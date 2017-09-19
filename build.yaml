@@ -27,3 +27,9 @@ artifacts:
   elemental2_core: com.google.elemental2:elemental2-core:jar:1.0.0-beta-1
   elemental2_dom: com.google.elemental2:elemental2-dom:jar:1.0.0-beta-1
   elemental2_promise: com.google.elemental2:elemental2-promise:jar:1.0.0-beta-1
+
+  arez_annotations: org.realityforge.arez:arez-annotations:jar:gwt:X
+  arez_core: org.realityforge.arez:arez-core:jar:gwt:X
+  arez_processor: org.realityforge.arez:arez-processor:jar:X
+  arez_extras: org.realityforge.arez:arez-extras:jar:gwt:X
+  arez_browser_extras: org.realityforge.arez:arez-browser-extras:jar:gwt:X

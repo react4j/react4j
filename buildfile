@@ -17,8 +17,16 @@ GWT_DEPS =
     :jsinterop_annotations,
     :jsinterop_annotations_sources
   ]
+AREZ_DEPS =
+  [
+    :arez_annotations,
+    :arez_core,
+    :arez_processor,
+    :arez_extras,
+    :arez_browser_extras
+  ]
 PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations]
-COMPILE_DEPS = [] + GWT_DEPS
+COMPILE_DEPS = [] + GWT_DEPS + AREZ_DEPS
 OPTIONAL_DEPS = []
 TEST_DEPS = []
 
