@@ -1,0 +1,298 @@
+/**
+ * The file contains styles for GWT widgets in the Clean theme.
+ *
+ * In order to maintain cross-browser compatibility, the following syntax is
+ * used to create IE6 specific style rules:
+ *    .gwt-Widget {
+ *      property: rule applies to all browsers
+ *      -property: rule applies only to IE6 (overrides previous rule)
+ *    }
+ *    * html .gwt-Widget {
+ *      property: rule applies to all versions of IE
+ *    }
+ */
+
+body, table td, select, button {
+    font-family: Arial Unicode MS, Arial, sans-serif;
+    font-size: small;
+}
+pre {
+    font-family: "courier new", courier;
+    font-size: small;
+}
+body {
+    color: black;
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+    background: #fff;
+    direction: ltr;
+}
+a, a:visited {
+    color: #0066cc;
+    text-decoration:none;
+}
+
+a:hover {
+    cursor: hand;
+    color: #0066cc;
+    text-decoration:underline;
+}
+
+select {
+    background: white;
+}
+
+/**
+ * The reference theme can be used to determine when this style sheet has
+ * loaded.  Create a hidden div element with absolute position, assign the style
+ * name below, and attach it to the DOM.  Use a timer to detect when the
+ * element's height and width are set to 5px.
+ */
+.gwt-Reference-clean {
+    height: 5px;
+    width: 5px;
+    zoom: 1;
+}
+
+.gwt-FileUpload {
+}
+
+.gwt-Frame {
+    border-top: 2px solid #666;
+    border-left: 2px solid #666;
+    border-right: 2px solid #bbb;
+    border-bottom: 2px solid #bbb;
+}
+
+.gwt-HTML {
+    padding: 0 0px;
+}
+
+.gwt-Hyperlink {
+}
+
+.gwt-Image {
+}
+
+.gwt-Label {
+}
+
+.gwt-ListBox {
+}
+
+.gwt-PopupPanel {
+    border: 3px solid #e7e7e7;
+    padding: 3px;
+    background: white;
+}
+
+.gwt-DecoratedPopupPanel .popupContent {
+}
+.gwt-DecoratedPopupPanel .popupMiddleCenter {
+    padding: 3px;
+    background: #f1f1f1;
+}
+.gwt-DecoratedPopupPanel .popupTopLeftInner {
+    width: 6px;
+    height: 5px;
+    zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupTopRightInner {
+    width: 6px;
+    height: 5px;
+    zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupBottomLeftInner {
+    width: 6px;
+    height: 6px;
+    zoom: 1;
+}
+.gwt-DecoratedPopupPanel .popupBottomRightInner {
+    width: 6px;
+    height: 6px;
+    zoom: 1;
+}
+* html .gwt-DecoratedPopupPanel .popupTopLeftInner {
+    width: 6px;
+    height: 5px;
+    overflow: hidden;
+}
+* html .gwt-DecoratedPopupPanel .popupTopRightInner {
+    width: 6px;
+    height: 5px;
+    overflow: hidden;
+}
+* html .gwt-DecoratedPopupPanel .popupBottomLeftInner {
+    width: 6px;
+    height: 6px;
+    overflow: hidden;
+}
+* html .gwt-DecoratedPopupPanel .popupBottomRightInner {
+    width: 6px;
+    height: 6px;
+    overflow: hidden;
+}
+
+.gwt-PopupPanelGlass {
+    background-color: #000;
+    opacity: 0.3;
+    filter: alpha(opacity=30);
+}
+
+.gwt-RadioButton {
+}
+.gwt-RadioButton-disabled {
+    color: #888;
+}
+
+.gwt-RichTextArea {
+}
+
+.gwt-TextArea {
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-top: 1px solid #666;
+    font-size: 100%;
+    font-family: Arial Unicode MS, Arial, sans-serif;
+}
+.gwt-TextArea-readonly {
+    color: #888;
+}
+
+.gwt-TextBox {
+    padding: 2px 1px;
+    border: 1px solid #ccc;
+    border-top: 1px solid #999;
+    font-size: small;
+    font-family: Arial Unicode MS, Arial, sans-serif;
+}
+.gwt-TextBox-readonly {
+    color: #888;
+}
+
+.gwt-Tree .gwt-TreeItem {
+    padding: 1px 0px;
+    margin: 0px;
+    white-space: nowrap;
+    cursor: hand;
+    cursor: pointer;
+}
+.gwt-Tree .gwt-TreeItem-selected {
+    background: #ebeff9;
+}
+.gwt-TreeItem .gwt-RadioButton input,
+.gwt-TreeItem .gwt-CheckBox input {
+    margin-left: 0px;
+}
+* html .gwt-TreeItem .gwt-RadioButton input,
+* html .gwt-TreeItem .gwt-CheckBox input {
+    margin-left: -4px;
+}
+
+.gwt-DateBox {
+    padding: 5px 4px;
+    border: 1px solid #ccc;
+    border-top: 1px solid #999;
+    font-size: 100%;
+}
+.gwt-DateBox input {
+    width: 8em;
+}
+.dateBoxFormatError {
+    background: #ffcccc;
+}
+.dateBoxPopup {
+    z-index: 1000000;
+}
+
+.gwt-DatePicker {
+    border: 1px solid #ccc;
+    border-top:1px solid #999;
+    cursor: default;
+}
+.gwt-DatePicker td,
+.datePickerMonthSelector td:focus {
+    outline: none;
+}
+.datePickerDays {
+    width: 100%;
+    background: white;
+}
+.datePickerDay,
+.datePickerWeekdayLabel,
+.datePickerWeekendLabel {
+    font-size: 85%;
+    text-align: center;
+    padding: 4px;
+    outline: none;
+    font-weight:bold;
+    color:#333;
+    border-right: 1px solid #EDEDED;
+    border-bottom: 1px solid #EDEDED;
+}
+.datePickerWeekdayLabel,
+.datePickerWeekendLabel {
+    background: #fff;
+    padding: 0px 4px 2px;
+    cursor: default;
+    color:#666;
+    font-size:70%;
+    font-weight:normal;
+}
+.datePickerDay {
+    padding: 4px 7px;
+    cursor: hand;
+    cursor: pointer;
+}
+.datePickerDayIsWeekend {
+    background: #f7f7f7;
+}
+.datePickerDayIsFiller {
+    color: #999;
+    font-weight:normal;
+}
+.datePickerDayIsValue {
+    background: #d7dfe8;
+}
+.datePickerDayIsDisabled {
+    color: #AAAAAA;
+    font-style: italic;
+}
+.datePickerDayIsHighlighted {
+    background: #F0E68C;
+}
+.datePickerDayIsValueAndHighlighted {
+    background: #d7dfe8;
+}
+.datePickerDayIsToday {
+    padding: 3px;
+    color: #fff;
+}
+
+.datePickerMonthSelector {
+    width: 100%;
+    padding: 1px 0 5px 0;
+    background: #fff;
+}
+td.datePickerMonth {
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    font-size: 100%;
+    font-weight: bold;
+    color: #333;
+}
+.datePickerPreviousButton,
+.datePickerNextButton {
+    font-size: 120%;
+    line-height: 1em;
+    color: #3a6aad;
+    cursor: hand;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0px 4px;
+    outline: none;
+}
+
+/* Application styles */
