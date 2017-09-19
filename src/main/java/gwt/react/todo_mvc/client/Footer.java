@@ -25,7 +25,7 @@ class Footer
     MouseEventHandler onClearCompleted;
   }
 
-  static StatelessComponent<FooterProps> component = ( props ) -> {
+  static StatelessComponent<FooterProps> component = StatelessComponent.wrap( "Footer", ( props ) -> {
 
     final String activeTodoWord = "item" + ( props.count == 1 ? "" : "s" );
 
@@ -54,7 +54,7 @@ class Footer
               ),
               buildClearButton( props )
       );
-  };
+  } );
 
   @Nullable
   private static ReactElement<?, ?> buildClearButton( @Nonnull final FooterProps props )
