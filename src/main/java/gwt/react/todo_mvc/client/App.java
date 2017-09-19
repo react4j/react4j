@@ -26,10 +26,10 @@ public class App
 
   private void render()
   {
-    ReactDOM.render(
-      React.createElement( Router, new RouterProps().History( ReactRouter.hashHistory ),
-                           castAsReactElement( routes ) ),
-      Document.get().getElementById( "todoapp" ) );
+    ReactDOM.render( React.createElement( Router,
+                                          new RouterProps().History( ReactRouter.hashHistory ),
+                                          castAsReactElement( routes ) ),
+                     Document.get().getElementById( "todoapp" ) );
   }
 
   @Override
