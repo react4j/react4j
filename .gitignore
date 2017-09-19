@@ -1,0 +1,10 @@
+*.iml
+/*.ipr
+/*.iws
+/Gemfile.lock
+/_buildr.rb
+/reports
+/target
+/tmp
+/generated
+/*/generated
