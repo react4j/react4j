@@ -25,10 +25,14 @@ public class ComponentUtils
    * @param <T> The type of {@link Component}
    * @return The constructor function
    */
-  public static <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ComponentConstructorFn<P>
-  getCtorFn( Class<T> cls )
+  public static <
+    P extends BaseProps,
+    S extends JsPlainObj,
+    T extends Component<P, S>
+    >
+  ComponentConstructorFn<P> getCtorFn( Class<T> cls )
   {
-    ComponentConstructorFn<?> constructorFn = _constructors.get( cls );
+    ComponentConstructorFn<P> constructorFn = (ComponentConstructorFn<P>) _constructors.get( cls );
     if ( null == constructorFn )
     {
       //TODO: This should be abstracted - it should also be guarded so not set during production compiles
@@ -36,7 +40,7 @@ public class ComponentUtils
       JsObjects.set( constructorFn, "displayName", cls.getSimpleName() );
       _constructors.put( cls, constructorFn );
     }
-    return (ComponentConstructorFn<P>) constructorFn;
+    return constructorFn;
   }
 
   /**
