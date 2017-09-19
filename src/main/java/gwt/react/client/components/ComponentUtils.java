@@ -31,7 +31,7 @@ public class ComponentUtils
     ComponentConstructorFn<?> constructorFn = _constructors.get( cls );
     if ( null == constructorFn )
     {
-      //TODO: This should be abstracted
+      //TODO: This should be abstracted - it should also be guarded so not set during production compiles
       constructorFn = getCtorFn0( cls );
       JsObjects.set( constructorFn, "displayName", cls.getSimpleName() );
       _constructors.put( cls, constructorFn );
