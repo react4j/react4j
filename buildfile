@@ -58,6 +58,9 @@ define 'playground' do
                       },
                     :gwt_dev_artifact => :gwt_dev)
 
+  # The generators are configured to generate to here.
+  iml.main_source_directories << _('generated/processors/main/java')
+
   iml.excluded_directories << project._('tmp/gwt')
 
   ipr.add_default_testng_configuration(:jvm_args => '-ea')
@@ -68,4 +71,14 @@ define 'playground' do
                             :start_javascript_debugger => false,
                             :vm_parameters => "-Xmx3G -Djava.io.tmpdir=#{_('tmp/gwt')}",
                             :shell_parameters => "-generateJsInteropExports -port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
+
+  ipr.add_component('CompilerConfiguration') do |component|
+    component.annotationProcessing do |xml|
+      xml.profile(:default => true, :name => 'Default', :enabled => true) do
+        xml.sourceOutputDir :name => 'generated/processors/main/java'
+        xml.sourceTestOutputDir :name => 'generated/processors/test/java'
+        xml.outputRelativeToContentRoot :value => true
+      end
+    end
+  end
 end
