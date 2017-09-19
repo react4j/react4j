@@ -13,6 +13,7 @@ import gwt.react.client.proptypes.BaseProps;
 import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
+import gwt.react.todo_mvc.client.model.Todo;
 import gwt.react_router.client.HistoryLocation;
 import gwt.react_router.client.RouterEnhancedProps;
 import java.util.Objects;
@@ -72,7 +73,7 @@ class TodoList
     state = $( new TodoListState(), "editingId", null, "newTodo", "" );
   }
 
-  private void handleDoAction( final Action action, final TodoModel.Todo todo )
+  private void handleDoAction( final Action action, final Todo todo )
   {
     switch ( action )
     {
@@ -86,11 +87,11 @@ class TodoList
         App.model.destroy( todo );
         break;
       case EDIT:
-        setState( $( new TodoListState(), "editingId", todo.id ) );
+        setState( $( new TodoListState(), "editingId", todo.getId() ) );
     }
   }
 
-  private void handleSave( final TodoModel.Todo todoToSave, final String text )
+  private void handleSave( final Todo todoToSave, final String text )
   {
     App.model.save( todoToSave, text );
     setState( $( new TodoListState(), "editingId", null ) );
@@ -129,11 +130,11 @@ class TodoList
 
   public ReactElement<?, ?> render()
   {
-    final Array<TodoModel.Todo> todos = App.model.todos;
+    final Array<Todo> todos = App.model.todos;
     final int todoCount = todos.getLength();
 
     final int activeTodoCount =
-      todos.reduce( ( accum, currentValue, index, theArray ) -> currentValue.completed ? accum : accum + 1, 0 );
+      todos.reduce( ( accum, currentValue, index, theArray ) -> currentValue.isCompleted() ? accum : accum + 1, 0 );
     final int completedCount = todoCount - activeTodoCount;
     return
       div( null,
@@ -155,12 +156,12 @@ class TodoList
   private ReactElement<?, ?> renderMainSection()
   {
     final String nowShowing = props.getRouterParams().nowShowing;
-    final Array<TodoModel.Todo> todos = App.model.todos;
+    final Array<Todo> todos = App.model.todos;
     final int todoCount = todos.getLength();
     ReactElement<?, ?> main = null;
     if ( todoCount > 0 )
     {
-      final Array<TodoModel.Todo> shownTodos = findShownTodos( todos, nowShowing );
+      final Array<Todo> shownTodos = findShownTodos( todos, nowShowing );
       main = section( new HtmlProps().className( "header" ),
                       input( new InputProps()
                                .className( "toggle-all" )
@@ -175,7 +176,7 @@ class TodoList
     return main;
   }
 
-  private Array<TodoModel.Todo> findShownTodos( final Array<TodoModel.Todo> todos, final String nowShowing )
+  private Array<Todo> findShownTodos( final Array<Todo> todos, final String nowShowing )
   {
     return todos.filter( ( todo, index, theArray ) -> {
       if ( nowShowing == null )
@@ -184,25 +185,25 @@ class TodoList
       }
       else if ( nowShowing.equals( NOW_SHOWING_ACTIVE_TODOS ) )
       {
-        return !todo.completed;
+        return !todo.isCompleted();
       }
       else
       {
-        return todo.completed;
+        return todo.isCompleted();
       }
     } );
   }
 
-  private Array<ReactElement<?, ?>> renderTodoItems( final Array<TodoModel.Todo> shownTodos )
+  private Array<ReactElement<?, ?>> renderTodoItems( final Array<Todo> shownTodos )
   {
     return shownTodos.map( ( todo, index, theArray ) -> {
       final TodoItem.TodoItemProps todoProps = new TodoItem.TodoItemProps();
 
-      todoProps.key = todo.id;
+      todoProps.key = todo.getId();
       todoProps.todo = todo;
       todoProps.doAction = this::handleDoAction;
       todoProps.doSave = this::handleSave;
-      todoProps.isEditing = Objects.equals( state.editingId, todo.id );
+      todoProps.isEditing = Objects.equals( state.editingId, todo.getId() );
 
       return React.createElement( TodoItem.class, todoProps );
     } );

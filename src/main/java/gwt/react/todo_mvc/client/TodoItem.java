@@ -15,6 +15,7 @@ import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;
 import gwt.react.client.proptypes.html.LabelProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
+import gwt.react.todo_mvc.client.model.Todo;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -31,10 +32,10 @@ class TodoItem
   static class TodoItemProps
     extends BaseProps
   {
-    TodoModel.Todo todo;
+    Todo todo;
     boolean isEditing;
-    JsBiConsumer<TodoModel.Todo, String> doSave;
-    JsBiConsumer<TodoList.Action, TodoModel.Todo> doAction;
+    JsBiConsumer<Todo, String> doSave;
+    JsBiConsumer<TodoList.Action, Todo> doAction;
   }
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
@@ -52,7 +53,7 @@ class TodoItem
   public TodoItem( @Nonnull final TodoItem.TodoItemProps props )
   {
     super( props );
-    state = newTodoItemState( props.todo.title );
+    state = newTodoItemState( props.todo.getTitle() );
   }
 
   private void onSubmitTodo()
@@ -73,14 +74,14 @@ class TodoItem
   private void onEdit()
   {
     props.doAction.accept( TodoList.Action.EDIT, props.todo );
-    setState( newTodoItemState( props.todo.title ) );
+    setState( newTodoItemState( props.todo.getTitle() ) );
   }
 
   private void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
     if ( event.which == App.ESCAPE_KEY )
     {
-      setState( newTodoItemState( props.todo.title ) );
+      setState( newTodoItemState( props.todo.getTitle() ) );
       props.doAction.accept( TodoList.Action.CANCEL, props.todo );
     }
     else if ( event.which == App.ENTER_KEY )
@@ -130,14 +131,14 @@ class TodoItem
   public ReactElement<?, ?> render()
   {
     return
-      li( new HtmlProps().className( classesFor( props.todo.completed, props.isEditing ) ),
+      li( new HtmlProps().className( classesFor( props.todo.isCompleted(), props.isEditing ) ),
           div( new HtmlProps().className( "view" ),
                input( new InputProps()
                         .className( "toggle" )
-                        .type( InputType.checkbox ).checked( props.todo.completed )
+                        .type( InputType.checkbox ).checked( props.todo.isCompleted() )
                         .onChange( e -> props.doAction.accept( TodoList.Action.TOGGLE, props.todo ) ) ),
                label( new LabelProps()
-                        .OnDoubleClick( e -> onEdit() ), props.todo.title ),
+                        .OnDoubleClick( e -> onEdit() ), props.todo.getTitle() ),
                button( new BtnProps()
                          .className( "destroy" )
                          .onClick( e -> props.doAction.accept( TodoList.Action.DESTROY, props.todo ) ) )

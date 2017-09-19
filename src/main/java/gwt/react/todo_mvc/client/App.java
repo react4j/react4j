@@ -8,6 +8,7 @@ import gwt.react.client.api.React;
 import gwt.react.client.api.ReactDOM;
 import gwt.react.client.components.ComponentUtils;
 import gwt.react.client.elements.ReactElement;
+import gwt.react.todo_mvc.client.model.TodoModel;
 import gwt.react_router.client.ReactRouter;
 import gwt.react_router.client.RouteProps;
 import gwt.react_router.client.RouterProps;
