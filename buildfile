@@ -19,6 +19,8 @@ GWT_DEPS =
   ]
 AREZ_DEPS =
   [
+    :javapoet,
+    :guava,
     :arez_annotations,
     :arez_core,
     :arez_processor,
