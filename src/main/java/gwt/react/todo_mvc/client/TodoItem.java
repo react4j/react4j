@@ -4,6 +4,8 @@ import com.google.gwt.dom.client.InputElement;
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.functional.JsBiConsumer;
 import gwt.react.client.components.Component;
+import gwt.react.client.components.lifecycle.ComponentDidUpdate;
+import gwt.react.client.components.lifecycle.ShouldComponentUpdate;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
@@ -22,6 +24,8 @@ import static gwt.react.client.api.React.DOM.*;
 @JsType
 class TodoItem
   extends Component<TodoItem.TodoItemProps, TodoItem.TodoState>
+  implements ShouldComponentUpdate<TodoItem.TodoItemProps, TodoItem.TodoState>,
+             ComponentDidUpdate<TodoItem.TodoItemProps>
 {
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   static class TodoItemProps
