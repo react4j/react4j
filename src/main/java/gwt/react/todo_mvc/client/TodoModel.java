@@ -36,7 +36,6 @@ class TodoModel
 
   private void inform()
   {
-    //Utils.store(this.key, this.todos);
     onChanges.forEachElem( ( v, index, theArray ) -> v.call() );
   }
 
