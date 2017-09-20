@@ -21,8 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-import gwt.interop.utils.client.plainobjects.JsPlainObj;
-import gwt.interop.utils.shared.collections.Array;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.StatelessComponent;
 import gwt.react.client.elements.DOMElement;
@@ -46,6 +44,8 @@ import gwt.react.client.proptypes.html.SourceProps;
 import gwt.react.client.proptypes.html.TdProps;
 import gwt.react.client.proptypes.html.TextAreaProps;
 import gwt.react.client.proptypes.html.ThProps;
+import gwt.react.client.util.Array;
+import gwt.react.client.util.JsPlainObj;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;

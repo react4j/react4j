@@ -2,11 +2,11 @@ package gwt.react.todo_mvc.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
-import gwt.interop.utils.shared.collections.Array;
-import gwt.interop.utils.shared.collections.JsArrayHelper;
 import gwt.react.client.api.React;
 import gwt.react.client.api.ReactDOM;
 import gwt.react.client.elements.ReactElement;
+import gwt.react.client.util.Array;
+import gwt.react.client.util.JsArrayHelper;
 import gwt.react.todo_mvc.client.model.TodoModel;
 import gwt.react_router.client.ReactRouter;
 import gwt.react_router.client.RouteProps;
@@ -35,7 +35,7 @@ public class App
   @Override
   public void onModuleLoad()
   {
-    //React Router now requires that you only create the Routes once so define them statically
+    //ReactRouter now requires that you only create the Routes once so define them statically
     routes.push( React.createElement( Route,
                                       new RouteProps()
                                         .path( "/" )

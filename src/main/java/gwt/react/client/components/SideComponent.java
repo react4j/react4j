@@ -1,8 +1,8 @@
 package gwt.react.client.components;
 
-import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
+import gwt.react.client.util.JsPlainObj;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;

@@ -1,4 +1,4 @@
-package gwt.interop.utils.shared.collections;
+package gwt.react.client.util;
 /* The MIT License (MIT)
 
 Copyright (c) 2016 GWT React
@@ -27,6 +27,8 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsArrayLike;
 
 /**
  * An interface to a Javascript array. The implementation may be different on the client
@@ -50,7 +52,7 @@ public interface Array<T>
   @JsOverlay
   default T get( int index )
   {
-    return JsArrayHelper.getArrayValue( this, index );
+    return Js.<JsArrayLike<T>>cast( this ).getAt( index );
   }
 
   /**
@@ -67,13 +69,6 @@ public interface Array<T>
    * @param value The value to add to the end of the array
    */
   void push( T value );
-
-  /**
-   * Pushes the given value onto the end of the array.
-   *
-   * @param value The value to add to the end of the array
-   */
-  void push( T... value );
 
   @JsMethod( name = "forEach" )
   void forEachElem( ForEachFullFn<T> fn );
@@ -97,7 +92,7 @@ public interface Array<T>
    * @param <T2> The type of output from the map function
    * @return The new mapped array
    */
-  <T2 extends Object> Array<T2> map( MapFullFn<T, T2> fn );
+  <T2> Array<T2> map( MapFullFn<T, T2> fn );
 
   /**
    * Applies a function against an accumulator and each value of the array (from left-to-right)
@@ -110,7 +105,7 @@ public interface Array<T>
    * @param <A>          The type of accumulator
    * @return The reduced accumulator value
    */
-  <A extends Object> A reduce( ReduceFullFn<A, T> fn, A initialValue );
+  <A> A reduce( ReduceFullFn<A, T> fn, A initialValue );
 
   /**
    * Tests whether some element in the array passes the run implemented by the provided function.

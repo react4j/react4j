@@ -1,6 +1,6 @@
 package gwt.react_router.client;
 
-import gwt.interop.utils.shared.functional.JsProcedure;
+import gwt.react.client.util.JsProcedure;
 import jsinterop.annotations.JsFunction;
 
 @JsFunction

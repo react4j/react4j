@@ -1,6 +1,5 @@
 package gwt.react.client.proptypes.html;
 
-import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.react.client.events.ClipboardEventHandler;
 import gwt.react.client.events.CompositionEventHandler;
 import gwt.react.client.events.DragEventHandler;
@@ -13,6 +12,7 @@ import gwt.react.client.events.TouchEventHandler;
 import gwt.react.client.events.UIEventHandler;
 import gwt.react.client.events.WheelEventHandler;
 import gwt.react.client.proptypes.BaseProps;
+import gwt.react.client.util.JsPlainObj;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;

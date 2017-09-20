@@ -21,11 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-import gwt.interop.utils.client.plainobjects.JsPlainObj;
-import gwt.interop.utils.shared.functional.JsProcedure;
 import gwt.react.client.api.React;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
+import gwt.react.client.util.JsPlainObj;
+import gwt.react.client.util.JsProcedure;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsMethod;

@@ -1,7 +1,6 @@
 package gwt.react.todo_mvc.client;
 
 import elemental2.dom.HTMLInputElement;
-import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.SideComponent;
 import gwt.react.client.elements.ReactElement;
@@ -13,6 +12,7 @@ import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;
 import gwt.react.client.proptypes.html.LabelProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
+import gwt.react.client.util.JsPlainObj;
 import gwt.react.todo_mvc.client.model.Todo;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;
@@ -20,8 +20,8 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
-import static gwt.interop.utils.client.plainobjects.JsPlainObj.$;
 import static gwt.react.client.api.React.DOM.*;
+import static gwt.react.client.util.JsPlainObj.$;
 
 class TodoItem
   extends SideComponent<TodoItem.Props, TodoItem.State>

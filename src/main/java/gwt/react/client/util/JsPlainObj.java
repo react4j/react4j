@@ -1,4 +1,4 @@
-package gwt.interop.utils.client.plainobjects;
+package gwt.react.client.util;
 /* The MIT License (MIT)
 
 Copyright (c) 2016 GWT React

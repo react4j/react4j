@@ -1,8 +1,8 @@
 package gwt.react.todo_mvc.client.model;
 
-import gwt.interop.utils.shared.collections.Array;
-import gwt.interop.utils.shared.collections.JsArrayHelper;
-import gwt.interop.utils.shared.functional.JsProcedure;
+import gwt.react.client.util.Array;
+import gwt.react.client.util.JsArrayHelper;
+import gwt.react.client.util.JsProcedure;
 import java.util.Date;
 
 public class TodoModel

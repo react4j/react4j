@@ -1,6 +1,6 @@
 package gwt.react_router.client;
 
-import gwt.interop.utils.client.plainobjects.JsPlainObj;
+import gwt.react.client.util.JsPlainObj;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 

@@ -1,8 +1,8 @@
 package gwt.react_router.client;
 
-import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.react.client.components.Component;
 import gwt.react.client.elements.ReactElement;
+import gwt.react.client.util.JsPlainObj;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;

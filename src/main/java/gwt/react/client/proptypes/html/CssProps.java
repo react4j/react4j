@@ -1,8 +1,8 @@
 package gwt.react.client.proptypes.html;
 
-import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.react.client.proptypes.cssPropertyTypes.AnimationFillMode;
 import gwt.react.client.proptypes.cssPropertyTypes.Visibility;
+import gwt.react.client.util.JsPlainObj;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
