@@ -25,7 +25,7 @@ class TodoItemWrapper
     return ComponentUtils.getCtorFn( TodoItemWrapper.class, "TodoItem" );
   }
 
-  public TodoItemWrapper( @Nonnull final Props props )
+  TodoItemWrapper( @Nonnull final Props props )
   {
     super( props );
     _component = new TodoItem( this );
