@@ -37,10 +37,7 @@ import jsinterop.annotations.JsType;
 /**
  * <p>You can subclass {@link Component} to define a stateful, ES6-style React component</p>
  *
- * <p>To create a {@link ReactElement} based on this component, call {@link React#createElement(Class, BaseProps, ReactElement...)}.
- * In cases where  you have exported a Component in JavaScript under a name that does not match its Java name, or you have
- * disabled class meta data, you cannot use a Class reference. Instead, pass the result of calling
- * {@link ComponentUtils#getCtorFn(Class)} with the fully qualified name of the class e.g.</p>
+ * <p>To create a {@link ReactElement} based on this component, call {@link React#createElement(Class, BaseProps, ReactElement...)}.</p>
  *
  * <pre>
  * React.createElement(ComponentUtils.getCtorFn("SomeComponentName"), someProps, ReactElement...)
