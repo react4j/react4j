@@ -3,8 +3,6 @@ package gwt.react.todo_mvc.client;
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.collections.StringMap;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.ComponentConstructorFn;
-import gwt.react.client.components.ComponentUtils;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.Objects;
@@ -47,16 +45,6 @@ public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
   protected void setInitialState( @Nonnull final S state )
   {
     component().setInitialState( state );
-  }
-
-  protected static <
-    P extends BaseProps,
-    S extends JsPlainObj,
-    T extends Component<P, S>
-    >
-  ComponentConstructorFn<P> getCtor( @Nonnull final Class<T> type )
-  {
-    return ComponentUtils.getCtorFn( type );
   }
 
  /**
