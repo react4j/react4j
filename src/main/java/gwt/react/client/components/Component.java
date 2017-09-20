@@ -100,7 +100,7 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj>
    *
    * @param state Object Literal (containing zero or more keys to update)
    */
-  protected native void setState( S state );
+  public native void setState( S state );
 
   /**
    * Performs a shallow merge of nextState into current state. This is the primary method you
@@ -171,19 +171,25 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj>
   protected abstract ReactElement<?, ?> render();
 
   @JsOverlay
-  protected final S state()
+  public final S state()
   {
     return state;
   }
 
   @JsOverlay
-  protected final P props()
+  public final P props()
   {
     return props;
   }
 
   @JsOverlay
-  protected final void setInitialState( @Nonnull final S state )
+  public final void setProps( @Nonnull final P props )
+  {
+    this.props = props;
+  }
+
+  @JsOverlay
+  public final void setInitialState( @Nonnull final S state )
   {
     this.state = Objects.requireNonNull( state );
   }
