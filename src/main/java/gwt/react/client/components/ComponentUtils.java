@@ -6,6 +6,7 @@ import gwt.react.client.GwtReactConfig;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 
 /**
  * Utility functions for working with ES6 style React.Components
@@ -35,13 +36,24 @@ public class ComponentUtils
     >
   ComponentConstructorFn<P> getCtorFn( Class<T> cls )
   {
+    return getCtorFn( cls, cls.getSimpleName() );
+  }
+
+  @SuppressWarnings( "unchecked" )
+  public static <
+    P extends BaseProps,
+    S extends JsPlainObj,
+    T extends Component<P, S>
+    >
+  ComponentConstructorFn<P> getCtorFn( @Nonnull final Class<T> cls, @Nonnull final String name )
+  {
     if ( GwtReactConfig.enableComponentNames() )
     {
       ComponentConstructorFn<P> constructorFn = (ComponentConstructorFn<P>) _constructors.get( cls );
       if ( null == constructorFn )
       {
         constructorFn = getCtorFn0( cls );
-        JsHelper.setObjectProperty( constructorFn, "displayName", cls.getSimpleName() );
+        JsHelper.setObjectProperty( constructorFn, "displayName", name );
         _constructors.put( cls, constructorFn );
       }
       return constructorFn;
