@@ -79,6 +79,7 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj> {
 	@JsProperty
 	protected S state;
 
+	@SuppressWarnings( "unused" )
 	@JsProperty
 	private P props;
 
