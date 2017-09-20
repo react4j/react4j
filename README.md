@@ -4,7 +4,6 @@ A simple project to experiment with gwt-react
 
 ## TODO
 
-* Publish to realityforge
 * Integrate Arez
 * Develop React-Arez extension
 
