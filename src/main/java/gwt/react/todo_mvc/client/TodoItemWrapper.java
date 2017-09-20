@@ -7,6 +7,7 @@ import gwt.react.client.elements.ReactElement;
 import gwt.react.todo_mvc.client.TodoItem.Props;
 import gwt.react.todo_mvc.client.TodoItem.State;
 import javax.annotation.Nonnull;
+import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 
 /**
@@ -25,6 +26,7 @@ class TodoItemWrapper
     return ComponentUtils.getCtorFn( TodoItemWrapper.class, "TodoItem" );
   }
 
+  @JsConstructor
   TodoItemWrapper( @Nonnull final Props props )
   {
     super( props );
