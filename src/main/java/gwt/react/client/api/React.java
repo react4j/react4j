@@ -26,7 +26,6 @@ import gwt.interop.utils.shared.collections.Array;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.ComponentConstructorFn;
 import gwt.react.client.components.ComponentUtils;
-import gwt.react.client.components.PureComponent;
 import gwt.react.client.components.StatelessComponent;
 import gwt.react.client.elements.DOMElement;
 import gwt.react.client.elements.ReactElement;
@@ -110,7 +109,7 @@ public class React
    * of the {@link JsType} annotation)</p>
    * <p>3) When class data is disabled when building</p>
    *
-   * @param type  the {@link Class} object of a React component extending {@link Component} or {@link PureComponent}
+   * @param type  the {@link Class} object of a React component extending {@link Component}
    * @param props the props to pass to the element
    * @return a {@link ReactElement}
    */
