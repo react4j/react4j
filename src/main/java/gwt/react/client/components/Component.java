@@ -88,8 +88,6 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj> {
 	@JsProperty
 	protected StringMap<Object> refs;
 
-	private Component() {}
-
 	public Component(P props) {
 	}
 
