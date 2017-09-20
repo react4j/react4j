@@ -61,16 +61,16 @@ import jsinterop.annotations.JsType;
  * void componentDidUpdate(P prevProps, S prevState)
  * void componentWillUnmount()
  * </Pre>
- * 
+ *
  * <p>To have extra type safety when defining some of the above methods, you can implement one or more of the following interfaces:</p>
- * <p>{@link ComponentWillMount}</p> 
- * <p>{@link ComponentDidMount}</p> 
+ * <p>{@link ComponentWillMount}</p>
+ * <p>{@link ComponentDidMount}</p>
  * <p>{@link ComponentWillReceiveProps}</p>
  * <p>{@link ShouldComponentUpdate}</p>
  * <p>{@link ComponentWillUpdate}</p>
  * <p>{@link ComponentDidUpdate}</p>
  * <p>{@link ComponentWillUnmount}</p>
- * 
+ *
  * @param <P> the type of props this component expects
  * @param <S> the type of state this component maintains
  */
