@@ -197,7 +197,7 @@ class TodoList
   private Array<ReactElement<?, ?>> renderTodoItems( final Array<Todo> shownTodos )
   {
     return shownTodos.map( ( todo, index, theArray ) -> {
-      final TodoItem.TodoItemProps todoProps = new TodoItem.TodoItemProps();
+      final TodoItem.Props todoProps = new TodoItem.Props();
 
       todoProps.key = todo.getId();
       todoProps.todo = todo;
@@ -205,7 +205,7 @@ class TodoList
       todoProps.doSave = this::handleSave;
       todoProps.isEditing = Objects.equals( state().editingId, todo.getId() );
 
-      return React.createElement( TodoItem.class, todoProps );
+      return React.createElement( TodoItem.COMPONENT_TYPE, todoProps );
     } );
   }
 

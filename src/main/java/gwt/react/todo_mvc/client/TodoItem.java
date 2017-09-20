@@ -4,8 +4,7 @@ import com.google.gwt.dom.client.InputElement;
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.functional.JsBiConsumer;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.lifecycle.ComponentDidUpdate;
-import gwt.react.client.components.lifecycle.ShouldComponentUpdate;
+import gwt.react.client.components.ComponentConstructorFn;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
@@ -22,14 +21,13 @@ import jsinterop.annotations.JsType;
 import static gwt.interop.utils.client.plainobjects.JsPlainObj.$;
 import static gwt.react.client.api.React.DOM.*;
 
-@JsType
 class TodoItem
-  extends Component<TodoItem.TodoItemProps, TodoItem.TodoState>
-  implements ShouldComponentUpdate<TodoItem.TodoItemProps, TodoItem.TodoState>,
-             ComponentDidUpdate<TodoItem.TodoItemProps>
+  extends SideComponent<TodoItem.Props, TodoItem.State>
 {
+  static final ComponentConstructorFn<Props> COMPONENT_TYPE = TodoItemWrapper.ctor();
+
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class TodoItemProps
+  public static class Props
     extends BaseProps
   {
     Todo todo;
@@ -39,31 +37,31 @@ class TodoItem
   }
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class TodoState
+  static class State
     extends JsPlainObj
   {
     String editText;
   }
 
-  private TodoState newTodoItemState( @Nonnull final String editText )
+  private State newTodoItemState( @Nonnull final String editText )
   {
-    return $( new TodoState(), "editText", editText );
+    return $( new State(), "editText", editText );
   }
 
-  public TodoItem( @Nonnull final TodoItem.TodoItemProps props )
+  TodoItem( @Nonnull final Component<Props, State> component )
   {
-    super( props );
-    setInitialState( newTodoItemState( props.todo.getTitle() ) );
+    super( component );
+    component.setInitialState( newTodoItemState( props().todo.getTitle() ) );
   }
 
   private void onSubmitTodo()
   {
-    String val = state().editText;
+    String val = component().state().editText;
     if ( val != null && !val.isEmpty() )
     {
       props().doSave.accept( props().todo, val );
 
-      setState( newTodoItemState( val ) );
+      component().setState( newTodoItemState( val ) );
     }
     else
     {
@@ -74,14 +72,14 @@ class TodoItem
   private void onEdit()
   {
     props().doAction.accept( TodoList.Action.EDIT, props().todo );
-    setState( newTodoItemState( props().todo.getTitle() ) );
+    component().setState( newTodoItemState( props().todo.getTitle() ) );
   }
 
   private void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
     if ( event.which == App.ESCAPE_KEY )
     {
-      setState( newTodoItemState( props().todo.getTitle() ) );
+      component().setState( newTodoItemState( props().todo.getTitle() ) );
       props().doAction.accept( TodoList.Action.CANCEL, props().todo );
     }
     else if ( event.which == App.ENTER_KEY )
@@ -94,41 +92,31 @@ class TodoItem
   {
     if ( props().isEditing )
     {
-      setState( newTodoItemState( InputElement.as( event.target ).getValue() ) );
+      component().setState( newTodoItemState( InputElement.as( event.target ).getValue() ) );
     }
   }
 
-  /**
-   * This is a completely optional performance enhancement that you can
-   * implement on any React component. If you were to delete this method
-   * the app would still work correctly (and still be very performant!), we
-   * just use it as an example of how little code it takes to getCtorFn an order
-   * of magnitude performance improvement.
-   */
-  public boolean shouldComponentUpdate( @Nonnull final TodoItemProps nextProps, @Nonnull final TodoState nextState )
+  @Override
+  protected boolean shouldComponentUpdate( @Nonnull final Props nextProps, @Nonnull final State nextState )
   {
     return ( nextProps.todo != props().todo ||
              nextProps.isEditing != props().isEditing ||
              !nextState.editText.equals( state().editText ) );
   }
 
-  /**
-   * Safely manipulate the DOM after updating the state when invoking
-   * `props.onEdit()` in the `handleEdit` method above.
-   * For more info refer to notes at https://facebook.github.io/react/docs/component-api.html#setstate
-   * and https://facebook.github.io/react/docs/component-specs.html#updating-componentdidupdate
-   */
-  public void componentDidUpdate( @Nonnull final TodoItemProps prevProps, @Nonnull final TodoItemProps prevState )
+  @Override
+  protected void componentDidUpdate( @Nonnull final Props prevProps, @Nonnull final Props prevState )
   {
     if ( !prevProps.isEditing && props().isEditing )
     {
-      final InputElement input = InputElement.as( (InputElement) this.refs.get( "editField" ) );
+      final InputElement input = InputElement.as( (InputElement) refs().get( "editField" ) );
       input.focus();
       input.select();
     }
   }
 
-  public ReactElement<?, ?> render()
+  @Override
+  protected ReactElement<?, ?> render()
   {
     return
       li( new HtmlProps().className( classesFor( props().todo.isCompleted(), props().isEditing ) ),
