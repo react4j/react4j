@@ -5,7 +5,6 @@ import gwt.interop.utils.shared.collections.StringMap;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.ComponentConstructorFn;
 import gwt.react.client.components.ComponentUtils;
-import gwt.react.client.components.lifecycle.ComponentDidMount;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -108,7 +107,7 @@ public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
   /**
    * This method is invoked immediately before a component is unmounted and destroyed.
    * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
-   * any DOM elements that were created in {@link ComponentDidMount#componentDidMount()}
+   * any DOM elements that were created in {@link #componentDidMount()}
    */
   protected void componentWillUnmount()
   {
