@@ -24,8 +24,6 @@ SOFTWARE. */
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.collections.Array;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.ComponentConstructorFn;
-import gwt.react.client.components.ComponentUtils;
 import gwt.react.client.components.StatelessComponent;
 import gwt.react.client.elements.DOMElement;
 import gwt.react.client.elements.ReactElement;
@@ -48,9 +46,10 @@ import gwt.react.client.proptypes.html.SourceProps;
 import gwt.react.client.proptypes.html.TdProps;
 import gwt.react.client.proptypes.html.TextAreaProps;
 import gwt.react.client.proptypes.html.ThProps;
-import jsinterop.annotations.JsOverlay;
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsConstructorFn;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL )
 public class React
@@ -113,45 +112,15 @@ public class React
    * @param props the props to pass to the element
    * @return a {@link ReactElement}
    */
-  @JsOverlay
-  public static <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T> createElement(
-    Class<T> type,
-    P props )
-  {
-    return createElement( ComponentUtils.getCtorFn( type ), props );
-  }
 
-  @JsOverlay
-  public static <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T> createElement(
-    Class<T> type,
-    P props,
-    String value )
-  {
-    return createElement( ComponentUtils.getCtorFn( type ), props, value );
-  }
+  public static native <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T>
+  createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props );
 
-  @JsOverlay
-  public static <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T> createElement(
-    Class<T> type,
-    P props,
-    ReactElement<?, ?>... child )
-  {
-    return createElement( ComponentUtils.getCtorFn( type ), props, child );
-  }
+  public static native <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T>
+  createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props, @Nonnull String value );
 
-  public static native <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T> createElement(
-    ComponentConstructorFn<P> type,
-    P props );
-
-  public static native <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T> createElement(
-    ComponentConstructorFn<P> type,
-    P props,
-    String value );
-
-  public static native <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T> createElement(
-    ComponentConstructorFn<P> type,
-    P props,
-    ReactElement<?, ?>... child );
+  public static native <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T>
+  createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props, @Nonnull ReactElement<?, ?>... child );
 
   /**
    * <p>Clone and return a new ReactElement using element as the starting point. The resulting

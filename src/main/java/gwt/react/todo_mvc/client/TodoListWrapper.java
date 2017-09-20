@@ -1,12 +1,13 @@
 package gwt.react.todo_mvc.client;
 
+import gwt.interop.utils.shared.JsHelper;
+import gwt.react.client.GwtReactConfig;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.ComponentConstructorFn;
-import gwt.react.client.components.ComponentUtils;
 import gwt.react.client.elements.ReactElement;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsConstructorFn;
 
 /**
  * TODO: Also should be generated.
@@ -17,9 +18,19 @@ class TodoListWrapper
 {
   private final TodoList _component;
 
-  static ComponentConstructorFn<TodoList.Props> ctor()
+  static JsConstructorFn<TodoListWrapper> ctor()
   {
-    return ComponentUtils.getCtorFn( TodoListWrapper.class, "TodoList" );
+    final JsConstructorFn<TodoListWrapper> constructorFn = JsConstructorFn.of( TodoListWrapper.class );
+    if ( null == constructorFn )
+    {
+      //TODO Replace this with invariant check soon
+      throw new IllegalStateException( "Unable to get constructor function for TodoListWrapper" );
+    }
+    if ( GwtReactConfig.enableComponentNames() )
+    {
+      JsHelper.setObjectProperty( constructorFn, "displayName", "TodoList" );
+    }
+    return constructorFn;
   }
 
   @JsConstructor

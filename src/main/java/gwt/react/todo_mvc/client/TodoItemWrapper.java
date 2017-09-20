@@ -1,14 +1,15 @@
 package gwt.react.todo_mvc.client;
 
+import gwt.interop.utils.shared.JsHelper;
+import gwt.react.client.GwtReactConfig;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.ComponentConstructorFn;
-import gwt.react.client.components.ComponentUtils;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.todo_mvc.client.TodoItem.Props;
 import gwt.react.todo_mvc.client.TodoItem.State;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsConstructorFn;
 
 /**
  * TODO: This should be generated from annotation processor, processing TodoItem.
@@ -21,9 +22,19 @@ class TodoItemWrapper
 {
   private final TodoItem _component;
 
-  static ComponentConstructorFn<Props> ctor()
+  static JsConstructorFn<TodoItemWrapper> ctor()
   {
-    return ComponentUtils.getCtorFn( TodoItemWrapper.class, "TodoItem" );
+    final JsConstructorFn<TodoItemWrapper> constructorFn = JsConstructorFn.of( TodoItemWrapper.class );
+    if ( null == constructorFn )
+    {
+      //TODO Replace this with invariant check soon
+      throw new IllegalStateException( "Unable to get constructor function for TodoItemWrapper" );
+    }
+    if ( GwtReactConfig.enableComponentNames() )
+    {
+      JsHelper.setObjectProperty( constructorFn, "displayName", "TodoItem" );
+    }
+    return constructorFn;
   }
 
   @JsConstructor

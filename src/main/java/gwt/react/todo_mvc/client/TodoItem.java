@@ -4,7 +4,6 @@ import com.google.gwt.dom.client.InputElement;
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.functional.JsBiConsumer;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.ComponentConstructorFn;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
@@ -18,13 +17,14 @@ import gwt.react.todo_mvc.client.model.Todo;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsConstructorFn;
 import static gwt.interop.utils.client.plainobjects.JsPlainObj.$;
 import static gwt.react.client.api.React.DOM.*;
 
 class TodoItem
   extends SideComponent<TodoItem.Props, TodoItem.State>
 {
-  static final ComponentConstructorFn<TodoItem.Props> TYPE = TodoItemWrapper.ctor();
+  static final JsConstructorFn<TodoItemWrapper> TYPE = TodoItemWrapper.ctor();
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   public static class Props

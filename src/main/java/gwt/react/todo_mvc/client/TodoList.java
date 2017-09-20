@@ -5,7 +5,6 @@ import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.collections.Array;
 import gwt.react.client.api.React;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.ComponentConstructorFn;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
@@ -22,6 +21,7 @@ import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsConstructorFn;
 import org.jetbrains.annotations.Nullable;
 import static gwt.interop.utils.client.plainobjects.JsPlainObj.$;
 import static gwt.react.client.api.GwtReact.castAsReactElement;
@@ -30,7 +30,7 @@ import static gwt.react.client.api.React.DOM.*;
 class TodoList
   extends SideComponent<TodoList.Props, TodoList.State>
 {
-  static final ComponentConstructorFn<TodoList.Props> TYPE = TodoListWrapper.ctor();
+  static final JsConstructorFn<TodoListWrapper> TYPE = TodoListWrapper.ctor();
 
   static final String NOW_SHOWING_ACTIVE_TODOS = "active";
   static final String NOW_SHOWING_COMPLETED_TODOS = "completed";
