@@ -25,6 +25,7 @@ import gwt.react.client.elements.ReactElement;
 import jsinterop.annotations.JsFunction;
 
 @JsFunction
-public interface ChildrenForEachFn {
-    void forEachChild(ReactElement<?, ?> childElement);
+public interface ChildrenForEachFn
+{
+  void forEachChild( ReactElement<?, ?> childElement );
 }

@@ -25,6 +25,7 @@ import gwt.react.client.elements.ReactElement;
 import jsinterop.annotations.JsFunction;
 
 @JsFunction
-public interface ChildrenMapFn {
-    ReactElement<?, ?> mapChild(ReactElement<?, ?> childElement);
+public interface ChildrenMapFn
+{
+  ReactElement<?, ?> mapChild( ReactElement<?, ?> childElement );
 }

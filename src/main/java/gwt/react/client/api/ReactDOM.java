@@ -26,37 +26,40 @@ import gwt.react.client.elements.ReactElement;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class ReactDOM {
-    /**
-     * This is a static class.
-     */
-	private ReactDOM() {
-	}
+@JsType( isNative = true, namespace = JsPackage.GLOBAL )
+public class ReactDOM
+{
+  /**
+   * This is a static class.
+   */
+  private ReactDOM()
+  {
+  }
 
-    /**
-     * <p>Render a ReactElement&lt;?, ?&gt; into the DOM in the supplied container and return a reference to
-     * the component (or returns nothing for stateless components).</p>
-     *
-     * <p>If the ReactElement&lt;?, ?&gt; was previously rendered into container, this will perform an update
-     * on it and only mutate the DOM as necessary to reflect the latest React component.</p>
-     *
-     * <p>If the optional callback is provided, it will be executed after the component is rendered
-     * or updated.</p>
-     *
-     * @param element the react element to render
-     * @param container the DOM container to render into
-     * @return a reference to the component or returns nothing for stateless components
-     */
-    public static native <C> ReactElement<?, ?> render(ReactElement<?, ?> element, C container);
-    public static native <C> ReactElement<?, ?> render(ReactElement<?, ?> element, C container, JsProcedure onUpdate);
+  /**
+   * <p>Render a ReactElement&lt;?, ?&gt; into the DOM in the supplied container and return a reference to
+   * the component (or returns nothing for stateless components).</p>
+   *
+   * <p>If the ReactElement&lt;?, ?&gt; was previously rendered into container, this will perform an update
+   * on it and only mutate the DOM as necessary to reflect the latest React component.</p>
+   *
+   * <p>If the optional callback is provided, it will be executed after the component is rendered
+   * or updated.</p>
+   *
+   * @param element   the react element to render
+   * @param container the DOM container to render into
+   * @return a reference to the component or returns nothing for stateless components
+   */
+  public static native <C> ReactElement<?, ?> render( ReactElement<?, ?> element, C container );
 
-    /**
-     * Remove a mounted React component from the DOM and clean up its event handlers and state. If
-     * no component was mounted in the container, calling this function does nothing.
-     *
-     * @param container the DOM container containing the react component to unmount
-     * @return <code>true</code> if the the component was unmounted
-     */
-    public static native <C> boolean unmountComponentAtNode(C container);
+  public static native <C> ReactElement<?, ?> render( ReactElement<?, ?> element, C container, JsProcedure onUpdate );
+
+  /**
+   * Remove a mounted React component from the DOM and clean up its event handlers and state. If
+   * no component was mounted in the container, calling this function does nothing.
+   *
+   * @param container the DOM container containing the react component to unmount
+   * @return <code>true</code> if the the component was unmounted
+   */
+  public static native <C> boolean unmountComponentAtNode( C container );
 }

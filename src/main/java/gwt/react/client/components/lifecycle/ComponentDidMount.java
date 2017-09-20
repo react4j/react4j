@@ -30,13 +30,14 @@ import jsinterop.annotations.JsType;
  * Implement this interface when using {@link Component} or {@link PureComponent} to receive the {@link #componentDidMount()} lifecycle event.
  */
 @JsType
-public interface ComponentDidMount {
-	/**
-	 * {@link #componentDidMount()} is invoked immediately after a component is mounted.
-	 * Initialization that requires DOM nodes should go here. If you need to load data from a remote endpoint,
-	 * this is a good place to instantiate the network request.
-	 * Setting state in this method will trigger a re-rendering.
-	 */
-	@JsMethod
-	void componentDidMount();
+public interface ComponentDidMount
+{
+  /**
+   * {@link #componentDidMount()} is invoked immediately after a component is mounted.
+   * Initialization that requires DOM nodes should go here. If you need to load data from a remote endpoint,
+   * this is a good place to instantiate the network request.
+   * Setting state in this method will trigger a re-rendering.
+   */
+  @JsMethod
+  void componentDidMount();
 }

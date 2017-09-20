@@ -28,22 +28,24 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name="GWTReact")
-public class GwtReact {
-    /**
-     * This is a static class.
-     */
-    private GwtReact() {
-    }
+@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "GWTReact" )
+public class GwtReact
+{
+  /**
+   * This is a static class.
+   */
+  private GwtReact()
+  {
+  }
 
-    //The following methods are used to work around limitations in the Java type system when
-    //creating React Elements
-    @JsMethod(name = "cast")
-    public static native ReactElement<?, ?> castAsReactElement(Array<? extends ReactElement<?, ?>> children);
+  //The following methods are used to work around limitations in the Java type system when
+  //creating React Elements
+  @JsMethod( name = "cast" )
+  public static native ReactElement<?, ?> castAsReactElement( Array<? extends ReactElement<?, ?>> children );
 
-    @JsMethod(name = "cast")
-    public static native ReactElement<?, ?> castAsReactElement(ReactElementChildren children);
+  @JsMethod( name = "cast" )
+  public static native ReactElement<?, ?> castAsReactElement( ReactElementChildren children );
 
-    @JsMethod(name = "cast")
-    public static native ReactElement<?, ?> stringLiteral(String value);
+  @JsMethod( name = "cast" )
+  public static native ReactElement<?, ?> stringLiteral( String value );
 }

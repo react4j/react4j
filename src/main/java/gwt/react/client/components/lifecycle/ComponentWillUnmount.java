@@ -30,12 +30,13 @@ import jsinterop.annotations.JsType;
  * Implement this interface when using {@link Component} or {@link PureComponent} to receive the {@link #componentWillUnmount()} lifecycle event.
  */
 @JsType
-public interface ComponentWillUnmount {
-	/**
-	 * {@link #componentWillUnmount()} is invoked immediately before a component is unmounted and destroyed.
-	 * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
-	 * any DOM elements that were created in {@link ComponentDidMount#componentDidMount()}
-	 */
-	@JsMethod
-	void componentWillUnmount();
+public interface ComponentWillUnmount
+{
+  /**
+   * {@link #componentWillUnmount()} is invoked immediately before a component is unmounted and destroyed.
+   * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
+   * any DOM elements that were created in {@link ComponentDidMount#componentDidMount()}
+   */
+  @JsMethod
+  void componentWillUnmount();
 }
