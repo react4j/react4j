@@ -6,7 +6,6 @@ require 'buildr/gwt'
 GWT_DEPS =
   [
     :gwt_user,
-    :gwt_interop_utils,
     :elemental2_core,
     :elemental2_dom,
     :elemental2_promise,
@@ -28,7 +27,7 @@ AREZ_DEPS =
 PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations]
 COMPILE_DEPS = [] + GWT_DEPS + AREZ_DEPS
 OPTIONAL_DEPS = []
-TEST_DEPS = []
+TEST_DEPS = [:gwt_dev] + Buildr::GWT.dependencies + Buildr.transitive('net.sourceforge.htmlunit:htmlunit:jar:2.19')
 
 desc 'GwtReactPlayground: Experimentation app'
 define 'playground' do
@@ -47,7 +46,6 @@ define 'playground' do
   package(:sources)
   package(:javadoc)
 
-  test.using :testng
   test.compile.with TEST_DEPS
 
   iml.add_gwt_facet({ 'gwt.react.todo_mvc.todomvc' => true },

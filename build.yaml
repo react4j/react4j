@@ -10,8 +10,6 @@ artifacts:
   javax_jsr305: com.google.code.findbugs:jsr305:jar:3.0.1
   jetbrains_annotations: org.jetbrains:annotations:jar:15.0
 
-  gwt_interop_utils: com.github.gwtreact:gwt-interop-utils:jar:0.4.0
-
   # GWT deps
   gwt_user: com.google.gwt:gwt-user:jar:2.8.1
   gwt_dev: com.google.gwt:gwt-dev:jar:2.8.1
