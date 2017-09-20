@@ -3,14 +3,9 @@
   <inherits name="gwt.react.ReactDev"/>
   <inherits name="gwt.react_router.ReactRouter"/>
 
-  <set-property name="user.agent" value="safari"/>
   <set-property name="jre.checks.checkLevel" value="MINIMAL"/>
 
   <entry-point class='gwt.react.todo_mvc.client.App'/>
 
   <source path='client'/>
-
-  <add-linker name="xsiframe"/>
-  <set-configuration-property name="devModeRedirectEnabled" value="true"/>
-  <set-property name="compiler.useSourceMaps" value="true"/>
 </module>
