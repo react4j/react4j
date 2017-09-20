@@ -53,6 +53,11 @@ public class ComponentUtils
       if ( null == constructorFn )
       {
         constructorFn = getCtorFn0( cls );
+        if( null == constructorFn )
+        {
+          //TODO Replace this with invariant check soon
+          throw new IllegalStateException( "Unable to get constructor function for " + name );
+        }
         JsHelper.setObjectProperty( constructorFn, "displayName", name );
         _constructors.put( cls, constructorFn );
       }
