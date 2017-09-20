@@ -16,12 +16,12 @@ import gwt.react.client.util.JsPlainObj;
 import gwt.react.todo_mvc.client.model.Todo;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 import static gwt.react.client.api.React.DOM.*;
-import static gwt.react.client.util.JsPlainObj.$;
 
 class TodoItem
   extends SideComponent<TodoItem.Props, TodoItem.State>
@@ -48,18 +48,21 @@ class TodoItem
   static class State
     extends JsPlainObj
   {
-    String editText;
-  }
+    @JsOverlay
+    static State create( @Nonnull final String editText )
+    {
+      final State state = new State();
+      state.editText = editText;
+      return state;
+    }
 
-  private State newTodoItemState( @Nonnull final String editText )
-  {
-    return $( new State(), "editText", editText );
+    String editText;
   }
 
   TodoItem( @Nonnull final Component<Props, State> component )
   {
     super( component );
-    component.setInitialState( newTodoItemState( props().todo.getTitle() ) );
+    component.setInitialState( State.create( props().todo.getTitle() ) );
   }
 
   private void onSubmitTodo()
@@ -69,7 +72,7 @@ class TodoItem
     {
       props().doSave.accept( props().todo, val );
 
-      setState( newTodoItemState( val ) );
+      setState( State.create( val ) );
     }
     else
     {
@@ -80,14 +83,14 @@ class TodoItem
   private void onEdit()
   {
     props().doAction.accept( TodoList.Action.EDIT, props().todo );
-    setState( newTodoItemState( props().todo.getTitle() ) );
+    setState( State.create( props().todo.getTitle() ) );
   }
 
   private void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
     if ( event.which == App.ESCAPE_KEY )
     {
-      setState( newTodoItemState( props().todo.getTitle() ) );
+      setState( State.create( props().todo.getTitle() ) );
       props().doAction.accept( TodoList.Action.CANCEL, props().todo );
     }
     else if ( event.which == App.ENTER_KEY )
@@ -101,7 +104,7 @@ class TodoItem
     if ( props().isEditing )
     {
       final HTMLInputElement input = Js.cast( event.target );
-      setState( newTodoItemState( input.value ) );
+      setState( State.create( input.value ) );
     }
   }
 
