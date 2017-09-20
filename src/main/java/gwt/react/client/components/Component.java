@@ -80,7 +80,7 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj> {
 	protected S state;
 
 	@JsProperty
-	protected P props;
+	private P props;
 
 	@JsProperty
 	protected StringMap<Object> refs;
@@ -165,4 +165,14 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj> {
      */
 	@JsMethod
 	protected abstract ReactElement<?, ?> render();
+
+	protected S state()
+	{
+		return state;
+	}
+
+	protected P props()
+	{
+		return props;
+	}
 }

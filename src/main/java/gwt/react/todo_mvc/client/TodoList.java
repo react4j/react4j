@@ -114,7 +114,7 @@ class TodoList
     {
       event.preventDefault();
 
-      final String val = state.newTodo.trim();
+      final String val = state().newTodo.trim();
 
       if ( val.length() > 0 )
       {
@@ -144,7 +144,7 @@ class TodoList
                    input( new InputProps()
                             .className( "new-todo" )
                             .placeHolder( "What needs to be done?" )
-                            .value( state.newTodo )
+                            .value( state().newTodo )
                             .onKeyDown( this::handleNewTodoKeyDown )
                             .onChange( this::handleChange )
                             .autoFocus( true ) ) ),
@@ -156,7 +156,7 @@ class TodoList
   @Nullable
   private ReactElement<?, ?> renderMainSection()
   {
-    final String nowShowing = props.getRouterParams().nowShowing;
+    final String nowShowing = props().getRouterParams().nowShowing;
     final Array<Todo> todos = App.model.todos;
     final int todoCount = todos.getLength();
     ReactElement<?, ?> main = null;
@@ -204,7 +204,7 @@ class TodoList
       todoProps.todo = todo;
       todoProps.doAction = this::handleDoAction;
       todoProps.doSave = this::handleSave;
-      todoProps.isEditing = Objects.equals( state.editingId, todo.getId() );
+      todoProps.isEditing = Objects.equals( state().editingId, todo.getId() );
 
       return React.createElement( TodoItem.class, todoProps );
     } );
@@ -219,7 +219,7 @@ class TodoList
       final Footer.FooterProps footerProps = new Footer.FooterProps();
       footerProps.count = activeTodoCount;
       footerProps.completedCount = completedCount;
-      footerProps.nowShowing = props.getRouterParams().nowShowing;
+      footerProps.nowShowing = props().getRouterParams().nowShowing;
       footerProps.onClearCompleted = this::handleClearCompleted;
       JsUtil.definePropertyValue( footerProps.onClearCompleted, "name", "handleClearCompleted" );
 

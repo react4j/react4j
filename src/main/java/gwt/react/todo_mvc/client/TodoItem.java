@@ -58,31 +58,31 @@ class TodoItem
 
   private void onSubmitTodo()
   {
-    String val = state.editText;
+    String val = state().editText;
     if ( val != null && !val.isEmpty() )
     {
-      props.doSave.accept( props.todo, val );
+      props().doSave.accept( props().todo, val );
 
       setState( newTodoItemState( val ) );
     }
     else
     {
-      props.doAction.accept( TodoList.Action.DESTROY, props.todo );
+      props().doAction.accept( TodoList.Action.DESTROY, props().todo );
     }
   }
 
   private void onEdit()
   {
-    props.doAction.accept( TodoList.Action.EDIT, props.todo );
-    setState( newTodoItemState( props.todo.getTitle() ) );
+    props().doAction.accept( TodoList.Action.EDIT, props().todo );
+    setState( newTodoItemState( props().todo.getTitle() ) );
   }
 
   private void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
     if ( event.which == App.ESCAPE_KEY )
     {
-      setState( newTodoItemState( props.todo.getTitle() ) );
-      props.doAction.accept( TodoList.Action.CANCEL, props.todo );
+      setState( newTodoItemState( props().todo.getTitle() ) );
+      props().doAction.accept( TodoList.Action.CANCEL, props().todo );
     }
     else if ( event.which == App.ENTER_KEY )
     {
@@ -92,7 +92,7 @@ class TodoItem
 
   private void handleChange( @Nonnull final FormEvent event )
   {
-    if ( props.isEditing )
+    if ( props().isEditing )
     {
       setState( newTodoItemState( InputElement.as( event.target ).getValue() ) );
     }
@@ -107,9 +107,9 @@ class TodoItem
    */
   public boolean shouldComponentUpdate( @Nonnull final TodoItemProps nextProps, @Nonnull final TodoState nextState )
   {
-    return ( nextProps.todo != props.todo ||
-             nextProps.isEditing != props.isEditing ||
-             !nextState.editText.equals( state.editText ) );
+    return ( nextProps.todo != props().todo ||
+             nextProps.isEditing != props().isEditing ||
+             !nextState.editText.equals( state().editText ) );
   }
 
   /**
@@ -120,7 +120,7 @@ class TodoItem
    */
   public void componentDidUpdate( @Nonnull final TodoItemProps prevProps, @Nonnull final TodoItemProps prevState )
   {
-    if ( !prevProps.isEditing && props.isEditing )
+    if ( !prevProps.isEditing && props().isEditing )
     {
       final InputElement input = InputElement.as( (InputElement) this.refs.get( "editField" ) );
       input.focus();
@@ -131,22 +131,22 @@ class TodoItem
   public ReactElement<?, ?> render()
   {
     return
-      li( new HtmlProps().className( classesFor( props.todo.isCompleted(), props.isEditing ) ),
+      li( new HtmlProps().className( classesFor( props().todo.isCompleted(), props().isEditing ) ),
           div( new HtmlProps().className( "view" ),
                input( new InputProps()
                         .className( "toggle" )
-                        .type( InputType.checkbox ).checked( props.todo.isCompleted() )
-                        .onChange( e -> props.doAction.accept( TodoList.Action.TOGGLE, props.todo ) ) ),
+                        .type( InputType.checkbox ).checked( props().todo.isCompleted() )
+                        .onChange( e -> props().doAction.accept( TodoList.Action.TOGGLE, props().todo ) ) ),
                label( new LabelProps()
-                        .OnDoubleClick( e -> onEdit() ), props.todo.getTitle() ),
+                        .OnDoubleClick( e -> onEdit() ), props().todo.getTitle() ),
                button( new BtnProps()
                          .className( "destroy" )
-                         .onClick( e -> props.doAction.accept( TodoList.Action.DESTROY, props.todo ) ) )
+                         .onClick( e -> props().doAction.accept( TodoList.Action.DESTROY, props().todo ) ) )
           ),
           input( new InputProps()
                    .ref( "editField" )
                    .className( "edit" )
-                   .defaultValue( state.editText )
+                   .defaultValue( state().editText )
                    .onBlur( e -> onSubmitTodo() )
                    .onChange( this::handleChange )
                    .onKeyDown( this::handleKeyDown ) )
