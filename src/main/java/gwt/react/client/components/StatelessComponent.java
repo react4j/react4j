@@ -1,12 +1,12 @@
 package gwt.react.client.components;
 
-import gwt.interop.utils.shared.JsHelper;
 import gwt.react.client.GwtReactConfig;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * <p>Define a stateless component expressed as plain function.This simplified component
@@ -52,7 +52,8 @@ public interface StatelessComponent<P extends BaseProps>
   {
     if ( GwtReactConfig.enableComponentNames() )
     {
-      JsHelper.setObjectProperty( c, "displayName", name );
+      JsPropertyMap.of( c ).set( "displayName", name );
+
     }
     return c;
   }

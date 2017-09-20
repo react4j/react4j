@@ -2,7 +2,6 @@ package gwt.react.todo_mvc.client;
 
 import elemental2.dom.HTMLInputElement;
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
-import gwt.interop.utils.shared.functional.JsBiConsumer;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.SideComponent;
 import gwt.react.client.elements.ReactElement;
@@ -16,6 +15,7 @@ import gwt.react.client.proptypes.html.LabelProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
 import gwt.react.todo_mvc.client.model.Todo;
 import javax.annotation.Nonnull;
+import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
@@ -27,6 +27,12 @@ class TodoItem
   extends SideComponent<TodoItem.Props, TodoItem.State>
 {
   static final JsConstructorFn<TodoItemWrapper> TYPE = TodoItemWrapper.ctor();
+
+  @JsFunction
+  public interface JsBiConsumer<A1, A2>
+  {
+    void accept( A1 arg, A2 arg2 );
+  }
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   public static class Props
@@ -112,7 +118,9 @@ class TodoItem
   {
     if ( !prevProps.isEditing && props().isEditing )
     {
-      final HTMLInputElement input = Js.cast( refs().get( "editField" ) );
+      final String refName = "editField";
+      final HTMLInputElement input = getRefNamed( refName );
+      assert null != input;
       input.focus();
       input.select();
     }

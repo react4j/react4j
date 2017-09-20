@@ -1,12 +1,14 @@
 package gwt.react.client.components;
 
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
-import gwt.interop.utils.shared.collections.StringMap;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The base java class that mirrors the react component.
@@ -49,9 +51,15 @@ public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
   }
 
   @Nonnull
-  protected StringMap<Object> refs()
+  protected JsPropertyMap<Object> refs()
   {
     return component().refs();
+  }
+
+  @Nullable
+  protected <T> T getRefNamed( @Nonnull final String refName )
+  {
+    return Js.cast( refs().get( refName ) );
   }
 
   protected void setInitialState( @Nonnull final S state )

@@ -1,6 +1,5 @@
 package gwt.react.todo_mvc.client;
 
-import gwt.interop.utils.shared.JsHelper;
 import gwt.react.client.GwtReactConfig;
 import gwt.react.client.components.Component;
 import gwt.react.client.elements.ReactElement;
@@ -8,6 +7,7 @@ import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * TODO: Also should be generated.
@@ -28,7 +28,8 @@ class TodoListWrapper
     }
     if ( GwtReactConfig.enableComponentNames() )
     {
-      JsHelper.setObjectProperty( constructorFn, "displayName", "TodoList" );
+      JsPropertyMap.of( constructorFn ).set( "displayName", "TodoList" );
+
     }
     return constructorFn;
   }

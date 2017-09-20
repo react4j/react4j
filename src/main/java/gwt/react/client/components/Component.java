@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
-import gwt.interop.utils.shared.collections.StringMap;
 import gwt.interop.utils.shared.functional.JsProcedure;
 import gwt.react.client.api.React;
 import gwt.react.client.elements.ReactElement;
@@ -33,6 +32,7 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * <p>You can subclass {@link Component} to define a stateful, ES6-style React component</p>
@@ -69,7 +69,7 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj>
   private P props;
 
   @JsProperty
-  private StringMap<Object> refs;
+  private JsPropertyMap<Object> refs;
 
   public Component( P props )
   {
@@ -176,14 +176,8 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj>
   }
 
   @JsOverlay
-  public final StringMap<Object> refs()
+  public final JsPropertyMap<Object> refs()
   {
     return refs;
-  }
-
-  @JsOverlay
-  public final void setRefs( @Nonnull final StringMap<Object> refs )
-  {
-    this.refs = Objects.requireNonNull( refs );
   }
 }

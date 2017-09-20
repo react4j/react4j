@@ -1,14 +1,14 @@
 package gwt.react.todo_mvc.client.model;
 
-import gwt.interop.utils.client.collections.JsArray;
 import gwt.interop.utils.shared.collections.Array;
+import gwt.interop.utils.shared.collections.JsArrayHelper;
 import gwt.interop.utils.shared.functional.JsProcedure;
 import java.util.Date;
 
 public class TodoModel
 {
-  public Array<Todo> todos = JsArray.create();
-  private Array<JsProcedure> onChanges = JsArray.create();
+  public Array<Todo> todos = JsArrayHelper.createArray();
+  private Array<JsProcedure> onChanges = JsArrayHelper.createArray();
 
   public void subscribe( JsProcedure onChange )
   {

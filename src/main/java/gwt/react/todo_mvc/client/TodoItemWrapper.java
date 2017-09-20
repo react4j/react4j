@@ -1,6 +1,5 @@
 package gwt.react.todo_mvc.client;
 
-import gwt.interop.utils.shared.JsHelper;
 import gwt.react.client.GwtReactConfig;
 import gwt.react.client.components.Component;
 import gwt.react.client.elements.ReactElement;
@@ -10,6 +9,7 @@ import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * TODO: This should be generated from annotation processor, processing TodoItem.
@@ -32,7 +32,8 @@ class TodoItemWrapper
     }
     if ( GwtReactConfig.enableComponentNames() )
     {
-      JsHelper.setObjectProperty( constructorFn, "displayName", "TodoItem" );
+      JsPropertyMap.of( constructorFn ).set( "displayName", "TodoItem" );
+
     }
     return constructorFn;
   }

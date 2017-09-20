@@ -17,6 +17,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class HtmlGlobalFields
@@ -27,7 +28,7 @@ public class HtmlGlobalFields
   public final void setDangerouslyInnerHTML( String __html )
   {
     JsPlainObj o = new JsPlainObj();
-    o.set( "__html", __html );
+    JsPropertyMap.of( o ).set( "__html", __html );
     setDangerouslySetInnerHTML( o );
   }
 

@@ -2,8 +2,8 @@ package gwt.react.todo_mvc.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
-import gwt.interop.utils.client.collections.JsArray;
 import gwt.interop.utils.shared.collections.Array;
+import gwt.interop.utils.shared.collections.JsArrayHelper;
 import gwt.react.client.api.React;
 import gwt.react.client.api.ReactDOM;
 import gwt.react.client.elements.ReactElement;
@@ -22,7 +22,7 @@ public class App
   static final int ENTER_KEY = 13;
 
   static TodoModel model = new TodoModel();
-  private static Array<ReactElement<?, ?>> routes = JsArray.create();
+  private static Array<ReactElement<?, ?>> routes = JsArrayHelper.createArray();
 
   private void render()
   {
