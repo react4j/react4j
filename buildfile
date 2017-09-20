@@ -7,7 +7,6 @@ GWT_DEPS =
   [
     :gwt_user,
     :gwt_interop_utils,
-    :react_router,
     :elemental2_core,
     :elemental2_dom,
     :elemental2_promise,
