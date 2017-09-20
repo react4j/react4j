@@ -1,6 +1,7 @@
 package gwt.react.client.components;
 
 import gwt.interop.utils.shared.JsHelper;
+import gwt.react.GwtReactConfig;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
 import javax.annotation.Nonnull;
@@ -46,9 +47,13 @@ public interface StatelessComponent<P extends BaseProps>
   ReactElement<?, ?> render( P props );
 
   @JsOverlay
-  static <R extends BaseProps> StatelessComponent<R> wrap( @Nonnull final String name, @Nonnull final StatelessComponent<R> c )
+  static <R extends BaseProps> StatelessComponent<R> wrap( @Nonnull final String name,
+                                                           @Nonnull final StatelessComponent<R> c )
   {
-    JsHelper.setObjectProperty( c, "displayName", name );
+    if ( GwtReactConfig.enableComponentNames() )
+    {
+      JsHelper.setObjectProperty( c, "displayName", name );
+    }
     return c;
   }
 }

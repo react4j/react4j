@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+    <inherits name='com.google.gwt.user.User' />
+    <inherits name="gwt.interop.utils.InteropUtils" />
+
+    <source path='client' />
+    <source path='shared' />
+
+<!--
+    These properties are all defined in gwt.react.GwtReactConfig
+    See that class for a better understanding of what these properties do.
+  -->
+
+  <define-property name="react.environment" values="development,production"/>
+  <set-property name="react.environment" value="production"/>
+
+  <define-property name="react.verbose_error_messages" values="true,false"/>
+  <set-property name="react.verbose_error_messages" value="false"/>
+
+  <define-property name="react.check_invariants" values="true,false"/>
+  <set-property name="react.check_invariants" value="false"/>
+
+  <define-property name="react.enable_component_names" values="true,false"/>
+  <set-property name="react.enable_component_names" value="false"/>
+</module>
