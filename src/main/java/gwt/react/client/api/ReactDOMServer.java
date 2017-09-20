@@ -33,7 +33,7 @@ public class ReactDOMServer {
      */
 	private ReactDOMServer() {
 	}
-	
+
     /**
      * <p>Render a ReactElement to its initial HTML. This should only be used on the server. React
      * will return an HTML string. You can use this method to generate HTML on the server and send

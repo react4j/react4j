@@ -33,7 +33,7 @@ public class ReactDOM {
      */
 	private ReactDOM() {
 	}
-	
+
     /**
      * <p>Render a ReactElement&lt;?, ?&gt; into the DOM in the supplied container and return a reference to
      * the component (or returns nothing for stateless components).</p>
@@ -50,7 +50,7 @@ public class ReactDOM {
      */
     public static native <C> ReactElement<?, ?> render(ReactElement<?, ?> element, C container);
     public static native <C> ReactElement<?, ?> render(ReactElement<?, ?> element, C container, JsProcedure onUpdate);
-    
+
     /**
      * Remove a mounted React component from the DOM and clean up its event handlers and state. If
      * no component was mounted in the container, calling this function does nothing.

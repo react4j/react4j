@@ -41,7 +41,7 @@ import jsinterop.annotations.JsType;
 /**
  * <p>You can subclass {@link PureComponent} to define a stateful, but pure ES6-style React component</p>
  *
- * <p>{@link PureComponent} is exactly like {@link Component} but acts as if {@link ShouldComponentUpdate#shouldComponentUpdate(BaseProps, JsPlainObj)} 
+ * <p>{@link PureComponent} is exactly like {@link Component} but acts as if {@link ShouldComponentUpdate#shouldComponentUpdate(BaseProps, JsPlainObj)}
  * was automatically implemented for you, with a shallow prop and state comparison.
  *
  * If your React component's {@link Component#render()} function renders the same result given the same props and state, you can use {@link PureComponent}

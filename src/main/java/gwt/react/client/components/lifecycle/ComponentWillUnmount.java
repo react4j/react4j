@@ -32,8 +32,8 @@ import jsinterop.annotations.JsType;
 @JsType
 public interface ComponentWillUnmount {
 	/**
-	 * {@link #componentWillUnmount()} is invoked immediately before a component is unmounted and destroyed. 
-	 * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up 
+	 * {@link #componentWillUnmount()} is invoked immediately before a component is unmounted and destroyed.
+	 * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
 	 * any DOM elements that were created in {@link ComponentDidMount#componentDidMount()}
 	 */
 	@JsMethod

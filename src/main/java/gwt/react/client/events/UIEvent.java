@@ -7,4 +7,3 @@ public class UIEvent extends SyntheticEvent {
     public int detail;
     public AbstractView view;
 }
-

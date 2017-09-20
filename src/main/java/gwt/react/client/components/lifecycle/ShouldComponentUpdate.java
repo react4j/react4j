@@ -34,24 +34,24 @@ import jsinterop.annotations.JsType;
 @JsType
 public interface ShouldComponentUpdate<P extends BaseProps, S extends JsPlainObj> {
 	/**
-	 * Use {@link #shouldComponentUpdate(BaseProps, JsPlainObj)} to let React know if a component's output is not affected 
-	 * by the current change in state or props. The default behavior is to re-render on every state change, and in the vast 
+	 * Use {@link #shouldComponentUpdate(BaseProps, JsPlainObj)} to let React know if a component's output is not affected
+	 * by the current change in state or props. The default behavior is to re-render on every state change, and in the vast
 	 * majority of cases you should rely on the default behavior.
-	 * 
-	 * {@link #shouldComponentUpdate(BaseProps, JsPlainObj)} is invoked before rendering when new props or state are being received. 
+	 *
+	 * {@link #shouldComponentUpdate(BaseProps, JsPlainObj)} is invoked before rendering when new props or state are being received.
 	 * Defaults to true. This method is not called for the initial render or when forceUpdate() is used.
 	 *
 	 * Returning false does not prevent child components from re-rendering when their state changes.
-	 * 
+	 *
 	 * Currently, if {@link ShouldComponentUpdate#shouldComponentUpdate(P, S)} returns false, then {@link ComponentWillUpdate#componentWillUpdate},
 	 * {@link Component#render()}, and {@link ComponentDidUpdate#componentDidUpdate} will not be invoked. Note that in the future React may treat
 	 * {@link #shouldComponentUpdate(P, S)} as a hint rather than a strict directive, and returning false may still
 	 * result in a re-rendering of the component.
-	 * 
-	 * If you determine a specific component is slow after profiling, you may change it to inherit from React.PureComponent which implements 
+	 *
+	 * If you determine a specific component is slow after profiling, you may change it to inherit from React.PureComponent which implements
 	 * {@link #shouldComponentUpdate(P, S)} with a shallow prop and state comparison. If you are confident you want to write
 	 * it by hand, you may compare this.props with nextProps and this.state with nextState and return false to tell React the update can be skipped.
-	 * 
+	 *
 	 * @param nextProps
 	 * @param nextState
 	 * @return true in case the component should be updated
