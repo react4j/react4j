@@ -11,6 +11,8 @@ import jsinterop.annotations.JsType;
 
 /**
  * TODO: This should be generated from annotation processor, processing TodoItem.
+ * Any lifecyclke methods that are overridden (i.e. not defined in SideComponent)
+ * should be copied here.
  */
 @JsType
 class TodoItemWrapper
