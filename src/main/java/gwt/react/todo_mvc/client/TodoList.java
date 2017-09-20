@@ -5,6 +5,7 @@ import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.collections.Array;
 import gwt.react.client.api.React;
 import gwt.react.client.components.Component;
+import gwt.react.client.components.ComponentConstructorFn;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
@@ -26,10 +27,16 @@ import static gwt.interop.utils.client.plainobjects.JsPlainObj.$;
 import static gwt.react.client.api.GwtReact.castAsReactElement;
 import static gwt.react.client.api.React.DOM.*;
 
-@JsType
 class TodoList
-  extends Component<TodoList.TodoListProps, TodoList.TodoListState>
+  extends SideComponent<TodoList.Props, TodoList.State>
 {
+  public static final ComponentConstructorFn<TodoList.Props> TYPE = TodoListWrapper.ctor();
+
+  static ComponentConstructorFn<TodoList.Props> ctor()
+  {
+    return TodoListWrapper.ctor();
+  }
+
   static final String NOW_SHOWING_ACTIVE_TODOS = "active";
   static final String NOW_SHOWING_COMPLETED_TODOS = "completed";
 
@@ -45,7 +52,7 @@ class TodoList
   }
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class TodoListProps
+  static class Props
     extends BaseProps
     implements RouterEnhancedProps<TodoRouterParams>
   {
@@ -60,17 +67,17 @@ class TodoList
   }
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class TodoListState
+  static class State
     extends JsPlainObj
   {
     String editingId;
     String newTodo;
   }
 
-  public TodoList( TodoList.TodoListProps props )
+  TodoList( @Nonnull final Component<TodoList.Props, TodoList.State> component )
   {
-    super( props );
-    setInitialState( $( new TodoListState(), "editingId", null, "newTodo", "" ) );
+    super( component );
+    setInitialState( $( new State(), "editingId", null, "newTodo", "" ) );
   }
 
   private void handleDoAction( final Action action, final Todo todo )
@@ -81,20 +88,21 @@ class TodoList
         App.model.toggle( todo );
         break;
       case CANCEL:
-        setState( $( new TodoListState(), "editingId", null ) );
+        final State s = $( new State(), "editingId", null );
+        setState( s );
         break;
       case DESTROY:
         App.model.destroy( todo );
         break;
       case EDIT:
-        setState( $( new TodoListState(), "editingId", todo.getId() ) );
+        setState( $( new State(), "editingId", todo.getId() ) );
     }
   }
 
   private void handleSave( final Todo todoToSave, final String text )
   {
     App.model.save( todoToSave, text );
-    setState( $( new TodoListState(), "editingId", null ) );
+    setState( $( new State(), "editingId", null ) );
   }
 
   private void handleClearCompleted()
@@ -118,16 +126,17 @@ class TodoList
       if ( val.length() > 0 )
       {
         App.model.addTodo( val );
-        setState( $( new TodoListState(), "newTodo", "" ) );
+        setState( $( new State(), "newTodo", "" ) );
       }
     }
   }
 
   private void handleChange( FormEvent event )
   {
-    setState( $( new TodoListState(), "newTodo", InputElement.as( event.target ).getValue() ) );
+    setState( $( new State(), "newTodo", InputElement.as( event.target ).getValue() ) );
   }
 
+  @Override
   public ReactElement<?, ?> render()
   {
     final Array<Todo> todos = App.model.todos;
@@ -205,7 +214,7 @@ class TodoList
       todoProps.doSave = this::handleSave;
       todoProps.isEditing = Objects.equals( state().editingId, todo.getId() );
 
-      return React.createElement( TodoItem.COMPONENT_TYPE, todoProps );
+      return React.createElement( TodoItem.TYPE, todoProps );
     } );
   }
 

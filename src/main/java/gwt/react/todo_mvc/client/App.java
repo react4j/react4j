@@ -6,7 +6,6 @@ import gwt.interop.utils.client.collections.JsArray;
 import gwt.interop.utils.shared.collections.Array;
 import gwt.react.client.api.React;
 import gwt.react.client.api.ReactDOM;
-import gwt.react.client.components.ComponentUtils;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.todo_mvc.client.model.TodoModel;
 import gwt.react_router.client.ReactRouter;
@@ -40,13 +39,13 @@ public class App
     routes.push( React.createElement( Route,
                                       new RouteProps()
                                         .path( "/" )
-                                        .component( ComponentUtils.getCtorFn( TodoList.class ) )
+                                        .component( TodoList.TYPE )
                                         .key( "1" ) ) );
 
     routes.push( React.createElement( Route,
                                       new RouteProps()
                                         .path( "/:nowShowing" )
-                                        .component( ComponentUtils.getCtorFn( TodoList.class ) )
+                                        .component( TodoList.TYPE )
                                         .key( "2" ) ) );
 
     model.subscribe( this::render );
