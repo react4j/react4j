@@ -37,6 +37,7 @@ import gwt.react.client.proptypes.BaseProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -167,16 +168,19 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj> {
 	@JsMethod
 	protected abstract ReactElement<?, ?> render();
 
-	protected S state()
+	@JsOverlay
+	protected final S state()
 	{
 		return state;
 	}
 
-	protected P props()
+	@JsOverlay
+	protected final P props()
 	{
 		return props;
 	}
 
+	@JsOverlay
   protected final void setInitialState( @Nonnull final S state )
   {
     this.state = Objects.requireNonNull( state );
