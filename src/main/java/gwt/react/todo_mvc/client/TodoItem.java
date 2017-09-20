@@ -118,8 +118,7 @@ class TodoItem
   {
     if ( !prevProps.isEditing && props().isEditing )
     {
-      final String refName = "editField";
-      final HTMLInputElement input = getRefNamed( refName );
+      final HTMLInputElement input = getRefNamed( "editField" );
       assert null != input;
       input.focus();
       input.select();
