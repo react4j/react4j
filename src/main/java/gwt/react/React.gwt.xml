@@ -3,6 +3,7 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="gwt.interop.utils.InteropUtils"/>
   <inherits name="jsinterop.base.Base"/>
+  <inherits name="elemental2.core.Core"/>
 
   <source path='client'/>
 
