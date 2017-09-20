@@ -1,6 +1,7 @@
 package gwt.react.client.components;
 
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
+import gwt.interop.utils.shared.JsHelper;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class ComponentUtils
     {
       //TODO: This should be abstracted - it should also be guarded so not set during production compiles
       constructorFn = getCtorFn0( cls );
-      JsObjects.set( constructorFn, "displayName", cls.getSimpleName() );
+      JsHelper.setObjectProperty( constructorFn, "displayName", cls.getSimpleName() );
       _constructors.put( cls, constructorFn );
     }
     return constructorFn;
