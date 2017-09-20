@@ -88,7 +88,7 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj>
   private P props;
 
   @JsProperty
-  protected StringMap<Object> refs;
+  private StringMap<Object> refs;
 
   public Component( P props )
   {
@@ -186,5 +186,17 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj>
   protected final void setInitialState( @Nonnull final S state )
   {
     this.state = Objects.requireNonNull( state );
+  }
+
+  @JsOverlay
+  public final StringMap<Object> refs()
+  {
+    return refs;
+  }
+
+  @JsOverlay
+  public final void setRefs( @Nonnull final StringMap<Object> refs )
+  {
+    this.refs = Objects.requireNonNull( refs );
   }
 }
