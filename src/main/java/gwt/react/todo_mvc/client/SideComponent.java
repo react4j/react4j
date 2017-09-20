@@ -5,6 +5,7 @@ import gwt.interop.utils.shared.collections.StringMap;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.ComponentConstructorFn;
 import gwt.react.client.components.ComponentUtils;
+import gwt.react.client.components.lifecycle.ComponentDidMount;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -56,5 +57,99 @@ public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
   ComponentConstructorFn<P> getCtor( @Nonnull final Class<T> type )
   {
     return ComponentUtils.getCtorFn( type );
+  }
+
+  /**
+   * This method is invoked immediately after a component is mounted.
+   * Initialization that requires DOM nodes should go here. If you need to load data from a remote endpoint,
+   * this is a good place to instantiate the network request.
+   * Setting state in this method will trigger a re-rendering.
+   */
+  protected void componentDidMount()
+  {
+  }
+
+  /**
+   * This method is invoked immediately after updating occurs. This method is not called for the initial render.
+   *
+   * Use this as an opportunity to operate on the DOM when the component has been updated. This is also a good place to do network requests as long as
+   * you compare the current props to previous props (e.g. a network request may not be necessary if the props have not changed).
+   *
+   * Note: This method will not be invoked if {@link #shouldComponentUpdate(P, S)} returns false.
+   */
+  protected void componentDidUpdate( @Nonnull final P nextProps, @Nonnull final P nextState )
+  {
+  }
+
+  /**
+   * This method is invoked immediately before mounting occurs.
+   * It is called before {@link #render()}, therefore setting state in this method will not trigger a re-rendering.
+   * Avoid introducing any side-effects or subscriptions in this method.
+   * This is the only lifecycle hook called on server rendering. Generally, we recommend using the constructor instead.
+   */
+  protected void componentWillMount()
+  {
+  }
+
+  /**
+   * This method is invoked before a mounted component receives new props.
+   * If you need to update the state in response to prop changes (for example, to reset it), you may compare
+   * this.props and nextProps and perform state transitions using {@link #setState(S)} in this method.
+   * Note that React may call this method even if the props have not changed, so make sure to compare the current
+   * and next values if you only want to handle changes. This may occur when the parent component causes your component to re-render.
+   * React doesn't call this method with initial props during mounting. It only calls this method
+   * if some of component's props may update. Calling {@link #setState(S)} generally doesn't trigger
+   * this method.
+   */
+  protected void componentWillReceiveProps( @Nonnull final P nextProps )
+  {
+  }
+
+  /**
+   * This method is invoked immediately before a component is unmounted and destroyed.
+   * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
+   * any DOM elements that were created in {@link ComponentDidMount#componentDidMount()}
+   */
+  protected void componentWillUnmount()
+  {
+  }
+
+  /**
+   * This method is invoked immediately before rendering when new props or state are being received.
+   * Use this as an opportunity to perform preparation before an update occurs. This method is not called for the initial render.
+   *
+   * Note that you cannot call {@link #setState(S)} here. If you need to update state in response to a prop change,
+   * use {@link #componentWillReceiveProps(P)} instead.
+   *
+   * Note: This method will not be invoked if {@link #shouldComponentUpdate(P, S)} returns false.
+   */
+  protected void componentWillUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  {
+  }
+
+  /**
+   * Use this method to let React know if a component's output is not affected
+   * by the current change in state or props. The default behavior is to re-render on every state change, and in the vast
+   * majority of cases you should rely on the default behavior.
+   *
+   * This method is invoked before rendering when new props or state are being received.
+   * Defaults to true. This method is not called for the initial render or when forceUpdate() is used.
+   *
+   * Returning false does not prevent child components from re-rendering when their state changes.
+   *
+   * Currently, if {@link #shouldComponentUpdate(P, S)} returns false, then {@link #componentWillUpdate},
+   * {@link #render()}, and {@link #componentDidUpdate} will not be invoked. Note that in the future React may treat
+   * {@link #shouldComponentUpdate(P, S)} as a hint rather than a strict directive, and returning false may still
+   * result in a re-rendering of the component.
+   *
+   * If you determine a specific component is slow after profiling, you may change it to inherit from React.PureComponent which implements
+   * this method with a shallow prop and state comparison. If you are confident you want to write
+   * it by hand, you may compare this.props with nextProps and this.state with nextState and return false to tell React the update can be skipped.
+   *
+   * @return true in case the component should be updated
+   */
+  protected boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  {
+    return true;
   }
 }
