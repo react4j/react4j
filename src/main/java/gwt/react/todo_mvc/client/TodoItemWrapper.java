@@ -22,7 +22,7 @@ class TodoItemWrapper
 
   static ComponentConstructorFn<Props> ctor()
   {
-    return ComponentUtils.getCtorFn( TodoItemWrapper.class, "TodoItemWrapper" );
+    return ComponentUtils.getCtorFn( TodoItemWrapper.class, "TodoItem" );
   }
 
   public TodoItemWrapper( @Nonnull final Props props )
