@@ -8,6 +8,12 @@ import gwt.react.client.proptypes.BaseProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
+/**
+ * The base java class that mirrors the react component.
+ *
+ * @param <P> the type of props that this component supports.
+ * @param <S> the type of state that this component maintains.
+ */
 public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
 {
   @Nonnull
@@ -52,7 +58,7 @@ public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
     component().setState( state );
   }
 
- /**
+  /**
    * The render() method is required.
    *
    * <p>When called, it should examine props and state and return a single child element.
