@@ -61,7 +61,7 @@ class TodoItem
     {
       props().doSave.accept( props().todo, val );
 
-      component().setState( newTodoItemState( val ) );
+      setState( newTodoItemState( val ) );
     }
     else
     {
@@ -72,14 +72,14 @@ class TodoItem
   private void onEdit()
   {
     props().doAction.accept( TodoList.Action.EDIT, props().todo );
-    component().setState( newTodoItemState( props().todo.getTitle() ) );
+    setState( newTodoItemState( props().todo.getTitle() ) );
   }
 
   private void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
     if ( event.which == App.ESCAPE_KEY )
     {
-      component().setState( newTodoItemState( props().todo.getTitle() ) );
+      setState( newTodoItemState( props().todo.getTitle() ) );
       props().doAction.accept( TodoList.Action.CANCEL, props().todo );
     }
     else if ( event.which == App.ENTER_KEY )
@@ -92,7 +92,7 @@ class TodoItem
   {
     if ( props().isEditing )
     {
-      component().setState( newTodoItemState( InputElement.as( event.target ).getValue() ) );
+      setState( newTodoItemState( InputElement.as( event.target ).getValue() ) );
     }
   }
 

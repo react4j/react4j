@@ -47,6 +47,11 @@ public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
     component().setInitialState( state );
   }
 
+  protected void setState( @Nonnull final S state )
+  {
+    component().setState( state );
+  }
+
  /**
    * The render() method is required.
    *
