@@ -30,7 +30,7 @@ import static gwt.react.client.api.React.DOM.*;
 class TodoList
   extends SideComponent<TodoList.Props, TodoList.State>
 {
-  public static final ComponentConstructorFn<TodoList.Props> TYPE = TodoListWrapper.ctor();
+  static final ComponentConstructorFn<TodoList.Props> TYPE = TodoListWrapper.ctor();
 
   static final String NOW_SHOWING_ACTIVE_TODOS = "active";
   static final String NOW_SHOWING_COMPLETED_TODOS = "completed";
