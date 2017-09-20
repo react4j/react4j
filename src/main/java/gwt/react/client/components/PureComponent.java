@@ -23,13 +23,6 @@ SOFTWARE. */
 
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.react.client.api.React;
-import gwt.react.client.components.lifecycle.ComponentDidMount;
-import gwt.react.client.components.lifecycle.ComponentDidUpdate;
-import gwt.react.client.components.lifecycle.ComponentWillMount;
-import gwt.react.client.components.lifecycle.ComponentWillReceiveProps;
-import gwt.react.client.components.lifecycle.ComponentWillUnmount;
-import gwt.react.client.components.lifecycle.ComponentWillUpdate;
-import gwt.react.client.components.lifecycle.ShouldComponentUpdate;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
 import jsinterop.annotations.JsType;
@@ -37,7 +30,7 @@ import jsinterop.annotations.JsType;
 /**
  * <p>You can subclass {@link PureComponent} to define a stateful, but pure ES6-style React component</p>
  *
- * <p>{@link PureComponent} is exactly like {@link Component} but acts as if {@link ShouldComponentUpdate#shouldComponentUpdate(BaseProps, JsPlainObj)}
+ * <p>{@link PureComponent} is exactly like {@link Component} but acts as if shouldComponentUpdate(BaseProps, JsPlainObj)
  * was automatically implemented for you, with a shallow prop and state comparison.
  *
  * If your React component's {@link Component#render()} function renders the same result given the same props and state, you can use {@link PureComponent}
@@ -63,14 +56,6 @@ import jsinterop.annotations.JsType;
  * void componentDidUpdate(P prevProps, S prevState)
  * void componentWillUnmount()
  * </Pre>
- *
- * <p>To have extra type safety when defining some of the above methods, you can implement one or more of the following interfaces:</p>
- * <p>{@link ComponentWillMount}</p>
- * <p>{@link ComponentDidMount}</p>
- * <p>{@link ComponentWillReceiveProps}</p>
- * <p>{@link ComponentWillUpdate}</p>
- * <p>{@link ComponentDidUpdate}</p>
- * <p>{@link ComponentWillUnmount}</p>
  *
  * @param <P> the type of props this component expects
  * @param <S> the type of state this component maintains

@@ -25,13 +25,6 @@ import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.collections.StringMap;
 import gwt.interop.utils.shared.functional.JsProcedure;
 import gwt.react.client.api.React;
-import gwt.react.client.components.lifecycle.ComponentDidMount;
-import gwt.react.client.components.lifecycle.ComponentDidUpdate;
-import gwt.react.client.components.lifecycle.ComponentWillMount;
-import gwt.react.client.components.lifecycle.ComponentWillReceiveProps;
-import gwt.react.client.components.lifecycle.ComponentWillUnmount;
-import gwt.react.client.components.lifecycle.ComponentWillUpdate;
-import gwt.react.client.components.lifecycle.ShouldComponentUpdate;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.Objects;
@@ -64,15 +57,6 @@ import jsinterop.annotations.JsType;
  * void componentDidUpdate(P prevProps, S prevState)
  * void componentWillUnmount()
  * </Pre>
- *
- * <p>To have extra type safety when defining some of the above methods, you can implement one or more of the following interfaces:</p>
- * <p>{@link ComponentWillMount}</p>
- * <p>{@link ComponentDidMount}</p>
- * <p>{@link ComponentWillReceiveProps}</p>
- * <p>{@link ShouldComponentUpdate}</p>
- * <p>{@link ComponentWillUpdate}</p>
- * <p>{@link ComponentDidUpdate}</p>
- * <p>{@link ComponentWillUnmount}</p>
  *
  * @param <P> the type of props this component expects
  * @param <S> the type of state this component maintains
@@ -161,7 +145,7 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj>
    * <p>The render() function should be pure, meaning that it does not modify component
    * state, it returns the same result each time it's invoked, and it does not read from
    * or write to the DOM or otherwise interact with the browser (e.g., by using setTimeout).
-   * If you need to interact with the browser, perform your work in {@link ComponentDidMount#componentDidMount()} or
+   * If you need to interact with the browser, perform your work in componentDidMount() or
    * the other lifecycle methods instead. Keeping render() pure makes components easier to
    * think about.</p>
    *
