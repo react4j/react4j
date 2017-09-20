@@ -5,6 +5,7 @@ import gwt.interop.utils.shared.collections.StringMap;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.ComponentConstructorFn;
 import gwt.react.client.components.ComponentUtils;
+import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -57,6 +58,29 @@ public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
   {
     return ComponentUtils.getCtorFn( type );
   }
+
+ /**
+   * The render() method is required.
+   *
+   * <p>When called, it should examine props and state and return a single child element.
+   * This child element can be either a virtual representation of a native DOM component
+   * (such as React.DOM.div()) or another composite component that you've defined
+   * yourself.</p>
+   *
+   * <p>You can also return null to indicate that you don't want anything rendered.
+   * Behind the scenes, React renders a &lt;noscript&gt; tag to work with our current diffing
+   * algorithm.</p>
+   *
+   * <p>The render() function should be pure, meaning that it does not modify component
+   * state, it returns the same result each time it's invoked, and it does not read from
+   * or write to the DOM or otherwise interact with the browser (e.g., by using setTimeout).
+   * If you need to interact with the browser, perform your work in {@link #componentDidMount()} or
+   * the other lifecycle methods instead. Keeping render() pure makes components easier to
+   * think about.</p>
+   *
+   * @return A single {@link ReactElement}
+   */
+  protected abstract ReactElement<?, ?> render();
 
   /**
    * This method is invoked immediately after a component is mounted.
