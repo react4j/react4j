@@ -3,7 +3,8 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="gwt.interop.utils.InteropUtils"/>
 
-  <source path=''/>
+  <source path='client'/>
+  <source path='GwtReactConfig.java'/>
 
   <!--
     These properties are all defined in gwt.react.GwtReactConfig
