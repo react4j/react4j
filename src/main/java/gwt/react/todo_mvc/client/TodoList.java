@@ -32,11 +32,6 @@ class TodoList
 {
   public static final ComponentConstructorFn<TodoList.Props> TYPE = TodoListWrapper.ctor();
 
-  static ComponentConstructorFn<TodoList.Props> ctor()
-  {
-    return TodoListWrapper.ctor();
-  }
-
   static final String NOW_SHOWING_ACTIVE_TODOS = "active";
   static final String NOW_SHOWING_COMPLETED_TODOS = "completed";
 
