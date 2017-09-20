@@ -8,7 +8,6 @@ import gwt.react.client.components.Component;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
-import gwt.react.client.events.MouseEvent;
 import gwt.react.client.proptypes.BaseProps;
 import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;
@@ -98,7 +97,7 @@ class TodoList
     setState( $( new TodoListState(), "editingId", null ) );
   }
 
-  private void handleClearCompleted( MouseEvent event )
+  private void handleClearCompleted()
   {
     App.model.clearCompleted();
   }
@@ -220,7 +219,7 @@ class TodoList
       footerProps.count = activeTodoCount;
       footerProps.completedCount = completedCount;
       footerProps.nowShowing = props().getRouterParams().nowShowing;
-      footerProps.onClearCompleted = this::handleClearCompleted;
+      footerProps.onClearCompleted = e -> handleClearCompleted();
       JsUtil.definePropertyValue( footerProps.onClearCompleted, "name", "handleClearCompleted" );
 
       footer = React.createElement( Footer.component, footerProps );
