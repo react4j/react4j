@@ -104,7 +104,7 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj>
    * @param callback callback function that will be executed once setState is completed and
    *                 the component is re-rendered.
    */
-  protected native void setState( SetStateCallback<S, P> callback );
+  protected native void setState( @Nonnull SideComponent.SetStateCallback<P, S> callback );
 
   /**
    * <p>By default, when your component's state or props change, your component will re-render.

@@ -1,12 +1,12 @@
-package gwt.react.todo_mvc.client;
+package gwt.react.client.components;
 
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.collections.StringMap;
-import gwt.react.client.components.Component;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import jsinterop.annotations.JsFunction;
 
 /**
  * The base java class that mirrors the react component.
@@ -16,6 +16,12 @@ import javax.annotation.Nonnull;
  */
 public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
 {
+  @JsFunction
+  public interface SetStateCallback<P, S>
+  {
+    S onSetState( S previousState, P currentProps );
+  }
+
   @Nonnull
   private final Component<P, S> _component;
 
@@ -56,6 +62,22 @@ public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
   protected void setState( @Nonnull final S state )
   {
     component().setState( state );
+  }
+
+  /**
+   * Performs a shallow merge of nextState into current state. This is the primary method
+   * you use to trigger UI updates from event handlers and server request callbacks.</p>
+   *
+   * <p>It's also possible to pass a function with the signature function(state, props).
+   * This can be useful in some cases when you want to enqueue an atomic update that
+   * consults the previous value of state+props before setting any values</p>
+   *
+   * @param callback callback function that will be executed once setState is completed and
+   *                 the component is re-rendered.
+   */
+  protected void setState( @Nonnull final SetStateCallback<P, S> callback )
+  {
+    component().setState( callback );
   }
 
   /**

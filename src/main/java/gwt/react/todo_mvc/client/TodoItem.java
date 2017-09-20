@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.InputElement;
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.functional.JsBiConsumer;
 import gwt.react.client.components.Component;
+import gwt.react.client.components.SideComponent;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
