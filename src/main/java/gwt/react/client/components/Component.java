@@ -34,6 +34,8 @@ import gwt.react.client.components.lifecycle.ComponentWillUpdate;
 import gwt.react.client.components.lifecycle.ShouldComponentUpdate;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
+import java.util.Objects;
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -77,7 +79,7 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = "React", name = "Component")
 public abstract class Component<P extends BaseProps, S extends JsPlainObj> {
 	@JsProperty
-	protected S state;
+	private S state;
 
 	@SuppressWarnings( "unused" )
 	@JsProperty
@@ -176,4 +178,9 @@ public abstract class Component<P extends BaseProps, S extends JsPlainObj> {
 	{
 		return props;
 	}
+
+  protected final void setInitialState( @Nonnull final S state )
+  {
+    this.state = Objects.requireNonNull( state );
+  }
 }

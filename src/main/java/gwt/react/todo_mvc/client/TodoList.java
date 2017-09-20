@@ -71,7 +71,7 @@ class TodoList
   public TodoList( TodoList.TodoListProps props )
   {
     super( props );
-    state = $( new TodoListState(), "editingId", null, "newTodo", "" );
+    setInitialState( $( new TodoListState(), "editingId", null, "newTodo", "" ) );
   }
 
   private void handleDoAction( final Action action, final Todo todo )

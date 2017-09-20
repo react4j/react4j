@@ -53,7 +53,7 @@ class TodoItem
   public TodoItem( @Nonnull final TodoItem.TodoItemProps props )
   {
     super( props );
-    state = newTodoItemState( props.todo.getTitle() );
+    setInitialState( newTodoItemState( props.todo.getTitle() ) );
   }
 
   private void onSubmitTodo()
