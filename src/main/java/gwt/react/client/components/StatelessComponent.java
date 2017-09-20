@@ -1,7 +1,7 @@
 package gwt.react.client.components;
 
 import gwt.interop.utils.shared.JsHelper;
-import gwt.react.GwtReactConfig;
+import gwt.react.client.GwtReactConfig;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
 import javax.annotation.Nonnull;

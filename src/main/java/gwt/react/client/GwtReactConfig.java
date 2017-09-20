@@ -1,4 +1,4 @@
-package gwt.react;
+package gwt.react.client;
 
 import org.jetbrains.annotations.TestOnly;
 

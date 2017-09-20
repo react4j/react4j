@@ -4,10 +4,9 @@
   <inherits name="gwt.interop.utils.InteropUtils"/>
 
   <source path='client'/>
-  <source path='GwtReactConfig.java'/>
 
   <!--
-    These properties are all defined in gwt.react.GwtReactConfig
+    These properties are all defined in gwt.react.client.GwtReactConfig
     See that class for a better understanding of what these properties do.
   -->
 

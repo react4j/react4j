@@ -2,7 +2,7 @@ package gwt.react.client.components;
 
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.JsHelper;
-import gwt.react.GwtReactConfig;
+import gwt.react.client.GwtReactConfig;
 import gwt.react.client.proptypes.BaseProps;
 import java.util.HashMap;
 import java.util.Map;
