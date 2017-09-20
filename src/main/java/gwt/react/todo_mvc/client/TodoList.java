@@ -13,6 +13,7 @@ import gwt.react.client.proptypes.BaseProps;
 import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
+import gwt.react.client.util.JsUtil;
 import gwt.react.todo_mvc.client.model.Todo;
 import gwt.react_router.client.HistoryLocation;
 import gwt.react_router.client.RouterEnhancedProps;
@@ -220,6 +221,7 @@ class TodoList
       footerProps.completedCount = completedCount;
       footerProps.nowShowing = props.getRouterParams().nowShowing;
       footerProps.onClearCompleted = this::handleClearCompleted;
+      JsUtil.definePropertyValue( footerProps.onClearCompleted, "name", "handleClearCompleted" );
 
       footer = React.createElement( Footer.component, footerProps );
     }
