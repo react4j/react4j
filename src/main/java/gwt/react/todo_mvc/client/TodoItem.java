@@ -24,7 +24,7 @@ import static gwt.react.client.api.React.DOM.*;
 class TodoItem
   extends SideComponent<TodoItem.Props, TodoItem.State>
 {
-  static final ComponentConstructorFn<Props> COMPONENT_TYPE = TodoItemWrapper.ctor();
+  static final ComponentConstructorFn<TodoItem.Props> TYPE = TodoItemWrapper.ctor();
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   public static class Props
