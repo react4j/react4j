@@ -11,7 +11,6 @@ artifacts:
   jetbrains_annotations: org.jetbrains:annotations:jar:15.0
 
   gwt_interop_utils: com.github.gwtreact:gwt-interop-utils:jar:0.4.0
-  react: com.github.gwtreact:gwt-react:jar:0.6.0
   react_router: com.github.gwtreact:gwt-react-router:jar:0.5.0
 
   # GWT deps
