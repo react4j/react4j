@@ -1,7 +1,7 @@
 package gwt.react.todo_mvc.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Document;
+import elemental2.dom.DomGlobal;
 import gwt.interop.utils.client.collections.JsArray;
 import gwt.interop.utils.shared.collections.Array;
 import gwt.react.client.api.React;
@@ -29,7 +29,7 @@ public class App
     ReactDOM.render( React.createElement( Router,
                                           new RouterProps().History( ReactRouter.hashHistory ),
                                           castAsReactElement( routes ) ),
-                     Document.get().getElementById( "todoapp" ) );
+                     DomGlobal.document.getElementById( "todoapp" ) );
   }
 
   @Override

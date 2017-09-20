@@ -1,6 +1,6 @@
 package gwt.react.todo_mvc.client;
 
-import com.google.gwt.dom.client.InputElement;
+import elemental2.dom.HTMLInputElement;
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.functional.JsBiConsumer;
 import gwt.react.client.components.Component;
@@ -18,6 +18,7 @@ import gwt.react.todo_mvc.client.model.Todo;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 import static gwt.interop.utils.client.plainobjects.JsPlainObj.$;
 import static gwt.react.client.api.React.DOM.*;
@@ -93,7 +94,8 @@ class TodoItem
   {
     if ( props().isEditing )
     {
-      setState( newTodoItemState( InputElement.as( event.target ).getValue() ) );
+      final HTMLInputElement input = Js.cast( event.target );
+      setState( newTodoItemState( input.value ) );
     }
   }
 
@@ -110,7 +112,7 @@ class TodoItem
   {
     if ( !prevProps.isEditing && props().isEditing )
     {
-      final InputElement input = InputElement.as( (InputElement) refs().get( "editField" ) );
+      final HTMLInputElement input = Js.cast( refs().get( "editField" ) );
       input.focus();
       input.select();
     }

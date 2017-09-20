@@ -1,6 +1,6 @@
 package gwt.react.todo_mvc.client;
 
-import com.google.gwt.dom.client.InputElement;
+import elemental2.dom.HTMLInputElement;
 import gwt.interop.utils.client.plainobjects.JsPlainObj;
 import gwt.interop.utils.shared.collections.Array;
 import gwt.react.client.api.React;
@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 import org.jetbrains.annotations.Nullable;
 import static gwt.interop.utils.client.plainobjects.JsPlainObj.$;
@@ -108,7 +109,8 @@ class TodoList
 
   private void handleToggleAll( FormEvent event )
   {
-    App.model.toggleAll( InputElement.as( event.target ).isChecked() );
+    final HTMLInputElement input = Js.cast( event.target );
+    App.model.toggleAll( input.checked );
   }
 
   private void handleNewTodoKeyDown( @Nonnull final KeyboardEvent event )
@@ -129,7 +131,8 @@ class TodoList
 
   private void handleChange( FormEvent event )
   {
-    setState( $( new State(), "newTodo", InputElement.as( event.target ).getValue() ) );
+    final HTMLInputElement input = Js.cast( event.target );
+    setState( $( new State(), "newTodo", input.value ) );
   }
 
   @Override

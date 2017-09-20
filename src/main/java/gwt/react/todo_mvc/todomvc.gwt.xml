@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='todomvc'>
-  <inherits name='com.google.gwt.user.User'/>
-  <inherits name="com.google.gwt.resources.Resources"/>
   <inherits name="gwt.react.ReactDev"/>
   <inherits name="gwt.react_router.ReactRouter"/>
 

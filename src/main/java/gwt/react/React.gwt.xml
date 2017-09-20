@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='com.google.gwt.useragent.UserAgent'/>
   <inherits name="gwt.interop.utils.InteropUtils"/>
-  <inherits name="jsinterop.base.Base"/>
-  <inherits name="elemental2.core.Core"/>
+  <inherits name="elemental2.dom.Dom"/>
 
   <source path='client'/>
 
