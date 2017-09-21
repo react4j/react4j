@@ -1,13 +1,13 @@
 package gwt.react.todo_mvc.client;
 
 import elemental2.dom.HTMLInputElement;
+import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.SideComponent;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
-import gwt.react.client.proptypes.BaseProps;
 import gwt.react.client.proptypes.html.BtnProps;
 import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;

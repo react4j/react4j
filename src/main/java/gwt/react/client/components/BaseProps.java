@@ -1,4 +1,4 @@
-package gwt.react.client.proptypes;
+package gwt.react.client.components;
 
 import gwt.react.client.elements.ReactElementChildren;
 import jsinterop.annotations.JsPackage;

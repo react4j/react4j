@@ -1,7 +1,7 @@
 package gwt.react_router.client;
 
+import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.Component;
-import gwt.react.client.proptypes.BaseProps;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;

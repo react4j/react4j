@@ -1,9 +1,9 @@
 package gwt.react.todo_mvc.client;
 
+import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.StatelessComponent;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.MouseEventHandler;
-import gwt.react.client.proptypes.BaseProps;
 import gwt.react.client.proptypes.html.AnchorProps;
 import gwt.react.client.proptypes.html.BtnProps;
 import gwt.react.client.proptypes.html.HtmlProps;

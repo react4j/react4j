@@ -1,12 +1,12 @@
 package gwt.react.client.proptypes.html;
 
+import gwt.react.client.components.ReactRefCallback;
 import gwt.react.client.events.DragEventHandler;
 import gwt.react.client.events.FocusEventHandler;
 import gwt.react.client.events.FormEventHandler;
 import gwt.react.client.events.KeyboardEventHandler;
 import gwt.react.client.events.MouseEventHandler;
 import gwt.react.client.events.TouchEventHandler;
-import gwt.react.client.proptypes.ReactRefCallback;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
 import gwt.react.client.proptypes.html.attributeTypes.OnOff;
 import gwt.react.client.proptypes.html.attributeTypes.YesNo;

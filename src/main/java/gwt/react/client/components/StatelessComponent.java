@@ -2,7 +2,6 @@ package gwt.react.client.components;
 
 import gwt.react.client.GwtReactConfig;
 import gwt.react.client.elements.ReactElement;
-import gwt.react.client.proptypes.BaseProps;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;

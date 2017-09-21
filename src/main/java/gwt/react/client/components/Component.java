@@ -23,7 +23,6 @@ SOFTWARE. */
 
 import gwt.react.client.api.React;
 import gwt.react.client.elements.ReactElement;
-import gwt.react.client.proptypes.BaseProps;
 import gwt.react.client.util.JsProcedure;
 import java.util.Objects;
 import javax.annotation.Nonnull;

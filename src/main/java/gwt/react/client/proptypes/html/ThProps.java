@@ -1,11 +1,11 @@
 package gwt.react.client.proptypes.html;
 
+import gwt.react.client.components.ReactRefCallback;
 import gwt.react.client.events.DragEventHandler;
 import gwt.react.client.events.FocusEventHandler;
 import gwt.react.client.events.KeyboardEventHandler;
 import gwt.react.client.events.MouseEventHandler;
 import gwt.react.client.events.TouchEventHandler;
-import gwt.react.client.proptypes.ReactRefCallback;
 import gwt.react.client.proptypes.html.attributeTypes.HeaderScope;
 import gwt.react.client.proptypes.html.attributeTypes.YesNo;
 import jsinterop.annotations.JsOverlay;

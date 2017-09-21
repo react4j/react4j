@@ -1,6 +1,6 @@
 package gwt.react.client.elements;
 
-import gwt.react.client.proptypes.BaseProps;
+import gwt.react.client.components.BaseProps;
 import jsinterop.annotations.JsType;
 
 @JsType( isNative = true )
