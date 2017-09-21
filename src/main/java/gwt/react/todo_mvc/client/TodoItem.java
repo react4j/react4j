@@ -42,6 +42,21 @@ class TodoItem
     boolean isEditing;
     JsBiConsumer<Todo, String> doSave;
     JsBiConsumer<TodoList.Action, Todo> doAction;
+
+    @JsOverlay
+    public static Props create( @Nonnull final Todo todo,
+                                @Nonnull final JsBiConsumer<Todo, String> doSave,
+                                @Nonnull final JsBiConsumer<TodoList.Action, Todo> doAction,
+                                final boolean isEditing )
+    {
+      final TodoItem.Props props = new TodoItem.Props();
+      props.key = todo.getId();
+      props.todo = todo;
+      props.doAction = doAction;
+      props.doSave = doSave;
+      props.isEditing = isEditing;
+      return props;
+    }
   }
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )

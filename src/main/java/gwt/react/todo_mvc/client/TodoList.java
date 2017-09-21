@@ -213,15 +213,9 @@ class TodoList
   private Array<ReactElement<?, ?>> renderTodoItems( final Array<Todo> shownTodos )
   {
     return shownTodos.map( ( todo, index, theArray ) -> {
-      final TodoItem.Props todoProps = new TodoItem.Props();
-
-      todoProps.key = todo.getId();
-      todoProps.todo = todo;
-      todoProps.doAction = this::handleDoAction;
-      todoProps.doSave = this::handleSave;
-      todoProps.isEditing = Objects.equals( state().editingId, todo.getId() );
-
-      return React.createElement( TodoItem.TYPE, todoProps );
+      final boolean isEditing = Objects.equals( state().editingId, todo.getId() );
+      return React.createElement( TodoItem.TYPE,
+                                  TodoItem.Props.create( todo, this::handleSave, this::handleDoAction, isEditing ) );
     } );
   }
 
@@ -231,13 +225,12 @@ class TodoList
     final ReactElement<?, ?> footer;
     if ( activeTodoCount > 0 || completedCount > 0 )
     {
-      final Footer.Props props = new Footer.Props();
-      props.count = activeTodoCount;
-      props.completedCount = completedCount;
-      props.nowShowing = props().getRouterParams().nowShowing;
-      props.onClearCompleted = e -> handleClearCompleted();
+      final Footer.Props props =
+        Footer.Props.create( activeTodoCount,
+                             completedCount,
+                             props().getRouterParams().nowShowing,
+                             e -> handleClearCompleted() );
       JsUtil.definePropertyValue( props.onClearCompleted, "name", "handleClearCompleted" );
-
       footer = React.createElement( Footer.TYPE, props );
     }
     else

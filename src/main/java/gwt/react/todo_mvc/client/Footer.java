@@ -9,7 +9,9 @@ import gwt.react.client.events.MouseEventHandler;
 import gwt.react.client.proptypes.html.AnchorProps;
 import gwt.react.client.proptypes.html.BtnProps;
 import gwt.react.client.proptypes.html.HtmlProps;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;
@@ -29,6 +31,20 @@ class Footer
     int completedCount;
     String nowShowing;
     MouseEventHandler onClearCompleted;
+
+    @JsOverlay
+    public static Props create( @Nonnegative final int count,
+                                @Nonnegative final int completedCount,
+                                @Nonnull final String nowShowing,
+                                @Nonnull final MouseEventHandler onClearCompleted )
+    {
+      final Props props = new Props();
+      props.count = count;
+      props.completedCount = completedCount;
+      props.nowShowing = nowShowing;
+      props.onClearCompleted = onClearCompleted;
+      return props;
+    }
   }
 
   Footer( @Nonnull final Component<Props, BaseState> component )
