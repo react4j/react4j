@@ -5,7 +5,7 @@ repositories:
    - https://stocksoftware.artifactoryonline.com/stocksoftware/oss
 
 artifacts:
-  idea_codestyle: au.com.stocksoftware.idea.codestyle:idea-codestyle:xml:1.9
+  idea_codestyle: au.com.stocksoftware.idea.codestyle:idea-codestyle:xml:1.10
 
   javax_jsr305: com.google.code.findbugs:jsr305:jar:3.0.1
   jetbrains_annotations: org.jetbrains:annotations:jar:15.0
