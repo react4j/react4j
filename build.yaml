@@ -31,3 +31,5 @@ artifacts:
   arez_processor: org.realityforge.arez:arez-processor:jar:X
   arez_extras: org.realityforge.arez:arez-extras:jar:gwt:X
   arez_browser_extras: org.realityforge.arez:arez-browser-extras:jar:gwt:X
+
+  braincheck: org.realityforge.braincheck:braincheck:jar:gwt:1.0.0

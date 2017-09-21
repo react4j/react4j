@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
   <inherits name='gwt.react.React'/>
+  <inherits name="org.realityforge.braincheck.BrainCheckDev"/>
 
   <set-property name="react.environment" value="development"/>
-  <set-property name="react.verbose_error_messages" value="true"/>
-  <set-property name="react.check_invariants" value="true"/>
   <set-property name="react.enable_component_names" value="true"/>
 </module>

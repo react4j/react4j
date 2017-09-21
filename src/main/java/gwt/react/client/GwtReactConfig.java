@@ -13,16 +13,6 @@ public final class GwtReactConfig
   {
   }
 
-  public static boolean verboseErrorMessages()
-  {
-    return c_provider.verboseErrorMessages();
-  }
-
-  public static boolean checkInvariants()
-  {
-    return c_provider.checkInvariants();
-  }
-
   public static boolean enableComponentNames()
   {
     return c_provider.enableComponentNames();
@@ -43,16 +33,12 @@ public final class GwtReactConfig
       throw new IllegalStateException( message );
     }
     final boolean development = environment.equals( "development" );
-    final boolean verboseErrorMessages =
-      "true".equals( System.getProperty( "react.verbose_error_messages", development ? "true" : "false" ) );
-    final boolean checkInvariants =
-      "true".equals( System.getProperty( "react.check_invariants", development ? "true" : "false" ) );
     final boolean enableNames =
       "true".equals( System.getProperty( "react.enable_component_names", development ? "true" : "false" ) );
 
     return System.getProperty( "react.dynamic_provider", "false" ).equals( "true" ) ?
-           new DynamicProvider( verboseErrorMessages, checkInvariants, enableNames ) :
-           new StaticProvider( verboseErrorMessages, checkInvariants, enableNames );
+           new DynamicProvider( enableNames ) :
+           new StaticProvider( enableNames );
   }
 
   /**
@@ -63,10 +49,6 @@ public final class GwtReactConfig
    */
   private interface Provider
   {
-    boolean verboseErrorMessages();
-
-    boolean checkInvariants();
-
     boolean enableComponentNames();
   }
 
@@ -78,50 +60,22 @@ public final class GwtReactConfig
   static final class DynamicProvider
     implements Provider
   {
-    private boolean _verboseErrorMessages;
-    private boolean _checkInvariants;
-    private boolean enableComponentNames;
+    private boolean _enableComponentNames;
 
-    DynamicProvider( final boolean verboseErrorMessages,
-                     final boolean checkInvariants,
-                     final boolean enableComponentNames )
+    DynamicProvider( final boolean enableComponentNames )
     {
-      _verboseErrorMessages = verboseErrorMessages;
-      _checkInvariants = checkInvariants;
-      this.enableComponentNames = enableComponentNames;
-    }
-
-    void setVerboseErrorMessages( final boolean verboseErrorMessages )
-    {
-      _verboseErrorMessages = verboseErrorMessages;
-    }
-
-    void setCheckInvariants( final boolean checkInvariants )
-    {
-      _checkInvariants = checkInvariants;
+      _enableComponentNames = enableComponentNames;
     }
 
     void setEnableComponentNames( final boolean enableComponentNames )
     {
-      this.enableComponentNames = enableComponentNames;
-    }
-
-    @Override
-    public boolean verboseErrorMessages()
-    {
-      return _verboseErrorMessages;
-    }
-
-    @Override
-    public boolean checkInvariants()
-    {
-      return _checkInvariants;
+      _enableComponentNames = enableComponentNames;
     }
 
     @Override
     public boolean enableComponentNames()
     {
-      return enableComponentNames;
+      return _enableComponentNames;
     }
   }
 
@@ -133,29 +87,11 @@ public final class GwtReactConfig
   private static final class StaticProvider
     implements Provider
   {
-    private final boolean _verboseErrorMessages;
-    private final boolean _checkInvariants;
     private final boolean _enableComponentNames;
 
-    StaticProvider( final boolean verboseErrorMessages,
-                    final boolean checkInvariants,
-                    final boolean enableComponentNames )
+    StaticProvider( final boolean enableComponentNames )
     {
-      _verboseErrorMessages = verboseErrorMessages;
-      _checkInvariants = checkInvariants;
       _enableComponentNames = enableComponentNames;
-    }
-
-    @Override
-    public boolean verboseErrorMessages()
-    {
-      return _verboseErrorMessages;
-    }
-
-    @Override
-    public boolean checkInvariants()
-    {
-      return _checkInvariants;
     }
 
     @Override

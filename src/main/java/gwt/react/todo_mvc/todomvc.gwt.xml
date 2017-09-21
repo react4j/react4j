@@ -2,6 +2,8 @@
 <module rename-to='todomvc'>
   <inherits name="gwt.react.ReactDev"/>
   <inherits name="gwt.react_router.ReactRouter"/>
+  <inherits name="org.realityforge.arez.ArezDev"/>
+  <inherits name="org.realityforge.braincheck.BrainCheckDev"/>
 
   <set-property name="jre.checks.checkLevel" value="MINIMAL"/>
 
