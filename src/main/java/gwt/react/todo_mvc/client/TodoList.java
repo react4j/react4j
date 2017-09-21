@@ -231,14 +231,14 @@ class TodoList
     final ReactElement<?, ?> footer;
     if ( activeTodoCount > 0 || completedCount > 0 )
     {
-      final Footer.FooterProps footerProps = new Footer.FooterProps();
-      footerProps.count = activeTodoCount;
-      footerProps.completedCount = completedCount;
-      footerProps.nowShowing = props().getRouterParams().nowShowing;
-      footerProps.onClearCompleted = e -> handleClearCompleted();
-      JsUtil.definePropertyValue( footerProps.onClearCompleted, "name", "handleClearCompleted" );
+      final Footer.Props props = new Footer.Props();
+      props.count = activeTodoCount;
+      props.completedCount = completedCount;
+      props.nowShowing = props().getRouterParams().nowShowing;
+      props.onClearCompleted = e -> handleClearCompleted();
+      JsUtil.definePropertyValue( props.onClearCompleted, "name", "handleClearCompleted" );
 
-      footer = React.createElement( Footer.component, footerProps );
+      footer = React.createElement( Footer.TYPE, props );
     }
     else
     {

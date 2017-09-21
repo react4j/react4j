@@ -1,7 +1,9 @@
 package gwt.react.todo_mvc.client;
 
 import gwt.react.client.components.BaseProps;
-import gwt.react.client.components.StatelessComponent;
+import gwt.react.client.components.BaseState;
+import gwt.react.client.components.Component;
+import gwt.react.client.components.StatelessSideComponent;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.MouseEventHandler;
 import gwt.react.client.proptypes.html.AnchorProps;
@@ -10,13 +12,17 @@ import gwt.react.client.proptypes.html.HtmlProps;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsConstructorFn;
 import org.jetbrains.annotations.Nullable;
 import static gwt.react.client.api.React.DOM.*;
 
 class Footer
+  extends StatelessSideComponent<Footer.Props>
 {
+  static final JsConstructorFn<FooterWrapper> TYPE = FooterWrapper.ctor();
+
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class FooterProps
+  static class Props
     extends BaseProps
   {
     int count;
@@ -25,39 +31,45 @@ class Footer
     MouseEventHandler onClearCompleted;
   }
 
-  static StatelessComponent<FooterProps> component = StatelessComponent.wrap( "Footer", ( props ) -> {
+  Footer( @Nonnull final Component<Props, BaseState> component )
+  {
+    super( component );
+  }
 
-    final String activeTodoWord = "item" + ( props.count == 1 ? "" : "s" );
+  @Override
+  protected ReactElement<?, ?> render()
+  {
+    final String activeTodoWord = "item" + ( props().count == 1 ? "" : "s" );
 
     return
       footer( new HtmlProps().className( "footer" ),
               span( new HtmlProps().className( "todo-count" ),
-                    strong( null, Integer.toString( props.count ) ),
+                    strong( null, Integer.toString( props().count ) ),
                     activeTodoWord + "  left"
               ),
               ul( new HtmlProps().className( "filters" ),
                   li( null,
                       a( new AnchorProps()
-                           .className( selected( props.nowShowing == null ) )
+                           .className( selected( props().nowShowing == null ) )
                            .href( "#/" ), "All" )
                   ),
                   li( null,
                       a( new AnchorProps()
-                           .className( selected( TodoList.NOW_SHOWING_ACTIVE_TODOS.equals( props.nowShowing ) ) )
+                           .className( selected( TodoList.NOW_SHOWING_ACTIVE_TODOS.equals( props().nowShowing ) ) )
                            .href( "#/active" ), "Active" )
                   ),
                   li( null,
                       a( new AnchorProps()
-                           .className( selected( TodoList.NOW_SHOWING_COMPLETED_TODOS.equals( props.nowShowing ) ) )
+                           .className( selected( TodoList.NOW_SHOWING_COMPLETED_TODOS.equals( props().nowShowing ) ) )
                            .href( "#/completed" ), "Completed" )
                   )
               ),
-              buildClearButton( props )
+              buildClearButton( props() )
       );
-  } );
+  }
 
   @Nullable
-  private static ReactElement<?, ?> buildClearButton( @Nonnull final FooterProps props )
+  private ReactElement<?, ?> buildClearButton( @Nonnull final Props props )
   {
     if ( props.completedCount > 0 )
     {
