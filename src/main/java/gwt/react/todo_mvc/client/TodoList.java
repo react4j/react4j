@@ -80,7 +80,7 @@ class TodoList
     }
   }
 
-  TodoList( @Nonnull final Component<TodoList.Props, TodoList.State> component )
+  TodoList( @Nonnull final Component<Props, State> component )
   {
     super( component );
     setInitialState( State.create( null, "" ) );
