@@ -1,8 +1,8 @@
 package gwt.react_router.client;
 
+import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
 import gwt.react.client.elements.ReactElement;
-import gwt.react.client.util.JsPlainObj;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;
@@ -13,7 +13,7 @@ public class ReactRouter {
     public static HistoryMechanism browserHistory;
     public static HistoryMechanism hashHistory;
 
-    static class RouterComponent extends Component<RouterProps, JsPlainObj>
+    static class RouterComponent extends Component<RouterProps, BaseState>
     {
         public RouterComponent( final RouterProps props )
         {
@@ -27,7 +27,7 @@ public class ReactRouter {
         }
     }
 
-    static class Route extends Component<RouteProps,JsPlainObj>
+    static class Route extends Component<RouteProps,BaseState>
     {
         public Route( final RouteProps props )
         {

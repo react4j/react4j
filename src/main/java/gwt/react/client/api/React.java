@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
+import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.StatelessComponent;
 import gwt.react.client.elements.DOMElement;
@@ -45,7 +46,6 @@ import gwt.react.client.proptypes.html.TdProps;
 import gwt.react.client.proptypes.html.TextAreaProps;
 import gwt.react.client.proptypes.html.ThProps;
 import gwt.react.client.util.Array;
-import gwt.react.client.util.JsPlainObj;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -113,13 +113,13 @@ public class React
    * @return a {@link ReactElement}
    */
 
-  public static native <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T>
+  public static native <P extends BaseProps, S extends BaseState, T extends Component<P, S>> ReactElement<P, T>
   createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props );
 
-  public static native <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T>
+  public static native <P extends BaseProps, S extends BaseState, T extends Component<P, S>> ReactElement<P, T>
   createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props, @Nonnull String value );
 
-  public static native <P extends BaseProps, S extends JsPlainObj, T extends Component<P, S>> ReactElement<P, T>
+  public static native <P extends BaseProps, S extends BaseState, T extends Component<P, S>> ReactElement<P, T>
   createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props, @Nonnull ReactElement<?, ?>... child );
 
   /**
@@ -134,7 +134,7 @@ public class React
    * @return the cloned element
    */
   public static native <P extends BaseProps, T> ReactElement<P, T> cloneElement( ReactElement<P, T> element,
-                                                                                 JsPlainObj props );
+                                                                                 P props );
 
   public static native boolean isValidElement( Object object );
 

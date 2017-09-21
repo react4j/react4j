@@ -1,6 +1,7 @@
 package gwt.react.todo_mvc.client;
 
 import elemental2.dom.HTMLInputElement;
+import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.SideComponent;
 import gwt.react.client.elements.ReactElement;
@@ -12,7 +13,6 @@ import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;
 import gwt.react.client.proptypes.html.LabelProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
-import gwt.react.client.util.JsPlainObj;
 import gwt.react.todo_mvc.client.model.Todo;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;
@@ -46,7 +46,7 @@ class TodoItem
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   static class State
-    extends JsPlainObj
+    extends BaseState
   {
     @JsOverlay
     static State create( @Nonnull final String editText )

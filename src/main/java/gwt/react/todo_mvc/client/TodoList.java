@@ -2,6 +2,7 @@ package gwt.react.todo_mvc.client;
 
 import elemental2.dom.HTMLInputElement;
 import gwt.react.client.api.React;
+import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.SideComponent;
 import gwt.react.client.elements.ReactElement;
@@ -12,13 +13,13 @@ import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
 import gwt.react.client.util.Array;
-import gwt.react.client.util.JsPlainObj;
 import gwt.react.client.util.JsUtil;
 import gwt.react.todo_mvc.client.model.Todo;
 import gwt.react_router.client.HistoryLocation;
 import gwt.react_router.client.RouterEnhancedProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -27,7 +28,6 @@ import jsinterop.base.JsConstructorFn;
 import org.jetbrains.annotations.Nullable;
 import static gwt.react.client.api.GwtReact.castAsReactElement;
 import static gwt.react.client.api.React.DOM.*;
-import static gwt.react.client.util.JsPlainObj.$;
 
 class TodoList
   extends SideComponent<TodoList.Props, TodoList.State>
@@ -65,16 +65,25 @@ class TodoList
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   static class State
-    extends JsPlainObj
+    extends BaseState
   {
     String editingId;
     String newTodo;
+
+    @JsOverlay
+    public static State create( final String editingId, final String newTodo )
+    {
+      final State state = new State();
+      state.editingId = editingId;
+      state.newTodo = newTodo;
+      return state;
+    }
   }
 
   TodoList( @Nonnull final Component<TodoList.Props, TodoList.State> component )
   {
     super( component );
-    setInitialState( $( new State(), "editingId", null, "newTodo", "" ) );
+    setInitialState( State.create( null, "" ) );
   }
 
   private void handleDoAction( final Action action, final Todo todo )
@@ -85,21 +94,20 @@ class TodoList
         App.model.toggle( todo );
         break;
       case CANCEL:
-        final State s = $( new State(), "editingId", null );
-        setState( s );
+        setState( State.create( null, state().newTodo ) );
         break;
       case DESTROY:
         App.model.destroy( todo );
         break;
       case EDIT:
-        setState( $( new State(), "editingId", todo.getId() ) );
+        setState( State.create( todo.getId(), state().newTodo ) );
     }
   }
 
   private void handleSave( final Todo todoToSave, final String text )
   {
     App.model.save( todoToSave, text );
-    setState( $( new State(), "editingId", null ) );
+    setState( State.create( null, state().newTodo ) );
   }
 
   private void handleClearCompleted()
@@ -124,7 +132,7 @@ class TodoList
       if ( val.length() > 0 )
       {
         App.model.addTodo( val );
-        setState( $( new State(), "newTodo", "" ) );
+        setState( State.create( state().editingId, "" ) );
       }
     }
   }
@@ -132,7 +140,7 @@ class TodoList
   private void handleChange( FormEvent event )
   {
     final HTMLInputElement input = Js.cast( event.target );
-    setState( $( new State(), "newTodo", input.value ) );
+    setState( State.create( state().editingId, input.value ) );
   }
 
   @Override

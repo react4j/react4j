@@ -2,7 +2,6 @@ package gwt.react.client.proptypes.html;
 
 import gwt.react.client.proptypes.cssPropertyTypes.AnimationFillMode;
 import gwt.react.client.proptypes.cssPropertyTypes.Visibility;
-import gwt.react.client.util.JsPlainObj;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -16,9 +15,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class CssProps
-  extends JsPlainObj
 {
-
   @JsProperty
   public native String getAnimationFillMode();
 

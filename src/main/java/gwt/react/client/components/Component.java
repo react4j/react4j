@@ -24,7 +24,6 @@ SOFTWARE. */
 import gwt.react.client.api.React;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
-import gwt.react.client.util.JsPlainObj;
 import gwt.react.client.util.JsProcedure;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -59,7 +58,7 @@ import jsinterop.base.JsPropertyMap;
  * @param <S> the type of state this component maintains
  */
 @JsType( isNative = true, namespace = "React", name = "Component" )
-public abstract class Component<P extends BaseProps, S extends JsPlainObj>
+public abstract class Component<P extends BaseProps, S extends BaseState>
 {
   @JsProperty
   private S state;

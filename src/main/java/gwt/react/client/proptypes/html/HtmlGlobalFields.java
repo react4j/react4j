@@ -12,12 +12,12 @@ import gwt.react.client.events.TouchEventHandler;
 import gwt.react.client.events.UIEventHandler;
 import gwt.react.client.events.WheelEventHandler;
 import gwt.react.client.proptypes.BaseProps;
-import gwt.react.client.util.JsPlainObj;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+import jsinterop.base.JsPropertyMapOfAny;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class HtmlGlobalFields
@@ -27,13 +27,11 @@ public class HtmlGlobalFields
   @JsOverlay
   public final void setDangerouslyInnerHTML( String __html )
   {
-    JsPlainObj o = new JsPlainObj();
-    JsPropertyMap.of( o ).set( "__html", __html );
-    setDangerouslySetInnerHTML( o );
+    setDangerouslySetInnerHTML( JsPropertyMap.of( "__html", __html ) );
   }
 
   @JsProperty
-  protected native void setDangerouslySetInnerHTML( JsPlainObj __html );
+  protected native void setDangerouslySetInnerHTML( JsPropertyMapOfAny __html );
 
   //React Specific
   @JsProperty

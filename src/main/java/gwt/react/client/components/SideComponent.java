@@ -2,7 +2,6 @@ package gwt.react.client.components;
 
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.proptypes.BaseProps;
-import gwt.react.client.util.JsPlainObj;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  * @param <P> the type of props that this component supports.
  * @param <S> the type of state that this component maintains.
  */
-public abstract class SideComponent<P extends BaseProps, S extends JsPlainObj>
+public abstract class SideComponent<P extends BaseProps, S extends BaseState>
 {
   @JsFunction
   public interface SetStateCallback<P, S>
