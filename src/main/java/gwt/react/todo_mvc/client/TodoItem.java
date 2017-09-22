@@ -82,8 +82,8 @@ class TodoItem
 
   private void onSubmitTodo()
   {
-    String val = component().state().editText;
-    if ( val != null && !val.isEmpty() )
+    final String val = component().state().editText;
+    if ( null != val && !val.isEmpty() )
     {
       props().doSave.accept( props().todo, val );
 
@@ -152,12 +152,15 @@ class TodoItem
                input( new InputProps()
                         .className( "toggle" )
                         .type( InputType.checkbox ).checked( props().todo.isCompleted() )
-                        .onChange( e -> props().doAction.accept( TodoList.Action.TOGGLE, props().todo ) ) ),
+                        .onChange( e -> props().doAction.accept( TodoList.Action.TOGGLE, props().todo ) )
+               ),
                label( new LabelProps()
-                        .OnDoubleClick( e -> onEdit() ), props().todo.getTitle() ),
+                        .OnDoubleClick( e -> onEdit() ), props().todo.getTitle()
+               ),
                button( new BtnProps()
                          .className( "destroy" )
-                         .onClick( e -> props().doAction.accept( TodoList.Action.DESTROY, props().todo ) ) )
+                         .onClick( e -> props().doAction.accept( TodoList.Action.DESTROY, props().todo ) )
+               )
           ),
           input( new InputProps()
                    .ref( "editField" )
@@ -165,7 +168,8 @@ class TodoItem
                    .defaultValue( state().editText )
                    .onBlur( e -> onSubmitTodo() )
                    .onChange( this::handleChange )
-                   .onKeyDown( this::handleKeyDown ) )
+                   .onKeyDown( this::handleKeyDown )
+          )
       );
   }
 
