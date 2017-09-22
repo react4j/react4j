@@ -222,7 +222,6 @@ class TodoList
   @Nullable
   private ReactElement<?, ?> renderFooter( final int activeTodoCount, final int completedCount )
   {
-    final ReactElement<?, ?> footer;
     if ( activeTodoCount > 0 || completedCount > 0 )
     {
       final Footer.Props props =
@@ -231,12 +230,11 @@ class TodoList
                              props().getRouterParams().nowShowing,
                              e -> handleClearCompleted() );
       JsUtil.definePropertyValue( props.onClearCompleted, "name", "handleClearCompleted" );
-      footer = React.createElement( Footer.TYPE, props );
+      return React.createElement( Footer.TYPE, props );
     }
     else
     {
-      footer = null;
+      return null;
     }
-    return footer;
   }
 }
