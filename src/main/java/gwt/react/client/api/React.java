@@ -24,7 +24,6 @@ SOFTWARE. */
 import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.StatelessComponent;
 import gwt.react.client.elements.DOMElement;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.elements.ReactElementChildren;
@@ -76,25 +75,6 @@ public class React
                                                                           P props,
                                                                           ReactElement<?, ?>... child );
 
-  /**
-   * Create and return a new ReactElement of the given type.
-   *
-   * @param type  a ReactClass (created via React.createClass).
-   * @param props the props to pass to the element
-   * @return a {@link ReactElement}
-   */
-
-  //Create Stateless Components
-  public static native <P extends BaseProps> ReactElement<P, StatelessComponent<P>> createElement( StatelessComponent<P> type,
-                                                                                                   P props );
-
-  public static native <P extends BaseProps> ReactElement<P, StatelessComponent<P>> createElement( StatelessComponent<P> type,
-                                                                                                   P props,
-                                                                                                   String value );
-
-  public static native <P extends BaseProps> ReactElement<P, StatelessComponent<P>> createElement( StatelessComponent<P> type,
-                                                                                                   P props,
-                                                                                                   ReactElement<?, ?>... child );
 
   //Create ES6 Components
 
