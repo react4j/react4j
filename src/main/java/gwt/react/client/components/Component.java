@@ -123,7 +123,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    */
   protected native void forceUpdate( JsProcedure callBack );
 
-  protected native void forceUpdate();
+  public native void forceUpdate();
 
   /**
    * The render() method is required.
