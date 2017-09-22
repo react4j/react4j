@@ -162,7 +162,9 @@ class TodoList
                             .value( state().newTodo )
                             .onKeyDown( this::handleNewTodoKeyDown )
                             .onChange( this::handleChange )
-                            .autoFocus( true ) ) ),
+                            .autoFocus( true )
+                   )
+           ),
            renderMainSection(),
            renderFooter( activeTodoCount, completedCount )
       );
@@ -171,25 +173,28 @@ class TodoList
   @Nullable
   private ReactElement<?, ?> renderMainSection()
   {
-    final String nowShowing = props().getRouterParams().nowShowing;
     final Array<Todo> todos = App.model.todos;
     final int todoCount = todos.getLength();
-    ReactElement<?, ?> main = null;
     if ( todoCount > 0 )
     {
+      final String nowShowing = props().getRouterParams().nowShowing;
       final Array<Todo> shownTodos = findShownTodos( todos, nowShowing );
-      main = section( new HtmlProps().className( "header" ),
+      return section( new HtmlProps().className( "header" ),
                       input( new InputProps()
                                .className( "toggle-all" )
                                .type( InputType.checkbox )
-                               .onChange( this::handleToggleAll ) ),
+                               .onChange( this::handleToggleAll )
+                      ),
                       ul( new HtmlProps()
                             .className( "todo-list" ),
                           castAsReactElement( renderTodoItems( shownTodos ) )
                       )
       );
     }
-    return main;
+    else
+    {
+      return null;
+    }
   }
 
   private Array<Todo> findShownTodos( final Array<Todo> todos, final String nowShowing )
@@ -214,8 +219,8 @@ class TodoList
   {
     return shownTodos.map( ( todo, index, theArray ) -> {
       final boolean isEditing = Objects.equals( state().editingId, todo.getId() );
-      return React.createElement( TodoItem.TYPE,
-                                  TodoItem.Props.create( todo, this::handleSave, this::handleDoAction, isEditing ) );
+      final TodoItem.Props props = TodoItem.Props.create( todo, this::handleSave, this::handleDoAction, isEditing );
+      return React.createElement( TodoItem.TYPE, props );
     } );
   }
 
