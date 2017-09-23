@@ -64,8 +64,6 @@ public class PersonModel
   @Action
   public void updateFirstName( @Nonnull final String firstName )
   {
-    DomGlobal.console.log( "Starting updateFirstName(" + firstName + ") ..." );
     setFirstName( firstName );
-    DomGlobal.console.log( "... Completed updateFirstName(" + firstName + ")" );
   }
 }
