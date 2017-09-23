@@ -89,7 +89,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @param callback callback function that will be executed once setState is completed and
    *                 the component is re-rendered.
    */
-  protected native void setState( S state, JsProcedure callback );
+  public native void setState( S state, JsProcedure callback );
 
   /**
    * <p>Performs a shallow merge of nextState into current state. This is the primary method
@@ -102,7 +102,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @param callback callback function that will be executed once setState is completed and
    *                 the component is re-rendered.
    */
-  protected native void setState( @Nonnull SideComponent.SetStateCallback<P, S> callback );
+  public native void setState( @Nonnull SideComponent.SetStateCallback<P, S> callback );
 
   /**
    * <p>By default, when your component's state or props change, your component will re-render.
