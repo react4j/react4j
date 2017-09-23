@@ -29,6 +29,9 @@ import org.realityforge.arez.Arez;
 import static gwt.react.client.api.GwtReact.castAsReactElement;
 import static gwt.react.client.api.React.DOM.*;
 
+/**
+ * TODO: Should be generate an Arez subclass of this that generates all action wrappers.
+ */
 class TodoList
   extends ArezComponent<TodoList.Props, TodoList.State>
 {
