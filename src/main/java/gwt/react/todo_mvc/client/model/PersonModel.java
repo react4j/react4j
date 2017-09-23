@@ -1,6 +1,5 @@
 package gwt.react.todo_mvc.client.model;
 
-import elemental2.dom.DomGlobal;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsMethod;
 import org.realityforge.arez.annotations.Action;
