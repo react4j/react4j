@@ -154,19 +154,22 @@ class TodoList
     final int completedCount = todoCount - activeTodoCount;
     return
       div( null,
-           header( new HtmlProps().className( "header" ),
-                   h1( null, "todos" ),
-                   input( new InputProps()
-                            .className( "new-todo" )
-                            .placeHolder( "What needs to be done?" )
-                            .value( state().newTodo )
-                            .onKeyDown( this::handleNewTodoKeyDown )
-                            .onChange( this::handleChange )
-                            .autoFocus( true )
-                   )
+           div( null,
+                header( new HtmlProps().className( "header" ),
+                        h1( null, "todos" ),
+                        input( new InputProps()
+                                 .className( "new-todo" )
+                                 .placeHolder( "What needs to be done?" )
+                                 .value( state().newTodo )
+                                 .onKeyDown( this::handleNewTodoKeyDown )
+                                 .onChange( this::handleChange )
+                                 .autoFocus( true )
+                        )
+                ),
+                renderMainSection(),
+                renderFooter( activeTodoCount, completedCount )
            ),
-           renderMainSection(),
-           renderFooter( activeTodoCount, completedCount )
+           React.createElement( PersonComponent.TYPE, PersonComponent.Props.create( 1 ) )
       );
   }
 
