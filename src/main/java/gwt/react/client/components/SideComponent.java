@@ -197,7 +197,7 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
    *
    * @return true in case the component should be updated
    */
-  protected boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  public boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
   {
     return true;
   }

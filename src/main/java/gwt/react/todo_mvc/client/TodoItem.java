@@ -124,7 +124,7 @@ class TodoItem
   }
 
   @Override
-  protected boolean shouldComponentUpdate( @Nonnull final Props nextProps, @Nonnull final State nextState )
+  public  boolean shouldComponentUpdate( @Nonnull final Props nextProps, @Nonnull final State nextState )
   {
     return ( nextProps.todo != props().todo ||
              nextProps.isEditing != props().isEditing ||

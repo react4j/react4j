@@ -88,7 +88,7 @@ public abstract class StatelessSideComponent<P extends BaseProps>
   }
 
   @Override
-  protected boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final BaseState nextState )
+  public boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final BaseState nextState )
   {
     //Replace with invariant failure
     throw new IllegalStateException();

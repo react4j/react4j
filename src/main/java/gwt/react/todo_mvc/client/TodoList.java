@@ -5,7 +5,6 @@ import gwt.react.client.api.React;
 import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.SideComponent;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
@@ -19,18 +18,19 @@ import gwt.react_router.client.HistoryLocation;
 import gwt.react_router.client.RouterEnhancedProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
-import org.jetbrains.annotations.Nullable;
+import org.realityforge.arez.Arez;
 import static gwt.react.client.api.GwtReact.castAsReactElement;
 import static gwt.react.client.api.React.DOM.*;
 
 class TodoList
-  extends SideComponent<TodoList.Props, TodoList.State>
+  extends ArezComponent<TodoList.Props, TodoList.State>
 {
   static final JsConstructorFn<TodoListWrapper> TYPE = TodoListWrapper.ctor();
 
@@ -86,6 +86,13 @@ class TodoList
     setInitialState( State.create( null, "" ) );
   }
 
+  @Nonnull
+  @Override
+  protected String getTypeName()
+  {
+    return "TodoList";
+  }
+
   private void handleDoAction( final Action action, final Todo todo )
   {
     switch ( action )
@@ -127,24 +134,33 @@ class TodoList
     {
       event.preventDefault();
 
-      final String val = state().newTodo.trim();
+      // TODO: Automate the wrapping of this as an action. Also should
+      // name the associates JSFunction so it appears nicely in debugger?
+      Arez.context().safeProcedure( true, () -> {
+        final String val = state().newTodo.trim();
 
-      if ( val.length() > 0 )
-      {
-        App.model.addTodo( val );
-        setState( State.create( state().editingId, "" ) );
-      }
+        if ( val.length() > 0 )
+        {
+          App.model.addTodo( val );
+          setState( State.create( state().editingId, "" ) );
+        }
+      } );
     }
   }
 
   private void handleChange( FormEvent event )
   {
-    final HTMLInputElement input = Js.cast( event.target );
-    setState( State.create( state().editingId, input.value ) );
+    // TODO: Automate the wrapping of this as an action. Also should
+    // name the associates JSFunction so it appears nicely in debugger?
+    Arez.context().safeProcedure( true, () -> {
+      final HTMLInputElement input = Js.cast( event.target );
+      setState( State.create( state().editingId, input.value ) );
+    } );
   }
 
+  @Nullable
   @Override
-  public ReactElement<?, ?> render()
+  protected ReactElement<?, ?> doRender()
   {
     final Array<Todo> todos = App.model.todos;
     final int todoCount = todos.getLength();
@@ -203,7 +219,7 @@ class TodoList
   private Array<Todo> findShownTodos( final Array<Todo> todos, final String nowShowing )
   {
     return todos.filter( ( todo, index, theArray ) -> {
-      if ( nowShowing == null )
+      if ( null == nowShowing )
       {
         return true;
       }
