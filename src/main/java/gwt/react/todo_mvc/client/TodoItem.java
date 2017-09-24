@@ -41,12 +41,12 @@ class TodoItem
     Todo todo;
     boolean isEditing;
     JsBiConsumer<Todo, String> doSave;
-    JsBiConsumer<TodoList.Action, Todo> doAction;
+    JsBiConsumer<TodoList.ActionType, Todo> doAction;
 
     @JsOverlay
     public static Props create( @Nonnull final Todo todo,
                                 @Nonnull final JsBiConsumer<Todo, String> doSave,
-                                @Nonnull final JsBiConsumer<TodoList.Action, Todo> doAction,
+                                @Nonnull final JsBiConsumer<TodoList.ActionType, Todo> doAction,
                                 final boolean isEditing )
     {
       final TodoItem.Props props = new TodoItem.Props();
@@ -91,13 +91,13 @@ class TodoItem
     }
     else
     {
-      props().doAction.accept( TodoList.Action.DESTROY, props().todo );
+      props().doAction.accept( TodoList.ActionType.DESTROY, props().todo );
     }
   }
 
   private void onEdit()
   {
-    props().doAction.accept( TodoList.Action.EDIT, props().todo );
+    props().doAction.accept( TodoList.ActionType.EDIT, props().todo );
     setState( State.create( props().todo.getTitle() ) );
   }
 
@@ -106,7 +106,7 @@ class TodoItem
     if ( event.which == App.ESCAPE_KEY )
     {
       setState( State.create( props().todo.getTitle() ) );
-      props().doAction.accept( TodoList.Action.CANCEL, props().todo );
+      props().doAction.accept( TodoList.ActionType.CANCEL, props().todo );
     }
     else if ( event.which == App.ENTER_KEY )
     {
@@ -152,14 +152,14 @@ class TodoItem
                input( new InputProps()
                         .className( "toggle" )
                         .type( InputType.checkbox ).checked( props().todo.isCompleted() )
-                        .onChange( e -> props().doAction.accept( TodoList.Action.TOGGLE, props().todo ) )
+                        .onChange( e -> props().doAction.accept( TodoList.ActionType.TOGGLE, props().todo ) )
                ),
                label( new LabelProps()
                         .OnDoubleClick( e -> onEdit() ), props().todo.getTitle()
                ),
                button( new BtnProps()
                          .className( "destroy" )
-                         .onClick( e -> props().doAction.accept( TodoList.Action.DESTROY, props().todo ) )
+                         .onClick( e -> props().doAction.accept( TodoList.ActionType.DESTROY, props().todo ) )
                )
           ),
           input( new InputProps()

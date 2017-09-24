@@ -40,7 +40,7 @@ class TodoList
   static final String NOW_SHOWING_ACTIVE_TODOS = "active";
   static final String NOW_SHOWING_COMPLETED_TODOS = "completed";
 
-  enum Action
+  enum ActionType
   {
     EDIT, DESTROY, TOGGLE, CANCEL
   }
@@ -96,9 +96,9 @@ class TodoList
     return "TodoList";
   }
 
-  private void handleDoAction( final Action action, final Todo todo )
+  private void handleDoAction( final ActionType actionType, final Todo todo )
   {
-    switch ( action )
+    switch ( actionType )
     {
       case TOGGLE:
         App.model.toggle( todo );
