@@ -12,6 +12,7 @@ import org.realityforge.arez.Arez;
 import org.realityforge.arez.ArezContext;
 import org.realityforge.arez.Observable;
 import org.realityforge.arez.Observer;
+import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ContainerId;
 
 /**
@@ -56,7 +57,14 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   @Nullable
   protected final String toName( @Nonnull final String suffix )
   {
-    return Arez.context().areNamesEnabled() ? "Component." + getTypeName() + "." + _arezComponentId + suffix : null;
+    return Arez.context().areNamesEnabled() ? getNamePrefix() + suffix : null;
+  }
+
+  @Nullable
+  private String getNamePrefix()
+  {
+    //TODO: This should be replaced by Arez generated method
+    return Arez.context().areNamesEnabled() ? "Component." + getTypeName() + "." + _arezComponentId : null;
   }
 
   @Nonnull
@@ -66,6 +74,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   @Override
   protected S state()
   {
+    //TODO: Only report Observed if inside transaction????
     _stateObservable.reportObserved();
     return component().state();
   }
@@ -74,10 +83,12 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   @Override
   protected P props()
   {
+    //TODO: Only report Observed if inside transaction????
     _propsObservable.reportObserved();
     return component().props();
   }
 
+  @Action
   @Override
   protected void setState( @Nonnull final S state )
   {
@@ -102,6 +113,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
    * {@inheritDoc}
    */
   @Override
+  @Action
   protected void componentWillReceiveProps( @Nonnull final P nextProps )
   {
     _propsObservable.reportChanged();
