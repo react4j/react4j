@@ -4,7 +4,6 @@ import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
 import gwt.react.client.elements.ReactElement;
-import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.todo_mvc.client.model.PersonModel;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -13,10 +12,8 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;
-import static gwt.react.client.api.React.DOM.h1;
 import org.realityforge.arez.annotations.Container;
 import static gwt.react.client.api.React.DOM.h4;
-import static gwt.react.client.api.React.DOM.section;
 
 @Container
 public class PersonComponent
