@@ -14,9 +14,11 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;
 import static gwt.react.client.api.React.DOM.h1;
+import org.realityforge.arez.annotations.Container;
 import static gwt.react.client.api.React.DOM.h4;
 import static gwt.react.client.api.React.DOM.section;
 
+@Container
 public class PersonComponent
   extends ArezComponent<PersonComponent.Props, BaseState>
 {

@@ -25,13 +25,15 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
-import org.realityforge.arez.Arez;
+import org.realityforge.arez.annotations.Action;
+import org.realityforge.arez.annotations.Container;
 import static gwt.react.client.api.GwtReact.castAsReactElement;
 import static gwt.react.client.api.React.DOM.*;
 
 /**
  * TODO: Should be generate an Arez subclass of this that generates all action wrappers.
  */
+@Container
 class TodoList
   extends ArezComponent<TodoList.Props, TodoList.State>
 {
@@ -104,20 +106,27 @@ class TodoList
         App.model.toggle( todo );
         break;
       case CANCEL:
-        setState( State.create( null, state().newTodo ) );
+        setEditingId( null );
         break;
       case DESTROY:
         App.model.destroy( todo );
         break;
       case EDIT:
-        setState( State.create( todo.getId(), state().newTodo ) );
+        setEditingId( todo.getId() );
     }
   }
 
   private void handleSave( final Todo todoToSave, final String text )
   {
     App.model.save( todoToSave, text );
-    setState( State.create( null, state().newTodo ) );
+    final String editingId = null;
+    setEditingId( editingId );
+  }
+
+  @Action
+  void setEditingId( final String editingId )
+  {
+    setState( State.create( editingId, state().newTodo ) );
   }
 
   private void handleClearCompleted()
@@ -136,29 +145,31 @@ class TodoList
     if ( App.ENTER_KEY == event.keyCode )
     {
       event.preventDefault();
-
-      // TODO: Automate the wrapping of this as an action. Also should
-      // name the associates JSFunction so it appears nicely in debugger?
-      Arez.context().safeProcedure( true, () -> {
-        final String val = state().newTodo.trim();
-
-        if ( val.length() > 0 )
-        {
-          App.model.addTodo( val );
-          setState( State.create( state().editingId, "" ) );
-        }
-      } );
+      addNewTodo();
     }
   }
 
-  private void handleChange( FormEvent event )
+  @Action
+  void addNewTodo()
   {
-    // TODO: Automate the wrapping of this as an action. Also should
-    // name the associates JSFunction so it appears nicely in debugger?
-    Arez.context().safeProcedure( true, () -> {
-      final HTMLInputElement input = Js.cast( event.target );
-      setState( State.create( state().editingId, input.value ) );
-    } );
+    final String val = state().newTodo.trim();
+    if ( val.length() > 0 )
+    {
+      App.model.addTodo( val );
+      setTodoText( "" );
+    }
+  }
+
+  private void handleChange( @Nonnull final FormEvent event )
+  {
+    final HTMLInputElement input = Js.cast( event.target );
+    setTodoText( input.value );
+  }
+
+  @Action
+  void setTodoText( @Nonnull final String value )
+  {
+    setState( State.create( state().editingId, value ) );
   }
 
   @Nullable

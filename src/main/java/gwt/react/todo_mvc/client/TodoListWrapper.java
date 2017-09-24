@@ -38,7 +38,7 @@ class TodoListWrapper
   TodoListWrapper( @Nonnull final TodoList.Props props )
   {
     super( props );
-    _component = new TodoList( this );
+    _component = new Arez_TodoList( this );
   }
 
   public ReactElement<?, ?> render()

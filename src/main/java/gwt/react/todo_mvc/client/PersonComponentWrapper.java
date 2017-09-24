@@ -39,7 +39,7 @@ class PersonComponentWrapper
   PersonComponentWrapper( @Nonnull final Props props )
   {
     super( props );
-    _component = new PersonComponent( this );
+    _component = new Arez_PersonComponent( this );
   }
 
   public ReactElement<?, ?> render()
