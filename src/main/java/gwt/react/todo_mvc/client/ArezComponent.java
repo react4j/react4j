@@ -12,6 +12,7 @@ import org.realityforge.arez.Arez;
 import org.realityforge.arez.ArezContext;
 import org.realityforge.arez.Observable;
 import org.realityforge.arez.Observer;
+import org.realityforge.arez.annotations.ContainerId;
 
 /**
  * A base class for all Arez enabled components.
@@ -46,6 +47,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
                                         () -> component().setState( ( s, p ) -> s ) );
   }
 
+  @ContainerId
   protected final int getArezComponentId()
   {
     return _arezComponentId;
