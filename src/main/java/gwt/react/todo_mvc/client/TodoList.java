@@ -1,6 +1,5 @@
 package gwt.react.todo_mvc.client;
 
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLInputElement;
 import gwt.react.client.api.React;
 import gwt.react.client.components.BaseProps;
@@ -15,7 +14,7 @@ import gwt.react.client.proptypes.html.attributeTypes.InputType;
 import gwt.react.client.util.JsUtil;
 import gwt.react.todo_mvc.client.model.AppData;
 import gwt.react.todo_mvc.client.model.Todo;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -171,7 +170,7 @@ class TodoList
   @Override
   protected ReactElement<?, ?> doRender()
   {
-    final ArrayList<Todo> todos = AppData.model.findAll();
+    final Collection<Todo> todos = AppData.model.findAll();
     final int todoCount = todos.size();
 
     final int activeTodoCount = (int) todos.stream().filter( todo -> !todo.isCompleted() ).count();
@@ -199,7 +198,7 @@ class TodoList
   @Nullable
   private ReactElement<?, ?> renderMainSection()
   {
-    final ArrayList<Todo> todos = AppData.model.findAll();
+    final Collection<Todo> todos = AppData.model.findAll();
     final int todoCount = todos.size();
     if ( todoCount > 0 )
     {

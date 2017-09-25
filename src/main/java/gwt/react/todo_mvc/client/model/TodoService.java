@@ -13,7 +13,7 @@ public class TodoService
   @Nonnull
   private final TodoRepository _repository;
 
-  public TodoService( @Nonnull final TodoRepository repository )
+  TodoService( @Nonnull final TodoRepository repository )
   {
     _repository = Objects.requireNonNull( repository );
   }
