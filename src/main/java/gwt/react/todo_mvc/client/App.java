@@ -5,9 +5,6 @@ import elemental2.dom.DomGlobal;
 import gwt.react.client.api.React;
 import gwt.react.client.api.ReactDOM;
 import gwt.react.client.components.BaseProps;
-import gwt.react.client.elements.ReactElement;
-import gwt.react.client.util.Array;
-import gwt.react.client.util.JsArrayHelper;
 import gwt.react.todo_mvc.client.model.TodoModel;
 import javax.annotation.Nonnull;
 import org.realityforge.arez.Arez;
@@ -20,7 +17,6 @@ public class App
   static final int ENTER_KEY = 13;
 
   static TodoModel model = new TodoModel();
-  private static Array<ReactElement<?, ?>> routes = JsArrayHelper.createArray();
 
   private void render()
   {
