@@ -5,6 +5,7 @@ import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.SideComponent;
 import gwt.react.client.elements.ReactElement;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
@@ -29,6 +30,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   private final Observable _stateObservable;
   @Nonnull
   private final Observer _renderReaction;
+  private boolean _renderDepsChanged;
 
   protected ArezComponent( @Nonnull final Component<P, S> component )
   {
@@ -45,7 +47,23 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
      */
     _renderReaction = context.reaction( toName( ".reaction" ),
                                         false,
-                                        () -> component().setState( ( s, p ) -> s ) );
+                                        this::onRenderDepsChanged );
+  }
+
+  private void onRenderDepsChanged()
+  {
+    _renderDepsChanged = true;
+    component().setState( ( s, p ) -> s );
+  }
+
+  @Override
+  protected void setInitialState( @Nonnull final Supplier<S> state )
+  {
+    final ArezContext context = Arez.context();
+    context.safeProcedure( toName( ".setInitialState" ),
+                           false,
+                           () -> component().setInitialState( state.get() ) );
+    ;
   }
 
   @ContainerId
@@ -99,6 +117,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   @Override
   protected final ReactElement<?, ?> render()
   {
+    _renderDepsChanged = false;
     /*
      * Need an uncheckedCast here rather than regular cast as otherwise GWT attempts to cast
      * this using a method that does not work. Unclear of the exact cause.
@@ -108,6 +127,24 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
 
   @Nullable
   protected abstract ReactElement<?, ?> doRender();
+
+  /**
+   * {@inheritDoc}
+   */
+  public boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  {
+    if ( _renderDepsChanged )
+    {
+      return true;
+    }
+    else if ( nextProps.equals( component().props() ) &&
+              nextState.equals( component().state() ) )
+    {
+      return false;
+    }
+    //TODO: Check shallow equality herr
+    return true;
+  }
 
   /**
    * {@inheritDoc}

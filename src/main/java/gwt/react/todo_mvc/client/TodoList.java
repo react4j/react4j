@@ -1,5 +1,6 @@
 package gwt.react.todo_mvc.client;
 
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLInputElement;
 import gwt.react.client.api.React;
 import gwt.react.client.components.BaseProps;
@@ -11,10 +12,13 @@ import gwt.react.client.events.KeyboardEvent;
 import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
-import gwt.react.client.util.Array;
 import gwt.react.client.util.JsUtil;
+import gwt.react.todo_mvc.client.model.AppData;
 import gwt.react.todo_mvc.client.model.Todo;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
@@ -22,13 +26,10 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
+import org.realityforge.arez.annotations.Autorun;
 import org.realityforge.arez.annotations.Container;
-import static gwt.react.client.api.GwtReact.castAsReactElement;
 import static gwt.react.client.api.React.DOM.*;
 
-/**
- * TODO: Should be generate an Arez subclass of this that generates all action wrappers.
- */
 @Container
 class TodoList
   extends ArezComponent<BaseProps, TodoList.State>
@@ -47,13 +48,15 @@ class TodoList
   {
     String editingId;
     String newTodo;
+    String nowShowing;
 
     @JsOverlay
-    public static State create( final String editingId, final String newTodo )
+    public static State create( final String editingId, final String newTodo, final String nowShowing )
     {
       final State state = new State();
       state.editingId = editingId;
       state.newTodo = newTodo;
+      state.nowShowing = nowShowing;
       return state;
     }
   }
@@ -61,7 +64,24 @@ class TodoList
   TodoList( @Nonnull final Component<BaseProps, State> component )
   {
     super( component );
-    setInitialState( State.create( null, "" ) );
+    setInitialState( () -> State.create( null, "", AppData.LOCATION.getLocation() ) );
+  }
+
+  //@PostConstruct
+  //void postConstruct()
+  //{
+  //  updateNowShowing();
+  //}
+  //
+  @Autorun
+  void updateNowShowing()
+  {
+    // Deliberately avoid observing state as it should only
+    // be run when location changes
+    final State state = component().state().dup();
+    state.nowShowing = AppData.LOCATION.getLocation();
+    setState( state );
+    App.whyRun();
   }
 
   @Nonnull
@@ -71,46 +91,48 @@ class TodoList
     return "TodoList";
   }
 
-  private void handleDoAction( final ActionType actionType, final Todo todo )
+  @Action
+  void handleDoAction( final ActionType actionType, final Todo todo )
   {
     switch ( actionType )
     {
       case TOGGLE:
-        App.model.toggle( todo );
+        todo.toggle();
         break;
       case CANCEL:
         setEditingId( null );
         break;
       case DESTROY:
-        App.model.destroy( todo );
+        AppData.model.destroy( todo );
         break;
       case EDIT:
         setEditingId( todo.getId() );
     }
   }
 
-  private void handleSave( final Todo todoToSave, final String text )
+  @Action
+  void handleSave( final Todo todoToSave, final String text )
   {
-    App.model.save( todoToSave, text );
-    final String editingId = null;
-    setEditingId( editingId );
+    AppData.service.save( todoToSave, text );
+    setEditingId( null );
   }
 
   @Action
-  void setEditingId( final String editingId )
+  void setEditingId( @Nullable final String editingId )
   {
-    setState( State.create( editingId, state().newTodo ) );
+    final State state = state();
+    setState( State.create( editingId, state.newTodo, state.nowShowing ) );
   }
 
   private void handleClearCompleted()
   {
-    App.model.clearCompleted();
+    AppData.service.clearCompleted();
   }
 
   private void handleToggleAll( FormEvent event )
   {
     final HTMLInputElement input = Js.cast( event.target );
-    App.model.toggleAll( input.checked );
+    AppData.service.toggleAll( input.checked );
   }
 
   private void handleNewTodoKeyDown( @Nonnull final KeyboardEvent event )
@@ -128,7 +150,7 @@ class TodoList
     final String val = state().newTodo.trim();
     if ( val.length() > 0 )
     {
-      App.model.addTodo( val );
+      AppData.service.addTodo( val );
       setTodoText( "" );
     }
   }
@@ -142,18 +164,17 @@ class TodoList
   @Action
   void setTodoText( @Nonnull final String value )
   {
-    setState( State.create( state().editingId, value ) );
+    setState( State.create( state().editingId, value, state().nowShowing ) );
   }
 
   @Nullable
   @Override
   protected ReactElement<?, ?> doRender()
   {
-    final Array<Todo> todos = App.model.todos;
-    final int todoCount = todos.getLength();
+    final ArrayList<Todo> todos = AppData.model.findAll();
+    final int todoCount = todos.size();
 
-    final int activeTodoCount =
-      todos.reduce( ( accum, currentValue, index, theArray ) -> currentValue.isCompleted() ? accum : accum + 1, 0 );
+    final int activeTodoCount = (int) todos.stream().filter( todo -> !todo.isCompleted() ).count();
     final int completedCount = todoCount - activeTodoCount;
     return
       div( null,
@@ -178,11 +199,13 @@ class TodoList
   @Nullable
   private ReactElement<?, ?> renderMainSection()
   {
-    final Array<Todo> todos = App.model.todos;
-    final int todoCount = todos.getLength();
+    final ArrayList<Todo> todos = AppData.model.findAll();
+    final int todoCount = todos.size();
     if ( todoCount > 0 )
     {
-      final Array<Todo> shownTodos = findShownTodos( todos );
+      final String nowShowing = state().nowShowing;
+      final List<Todo> shownTodos =
+        todos.stream().filter( todo -> shouldShowTodo( nowShowing, todo ) ).collect( Collectors.toList() );
       return section( new HtmlProps().className( "header" ),
                       input( new InputProps()
                                .className( "toggle-all" )
@@ -191,7 +214,7 @@ class TodoList
                       ),
                       ul( new HtmlProps()
                             .className( "todo-list" ),
-                          castAsReactElement( renderTodoItems( shownTodos ) )
+                          renderTodoItems( shownTodos )
                       )
       );
     }
@@ -201,38 +224,33 @@ class TodoList
     }
   }
 
-  private Array<Todo> findShownTodos( final Array<Todo> todos )
+  private boolean shouldShowTodo( @Nullable final String currentCategory, @Nonnull final Todo todo )
   {
-    final String nowShowing = getNowShowing();
-    return todos.filter( ( todo, index, theArray ) -> {
-      if ( nowShowing.isEmpty() )
-      {
-        return true;
-      }
-      else if ( nowShowing.equals( NOW_SHOWING_ACTIVE_TODOS ) )
-      {
-        return !todo.isCompleted();
-      }
-      else
-      {
-        return todo.isCompleted();
-      }
-    } );
+    if ( null == currentCategory || currentCategory.isEmpty() )
+    {
+      return true;
+    }
+    else if ( currentCategory.equals( NOW_SHOWING_ACTIVE_TODOS ) )
+    {
+      return !todo.isCompleted();
+    }
+    else
+    {
+      return todo.isCompleted();
+    }
+  }
+
+  private List<ReactElement<?, ?>> renderTodoItems( final List<Todo> shownTodos )
+  {
+    return shownTodos.stream().map( this::renderTodo ).collect( Collectors.toList() );
   }
 
   @Nonnull
-  private String getNowShowing()
+  private ReactElement<?, ?> renderTodo( @Nonnull final Todo todo )
   {
-    return TestData.LOCATION.getLocation();
-  }
-
-  private Array<ReactElement<?, ?>> renderTodoItems( final Array<Todo> shownTodos )
-  {
-    return shownTodos.map( ( todo, index, theArray ) -> {
-      final boolean isEditing = Objects.equals( state().editingId, todo.getId() );
-      final TodoItem.Props props = TodoItem.Props.create( todo, this::handleSave, this::handleDoAction, isEditing );
-      return React.createElement( TodoItem_.TYPE, props );
-    } );
+    final boolean isEditing = Objects.equals( state().editingId, todo.getId() );
+    final TodoItem.Props props = TodoItem.Props.create( todo, this::handleSave, this::handleDoAction, isEditing );
+    return React.createElement( TodoItem_.TYPE, props );
   }
 
   @Nullable
@@ -243,7 +261,7 @@ class TodoList
       final Footer.Props props =
         Footer.Props.create( activeTodoCount,
                              completedCount,
-                             getNowShowing(),
+                             state().nowShowing,
                              e -> handleClearCompleted() );
       JsUtil.definePropertyValue( props.onClearCompleted, "name", "handleClearCompleted" );
       return React.createElement( Footer_.TYPE, props );

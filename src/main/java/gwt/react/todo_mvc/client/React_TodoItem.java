@@ -23,7 +23,7 @@ final class React_TodoItem
   private React_TodoItem( @Nonnull final Props props )
   {
     super( props );
-    _component = new TodoItem( this );
+    _component = new Arez_TodoItem( this );
   }
 
   public boolean shouldComponentUpdate( @Nonnull final Props nextProps, @Nonnull final State nextState )

@@ -4,7 +4,7 @@ import elemental2.dom.HTMLInputElement;
 import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
-import gwt.react.client.components.SideComponent;
+import gwt.react.client.elements.DOMElement;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.events.FormEvent;
 import gwt.react.client.events.KeyboardEvent;
@@ -15,18 +15,20 @@ import gwt.react.client.proptypes.html.LabelProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
 import gwt.react.todo_mvc.client.model.Todo;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import jsinterop.base.JsConstructorFn;
+import org.realityforge.arez.annotations.Action;
+import org.realityforge.arez.annotations.Container;
 import static gwt.react.client.api.React.DOM.*;
 
+@Container
 class TodoItem
-  extends SideComponent<TodoItem.Props, TodoItem.State>
+  extends ArezComponent<TodoItem.Props, TodoItem.State>
 {
-
   @JsFunction
   public interface JsBiConsumer<A1, A2>
   {
@@ -76,41 +78,76 @@ class TodoItem
   TodoItem( @Nonnull final Component<Props, State> component )
   {
     super( component );
-    component.setInitialState( State.create( props().todo.getTitle() ) );
+    setInitialState( () -> State.create( props().todo.getTitle() ) );
   }
 
-  private void onSubmitTodo()
+  @Nonnull
+  @Override
+  protected String getTypeName()
   {
-    final String val = component().state().editText;
-    if ( null != val && !val.isEmpty() )
-    {
-      props().doSave.accept( props().todo, val );
-
-      setState( State.create( val ) );
-    }
-    else
-    {
-      props().doAction.accept( TodoList.ActionType.DESTROY, props().todo );
-    }
-  }
-
-  private void onEdit()
-  {
-    props().doAction.accept( TodoList.ActionType.EDIT, props().todo );
-    setState( State.create( props().todo.getTitle() ) );
+    //TODO: Remove this method
+    return "TodoItem";
   }
 
   private void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
     if ( event.which == App.ESCAPE_KEY )
     {
-      setState( State.create( props().todo.getTitle() ) );
-      props().doAction.accept( TodoList.ActionType.CANCEL, props().todo );
+      onCancel();
     }
     else if ( event.which == App.ENTER_KEY )
     {
       onSubmitTodo();
     }
+  }
+
+  @Action
+  void onSubmitTodo()
+  {
+    final String val = state().editText;
+    final Props props = props();
+    if ( null != val && !val.isEmpty() )
+    {
+      onSave( val, props );
+    }
+    else
+    {
+      onDestroy();
+    }
+  }
+
+  private void onSave( final String val, final Props props )
+  {
+    props.doSave.accept( props.todo, val );
+    setState( State.create( val ) );
+  }
+
+  @Action
+  void onToggle()
+  {
+    final Props props = props();
+    props.doAction.accept( TodoList.ActionType.TOGGLE, props.todo );
+  }
+
+  @Action
+  void onEdit()
+  {
+    props().doAction.accept( TodoList.ActionType.EDIT, props().todo );
+    setState( State.create( props().todo.getTitle() ) );
+  }
+
+  @Action
+  void onDestroy()
+  {
+    final Props props = props();
+    props.doAction.accept( TodoList.ActionType.DESTROY, props.todo );
+  }
+
+  @Action
+  void onCancel()
+  {
+    setState( State.create( props().todo.getTitle() ) );
+    props().doAction.accept( TodoList.ActionType.CANCEL, props().todo );
   }
 
   private void handleChange( @Nonnull final FormEvent event )
@@ -123,17 +160,9 @@ class TodoItem
   }
 
   @Override
-  public  boolean shouldComponentUpdate( @Nonnull final Props nextProps, @Nonnull final State nextState )
-  {
-    return ( nextProps.todo != props().todo ||
-             nextProps.isEditing != props().isEditing ||
-             !nextState.editText.equals( state().editText ) );
-  }
-
-  @Override
   protected void componentDidUpdate( @Nonnull final Props prevProps, @Nonnull final Props prevState )
   {
-    if ( !prevProps.isEditing && props().isEditing )
+    if ( !prevProps.isEditing && component().props().isEditing )
     {
       final HTMLInputElement input = getRefNamed( "editField" );
       assert null != input;
@@ -142,23 +171,25 @@ class TodoItem
     }
   }
 
+  @Nullable
   @Override
-  protected ReactElement<?, ?> render()
+  protected ReactElement<?, ?> doRender()
   {
-    return
-      li( new HtmlProps().className( classesFor( props().todo.isCompleted(), props().isEditing ) ),
+    final Props props = props();
+    final boolean completed = props.todo.isCompleted();
+    final DOMElement<HtmlProps> element =
+      li( new HtmlProps().className( classesFor( completed, props.isEditing ) ),
           div( new HtmlProps().className( "view" ),
                input( new InputProps()
                         .className( "toggle" )
-                        .type( InputType.checkbox ).checked( props().todo.isCompleted() )
-                        .onChange( e -> props().doAction.accept( TodoList.ActionType.TOGGLE, props().todo ) )
+                        .type( InputType.checkbox ).checked( completed )
+                        .onChange( e -> onToggle() )
                ),
-               label( new LabelProps()
-                        .OnDoubleClick( e -> onEdit() ), props().todo.getTitle()
-               ),
+               label( new LabelProps().OnDoubleClick( e -> onEdit() ),
+                      props.todo.getTitle() ),
                button( new BtnProps()
                          .className( "destroy" )
-                         .onClick( e -> props().doAction.accept( TodoList.ActionType.DESTROY, props().todo ) )
+                         .onClick( e -> onDestroy() )
                )
           ),
           input( new InputProps()
@@ -170,6 +201,8 @@ class TodoItem
                    .onKeyDown( this::handleKeyDown )
           )
       );
+    App.whyRun();
+    return element;
   }
 
   private static String classesFor( final boolean completed, final boolean editing )

@@ -58,7 +58,7 @@ class Footer
       footer( new HtmlProps().className( "footer" ),
               span( new HtmlProps().className( "todo-count" ),
                     strong( null, Integer.toString( props().count ) ),
-                    activeTodoWord + "  left"
+                    " " + activeTodoWord + " left"
               ),
               ul( new HtmlProps().className( "filters" ),
                   li( null,

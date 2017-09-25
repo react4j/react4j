@@ -2,8 +2,10 @@ package gwt.react.client.components;
 
 import gwt.react.client.elements.ReactElement;
 import java.util.Objects;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +30,11 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
   protected SideComponent( @Nonnull final Component<P, S> component )
   {
     _component = Objects.requireNonNull( component );
+  }
+
+  protected void setInitialState( @Nonnull final Supplier<S> state )
+  {
+    component().setInitialState( state.get() );
   }
 
   @Nonnull

@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
+import elemental2.core.Array;
 import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
@@ -44,10 +45,13 @@ import gwt.react.client.proptypes.html.SourceProps;
 import gwt.react.client.proptypes.html.TdProps;
 import gwt.react.client.proptypes.html.TextAreaProps;
 import gwt.react.client.proptypes.html.ThProps;
-import gwt.react.client.util.Array;
+import gwt.react.client.util.JsUtil;
+import java.util.List;
 import javax.annotation.Nonnull;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL )
@@ -74,7 +78,6 @@ public class React
   public static native <P extends HtmlProps> DOMElement<P> createElement( String type,
                                                                           P props,
                                                                           ReactElement<?, ?>... child );
-
 
   //Create ES6 Components
 
@@ -231,6 +234,12 @@ public class React
     public static native DOMElement<HtmlProps> tr( HtmlProps props, ReactElement<?, ?>... child );
 
     public static native DOMElement<HtmlProps> ul( HtmlProps props, ReactElement<?, ?>... child );
+
+    @JsOverlay
+    public static DOMElement<HtmlProps> ul( HtmlProps props, List<ReactElement<?, ?>> children )
+    {
+      return ul( props, Js.<ReactElement<?, ?>[]>uncheckedCast( JsUtil.asJsArray( children ) ) );
+    }
   }
 
   /**

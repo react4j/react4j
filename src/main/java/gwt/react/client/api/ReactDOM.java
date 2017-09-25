@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
 import gwt.react.client.elements.ReactElement;
-import gwt.react.client.util.JsProcedure;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 

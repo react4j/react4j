@@ -2,7 +2,12 @@ package gwt.react.todo_mvc.client.model;
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import org.realityforge.arez.annotations.Action;
+import org.realityforge.arez.annotations.Container;
+import org.realityforge.arez.annotations.ContainerId;
+import org.realityforge.arez.annotations.Observable;
 
+@Container
 public class Todo
 {
   @Nonnull
@@ -18,17 +23,14 @@ public class Todo
     _completed = completed;
   }
 
+  @ContainerId
   @Nonnull
-  public String getId()
+  public final String getId()
   {
     return _id;
   }
 
-  public void setId( @Nonnull String id )
-  {
-    _id = Objects.requireNonNull( id );
-  }
-
+  @Observable
   @Nonnull
   public String getTitle()
   {
@@ -40,6 +42,7 @@ public class Todo
     _title = Objects.requireNonNull( title );
   }
 
+  @Observable
   public boolean isCompleted()
   {
     return _completed;
@@ -48,5 +51,11 @@ public class Todo
   public void setCompleted( final boolean completed )
   {
     _completed = completed;
+  }
+
+  @Action
+  public void toggle()
+  {
+    setCompleted( !isCompleted() );
   }
 }
