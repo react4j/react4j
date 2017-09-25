@@ -1,4 +1,4 @@
-package gwt.react.todo_mvc.client;
+package org.realityforge.react.todo_mvc.client;
 
 import elemental2.dom.HTMLInputElement;
 import gwt.arez.ArezComponent;
@@ -14,7 +14,7 @@ import gwt.react.client.proptypes.html.HtmlProps;
 import gwt.react.client.proptypes.html.InputProps;
 import gwt.react.client.proptypes.html.LabelProps;
 import gwt.react.client.proptypes.html.attributeTypes.InputType;
-import gwt.react.todo_mvc.client.model.Todo;
+import org.realityforge.react.todo_mvc.client.model.Todo;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;

@@ -8,7 +8,7 @@
 
   <set-property name="jre.checks.checkLevel" value="MINIMAL"/>
 
-  <entry-point class='gwt.react.todo_mvc.client.App'/>
+  <entry-point class='org.realityforge.react.todo_mvc.client.App'/>
 
   <source path='client'/>
 </module>

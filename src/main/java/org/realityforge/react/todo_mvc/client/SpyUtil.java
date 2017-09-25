@@ -1,4 +1,4 @@
-package gwt.react.todo_mvc.client;
+package org.realityforge.react.todo_mvc.client;
 
 import elemental2.dom.DomGlobal;
 import java.util.Arrays;

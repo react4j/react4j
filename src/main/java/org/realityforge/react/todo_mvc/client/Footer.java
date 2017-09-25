@@ -1,4 +1,4 @@
-package gwt.react.todo_mvc.client;
+package org.realityforge.react.todo_mvc.client;
 
 import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.BaseState;

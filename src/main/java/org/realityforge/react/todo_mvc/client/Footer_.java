@@ -1,4 +1,4 @@
-package gwt.react.todo_mvc.client;
+package org.realityforge.react.todo_mvc.client;
 
 import gwt.react.client.GwtReactConfig;
 import javax.annotation.Generated;
@@ -20,7 +20,7 @@ public final class Footer_
   {
     final JsConstructorFn<React_Footer> constructorFn = JsConstructorFn.of( React_Footer.class );
     Guards.invariant( () -> null != constructorFn,
-                      () -> "Unable to locate constructor function for Footer defined by class gwt.react.todo_mvc.client.Footer" );
+                      () -> "Unable to locate constructor function for Footer defined by class org.realityforge.react.todo_mvc.client.Footer" );
     assert null != constructorFn;
     if ( GwtReactConfig.enableComponentNames() )
     {

@@ -1,4 +1,4 @@
-package gwt.react.todo_mvc.client;
+package org.realityforge.react.todo_mvc.client;
 
 import gwt.react.client.GwtReactConfig;
 import jsinterop.base.JsConstructorFn;
@@ -16,7 +16,7 @@ public final class TodoList_
   {
     final JsConstructorFn<React_TodoList> constructorFn = JsConstructorFn.of( React_TodoList.class );
     Guards.invariant( () -> null != constructorFn,
-                      () -> "Unable to locate constructor function for TodoList defined by class gwt.react.todo_mvc.client.TodoList" );
+                      () -> "Unable to locate constructor function for TodoList defined by class org.realityforge.react.todo_mvc.client.TodoList" );
     assert null != constructorFn;
     if ( GwtReactConfig.enableComponentNames() )
     {

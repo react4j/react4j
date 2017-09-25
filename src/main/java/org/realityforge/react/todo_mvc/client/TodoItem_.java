@@ -1,4 +1,4 @@
-package gwt.react.todo_mvc.client;
+package org.realityforge.react.todo_mvc.client;
 
 import gwt.react.client.GwtReactConfig;
 import javax.annotation.Generated;
@@ -22,7 +22,7 @@ public final class TodoItem_
   {
     final JsConstructorFn<React_TodoItem> constructorFn = JsConstructorFn.of( React_TodoItem.class );
     Guards.invariant( () -> null != constructorFn,
-                      () -> "Unable to locate constructor function for TodoItem defined by class gwt.react.todo_mvc.client.TodoItem" );
+                      () -> "Unable to locate constructor function for TodoItem defined by class org.realityforge.react.todo_mvc.client.TodoItem" );
     assert null != constructorFn;
     if ( GwtReactConfig.enableComponentNames() )
     {
