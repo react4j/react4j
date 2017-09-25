@@ -1,5 +1,3 @@
-require 'buildr/gwt'
-
 #
 # Enhance the Buildr project to compile gwt sources.
 # For each of the supplied gwt modules, this task will create
@@ -34,7 +32,7 @@ CONTENT
     project.compile.dependencies + [project.compile.target] + extra_deps + [dir] + [Buildr.artifact(:gwt_user)]
   unless ENV['GWT'] == 'no'
     project.gwt(gwt_modules.collect {|gwt_module| "#{gwt_module}Test"},
-                { :java_args => %w(-generateJsInteropExports -Xms512M -Xmx1024M), :dependencies => dependencies })
+                { :java_args => %w(-Xms512M -Xmx1024M), :js_exports => true, :dependencies => dependencies })
   end
 
   project.package(:jar, :classifier => :gwt).tap do |j|

@@ -1,7 +1,6 @@
 require 'buildr/git_auto_version'
 require 'buildr/gpg'
 require 'buildr/single_intermediate_layout'
-require 'buildr/gwt'
 
 PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations]
 TEST_DEPS = []
@@ -16,7 +15,7 @@ REACT_TEST_OPTIONS =
     'react.environment' => 'development'
   }
 
-desc 'GwtReactPlayground: Experimentation app'
+desc 'GWT-React: GWT Bindings for React framework'
 define 'react' do
   project.group = 'org.realityforge.react'
   compile.options.source = '1.8'
@@ -64,7 +63,7 @@ define 'react' do
   define 'dom' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
-    compile.with project('core').package(:jar),
+    compile.with project('core').package(:jar, :classifier => :gwt),
                  project('core').compile.dependencies,
                  :elemental2_dom,
                  :elemental2_promise
@@ -85,7 +84,7 @@ define 'react' do
   define 'arez' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
-    compile.with project('core').package(:jar),
+    compile.with project('core').package(:jar, :classifier => :gwt),
                  project('core').compile.dependencies,
                  :braincheck,
                  :javapoet,
@@ -96,7 +95,7 @@ define 'react' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react.dom.ReactDOM))
+    gwt_enhance(project, %w(react.arez.ReactArez))
 
     package(:jar)
     package(:sources)
@@ -109,11 +108,11 @@ define 'react' do
   define 'todomvc' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
-    compile.with project('core').package(:jar),
+    compile.with project('core').package(:jar, :classifier => :gwt),
                  project('core').compile.dependencies,
-                 project('dom').package(:jar),
+                 project('dom').package(:jar, :classifier => :gwt),
                  project('dom').compile.dependencies,
-                 project('arez').package(:jar),
+                 project('arez').package(:jar, :classifier => :gwt),
                  project('arez').compile.dependencies,
                  :arez_annotations,
                  :arez_processor,
