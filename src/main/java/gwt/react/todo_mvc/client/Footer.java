@@ -5,7 +5,6 @@ import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.StatelessSideComponent;
 import gwt.react.client.elements.ReactElement;
-import gwt.react.client.events.MouseEvent;
 import gwt.react.client.events.MouseEventHandler;
 import gwt.react.client.proptypes.html.AnchorProps;
 import gwt.react.client.proptypes.html.BtnProps;
@@ -21,7 +20,6 @@ import static gwt.react.client.api.React.DOM.*;
 class Footer
   extends StatelessSideComponent<Footer.Props>
 {
-
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   static class Props
     extends BaseProps
@@ -81,12 +79,6 @@ class Footer
               ),
               buildClearButton( props() )
       );
-  }
-
-  private void changeLocation( final MouseEvent e, final String targetLocation )
-  {
-    e.preventDefault();
-    TestData.LOCATION.changeLocation( targetLocation );
   }
 
   @Nullable
