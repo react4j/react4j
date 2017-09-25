@@ -28,7 +28,7 @@ import react.dom.events.KeyboardEvent;
 import react.dom.proptypes.html.HtmlProps;
 import react.dom.proptypes.html.InputProps;
 import react.dom.proptypes.html.attributeTypes.InputType;
-import static react.core.React.DOM.*;
+import static react.dom.DOM.*;
 
 @Container
 class TodoList

@@ -15,7 +15,7 @@ import react.dom.events.MouseEventHandler;
 import react.dom.proptypes.html.AnchorProps;
 import react.dom.proptypes.html.BtnProps;
 import react.dom.proptypes.html.HtmlProps;
-import static react.core.React.DOM.*;
+import static react.dom.DOM.*;
 
 class Footer
   extends StatelessSideComponent<Footer.Props>

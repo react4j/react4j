@@ -3,64 +3,142 @@ require 'buildr/gpg'
 require 'buildr/single_intermediate_layout'
 require 'buildr/gwt'
 
-GWT_DEPS =
-  [
-    :gwt_user,
-    :elemental2_core,
-    :elemental2_dom,
-    :elemental2_promise,
-    :jsinterop_base,
-    :jsinterop_base_sources,
-    :jsinterop_annotations,
-    :jsinterop_annotations_sources
-  ]
-AREZ_DEPS =
-  [
-    :braincheck,
-    :javapoet,
-    :guava,
-    :arez_annotations,
-    :arez_core,
-    :arez_processor,
-    :arez_extras,
-    :arez_browser_extras
-  ]
 PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations]
-COMPILE_DEPS = [] + GWT_DEPS + AREZ_DEPS
-OPTIONAL_DEPS = []
-TEST_DEPS = [:gwt_dev] + Buildr::GWT.dependencies + Buildr.transitive('net.sourceforge.htmlunit:htmlunit:jar:2.19')
+TEST_DEPS = []
+
+# JDK options passed to test environment. Essentially turns assertions on.
+REACT_TEST_OPTIONS =
+  {
+    'braincheck.dynamic_provider' => 'true',
+    'braincheck.environment' => 'development',
+    'react.dynamic_provider' => 'true',
+    'react.logger' => 'proxy',
+    'react.environment' => 'development'
+  }
 
 desc 'GwtReactPlayground: Experimentation app'
-define 'playground' do
-  project.group = 'org.realityforge.gwt.react.playground'
+define 'react' do
+  project.group = 'org.realityforge.react'
   compile.options.source = '1.8'
   compile.options.target = '1.8'
   compile.options.lint = 'all'
 
   project.version = ENV['PRODUCT_VERSION'] if ENV['PRODUCT_VERSION']
 
-  compile.with PROVIDED_DEPS, COMPILE_DEPS
+  define 'annotations' do
+    pom.provided_dependencies.concat PROVIDED_DEPS
 
-  test.options[:java_args] = ['-ea']
+    compile.with PROVIDED_DEPS
 
-  package(:jar)
-  package(:sources)
-  package(:javadoc)
+    gwt_enhance(project, ['react.annotations.Annotations'])
 
-  test.compile.with TEST_DEPS
+    package(:jar)
+    package(:sources)
+    package(:javadoc)
+  end
 
-  iml.add_gwt_facet({ 'org.realityforge.react.todo_mvc.todomvc' => true },
-                    :settings =>
-                      {
-                        :compilerParameters => '-generateJsInteropExports -draftCompile -localWorkers 2 -strict',
-                        :compilerMaxHeapSize => '4096'
-                      },
-                    :gwt_dev_artifact => :gwt_dev)
+  define 'core' do
+    pom.provided_dependencies.concat PROVIDED_DEPS
 
-  # The generators are configured to generate to here.
-  iml.main_source_directories << _('generated/processors/main/java')
+    compile.with PROVIDED_DEPS,
+                 :elemental2_core,
+                 :jsinterop_base,
+                 :jsinterop_base_sources,
+                 :jsinterop_annotations,
+                 :jsinterop_annotations_sources,
+                 :braincheck
+
+    test.options[:properties] = REACT_TEST_OPTIONS
+    test.options[:java_args] = ['-ea']
+
+    gwt_enhance(project, %w(react.core.React react.core.ReactDev))
+
+    package(:jar)
+    package(:sources)
+    package(:javadoc)
+
+    test.using :testng
+    test.compile.with TEST_DEPS
+  end
+
+  define 'dom' do
+    pom.provided_dependencies.concat PROVIDED_DEPS
+
+    compile.with project('core').package(:jar),
+                 project('core').compile.dependencies,
+                 :elemental2_dom,
+                 :elemental2_promise
+
+    test.options[:properties] = REACT_TEST_OPTIONS
+    test.options[:java_args] = ['-ea']
+
+    gwt_enhance(project, %w(react.dom.ReactDOM))
+
+    package(:jar)
+    package(:sources)
+    package(:javadoc)
+
+    test.using :testng
+    test.compile.with TEST_DEPS
+  end
+
+  define 'arez' do
+    pom.provided_dependencies.concat PROVIDED_DEPS
+
+    compile.with project('core').package(:jar),
+                 project('core').compile.dependencies,
+                 :braincheck,
+                 :javapoet,
+                 :guava,
+                 :arez_core,
+                 :arez_annotations
+
+    test.options[:properties] = REACT_TEST_OPTIONS
+    test.options[:java_args] = ['-ea']
+
+    gwt_enhance(project, %w(react.dom.ReactDOM))
+
+    package(:jar)
+    package(:sources)
+    package(:javadoc)
+
+    test.using :testng
+    test.compile.with TEST_DEPS
+  end
+
+  define 'todomvc' do
+    pom.provided_dependencies.concat PROVIDED_DEPS
+
+    compile.with project('core').package(:jar),
+                 project('core').compile.dependencies,
+                 project('dom').package(:jar),
+                 project('dom').compile.dependencies,
+                 project('arez').package(:jar),
+                 project('arez').compile.dependencies,
+                 :arez_annotations,
+                 :arez_processor,
+                 :arez_extras,
+                 :arez_browser_extras,
+                 :gwt_user
+
+    test.options[:properties] = REACT_TEST_OPTIONS
+    test.options[:java_args] = ['-ea']
+
+    gwt_enhance(project, %w(react.dom.ReactDOM))
+
+    package(:jar)
+    package(:sources)
+    package(:javadoc)
+
+    test.using :testng
+    test.compile.with TEST_DEPS
+
+    # The generators are configured to generate to here.
+    iml.main_source_directories << _('generated/processors/main/java')
+  end
 
   iml.excluded_directories << project._('tmp/gwt')
+  iml.excluded_directories << project._('tmp')
 
   ipr.add_default_testng_configuration(:jvm_args => '-ea')
   ipr.add_component_from_artifact(:idea_codestyle)
