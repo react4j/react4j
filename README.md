@@ -6,6 +6,8 @@ A simple project to experiment with gwt-react
 
 * Develop React-Arez extension
 
+* Separate into separate modules (annotations, processor, core, dom, arez, ...)
+
 * Consider using annotations and generator to generate components
 * Add mechanism for exporting methods with useful displayNames in props
 * Overload React methods so can accept arrays
