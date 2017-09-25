@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='todomvc'>
+  <inherits name="gwt.arez.GwtArez"/>
   <inherits name="gwt.react.ReactDev"/>
   <inherits name="org.realityforge.arez.ArezDev"/>
   <inherits name="org.realityforge.braincheck.BrainCheckDev"/>

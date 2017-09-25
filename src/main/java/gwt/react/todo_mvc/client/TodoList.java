@@ -2,6 +2,7 @@ package gwt.react.todo_mvc.client;
 
 import elemental2.dom.HTMLInputElement;
 import gwt.react.client.api.React;
+import gwt.arez.ArezComponent;
 import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;

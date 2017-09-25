@@ -1,4 +1,4 @@
-package gwt.react.todo_mvc.client;
+package gwt.arez;
 
 import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.BaseState;
@@ -15,6 +15,8 @@ import org.realityforge.arez.Observable;
 import org.realityforge.arez.Observer;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ContainerId;
+import org.realityforge.arez.annotations.ContainerName;
+import org.realityforge.arez.annotations.ContainerNamePrefix;
 
 /**
  * A base class for all Arez enabled components.
@@ -78,15 +80,21 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
     return Arez.context().areNamesEnabled() ? getNamePrefix() + suffix : null;
   }
 
+  @ContainerName
   @Nullable
-  private String getNamePrefix()
+  protected String getNamePrefix()
   {
-    //TODO: This should be replaced by Arez generated method
-    return Arez.context().areNamesEnabled() ? "Component." + getTypeName() + "." + _arezComponentId : null;
+    // Arez will override this method so we can ignore the value here.
+    return Arez.context().areNamesEnabled() ? getTypeName() + "." + _arezComponentId : null;
   }
 
+  @ContainerNamePrefix
   @Nonnull
-  protected abstract String getTypeName();
+  protected String getTypeName()
+  {
+    // Arez will override this method so we can ignore the value here.
+    return "<default>";
+  }
 
   @Nonnull
   @Override
@@ -115,7 +123,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   }
 
   @Override
-  protected final ReactElement<?, ?> render()
+  public final ReactElement<?, ?> render()
   {
     _renderDepsChanged = false;
     /*
@@ -142,7 +150,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
     {
       return false;
     }
-    //TODO: Check shallow equality herr
+    //TODO: Check shallow equality here
     return true;
   }
 
