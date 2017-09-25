@@ -171,8 +171,7 @@ class TodoList
                 ),
                 renderMainSection(),
                 renderFooter( activeTodoCount, completedCount )
-           ),
-           React.createElement( PersonComponent_.TYPE, PersonComponent.Props.create( 1 ) )
+           )
       );
   }
 
