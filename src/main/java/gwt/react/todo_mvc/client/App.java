@@ -4,16 +4,14 @@ import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
 import gwt.react.client.api.React;
 import gwt.react.client.api.ReactDOM;
+import gwt.react.client.components.BaseProps;
 import gwt.react.client.elements.ReactElement;
 import gwt.react.client.util.Array;
 import gwt.react.client.util.JsArrayHelper;
 import gwt.react.todo_mvc.client.model.TodoModel;
-import gwt.react_router.client.ReactRouter;
-import gwt.react_router.client.RouteProps;
-import gwt.react_router.client.RouterProps;
-import static gwt.react.client.api.GwtReact.castAsReactElement;
-import static gwt.react_router.client.ReactRouter.Route;
-import static gwt.react_router.client.ReactRouter.Router;
+import javax.annotation.Nonnull;
+import org.realityforge.arez.Arez;
+import org.realityforge.arez.browser.extras.BrowserLocation;
 
 public class App
   implements EntryPoint
@@ -26,29 +24,39 @@ public class App
 
   private void render()
   {
-    ReactDOM.render( React.createElement( Router,
-                                          new RouterProps().History( ReactRouter.hashHistory ),
-                                          castAsReactElement( routes ) ),
+    ReactDOM.render( React.createElement( TodoList_.TYPE, new BaseProps() ),
                      DomGlobal.document.getElementById( "todoapp" ) );
   }
 
   @Override
   public void onModuleLoad()
   {
-    //ReactRouter now requires that you only create the Routes once so define them statically
-    routes.push( React.createElement( Route,
-                                      new RouteProps()
-                                        .path( "/" )
-                                        .component( TodoList_.TYPE )
-                                        .key( "1" ) ) );
-
-    routes.push( React.createElement( Route,
-                                      new RouteProps()
-                                        .path( "/:nowShowing" )
-                                        .component( TodoList_.TYPE )
-                                        .key( "2" ) ) );
-
+    Arez.context().autorun( true, () -> cleanLocation( TestData.LOCATION ) );
     model.subscribe( this::render );
     render();
+  }
+
+  private void cleanLocation( @Nonnull final BrowserLocation l )
+  {
+    final String browserLocation = l.getBrowserLocation();
+    if ( isValid( browserLocation ) )
+    {
+      l.changeLocation( browserLocation );
+    }
+    else if ( isValid( l.getLocation() ) )
+    {
+      l.resetBrowserLocation();
+    }
+    else
+    {
+      l.changeLocation( "" );
+    }
+  }
+
+  private boolean isValid( @Nonnull final String location )
+  {
+    return "active".equals( location ) ||
+           "completed".equals( location ) ||
+           "".equals( location );
   }
 }

@@ -1,5 +1,6 @@
 package gwt.react.todo_mvc.client;
 
+import gwt.react.client.components.BaseProps;
 import gwt.react.client.components.Component;
 import gwt.react.client.elements.ReactElement;
 import javax.annotation.Nonnull;
@@ -11,12 +12,12 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 final class React_TodoList
-  extends Component<TodoList.Props, TodoList.State>
+  extends Component<BaseProps, TodoList.State>
 {
   private final TodoList _component;
 
   @JsConstructor
-  private React_TodoList( @Nonnull final TodoList.Props props )
+  private React_TodoList( @Nonnull final BaseProps props )
   {
     super( props );
     _component = new Arez_TodoList( this );

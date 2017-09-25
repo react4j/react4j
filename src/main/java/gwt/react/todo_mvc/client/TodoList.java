@@ -14,14 +14,11 @@ import gwt.react.client.proptypes.html.attributeTypes.InputType;
 import gwt.react.client.util.Array;
 import gwt.react.client.util.JsUtil;
 import gwt.react.todo_mvc.client.model.Todo;
-import gwt.react_router.client.HistoryLocation;
-import gwt.react_router.client.RouterEnhancedProps;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
@@ -34,36 +31,14 @@ import static gwt.react.client.api.React.DOM.*;
  */
 @Container
 class TodoList
-  extends ArezComponent<TodoList.Props, TodoList.State>
+  extends ArezComponent<BaseProps, TodoList.State>
 {
-
   static final String NOW_SHOWING_ACTIVE_TODOS = "active";
   static final String NOW_SHOWING_COMPLETED_TODOS = "completed";
 
   enum ActionType
   {
     EDIT, DESTROY, TOGGLE, CANCEL
-  }
-
-  @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class TodoRouterParams
-  {
-    String nowShowing;
-  }
-
-  @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class Props
-    extends BaseProps
-    implements RouterEnhancedProps<TodoRouterParams>
-  {
-
-    //Having to define the JsProperty annotations again when implementing an interface
-    //has been logged as an issue that should be fixed in the future
-    @JsProperty( name = "location" )
-    public native HistoryLocation getRouterLocation();
-
-    @JsProperty( name = "params" )
-    public native TodoRouterParams getRouterParams();
   }
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
@@ -83,7 +58,7 @@ class TodoList
     }
   }
 
-  TodoList( @Nonnull final Component<Props, State> component )
+  TodoList( @Nonnull final Component<BaseProps, State> component )
   {
     super( component );
     setInitialState( State.create( null, "" ) );
@@ -208,8 +183,7 @@ class TodoList
     final int todoCount = todos.getLength();
     if ( todoCount > 0 )
     {
-      final String nowShowing = props().getRouterParams().nowShowing;
-      final Array<Todo> shownTodos = findShownTodos( todos, nowShowing );
+      final Array<Todo> shownTodos = findShownTodos( todos );
       return section( new HtmlProps().className( "header" ),
                       input( new InputProps()
                                .className( "toggle-all" )
@@ -228,10 +202,11 @@ class TodoList
     }
   }
 
-  private Array<Todo> findShownTodos( final Array<Todo> todos, final String nowShowing )
+  private Array<Todo> findShownTodos( final Array<Todo> todos )
   {
+    final String nowShowing = getNowShowing();
     return todos.filter( ( todo, index, theArray ) -> {
-      if ( null == nowShowing )
+      if ( nowShowing.isEmpty() )
       {
         return true;
       }
@@ -244,6 +219,12 @@ class TodoList
         return todo.isCompleted();
       }
     } );
+  }
+
+  @Nonnull
+  private String getNowShowing()
+  {
+    return TestData.LOCATION.getLocation();
   }
 
   private Array<ReactElement<?, ?>> renderTodoItems( final Array<Todo> shownTodos )
@@ -263,7 +244,7 @@ class TodoList
       final Footer.Props props =
         Footer.Props.create( activeTodoCount,
                              completedCount,
-                             props().getRouterParams().nowShowing,
+                             getNowShowing(),
                              e -> handleClearCompleted() );
       JsUtil.definePropertyValue( props.onClearCompleted, "name", "handleClearCompleted" );
       return React.createElement( Footer_.TYPE, props );

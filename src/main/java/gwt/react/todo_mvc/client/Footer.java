@@ -5,6 +5,7 @@ import gwt.react.client.components.BaseState;
 import gwt.react.client.components.Component;
 import gwt.react.client.components.StatelessSideComponent;
 import gwt.react.client.elements.ReactElement;
+import gwt.react.client.events.MouseEvent;
 import gwt.react.client.events.MouseEventHandler;
 import gwt.react.client.proptypes.html.AnchorProps;
 import gwt.react.client.proptypes.html.BtnProps;
@@ -14,7 +15,6 @@ import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsConstructorFn;
 import org.jetbrains.annotations.Nullable;
 import static gwt.react.client.api.React.DOM.*;
 
@@ -66,21 +66,27 @@ class Footer
                   li( null,
                       a( new AnchorProps()
                            .className( selected( props().nowShowing == null ) )
-                           .href( "#/" ), "All" )
+                           .href( "#" ), "All" )
                   ),
                   li( null,
                       a( new AnchorProps()
                            .className( selected( TodoList.NOW_SHOWING_ACTIVE_TODOS.equals( props().nowShowing ) ) )
-                           .href( "#/active" ), "Active" )
+                           .href( "#active" ), "Active" )
                   ),
                   li( null,
                       a( new AnchorProps()
                            .className( selected( TodoList.NOW_SHOWING_COMPLETED_TODOS.equals( props().nowShowing ) ) )
-                           .href( "#/completed" ), "Completed" )
+                           .href( "#completed" ), "Completed" )
                   )
               ),
               buildClearButton( props() )
       );
+  }
+
+  private void changeLocation( final MouseEvent e, final String targetLocation )
+  {
+    e.preventDefault();
+    TestData.LOCATION.changeLocation( targetLocation );
   }
 
   @Nullable
