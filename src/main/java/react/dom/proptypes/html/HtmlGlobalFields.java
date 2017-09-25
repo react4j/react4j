@@ -1,5 +1,11 @@
 package react.dom.proptypes.html;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
+import jsinterop.base.JsPropertyMapOfAny;
 import react.core.BaseProps;
 import react.dom.events.ClipboardEventHandler;
 import react.dom.events.CompositionEventHandler;
@@ -12,12 +18,6 @@ import react.dom.events.ReactEventHandler;
 import react.dom.events.TouchEventHandler;
 import react.dom.events.UIEventHandler;
 import react.dom.events.WheelEventHandler;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
-import jsinterop.base.JsPropertyMap;
-import jsinterop.base.JsPropertyMapOfAny;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class HtmlGlobalFields

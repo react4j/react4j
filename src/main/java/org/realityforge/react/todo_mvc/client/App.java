@@ -2,14 +2,14 @@ package org.realityforge.react.todo_mvc.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
-import react.core.React;
-import react.dom.ReactDOM;
-import react.core.BaseProps;
-import org.realityforge.react.todo_mvc.client.model.AppData;
 import javax.annotation.Nonnull;
 import org.realityforge.arez.Arez;
 import org.realityforge.arez.browser.extras.BrowserLocation;
 import org.realityforge.arez.extras.WhyRun;
+import org.realityforge.react.todo_mvc.client.model.AppData;
+import react.core.BaseProps;
+import react.core.React;
+import react.dom.ReactDOM;
 
 public class App
   implements EntryPoint

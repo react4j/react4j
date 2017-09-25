@@ -1,12 +1,12 @@
 package org.realityforge.react.todo_mvc.client;
 
-import react.core.Component;
-import react.core.ReactElement;
-import org.realityforge.react.todo_mvc.client.TodoItem.Props;
-import org.realityforge.react.todo_mvc.client.TodoItem.State;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
+import org.realityforge.react.todo_mvc.client.TodoItem.Props;
+import org.realityforge.react.todo_mvc.client.TodoItem.State;
+import react.core.Component;
+import react.core.ReactElement;
 
 /**
  * TODO: This should be generated from annotation processor, processing TodoItem.

@@ -1,7 +1,7 @@
 package react.core.util;
 
-import elemental2.core.JsObject;
 import elemental2.core.Array;
+import elemental2.core.JsObject;
 import java.util.List;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;

@@ -1,11 +1,11 @@
 package react.dom.proptypes.html;
 
-import react.dom.proptypes.cssPropertyTypes.AnimationFillMode;
-import react.dom.proptypes.cssPropertyTypes.Visibility;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import react.dom.proptypes.cssPropertyTypes.AnimationFillMode;
+import react.dom.proptypes.cssPropertyTypes.Visibility;
 
 /**
  * This class represents propeties of the CSS style object.

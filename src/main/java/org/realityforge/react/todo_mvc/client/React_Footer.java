@@ -1,12 +1,12 @@
 package org.realityforge.react.todo_mvc.client;
 
-import react.core.BaseState;
-import react.core.Component;
-import react.core.ReactElement;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
+import react.core.BaseState;
+import react.core.Component;
+import react.core.ReactElement;
 
 @JsType
 @Generated( "" )

@@ -1,5 +1,8 @@
 package react.dom.proptypes.html;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import react.core.ReactRefCallback;
 import react.dom.events.DragEventHandler;
 import react.dom.events.FocusEventHandler;
@@ -11,9 +14,6 @@ import react.dom.proptypes.html.attributeTypes.FormMethod;
 import react.dom.proptypes.html.attributeTypes.OnOff;
 import react.dom.proptypes.html.attributeTypes.Target;
 import react.dom.proptypes.html.attributeTypes.YesNo;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 
 /**
  * Props for form elements. Refer to http://www.w3schools.com/tags/tag_form.asp

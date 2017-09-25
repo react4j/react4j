@@ -21,10 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-import react.core.ReactElement;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import react.core.JsProcedure;
+import react.core.ReactElement;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL )
 public class ReactDOM

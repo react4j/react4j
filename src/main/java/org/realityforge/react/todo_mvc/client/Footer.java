@@ -1,20 +1,20 @@
 package org.realityforge.react.todo_mvc.client;
 
-import react.core.BaseProps;
-import react.core.BaseState;
-import react.core.Component;
-import react.core.StatelessSideComponent;
-import react.core.ReactElement;
-import react.dom.events.MouseEventHandler;
-import react.dom.proptypes.html.AnchorProps;
-import react.dom.proptypes.html.BtnProps;
-import react.dom.proptypes.html.HtmlProps;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.jetbrains.annotations.Nullable;
+import react.core.BaseProps;
+import react.core.BaseState;
+import react.core.Component;
+import react.core.ReactElement;
+import react.core.StatelessSideComponent;
+import react.dom.events.MouseEventHandler;
+import react.dom.proptypes.html.AnchorProps;
+import react.dom.proptypes.html.BtnProps;
+import react.dom.proptypes.html.HtmlProps;
 import static react.core.React.DOM.*;
 
 class Footer

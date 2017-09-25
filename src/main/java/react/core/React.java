@@ -22,6 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
 import elemental2.core.Array;
+import java.util.List;
+import javax.annotation.Nonnull;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsConstructorFn;
+import react.core.util.JsUtil;
 import react.dom.DOMElement;
 import react.dom.proptypes.html.AnchorProps;
 import react.dom.proptypes.html.AudioProps;
@@ -40,14 +48,6 @@ import react.dom.proptypes.html.SourceProps;
 import react.dom.proptypes.html.TdProps;
 import react.dom.proptypes.html.TextAreaProps;
 import react.dom.proptypes.html.ThProps;
-import react.core.util.JsUtil;
-import java.util.List;
-import javax.annotation.Nonnull;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
-import jsinterop.base.Js;
-import jsinterop.base.JsConstructorFn;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL )
 public class React

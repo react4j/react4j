@@ -1,11 +1,11 @@
 package org.realityforge.react.todo_mvc.client;
 
-import react.core.BaseProps;
-import react.core.Component;
-import react.core.ReactElement;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
+import react.core.BaseProps;
+import react.core.Component;
+import react.core.ReactElement;
 
 /**
  * TODO: Also should be generated.

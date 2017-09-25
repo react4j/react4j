@@ -1,10 +1,5 @@
 package react.arez;
 
-import react.core.BaseProps;
-import react.core.BaseState;
-import react.core.Component;
-import react.core.SideComponent;
-import react.core.ReactElement;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,6 +11,11 @@ import org.realityforge.arez.Observer;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ContainerId;
 import org.realityforge.arez.annotations.ContainerName;
+import react.core.BaseProps;
+import react.core.BaseState;
+import react.core.Component;
+import react.core.ReactElement;
+import react.core.SideComponent;
 
 /**
  * A base class for all Arez enabled components.

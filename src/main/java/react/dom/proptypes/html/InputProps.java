@@ -1,5 +1,8 @@
 package react.dom.proptypes.html;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import react.core.ReactRefCallback;
 import react.dom.events.DragEventHandler;
 import react.dom.events.FocusEventHandler;
@@ -10,9 +13,6 @@ import react.dom.events.TouchEventHandler;
 import react.dom.proptypes.html.attributeTypes.InputType;
 import react.dom.proptypes.html.attributeTypes.OnOff;
 import react.dom.proptypes.html.attributeTypes.YesNo;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 
 /**
  * Props for input elements. Refer to http://www.w3schools.com/tags/tag_input.asp

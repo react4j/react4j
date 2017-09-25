@@ -1,20 +1,6 @@
 package org.realityforge.react.todo_mvc.client;
 
 import elemental2.dom.HTMLInputElement;
-import react.core.React;
-import react.arez.ArezComponent;
-import react.core.BaseProps;
-import react.core.BaseState;
-import react.core.Component;
-import react.core.ReactElement;
-import react.dom.events.FormEvent;
-import react.dom.events.KeyboardEvent;
-import react.dom.proptypes.html.HtmlProps;
-import react.dom.proptypes.html.InputProps;
-import react.dom.proptypes.html.attributeTypes.InputType;
-import react.core.util.JsUtil;
-import org.realityforge.react.todo_mvc.client.model.AppData;
-import org.realityforge.react.todo_mvc.client.model.Todo;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +14,20 @@ import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.Autorun;
 import org.realityforge.arez.annotations.Container;
+import org.realityforge.react.todo_mvc.client.model.AppData;
+import org.realityforge.react.todo_mvc.client.model.Todo;
+import react.arez.ArezComponent;
+import react.core.BaseProps;
+import react.core.BaseState;
+import react.core.Component;
+import react.core.React;
+import react.core.ReactElement;
+import react.core.util.JsUtil;
+import react.dom.events.FormEvent;
+import react.dom.events.KeyboardEvent;
+import react.dom.proptypes.html.HtmlProps;
+import react.dom.proptypes.html.InputProps;
+import react.dom.proptypes.html.attributeTypes.InputType;
 import static react.core.React.DOM.*;
 
 @Container
