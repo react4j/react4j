@@ -39,13 +39,13 @@ public class App
     routes.push( React.createElement( Route,
                                       new RouteProps()
                                         .path( "/" )
-                                        .component( TodoList.TYPE )
+                                        .component( TodoList_.TYPE )
                                         .key( "1" ) ) );
 
     routes.push( React.createElement( Route,
                                       new RouteProps()
                                         .path( "/:nowShowing" )
-                                        .component( TodoList.TYPE )
+                                        .component( TodoList_.TYPE )
                                         .key( "2" ) ) );
 
     model.subscribe( this::render );

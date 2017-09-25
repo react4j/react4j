@@ -24,7 +24,6 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import jsinterop.base.JsConstructorFn;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.Container;
 import static gwt.react.client.api.GwtReact.castAsReactElement;
@@ -37,7 +36,6 @@ import static gwt.react.client.api.React.DOM.*;
 class TodoList
   extends ArezComponent<TodoList.Props, TodoList.State>
 {
-  static final JsConstructorFn<TodoListWrapper> TYPE = TodoListWrapper.ctor();
 
   static final String NOW_SHOWING_ACTIVE_TODOS = "active";
   static final String NOW_SHOWING_COMPLETED_TODOS = "completed";
@@ -199,7 +197,7 @@ class TodoList
                 renderMainSection(),
                 renderFooter( activeTodoCount, completedCount )
            ),
-           React.createElement( PersonComponent.TYPE, PersonComponent.Props.create( 1 ) )
+           React.createElement( PersonComponent_.TYPE, PersonComponent.Props.create( 1 ) )
       );
   }
 
@@ -253,7 +251,7 @@ class TodoList
     return shownTodos.map( ( todo, index, theArray ) -> {
       final boolean isEditing = Objects.equals( state().editingId, todo.getId() );
       final TodoItem.Props props = TodoItem.Props.create( todo, this::handleSave, this::handleDoAction, isEditing );
-      return React.createElement( TodoItem.TYPE, props );
+      return React.createElement( TodoItem_.TYPE, props );
     } );
   }
 
@@ -268,7 +266,7 @@ class TodoList
                              props().getRouterParams().nowShowing,
                              e -> handleClearCompleted() );
       JsUtil.definePropertyValue( props.onClearCompleted, "name", "handleClearCompleted" );
-      return React.createElement( Footer.TYPE, props );
+      return React.createElement( Footer_.TYPE, props );
     }
     else
     {

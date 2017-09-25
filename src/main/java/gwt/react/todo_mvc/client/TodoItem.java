@@ -26,7 +26,6 @@ import static gwt.react.client.api.React.DOM.*;
 class TodoItem
   extends SideComponent<TodoItem.Props, TodoItem.State>
 {
-  static final JsConstructorFn<TodoItemWrapper> TYPE = TodoItemWrapper.ctor();
 
   @JsFunction
   public interface JsBiConsumer<A1, A2>

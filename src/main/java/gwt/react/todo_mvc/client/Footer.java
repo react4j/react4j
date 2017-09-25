@@ -21,7 +21,6 @@ import static gwt.react.client.api.React.DOM.*;
 class Footer
   extends StatelessSideComponent<Footer.Props>
 {
-  static final JsConstructorFn<FooterWrapper> TYPE = FooterWrapper.ctor();
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   static class Props

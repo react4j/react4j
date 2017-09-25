@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsConstructorFn;
 import org.realityforge.arez.annotations.Container;
 import static gwt.react.client.api.React.DOM.h4;
 
@@ -19,8 +18,6 @@ import static gwt.react.client.api.React.DOM.h4;
 public class PersonComponent
   extends ArezComponent<PersonComponent.Props, BaseState>
 {
-  static final JsConstructorFn<PersonComponentWrapper> TYPE = PersonComponentWrapper.ctor();
-
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   static class Props
     extends BaseProps

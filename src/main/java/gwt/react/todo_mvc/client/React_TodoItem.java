@@ -10,6 +10,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
+import org.realityforge.braincheck.Guards;
 
 /**
  * TODO: This should be generated from annotation processor, processing TodoItem.
@@ -17,29 +18,13 @@ import jsinterop.base.JsPropertyMap;
  * should be copied here.
  */
 @JsType
-class TodoItemWrapper
+final class React_TodoItem
   extends Component<Props, State>
 {
   private final TodoItem _component;
 
-  static JsConstructorFn<TodoItemWrapper> ctor()
-  {
-    final JsConstructorFn<TodoItemWrapper> constructorFn = JsConstructorFn.of( TodoItemWrapper.class );
-    if ( null == constructorFn )
-    {
-      //TODO Replace this with invariant check soon
-      throw new IllegalStateException( "Unable to get constructor function for TodoItemWrapper" );
-    }
-    if ( GwtReactConfig.enableComponentNames() )
-    {
-      JsPropertyMap.of( constructorFn ).set( "displayName", "TodoItem" );
-
-    }
-    return constructorFn;
-  }
-
   @JsConstructor
-  TodoItemWrapper( @Nonnull final Props props )
+  private React_TodoItem( @Nonnull final Props props )
   {
     super( props );
     _component = new TodoItem( this );
