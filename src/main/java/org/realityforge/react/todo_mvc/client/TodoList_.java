@@ -3,7 +3,7 @@ package org.realityforge.react.todo_mvc.client;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react.core.GwtReactConfig;
+import react.core.ReactConfig;
 
 /**
  * TODO: Also should be generated.
@@ -18,7 +18,7 @@ public final class TodoList_
     Guards.invariant( () -> null != constructorFn,
                       () -> "Unable to locate constructor function for TodoList defined by class org.realityforge.react.todo_mvc.client.TodoList" );
     assert null != constructorFn;
-    if ( GwtReactConfig.enableComponentNames() )
+    if ( ReactConfig.enableComponentNames() )
     {
       JsPropertyMap.of( constructorFn ).set( "displayName", "TodoList" );
 

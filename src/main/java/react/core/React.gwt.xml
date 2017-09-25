@@ -5,7 +5,7 @@
   <source path=''/>
 
   <!--
-    These properties are all defined in react.core.GwtReactConfig
+    These properties are all defined in react.core.ReactConfig
     See that class for a better understanding of what these properties do.
   -->
 

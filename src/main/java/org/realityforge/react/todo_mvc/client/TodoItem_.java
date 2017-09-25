@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react.core.GwtReactConfig;
+import react.core.ReactConfig;
 
 /**
  * TODO: This should be generated from annotation processor, processing TodoItem.
@@ -24,7 +24,7 @@ public final class TodoItem_
     Guards.invariant( () -> null != constructorFn,
                       () -> "Unable to locate constructor function for TodoItem defined by class org.realityforge.react.todo_mvc.client.TodoItem" );
     assert null != constructorFn;
-    if ( GwtReactConfig.enableComponentNames() )
+    if ( ReactConfig.enableComponentNames() )
     {
       JsPropertyMap.of( constructorFn ).set( "displayName", "TodoItem" );
     }

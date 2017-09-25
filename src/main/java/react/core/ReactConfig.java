@@ -5,11 +5,11 @@ import org.jetbrains.annotations.TestOnly;
 /**
  * Location of all compile time configuration settings for framework.
  */
-public final class GwtReactConfig
+public final class ReactConfig
 {
   private static final Provider c_provider = createProvider();
 
-  private GwtReactConfig()
+  private ReactConfig()
   {
   }
 
