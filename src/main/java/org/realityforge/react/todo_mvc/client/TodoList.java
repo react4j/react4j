@@ -67,12 +67,6 @@ class TodoList
     setInitialState( () -> State.create( null, "", AppData.LOCATION.getLocation() ) );
   }
 
-  //@PostConstruct
-  //void postConstruct()
-  //{
-  //  updateNowShowing();
-  //}
-  //
   @Autorun
   void updateNowShowing()
   {
