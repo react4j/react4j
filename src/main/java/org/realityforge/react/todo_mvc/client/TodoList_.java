@@ -1,6 +1,6 @@
 package org.realityforge.react.todo_mvc.client;
 
-import gwt.react.client.GwtReactConfig;
+import react.core.GwtReactConfig;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;

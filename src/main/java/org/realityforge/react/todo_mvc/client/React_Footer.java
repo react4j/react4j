@@ -1,8 +1,8 @@
 package org.realityforge.react.todo_mvc.client;
 
-import gwt.react.client.components.BaseState;
-import gwt.react.client.components.Component;
-import gwt.react.client.elements.ReactElement;
+import react.core.BaseState;
+import react.core.Component;
+import react.core.ReactElement;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;

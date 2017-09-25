@@ -1,21 +1,21 @@
 package org.realityforge.react.todo_mvc.client;
 
-import gwt.react.client.components.BaseProps;
-import gwt.react.client.components.BaseState;
-import gwt.react.client.components.Component;
-import gwt.react.client.components.StatelessSideComponent;
-import gwt.react.client.elements.ReactElement;
-import gwt.react.client.events.MouseEventHandler;
-import gwt.react.client.proptypes.html.AnchorProps;
-import gwt.react.client.proptypes.html.BtnProps;
-import gwt.react.client.proptypes.html.HtmlProps;
+import react.core.BaseProps;
+import react.core.BaseState;
+import react.core.Component;
+import react.core.StatelessSideComponent;
+import react.core.ReactElement;
+import react.dom.events.MouseEventHandler;
+import react.dom.proptypes.html.AnchorProps;
+import react.dom.proptypes.html.BtnProps;
+import react.dom.proptypes.html.HtmlProps;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.jetbrains.annotations.Nullable;
-import static gwt.react.client.api.React.DOM.*;
+import static react.core.React.DOM.*;
 
 class Footer
   extends StatelessSideComponent<Footer.Props>

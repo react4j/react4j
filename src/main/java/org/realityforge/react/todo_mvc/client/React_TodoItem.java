@@ -1,7 +1,7 @@
 package org.realityforge.react.todo_mvc.client;
 
-import gwt.react.client.components.Component;
-import gwt.react.client.elements.ReactElement;
+import react.core.Component;
+import react.core.ReactElement;
 import org.realityforge.react.todo_mvc.client.TodoItem.Props;
 import org.realityforge.react.todo_mvc.client.TodoItem.State;
 import javax.annotation.Nonnull;

@@ -1,6 +1,6 @@
 package org.realityforge.react.todo_mvc.client;
 
-import gwt.react.client.GwtReactConfig;
+import react.core.GwtReactConfig;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.base.JsConstructorFn;

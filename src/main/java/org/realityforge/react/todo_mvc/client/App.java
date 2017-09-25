@@ -2,9 +2,9 @@ package org.realityforge.react.todo_mvc.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
-import gwt.react.client.api.React;
-import gwt.react.client.api.ReactDOM;
-import gwt.react.client.components.BaseProps;
+import react.core.React;
+import react.dom.ReactDOM;
+import react.core.BaseProps;
 import org.realityforge.react.todo_mvc.client.model.AppData;
 import javax.annotation.Nonnull;
 import org.realityforge.arez.Arez;

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module>
-  <inherits name="gwt.react.React"/>
-  <inherits name="org.realityforge.arez.Arez"/>
-  <inherits name="org.realityforge.braincheck.BrainCheck"/>
-  <inherits name="org.realityforge.arez.browser.extras.BrowserExtras"/>
-
-  <source path=''/>
-</module>
