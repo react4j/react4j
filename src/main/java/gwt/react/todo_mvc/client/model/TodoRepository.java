@@ -21,7 +21,7 @@ public class TodoRepository
   private final Collection<Todo> _entityList = Collections.unmodifiableCollection( _entities.values() );
 
   @Action
-  public final void create( @Nonnull final String id, @Nonnull final String title, final boolean completed )
+  public void create( @Nonnull final String id, @Nonnull final String title, final boolean completed )
   {
     final Arez_Todo entity = new Arez_Todo( id, title, completed );
     _entities.put( entity.getId(), entity );
@@ -29,13 +29,13 @@ public class TodoRepository
   }
 
   @Action
-  public final boolean contains( @Nonnull final Todo todo )
+  public boolean contains( @Nonnull final Todo todo )
   {
     return _entities.containsKey( todo.getId() );
   }
 
   @Action
-  public final void destroy( @Nonnull final Todo todo )
+  public void destroy( @Nonnull final Todo todo )
   {
     //TODO: Should this next line be an invariant check
     assert null != todo;
