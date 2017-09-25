@@ -4,7 +4,6 @@ A simple project to experiment with gwt-react
 
 ## TODO
 
-* Integrate Arez
 * Develop React-Arez extension
 
 * Consider using annotations and generator to generate components
