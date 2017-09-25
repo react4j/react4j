@@ -78,13 +78,6 @@ class TodoList
     App.whyRun();
   }
 
-  @Nonnull
-  @Override
-  protected String getTypeName()
-  {
-    return "TodoList";
-  }
-
   @Action
   void handleDoAction( final ActionType actionType, final Todo todo )
   {

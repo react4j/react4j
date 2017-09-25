@@ -82,14 +82,6 @@ class TodoItem
     setInitialState( () -> State.create( props().todo.getTitle() ) );
   }
 
-  @Nonnull
-  @Override
-  protected String getTypeName()
-  {
-    //TODO: Remove this method
-    return "TodoItem";
-  }
-
   private void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
     if ( event.which == App.ESCAPE_KEY )

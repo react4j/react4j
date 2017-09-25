@@ -16,7 +16,6 @@ import org.realityforge.arez.Observer;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ContainerId;
 import org.realityforge.arez.annotations.ContainerName;
-import org.realityforge.arez.annotations.ContainerNamePrefix;
 
 /**
  * A base class for all Arez enabled components.
@@ -83,14 +82,6 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   @ContainerName
   @Nullable
   protected String getNamePrefix()
-  {
-    // Arez will override this method so we can ignore the value here.
-    return Arez.context().areNamesEnabled() ? getTypeName() + "." + _arezComponentId : null;
-  }
-
-  @ContainerNamePrefix
-  @Nonnull
-  protected String getTypeName()
   {
     // Arez will override this method so we can ignore the value here.
     return "<default>";
