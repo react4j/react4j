@@ -18,6 +18,16 @@ public final class ReactConfig
     return c_provider.enableComponentNames();
   }
 
+  /**
+   * Return true if we should check that the user interacts with React component in a way compatible with the state.
+   * i.e. setInitialState should only be invoked at the start, setState should not be invoked while componentWillUpdate
+   * is running etc.
+   */
+  public static boolean checkComponentStateInvariants()
+  {
+    return c_provider.checkComponentStateInvariants();
+  }
+
   @TestOnly
   static Provider getProvider()
   {
@@ -35,10 +45,12 @@ public final class ReactConfig
     final boolean development = environment.equals( "development" );
     final boolean enableNames =
       "true".equals( System.getProperty( "react.enable_component_names", development ? "true" : "false" ) );
+    final boolean checkComponentStateInvariants =
+      "true".equals( System.getProperty( "react.check_component_state_invariants", development ? "true" : "false" ) );
 
     return System.getProperty( "react.dynamic_provider", "false" ).equals( "true" ) ?
-           new DynamicProvider( enableNames ) :
-           new StaticProvider( enableNames );
+           new DynamicProvider( enableNames, checkComponentStateInvariants ) :
+           new StaticProvider( enableNames, checkComponentStateInvariants );
   }
 
   /**
@@ -50,6 +62,8 @@ public final class ReactConfig
   private interface Provider
   {
     boolean enableComponentNames();
+
+    boolean checkComponentStateInvariants();
   }
 
   /**
@@ -61,10 +75,12 @@ public final class ReactConfig
     implements Provider
   {
     private boolean _enableComponentNames;
+    private boolean _checkComponentStateInvariants;
 
-    DynamicProvider( final boolean enableComponentNames )
+    DynamicProvider( final boolean enableComponentNames, final boolean checkComponentStateInvariants )
     {
       _enableComponentNames = enableComponentNames;
+      _checkComponentStateInvariants = checkComponentStateInvariants;
     }
 
     void setEnableComponentNames( final boolean enableComponentNames )
@@ -72,10 +88,21 @@ public final class ReactConfig
       _enableComponentNames = enableComponentNames;
     }
 
+    void setCheckComponentStateInvariants( final boolean checkComponentStateInvariants )
+    {
+      _checkComponentStateInvariants = checkComponentStateInvariants;
+    }
+
     @Override
     public boolean enableComponentNames()
     {
       return _enableComponentNames;
+    }
+
+    @Override
+    public boolean checkComponentStateInvariants()
+    {
+      return _checkComponentStateInvariants;
     }
   }
 
@@ -88,16 +115,24 @@ public final class ReactConfig
     implements Provider
   {
     private final boolean _enableComponentNames;
+    private final boolean _checkComponentStateInvariants;
 
-    StaticProvider( final boolean enableComponentNames )
+    StaticProvider( final boolean enableComponentNames, final boolean checkComponentStateInvariants )
     {
       _enableComponentNames = enableComponentNames;
+      _checkComponentStateInvariants = checkComponentStateInvariants;
     }
 
     @Override
     public boolean enableComponentNames()
     {
       return _enableComponentNames;
+    }
+
+    @Override
+    public boolean checkComponentStateInvariants()
+    {
+      return _checkComponentStateInvariants;
     }
   }
 }
