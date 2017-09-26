@@ -6,6 +6,7 @@ import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -15,7 +16,9 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import react.annotations.ReactComponent;
+import react.core.Component;
 import static javax.tools.Diagnostic.Kind.ERROR;
 
 /**
@@ -45,7 +48,7 @@ public final class ReactProcessor
     {
       try
       {
-        process( element );
+        process( (TypeElement) element );
       }
       catch ( final IOException ioe )
       {
@@ -58,12 +61,10 @@ public final class ReactProcessor
     }
   }
 
-  private void process( @Nonnull final Element element )
+  private void process( @Nonnull final TypeElement element )
     throws IOException, ReactProcessorException
   {
-    final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( element );
-    final TypeElement typeElement = (TypeElement) element;
-    final ComponentDescriptor descriptor = Parser.parse( packageElement, typeElement );
+    final ComponentDescriptor descriptor = parse( element );
     emitTypeSpec( descriptor.getPackageElement().getQualifiedName().toString(),
                   Generator.buildConstructorFactory( descriptor ) );
   }
@@ -75,5 +76,37 @@ public final class ReactProcessor
       skipJavaLangImports( true ).
       build().
       writeTo( processingEnv.getFiler() );
+  }
+
+  @Nonnull
+  private ComponentDescriptor parse( @Nonnull final TypeElement typeElement )
+  {
+    final ReactComponent component = typeElement.getAnnotation( ReactComponent.class );
+    assert null != component;
+    final String name =
+      ProcessorUtil.isSentinelName( component.name() ) ? typeElement.getSimpleName().toString() : component.name();
+    final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
+    final ComponentDescriptor descriptor = new ComponentDescriptor( name, packageElement, typeElement );
+
+    final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
+    final TypeMirror rawComponentType = processingEnv.getTypeUtils().erasure( componentType.asType() );
+
+    /*
+     * Arez need not be on the classpath in which case this will return a null value to arezComponentType.
+     * Our code should just gracefully handle this and perform none of the arez specific checks or generation.
+     */
+    @Nullable
+    final TypeElement arezComponentType = processingEnv.getElementUtils().getTypeElement( "react.arez.ArezComponent" );
+    @Nullable
+    final TypeMirror rawArezComponentType =
+      null == arezComponentType ? null : processingEnv.getTypeUtils().erasure( arezComponentType.asType() );
+
+    final TypeMirror type = descriptor.getDeclaredType();
+
+    final boolean isComponent = processingEnv.getTypeUtils().isSubtype( type, rawComponentType );
+    final boolean isArezComponent =
+      null != rawArezComponentType && processingEnv.getTypeUtils().isSubtype( type, rawArezComponentType );
+
+    return descriptor;
   }
 }

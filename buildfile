@@ -117,6 +117,7 @@ define 'react' do
                  :jsinterop_base,
                  :jsinterop_annotations,
                  project('core'),
+                 project('arez'),
                  project('annotations')
 
     test.with :compile_testing,
