@@ -94,6 +94,8 @@ public class TodoRepository
     return findAll().stream().filter( query ).sorted( sorter ).collect( Collectors.toList() );
   }
 
+  //TODO: Should we support a getById and getByQuery that throws exceptions if unable to find element?
+
   @Nonnull
   public final TodoRepository self()
   {
