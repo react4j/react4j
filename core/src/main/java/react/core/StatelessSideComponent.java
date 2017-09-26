@@ -1,6 +1,7 @@
 package react.core;
 
 import javax.annotation.Nonnull;
+import static org.realityforge.braincheck.Guards.*;
 
 /**
  * The base class for stateless components.
@@ -12,85 +13,72 @@ import javax.annotation.Nonnull;
 public abstract class StatelessSideComponent<P extends BaseProps>
   extends SideComponent<P, BaseState>
 {
-  protected StatelessSideComponent( @Nonnull final Component<P, BaseState> component )
-  {
-    super( component );
-  }
-
   @Nonnull
   protected final BaseState state()
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke state() on " + this + " when component is a stateless component" );
+    return super.state();
   }
 
   @Override
   protected final void setInitialState( @Nonnull final BaseState state )
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke setInitialState() on " + this + " when component is a stateless component" );
   }
 
   @Override
   protected final void setState( @Nonnull final BaseState state )
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke setState() on " + this + " when component is a stateless component" );
   }
 
   @Override
   protected final void setState( @Nonnull final SetStateCallback<P, BaseState> callback )
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke setState() on " + this + " when component is a stateless component" );
   }
 
   @Override
   protected final void componentDidMount()
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke componentDidMount() on " + this + " when component is a stateless component" );
   }
 
   @Override
   protected final void componentDidUpdate( @Nonnull final P nextProps, @Nonnull final P nextState )
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke componentDidUpdate() on " + this + " when component is a stateless component" );
   }
 
   @Override
   protected void componentWillMount()
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke componentWillMount() on " + this + " when component is a stateless component" );
   }
 
   @Override
   protected void componentWillReceiveProps( @Nonnull final P nextProps )
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke componentWillReceiveProps() on " + this +
+                " when component is a stateless component" );
   }
 
   @Override
   protected void componentWillUnmount()
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke componentWillUnmount() on " + this + " when component is a stateless component" );
   }
 
   @Override
   protected void componentWillUpdate( @Nonnull final P nextProps, @Nonnull final BaseState nextState )
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke componentWillUpdate() on " + this + " when component is a stateless component" );
   }
 
   @Override
   public boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final BaseState nextState )
   {
-    //Replace with invariant failure
-    throw new IllegalStateException();
+    fail( () -> "Attempted to invoke shouldComponentUpdate() on " + this + " when component is a stateless component" );
+    return super.shouldComponentUpdate( nextProps, nextState );
   }
 }
