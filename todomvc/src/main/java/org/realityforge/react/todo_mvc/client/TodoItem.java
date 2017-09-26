@@ -11,6 +11,7 @@ import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.Container;
 import org.realityforge.react.todo_mvc.client.model.Todo;
+import react.annotations.ReactComponent;
 import react.arez.ArezComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
@@ -26,6 +27,7 @@ import react.dom.proptypes.html.LabelProps;
 import react.dom.proptypes.html.attributeTypes.InputType;
 import static react.dom.DOM.*;
 
+@ReactComponent
 @Container
 class TodoItem
   extends ArezComponent<TodoItem.Props, TodoItem.State>

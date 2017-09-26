@@ -6,6 +6,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.jetbrains.annotations.Nullable;
+import react.annotations.ReactComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
 import react.core.Component;
@@ -17,6 +18,7 @@ import react.dom.proptypes.html.BtnProps;
 import react.dom.proptypes.html.HtmlProps;
 import static react.dom.DOM.*;
 
+@ReactComponent
 class Footer
   extends StatelessSideComponent<Footer.Props>
 {

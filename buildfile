@@ -108,7 +108,9 @@ define 'react' do
   define 'todomvc' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
-    compile.with project('core').package(:jar, :classifier => :gwt),
+    compile.with project('annotations').package(:jar, :classifier => :gwt),
+                 project('annotations').compile.dependencies,
+                 project('core').package(:jar, :classifier => :gwt),
                  project('core').compile.dependencies,
                  project('dom').package(:jar, :classifier => :gwt),
                  project('dom').compile.dependencies,
