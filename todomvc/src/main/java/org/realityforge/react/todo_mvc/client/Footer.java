@@ -2,14 +2,12 @@ package org.realityforge.react.todo_mvc.client;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import org.jetbrains.annotations.Nullable;
 import react.annotations.ReactComponent;
 import react.core.BaseProps;
-import react.core.BaseState;
-import react.core.Component;
 import react.core.ReactElement;
 import react.core.StatelessSideComponent;
 import react.dom.events.MouseEventHandler;
@@ -32,10 +30,10 @@ class Footer
     MouseEventHandler onClearCompleted;
 
     @JsOverlay
-    public static Props create( @Nonnegative final int count,
-                                @Nonnegative final int completedCount,
-                                @Nonnull final String nowShowing,
-                                @Nonnull final MouseEventHandler onClearCompleted )
+    static Props create( @Nonnegative final int count,
+                         @Nonnegative final int completedCount,
+                         @Nonnull final String nowShowing,
+                         @Nonnull final MouseEventHandler onClearCompleted )
     {
       final Props props = new Props();
       props.count = count;
@@ -44,11 +42,6 @@ class Footer
       props.onClearCompleted = onClearCompleted;
       return props;
     }
-  }
-
-  Footer( @Nonnull final Component<Props, BaseState> component )
-  {
-    super( component );
   }
 
   @Override

@@ -13,7 +13,6 @@ import org.realityforge.arez.annotations.ContainerId;
 import org.realityforge.arez.annotations.ContainerName;
 import react.core.BaseProps;
 import react.core.BaseState;
-import react.core.Component;
 import react.core.ReactElement;
 import react.core.SideComponent;
 
@@ -33,9 +32,8 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   private final Observer _renderReaction;
   private boolean _renderDepsChanged;
 
-  protected ArezComponent( @Nonnull final Component<P, S> component )
+  protected ArezComponent()
   {
-    super( component );
     _arezComponentId = c_nextComponentId++;
     final ArezContext context = Arez.context();
     _propsObservable = context.createObservable( toName( ".props" ) );
@@ -78,7 +76,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   }
 
   @ContainerName
-  @Nullable
+  @Nonnull
   protected String getNamePrefix()
   {
     // Arez will override this method so we can ignore the value here.

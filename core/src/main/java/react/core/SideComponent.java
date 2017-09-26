@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import static org.realityforge.braincheck.Guards.*;
 
 /**
  * The base java class that mirrors the react component.
@@ -22,34 +23,61 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
     S onSetState( S previousState, P currentProps );
   }
 
+  @Nonnull
+  private ComponentState _componentState = ComponentState.UNKNOWN;
   @Nullable
   private Component<P, S> _component;
 
-  protected SideComponent( @Nonnull final Component<P, S> component )
+  /**
+   * Set the state of the component. Only used for invariant checking.
+   */
+  final void setComponentState( @Nonnull final ComponentState componentState )
   {
-    setComponent( component );
+    invariant( ReactConfig::checkComponentStateInvariants,
+               () -> "SideComponent.setComponentState() invoked on " + this +
+                     " when ReactConfig.checkComponentStateInvariants() is false" );
+    _componentState = Objects.requireNonNull( componentState );
   }
 
-  final void clearComponent()
-  {
-    _component = null;
-  }
-
-  final void setComponent( @Nonnull final Component<P, S> component )
+  final void bindComponent( @Nonnull final Component<P, S> component )
   {
     _component = Objects.requireNonNull( component );
   }
 
+  protected void setInitialState( @Nonnull final S state )
+  {
+    if ( ReactConfig.checkComponentStateInvariants() )
+    {
+      apiInvariant( () -> ComponentState.INITIAL == _componentState,
+                    () -> "Attempted to invoke setInitialState on " + this + " when component is " +
+                          "not in INITIAL state but in state " + _componentState );
+    }
+    component().setInitialState( state );
+  }
+
   protected void setInitialState( @Nonnull final Supplier<S> state )
   {
+    if ( ReactConfig.checkComponentStateInvariants() )
+    {
+      apiInvariant( () -> ComponentState.INITIAL == _componentState,
+                    () -> "Attempted to invoke setInitialState on " + this + " when component is " +
+                          "not in INITIAL state but in state " + _componentState );
+    }
     component().setInitialState( state.get() );
   }
 
   @Nonnull
   protected Component<P, S> component()
   {
+    invariant( () -> null != _component,
+               () -> "Invoked component() on " + this + " before a component has been bound." );
     assert null != _component;
     return _component;
+  }
+
+  protected boolean isComponentBound()
+  {
+    return null != _component;
   }
 
   @Nonnull
@@ -74,11 +102,6 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
   protected <T> T getRefNamed( @Nonnull final String refName )
   {
     return Js.cast( refs().get( refName ) );
-  }
-
-  protected void setInitialState( @Nonnull final S state )
-  {
-    component().setInitialState( state );
   }
 
   protected void setState( @Nonnull final S state )
@@ -125,6 +148,10 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
    */
   @Nullable
   protected abstract ReactElement<?, ?> render();
+
+  protected void componentInitialize()
+  {
+  }
 
   /**
    * This method is invoked immediately after a component is mounted.

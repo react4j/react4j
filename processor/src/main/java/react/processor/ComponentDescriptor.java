@@ -46,15 +46,15 @@ final class ComponentDescriptor
     {
       throw new ReactProcessorException( "@ReactComponent target must not be a non-static nested class", element );
     }
-    final List<ExecutableElement> constructors = element.getEnclosedElements().stream().
-      filter( m -> m.getKind() == ElementKind.CONSTRUCTOR ).
-      map( m -> (ExecutableElement) m ).
-      collect( Collectors.toList() );
-    if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
-    {
-      throw new ReactProcessorException( "@ReactComponent target must have a single constructor that accepts " +
-                                         "the native react component", element );
-    }
+    //final List<ExecutableElement> constructors = element.getEnclosedElements().stream().
+    //  filter( m -> m.getKind() == ElementKind.CONSTRUCTOR ).
+    //  map( m -> (ExecutableElement) m ).
+    //  collect( Collectors.toList() );
+    //if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
+    //{
+    //  throw new ReactProcessorException( "@ReactComponent target must have a single constructor that accepts " +
+    //                                     "the native react component", element );
+    //}
   }
 
   @Nonnull

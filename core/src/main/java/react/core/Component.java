@@ -23,6 +23,7 @@ SOFTWARE. */
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
@@ -138,6 +139,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @return A single {@link ReactElement}
    */
   @JsMethod
+  @Nullable
   protected abstract ReactElement<?, ?> render();
 
   @JsOverlay

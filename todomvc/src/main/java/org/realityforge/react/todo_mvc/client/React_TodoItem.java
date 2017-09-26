@@ -6,8 +6,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 import org.realityforge.react.todo_mvc.client.TodoItem.Props;
 import org.realityforge.react.todo_mvc.client.TodoItem.State;
-import react.core.Component;
-import react.core.ReactElement;
+import react.core.NativeAdapterComponent;
 
 /**
  * TODO: This should be generated from annotation processor, processing TodoItem.
@@ -17,29 +16,27 @@ import react.core.ReactElement;
 @JsType
 @Generated( "" )
 final class React_TodoItem
-  extends Component<Props, State>
+  extends NativeAdapterComponent<Props, State, TodoItem>
 {
-  private final TodoItem _component;
-
   @JsConstructor
   private React_TodoItem( @Nonnull final Props props )
   {
     super( props );
-    _component = new Arez_TodoItem( this );
+  }
+
+  @Override
+  protected TodoItem createComponent()
+  {
+    return new Arez_TodoItem();
   }
 
   public boolean shouldComponentUpdate( @Nonnull final Props nextProps, @Nonnull final State nextState )
   {
-    return _component.shouldComponentUpdate( nextProps, nextState );
+    return performShouldComponentUpdate( nextProps, nextState );
   }
 
   public void componentDidUpdate( @Nonnull final Props prevProps, @Nonnull final Props prevState )
   {
-    _component.componentDidUpdate( prevProps, prevState );
-  }
-
-  public ReactElement<?, ?> render()
-  {
-    return _component.render();
+    performComponentDidUpdate( prevProps, prevState );
   }
 }

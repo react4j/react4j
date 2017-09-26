@@ -20,7 +20,6 @@ import react.annotations.ReactComponent;
 import react.arez.ArezComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
-import react.core.Component;
 import react.core.React;
 import react.core.ReactElement;
 import react.core.util.JsUtil;
@@ -63,20 +62,27 @@ class TodoList
     }
   }
 
-  TodoList( @Nonnull final Component<BaseProps, State> component )
+  @Override
+  protected void componentInitialize()
   {
-    super( component );
     setInitialState( () -> State.create( null, "", AppData.LOCATION.getLocation() ) );
   }
 
   @Autorun
   void updateNowShowing()
   {
-    // Deliberately avoid observing state as it should only
-    // be run when location changes
-    final State state = component().state().dup();
-    state.nowShowing = AppData.LOCATION.getLocation();
-    setState( state );
+    // Observe the state here so we will re-run if it changes
+    // regardless of whether component is bound yet
+    final String location = AppData.LOCATION.getLocation();
+
+    if ( isComponentBound() )
+    {
+      // Deliberately avoid observing state as it should only
+      // be run when location changes
+      final State state = component().state().dup();
+      state.nowShowing = location;
+      setState( state );
+    }
     App.whyRun();
   }
 

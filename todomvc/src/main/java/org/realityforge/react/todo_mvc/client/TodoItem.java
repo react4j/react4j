@@ -15,7 +15,6 @@ import react.annotations.ReactComponent;
 import react.arez.ArezComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
-import react.core.Component;
 import react.core.ReactElement;
 import react.dom.DOMElement;
 import react.dom.events.FormEvent;
@@ -48,10 +47,10 @@ class TodoItem
     JsBiConsumer<TodoList.ActionType, Todo> doAction;
 
     @JsOverlay
-    public static Props create( @Nonnull final Todo todo,
-                                @Nonnull final JsBiConsumer<Todo, String> doSave,
-                                @Nonnull final JsBiConsumer<TodoList.ActionType, Todo> doAction,
-                                final boolean isEditing )
+    static Props create( @Nonnull final Todo todo,
+                         @Nonnull final JsBiConsumer<Todo, String> doSave,
+                         @Nonnull final JsBiConsumer<TodoList.ActionType, Todo> doAction,
+                         final boolean isEditing )
     {
       final TodoItem.Props props = new TodoItem.Props();
       props.key = todo.getId();
@@ -78,9 +77,9 @@ class TodoItem
     String editText;
   }
 
-  TodoItem( @Nonnull final Component<Props, State> component )
+  @Override
+  protected void componentInitialize()
   {
-    super( component );
     setInitialState( () -> State.create( props().todo.getTitle() ) );
   }
 
@@ -196,7 +195,6 @@ class TodoItem
                    .onKeyDown( this::handleKeyDown )
           )
       );
-    App.whyRun();
     return element;
   }
 
