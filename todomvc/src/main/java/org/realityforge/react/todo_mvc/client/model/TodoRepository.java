@@ -2,7 +2,11 @@ package org.realityforge.react.todo_mvc.client.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,6 +73,25 @@ public class TodoRepository
   {
     _observable.reportObserved();
     return _entityList;
+  }
+
+  @Nonnull
+  public final List<Todo> findAll( @Nonnull final Comparator<Todo> sorter )
+  {
+    return findAll().stream().sorted( sorter ).collect( Collectors.toList() );
+  }
+
+  @Nonnull
+  public final List<Todo> findAllByQuery( @Nonnull final Predicate<Todo> query )
+  {
+    return findAll().stream().filter( query ).collect( Collectors.toList() );
+  }
+
+  @Nonnull
+  public final List<Todo> findAllByQuery( @Nonnull final Predicate<Todo> query,
+                                          @Nonnull final Comparator<Todo> sorter )
+  {
+    return findAll().stream().filter( query ).sorted( sorter ).collect( Collectors.toList() );
   }
 
   @Nonnull
