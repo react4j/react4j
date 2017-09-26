@@ -179,7 +179,7 @@ define 'react' do
   ipr.add_default_testng_configuration(:jvm_args => '-ea -Dbraincheck.dynamic_provider=true -Dbraincheck.environment=development -Dreact.dynamic_provider=true -Dreact.environment=development -Dreact.output_fixture_data=false -Dreact.fixture_dir=processor/src/test/resources')
   ipr.add_component_from_artifact(:idea_codestyle)
 
-  ipr.add_gwt_configuration(project,
+  ipr.add_gwt_configuration(project('todomvc'),
                             :gwt_module => 'org.realityforge.react.todo_mvc.todomvc',
                             :start_javascript_debugger => false,
                             :vm_parameters => "-Xmx2G -Djava.io.tmpdir=#{_('tmp/gwt')}",
