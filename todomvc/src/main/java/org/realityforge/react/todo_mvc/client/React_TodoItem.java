@@ -1,5 +1,6 @@
 package org.realityforge.react.todo_mvc.client;
 
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
@@ -14,6 +15,7 @@ import react.core.ReactElement;
  * should be copied here.
  */
 @JsType
+@Generated( "" )
 final class React_TodoItem
   extends Component<Props, State>
 {

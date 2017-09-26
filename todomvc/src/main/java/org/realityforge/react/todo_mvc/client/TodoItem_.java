@@ -7,11 +7,6 @@ import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react.core.ReactConfig;
 
-/**
- * TODO: This should be generated from annotation processor, processing TodoItem.
- * Any lifecycle methods that are overridden (i.e. not defined in SideComponent)
- * should be copied here.
- */
 @Generated( "" )
 public final class TodoItem_
 {

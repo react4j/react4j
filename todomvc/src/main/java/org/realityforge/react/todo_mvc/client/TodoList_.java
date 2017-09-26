@@ -1,13 +1,12 @@
 package org.realityforge.react.todo_mvc.client;
 
+import javax.annotation.Generated;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react.core.ReactConfig;
 
-/**
- * TODO: Also should be generated.
- */
+@Generated( "" )
 public final class TodoList_
 {
   public static final JsConstructorFn<React_TodoList> TYPE = ctor();

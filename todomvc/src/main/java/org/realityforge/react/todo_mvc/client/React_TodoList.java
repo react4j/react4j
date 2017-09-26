@@ -1,5 +1,6 @@
 package org.realityforge.react.todo_mvc.client;
 
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
@@ -7,10 +8,8 @@ import react.core.BaseProps;
 import react.core.Component;
 import react.core.ReactElement;
 
-/**
- * TODO: Also should be generated.
- */
 @JsType
+@Generated( "" )
 final class React_TodoList
   extends Component<BaseProps, TodoList.State>
 {

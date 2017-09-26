@@ -7,9 +7,6 @@ import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react.core.ReactConfig;
 
-/**
- * TODO: Also should be generated.
- */
 @Generated( "" )
 public final class Footer_
 {
