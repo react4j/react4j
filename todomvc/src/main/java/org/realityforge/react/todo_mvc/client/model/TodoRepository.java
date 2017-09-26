@@ -3,6 +3,7 @@ package org.realityforge.react.todo_mvc.client.model;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.arez.Arez;
@@ -11,8 +12,13 @@ import org.realityforge.arez.Observable;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.Container;
 
+/**
+ * TODO: This class should be entirely generated.
+ * Perhaps with additional query capabilities sourced out of replicant.
+ */
 @SuppressWarnings( "ConstantConditions" )
 @Container( singleton = true )
+@Generated( "Arez" )
 public class TodoRepository
 {
   private final Observable _observable =
