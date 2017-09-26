@@ -16,4 +16,7 @@
 
   <define-property name="react.enable_component_names" values="true,false"/>
   <set-property name="react.enable_component_names" value="false"/>
+
+  <define-property name="react.check_component_state_invariants" values="true,false"/>
+  <set-property name="react.check_component_state_invariants" value="false"/>
 </module>
