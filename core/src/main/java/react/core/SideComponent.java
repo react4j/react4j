@@ -77,7 +77,7 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
 
   /**
    * Performs a shallow merge of nextState into current state. This is the primary method
-   * you use to trigger UI updates from event handlers and server request callbacks.</p>
+   * you use to trigger UI updates from event handlers and server request callbacks.
    *
    * <p>It's also possible to pass a function with the signature function(state, props).
    * This can be useful in some cases when you want to enqueue an atomic update that
@@ -130,7 +130,7 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
    * Use this as an opportunity to operate on the DOM when the component has been updated. This is also a good place to do network requests as long as
    * you compare the current props to previous props (e.g. a network request may not be necessary if the props have not changed).
    *
-   * Note: This method will not be invoked if {@link #shouldComponentUpdate(P, S)} returns false.
+   * Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState)} returns false.
    */
   protected void componentDidUpdate( @Nonnull final P nextProps, @Nonnull final P nextState )
   {
@@ -149,11 +149,11 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
   /**
    * This method is invoked before a mounted component receives new props.
    * If you need to update the state in response to prop changes (for example, to reset it), you may compare
-   * this.props and nextProps and perform state transitions using {@link #setState(S)} in this method.
+   * this.props and nextProps and perform state transitions using {@link #setState(BaseState)} in this method.
    * Note that React may call this method even if the props have not changed, so make sure to compare the current
    * and next values if you only want to handle changes. This may occur when the parent component causes your component to re-render.
    * React doesn't call this method with initial props during mounting. It only calls this method
-   * if some of component's props may update. Calling {@link #setState(S)} generally doesn't trigger
+   * if some of component's props may update. Calling {@link #setState(BaseState)} generally doesn't trigger
    * this method.
    */
   protected void componentWillReceiveProps( @Nonnull final P nextProps )
@@ -173,10 +173,13 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
    * This method is invoked immediately before rendering when new props or state are being received.
    * Use this as an opportunity to perform preparation before an update occurs. This method is not called for the initial render.
    *
-   * Note that you cannot call {@link #setState(S)} here. If you need to update state in response to a prop change,
-   * use {@link #componentWillReceiveProps(P)} instead.
+   * Note that you cannot call {@link #setState(BaseState)} here. If you need to update state in response to a prop change,
+   * use {@link #componentWillReceiveProps(BaseProps)} instead.
    *
-   * Note: This method will not be invoked if {@link #shouldComponentUpdate(P, S)} returns false.
+   * Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState)} returns false.
+   *
+   * @param nextProps the new properties of the component.
+   * @param nextState the new state of the component.
    */
   protected void componentWillUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
   {
@@ -192,8 +195,8 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
    *
    * Returning false does not prevent child components from re-rendering when their state changes.
    *
-   * Currently, if this method returns false, then {@link #componentWillUpdate}, {@link #render()}, and
-   * {@link #componentDidUpdate} will not be invoked. Note that in the future React may treat shouldComponentUpdate
+   * Currently, if this method returns false, then {@link #componentWillUpdate(BaseProps, BaseState)}, {@link #render()}, and
+   * {@link #componentDidUpdate(BaseProps, BaseProps)} will not be invoked. Note that in the future React may treat shouldComponentUpdate
    * as a hint rather than a strict directive, and returning false may still result in a re-rendering of the component.
    *
    * If you determine a specific component is slow after profiling, you may change it to inherit from React.PureComponent which implements
