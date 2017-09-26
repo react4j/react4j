@@ -24,11 +24,22 @@ import org.realityforge.arez.annotations.Container;
 @Container( singleton = true )
 @Generated( "Arez" )
 public class TodoRepository
+  implements TodoRepositoryExtension
 {
   private final Observable _observable =
     Arez.context().createObservable( Arez.context().areNamesEnabled() ? "Todos.todo" : null );
   private final HashMap<Object, Todo> _entities = new HashMap<>();
   private final Collection<Todo> _entityList = Collections.unmodifiableCollection( _entities.values() );
+
+  @Nonnull
+  public static TodoRepository create()
+  {
+    return new Arez_TodoRepository();
+  }
+
+  TodoRepository()
+  {
+  }
 
   @Action
   public void create( @Nonnull final String id, @Nonnull final String title, final boolean completed )
@@ -69,6 +80,17 @@ public class TodoRepository
   }
 
   @Nonnull
+  public final Todo getById( @Nonnull final String id )
+  {
+    final Todo todo = findById( id );
+    if( null == todo )
+    {
+      throw new NoSuchEntityException( "Todo", id );
+    }
+    return todo;
+  }
+
+  @Nonnull
   public final Collection<Todo> findAll()
   {
     _observable.reportObserved();
@@ -96,6 +118,37 @@ public class TodoRepository
 
   //TODO: Should we support a getById and getByQuery that throws exceptions if unable to find element?
 
+  /**
+   * Find an entity based on specified query, returning null if not present.
+   *
+   * @param query the query.
+   * @return the entity or null if no such entity.
+   */
+  @Nullable
+  public final Todo findByQuery( @Nonnull final Predicate<Todo> query )
+  {
+    return findAll().stream().filter( query ).findFirst().orElse( null );
+  }
+
+  /**
+   * Return an entity based on specified query, raising a NoResultException if no matching entity.
+   *
+   * @param query the query.
+   * @return the entity.
+   */
+  @Nonnull
+  public final Todo getByQuery( @Nonnull final Predicate<Todo> query )
+    throws NoResultException
+  {
+    final Todo result = findByQuery( query );
+    if ( null == result )
+    {
+      throw new NoResultException();
+    }
+    return result;
+  }
+
+  @Override
   @Nonnull
   public final TodoRepository self()
   {
