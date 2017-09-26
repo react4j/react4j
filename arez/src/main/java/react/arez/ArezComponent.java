@@ -40,12 +40,6 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
     final ArezContext context = Arez.context();
     _propsObservable = context.createObservable( toName( ".props" ) );
     _stateObservable = context.createObservable( toName( ".state" ) );
-    /*
-     * We are forced to use the callback variant of setState as not all components have state
-     * and thus state will be null, but it is invalid to pass null to setState. The callback
-     * approach forces the framework to construct state for us and pass it to callback AND it
-     * also ensures that if any other code changes the state we will not override the value.
-     */
     _renderReaction = context.reaction( toName( ".reaction" ),
                                         false,
                                         this::onRenderDepsChanged );
@@ -54,6 +48,12 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   private void onRenderDepsChanged()
   {
     _renderDepsChanged = true;
+    /*
+     * We are forced to use the callback variant of setState as not all components have state
+     * and thus state will be null, but it is invalid to pass null to setState. The callback
+     * approach forces the framework to construct state for us and pass it to callback AND it
+     * also ensures that if any other code changes the state we will not override the value.
+     */
     component().setState( ( s, p ) -> s );
   }
 
