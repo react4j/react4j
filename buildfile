@@ -105,6 +105,37 @@ define 'react' do
     test.compile.with TEST_DEPS
   end
 
+  define 'processor' do
+    pom.provided_dependencies.concat PROVIDED_DEPS
+
+    compile.with PROVIDED_DEPS,
+                 :autoservice,
+                 :autocommon,
+                 :javapoet,
+                 :guava,
+                 :braincheck,
+                 :jsinterop_base,
+                 :jsinterop_annotations,
+                 project('core'),
+                 project('annotations')
+
+    test.with :compile_testing,
+              Java.tools_jar,
+              :truth,
+              project('core')
+
+    package(:jar)
+    package(:sources)
+    package(:javadoc)
+
+    test.using :testng
+    test.compile.with TEST_DEPS
+
+    iml.test_source_directories << _('src/test/resources/input')
+    iml.test_source_directories << _('src/test/resources/expected')
+    iml.test_source_directories << _('src/test/resources/bad_input')
+  end
+
   define 'todomvc' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
@@ -116,6 +147,8 @@ define 'react' do
                  project('dom').compile.dependencies,
                  project('arez').package(:jar, :classifier => :gwt),
                  project('arez').compile.dependencies,
+                 project('processor').package(:jar, :classifier => :gwt),
+                 project('processor').compile.dependencies,
                  :arez_annotations,
                  :arez_processor,
                  :arez_extras,
@@ -138,12 +171,12 @@ define 'react' do
     iml.main_source_directories << _('generated/processors/main/java')
   end
 
-  doc.from(projects(%w(react:annotations react:core react:dom react:arez))).using(:javadoc, :windowtitle => 'React')
+  doc.from(projects(%w(react:annotations react:core react:dom react:arez react:processor))).using(:javadoc, :windowtitle => 'React')
 
   iml.excluded_directories << project._('tmp/gwt')
   iml.excluded_directories << project._('tmp')
 
-  ipr.add_default_testng_configuration(:jvm_args => '-ea')
+  ipr.add_default_testng_configuration(:jvm_args => '-ea -Dbraincheck.dynamic_provider=true -Dbraincheck.environment=development -Dreact.dynamic_provider=true -Dreact.environment=development -Dreact.output_fixture_data=false -Dreact.fixture_dir=processor/src/test/resources')
   ipr.add_component_from_artifact(:idea_codestyle)
 
   ipr.add_gwt_configuration(project,
