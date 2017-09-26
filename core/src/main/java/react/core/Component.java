@@ -89,8 +89,8 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   public native void setState( S state, JsProcedure callback );
 
   /**
-   * <p>Performs a shallow merge of nextState into current state. This is the primary method
-   * you use to trigger UI updates from event handlers and server request callbacks.</p>
+   * Performs a shallow merge of nextState into current state. This is the primary method
+   * you use to trigger UI updates from event handlers and server request callbacks.
    *
    * <p>It's also possible to pass a function with the signature function(state, props).
    * This can be useful in some cases when you want to enqueue an atomic update that
