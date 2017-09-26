@@ -40,9 +40,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
     final ArezContext context = Arez.context();
     _propsObservable = context.createObservable( toName( ".props" ) );
     _stateObservable = context.createObservable( toName( ".state" ) );
-    _renderReaction = context.reaction( toName( ".reaction" ),
-                                        false,
-                                        this::onRenderDepsChanged );
+    _renderReaction = context.reaction( toName( ".reaction" ), false, this::onRenderDepsChanged );
   }
 
   private void onRenderDepsChanged()
