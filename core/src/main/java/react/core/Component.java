@@ -30,17 +30,11 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
 
 /**
- * <p>You can subclass {@link Component} to define a stateful, ES6-style React component</p>
+ * You can subclass {@link Component} to define a stateful, ES6-style React component.
  *
- * <p>To create a {@link ReactElement} based on this component, call {@link React#createElement(Class, BaseProps, ReactElement...)}.</p>
+ * In addition to the methods defined in this class, you can also define the following lifecycle methods as needed:
  *
  * <pre>
- * React.createElement(ComponentUtils.getCtorFn("SomeComponentName"), someProps, ReactElement...)
- * </pre>
- *
- * In addition to the methods defined in this class, you can also define the following lifecyle methods as needed:
- *
- * <Pre>
  * void componentWillMount()
  * void componentDidMount()
  * void componentWillReceiveProps(P nextProps)
@@ -48,7 +42,7 @@ import jsinterop.base.JsPropertyMap;
  * void componentWillUpdate(P nextProps, S nextState)
  * void componentDidUpdate(P prevProps, S prevState)
  * void componentWillUnmount()
- * </Pre>
+ * </pre>
  *
  * @param <P> the type of props this component expects
  * @param <S> the type of state this component maintains
