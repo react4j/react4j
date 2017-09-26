@@ -136,6 +136,8 @@ define 'react' do
     iml.main_source_directories << _('generated/processors/main/java')
   end
 
+  doc.from(projects(%w(react:annotations react:core react:dom react:arez))).using(:javadoc, :windowtitle => 'React')
+
   iml.excluded_directories << project._('tmp/gwt')
   iml.excluded_directories << project._('tmp')
 
