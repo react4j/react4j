@@ -1,9 +1,10 @@
 package react.dom.events;
 
-import com.google.gwt.core.client.JsDate;
+import elemental2.core.Date;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
 import jsinterop.annotations.JsType;
+
 
 @JsType( isNative = true )
 public class SyntheticEvent
@@ -16,7 +17,7 @@ public class SyntheticEvent
   public boolean isTrusted;
   public Event nativeEvent;
   public Element target;
-  public JsDate timeStamp;
+  public Date timeStamp;
   public String type;
 
   public native void preventDefault();
