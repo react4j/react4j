@@ -3,10 +3,10 @@ package react.core;
 import java.util.Objects;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * The base java class that mirrors the react component.
@@ -123,6 +123,7 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
    *
    * @return A single {@link ReactElement}
    */
+  @Nullable
   protected abstract ReactElement<?, ?> render();
 
   /**
