@@ -22,10 +22,20 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
     S onSetState( S previousState, P currentProps );
   }
 
-  @Nonnull
-  private final Component<P, S> _component;
+  @Nullable
+  private Component<P, S> _component;
 
   protected SideComponent( @Nonnull final Component<P, S> component )
+  {
+    setComponent( component );
+  }
+
+  final void clearComponent()
+  {
+    _component = null;
+  }
+
+  final void setComponent( @Nonnull final Component<P, S> component )
   {
     _component = Objects.requireNonNull( component );
   }
@@ -38,6 +48,7 @@ public abstract class SideComponent<P extends BaseProps, S extends BaseState>
   @Nonnull
   protected Component<P, S> component()
   {
+    assert null != _component;
     return _component;
   }
 
