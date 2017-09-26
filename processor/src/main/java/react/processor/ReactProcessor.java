@@ -35,7 +35,6 @@ public final class ReactProcessor
   public boolean process( final Set<? extends TypeElement> annotations, final RoundEnvironment env )
   {
     final Set<? extends Element> elements = env.getElementsAnnotatedWith( ReactComponent.class );
-    System.out.println( "elements = " + elements.size() );
     processElements( elements );
     return false;
   }
