@@ -1,8 +1,6 @@
 package react.processor;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;

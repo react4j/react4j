@@ -1,87 +1,113 @@
 package react.core;
-/* The MIT License (MIT)
-
-Copyright (c) 2016 GWT React
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE. */
 
 import java.util.Objects;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsMethod;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
+import jsinterop.annotations.JsFunction;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import static org.realityforge.braincheck.Guards.*;
 
 /**
- * You can subclass {@link Component} to define a stateful, ES6-style React component.
+ * The base java class that mirrors the react component.
  *
- * In addition to the methods defined in this class, you can also define the following lifecycle methods as needed:
- *
- * <pre>
- * void componentWillMount()
- * void componentDidMount()
- * void componentWillReceiveProps(P nextProps)
- * boolean shouldComponentUpdate(P nextProps, S nextState)
- * void componentWillUpdate(P nextProps, S nextState)
- * void componentDidUpdate(P prevProps, S prevState)
- * void componentWillUnmount()
- * </pre>
- *
- * @param <P> the type of props this component expects
- * @param <S> the type of state this component maintains
+ * @param <P> the type of props that this component supports.
+ * @param <S> the type of state that this component maintains.
  */
-@JsType( isNative = true, namespace = "React", name = "Component" )
 public abstract class Component<P extends BaseProps, S extends BaseState>
 {
-  @JsProperty
-  private S state;
-
-  @SuppressWarnings( "unused" )
-  @JsProperty
-  private P props;
-
-  @JsProperty
-  private JsPropertyMap<Object> refs;
-
-  protected Component( @Nonnull final P props )
+  @JsFunction
+  public interface SetStateCallback<P, S>
   {
+    S onSetState( S previousState, P currentProps );
   }
 
-  /**
-   * Performs a shallow merge of nextState into current state. This is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
-   *
-   * @param state Object Literal (containing zero or more keys to update)
-   */
-  public native void setState( S state );
+  @Nonnull
+  private ComponentState _componentState = ComponentState.UNKNOWN;
+  @Nullable
+  private NativeComponent<P, S> _nativeComponent;
 
   /**
-   * Performs a shallow merge of nextState into current state. This is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
-   *
-   * @param state    Object Literal (containing zero or more keys to update)
-   * @param callback callback function that will be executed once setState is completed and
-   *                 the component is re-rendered.
+   * Set the state of the component. Only used for invariant checking.
    */
-  public native void setState( S state, JsProcedure callback );
+  final void setComponentState( @Nonnull final ComponentState componentState )
+  {
+    invariant( ReactConfig::checkComponentStateInvariants,
+               () -> "Component.setComponentState() invoked on " + this +
+                     " when ReactConfig.checkComponentStateInvariants() is false" );
+    _componentState = Objects.requireNonNull( componentState );
+  }
+
+  final void bindComponent( @Nonnull final NativeComponent<P, S> nativeComponent )
+  {
+    _nativeComponent = Objects.requireNonNull( nativeComponent );
+  }
+
+  protected void setInitialState( @Nonnull final S state )
+  {
+    if ( ReactConfig.checkComponentStateInvariants() )
+    {
+      apiInvariant( () -> ComponentState.INITIAL == _componentState,
+                    () -> "Attempted to invoke setInitialState on " + this + " when component is " +
+                          "not in INITIAL state but in state " + _componentState );
+    }
+    component().setInitialState( state );
+  }
+
+  protected void setInitialState( @Nonnull final Supplier<S> state )
+  {
+    if ( ReactConfig.checkComponentStateInvariants() )
+    {
+      apiInvariant( () -> ComponentState.INITIAL == _componentState,
+                    () -> "Attempted to invoke setInitialState on " + this + " when component is " +
+                          "not in INITIAL state but in state " + _componentState );
+    }
+    component().setInitialState( state.get() );
+  }
+
+  @Nonnull
+  protected NativeComponent<P, S> component()
+  {
+    invariant( () -> null != _nativeComponent,
+               () -> "Invoked component() on " + this + " before a component has been bound." );
+    assert null != _nativeComponent;
+    return _nativeComponent;
+  }
+
+  protected boolean isComponentBound()
+  {
+    return null != _nativeComponent;
+  }
+
+  @Nonnull
+  protected S state()
+  {
+    return component().state();
+  }
+
+  @Nonnull
+  protected P props()
+  {
+    return component().props();
+  }
+
+  @Nonnull
+  protected JsPropertyMap<Object> refs()
+  {
+    return component().refs();
+  }
+
+  @Nullable
+  protected <T> T getRefNamed( @Nonnull final String refName )
+  {
+    return Js.cast( refs().get( refName ) );
+  }
+
+  protected void setState( @Nonnull final S state )
+  {
+    component().setState( state );
+  }
 
   /**
    * Performs a shallow merge of nextState into current state. This is the primary method
@@ -94,28 +120,10 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @param callback callback function that will be executed once setState is completed and
    *                 the component is re-rendered.
    */
-  public native void setState( @Nonnull SideComponent.SetStateCallback<P, S> callback );
-
-  /**
-   * <p>By default, when your component's state or props change, your component will re-render.
-   * However, if these change implicitly (eg: data deep within an object changes without
-   * changing the object itself) or if your render() method depends on some other data, you can
-   * tell React that it needs to re-run render() by calling forceUpdate().</p>
-   *
-   * <p>Calling forceUpdate() will cause render() to be called on the component, skipping
-   * shouldComponentUpdate(). This will trigger the normal lifecycle methods for child
-   * components, including the shouldComponentUpdate() method of each child. React will still
-   * only update the DOM if the markup changes.</p>
-   *
-   * <p>Normally you should try to avoid all uses of forceUpdate() and only read from this.props
-   * and this.state in render(). This makes your component "pure" and your application much
-   * simpler and more efficient.</p>
-   *
-   * @param callBack callback function that will be executed once the component has been updated
-   */
-  protected native void forceUpdate( JsProcedure callBack );
-
-  public native void forceUpdate();
+  protected void setState( @Nonnull final SetStateCallback<P, S> callback )
+  {
+    component().setState( callback );
+  }
 
   /**
    * The render() method is required.
@@ -132,43 +140,112 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * <p>The render() function should be pure, meaning that it does not modify component
    * state, it returns the same result each time it's invoked, and it does not read from
    * or write to the DOM or otherwise interact with the browser (e.g., by using setTimeout).
-   * If you need to interact with the browser, perform your work in componentDidMount() or
+   * If you need to interact with the browser, perform your work in {@link #componentDidMount()} or
    * the other lifecycle methods instead. Keeping render() pure makes components easier to
    * think about.</p>
    *
    * @return A single {@link ReactElement}
    */
-  @JsMethod
   @Nullable
   protected abstract ReactElement<?, ?> render();
 
-  @JsOverlay
-  public final S state()
+  protected void componentInitialize()
   {
-    return state;
   }
 
-  @JsOverlay
-  public final P props()
+  /**
+   * This method is invoked immediately after a component is mounted.
+   * Initialization that requires DOM nodes should go here. If you need to load data from a remote endpoint,
+   * this is a good place to instantiate the network request.
+   * Setting state in this method will trigger a re-rendering.
+   */
+  protected void componentDidMount()
   {
-    return props;
   }
 
-  @JsOverlay
-  public final void setProps( @Nonnull final P props )
+  /**
+   * This method is invoked immediately after updating occurs. This method is not called for the initial render.
+   *
+   * Use this as an opportunity to operate on the DOM when the component has been updated. This is also a good place to do network requests as long as
+   * you compare the current props to previous props (e.g. a network request may not be necessary if the props have not changed).
+   *
+   * Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState)} returns false.
+   */
+  protected void componentDidUpdate( @Nonnull final P nextProps, @Nonnull final P nextState )
   {
-    this.props = props;
   }
 
-  @JsOverlay
-  public final void setInitialState( @Nonnull final S state )
+  /**
+   * This method is invoked immediately before mounting occurs.
+   * It is called before {@link #render()}, therefore setting state in this method will not trigger a re-rendering.
+   * Avoid introducing any side-effects or subscriptions in this method.
+   * This is the only lifecycle hook called on server rendering. Generally, we recommend using the constructor instead.
+   */
+  protected void componentWillMount()
   {
-    this.state = Objects.requireNonNull( state );
   }
 
-  @JsOverlay
-  public final JsPropertyMap<Object> refs()
+  /**
+   * This method is invoked before a mounted component receives new props.
+   * If you need to update the state in response to prop changes (for example, to reset it), you may compare
+   * this.props and nextProps and perform state transitions using {@link #setState(BaseState)} in this method.
+   * Note that React may call this method even if the props have not changed, so make sure to compare the current
+   * and next values if you only want to handle changes. This may occur when the parent component causes your component to re-render.
+   * React doesn't call this method with initial props during mounting. It only calls this method
+   * if some of component's props may update. Calling {@link #setState(BaseState)} generally doesn't trigger
+   * this method.
+   */
+  protected void componentWillReceiveProps( @Nonnull final P nextProps )
   {
-    return refs;
+  }
+
+  /**
+   * This method is invoked immediately before a component is unmounted and destroyed.
+   * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
+   * any DOM elements that were created in {@link #componentDidMount()}
+   */
+  protected void componentWillUnmount()
+  {
+  }
+
+  /**
+   * This method is invoked immediately before rendering when new props or state are being received.
+   * Use this as an opportunity to perform preparation before an update occurs. This method is not called for the initial render.
+   *
+   * Note that you cannot call {@link #setState(BaseState)} here. If you need to update state in response to a prop change,
+   * use {@link #componentWillReceiveProps(BaseProps)} instead.
+   *
+   * Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState)} returns false.
+   *
+   * @param nextProps the new properties of the component.
+   * @param nextState the new state of the component.
+   */
+  protected void componentWillUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  {
+  }
+
+  /**
+   * Use this method to let React know if a component's output is not affected
+   * by the current change in state or props. The default behavior is to re-render on every state change, and in the vast
+   * majority of cases you should rely on the default behavior.
+   *
+   * This method is invoked before rendering when new props or state are being received.
+   * Defaults to true. This method is not called for the initial render or when forceUpdate() is used.
+   *
+   * Returning false does not prevent child components from re-rendering when their state changes.
+   *
+   * Currently, if this method returns false, then {@link #componentWillUpdate(BaseProps, BaseState)}, {@link #render()}, and
+   * {@link #componentDidUpdate(BaseProps, BaseProps)} will not be invoked. Note that in the future React may treat shouldComponentUpdate
+   * as a hint rather than a strict directive, and returning false may still result in a re-rendering of the component.
+   *
+   * If you determine a specific component is slow after profiling, you may change it to inherit from React.PureComponent which implements
+   * this method with a shallow prop and state comparison. If you are confident you want to write
+   * it by hand, you may compare this.props with nextProps and this.state with nextState and return false to tell React the update can be skipped.
+   *
+   * @return true in case the component should be updated
+   */
+  public boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  {
+    return true;
   }
 }

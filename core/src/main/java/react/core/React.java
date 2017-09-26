@@ -47,18 +47,18 @@ public class React
    * of the {@link JsType} annotation)</p>
    * <p>3) When class data is disabled when building</p>
    *
-   * @param type  the {@link Class} object of a React component extending {@link Component}
+   * @param type  the {@link Class} object of a React component extending {@link NativeComponent}
    * @param props the props to pass to the element
    * @return a {@link ReactElement}
    */
 
-  public static native <P extends BaseProps, S extends BaseState, T extends Component<P, S>> ReactElement<P, T>
+  public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
   createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props );
 
-  public static native <P extends BaseProps, S extends BaseState, T extends Component<P, S>> ReactElement<P, T>
+  public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
   createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props, @Nonnull String value );
 
-  public static native <P extends BaseProps, S extends BaseState, T extends Component<P, S>> ReactElement<P, T>
+  public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
   createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props, @Nonnull ReactElement<?, ?>... child );
 
   /**

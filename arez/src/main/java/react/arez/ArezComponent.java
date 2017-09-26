@@ -13,14 +13,14 @@ import org.realityforge.arez.annotations.ContainerId;
 import org.realityforge.arez.annotations.ContainerName;
 import react.core.BaseProps;
 import react.core.BaseState;
+import react.core.Component;
 import react.core.ReactElement;
-import react.core.SideComponent;
 
 /**
  * A base class for all Arez enabled components.
  */
 public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
-  extends SideComponent<P, S>
+  extends Component<P, S>
 {
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;

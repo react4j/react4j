@@ -1,12 +1,12 @@
 import react.annotations.ReactComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
+import react.core.Component;
 import react.core.ReactElement;
-import react.core.SideComponent;
 
 @ReactComponent
 class RootPackageReactComponent
-  extends SideComponent<BaseProps, BaseState>
+  extends Component<BaseProps, BaseState>
 {
   @Override
   protected ReactElement<?, ?> render()

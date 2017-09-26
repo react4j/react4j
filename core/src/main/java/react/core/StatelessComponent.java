@@ -10,8 +10,8 @@ import static org.realityforge.braincheck.Guards.*;
  *
  * @param <P> the type of props that this component supports.
  */
-public abstract class StatelessSideComponent<P extends BaseProps>
-  extends SideComponent<P, BaseState>
+public abstract class StatelessComponent<P extends BaseProps>
+  extends Component<P, BaseState>
 {
   @Nonnull
   protected final BaseState state()

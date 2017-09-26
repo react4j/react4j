@@ -2,13 +2,12 @@ package react.core;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 
 /**
  * This class provides a base class that designed to forward all lifecycle methods to a target component.
- * The target component is of type {@link SideComponent}. This class is also responsible for calling
- * {@link SideComponent#setComponentState(ComponentState)} before and after each call to the target component
+ * The target component is of type {@link Component}. This class is also responsible for calling
+ * {@link Component#setComponentState(ComponentState)} before and after each call to the target component
  * if {@link ReactConfig#checkComponentStateInvariants()} returns true. This will make it possible for the
  * target component to check that the application code is correctly interacting with the React component
  * framework. In production builds it is expected that the method calls will be inlined and the checks will
@@ -18,9 +17,9 @@ import jsinterop.annotations.JsType;
 public abstract class NativeAdapterComponent<
   P extends BaseProps,
   S extends BaseState,
-  C extends SideComponent<P, S>
+  C extends Component<P, S>
   >
-  extends Component<P, S>
+  extends NativeComponent<P, S>
 {
   /**
    * The target component that all lifecycle methods are forwarded to.
@@ -32,7 +31,6 @@ public abstract class NativeAdapterComponent<
    *
    * @param props the initial props.
    */
-  @JsConstructor
   protected NativeAdapterComponent( @Nonnull final P props )
   {
     super( props );
@@ -75,7 +73,7 @@ public abstract class NativeAdapterComponent<
    * Call render on the target component.
    *
    * @return the react component.
-   * @see SideComponent#render()
+   * @see Component#render()
    */
   @Nullable
   public final ReactElement<?, ?> render()
@@ -102,7 +100,7 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method componentDidMount() that
    * delegates to this method to perform the work.
    *
-   * @see SideComponent#componentDidMount()
+   * @see Component#componentDidMount()
    */
   protected final void performComponentDidMount()
   {
@@ -128,7 +126,7 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method componentWillMount() that
    * delegates to this method to perform the work.
    *
-   * @see SideComponent#componentWillMount()
+   * @see Component#componentWillMount()
    */
   protected final void performComponentWillMount()
   {
@@ -154,7 +152,7 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method componentWillUnmount() that
    * delegates to this method to perform the work.
    *
-   * @see SideComponent#componentWillUnmount()
+   * @see Component#componentWillUnmount()
    */
   protected final void performComponentWillUnmount()
   {
@@ -182,7 +180,7 @@ public abstract class NativeAdapterComponent<
    *
    * @param nextProps the props.
    * @param nextState the state.
-   * @see SideComponent#componentWillUpdate(BaseProps, BaseState)
+   * @see Component#componentWillUpdate(BaseProps, BaseState)
    */
   protected final void performComponentWillUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
   {
@@ -210,7 +208,7 @@ public abstract class NativeAdapterComponent<
    *
    * @param nextProps the props.
    * @param nextState the state.
-   * @see SideComponent#shouldComponentUpdate(BaseProps, BaseState)
+   * @see Component#shouldComponentUpdate(BaseProps, BaseState)
    */
   protected final boolean performShouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
   {
@@ -237,7 +235,7 @@ public abstract class NativeAdapterComponent<
    * delegates to this method to perform the work.
    *
    * @param nextProps the props.
-   * @see SideComponent#componentWillReceiveProps(BaseProps)
+   * @see Component#componentWillReceiveProps(BaseProps)
    */
   protected final void performComponentWillReceiveProps( @Nonnull final P nextProps )
   {
@@ -265,7 +263,7 @@ public abstract class NativeAdapterComponent<
    *
    * @param nextProps the props.
    * @param nextState the state.
-   * @see SideComponent#componentDidUpdate(BaseProps, BaseProps)
+   * @see Component#componentDidUpdate(BaseProps, BaseProps)
    */
   protected final void performComponentDidUpdate( @Nonnull final P nextProps, @Nonnull final P nextState )
   {

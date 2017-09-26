@@ -9,7 +9,7 @@ import jsinterop.annotations.JsType;
 import react.annotations.ReactComponent;
 import react.core.BaseProps;
 import react.core.ReactElement;
-import react.core.StatelessSideComponent;
+import react.core.StatelessComponent;
 import react.dom.events.MouseEventHandler;
 import react.dom.proptypes.html.AnchorProps;
 import react.dom.proptypes.html.BtnProps;
@@ -18,7 +18,7 @@ import static react.dom.DOM.*;
 
 @ReactComponent
 class Footer
-  extends StatelessSideComponent<Footer.Props>
+  extends StatelessComponent<Footer.Props>
 {
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   static class Props

@@ -10,7 +10,7 @@ import react.core.NativeAdapterComponent;
 
 /**
  * TODO: This should be generated from annotation processor, processing TodoItem.
- * Any lifecycle methods that are overridden (i.e. not defined in SideComponent)
+ * Any lifecycle methods that are overridden (i.e. not defined in Component)
  * should be copied here.
  */
 @JsType
