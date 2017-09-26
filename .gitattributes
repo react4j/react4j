@@ -5,8 +5,10 @@
 *.java text
 *.js text
 *.md text
+*.rake text
 *.xml text
 *.yaml text
+*.yml text
 .gitattributes text
 .gitignore text
 .ruby-version text
