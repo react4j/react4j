@@ -60,7 +60,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   @JsProperty
   private JsPropertyMap<Object> refs;
 
-  public Component( @Nonnull final P props )
+  protected Component( @Nonnull final P props )
   {
   }
 
