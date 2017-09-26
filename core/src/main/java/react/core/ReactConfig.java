@@ -13,6 +13,12 @@ public final class ReactConfig
   {
   }
 
+  /**
+   * Return true if components should have human readable names specified.
+   * Useful if you want to interact via DevTools or other tool chains.
+   *
+   * @return to enable human readable names for components.
+   */
   public static boolean enableComponentNames()
   {
     return c_provider.enableComponentNames();
@@ -22,6 +28,8 @@ public final class ReactConfig
    * Return true if we should check that the user interacts with React component in a way compatible with the state.
    * i.e. setInitialState should only be invoked at the start, setState should not be invoked while componentWillUpdate
    * is running etc.
+   *
+   * @return true to enable invariant checking about how we interact with native react component.
    */
   public static boolean checkComponentStateInvariants()
   {
