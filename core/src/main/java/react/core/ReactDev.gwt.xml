@@ -3,6 +3,8 @@
   <inherits name='react.core.React'/>
   <inherits name="org.realityforge.braincheck.BrainCheckDev"/>
 
+  <public path='public' includes="dev/*"/>
+
   <set-property name="react.environment" value="development"/>
   <set-property name="react.enable_component_names" value="true"/>
 </module>

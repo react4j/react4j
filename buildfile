@@ -39,6 +39,8 @@ define 'react' do
   define 'core' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
+    js_assets(project, :core)
+
     compile.with PROVIDED_DEPS,
                  :elemental2_core,
                  :jsinterop_base,
@@ -62,6 +64,8 @@ define 'react' do
 
   define 'dom' do
     pom.provided_dependencies.concat PROVIDED_DEPS
+
+    js_assets(project, :dom)
 
     compile.with project('core').package(:jar, :classifier => :gwt),
                  project('core').compile.dependencies,
