@@ -12,7 +12,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 ## TODO
 
 * Develop React-Arez extension
-* Consider using annotations and generator to generate components
 * Add mechanism for exporting methods with useful displayNames in props
 * Overload React methods so can accept arrays
 * Add invariant checks to make sure people are doing the right thing when interacting with react.
