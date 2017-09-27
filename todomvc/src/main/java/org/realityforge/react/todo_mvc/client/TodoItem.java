@@ -16,7 +16,6 @@ import react.arez.ArezComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
 import react.core.ReactElement;
-import react.dom.DOMElement;
 import react.dom.events.FormEvent;
 import react.dom.events.KeyboardEvent;
 import react.dom.proptypes.html.BtnProps;
@@ -171,31 +170,29 @@ class TodoItem
   {
     final Props props = props();
     final boolean completed = props.todo.isCompleted();
-    final DOMElement<HtmlProps> element =
-      li( new HtmlProps().className( classesFor( completed, props.isEditing ) ),
-          div( new HtmlProps().className( "view" ),
-               input( new InputProps()
-                        .className( "toggle" )
-                        .type( InputType.checkbox ).checked( completed )
-                        .onChange( e -> onToggle() )
+    return li( new HtmlProps().className( classesFor( completed, props.isEditing ) ),
+               div( new HtmlProps().className( "view" ),
+                    input( new InputProps()
+                             .className( "toggle" )
+                             .type( InputType.checkbox ).checked( completed )
+                             .onChange( e -> onToggle() )
+                    ),
+                    label( new LabelProps().OnDoubleClick( e -> onEdit() ),
+                           props.todo.getTitle() ),
+                    button( new BtnProps()
+                              .className( "destroy" )
+                              .onClick( e -> onDestroy() )
+                    )
                ),
-               label( new LabelProps().OnDoubleClick( e -> onEdit() ),
-                      props.todo.getTitle() ),
-               button( new BtnProps()
-                         .className( "destroy" )
-                         .onClick( e -> onDestroy() )
+               input( new InputProps()
+                        .ref( "editField" )
+                        .className( "edit" )
+                        .defaultValue( state().editText )
+                        .onBlur( e -> onSubmitTodo() )
+                        .onChange( this::handleChange )
+                        .onKeyDown( this::handleKeyDown )
                )
-          ),
-          input( new InputProps()
-                   .ref( "editField" )
-                   .className( "edit" )
-                   .defaultValue( state().editText )
-                   .onBlur( e -> onSubmitTodo() )
-                   .onChange( this::handleChange )
-                   .onKeyDown( this::handleKeyDown )
-          )
-      );
-    return element;
+    );
   }
 
   private static String classesFor( final boolean completed, final boolean editing )
