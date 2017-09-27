@@ -90,7 +90,7 @@ abstract class AbstractReactProcessorTest
   void assertFailedCompile( @Nonnull final String classname, @Nonnull final String errorMessageFragment )
     throws Exception
   {
-    final String[] elements = classname.contains( "." ) ? classname.split( "." ) : new String[]{ classname };
+    final String[] elements = classname.contains( "." ) ? classname.split( "\\." ) : new String[]{ classname };
     final StringBuilder input = new StringBuilder();
     input.append( "bad_input" );
     for ( final String element : elements )

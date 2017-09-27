@@ -38,7 +38,7 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "com.example.component.FinalComponent", "@ContainerName target must not be static" }
+        new Object[]{ "com.example.component.FinalComponent", "@ReactComponent target must not be final" }
       };
   }
 
