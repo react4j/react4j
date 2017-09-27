@@ -9,10 +9,10 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
-import org.realityforge.arez.annotations.Container;
+import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.react.todo_mvc.client.model.Todo;
 import react.annotations.ReactComponent;
-import react.arez.ArezComponent;
+import react.arez.ReactArezComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
 import react.core.ReactElement;
@@ -26,9 +26,9 @@ import react.dom.proptypes.html.attributeTypes.InputType;
 import static react.dom.DOM.*;
 
 @ReactComponent
-@Container
+@ArezComponent
 class TodoItem
-  extends ArezComponent<TodoItem.Props, TodoItem.State>
+  extends ReactArezComponent<TodoItem.Props, TodoItem.State>
 {
   @JsFunction
   public interface JsBiConsumer<A1, A2>

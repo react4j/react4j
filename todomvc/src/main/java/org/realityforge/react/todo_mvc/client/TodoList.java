@@ -12,12 +12,12 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
+import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Autorun;
-import org.realityforge.arez.annotations.Container;
 import org.realityforge.react.todo_mvc.client.model.AppData;
 import org.realityforge.react.todo_mvc.client.model.Todo;
 import react.annotations.ReactComponent;
-import react.arez.ArezComponent;
+import react.arez.ReactArezComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
 import react.core.React;
@@ -31,9 +31,9 @@ import react.dom.proptypes.html.attributeTypes.InputType;
 import static react.dom.DOM.*;
 
 @ReactComponent
-@Container
+@ArezComponent
 class TodoList
-  extends ArezComponent<BaseProps, TodoList.State>
+  extends ReactArezComponent<BaseProps, TodoList.State>
 {
   static final String NOW_SHOWING_ACTIVE_TODOS = "active";
   static final String NOW_SHOWING_COMPLETED_TODOS = "completed";

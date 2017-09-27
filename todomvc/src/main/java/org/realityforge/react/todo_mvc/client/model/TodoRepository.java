@@ -14,14 +14,14 @@ import org.realityforge.arez.Arez;
 import org.realityforge.arez.Disposable;
 import org.realityforge.arez.Observable;
 import org.realityforge.arez.annotations.Action;
-import org.realityforge.arez.annotations.Container;
+import org.realityforge.arez.annotations.ArezComponent;
 
 /**
  * TODO: This class should be entirely generated.
  * Perhaps with additional query capabilities sourced out of replicant.
  */
 @SuppressWarnings( "ConstantConditions" )
-@Container( singleton = true )
+@ArezComponent( singleton = true )
 @Generated( "Arez" )
 public class TodoRepository
   implements TodoRepositoryExtension

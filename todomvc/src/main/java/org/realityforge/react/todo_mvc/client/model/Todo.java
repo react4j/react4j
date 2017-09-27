@@ -3,11 +3,11 @@ package org.realityforge.react.todo_mvc.client.model;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.realityforge.arez.annotations.Action;
-import org.realityforge.arez.annotations.Container;
-import org.realityforge.arez.annotations.ContainerId;
+import org.realityforge.arez.annotations.ArezComponent;
+import org.realityforge.arez.annotations.ComponentId;
 import org.realityforge.arez.annotations.Observable;
 
-@Container
+@ArezComponent
 public class Todo
 {
   @Nonnull
@@ -23,7 +23,7 @@ public class Todo
     _completed = completed;
   }
 
-  @ContainerId
+  @ComponentId
   @Nonnull
   public final String getId()
   {

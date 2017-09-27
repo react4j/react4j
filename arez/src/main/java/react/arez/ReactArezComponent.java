@@ -9,8 +9,8 @@ import org.realityforge.arez.ArezContext;
 import org.realityforge.arez.Observable;
 import org.realityforge.arez.Observer;
 import org.realityforge.arez.annotations.Action;
-import org.realityforge.arez.annotations.ContainerId;
-import org.realityforge.arez.annotations.ContainerName;
+import org.realityforge.arez.annotations.ComponentId;
+import org.realityforge.arez.annotations.ComponentName;
 import react.core.BaseProps;
 import react.core.BaseState;
 import react.core.Component;
@@ -19,7 +19,7 @@ import react.core.ReactElement;
 /**
  * A base class for all Arez enabled components.
  */
-public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
+public abstract class ReactArezComponent<P extends BaseProps, S extends BaseState>
   extends Component<P, S>
 {
   private static int c_nextComponentId = 1;
@@ -32,7 +32,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
   private final Observer _renderReaction;
   private boolean _renderDepsChanged;
 
-  protected ArezComponent()
+  protected ReactArezComponent()
   {
     _arezComponentId = c_nextComponentId++;
     final ArezContext context = Arez.context();
@@ -63,7 +63,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
     ;
   }
 
-  @ContainerId
+  @ComponentId
   protected final int getArezComponentId()
   {
     return _arezComponentId;
@@ -75,7 +75,7 @@ public abstract class ArezComponent<P extends BaseProps, S extends BaseState>
     return Arez.context().areNamesEnabled() ? getNamePrefix() + suffix : null;
   }
 
-  @ContainerName
+  @ComponentName
   @Nonnull
   protected String getNamePrefix()
   {

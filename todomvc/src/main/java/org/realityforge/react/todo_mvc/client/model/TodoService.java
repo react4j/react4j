@@ -5,9 +5,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.realityforge.arez.annotations.Action;
-import org.realityforge.arez.annotations.Container;
+import org.realityforge.arez.annotations.ArezComponent;
 
-@Container( singleton = true )
+@ArezComponent( singleton = true )
 public class TodoService
 {
   @Nonnull
