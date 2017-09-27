@@ -52,7 +52,7 @@ class TodoList
     String nowShowing;
 
     @JsOverlay
-    public static State create( final String editingId, final String newTodo, final String nowShowing )
+    static State create( final String editingId, final String newTodo, final String nowShowing )
     {
       final State state = new State();
       state.editingId = editingId;
