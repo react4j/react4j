@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -13,9 +14,12 @@ import javax.annotation.Nonnull;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
+import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
+import react.core.NativeAdapterComponent;
 import react.core.ReactConfig;
 
 final class Generator
@@ -91,6 +95,68 @@ final class Generator
     method.addStatement( "return constructorFn" );
 
     builder.addMethod( method.build() );
+
+    return builder.build();
+  }
+
+  @Nonnull
+  static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeElement element = descriptor.getElement();
+
+    final StringBuilder name = new StringBuilder( descriptor.getNativeComponentName() );
+
+    TypeElement t = element;
+    while ( NestingKind.TOP_LEVEL != t.getNestingKind() )
+    {
+      t = (TypeElement) t.getEnclosingElement();
+      name.insert( 0, t.getSimpleName() + "$" );
+    }
+
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( name.toString() );
+
+    //Ensure it can not be subclassd
+    builder.addModifiers( Modifier.FINAL );
+
+    builder.addAnnotation( AnnotationSpec.builder( JsType.class ).build() );
+    // Mark it as generated
+    builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
+      addMember( "value", "$S", ReactProcessor.class.getName() ).
+      build() );
+
+    final TypeName superType =
+      ParameterizedTypeName.get( ClassName.get( NativeAdapterComponent.class ),
+                                 ClassName.get( descriptor.getPropsType().asType() ),
+                                 ClassName.get( descriptor.getStateType().asType() ),
+                                 ClassName.get( descriptor.getElement() ) );
+
+    builder.superclass( superType );
+
+    // build the constructor
+    {
+      final ParameterSpec.Builder props =
+        ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
+          addAnnotation( Nonnull.class );
+      final MethodSpec.Builder method =
+        MethodSpec.constructorBuilder().
+          addAnnotation( JsConstructor.class ).
+          addModifiers( Modifier.PRIVATE ).
+          addParameter( props.build() );
+      method.addStatement( "super( props )" );
+      builder.addMethod( method.build() );
+    }
+
+    // build createComponent
+    {
+      final MethodSpec.Builder method =
+        MethodSpec.methodBuilder( "createComponent" ).
+          addAnnotation( Override.class ).
+          addModifiers( Modifier.PROTECTED ).
+          returns( ClassName.get( descriptor.getElement() ) );
+      method.addStatement( "return new $T()",
+                           ClassName.get( descriptor.getPackageName(), descriptor.getTypeToCreate() ) );
+      builder.addMethod( method.build() );
+    }
 
     return builder.build();
   }

@@ -13,6 +13,7 @@ public class ReactProcessorTest
     return new Object[][]
       {
         new Object[]{ "com.example.basic.BasicReactComponent" },
+        new Object[]{ "com.example.stateless.BasicStatelessComponent" },
         new Object[]{ "RootPackageReactComponent" }
       };
   }
