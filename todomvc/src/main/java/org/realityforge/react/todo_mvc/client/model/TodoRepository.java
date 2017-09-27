@@ -15,6 +15,7 @@ import org.realityforge.arez.Disposable;
 import org.realityforge.arez.Observable;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
+import org.realityforge.arez.annotations.PreDispose;
 
 /**
  * TODO: This class should be entirely generated.
@@ -24,7 +25,7 @@ import org.realityforge.arez.annotations.ArezComponent;
 @ArezComponent( singleton = true )
 @Generated( "Arez" )
 public class TodoRepository
-  implements TodoRepositoryExtension
+  implements TodoRepositoryExtension, MyTodoRepositoryExtension
 {
   private final Observable _observable =
     Arez.context().createObservable( Arez.context().areNamesEnabled() ? "Todos.todo" : null );
@@ -41,6 +42,15 @@ public class TodoRepository
   {
   }
 
+  @PreDispose
+  final void preDispose()
+  {
+    // Only if TODO is disposable
+    _entityList.forEach( todo -> Disposable.dispose( todo ) );
+    _entities.clear();
+    _observable.reportChanged();
+  }
+
   @Action
   public void create( @Nonnull final String id, @Nonnull final String title, final boolean completed )
   {
@@ -49,7 +59,6 @@ public class TodoRepository
     _observable.reportChanged();
   }
 
-  @Action
   public boolean contains( @Nonnull final Todo todo )
   {
     return _entities.containsKey( todo.getId() );
@@ -83,7 +92,7 @@ public class TodoRepository
   public final Todo getById( @Nonnull final String id )
   {
     final Todo todo = findById( id );
-    if( null == todo )
+    if ( null == todo )
     {
       throw new NoSuchEntityException( "Todo", id );
     }
