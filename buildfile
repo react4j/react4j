@@ -123,7 +123,9 @@ define 'react' do
     test.with :compile_testing,
               Java.tools_jar,
               :truth,
-              project('core')
+              project('core'),
+              :gwt_user,
+              :gwt_dev
 
     package(:jar)
     package(:sources)
