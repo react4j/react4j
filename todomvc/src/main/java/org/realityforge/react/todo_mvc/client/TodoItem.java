@@ -154,7 +154,7 @@ class TodoItem
   }
 
   @Override
-  protected void componentDidUpdate( @Nonnull final Props prevProps, @Nonnull final Props prevState )
+  protected void componentDidUpdate( @Nonnull final Props prevProps, @Nonnull final State prevState )
   {
     if ( !prevProps.isEditing && component().props().isEditing )
     {

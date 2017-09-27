@@ -9,11 +9,16 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import java.util.List;
+import java.util.StringJoiner;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsConstructorFn;
@@ -156,6 +161,53 @@ final class Generator
       method.addStatement( "return new $T()",
                            ClassName.get( descriptor.getPackageName(), descriptor.getTypeToCreate() ) );
       builder.addMethod( method.build() );
+    }
+
+    // Lifecycle methods
+    {
+
+      for ( final MethodDescriptor lifecycleMethod : descriptor.getLifecycleMethods() )
+      {
+        final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
+        final MethodSpec.Builder method =
+          MethodSpec.methodBuilder( methodName ).
+            addModifiers( Modifier.PUBLIC ).
+            returns( ClassName.get( lifecycleMethod.getMethodType().getReturnType() ) );
+
+        ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
+
+        final StringJoiner params = new StringJoiner( "," );
+        final List<? extends VariableElement> sourceParameters = lifecycleMethod.getMethod().getParameters();
+        final List<? extends TypeMirror> sourceParameterTypes = lifecycleMethod.getMethodType().getParameterTypes();
+        final int parameterCount = sourceParameters.size();
+        for ( int i = 0; i < parameterCount; i++ )
+        {
+          final VariableElement parameter = sourceParameters.get( i );
+          final TypeMirror parameterType = sourceParameterTypes.get( i );
+          final String parameterName = parameter.getSimpleName().toString();
+          final ParameterSpec.Builder parameterSpec =
+            ParameterSpec.builder( TypeName.get( parameterType ), parameterName, Modifier.FINAL ).
+              addAnnotation( Nonnull.class );
+          method.addParameter( parameterSpec.build() );
+          params.add( parameterName );
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        if ( TypeKind.VOID != lifecycleMethod.getMethodType().getReturnType().getKind() )
+        {
+          sb.append( "return " );
+        }
+
+        sb.append( "perform" );
+        sb.append( Character.toUpperCase( methodName.charAt( 0 ) ) );
+        sb.append( methodName.substring( 1 ) );
+        sb.append( "(" );
+        sb.append( params.toString() );
+        sb.append( ")" );
+
+        method.addStatement( sb.toString() );
+        builder.addMethod( method.build() );
+      }
     }
 
     return builder.build();

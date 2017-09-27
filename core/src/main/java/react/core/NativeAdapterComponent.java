@@ -263,9 +263,9 @@ public abstract class NativeAdapterComponent<
    *
    * @param nextProps the props.
    * @param nextState the state.
-   * @see Component#componentDidUpdate(BaseProps, BaseProps)
+   * @see Component#componentDidUpdate(BaseProps, BaseState)
    */
-  protected final void performComponentDidUpdate( @Nonnull final P nextProps, @Nonnull final P nextState )
+  protected final void performComponentDidUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {

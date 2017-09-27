@@ -4,8 +4,12 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
@@ -15,10 +19,14 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import react.annotations.ReactComponent;
 import react.core.Component;
 import react.core.StatelessComponent;
@@ -34,12 +42,29 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 public final class ReactProcessor
   extends AbstractProcessor
 {
+  private static final List<String> LIFECYCLE_METHODS =
+    Arrays.asList( "componentDidMount",
+                   "componentDidUpdate",
+                   "componentWillMount",
+                   "componentWillReceiveProps",
+                   "componentWillUnmount",
+                   "componentWillUpdate",
+                   "shouldComponentUpdate" );
+
+  /**
+   * Cache of lifecycle names to methods as defined by Component.
+   */
+  private final HashMap<String, ExecutableElement> _componentLifecycleMethods = new HashMap<>();
+
   /**
    * {@inheritDoc}
    */
   @Override
   public boolean process( final Set<? extends TypeElement> annotations, final RoundEnvironment env )
   {
+    // Clear lifecycle method cache to avoid potential inter-run problems
+    _componentLifecycleMethods.clear();
+
     final Set<? extends Element> elements = env.getElementsAnnotatedWith( ReactComponent.class );
     processElements( elements );
     return false;
@@ -69,11 +94,7 @@ public final class ReactProcessor
   {
     final ComponentDescriptor descriptor = parse( element );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildConstructorFactory( descriptor ) );
-    if ( descriptor.isStateless() )
-    {
-      //Start generating stateless components. Once this is done move on to others
-      emitTypeSpec( descriptor.getPackageName(), Generator.buildNativeComponent( descriptor ) );
-    }
+    emitTypeSpec( descriptor.getPackageName(), Generator.buildNativeComponent( descriptor ) );
   }
 
   private void emitTypeSpec( @Nonnull final String packageName, @Nonnull final TypeSpec typeSpec )
@@ -95,6 +116,55 @@ public final class ReactProcessor
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
     final ComponentDescriptor descriptor = new ComponentDescriptor( name, packageElement, typeElement );
 
+    determineComponentType( descriptor, typeElement );
+    determinePropsAndStateTypes( descriptor );
+
+    /*
+     * Get the list of lifecycle methods that have been overridden by typeElement
+     * a parent class, or by a default method method implemented by typeElement or
+     * a parent class.
+     */
+    final Collection<ExecutableElement> lifecycleMethods = getComponentLifecycleMethods().values();
+    final Elements elementUtils = processingEnv.getElementUtils();
+    final Types typeUtils = processingEnv.getTypeUtils();
+    final TypeElement componentType = elementUtils.getTypeElement( Component.class.getName() );
+    final TypeElement statelessComponentType = elementUtils.getTypeElement( StatelessComponent.class.getName() );
+    final List<MethodDescriptor> overriddenLifecycleMethods =
+      // Get all methods on type parent classes, and default methods from interfaces
+      ProcessorUtil.getMethods( typeElement ).stream()
+        // Only keep methods that override the lifecycle methods
+        .filter( m -> lifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
+        //Remove those that come from the base classes
+        .filter( m -> m.getEnclosingElement() != componentType && m.getEnclosingElement() != statelessComponentType )
+        .map( m -> new MethodDescriptor( m, (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), m ) ) )
+        .collect( Collectors.toList() );
+
+    descriptor.setLifecycleMethods( overriddenLifecycleMethods );
+
+    return descriptor;
+  }
+
+  @Nonnull
+  private HashMap<String, ExecutableElement> getComponentLifecycleMethods()
+  {
+    if ( _componentLifecycleMethods.isEmpty() )
+    {
+      final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
+      for ( final ExecutableElement method : ProcessorUtil.getMethods( componentType ) )
+      {
+        final String methodName = method.getSimpleName().toString();
+        if ( LIFECYCLE_METHODS.contains( methodName ) )
+        {
+          _componentLifecycleMethods.put( methodName, method );
+        }
+      }
+
+    }
+    return _componentLifecycleMethods;
+  }
+
+  private void determineComponentType( final ComponentDescriptor descriptor, final @Nonnull TypeElement typeElement )
+  {
     final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
     final TypeMirror rawComponentType = processingEnv.getTypeUtils().erasure( componentType.asType() );
 
@@ -127,7 +197,12 @@ public final class ReactProcessor
     }
 
     descriptor.setStateless( isStatelessComponent );
+    descriptor.setArezComponent( isArezComponent );
+  }
 
+  private void determinePropsAndStateTypes( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
     final List<? extends TypeParameterElement> typeParameters = componentType.getTypeParameters();
     assert 2 == typeParameters.size();
 
@@ -140,8 +215,6 @@ public final class ReactProcessor
     assert stateTypeParameter.getSimpleName().toString().equals( "S" );
     final TypeElement stateType = resolveToElement( descriptor, stateTypeParameter );
     descriptor.setStateType( stateType );
-
-    return descriptor;
   }
 
   @Nonnull

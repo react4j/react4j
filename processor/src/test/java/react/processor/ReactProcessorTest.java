@@ -13,6 +13,7 @@ public class ReactProcessorTest
     return new Object[][]
       {
         new Object[]{ "com.example.basic.BasicReactComponent" },
+        new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
         new Object[]{ "com.example.stateless.BasicStatelessComponent" },
         new Object[]{ "RootPackageReactComponent" }
       };
@@ -23,6 +24,13 @@ public class ReactProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( classname );
+  }
+
+  @Test
+  public void WIP()
+    throws Exception
+  {
+    assertSuccessfulCompile( "com.example.lifecycle.OverrideLifecycleMethodsComponent" );
   }
 
   @DataProvider( name = "failedCompiles" )

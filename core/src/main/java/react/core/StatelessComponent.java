@@ -45,7 +45,7 @@ public abstract class StatelessComponent<P extends BaseProps>
   }
 
   @Override
-  protected final void componentDidUpdate( @Nonnull final P nextProps, @Nonnull final P nextState )
+  protected final void componentDidUpdate( @Nonnull final P nextProps, @Nonnull final BaseState nextState )
   {
     fail( () -> "Attempted to invoke componentDidUpdate() on " + this + " when component is a stateless component" );
   }

@@ -171,7 +171,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    *
    * Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState)} returns false.
    */
-  protected void componentDidUpdate( @Nonnull final P nextProps, @Nonnull final P nextState )
+  protected void componentDidUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
   {
   }
 
@@ -235,7 +235,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * Returning false does not prevent child components from re-rendering when their state changes.
    *
    * Currently, if this method returns false, then {@link #componentWillUpdate(BaseProps, BaseState)}, {@link #render()}, and
-   * {@link #componentDidUpdate(BaseProps, BaseProps)} will not be invoked. Note that in the future React may treat shouldComponentUpdate
+   * {@link #componentDidUpdate(BaseProps, BaseState)} will not be invoked. Note that in the future React may treat shouldComponentUpdate
    * as a hint rather than a strict directive, and returning false may still result in a re-rendering of the component.
    *
    * If you determine a specific component is slow after profiling, you may change it to inherit from React.PureComponent which implements
@@ -244,7 +244,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    *
    * @return true in case the component should be updated
    */
-  public boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  protected boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
   {
     return true;
   }

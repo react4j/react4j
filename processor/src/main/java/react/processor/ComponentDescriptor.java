@@ -27,6 +27,11 @@ final class ComponentDescriptor
   private TypeElement _propsType;
   @Nullable
   private TypeElement _stateType;
+  /**
+   * Lifecycle methods that are overidden by the user and need to be proxied from the native object.
+   */
+  @Nullable
+  private List<MethodDescriptor> _lifecycleMethods;
 
   ComponentDescriptor( @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
@@ -157,5 +162,17 @@ final class ComponentDescriptor
   String getTypeToCreate()
   {
     return ( _arezComponent ? "Arez_" : "" ) + getElement().getSimpleName();
+  }
+
+  @Nonnull
+  List<MethodDescriptor> getLifecycleMethods()
+  {
+    assert null != _lifecycleMethods;
+    return _lifecycleMethods;
+  }
+
+  void setLifecycleMethods( @Nonnull final List<MethodDescriptor> lifecycleMethods )
+  {
+    _lifecycleMethods = Objects.requireNonNull( lifecycleMethods );
   }
 }
