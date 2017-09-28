@@ -52,9 +52,22 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
+
+        new Object[]{ "com.example.component.AbstractComponent", "@ReactComponent target must not be abstract" },
+        new Object[]{ "com.example.component.BadNameComponent",
+                      "The @ReactComponent specified an invalid name. Name should be follow the rules of a java identifier." },
+        new Object[]{ "com.example.component.ConstructorWithParamComponent",
+                      "@ReactComponent target must have a single non-private, no-argument constructor or the default constructor" },
         new Object[]{ "com.example.component.FinalComponent", "@ReactComponent target must not be final" },
+        new Object[]{ "com.example.component.MultipleConstructorsComponent",
+                      "@ReactComponent target must have a single non-private, no-argument constructor or the default constructor" },
         new Object[]{ "com.example.component.NonStaticInnerClassComponent",
-                      "@ReactComponent target must not be a non-static nested class" }
+                      "@ReactComponent target must not be a non-static nested class" },
+        new Object[]{ "com.example.component.NonClassComponent", "@ReactComponent target must be a class" },
+        new Object[]{ "com.example.component.NotExtendingComponent",
+                      "@ReactComponent target must be a subclass of react.core.Component" },
+        new Object[]{ "com.example.component.PrivateConstructorComponent",
+                      "@ReactComponent target must have a single non-private, no-argument constructor or the default constructor" }
       };
   }
 
