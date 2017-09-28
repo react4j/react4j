@@ -110,7 +110,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   }
 
   @Override
-  public final ReactElement<?, ?> render()
+  protected final ReactElement<?, ?> render()
   {
     _renderDepsChanged = false;
     /*
@@ -127,7 +127,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  public boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  protected boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
   {
     if ( _renderDepsChanged )
     {
