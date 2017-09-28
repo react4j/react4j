@@ -4,7 +4,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Element;
 
-class ReactProcessorException
+final class ReactProcessorException
   extends RuntimeException
 {
   @Nonnull
