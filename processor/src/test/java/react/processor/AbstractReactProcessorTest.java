@@ -61,8 +61,8 @@ abstract class AbstractReactProcessorTest
     assertSuccessfulCompile( Collections.singletonList( source ), Arrays.asList( expectedOutputResources ) );
   }
 
-  void assertSuccessfulCompile( @Nonnull final List<JavaFileObject> inputs,
-                                @Nonnull final List<String> outputs )
+  private void assertSuccessfulCompile( @Nonnull final List<JavaFileObject> inputs,
+                                        @Nonnull final List<String> outputs )
     throws Exception
   {
     if ( outputFiles() )
