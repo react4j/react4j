@@ -163,7 +163,8 @@ public final class ReactProcessor
     return _componentLifecycleMethods;
   }
 
-  private void determineComponentType( final ComponentDescriptor descriptor, final @Nonnull TypeElement typeElement )
+  private void determineComponentType( @Nonnull final ComponentDescriptor descriptor,
+                                       @Nonnull final TypeElement typeElement )
   {
     final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
     final TypeMirror rawComponentType = processingEnv.getTypeUtils().erasure( componentType.asType() );
@@ -178,7 +179,8 @@ public final class ReactProcessor
      * Our code should just gracefully handle this and perform none of the arez specific checks or generation.
      */
     @Nullable
-    final TypeElement arezComponentType = processingEnv.getElementUtils().getTypeElement( "react.arez.ReactArezComponent" );
+    final TypeElement arezComponentType =
+      processingEnv.getElementUtils().getTypeElement( "react.arez.ReactArezComponent" );
     @Nullable
     final TypeMirror rawArezComponentType =
       null == arezComponentType ? null : processingEnv.getTypeUtils().erasure( arezComponentType.asType() );
