@@ -75,19 +75,13 @@ final class ComponentDescriptor
   @Nonnull
   String getPackageName()
   {
-    return getPackageElement().getQualifiedName().toString();
+    return _packageElement.getQualifiedName().toString();
   }
 
   @Nonnull
   String getName()
   {
     return _name;
-  }
-
-  @Nonnull
-  PackageElement getPackageElement()
-  {
-    return _packageElement;
   }
 
   @Nonnull
