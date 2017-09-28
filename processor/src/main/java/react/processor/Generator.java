@@ -105,20 +105,25 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor )
+  private static String getNestedClassPrefix( @Nonnull final TypeElement element )
   {
-    final TypeElement element = descriptor.getElement();
-
-    final StringBuilder name = new StringBuilder( descriptor.getNativeComponentName() );
-
+    final StringBuilder name = new StringBuilder();
     TypeElement t = element;
     while ( NestingKind.TOP_LEVEL != t.getNestingKind() )
     {
       t = (TypeElement) t.getEnclosingElement();
       name.insert( 0, t.getSimpleName() + "$" );
     }
+    return name.toString();
+  }
 
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( name.toString() );
+  @Nonnull
+  static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeElement element = descriptor.getElement();
+
+    final String name = getNestedClassPrefix( element ) + descriptor.getNativeComponentName();
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
 
     //Ensure it can not be subclassed
     builder.addModifiers( Modifier.FINAL );
