@@ -25,23 +25,33 @@ abstract class AbstractReactProcessorTest
   {
     final String[] elements = classname.contains( "." ) ? classname.split( "\\." ) : new String[]{ classname };
     final StringBuilder input = new StringBuilder();
-    final StringBuilder expected = new StringBuilder();
+    final StringBuilder factory = new StringBuilder();
+    final StringBuilder nativeComponent = new StringBuilder();
     input.append( "input" );
-    expected.append( "expected" );
+    factory.append( "expected" );
+    nativeComponent.append( "expected" );
     for ( int i = 0; i < elements.length; i++ )
     {
       input.append( '/' );
       input.append( elements[ i ] );
-      expected.append( '/' );
-      expected.append( elements[ i ] );
-      if ( i == elements.length - 1 )
+      factory.append( '/' );
+      factory.append( elements[ i ] );
+      nativeComponent.append( '/' );
+      final boolean isLastElement = i == elements.length - 1;
+      if ( isLastElement )
       {
-        expected.append( "_" );
+        nativeComponent.append( "React_" );
+      }
+      nativeComponent.append( elements[ i ] );
+      if ( isLastElement )
+      {
+        factory.append( "_" );
       }
     }
     input.append( ".java" );
-    expected.append( ".java" );
-    assertSuccessfulCompile( input.toString(), expected.toString() );
+    factory.append( ".java" );
+    nativeComponent.append( ".java" );
+    assertSuccessfulCompile( input.toString(), factory.toString(), nativeComponent.toString() );
   }
 
   void assertSuccessfulCompile( @Nonnull final String inputResource, @Nonnull final String... expectedOutputResources )
