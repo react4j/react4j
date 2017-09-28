@@ -194,9 +194,6 @@ define 'react' do
         xml.sourceTestOutputDir :name => 'generated/processors/test/java'
         xml.outputRelativeToContentRoot :value => true
       end
-      xml.profile(:name => 'Manual') do
-        xml.module :name => 'processor'
-      end
     end
   end
 end
