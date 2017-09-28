@@ -90,9 +90,6 @@ define 'react' do
 
     compile.with project('core').package(:jar, :classifier => :gwt),
                  project('core').compile.dependencies,
-                 :braincheck,
-                 :javapoet,
-                 :guava,
                  :arez_core,
                  :arez_annotations
 
@@ -154,7 +151,6 @@ define 'react' do
                  project('arez').compile.dependencies,
                  project('processor').package(:jar),
                  project('processor').compile.dependencies,
-                 :arez_annotations,
                  :arez_processor,
                  :arez_extras,
                  :arez_browser_extras,
