@@ -126,6 +126,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
   {
     if ( _renderDepsChanged )
