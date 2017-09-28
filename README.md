@@ -33,3 +33,5 @@ tooling that stops you from using the toolkit incorrectly with no performance co
    element factories can be built by looking at html spec and auto-generating?
 * Add invariant checks to make sure people are doing the right thing when interacting with react.
   (i.e. Make sure call setState in correct places setInitialState only in constructor etc.)
+* Incorporate lifecycle documentation ala https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
+  directly into javadocs or project docs.
