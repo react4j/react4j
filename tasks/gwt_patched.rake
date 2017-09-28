@@ -13,7 +13,7 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-expected_versions = %w(1.5.3 1.5.4)
+expected_versions = %w(1.5.3)
 unless expected_versions.include?(Buildr::VERSION.to_s)
   raise "Patch should no longer be required unless Buildr versions are #{expected_versions.join(', ')} but actual version is #{Buildr::VERSION}"
 end
