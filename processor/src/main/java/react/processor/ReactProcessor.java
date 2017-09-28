@@ -18,6 +18,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
@@ -214,6 +215,18 @@ public final class ReactProcessor
     {
       throw new ReactProcessorException( "@ReactComponent target must be a subclass of react.core.Component",
                                          typeElement );
+    }
+    else if ( isArezComponent )
+    {
+      final AnnotationMirror arezAnnotation = typeElement.getAnnotationMirrors().stream().
+        filter( m -> m.getAnnotationType().toString().equals( "org.realityforge.arez.annotations.ArezComponent" ) ).
+        findAny().orElse( null );
+      if ( null == arezAnnotation )
+      {
+        throw new ReactProcessorException( "@ReactComponent target extends react.arez.ReactArezComponent and should " +
+                                           "be annotated with org.realityforge.arez.annotations.ArezComponent but " +
+                                           "is not", typeElement );
+      }
     }
 
     descriptor.setStateless( isStatelessComponent );

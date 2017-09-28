@@ -52,8 +52,9 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
-
         new Object[]{ "com.example.component.AbstractComponent", "@ReactComponent target must not be abstract" },
+        new Object[]{ "com.example.component.ArezComponentNotAnnotated",
+                      "@ReactComponent target extends react.arez.ReactArezComponent and should be annotated with org.realityforge.arez.annotations.ArezComponent but is not" },
         new Object[]{ "com.example.component.BadNameComponent",
                       "The @ReactComponent specified an invalid name. Name should be follow the rules of a java identifier." },
         new Object[]{ "com.example.component.ConstructorWithParamComponent",
