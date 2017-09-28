@@ -8,6 +8,7 @@ import com.google.testing.compile.JavaSourcesSubjectFactory;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,11 +44,11 @@ abstract class AbstractReactProcessorTest
     assertSuccessfulCompile( input.toString(), expected.toString() );
   }
 
-  void assertSuccessfulCompile( @Nonnull final String inputResource, @Nonnull final String expectedOutputResource )
+  void assertSuccessfulCompile( @Nonnull final String inputResource, @Nonnull final String... expectedOutputResources )
     throws Exception
   {
     final JavaFileObject source = JavaFileObjects.forResource( inputResource );
-    assertSuccessfulCompile( Collections.singletonList( source ), Collections.singletonList( expectedOutputResource ) );
+    assertSuccessfulCompile( Collections.singletonList( source ), Arrays.asList( expectedOutputResources ) );
   }
 
   void assertSuccessfulCompile( @Nonnull final List<JavaFileObject> inputs,
