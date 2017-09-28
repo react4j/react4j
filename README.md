@@ -11,8 +11,20 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 
 ## TODO
 
+* Move to react16.
+  - Consider embedding react-dom-factories in short term, replacing by java factories in long term?
+  - Add support for componentDidCatch()
+  - Add support for portals
+* Figure out a way to support `getInitialProps()` on components.
 * Develop React-Arez extension
 * Add mechanism for exporting methods with useful displayNames in props
-* Overload React methods so can accept arrays
+* Add multiple render methods that return different values. Enhance code generator to ensure that
+  the developer only overloads a single variant. Variants include;
+  - renderAsElement
+  - renderAsString (React16?)
+  - renderAsChildren (React16?)
+  - renderAsList (React16?)
+  - renderAsArray (React16?)
+* Overload React dom factory methods so can accept arrays
 * Add invariant checks to make sure people are doing the right thing when interacting with react.
   (i.e. Make sure call setState in correct places setInitialState only in constructor etc.)
