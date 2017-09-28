@@ -120,7 +120,7 @@ final class Generator
 
     final TypeSpec.Builder builder = TypeSpec.classBuilder( name.toString() );
 
-    //Ensure it can not be subclassd
+    //Ensure it can not be subclassed
     builder.addModifiers( Modifier.FINAL );
 
     builder.addAnnotation( AnnotationSpec.builder( JsType.class ).build() );
