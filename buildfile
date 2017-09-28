@@ -112,22 +112,20 @@ define 'react' do
   define 'processor' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
-    compile.with PROVIDED_DEPS,
-                 :autoservice,
+    compile.with :autoservice,
                  :autocommon,
                  :javapoet,
                  :guava,
-                 :braincheck,
-                 :jsinterop_base,
-                 :jsinterop_annotations,
-                 project('core'),
-                 project('arez'),
-                 project('annotations')
+                 project('annotations').package(:jar),
+                 project('annotations').compile.dependencies,
+                 project('core').package(:jar),
+                 project('core').compile.dependencies
 
     test.with :compile_testing,
               Java.tools_jar,
               :truth,
-              project('core'),
+              project('arez').package(:jar),
+              project('arez').compile.dependencies,
               :gwt_user,
               :gwt_dev
 
