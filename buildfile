@@ -154,7 +154,7 @@ define 'react' do
                  project('dom').compile.dependencies,
                  project('arez').package(:jar, :classifier => :gwt),
                  project('arez').compile.dependencies,
-                 project('processor').package(:jar, :classifier => :gwt),
+                 project('processor').package(:jar),
                  project('processor').compile.dependencies,
                  :arez_annotations,
                  :arez_processor,
