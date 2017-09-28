@@ -15,6 +15,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.basic.BasicReactComponent" },
         new Object[]{ "com.example.basic.CustomNameReactComponent" },
         new Object[]{ "com.example.basic.CustomPropsAndStateReactComponent" },
+        new Object[]{ "com.example.basic.PublicReactComponent" },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
         new Object[]{ "com.example.stateless.BasicStatelessComponent" },
         new Object[]{ "RootPackageReactComponent" }
