@@ -143,7 +143,8 @@ class TodoItem
     props().doAction.accept( TodoList.ActionType.CANCEL, props().todo );
   }
 
-  private void handleChange( @Nonnull final FormEvent event )
+  @Action
+  void handleChange( @Nonnull final FormEvent event )
   {
     if ( props().isEditing )
     {
