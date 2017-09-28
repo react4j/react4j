@@ -26,5 +26,10 @@ tooling that stops you from using the toolkit incorrectly with no performance co
   - renderAsList (React16?)
   - renderAsArray (React16?)
 * Overload React dom factory methods so can accept arrays
+* Figure out a way to define dom factories in java that are optimized away in production such that
+   `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
+   compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
+   Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
+   element factories can be built by looking at html spec and auto-generating?
 * Add invariant checks to make sure people are doing the right thing when interacting with react.
   (i.e. Make sure call setState in correct places setInitialState only in constructor etc.)
