@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.tools.JavaFileObject;
+import org.realityforge.arez.processor.ArezProcessor;
 import static com.google.common.truth.Truth.assert_;
 import static org.testng.Assert.*;
 
@@ -65,10 +66,13 @@ abstract class AbstractReactProcessorTest
                                         @Nonnull final List<String> outputs )
     throws Exception
   {
+    // Arez processor required so that our tests emit all the right outputs
+    // when outputFiles() is true
     if ( outputFiles() )
     {
       final ImmutableList<JavaFileObject> fileObjects =
-        Compiler.javac().withProcessors( new ReactProcessor() ).compile( inputs ).generatedSourceFiles();
+        Compiler.javac().withProcessors( new ReactProcessor(), new ArezProcessor() ).
+          compile( inputs ).generatedSourceFiles();
       for ( final JavaFileObject fileObject : fileObjects )
       {
         final Path target = fixtureDir().resolve( "expected/" + fileObject.getName().replace( "/SOURCE_OUTPUT/", "" ) );
@@ -92,7 +96,7 @@ abstract class AbstractReactProcessorTest
         toArray( new JavaFileObject[ 0 ] );
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( inputs ).
-      processedWith( new ReactProcessor() ).
+      processedWith( new ReactProcessor(), new ArezProcessor() ).
       compilesWithoutError().
       and().
       generatesSources( firstExpected, restExpected );
@@ -120,7 +124,7 @@ abstract class AbstractReactProcessorTest
     final JavaFileObject source = JavaFileObjects.forResource( inputResource );
     assert_().about( JavaSourceSubjectFactory.javaSource() ).
       that( source ).
-      processedWith( new ReactProcessor() ).
+      processedWith( new ReactProcessor(), new ArezProcessor() ).
       failsToCompile().
       withErrorContaining( errorMessageFragment );
   }

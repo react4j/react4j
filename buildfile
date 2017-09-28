@@ -123,6 +123,7 @@ define 'react' do
               :truth,
               project('arez').package(:jar),
               project('arez').compile.dependencies,
+              :arez_processor,
               :gwt_user,
               :gwt_dev
 
