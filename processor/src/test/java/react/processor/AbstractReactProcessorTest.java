@@ -24,6 +24,8 @@ abstract class AbstractReactProcessorTest
   void assertSuccessfulCompile( @Nonnull final String classname )
     throws Exception
   {
+    // It should be noted that we do not test the output of any Arez artifact
+    // emitted. We assume the Arez project adequately tests this scenario
     final String[] elements = classname.contains( "." ) ? classname.split( "\\." ) : new String[]{ classname };
     final StringBuilder input = new StringBuilder();
     final StringBuilder factory = new StringBuilder();
