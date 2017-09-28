@@ -30,10 +30,21 @@ public class ReactProcessorTest
   }
 
   @Test
-  public void WIP()
+  public void nestedReactComponent()
     throws Exception
   {
-    assertSuccessfulCompile( "com.example.lifecycle.OverrideLifecycleMethodsComponent" );
+    assertSuccessfulCompile( "input/com/example/nested/NestedReactComponent.java",
+                             "expected/com/example/nested/NestedReactComponent$BasicReactComponent_.java",
+                             "expected/com/example/nested/NestedReactComponent$React_BasicReactComponent.java" );
+  }
+
+  @Test
+  public void nestedNestedReactComponent()
+    throws Exception
+  {
+    assertSuccessfulCompile( "input/com/example/nested/NestedNestedReactComponent.java",
+                             "expected/com/example/nested/NestedNestedReactComponent$DeepNesting$BasicReactComponent_.java",
+                             "expected/com/example/nested/NestedNestedReactComponent$DeepNesting$React_BasicReactComponent.java" );
   }
 
   @DataProvider( name = "failedCompiles" )
@@ -41,7 +52,9 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "com.example.component.FinalComponent", "@ReactComponent target must not be final" }
+        new Object[]{ "com.example.component.FinalComponent", "@ReactComponent target must not be final" },
+        new Object[]{ "com.example.component.NonStaticInnerClassComponent",
+                      "@ReactComponent target must not be a non-static nested class" }
       };
   }
 

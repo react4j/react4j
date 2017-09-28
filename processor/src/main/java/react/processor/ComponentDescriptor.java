@@ -153,9 +153,16 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  String getTypeToCreate()
+  String getNestedClassPrefix()
   {
-    return ( _arezComponent ? "Arez_" : "" ) + getElement().getSimpleName();
+    final StringBuilder name = new StringBuilder();
+    TypeElement t = getElement();
+    while ( NestingKind.TOP_LEVEL != t.getNestingKind() )
+    {
+      t = (TypeElement) t.getEnclosingElement();
+      name.insert( 0, t.getSimpleName() + "$" );
+    }
+    return name.toString();
   }
 
   @Nonnull

@@ -9,12 +9,12 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
@@ -38,16 +38,8 @@ final class Generator
   {
     final TypeElement element = descriptor.getElement();
 
-    final StringBuilder name = new StringBuilder( descriptor.getConstructorFactoryName() );
-
-    TypeElement t = element;
-    while ( NestingKind.TOP_LEVEL != t.getNestingKind() )
-    {
-      t = (TypeElement) t.getEnclosingElement();
-      name.insert( 0, t.getSimpleName() + "$" );
-    }
-
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( name.toString() );
+    final String name = descriptor.getNestedClassPrefix() + descriptor.getConstructorFactoryName();
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
 
     ProcessorUtil.copyAccessModifiers( element, builder );
 
@@ -59,8 +51,8 @@ final class Generator
       addMember( "value", "$S", ReactProcessor.class.getName() ).
       build() );
     final ClassName nativeComponent =
-      ClassName.get( descriptor.getPackageElement().getQualifiedName().toString(),
-                     "React_" + descriptor.getElement().getSimpleName().toString() );
+      ClassName.get( descriptor.getPackageName(),
+                     descriptor.getNestedClassPrefix() + descriptor.getNativeComponentName() );
     final TypeName constructorType =
       ParameterizedTypeName.get( ClassName.get( JsConstructorFn.class ), nativeComponent );
 
@@ -105,24 +97,11 @@ final class Generator
   }
 
   @Nonnull
-  private static String getNestedClassPrefix( @Nonnull final TypeElement element )
-  {
-    final StringBuilder name = new StringBuilder();
-    TypeElement t = element;
-    while ( NestingKind.TOP_LEVEL != t.getNestingKind() )
-    {
-      t = (TypeElement) t.getEnclosingElement();
-      name.insert( 0, t.getSimpleName() + "$" );
-    }
-    return name.toString();
-  }
-
-  @Nonnull
   static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeElement element = descriptor.getElement();
 
-    final String name = getNestedClassPrefix( element ) + descriptor.getNativeComponentName();
+    final String name = descriptor.getNestedClassPrefix() + descriptor.getNativeComponentName();
     final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
 
     //Ensure it can not be subclassed
@@ -163,8 +142,24 @@ final class Generator
           addAnnotation( Override.class ).
           addModifiers( Modifier.PROTECTED ).
           returns( ClassName.get( descriptor.getElement() ) );
-      method.addStatement( "return new $T()",
-                           ClassName.get( descriptor.getPackageName(), descriptor.getTypeToCreate() ) );
+      final ClassName className = ClassName.get( descriptor.getElement() );
+      final ArrayList<String> names = new ArrayList<>( className.simpleNames() );
+      final String cname = ( descriptor.isArezComponent() ? "Arez_" : "" ) + element.getSimpleName();
+      final ClassName target;
+      if ( names.size() > 1 )
+      {
+        names.remove( names.size() - 1 );
+        names.add( cname );
+        target =
+          ClassName.get( className.packageName(),
+                         names.get( 0 ),
+                         names.subList( 1, names.size() ).toArray( new String[ 0 ] ) );
+      }
+      else
+      {
+        target = ClassName.get( className.packageName(), cname );
+      }
+      method.addStatement( "return new $T()", target );
       builder.addMethod( method.build() );
     }
 
