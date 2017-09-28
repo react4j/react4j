@@ -111,8 +111,7 @@ public final class ReactProcessor
   {
     final ReactComponent component = typeElement.getAnnotation( ReactComponent.class );
     assert null != component;
-    final String name =
-      ProcessorUtil.isSentinelName( component.name() ) ? typeElement.getSimpleName().toString() : component.name();
+    final String name = deriveComponentName( typeElement, component );
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
     final ComponentDescriptor descriptor = new ComponentDescriptor( name, packageElement, typeElement );
 
@@ -142,6 +141,25 @@ public final class ReactProcessor
     descriptor.setLifecycleMethods( overriddenLifecycleMethods );
 
     return descriptor;
+  }
+
+  @Nonnull
+  private String deriveComponentName( @Nonnull final TypeElement typeElement, @Nonnull final ReactComponent component )
+  {
+    if ( ProcessorUtil.isSentinelName( component.name() ) )
+    {
+      return typeElement.getSimpleName().toString();
+    }
+    else
+    {
+      final String name = component.name();
+      if ( name.isEmpty() || !ProcessorUtil.isJavaIdentifier( name ) )
+      {
+        throw new ReactProcessorException( "The @ReactComponent specified an invalid name. Name should be follow " +
+                                           "the rules of a java identifier.", typeElement );
+      }
+      return name;
+    }
   }
 
   @Nonnull
