@@ -6,7 +6,9 @@ import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.ComponentId;
 import org.realityforge.arez.annotations.Observable;
+import org.realityforge.arez.annotations.Repository;
 
+@Repository
 @ArezComponent
 public class Todo
 {
