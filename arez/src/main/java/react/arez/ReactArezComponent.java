@@ -86,7 +86,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Override
   protected S state()
   {
-    //TODO: Only report Observed if inside transaction????
     _stateObservable.reportObserved();
     return component().state();
   }
@@ -95,7 +94,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Override
   protected P props()
   {
-    //TODO: Only report Observed if inside transaction????
     _propsObservable.reportObserved();
     return component().props();
   }
