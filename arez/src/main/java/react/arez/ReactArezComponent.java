@@ -60,7 +60,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     context.safeProcedure( toName( ".setInitialState" ),
                            false,
                            () -> component().setInitialState( state.get() ) );
-    ;
   }
 
   @ComponentId
