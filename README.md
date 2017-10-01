@@ -49,3 +49,7 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 * Incorporate lifecycle documentation ala https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
   directly into javadocs or project docs.
 * setState(null) should be a noop in both react16 and react15
+* Ensure refs is only accessed after component mounted
+* Consider introducing an interface for "React" API and swap out with a provider as required.
+* In development mode copy the list of arez dependencies to "state" of the component. Extra checking in
+  shouldComponentUpdate to make sure it does not re-run as result of this.
