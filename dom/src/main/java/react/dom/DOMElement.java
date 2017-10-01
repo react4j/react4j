@@ -1,11 +1,11 @@
 package react.dom;
 
 import jsinterop.annotations.JsType;
-import react.core.BaseProps;
 import react.core.ReactElement;
+import react.dom.proptypes.html.HtmlGlobalFields;
 
 @JsType( isNative = true )
-public class DOMElement<P extends BaseProps>
+public class DOMElement<P extends HtmlGlobalFields>
   extends ReactElement<P, String>
 {
   /**

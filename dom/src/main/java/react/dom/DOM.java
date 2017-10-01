@@ -12,6 +12,7 @@ import react.dom.proptypes.html.AudioProps;
 import react.dom.proptypes.html.BtnProps;
 import react.dom.proptypes.html.ColProps;
 import react.dom.proptypes.html.FormProps;
+import react.dom.proptypes.html.HtmlGlobalFields;
 import react.dom.proptypes.html.HtmlProps;
 import react.dom.proptypes.html.IFrameProps;
 import react.dom.proptypes.html.ImgProps;
@@ -47,15 +48,15 @@ public class DOM
    * @return a {@link DOMElement}
    */
   @JsMethod( namespace = "React" )
-  public static native <P extends HtmlProps> DOMElement<P> createElement( String type, P props );
+  public static native <P extends HtmlGlobalFields> DOMElement<P> createElement( String type, P props );
 
   @JsMethod( namespace = "React" )
-  public static native <P extends HtmlProps> DOMElement<P> createElement( String type, P props, String value );
+  public static native <P extends HtmlGlobalFields> DOMElement<P> createElement( String type, P props, String value );
 
   @JsMethod( namespace = "React" )
-  public static native <P extends HtmlProps> DOMElement<P> createElement( String type,
-                                                                          P props,
-                                                                          ReactElement<?, ?>... child );
+  public static native <P extends HtmlGlobalFields> DOMElement<P> createElement( String type,
+                                                                                 P props,
+                                                                                 ReactElement<?, ?>... child );
 
   public static native DOMElement<HtmlProps> a( AnchorProps props, String value );
 
