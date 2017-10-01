@@ -172,22 +172,21 @@ class TodoList
     final int activeTodoCount = (int) todos.stream().filter( todo -> !todo.isCompleted() ).count();
     final int completedCount = todoCount - activeTodoCount;
     return
-      div( null,
-           div( null,
-                header( new HtmlProps().className( "header" ),
-                        h1( null, "todos" ),
-                        input( new InputProps()
-                                 .className( "new-todo" )
-                                 .placeHolder( "What needs to be done?" )
-                                 .value( state().newTodo )
-                                 .onKeyDown( this::handleNewTodoKeyDown )
-                                 .onChange( this::handleChange )
-                                 .autoFocus( true )
-                        )
-                ),
-                renderMainSection(),
-                renderFooter( activeTodoCount, completedCount )
-           )
+      div(
+        div( header( new HtmlProps().className( "header" ),
+                     h1( "todos" ),
+                     input( new InputProps()
+                              .className( "new-todo" )
+                              .placeHolder( "What needs to be done?" )
+                              .value( state().newTodo )
+                              .onKeyDown( this::handleNewTodoKeyDown )
+                              .onChange( this::handleChange )
+                              .autoFocus( true )
+                     )
+             ),
+             renderMainSection(),
+             renderFooter( activeTodoCount, completedCount )
+        )
       );
   }
 

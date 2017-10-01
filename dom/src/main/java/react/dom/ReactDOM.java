@@ -21,10 +21,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import react.core.JsProcedure;
 import react.core.ReactElement;
+import react.dom.proptypes.html.HtmlGlobalFields;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL )
 public class ReactDOM
@@ -62,4 +66,47 @@ public class ReactDOM
    * @return <code>true</code> if the the component was unmounted
    */
   public static native <C> boolean unmountComponentAtNode( C container );
+
+  /**
+   * Create and return a new ReactElement of the given type.
+   *
+   * @param <P>   The type of the props. It should match the associated tag name.
+   * @param type  A HTML tag name (eg. 'div', 'span', etc)
+   * @param props The props to pass to the element.
+   * @return the created DOMElement
+   */
+  @Nonnull
+  @JsMethod( namespace = "React" )
+  public static native <P extends HtmlGlobalFields> DOMElement<P> createElement( @Nonnull String type,
+                                                                                 @Nullable P props );
+
+  /**
+   * Create and return a new ReactElement of the given type with a single text child.
+   *
+   * @param <P>   The type of the props. It should match the associated tag name.
+   * @param type  A HTML tag name (eg. 'div', 'span', etc)
+   * @param props The props to pass to the element.
+   * @param value The text child.
+   * @return the created DOMElement
+   */
+  @Nonnull
+  @JsMethod( namespace = "React" )
+  public static native <P extends HtmlGlobalFields> DOMElement<P> createElement( @Nonnull String type,
+                                                                                 @Nullable P props,
+                                                                                 @Nonnull String value );
+
+  /**
+   * Create and return a new ReactElement of the given type with specified children.
+   *
+   * @param <P>      The type of the props. It should match the associated tag name.
+   * @param type     A HTML tag name (eg. 'div', 'span', etc)
+   * @param props    The props to pass to the element.
+   * @param children The child elements.
+   * @return the created DOMElement
+   */
+  @Nonnull
+  @JsMethod( namespace = "React" )
+  public static native <P extends HtmlGlobalFields> DOMElement<P> createElement( @Nonnull String type,
+                                                                                 @Nullable P props,
+                                                                                 @Nullable ReactElement<?, ?>... children );
 }

@@ -16,7 +16,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 * Restructure the app in the same way as https://github.com/mobxjs/mobx-react-todomvc and verify  that
   only the parts of the screen that need to re-render get re-rendered.
 * Move to react16.
-  - Consider embedding react-dom-factories in short term, replacing by java factories in long term?
   - Add support for componentDidCatch()
   - Add support for portals
 * Figure out a way to support `getInitialProps()` on components.
@@ -37,7 +36,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
   - renderAsList (React16?)
   - renderAsArray (React16?)
   - Perhaps we go down the same path as Elemental uses for unions?
-* Overload React dom factory methods so can accept arrays
 * Figure out a way to define dom factories in java that are optimized away in production such that
    `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
    compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`

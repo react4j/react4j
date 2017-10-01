@@ -52,22 +52,19 @@ class Footer
     return
       footer( new HtmlProps().className( "footer" ),
               span( new HtmlProps().className( "todo-count" ),
-                    strong( null, Integer.toString( props().count ) ),
-                    " " + activeTodoWord + " left"
+                    strong( Integer.toString( props().count ) ),
+                    text(" " + activeTodoWord + " left")
               ),
               ul( new HtmlProps().className( "filters" ),
-                  li( null,
-                      a( new AnchorProps()
+                  li( a( new AnchorProps()
                            .className( selected( props().nowShowing == null ) )
                            .href( "#" ), "All" )
                   ),
-                  li( null,
-                      a( new AnchorProps()
+                  li( a( new AnchorProps()
                            .className( selected( TodoList.NOW_SHOWING_ACTIVE_TODOS.equals( props().nowShowing ) ) )
                            .href( "#active" ), "Active" )
                   ),
-                  li( null,
-                      a( new AnchorProps()
+                  li( a( new AnchorProps()
                            .className( selected( TodoList.NOW_SHOWING_COMPLETED_TODOS.equals( props().nowShowing ) ) )
                            .href( "#completed" ), "Completed" )
                   )

@@ -75,6 +75,7 @@ define 'react' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
+    generate_factory_source(project)
     gwt_enhance(project, %w(react.dom.ReactDOM))
 
     package(:jar)
