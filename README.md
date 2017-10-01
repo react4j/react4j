@@ -11,6 +11,10 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 
 ## TODO
 
+* Consider enhancing `@ComponentId` so it can be overidden in subclasses and provide if to parent class.
+  i.e. Non-enhanced class can use it similarly to `@ComponentName`
+* Restructure the app in the same way as https://github.com/mobxjs/mobx-react-todomvc and verify  that
+  only the parts of the screen that need to re-render get re-rendered.
 * Move to react16.
   - Consider embedding react-dom-factories in short term, replacing by java factories in long term?
   - Add support for componentDidCatch()
@@ -18,6 +22,13 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 * Figure out a way to support `getInitialProps()` on components.
 * Develop React-Arez extension
 * Add mechanism for exporting methods with useful displayNames in props
+  - Perhaps we detect any non-private methods and add a function reference in the generated component
+    factory class ala (MyComponent_) that setups up displayNames. So we end up doing `MyComponent_.handleAction(this)`
+    rather than `this::handleAction` or `e -> handleAction(e)`
+  - Perhaps for Arez we only look at those annotated with @Action? or maybe not.
+  - Maybe just if they accept a synthetic event and thus are an "event" handler
+  - We could also allow static imports on any class named "*_" and thus just use `_handleAction(this)` or similar.
+    Simple to update idea config and checkstyle to allow.
 * Add multiple render methods that return different values. Enhance code generator to ensure that
   the developer only overloads a single variant. Variants include;
   - renderAsElement
@@ -25,13 +36,16 @@ tooling that stops you from using the toolkit incorrectly with no performance co
   - renderAsChildren (React16?)
   - renderAsList (React16?)
   - renderAsArray (React16?)
+  - Perhaps we go down the same path as Elemental uses for unions?
 * Overload React dom factory methods so can accept arrays
 * Figure out a way to define dom factories in java that are optimized away in production such that
    `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
    compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
    Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
-   element factories can be built by looking at html spec and auto-generating?
+   element factories can be built by looking at html spec and auto-generating? Probably get away from writing build
+   at end by overloading methods
 * Add invariant checks to make sure people are doing the right thing when interacting with react.
   (i.e. Make sure call setState in correct places setInitialState only in constructor etc.)
 * Incorporate lifecycle documentation ala https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
   directly into javadocs or project docs.
+* setState(null) should be a noop in both react16 and react15
