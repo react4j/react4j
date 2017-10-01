@@ -76,7 +76,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   }
 
   @ComponentName
-  @Nonnull
   protected String getNamePrefix()
   {
     // Arez will override this method so we can ignore the value here.
