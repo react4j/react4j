@@ -53,3 +53,4 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 * Consider introducing an interface for "React" API and swap out with a provider as required.
 * In development mode copy the list of arez dependencies to "state" of the component. Extra checking in
   shouldComponentUpdate to make sure it does not re-run as result of this.
+* Ensure setState not called after component destroyed
