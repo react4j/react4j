@@ -69,7 +69,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   }
 
   @Nullable
-  protected final String toName( @Nonnull final String suffix )
+  private String toName( @Nonnull final String suffix )
   {
     return Arez.context().areNamesEnabled() ? getNamePrefix() + suffix : null;
   }
