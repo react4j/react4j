@@ -15,9 +15,8 @@ tooling that stops you from using the toolkit incorrectly with no performance co
   i.e. Non-enhanced class can use it similarly to `@ComponentName`
 * Restructure the app in the same way as https://github.com/mobxjs/mobx-react-todomvc and verify  that
   only the parts of the screen that need to re-render get re-rendered.
-* Move to react16.
-  - Add support for componentDidCatch()
-  - Add support for portals
+* Add support for componentDidCatch() (React16)
+* Add support for portals (React16)
 * Figure out a way to support `getInitialProps()` on components.
 * Develop React-Arez extension
 * Add mechanism for exporting methods with useful displayNames in props
