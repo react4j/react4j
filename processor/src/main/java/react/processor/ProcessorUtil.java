@@ -67,14 +67,6 @@ final class ProcessorUtil
     }
   }
 
-  static void copyAccessModifiers( @Nonnull final TypeElement element, @Nonnull final MethodSpec.Builder builder )
-  {
-    if ( element.getModifiers().contains( Modifier.PUBLIC ) )
-    {
-      builder.addModifiers( Modifier.PUBLIC );
-    }
-  }
-
   static void copyTypeParameters( @Nonnull final ExecutableType action, @Nonnull final MethodSpec.Builder builder )
   {
     for ( final TypeVariable typeParameter : action.getTypeVariables() )
