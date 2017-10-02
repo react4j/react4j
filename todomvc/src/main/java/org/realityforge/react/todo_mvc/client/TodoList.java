@@ -210,7 +210,7 @@ class TodoList
   private ReactElement<?, ?> renderTodo( @Nonnull final Todo todo )
   {
     final boolean isEditing = Objects.equals( state().editingId, todo.getId() );
-    final TodoItem.Props props = TodoItem.Props.create( todo, this::handleSave, this::handleDoAction, isEditing );
+    final TodoItem.Props props = TodoItem.Props.create( todo, _handleSave( this ), _handleDoAction( this ), isEditing );
     return React.createElement( TodoItem_.TYPE, props );
   }
 
