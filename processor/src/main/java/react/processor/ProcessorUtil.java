@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -104,7 +105,6 @@ final class ProcessorUtil
   @Nonnull
   static ExecutableElement getFunctionalInterfaceMethod( @Nonnull final TypeElement element )
   {
-    assert null != element.getAnnotation( FunctionalInterface.class );
     final ExecutableElement method = getMethods( element ).stream().
       filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) ).
       findAny().orElse( null );
@@ -113,7 +113,7 @@ final class ProcessorUtil
   }
 
   @SuppressWarnings( { "unchecked", "SameParameterValue" } )
-  @Nonnull
+  @Nullable
   static DeclaredType getTypeMirrorAnnotationParameter( @Nonnull final Element typeElement,
                                                         @Nonnull final String parameterName,
                                                         @Nonnull final Class<?> annotationType )
@@ -124,9 +124,6 @@ final class ProcessorUtil
     final ExecutableElement annotationKey = mirror.getElementValues().keySet().stream().
       filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
     final AnnotationValue annotationValue = mirror.getElementValues().get( annotationKey );
-
-    assert null != annotationValue;
-
-    return (DeclaredType) annotationValue.getValue();
+    return null == annotationValue ? null : (DeclaredType) annotationValue.getValue();
   }
 }

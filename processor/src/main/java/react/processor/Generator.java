@@ -9,11 +9,15 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import elemental2.core.JsObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -21,6 +25,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
@@ -62,6 +67,11 @@ final class Generator
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
+    for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
+    {
+      builder.addMethod( buildEventHandlerMethod( descriptor, eventHandler ).build() );
+    }
+
     return builder.build();
   }
 
@@ -72,7 +82,49 @@ final class Generator
                                       descriptor.getNativeComponentClassName() );
   }
 
+  @Nonnull
+  private static MethodSpec.Builder buildEventHandlerMethod( final @Nonnull ComponentDescriptor descriptor,
+                                                             final EventHandlerDescriptor eventHandler )
   {
+    final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( "_" + eventHandler.getMethod().getSimpleName() ).
+        addAnnotation( Nonnull.class ).
+        returns( handlerType );
+
+    method.addModifiers( Modifier.STATIC );
+
+    final ParameterSpec.Builder parameter =
+      ParameterSpec.builder( TypeName.get( descriptor.getElement().asType() ), "component", Modifier.FINAL ).
+        addAnnotation( Nonnull.class );
+    method.addParameter( parameter.build() );
+
+    final ExecutableElement target = ProcessorUtil.getFunctionalInterfaceMethod( eventHandler.getEventHandlerType() );
+    final int targetParameterCount = target.getParameters().size();
+    final String args =
+      0 == targetParameterCount ?
+      "()" :
+      IntStream.range( 0, targetParameterCount ).mapToObj( i -> "arg" + i ).collect( Collectors.joining( "," ) );
+
+    final int paramCount = eventHandler.getMethod().getParameters().size();
+    final String params =
+      0 == paramCount ?
+      "" :
+      IntStream.range( 0, paramCount ).mapToObj( i -> "arg" + i ).collect( Collectors.joining( "," ) );
+
+    method.addStatement( "final $T handler = " + args + " -> component.$N(" + params + ")",
+                         handlerType,
+                         eventHandler.getMethod().getSimpleName() );
+    final String code =
+      "$T.defineProperty( $T.cast( handler ), \"name\", $T.cast( JsPropertyMap.of( \"value\", $S ) ) )";
+    method.addStatement( code,
+                         JsObject.class,
+                         Js.class,
+                         Js.class,
+                         descriptor.getName() + "." + eventHandler.getName() );
+    method.addStatement( "return handler" );
+    return method;
+  }
 
   @Nonnull
   private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ComponentDescriptor descriptor )

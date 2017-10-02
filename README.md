@@ -20,14 +20,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 * Figure out a way to support `getInitialProps()` on components.
 * Develop React-Arez extension
 * Allow static imports on any class named "*_". Update idea config and checkstyle to allow.
-* Add mechanism for exporting methods with useful displayNames in props
-  - Perhaps we detect any non-private methods and add a function reference in the generated component
-    factory class ala (MyComponent_) that setups up displayNames. So we end up doing `MyComponent_.handleAction(this)`
-    rather than `this::handleAction` or `e -> handleAction(e)`
-  - Perhaps for Arez we only look at those annotated with @Action? or maybe not.
-  - Maybe just if they accept a synthetic event and thus are an "event" handler
-  - We could also allow static imports on any class named "*_" and thus just use `_handleAction(this)` or similar.
-    Simple to update idea config and checkstyle to allow.
 * Add multiple render methods that return different values. Enhance code generator to ensure that
   the developer only overloads a single variant. Variants include;
   - renderAsElement

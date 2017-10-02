@@ -4,6 +4,8 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,15 +23,21 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import jsinterop.annotations.JsFunction;
+import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
+import react.common.Procedure;
 import react.core.Component;
 import react.core.StatelessComponent;
 import static javax.tools.Diagnostic.Kind.ERROR;
@@ -135,8 +143,119 @@ public final class ReactProcessor
     determineComponentType( descriptor, typeElement );
     determinePropsAndStateTypes( descriptor );
     determineLifecycleMethods( typeElement, descriptor );
+    determineEventHandlers( descriptor );
 
     return descriptor;
+  }
+
+  private void determineEventHandlers( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final List<EventHandlerDescriptor> eventHandlers =
+      ProcessorUtil.getMethods( descriptor.getElement() ).stream()
+        .filter( m -> null != m.getAnnotation( EventHandler.class ) )
+        .map( m -> createEventHandlerDescriptor( descriptor, m ) )
+        .collect( Collectors.toList() );
+    for ( final EventHandlerDescriptor eventHandler : eventHandlers )
+    {
+      final ExecutableElement method = eventHandler.getMethod();
+      final TypeElement handlerType = getEventHandlerType( method );
+      if ( ElementKind.INTERFACE != handlerType.getKind() )
+      {
+        throw new ReactProcessorException( "The @EventHandler specified an invalid type that is not an interface.",
+                                           eventHandler.getMethod() );
+      }
+      if ( null == handlerType.getAnnotation( JsFunction.class ) )
+      {
+        throw new ReactProcessorException( "The @EventHandler specified an invalid type that is not annotated " +
+                                           "with the annotation jsinterop.annotations.JsFunction.",
+                                           eventHandler.getMethod() );
+      }
+      final ExecutableType methodType = eventHandler.getMethodType();
+      final List<? extends TypeMirror> parameters = methodType.getParameterTypes();
+      if ( !parameters.isEmpty() )
+      {
+        // Our annotated handler method has parameters so they should exactly align
+        // in count and type with the parameters in the event handler method
+        final ExecutableElement target =
+          ProcessorUtil.getFunctionalInterfaceMethod( eventHandler.getEventHandlerType() );
+        final List<? extends VariableElement> targetParameters = target.getParameters();
+        if ( targetParameters.size() != parameters.size() )
+        {
+          throw new ReactProcessorException( "The @EventHandler target has " + parameters.size() + " parameters " +
+                                             "but the type parameter specified a handler with method type " +
+                                             eventHandler.getEventHandlerType().getQualifiedName() + " that has " +
+                                             "handler method with " + targetParameters.size() + " parameters. The " +
+                                             "@EventHandler target should have zero parameters or match the number " +
+                                             "of parameter in the target method " + target.getSimpleName() + ".",
+                                             eventHandler.getMethod() );
+        }
+        for ( int i = 0; i < parameters.size(); i++ )
+        {
+          final TypeMirror parameterType = parameters.get( i );
+          final VariableElement element = targetParameters.get( i );
+          final TypeMirror targetParameterType = element.asType();
+          if ( !processingEnv.getTypeUtils().isAssignable( targetParameterType, parameterType ) )
+          {
+            throw new ReactProcessorException( "The @EventHandler target parameter named " +
+                                               eventHandler.getMethod().getParameters().get( i ).getSimpleName() +
+                                               " of type " + parameterType + " is not assignable from target type " +
+                                               targetParameterType + " of parameter " + element.getSimpleName() +
+                                               " in method " + eventHandler.getEventHandlerType().getQualifiedName() +
+                                               "." + target.getSimpleName() + ".",
+                                               eventHandler.getMethod() );
+          }
+        }
+      }
+    }
+
+    descriptor.setEventHandlers( eventHandlers );
+  }
+
+  @Nonnull
+  private EventHandlerDescriptor createEventHandlerDescriptor( @Nonnull final ComponentDescriptor descriptor,
+                                                               @Nonnull final ExecutableElement m )
+  {
+    final String name = deriveEventHandlerName( m, m.getAnnotation( EventHandler.class ) );
+    final TypeElement eventHandlerType = getEventHandlerType( m );
+    final ExecutableType methodType =
+      (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), m );
+    return new EventHandlerDescriptor( name, m, methodType, eventHandlerType );
+  }
+
+  @Nonnull
+  private TypeElement getEventHandlerType( @Nonnull final ExecutableElement method )
+  {
+    final DeclaredType typeMirror =
+      ProcessorUtil.getTypeMirrorAnnotationParameter( method, "value", EventHandler.class );
+    if ( null != typeMirror )
+    {
+      return (TypeElement) processingEnv.getTypeUtils().asElement( typeMirror );
+    }
+    else
+    {
+      return processingEnv.getElementUtils().getTypeElement( Procedure.class.getName() );
+    }
+  }
+
+  @Nonnull
+  private String deriveEventHandlerName( @Nonnull final ExecutableElement method,
+                                         @Nonnull final EventHandler annotation )
+    throws ReactProcessorException
+  {
+    if ( ProcessorUtil.isSentinelName( annotation.name() ) )
+    {
+      return method.getSimpleName().toString();
+    }
+    else
+    {
+      final String name = annotation.name();
+      if ( name.isEmpty() || !ProcessorUtil.isJavaIdentifier( name ) )
+      {
+        throw new ReactProcessorException( "Method annotated with @EventHandler specified invalid name " + name,
+                                           method );
+      }
+      return name;
+    }
   }
 
   private void determineLifecycleMethods( @Nonnull final TypeElement typeElement,

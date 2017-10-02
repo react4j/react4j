@@ -17,6 +17,10 @@ public class ReactProcessorTest
         new Object[]{ "com.example.basic.CustomNameReactComponent" },
         new Object[]{ "com.example.basic.CustomPropsAndStateReactComponent" },
         new Object[]{ "com.example.basic.PublicReactComponent" },
+        new Object[]{ "com.example.event_handler.BasicHandlerComponent" },
+        new Object[]{ "com.example.event_handler.CustomHandlerButParametersIgnoredComponent" },
+        new Object[]{ "com.example.event_handler.CustomHandlerComponent" },
+        new Object[]{ "com.example.event_handler.CustomNameComponent" },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
         new Object[]{ "com.example.stateless.BasicStatelessComponent" },
         new Object[]{ "RootPackageReactComponent" }
@@ -73,8 +77,22 @@ public class ReactProcessorTest
         new Object[]{ "com.example.component.NotExtendingComponent",
                       "@ReactComponent target must be a subclass of react.core.Component" },
         new Object[]{ "com.example.component.PrivateConstructorComponent",
-                      "@ReactComponent target must have a single non-private, no-argument constructor or the default constructor" }
-      };
+                      "@ReactComponent target must have a single non-private, no-argument constructor or the default constructor" },
+
+        new Object[]{ "com.example.event_handler.BadNameComponent",
+                      "Method annotated with @EventHandler specified invalid name -fox" },
+        new Object[]{ "com.example.event_handler.BadTypeComponent",
+                      "The @EventHandler target parameter named i of type int is not assignable from target type java.lang.Object of parameter o1 in method com.example.event_handler.BadTypeComponent.CustomHandler.onMyEvent." },
+        new Object[]{ "com.example.event_handler.HandlerNotInterfaceComponent",
+                      "The @EventHandler specified an invalid type that is not an interface." },
+        new Object[]{ "com.example.event_handler.HandlerNotJsFunctionComponent",
+                      "The @EventHandler specified an invalid type that is not annotated with the annotation jsinterop.annotations.JsFunction." },
+        new Object[]{ "com.example.event_handler.TooFewParamsComponent",
+                      "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type com.example.event_handler.TooFewParamsComponent.CustomHandler that has handler method with 2 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method onMouseEvent." },
+        new Object[]{ "com.example.event_handler.TooManyParamsComponent",
+                      "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react.common.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." },
+
+        };
   }
 
   @Test( dataProvider = "failedCompiles" )

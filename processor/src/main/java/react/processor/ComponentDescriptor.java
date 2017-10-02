@@ -1,5 +1,6 @@
 package react.processor;
 
+import com.squareup.javapoet.ClassName;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import react.annotations.EventHandler;
 
 final class ComponentDescriptor
 {
@@ -31,6 +33,12 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<MethodDescriptor> _lifecycleMethods;
+  /**
+   * Methods that are designated as event handlers. A wrapper method will be generated to simplify
+   * the use of the method in React DevTools by naming handler..
+   */
+  @Nullable
+  private List<EventHandlerDescriptor> _eventHandlers;
 
   ComponentDescriptor( @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
@@ -170,5 +178,25 @@ final class ComponentDescriptor
   void setLifecycleMethods( @Nonnull final List<MethodDescriptor> lifecycleMethods )
   {
     _lifecycleMethods = Objects.requireNonNull( lifecycleMethods );
+    for ( final MethodDescriptor method : _lifecycleMethods )
+    {
+      final ExecutableElement m = method.getMethod();
+      if ( null != m.getAnnotation( EventHandler.class ) )
+      {
+        throw new ReactProcessorException( "@EventHandler target must not be a lifecycle method", m );
+      }
+    }
+  }
+
+  @Nonnull
+  List<EventHandlerDescriptor> getEventHandlers()
+  {
+    assert null != _eventHandlers;
+    return _eventHandlers;
+  }
+
+  void setEventHandlers( @Nonnull final List<EventHandlerDescriptor> eventHandlers )
+  {
+    _eventHandlers = Objects.requireNonNull( eventHandlers );
   }
 }
