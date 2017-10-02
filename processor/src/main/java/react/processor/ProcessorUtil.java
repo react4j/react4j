@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -97,5 +99,23 @@ final class ProcessorUtil
 
       return true;
     }
+  }
+
+  @SuppressWarnings( { "unchecked", "SameParameterValue" } )
+  @Nonnull
+  static DeclaredType getTypeMirrorAnnotationParameter( @Nonnull final Element typeElement,
+                                                        @Nonnull final String parameterName,
+                                                        @Nonnull final Class<?> annotationType )
+  {
+    final AnnotationMirror mirror = typeElement.getAnnotationMirrors().stream().
+      filter( a -> a.getAnnotationType().toString().equals( annotationType.getName() ) ).findFirst().orElse( null );
+    assert null != mirror;
+    final ExecutableElement annotationKey = mirror.getElementValues().keySet().stream().
+      filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
+    final AnnotationValue annotationValue = mirror.getElementValues().get( annotationKey );
+
+    assert null != annotationValue;
+
+    return (DeclaredType) annotationValue.getValue();
   }
 }
