@@ -119,7 +119,14 @@ public final class ReactProcessor
 
     determineComponentType( descriptor, typeElement );
     determinePropsAndStateTypes( descriptor );
+    determineLifecycleMethods( typeElement, descriptor );
 
+    return descriptor;
+  }
+
+  private void determineLifecycleMethods( @Nonnull final TypeElement typeElement,
+                                          @Nonnull final ComponentDescriptor descriptor )
+  {
     /*
      * Get the list of lifecycle methods that have been overridden by typeElement
      * a parent class, or by a default method method implemented by typeElement or
@@ -141,8 +148,6 @@ public final class ReactProcessor
         .collect( Collectors.toList() );
 
     descriptor.setLifecycleMethods( overriddenLifecycleMethods );
-
-    return descriptor;
   }
 
   @Nonnull
