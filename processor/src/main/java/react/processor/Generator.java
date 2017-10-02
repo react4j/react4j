@@ -101,10 +101,14 @@ final class Generator
 
     final ExecutableElement target = ProcessorUtil.getFunctionalInterfaceMethod( eventHandler.getEventHandlerType() );
     final int targetParameterCount = target.getParameters().size();
-    final String args =
+    String args =
       0 == targetParameterCount ?
       "()" :
       IntStream.range( 0, targetParameterCount ).mapToObj( i -> "arg" + i ).collect( Collectors.joining( "," ) );
+    if ( 1 < targetParameterCount )
+    {
+      args = "(" + args + ")";
+    }
 
     final int paramCount = eventHandler.getMethod().getParameters().size();
     final String params =

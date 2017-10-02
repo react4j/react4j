@@ -20,6 +20,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.event_handler.BasicHandlerComponent" },
         new Object[]{ "com.example.event_handler.CustomHandlerButParametersIgnoredComponent" },
         new Object[]{ "com.example.event_handler.CustomHandlerComponent" },
+        new Object[]{ "com.example.event_handler.CustomHandlerMultipleArgsComponent" },
         new Object[]{ "com.example.event_handler.CustomNameComponent" },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
         new Object[]{ "com.example.stateless.BasicStatelessComponent" },
