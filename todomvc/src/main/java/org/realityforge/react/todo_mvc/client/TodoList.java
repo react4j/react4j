@@ -16,6 +16,7 @@ import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Autorun;
 import org.realityforge.react.todo_mvc.client.model.AppData;
 import org.realityforge.react.todo_mvc.client.model.Todo;
+import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
 import react.arez.ReactArezComponent;
 import react.core.BaseProps;
@@ -23,10 +24,14 @@ import react.core.BaseState;
 import react.core.React;
 import react.core.ReactElement;
 import react.dom.events.FormEvent;
+import react.dom.events.FormEventHandler;
 import react.dom.events.KeyboardEvent;
+import react.dom.events.KeyboardEventHandler;
+import react.dom.events.MouseEventHandler;
 import react.dom.proptypes.html.HtmlProps;
 import react.dom.proptypes.html.InputProps;
 import react.dom.proptypes.html.attributeTypes.InputType;
+import static org.realityforge.react.todo_mvc.client.TodoList_.*;
 import static react.dom.DOM.*;
 
 @ReactComponent
@@ -85,6 +90,7 @@ class TodoList
     App.whyRun();
   }
 
+  @EventHandler( TodoItem.OnAction.class )
   @Action
   void handleDoAction( final ActionType actionType, final Todo todo )
   {
@@ -104,6 +110,7 @@ class TodoList
     }
   }
 
+  @EventHandler( TodoItem.OnSave.class )
   @Action
   void handleSave( final Todo todoToSave, final String text )
   {
@@ -118,18 +125,21 @@ class TodoList
     setState( State.create( editingId, state.newTodo, state.nowShowing ) );
   }
 
-  private void handleClearCompleted()
+  @EventHandler( MouseEventHandler.class )
+  void handleClearCompleted()
   {
     AppData.service.clearCompleted();
   }
 
-  private void handleToggleAll( FormEvent event )
+  @EventHandler( FormEventHandler.class )
+  void handleToggleAll( FormEvent event )
   {
     final HTMLInputElement input = Js.cast( event.target );
     AppData.service.toggleAll( input.checked );
   }
 
-  private void handleNewTodoKeyDown( @Nonnull final KeyboardEvent event )
+  @EventHandler( KeyboardEventHandler.class )
+  void handleNewTodoKeyDown( @Nonnull final KeyboardEvent event )
   {
     if ( App.ENTER_KEY == event.keyCode )
     {
@@ -149,7 +159,8 @@ class TodoList
     }
   }
 
-  private void handleChange( @Nonnull final FormEvent event )
+  @EventHandler( FormEventHandler.class )
+  void handleChange( @Nonnull final FormEvent event )
   {
     final HTMLInputElement input = Js.cast( event.target );
     setTodoText( input.value );
@@ -178,8 +189,8 @@ class TodoList
                               .className( "new-todo" )
                               .placeHolder( "What needs to be done?" )
                               .value( state().newTodo )
-                              .onKeyDown( this::handleNewTodoKeyDown )
-                              .onChange( this::handleChange )
+                              .onKeyDown( _handleNewTodoKeyDown( this ) )
+                              .onChange( _handleChange( this ) )
                               .autoFocus( true )
                      )
              ),
@@ -203,7 +214,7 @@ class TodoList
                       input( new InputProps()
                                .className( "toggle-all" )
                                .type( InputType.checkbox )
-                               .onChange( this::handleToggleAll )
+                               .onChange( _handleToggleAll( this ) )
                       ),
                       ul( new HtmlProps()
                             .className( "todo-list" ),
@@ -255,7 +266,7 @@ class TodoList
         Footer.Props.create( activeTodoCount,
                              completedCount,
                              state().nowShowing,
-                             e -> handleClearCompleted() );
+                             _handleClearCompleted( this ) );
       return React.createElement( Footer_.TYPE, props );
     }
     else

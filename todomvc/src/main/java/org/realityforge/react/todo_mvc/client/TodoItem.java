@@ -11,18 +11,24 @@ import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.react.todo_mvc.client.model.Todo;
+import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
 import react.arez.ReactArezComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
 import react.core.ReactElement;
+import react.dom.events.FocusEventHandler;
 import react.dom.events.FormEvent;
+import react.dom.events.FormEventHandler;
 import react.dom.events.KeyboardEvent;
+import react.dom.events.KeyboardEventHandler;
+import react.dom.events.MouseEventHandler;
 import react.dom.proptypes.html.BtnProps;
 import react.dom.proptypes.html.HtmlProps;
 import react.dom.proptypes.html.InputProps;
 import react.dom.proptypes.html.LabelProps;
 import react.dom.proptypes.html.attributeTypes.InputType;
+import static org.realityforge.react.todo_mvc.client.TodoItem_.*;
 import static react.dom.DOM.*;
 
 @ReactComponent
@@ -31,9 +37,17 @@ class TodoItem
   extends ReactArezComponent<TodoItem.Props, TodoItem.State>
 {
   @JsFunction
-  public interface JsBiConsumer<A1, A2>
+  @FunctionalInterface
+  public interface OnSave
   {
-    void accept( A1 arg, A2 arg2 );
+    void save( @Nonnull Todo todo, @Nonnull String newContent );
+  }
+
+  @JsFunction
+  @FunctionalInterface
+  public interface OnAction
+  {
+    void action( @Nonnull TodoList.ActionType action, @Nonnull Todo todo );
   }
 
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
@@ -42,13 +56,13 @@ class TodoItem
   {
     Todo todo;
     boolean isEditing;
-    JsBiConsumer<Todo, String> doSave;
-    JsBiConsumer<TodoList.ActionType, Todo> doAction;
+    OnSave doSave;
+    OnAction doAction;
 
     @JsOverlay
     static Props create( @Nonnull final Todo todo,
-                         @Nonnull final JsBiConsumer<Todo, String> doSave,
-                         @Nonnull final JsBiConsumer<TodoList.ActionType, Todo> doAction,
+                         @Nonnull final OnSave doSave,
+                         @Nonnull final OnAction doAction,
                          final boolean isEditing )
     {
       final TodoItem.Props props = new TodoItem.Props();
@@ -82,7 +96,8 @@ class TodoItem
     setInitialState( () -> State.create( props().todo.getTitle() ) );
   }
 
-  private void handleKeyDown( @Nonnull final KeyboardEvent event )
+  @EventHandler( KeyboardEventHandler.class )
+  void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
     if ( event.which == App.ESCAPE_KEY )
     {
@@ -94,6 +109,7 @@ class TodoItem
     }
   }
 
+  @EventHandler( FocusEventHandler.class )
   @Action
   void onSubmitTodo()
   {
@@ -111,38 +127,42 @@ class TodoItem
 
   private void onSave( final String val, final Props props )
   {
-    props.doSave.accept( props.todo, val );
+    props.doSave.save( props.todo, val );
     setState( State.create( val ) );
   }
 
+  @EventHandler( FormEventHandler.class )
   @Action
   void onToggle()
   {
     final Props props = props();
-    props.doAction.accept( TodoList.ActionType.TOGGLE, props.todo );
+    props.doAction.action( TodoList.ActionType.TOGGLE, props.todo );
   }
 
+  @EventHandler( MouseEventHandler.class )
   @Action
   void onEdit()
   {
-    props().doAction.accept( TodoList.ActionType.EDIT, props().todo );
+    props().doAction.action( TodoList.ActionType.EDIT, props().todo );
     setState( State.create( props().todo.getTitle() ) );
   }
 
+  @EventHandler( MouseEventHandler.class )
   @Action
   void onDestroy()
   {
     final Props props = props();
-    props.doAction.accept( TodoList.ActionType.DESTROY, props.todo );
+    props.doAction.action( TodoList.ActionType.DESTROY, props.todo );
   }
 
   @Action
   void onCancel()
   {
     setState( State.create( props().todo.getTitle() ) );
-    props().doAction.accept( TodoList.ActionType.CANCEL, props().todo );
+    props().doAction.action( TodoList.ActionType.CANCEL, props().todo );
   }
 
+  @EventHandler( FormEventHandler.class )
   @Action
   void handleChange( @Nonnull final FormEvent event )
   {
@@ -176,22 +196,22 @@ class TodoItem
                     input( new InputProps()
                              .className( "toggle" )
                              .type( InputType.checkbox ).checked( completed )
-                             .onChange( e -> onToggle() )
+                             .onChange( _onToggle( this ) )
                     ),
-                    label( new LabelProps().OnDoubleClick( e -> onEdit() ),
+                    label( new LabelProps().OnDoubleClick( _onEdit( this ) ),
                            props.todo.getTitle() ),
                     button( new BtnProps()
                               .className( "destroy" )
-                              .onClick( e -> onDestroy() )
+                              .onClick( _onDestroy( this ) )
                     )
                ),
                input( new InputProps()
                         .ref( "editField" )
                         .className( "edit" )
                         .defaultValue( state().editText )
-                        .onBlur( e -> onSubmitTodo() )
-                        .onChange( this::handleChange )
-                        .onKeyDown( this::handleKeyDown )
+                        .onBlur( _onSubmitTodo( this ) )
+                        .onChange( _handleChange( this ) )
+                        .onKeyDown( _handleKeyDown( this ) )
                )
     );
   }
