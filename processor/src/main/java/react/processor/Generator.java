@@ -91,7 +91,8 @@ final class Generator
                          descriptor.getNativeComponentClassName() );
     method.addStatement( "$T.invariant( () -> null != constructorFn,\n" +
                          "              () -> \"Unable to locate constructor function for " +
-                         descriptor.getName() + " defined by class " + element.getQualifiedName().toString() + "\" )",
+                         descriptor.getName() + " defined by class " +
+                         descriptor.getElement().getQualifiedName().toString() + "\" )",
                          Guards.class );
     method.addStatement( "assert null != constructorFn" );
 
