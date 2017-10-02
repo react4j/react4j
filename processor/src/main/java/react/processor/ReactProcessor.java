@@ -266,7 +266,6 @@ public final class ReactProcessor
       }
     }
 
-    descriptor.setStateless( isStatelessComponent );
     descriptor.setArezComponent( isArezComponent );
   }
 

@@ -21,7 +21,6 @@ final class ComponentDescriptor
   private final PackageElement _packageElement;
   @Nonnull
   private final TypeElement _element;
-  private boolean _stateless;
   private boolean _arezComponent;
   @Nullable
   private TypeElement _propsType;
@@ -106,16 +105,6 @@ final class ComponentDescriptor
   String getNativeComponentName()
   {
     return "React_" + _element.getSimpleName();
-  }
-
-  boolean isStateless()
-  {
-    return _stateless;
-  }
-
-  void setStateless( final boolean stateless )
-  {
-    _stateless = stateless;
   }
 
   boolean isArezComponent()
