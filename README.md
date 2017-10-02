@@ -11,14 +11,19 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 
 ## TODO
 
-* Consider enhancing `@ComponentId` so it can be overidden in subclasses and provide if to parent class.
-  i.e. Non-enhanced class can use it similarly to `@ComponentName`
+### High Priority
+
 * Restructure the app in the same way as https://github.com/mobxjs/mobx-react-todomvc and verify  that
   only the parts of the screen that need to re-render get re-rendered.
-* Add support for componentDidCatch() (React16)
-* Add support for portals (React16)
-* Figure out a way to support `getInitialProps()` on components.
-* Develop React-Arez extension
+* Complete React-Arez extension
+* Add invariant checks to make sure people are doing the right thing when interacting with react.  
+  * Make sure call setState in correct places setInitialState only in constructor.
+  * setState(null) should be a noop in both react16 and react15
+  * Ensure setState not called after component destroyed
+  * Ensure refs is only accessed after component mounted
+
+### Must Haves
+
 * Add multiple render methods that return different values. Enhance code generator to ensure that
   the developer only overloads a single variant. Variants include;
   - renderAsElement
@@ -33,13 +38,20 @@ tooling that stops you from using the toolkit incorrectly with no performance co
    Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
    element factories can be built by looking at html spec and auto-generating? Probably get away from writing build
    at end by overloading methods
-* Add invariant checks to make sure people are doing the right thing when interacting with react.
-  (i.e. Make sure call setState in correct places setInitialState only in constructor etc.)
-* Incorporate lifecycle documentation ala https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
-  directly into javadocs or project docs.
-* setState(null) should be a noop in both react16 and react15
-* Ensure refs is only accessed after component mounted
-* Consider introducing an interface for "React" API and swap out with a provider as required.
 * In development mode copy the list of arez dependencies to "state" of the component. Extra checking in
   shouldComponentUpdate to make sure it does not re-run as result of this.
-* Ensure setState not called after component destroyed
+
+### Low Priorities
+
+* Add support for componentDidCatch() (React16)
+* Add support for portals (React16)
+* Figure out a way to support `getInitialProps()` on components.
+
+### Really Low Priorities
+
+* Consider introducing an interface for "React" API and swap out with a provider as required.
+* Consider enhancing `@ComponentId` so it can be overidden in subclasses and provide if to parent class.
+  i.e. Non-enhanced class can use it similarly to `@ComponentName`
+* Incorporate lifecycle documentation ala https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
+  directly into javadocs or project docs.
+
