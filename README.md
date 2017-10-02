@@ -16,7 +16,7 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 * Restructure the app in the same way as https://github.com/mobxjs/mobx-react-todomvc and verify  that
   only the parts of the screen that need to re-render get re-rendered.
 * Complete React-Arez extension
-* Add invariant checks to make sure people are doing the right thing when interacting with react.  
+* Add invariant checks to make sure people are doing the right thing when interacting with react.
   * Make sure call setState in correct places setInitialState only in constructor.
   * setState(null) should be a noop in both react16 and react15
   * Ensure setState not called after component destroyed
@@ -54,4 +54,3 @@ tooling that stops you from using the toolkit incorrectly with no performance co
   i.e. Non-enhanced class can use it similarly to `@ComponentName`
 * Incorporate lifecycle documentation ala https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
   directly into javadocs or project docs.
-
