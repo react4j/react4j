@@ -22,7 +22,6 @@ import react.core.BaseProps;
 import react.core.BaseState;
 import react.core.React;
 import react.core.ReactElement;
-import react.core.util.JsUtil;
 import react.dom.events.FormEvent;
 import react.dom.events.KeyboardEvent;
 import react.dom.proptypes.html.HtmlProps;
@@ -257,7 +256,6 @@ class TodoList
                              completedCount,
                              state().nowShowing,
                              e -> handleClearCompleted() );
-      JsUtil.definePropertyValue( props.onClearCompleted, "name", "handleClearCompleted" );
       return React.createElement( Footer_.TYPE, props );
     }
     else

@@ -14,11 +14,6 @@ public final class JsUtil
   {
   }
 
-  public static <O> void definePropertyValue( O o, String p, Object v )
-  {
-    JsObject.defineProperty( Js.cast( o ), p, Js.cast( JsPropertyMap.of( "value", v ) ) );
-  }
-
   /**
    * Box a native JS array into a Java List. It does not have any significant performance
    * penalty because we directly set the native array of the super ArrayList
