@@ -3,7 +3,6 @@
 *.css text
 *.html text
 *.java text
-*.js text
 *.md text
 *.rake text
 *.xml text
