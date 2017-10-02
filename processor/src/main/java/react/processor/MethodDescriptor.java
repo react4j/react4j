@@ -29,4 +29,30 @@ final class MethodDescriptor
   {
     return _methodType;
   }
+
+  @Override
+  public boolean equals( final Object o )
+  {
+    if ( this == o )
+    {
+      return true;
+    }
+    else if ( null == o || getClass() != o.getClass() )
+    {
+      return false;
+    }
+    else
+    {
+      final MethodDescriptor that = (MethodDescriptor) o;
+      return getMethod().equals( that.getMethod() ) && getMethodType().equals( that.getMethodType() );
+    }
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int result = getMethod().hashCode();
+    result = 31 * result + getMethodType().hashCode();
+    return result;
+  }
 }
