@@ -40,7 +40,7 @@ import react.annotations.ReactComponent;
 import react.common.Procedure;
 import react.core.Component;
 import react.core.StatelessComponent;
-import static javax.tools.Diagnostic.Kind.ERROR;
+import static javax.tools.Diagnostic.Kind.*;
 
 /**
  * Annotation processor that analyzes React annotated source and generates models from the annotations.
