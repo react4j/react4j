@@ -78,6 +78,10 @@ abstract class AbstractReactProcessorTest
       for ( final JavaFileObject fileObject : fileObjects )
       {
         final Path target = fixtureDir().resolve( "expected/" + fileObject.getName().replace( "/SOURCE_OUTPUT/", "" ) );
+        if ( target.toFile().getName().startsWith( "Arez_" ) )
+        {
+          continue;
+        }
         if ( Files.exists( target ) )
         {
           Files.delete( target );
