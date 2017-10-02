@@ -50,14 +50,9 @@ final class Generator
     builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
       addMember( "value", "$S", ReactProcessor.class.getName() ).
       build() );
-    final ClassName nativeComponent =
-      ClassName.get( descriptor.getPackageName(),
-                     descriptor.getNestedClassPrefix() + descriptor.getNativeComponentName() );
-    final TypeName constructorType =
-      ParameterizedTypeName.get( ClassName.get( JsConstructorFn.class ), nativeComponent );
 
     final FieldSpec.Builder field =
-      FieldSpec.builder( constructorType,
+      FieldSpec.builder( getJsConstructorFnType( descriptor ),
                          "TYPE",
                          Modifier.STATIC,
                          Modifier.FINAL,
@@ -65,17 +60,25 @@ final class Generator
         initializer( "getConstrutorFunction()" );
     builder.addField( field.build() );
 
-    builder.addMethod( buildConstructorFnMethod( descriptor, element, nativeComponent, constructorType ).build() );
+    builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
     return builder.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                              @Nonnull final TypeElement element,
-                                                              @Nonnull final ClassName nativeComponent,
-                                                              @Nonnull final TypeName constructorType )
+  private static ParameterizedTypeName getJsConstructorFnType( final @Nonnull ComponentDescriptor descriptor )
   {
+    return ParameterizedTypeName.get( ClassName.get( JsConstructorFn.class ),
+                                      descriptor.getNativeComponentClassName() );
+  }
+
+  {
+
+  @Nonnull
+  private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final ParameterizedTypeName constructorType = getJsConstructorFnType( descriptor );
+
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "getConstrutorFunction" ).
         addAnnotation( Nonnull.class ).
@@ -85,7 +88,7 @@ final class Generator
     method.addStatement( "final $T constructorFn = $T.of( $T.class ) ",
                          constructorType,
                          JsConstructorFn.class,
-                         nativeComponent );
+                         descriptor.getNativeComponentClassName() );
     method.addStatement( "$T.invariant( () -> null != constructorFn,\n" +
                          "              () -> \"Unable to locate constructor function for " +
                          descriptor.getName() + " defined by class " + element.getQualifiedName().toString() + "\" )",

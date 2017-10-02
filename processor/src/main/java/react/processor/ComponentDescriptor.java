@@ -107,6 +107,12 @@ final class ComponentDescriptor
     return "React_" + _element.getSimpleName();
   }
 
+  @Nonnull
+  ClassName getNativeComponentClassName()
+  {
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + getNativeComponentName() );
+  }
+
   boolean isArezComponent()
   {
     return _arezComponent;
