@@ -5,6 +5,7 @@ import elemental2.dom.DomGlobal;
 import javax.annotation.Nonnull;
 import org.realityforge.arez.Arez;
 import org.realityforge.arez.browser.extras.BrowserLocation;
+import org.realityforge.arez.browser.extras.spy.ConsoleSpyEventProcessor;
 import org.realityforge.arez.extras.WhyRun;
 import org.realityforge.react.todo_mvc.client.model.AppData;
 import react.core.BaseProps;
@@ -22,9 +23,9 @@ public class App
     DomGlobal.console.log( new WhyRun( Arez.context() ).whyRun() );
   }
 
-  static void spyEvents()
+  private static void spyEvents()
   {
-    Arez.context().getSpy().addSpyEventHandler( SpyUtil::emitEvent );
+    Arez.context().getSpy().addSpyEventHandler( new ConsoleSpyEventProcessor() );
   }
 
   @Override
