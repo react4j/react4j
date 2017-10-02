@@ -29,6 +29,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+import react.common.Procedure;
 
 /**
  * You can subclass {@link NativeComponent} to define a stateful, ES6-style React component.
@@ -81,7 +82,7 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState>
    * @param callback callback function that will be executed once setState is completed and
    *                 the component is re-rendered.
    */
-  public native void setState( S state, JsProcedure callback );
+  public native void setState( S state, Procedure callback );
 
   /**
    * Performs a shallow merge of nextState into current state. This is the primary method
@@ -113,7 +114,7 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState>
    *
    * @param callBack callback function that will be executed once the component has been updated
    */
-  protected native void forceUpdate( JsProcedure callBack );
+  protected native void forceUpdate( Procedure callBack );
 
   public native void forceUpdate();
 

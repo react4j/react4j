@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react.core.JsProcedure;
+import react.common.Procedure;
 import react.core.ReactElement;
 import react.dom.proptypes.html.HtmlGlobalFields;
 
@@ -56,7 +56,7 @@ public class ReactDOM
    */
   public static native <C> ReactElement<?, ?> render( ReactElement<?, ?> element, C container );
 
-  public static native <C> ReactElement<?, ?> render( ReactElement<?, ?> element, C container, JsProcedure onUpdate );
+  public static native <C> ReactElement<?, ?> render( ReactElement<?, ?> element, C container, Procedure onUpdate );
 
   /**
    * Remove a mounted React component from the DOM and clean up its event handlers and state. If

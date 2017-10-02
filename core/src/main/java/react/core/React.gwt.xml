@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
+  <inherits name="react.common.Common"/>
   <inherits name="org.realityforge.braincheck.BrainCheck"/>
   <inherits name="jsinterop.annotations.Annotations"/>
   <inherits name="elemental2.core.Core"/>
