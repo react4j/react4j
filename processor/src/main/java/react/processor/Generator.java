@@ -65,6 +65,17 @@ final class Generator
         initializer( "getConstrutorFunction()" );
     builder.addField( field.build() );
 
+    builder.addMethod( buildConstructorFnMethod( descriptor, element, nativeComponent, constructorType ).build() );
+
+    return builder.build();
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                              @Nonnull final TypeElement element,
+                                                              @Nonnull final ClassName nativeComponent,
+                                                              @Nonnull final TypeName constructorType )
+  {
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "getConstrutorFunction" ).
         addAnnotation( Nonnull.class ).
@@ -90,10 +101,7 @@ final class Generator
 
     method.addCode( codeBlock.build() );
     method.addStatement( "return constructorFn" );
-
-    builder.addMethod( method.build() );
-
-    return builder.build();
+    return method;
   }
 
   @Nonnull
