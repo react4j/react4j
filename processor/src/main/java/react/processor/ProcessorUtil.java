@@ -101,6 +101,17 @@ final class ProcessorUtil
     }
   }
 
+  @Nonnull
+  static ExecutableElement getFunctionalInterfaceMethod( @Nonnull final TypeElement element )
+  {
+    assert null != element.getAnnotation( FunctionalInterface.class );
+    final ExecutableElement method = getMethods( element ).stream().
+      filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) ).
+      findAny().orElse( null );
+    assert null != method;
+    return method;
+  }
+
   @SuppressWarnings( { "unchecked", "SameParameterValue" } )
   @Nonnull
   static DeclaredType getTypeMirrorAnnotationParameter( @Nonnull final Element typeElement,
