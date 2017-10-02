@@ -1,13 +1,13 @@
-package react.core.util;
+package react.common;
 
 import elemental2.core.Array;
-import elemental2.core.JsObject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 
+/**
+ * A collection of utilities for interoperability between Java and Javascript.
+ */
 public final class JsUtil
 {
   private JsUtil()
@@ -19,7 +19,7 @@ public final class JsUtil
    * penalty because we directly set the native array of the super ArrayList
    * implementation.
    *
-   * @param <T> the type of array elements.
+   * @param <T>   the type of array elements.
    * @param input the native array.
    * @return the java list instance.
    */
@@ -35,7 +35,7 @@ public final class JsUtil
    * penalty because we directly take the native array of the super ArrayList
    * implementation.
    *
-   * @param <T> the type of array elements.
+   * @param <T>   the type of array elements.
    * @param input the java list instance.
    * @return the native array.
    */
