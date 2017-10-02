@@ -19,7 +19,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 * Add support for portals (React16)
 * Figure out a way to support `getInitialProps()` on components.
 * Develop React-Arez extension
-* Allow static imports on any class named "*_". Update idea config and checkstyle to allow.
 * Add multiple render methods that return different values. Enhance code generator to ensure that
   the developer only overloads a single variant. Variants include;
   - renderAsElement
