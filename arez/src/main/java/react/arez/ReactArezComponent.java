@@ -46,9 +46,10 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     _renderDepsChanged = true;
     /*
      * We are forced to use the callback variant of setState as not all components have state
-     * and thus state will be null, but it is invalid to pass null to setState. The callback
-     * approach forces the framework to construct state for us and pass it to callback AND it
-     * also ensures that if any other code changes the state we will not override the value.
+     * and thus state will be null, but passing null to setState will not result in re-render.
+     * The callback approach forces the framework to construct state for us and pass it to the
+     * callback AND it also ensures that if any other code changes the state we will not override
+     * the value.
      */
     component().setState( ( s, p ) -> s );
   }

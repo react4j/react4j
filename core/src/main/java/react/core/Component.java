@@ -20,7 +20,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   @JsFunction
   public interface SetStateCallback<P, S>
   {
-    @Nonnull
+    @Nullable
     S onSetState( @Nonnull S previousState, @Nonnull P currentProps );
   }
 
