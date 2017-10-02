@@ -25,8 +25,6 @@ import react.core.React;
 import react.core.ReactElement;
 import react.dom.events.FormEvent;
 import react.dom.events.FormEventHandler;
-import react.dom.events.KeyboardEvent;
-import react.dom.events.KeyboardEventHandler;
 import react.dom.events.MouseEventHandler;
 import react.dom.proptypes.html.HtmlProps;
 import react.dom.proptypes.html.InputProps;
@@ -52,15 +50,13 @@ class TodoList
     extends BaseState
   {
     String editingId;
-    String newTodo;
     String nowShowing;
 
     @JsOverlay
-    static State create( final String editingId, final String newTodo, final String nowShowing )
+    static State create( final String editingId, final String nowShowing )
     {
       final State state = new State();
       state.editingId = editingId;
-      state.newTodo = newTodo;
       state.nowShowing = nowShowing;
       return state;
     }
@@ -69,7 +65,7 @@ class TodoList
   @Override
   protected void componentInitialize()
   {
-    setInitialState( () -> State.create( null, "", AppData.LOCATION.getLocation() ) );
+    setInitialState( () -> State.create( null, AppData.LOCATION.getLocation() ) );
   }
 
   @Autorun
@@ -122,7 +118,7 @@ class TodoList
   void setEditingId( @Nullable final String editingId )
   {
     final State state = state();
-    setState( State.create( editingId, state.newTodo, state.nowShowing ) );
+    setState( State.create( editingId, state.nowShowing ) );
   }
 
   @EventHandler( MouseEventHandler.class )
@@ -138,40 +134,6 @@ class TodoList
     AppData.service.toggleAll( input.checked );
   }
 
-  @EventHandler( KeyboardEventHandler.class )
-  void handleNewTodoKeyDown( @Nonnull final KeyboardEvent event )
-  {
-    if ( App.ENTER_KEY == event.keyCode )
-    {
-      event.preventDefault();
-      addNewTodo();
-    }
-  }
-
-  @Action
-  void addNewTodo()
-  {
-    final String val = state().newTodo.trim();
-    if ( val.length() > 0 )
-    {
-      AppData.service.addTodo( val );
-      setTodoText( "" );
-    }
-  }
-
-  @EventHandler( FormEventHandler.class )
-  void handleChange( @Nonnull final FormEvent event )
-  {
-    final HTMLInputElement input = Js.cast( event.target );
-    setTodoText( input.value );
-  }
-
-  @Action
-  void setTodoText( @Nonnull final String value )
-  {
-    setState( State.create( state().editingId, value, state().nowShowing ) );
-  }
-
   @Nullable
   @Override
   protected ReactElement<?, ?> doRender()
@@ -185,14 +147,7 @@ class TodoList
       div(
         div( header( new HtmlProps().className( "header" ),
                      h1( "todos" ),
-                     input( new InputProps()
-                              .className( "new-todo" )
-                              .placeHolder( "What needs to be done?" )
-                              .value( state().newTodo )
-                              .onKeyDown( _handleNewTodoKeyDown( this ) )
-                              .onChange( _handleChange( this ) )
-                              .autoFocus( true )
-                     )
+                     React.createElement( TodoEntry_.TYPE, new BaseProps() )
              ),
              renderMainSection(),
              renderFooter( activeTodoCount, completedCount )
