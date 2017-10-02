@@ -49,6 +49,8 @@ class TodoList
   static class State
     extends BaseState
   {
+    // TODO: Move this state to view store of some sort so changing editingId does not redraw this entire TodoList component
+    // then have each TodoItem have a @computed property that controls whether they redraw?
     String editingId;
     String nowShowing;
 
