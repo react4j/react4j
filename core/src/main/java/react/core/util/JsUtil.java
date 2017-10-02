@@ -1,4 +1,4 @@
-package react.common;
+package react.core.util;
 
 import elemental2.core.Array;
 import java.util.ArrayList;

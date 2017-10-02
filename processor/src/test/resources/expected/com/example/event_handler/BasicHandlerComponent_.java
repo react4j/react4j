@@ -7,7 +7,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react.common.Procedure;
+import react.core.Procedure;
 import react.core.ReactConfig;
 
 @Generated("react.processor.ReactProcessor")

@@ -4,7 +4,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import javax.annotation.Nonnull;
-import react.common.Procedure;
+import jsinterop.annotations.JsFunction;
 
 /**
  * Annotation used to specify a callback for a react event handler.
@@ -39,4 +39,17 @@ public @interface EventHandler
    * given a useful debug name.
    */
   Class value() default Procedure.class;
+
+  /**
+   * Interface for performing an action that does not return a value.
+   */
+  @FunctionalInterface
+  @JsFunction
+  interface Procedure
+  {
+    /**
+     * Perform an action.
+     */
+    void call();
+  }
 }

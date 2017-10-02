@@ -37,7 +37,7 @@ import javax.lang.model.util.Types;
 import jsinterop.annotations.JsFunction;
 import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
-import react.common.Procedure;
+import react.core.Procedure;
 import react.core.Component;
 import react.core.StatelessComponent;
 import static javax.tools.Diagnostic.Kind.*;

@@ -90,7 +90,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.event_handler.TooFewParamsComponent",
                       "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type com.example.event_handler.TooFewParamsComponent.CustomHandler that has handler method with 2 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method onMouseEvent." },
         new Object[]{ "com.example.event_handler.TooManyParamsComponent",
-                      "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react.common.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." }
+                      "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react.core.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." }
       };
   }
 

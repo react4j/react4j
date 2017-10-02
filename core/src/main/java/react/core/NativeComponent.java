@@ -29,7 +29,6 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
-import react.common.Procedure;
 
 /**
  * You can subclass {@link NativeComponent} to define a stateful, ES6-style React component.

@@ -1,4 +1,4 @@
-package react.common;
+package react.core;
 
 import jsinterop.annotations.JsFunction;
 

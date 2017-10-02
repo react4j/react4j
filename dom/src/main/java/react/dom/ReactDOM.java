@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react.common.Procedure;
+import react.core.Procedure;
 import react.core.ReactElement;
 import react.dom.proptypes.html.HtmlGlobalFields;
 
