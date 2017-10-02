@@ -19,6 +19,7 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 * Add support for portals (React16)
 * Figure out a way to support `getInitialProps()` on components.
 * Develop React-Arez extension
+* Allow static imports on any class named "*_". Update idea config and checkstyle to allow.
 * Add mechanism for exporting methods with useful displayNames in props
   - Perhaps we detect any non-private methods and add a function reference in the generated component
     factory class ala (MyComponent_) that setups up displayNames. So we end up doing `MyComponent_.handleAction(this)`
