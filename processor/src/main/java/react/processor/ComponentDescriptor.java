@@ -28,7 +28,7 @@ final class ComponentDescriptor
   @Nullable
   private TypeElement _stateType;
   /**
-   * Lifecycle methods that are overidden by the user and need to be proxied from the native object.
+   * Lifecycle methods that are overridden by the user and need to be proxied from the native object.
    */
   @Nullable
   private List<MethodDescriptor> _lifecycleMethods;
