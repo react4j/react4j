@@ -79,7 +79,6 @@ public class ReactProcessorTest
                       "@ReactComponent target must be a subclass of react.core.Component" },
         new Object[]{ "com.example.component.PrivateConstructorComponent",
                       "@ReactComponent target must have a single non-private, no-argument constructor or the default constructor" },
-
         new Object[]{ "com.example.event_handler.BadNameComponent",
                       "Method annotated with @EventHandler specified invalid name -fox" },
         new Object[]{ "com.example.event_handler.BadTypeComponent",
@@ -91,9 +90,8 @@ public class ReactProcessorTest
         new Object[]{ "com.example.event_handler.TooFewParamsComponent",
                       "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type com.example.event_handler.TooFewParamsComponent.CustomHandler that has handler method with 2 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method onMouseEvent." },
         new Object[]{ "com.example.event_handler.TooManyParamsComponent",
-                      "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react.common.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." },
-
-        };
+                      "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react.common.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." }
+      };
   }
 
   @Test( dataProvider = "failedCompiles" )
