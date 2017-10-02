@@ -58,9 +58,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected void setInitialState( @Nonnull final Supplier<S> state )
   {
     final ArezContext context = Arez.context();
-    context.safeProcedure( toName( ".setInitialState" ),
-                           false,
-                           () -> component().setInitialState( state.get() ) );
+    context.safeAction( toName( ".setInitialState" ), false, () -> component().setInitialState( state.get() ) );
   }
 
   @ComponentId
@@ -114,7 +112,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
      * Need an uncheckedCast here rather than regular cast as otherwise GWT attempts to cast
      * this using a method that does not work. Unclear of the exact cause.
      */
-    return Js.uncheckedCast( Arez.context().safeFunction( _renderTracker, this::doRender ) );
+    return Js.uncheckedCast( Arez.context().safeTrack( _renderTracker, this::doRender ) );
   }
 
   @Nullable
