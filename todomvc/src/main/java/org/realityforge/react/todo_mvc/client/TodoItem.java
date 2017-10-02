@@ -173,10 +173,11 @@ class TodoItem
     }
   }
 
+  @Action
   @Override
   protected void componentDidUpdate( @Nonnull final Props prevProps, @Nonnull final State prevState )
   {
-    if ( !prevProps.isEditing && component().props().isEditing )
+    if ( !prevProps.isEditing && props().isEditing )
     {
       final HTMLInputElement input = getRefNamed( "editField" );
       assert null != input;
