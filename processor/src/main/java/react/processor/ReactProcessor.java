@@ -194,7 +194,9 @@ public final class ReactProcessor
           final TypeMirror parameterType = parameters.get( i );
           final VariableElement element = targetParameters.get( i );
           final TypeMirror targetParameterType = element.asType();
-          if ( !processingEnv.getTypeUtils().isAssignable( targetParameterType, parameterType ) )
+          final TypeMirror targetErased = processingEnv.getTypeUtils().erasure( targetParameterType );
+          final TypeMirror parameterErased = processingEnv.getTypeUtils().erasure( parameterType );
+          if ( !processingEnv.getTypeUtils().isAssignable( targetErased, parameterErased ) )
           {
             throw new ReactProcessorException( "The @EventHandler target parameter named " +
                                                eventHandler.getMethod().getParameters().get( i ).getSimpleName() +
