@@ -29,7 +29,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Nonnull
   private final Observable _stateObservable;
   @Nonnull
-  private final Observer _renderReaction;
+  private final Observer _renderTracker;
   private boolean _renderDepsChanged;
 
   protected ReactArezComponent()
@@ -38,7 +38,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     final ArezContext context = Arez.context();
     _propsObservable = context.createObservable( toName( ".props" ) );
     _stateObservable = context.createObservable( toName( ".state" ) );
-    _renderReaction = context.tracker( toName( ".reaction" ), false, this::onRenderDepsChanged );
+    _renderTracker = context.tracker( toName( ".render" ), false, this::onRenderDepsChanged );
   }
 
   private void onRenderDepsChanged()
@@ -113,7 +113,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
      * Need an uncheckedCast here rather than regular cast as otherwise GWT attempts to cast
      * this using a method that does not work. Unclear of the exact cause.
      */
-    return Js.uncheckedCast( Arez.context().safeFunction( _renderReaction, this::doRender ) );
+    return Js.uncheckedCast( Arez.context().safeFunction( _renderTracker, this::doRender ) );
   }
 
   @Nullable
