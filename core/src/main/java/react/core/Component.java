@@ -21,7 +21,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   public interface SetStateCallback<P, S>
   {
     @Nullable
-    S onSetState( @Nonnull S previousState, @Nonnull P currentProps );
+    S onSetState( @Nullable S previousState, @Nonnull P currentProps );
   }
 
   @Nonnull

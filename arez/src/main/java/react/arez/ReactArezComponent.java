@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.realityforge.arez.Arez;
 import org.realityforge.arez.ArezContext;
 import org.realityforge.arez.Observable;
@@ -45,13 +46,10 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   {
     _renderDepsChanged = true;
     /*
-     * We are forced to use the callback variant of setState as not all components have state
-     * and thus state will be null, but passing null to setState will not result in re-render.
-     * The callback approach forces the framework to construct state for us and pass it to the
-     * callback AND it also ensures that if any other code changes the state we will not override
-     * the value.
+     * Force a re-render by requesting the merge of empty state literal.
+     * It has no effect other than to force a reschedule.
      */
-    component().setState( ( s, p ) -> s );
+    component().setState( Js.<S>cast( JsPropertyMap.of() ) );
   }
 
   @Override
