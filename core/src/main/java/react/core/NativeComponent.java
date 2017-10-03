@@ -143,12 +143,14 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState>
   protected abstract ReactElement<?, ?> render();
 
   @JsOverlay
+  @Nullable
   public final S state()
   {
     return state;
   }
 
   @JsOverlay
+  @Nullable
   public final P props()
   {
     return props;

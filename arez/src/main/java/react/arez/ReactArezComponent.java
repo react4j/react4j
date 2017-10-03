@@ -85,7 +85,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     return "<default>";
   }
 
-  @Nonnull
+  @Nullable
   @Override
   protected S state()
   {
@@ -93,7 +93,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     return component().state();
   }
 
-  @Nonnull
+  @Nullable
   @Override
   protected P props()
   {
