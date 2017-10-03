@@ -63,7 +63,6 @@ class TodoList
   @Nullable
   private ReactElement<?, ?> renderMainSection()
   {
-
     if ( AppData.model.totalCount() > 0 )
     {
       final FilterMode filterMode = AppData.viewService.getFilterMode();
