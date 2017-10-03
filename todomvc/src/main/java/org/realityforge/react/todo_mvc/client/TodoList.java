@@ -13,8 +13,8 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
-import org.realityforge.arez.annotations.Autorun;
 import org.realityforge.react.todo_mvc.client.model.AppData;
+import org.realityforge.react.todo_mvc.client.model.FilterMode;
 import org.realityforge.react.todo_mvc.client.model.Todo;
 import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
@@ -37,9 +37,6 @@ import static react.dom.DOM.*;
 class TodoList
   extends ReactArezComponent<BaseProps, TodoList.State>
 {
-  static final String NOW_SHOWING_ACTIVE_TODOS = "active";
-  static final String NOW_SHOWING_COMPLETED_TODOS = "completed";
-
   enum ActionType
   {
     EDIT, DESTROY, TOGGLE, CANCEL
@@ -52,40 +49,14 @@ class TodoList
     // TODO: Move this state to view store of some sort so changing editingId does not redraw this entire TodoList component
     // then have each TodoItem have a @computed property that controls whether they redraw?
     String editingId;
-    String nowShowing;
 
     @JsOverlay
-    static State create( final String editingId, final String nowShowing )
+    static State create( @Nullable final String editingId )
     {
       final State state = new State();
       state.editingId = editingId;
-      state.nowShowing = nowShowing;
       return state;
     }
-  }
-
-  @Override
-  protected void componentInitialize()
-  {
-    setInitialState( () -> State.create( null, AppData.LOCATION.getLocation() ) );
-  }
-
-  @Autorun
-  void updateNowShowing()
-  {
-    // Observe the state here so we will re-run if it changes
-    // regardless of whether component is bound yet
-    final String location = AppData.LOCATION.getLocation();
-
-    if ( isComponentBound() )
-    {
-      // Deliberately avoid observing state as it should only
-      // be run when location changes
-      final State state = component().state().dup();
-      state.nowShowing = location;
-      setState( state );
-    }
-    App.whyRun();
   }
 
   @EventHandler( TodoItem.OnAction.class )
@@ -119,8 +90,7 @@ class TodoList
   @Action
   void setEditingId( @Nullable final String editingId )
   {
-    final State state = state();
-    setState( State.create( editingId, state.nowShowing ) );
+    setState( State.create( editingId ) );
   }
 
   @EventHandler( MouseEventHandler.class )
@@ -162,11 +132,12 @@ class TodoList
   {
     final Collection<Todo> todos = AppData.model.findAll();
     final int todoCount = todos.size();
+
     if ( todoCount > 0 )
     {
-      final String nowShowing = state().nowShowing;
+      final FilterMode filterMode = AppData.viewService.getFilterMode();
       final List<Todo> shownTodos =
-        todos.stream().filter( todo -> shouldShowTodo( nowShowing, todo ) ).collect( Collectors.toList() );
+        todos.stream().filter( todo -> shouldShowTodo( filterMode, todo ) ).collect( Collectors.toList() );
       return section( new HtmlProps().className( "header" ),
                       input( new InputProps()
                                .className( "toggle-all" )
@@ -185,13 +156,13 @@ class TodoList
     }
   }
 
-  private boolean shouldShowTodo( @Nullable final String currentCategory, @Nonnull final Todo todo )
+  private boolean shouldShowTodo( @Nonnull final FilterMode filterMode, @Nonnull final Todo todo )
   {
-    if ( null == currentCategory || currentCategory.isEmpty() )
+    if ( FilterMode.ALL == filterMode )
     {
       return true;
     }
-    else if ( currentCategory.equals( NOW_SHOWING_ACTIVE_TODOS ) )
+    else if ( FilterMode.ACTIVE == filterMode )
     {
       return !todo.isCompleted();
     }
@@ -222,7 +193,7 @@ class TodoList
       final Footer.Props props =
         Footer.Props.create( activeTodoCount,
                              completedCount,
-                             state().nowShowing,
+                             AppData.viewService.getFilterMode(),
                              _handleClearCompleted( this ) );
       return React.createElement( Footer_.TYPE, props );
     }

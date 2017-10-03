@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.realityforge.react.todo_mvc.client.model.FilterMode;
 import react.annotations.ReactComponent;
 import react.core.BaseProps;
 import react.core.ReactElement;
@@ -26,19 +27,19 @@ class Footer
   {
     int count;
     int completedCount;
-    String nowShowing;
+    FilterMode filterMode;
     MouseEventHandler onClearCompleted;
 
     @JsOverlay
     static Props create( @Nonnegative final int count,
                          @Nonnegative final int completedCount,
-                         @Nonnull final String nowShowing,
+                         @Nonnull final FilterMode filterMode,
                          @Nonnull final MouseEventHandler onClearCompleted )
     {
       final Props props = new Props();
       props.count = count;
       props.completedCount = completedCount;
-      props.nowShowing = nowShowing;
+      props.filterMode = filterMode;
       props.onClearCompleted = onClearCompleted;
       return props;
     }
@@ -48,7 +49,7 @@ class Footer
   protected ReactElement<?, ?> render()
   {
     final String activeTodoWord = "item" + ( props().count == 1 ? "" : "s" );
-
+    final FilterMode filterMode = props().filterMode;
     return
       footer( new HtmlProps().className( "footer" ),
               span( new HtmlProps().className( "todo-count" ),
@@ -57,15 +58,15 @@ class Footer
               ),
               ul( new HtmlProps().className( "filters" ),
                   li( a( new AnchorProps()
-                           .className( selected( props().nowShowing == null ) )
+                           .className( selected( FilterMode.ALL == filterMode ) )
                            .href( "#" ), "All" )
                   ),
                   li( a( new AnchorProps()
-                           .className( selected( TodoList.NOW_SHOWING_ACTIVE_TODOS.equals( props().nowShowing ) ) )
+                           .className( selected( FilterMode.ACTIVE == filterMode ) )
                            .href( "#active" ), "Active" )
                   ),
                   li( a( new AnchorProps()
-                           .className( selected( TodoList.NOW_SHOWING_COMPLETED_TODOS.equals( props().nowShowing ) ) )
+                           .className( selected( FilterMode.COMPLETED == filterMode ) )
                            .href( "#completed" ), "Completed" )
                   )
               ),
