@@ -7,8 +7,8 @@ import org.realityforge.arez.browser.extras.spy.ConsoleSpyEventProcessor;
 import org.realityforge.arez.browser.extras.spy.StringifyReplacer;
 
 /**
- * A customized console event processor that avoids accessing key attributes.
- * This causes warnings when accessing props.key from react components.
+ * A customized console event processor that avoids accessing "key" and "ref" attributes.
+ * This causes warnings when accessing props.key and props.ref in react components.
  */
 public class ReactArezConsoleSpyEventProcessor
   extends ConsoleSpyEventProcessor
@@ -27,7 +27,7 @@ public class ReactArezConsoleSpyEventProcessor
       protected String[] getPropertyNames( @Nonnull final Object object )
       {
         return Arrays.stream( super.getPropertyNames( object ) ).
-          filter( n -> !n.equals( "key" ) ).
+          filter( n -> !n.equals( "key" ) && !n.equals( "ref" ) ).
           collect( Collectors.toList() ).
           toArray( new String[ 0 ] );
       }
