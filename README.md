@@ -37,8 +37,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
    Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
    element factories can be built by looking at html spec and auto-generating? Probably get away from writing build
    at end by overloading methods
-* In development mode copy the list of arez dependencies to "state" of the component. Extra checking in
-  shouldComponentUpdate to make sure it does not re-run as result of this.
 
 ### Low Priorities
 

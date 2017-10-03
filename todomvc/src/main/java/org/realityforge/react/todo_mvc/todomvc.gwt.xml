@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='todomvc'>
-  <inherits name="react.arez.ReactArez"/>
+  <inherits name="react.arez.ReactArezDev"/>
   <inherits name="react.core.ReactDev"/>
   <inherits name="react.dom.ReactDOM"/>
   <inherits name="org.realityforge.arez.ArezDev"/>

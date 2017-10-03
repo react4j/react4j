@@ -1,10 +1,12 @@
 package react.arez;
 
+import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import jsinterop.base.JsPropertyMapOfAny;
 import org.realityforge.arez.Arez;
 import org.realityforge.arez.ArezContext;
 import org.realityforge.arez.Observable;
@@ -23,6 +25,11 @@ import react.core.ReactElement;
 public abstract class ReactArezComponent<P extends BaseProps, S extends BaseState>
   extends Component<P, S>
 {
+  /**
+   * Key used to store the arez dependencies in state.
+   */
+  private static final String DEPS_STATE_KEY = "arez";
+
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
   @Nonnull
@@ -126,13 +133,23 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     {
       return true;
     }
-    else if ( nextProps.equals( component().props() ) &&
-              nextState.equals( component().state() ) )
+    final S state = component().state();
+    if ( !Js.isTripleEqual( state, nextState ) )
     {
-      return false;
+      // If state is not identical then we need to re-render ...
+      // unless it is only arez dependencies state that has updated in which case we can ignore
+      // as we only use this field to help debug and no direct impact on rendering
+      final boolean onlyDepsUpdated =
+        ReactArezConfig.shouldStoreDependenciesAsState() && !ArezJsUtil.isObjectShallowModified( state, nextState, DEPS_STATE_KEY );
+      if ( !onlyDepsUpdated )
+      {
+        return true;
+      }
     }
-    //TODO: Check shallow equality here
-    return true;
+    /*
+     * We just compare the props shallowly and avoid a re-render if the props have not changed.
+     */
+    return ArezJsUtil.isObjectShallowModified( component().props(), nextProps );
   }
 
   /**
@@ -152,6 +169,33 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected void componentDidMount()
   {
     //Add observable to cache
+  }
+
+  @Action
+  @Override
+  protected void componentDidUpdate( @Nullable final P nextProps, @Nullable final S nextState )
+  {
+    storeDependenciesAsState();
+  }
+
+  /**
+   * Store dependencies on state of component.
+   * This is only done if {@link ReactArezConfig#shouldStoreDependenciesAsState()} returns true and is primarily
+   * done to make it easy to debug from within React DevTools.
+   */
+  private void storeDependenciesAsState()
+  {
+    if ( ReactArezConfig.shouldStoreDependenciesAsState() && Arez.context().areSpiesEnabled() )
+    {
+      final List<Observable> dependencies = Arez.context().getSpy().getDependencies( _renderTracker );
+      final JsPropertyMapOfAny deps = JsPropertyMap.of();
+      dependencies.forEach( d -> deps.set( d.getName(), d ) );
+      final Object currentDeps = JsPropertyMap.of( state() ).get( DEPS_STATE_KEY );
+      if ( ArezJsUtil.isObjectShallowModified( currentDeps, deps ) )
+      {
+        setState( Js.<S>cast( JsPropertyMap.of( DEPS_STATE_KEY, deps ) ) );
+      }
+    }
   }
 
   /**
