@@ -1,7 +1,6 @@
 package org.realityforge.react.todo_mvc.client;
 
 import elemental2.dom.HTMLInputElement;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -49,19 +48,14 @@ class TodoList
   @Override
   protected ReactElement<?, ?> doRender()
   {
-    final Collection<Todo> todos = AppData.model.findAll();
-    final int todoCount = todos.size();
-
-    final int activeTodoCount = (int) todos.stream().filter( todo -> !todo.isCompleted() ).count();
-    final int completedCount = todoCount - activeTodoCount;
     return
       div(
         div( header( new HtmlProps().className( "header" ),
                      h1( "todos" ),
-                     React.createElement( TodoEntry_.TYPE, new BaseProps() )
+                     React.createElement( TodoEntry_.TYPE )
              ),
              renderMainSection(),
-             renderFooter( activeTodoCount, completedCount )
+             renderFooter()
         )
       );
   }
@@ -69,14 +63,14 @@ class TodoList
   @Nullable
   private ReactElement<?, ?> renderMainSection()
   {
-    final Collection<Todo> todos = AppData.model.findAll();
-    final int todoCount = todos.size();
 
-    if ( todoCount > 0 )
+    if ( AppData.model.totalCount() > 0 )
     {
       final FilterMode filterMode = AppData.viewService.getFilterMode();
       final List<Todo> shownTodos =
-        todos.stream().filter( todo -> shouldShowTodo( filterMode, todo ) ).collect( Collectors.toList() );
+        AppData.model.findAll().stream().
+          filter( todo -> shouldShowTodo( filterMode, todo ) ).
+          collect( Collectors.toList() );
       return section( new HtmlProps().className( "header" ),
                       input( new InputProps()
                                .className( "toggle-all" )
@@ -123,16 +117,11 @@ class TodoList
   }
 
   @Nullable
-  private ReactElement<?, ?> renderFooter( final int activeTodoCount, final int completedCount )
+  private ReactElement<?, ?> renderFooter()
   {
-    if ( activeTodoCount > 0 || completedCount > 0 )
+    if ( AppData.model.activeCount() > 0 || AppData.model.completedCount() > 0 )
     {
-      final Footer.Props props =
-        Footer.Props.create( activeTodoCount,
-                             completedCount,
-                             AppData.viewService.getFilterMode(),
-                             _handleClearCompleted( this ) );
-      return React.createElement( Footer_.TYPE, props );
+      return React.createElement( Footer_.TYPE );
     }
     else
     {

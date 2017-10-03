@@ -1,60 +1,45 @@
 package org.realityforge.react.todo_mvc.client;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
+import org.realityforge.arez.annotations.ArezComponent;
+import org.realityforge.react.todo_mvc.client.model.AppData;
 import org.realityforge.react.todo_mvc.client.model.FilterMode;
+import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
+import react.arez.ReactArezComponent;
 import react.core.BaseProps;
+import react.core.BaseState;
 import react.core.ReactElement;
-import react.core.StatelessComponent;
 import react.dom.events.MouseEventHandler;
 import react.dom.proptypes.html.AnchorProps;
 import react.dom.proptypes.html.BtnProps;
 import react.dom.proptypes.html.HtmlProps;
+import static org.realityforge.react.todo_mvc.client.Footer_.*;
 import static react.dom.DOM.*;
 
 @ReactComponent
+@ArezComponent
 class Footer
-  extends StatelessComponent<Footer.Props>
+  extends ReactArezComponent<BaseProps, BaseState>
 {
-  @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class Props
-    extends BaseProps
+  @EventHandler( MouseEventHandler.class )
+  void handleClearCompleted()
   {
-    int count;
-    int completedCount;
-    FilterMode filterMode;
-    MouseEventHandler onClearCompleted;
-
-    @JsOverlay
-    static Props create( @Nonnegative final int count,
-                         @Nonnegative final int completedCount,
-                         @Nonnull final FilterMode filterMode,
-                         @Nonnull final MouseEventHandler onClearCompleted )
-    {
-      final Props props = new Props();
-      props.count = count;
-      props.completedCount = completedCount;
-      props.filterMode = filterMode;
-      props.onClearCompleted = onClearCompleted;
-      return props;
-    }
+    AppData.service.clearCompleted();
   }
 
+  @Nullable
   @Override
-  protected ReactElement<?, ?> render()
+  protected ReactElement<?, ?> doRender()
   {
-    final String activeTodoWord = "item" + ( props().count == 1 ? "" : "s" );
-    final FilterMode filterMode = props().filterMode;
+    final int count = AppData.model.totalCount();
+    final String activeTodoWord = "item" + ( count == 1 ? "" : "s" );
+    final FilterMode filterMode = AppData.viewService.getFilterMode();
     return
       footer( new HtmlProps().className( "footer" ),
               span( new HtmlProps().className( "todo-count" ),
-                    strong( Integer.toString( props().count ) ),
-                    text(" " + activeTodoWord + " left")
+                    strong( Integer.toString( count ) ),
+                    text( " " + activeTodoWord + " left" )
               ),
               ul( new HtmlProps().className( "filters" ),
                   li( a( new AnchorProps()
@@ -70,16 +55,16 @@ class Footer
                            .href( "#completed" ), "Completed" )
                   )
               ),
-              buildClearButton( props() )
+              buildClearButton()
       );
   }
 
   @Nullable
-  private ReactElement<?, ?> buildClearButton( @Nonnull final Props props )
+  private ReactElement<?, ?> buildClearButton()
   {
-    if ( props.completedCount > 0 )
+    if ( AppData.model.completedCount() > 0 )
     {
-      return button( new BtnProps().className( "clear-completed" ).onClick( props.onClearCompleted ),
+      return button( new BtnProps().className( "clear-completed" ).onClick( _handleClearCompleted( this ) ),
                      "Clear Completed" );
     }
     else
