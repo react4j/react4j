@@ -60,4 +60,20 @@ public class Todo
   {
     setCompleted( !isCompleted() );
   }
+
+  boolean shouldShowTodo( @Nonnull final FilterMode filterMode )
+  {
+    if ( FilterMode.ALL == filterMode )
+    {
+      return true;
+    }
+    else if ( FilterMode.ACTIVE == filterMode )
+    {
+      return !isCompleted();
+    }
+    else
+    {
+      return isCompleted();
+    }
+  }
 }

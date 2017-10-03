@@ -3,13 +3,10 @@ package org.realityforge.react.todo_mvc.client;
 import elemental2.dom.HTMLInputElement;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.react.todo_mvc.client.model.AppData;
-import org.realityforge.react.todo_mvc.client.model.FilterMode;
-import org.realityforge.react.todo_mvc.client.model.Todo;
 import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
 import react.arez.ReactArezComponent;
@@ -63,13 +60,8 @@ class TodoList
   @Nullable
   private ReactElement<?, ?> renderMainSection()
   {
-    if ( AppData.model.totalCount() > 0 )
+    if ( AppData.model.isNotEmpty() )
     {
-      final FilterMode filterMode = AppData.viewService.getFilterMode();
-      final List<Todo> shownTodos =
-        AppData.model.findAll().stream().
-          filter( todo -> shouldShowTodo( filterMode, todo ) ).
-          collect( Collectors.toList() );
       return section( new HtmlProps().className( "header" ),
                       input( new InputProps()
                                .className( "toggle-all" )
@@ -78,7 +70,7 @@ class TodoList
                       ),
                       ul( new HtmlProps()
                             .className( "todo-list" ),
-                          renderTodoItems( shownTodos )
+                          renderTodoItems()
                       )
       );
     }
@@ -88,37 +80,17 @@ class TodoList
     }
   }
 
-  private boolean shouldShowTodo( @Nonnull final FilterMode filterMode, @Nonnull final Todo todo )
+  private List<ReactElement<?, ?>> renderTodoItems()
   {
-    if ( FilterMode.ALL == filterMode )
-    {
-      return true;
-    }
-    else if ( FilterMode.ACTIVE == filterMode )
-    {
-      return !todo.isCompleted();
-    }
-    else
-    {
-      return todo.isCompleted();
-    }
-  }
-
-  private List<ReactElement<?, ?>> renderTodoItems( final List<Todo> shownTodos )
-  {
-    return shownTodos.stream().map( this::renderTodo ).collect( Collectors.toList() );
-  }
-
-  @Nonnull
-  private ReactElement<?, ?> renderTodo( @Nonnull final Todo todo )
-  {
-    return React.createElement( TodoItem_.TYPE, TodoItem.Props.create( todo ) );
+    return AppData.model.filteredTodos().stream().
+      map( todo -> React.createElement( TodoItem_.TYPE, TodoItem.Props.create( todo ) ) ).
+      collect( Collectors.toList() );
   }
 
   @Nullable
   private ReactElement<?, ?> renderFooter()
   {
-    if ( AppData.model.activeCount() > 0 || AppData.model.completedCount() > 0 )
+    if ( AppData.model.isNotEmpty() )
     {
       return React.createElement( Footer_.TYPE );
     }

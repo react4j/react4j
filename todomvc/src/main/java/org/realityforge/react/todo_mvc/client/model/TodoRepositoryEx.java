@@ -1,10 +1,23 @@
 package org.realityforge.react.todo_mvc.client.model;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.realityforge.arez.annotations.Computed;
 
 public interface TodoRepositoryEx
   extends TodoRepositoryExtension
 {
+  @Computed
+  default boolean isEmpty()
+  {
+    return 0 == totalCount();
+  }
+
+  default boolean isNotEmpty()
+  {
+    return !isEmpty();
+  }
+
   @Computed
   default int totalCount()
   {
@@ -21,5 +34,14 @@ public interface TodoRepositoryEx
   default int completedCount()
   {
     return totalCount() - activeCount();
+  }
+
+  @Computed
+  default List<Todo> filteredTodos()
+  {
+    final FilterMode filterMode = AppData.viewService.getFilterMode();
+    return AppData.model.findAll().stream().
+      filter( todo -> todo.shouldShowTodo( filterMode ) ).
+      collect( Collectors.toList() );
   }
 }
