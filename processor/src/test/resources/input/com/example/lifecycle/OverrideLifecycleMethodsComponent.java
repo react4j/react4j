@@ -11,7 +11,7 @@ import static org.realityforge.braincheck.Guards.fail;
 
 @ReactComponent
 class OverrideLifecycleMethodsComponent
-  extends Component<BaseProps,BaseState>
+  extends Component<BaseProps, BaseState>
 {
   @Override
   protected ReactElement<?, ?> render()
