@@ -37,6 +37,7 @@ tooling that stops you from using the toolkit incorrectly with no performance co
    element factories can be built by looking at html spec and auto-generating? Probably get away from writing build
    at end by overloading methods
 * Somehow declare props as interfaces in components and have implementation generated? 
+* In base class have configuration that warns on re-renders that produced duplicate values
 
 ### Low Priorities
 
