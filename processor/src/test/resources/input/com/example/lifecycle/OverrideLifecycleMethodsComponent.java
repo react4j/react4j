@@ -20,7 +20,7 @@ class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected final void componentDidUpdate( @Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState )
+  protected final void componentDidUpdate( @Nullable final BaseProps nextProps, @Nullable final BaseState nextState )
   {
   }
 
@@ -40,12 +40,12 @@ class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected void componentWillUpdate( @Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState )
+  protected void componentWillUpdate( @Nullable final BaseProps nextProps, @Nullable final BaseState nextState )
   {
   }
 
   @Override
-  public boolean shouldComponentUpdate( @Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState )
+  public boolean shouldComponentUpdate( @Nullable final BaseProps nextProps, @Nullable final BaseState nextState )
   {
     return super.shouldComponentUpdate( nextProps, nextState );
   }

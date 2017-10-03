@@ -155,7 +155,7 @@ class TodoItem
 
   @Action
   @Override
-  protected void componentDidUpdate( @Nonnull final Props prevProps, @Nonnull final State prevState )
+  protected void componentDidUpdate( @Nullable final Props prevProps, @Nullable final State prevState )
   {
     final boolean todoBeingEdited = isTodoBeingEdited();
     if ( !_isEditing && todoBeingEdited )

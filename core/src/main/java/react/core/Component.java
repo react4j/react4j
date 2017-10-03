@@ -172,7 +172,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    *
    * Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState)} returns false.
    */
-  protected void componentDidUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  protected void componentDidUpdate( @Nullable final P nextProps, @Nullable final S nextState )
   {
   }
 
@@ -221,7 +221,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @param nextProps the new properties of the component.
    * @param nextState the new state of the component.
    */
-  protected void componentWillUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  protected void componentWillUpdate( @Nullable final P nextProps, @Nullable final S nextState )
   {
   }
 
@@ -245,7 +245,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    *
    * @return true in case the component should be updated
    */
-  protected boolean shouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  protected boolean shouldComponentUpdate( @Nullable final P nextProps, @Nullable final S nextState )
   {
     return true;
   }
