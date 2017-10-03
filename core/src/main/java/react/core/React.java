@@ -53,6 +53,9 @@ public class React
    */
 
   public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
+  createElement( @Nonnull JsConstructorFn<T> type );
+
+  public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
   createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props );
 
   public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
