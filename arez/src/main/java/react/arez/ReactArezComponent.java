@@ -193,7 +193,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       final Object currentDeps = null != state ? JsPropertyMap.of( state ).get( DEPS_STATE_KEY ) : null;
       if ( ArezJsUtil.isObjectShallowModified( currentDeps, deps ) )
       {
-        setState( Js.<S>cast( JsPropertyMap.of( DEPS_STATE_KEY, deps ) ) );
+        component().setState( Js.<S>cast( JsPropertyMap.of( DEPS_STATE_KEY, deps ) ) );
       }
     }
   }
