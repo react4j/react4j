@@ -25,6 +25,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
@@ -37,8 +38,8 @@ import javax.lang.model.util.Types;
 import jsinterop.annotations.JsFunction;
 import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
-import react.core.Procedure;
 import react.core.Component;
+import react.core.Procedure;
 import react.core.StatelessComponent;
 import static javax.tools.Diagnostic.Kind.*;
 
@@ -151,7 +152,7 @@ public final class ReactProcessor
   private void determineEventHandlers( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<EventHandlerDescriptor> eventHandlers =
-      ProcessorUtil.getMethods( descriptor.getElement() ).stream()
+      ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
         .filter( m -> null != m.getAnnotation( EventHandler.class ) )
         .map( m -> createEventHandlerDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
@@ -176,8 +177,7 @@ public final class ReactProcessor
       {
         // Our annotated handler method has parameters so they should exactly align
         // in count and type with the parameters in the event handler method
-        final ExecutableElement target =
-          ProcessorUtil.getFunctionalInterfaceMethod( eventHandler.getEventHandlerType() );
+        final ExecutableElement target = eventHandler.getEventHandlerMethod();
         final List<? extends VariableElement> targetParameters = target.getParameters();
         if ( targetParameters.size() != parameters.size() )
         {
@@ -215,13 +215,29 @@ public final class ReactProcessor
 
   @Nonnull
   private EventHandlerDescriptor createEventHandlerDescriptor( @Nonnull final ComponentDescriptor descriptor,
-                                                               @Nonnull final ExecutableElement m )
+                                                               @Nonnull final ExecutableElement method )
   {
-    final String name = deriveEventHandlerName( m, m.getAnnotation( EventHandler.class ) );
-    final TypeElement eventHandlerType = getEventHandlerType( m );
+    final String name = deriveEventHandlerName( method, method.getAnnotation( EventHandler.class ) );
+    final TypeElement eventHandlerType = getEventHandlerType( method );
     final ExecutableType methodType =
-      (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), m );
-    return new EventHandlerDescriptor( name, m, methodType, eventHandlerType );
+      (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
+    final List<ExecutableElement> eventHandlerMethods =
+      ProcessorUtil.getMethods( eventHandlerType, processingEnv.getTypeUtils() ).stream().
+        filter( m11 -> m11.getModifiers().contains( Modifier.ABSTRACT ) ).
+        collect( Collectors.toList() );
+    if ( eventHandlerMethods.isEmpty() )
+    {
+      throw new ReactProcessorException( "Method annotated with @EventHandler specified type " +
+                                         eventHandlerType.getQualifiedName() + " that has no abstract method and " +
+                                         "thus is not a functional interface", method );
+    }
+    else if ( eventHandlerMethods.size() > 1 )
+    {
+      throw new ReactProcessorException( "Method annotated with @EventHandler specified type " +
+                                         eventHandlerType.getQualifiedName() + " that has more than 1 abstract " +
+                                         "method and thus is not a functional interface", method );
+    }
+    return new EventHandlerDescriptor( name, method, methodType, eventHandlerType, eventHandlerMethods.get( 0 ) );
   }
 
   @Nonnull
@@ -275,7 +291,7 @@ public final class ReactProcessor
     final TypeElement statelessComponentType = elementUtils.getTypeElement( StatelessComponent.class.getName() );
     final List<MethodDescriptor> overriddenLifecycleMethods =
       // Get all methods on type parent classes, and default methods from interfaces
-      ProcessorUtil.getMethods( typeElement ).stream()
+      ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).stream()
         // Only keep methods that override the lifecycle methods
         .filter( m -> lifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
         //Remove those that come from the base classes
@@ -311,7 +327,7 @@ public final class ReactProcessor
     if ( _componentLifecycleMethods.isEmpty() )
     {
       final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
-      for ( final ExecutableElement method : ProcessorUtil.getMethods( componentType ) )
+      for ( final ExecutableElement method : ProcessorUtil.getMethods( componentType, processingEnv.getTypeUtils() ) )
       {
         final String methodName = method.getSimpleName().toString();
         if ( LIFECYCLE_METHODS.contains( methodName ) )

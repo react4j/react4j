@@ -21,12 +21,20 @@ final class React_OverridingComponentDidUpdateComponent extends NativeAdapterCom
     return new Arez_OverridingComponentDidUpdateComponent();
   }
 
-  public void componentWillUnmount() {
-    performComponentWillUnmount();
+  public void componentDidMount() {
+    performComponentDidMount();
+  }
+
+  public void componentDidUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState) {
+    performComponentDidUpdate(nextProps,nextState);
   }
 
   public void componentWillReceiveProps(@Nonnull final BaseProps arg0) {
     performComponentWillReceiveProps(arg0);
+  }
+
+  public void componentWillUnmount() {
+    performComponentWillUnmount();
   }
 
   public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1) {

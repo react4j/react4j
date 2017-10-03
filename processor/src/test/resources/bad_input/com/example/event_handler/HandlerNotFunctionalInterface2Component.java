@@ -1,5 +1,6 @@
 package com.example.event_handler;
 
+import jsinterop.annotations.JsFunction;
 import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
 import react.core.BaseProps;
@@ -8,12 +9,19 @@ import react.core.Component;
 import react.core.ReactElement;
 
 @ReactComponent
-class HandlerNotInterfaceComponent
+class HandlerNotFunctionalInterface2Component
   extends Component<BaseProps, BaseState>
 {
-  static abstract class Foo
+  @JsFunction
+  interface Foo
   {
-    abstract void foo();
+    default void foo()
+    {
+    }
+
+    default void foo2()
+    {
+    }
   }
 
   @Override

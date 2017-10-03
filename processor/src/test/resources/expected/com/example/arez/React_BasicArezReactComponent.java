@@ -25,6 +25,10 @@ final class React_BasicArezReactComponent extends NativeAdapterComponent<BasePro
     performComponentDidMount();
   }
 
+  public void componentDidUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1) {
+    performComponentDidUpdate(arg0,arg1);
+  }
+
   public void componentWillReceiveProps(@Nonnull final BaseProps arg0) {
     performComponentWillReceiveProps(arg0);
   }

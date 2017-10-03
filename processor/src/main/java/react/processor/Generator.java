@@ -76,15 +76,15 @@ final class Generator
   }
 
   @Nonnull
-  private static ParameterizedTypeName getJsConstructorFnType( final @Nonnull ComponentDescriptor descriptor )
+  private static ParameterizedTypeName getJsConstructorFnType( @Nonnull final ComponentDescriptor descriptor )
   {
     return ParameterizedTypeName.get( ClassName.get( JsConstructorFn.class ),
                                       descriptor.getNativeComponentClassName() );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildEventHandlerMethod( final @Nonnull ComponentDescriptor descriptor,
-                                                             final EventHandlerDescriptor eventHandler )
+  private static MethodSpec.Builder buildEventHandlerMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                             @Nonnull final EventHandlerDescriptor eventHandler )
   {
     final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
     final MethodSpec.Builder method =
@@ -99,7 +99,7 @@ final class Generator
         addAnnotation( Nonnull.class );
     method.addParameter( parameter.build() );
 
-    final ExecutableElement target = ProcessorUtil.getFunctionalInterfaceMethod( eventHandler.getEventHandlerType() );
+    final ExecutableElement target = eventHandler.getEventHandlerMethod();
     final int targetParameterCount = target.getParameters().size();
     String args =
       0 == targetParameterCount ?

@@ -19,7 +19,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
   * Make sure call setState in correct places setInitialState only in constructor.
   * Ensure setState not called after component destroyed
   * Ensure refs is only accessed after component mounted
-* subclasses that extend base methods with generics multiple times can result in multiple overrides in generated class
 
 ### Must Haves
 

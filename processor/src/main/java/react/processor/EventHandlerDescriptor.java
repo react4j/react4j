@@ -16,16 +16,20 @@ final class EventHandlerDescriptor
   private final ExecutableType _methodType;
   @Nonnull
   private final TypeElement _eventHandlerType;
+  @Nonnull
+  private final ExecutableElement _eventHandlerMethod;
 
   EventHandlerDescriptor( @Nonnull final String name,
                           @Nonnull final ExecutableElement method,
                           @Nonnull final ExecutableType methodType,
-                          @Nonnull final TypeElement eventHandlerType )
+                          @Nonnull final TypeElement eventHandlerType,
+                          @Nonnull final ExecutableElement eventHandlerMethod )
   {
     _name = Objects.requireNonNull( name );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
     _eventHandlerType = Objects.requireNonNull( eventHandlerType );
+    _eventHandlerMethod = Objects.requireNonNull( eventHandlerMethod );
   }
 
   @Nonnull
@@ -50,5 +54,11 @@ final class EventHandlerDescriptor
   TypeElement getEventHandlerType()
   {
     return _eventHandlerType;
+  }
+
+  @Nonnull
+  ExecutableElement getEventHandlerMethod()
+  {
+    return _eventHandlerMethod;
   }
 }

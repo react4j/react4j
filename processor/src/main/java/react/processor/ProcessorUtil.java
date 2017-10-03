@@ -21,6 +21,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.util.Types;
 
 final class ProcessorUtil
 {
@@ -31,31 +32,36 @@ final class ProcessorUtil
   }
 
   @Nonnull
-  static List<ExecutableElement> getMethods( @Nonnull final TypeElement element )
+  static List<ExecutableElement> getMethods( @Nonnull final TypeElement element,
+                                             @Nonnull final Types typeUtils )
   {
     final Map<String, ExecutableElement> methodMap = new LinkedHashMap<>();
-    enumerateMethods( element, methodMap );
+    enumerateMethods( element, typeUtils, element, methodMap );
     return new ArrayList<>( methodMap.values() );
   }
 
-  private static void enumerateMethods( @Nonnull final TypeElement element,
+  private static void enumerateMethods( @Nonnull final TypeElement scope,
+                                        @Nonnull final Types typeUtils,
+                                        @Nonnull final TypeElement element,
                                         @Nonnull final Map<String, ExecutableElement> methods )
   {
     final TypeMirror superclass = element.getSuperclass();
     if ( TypeKind.NONE != superclass.getKind() )
     {
-      enumerateMethods( (TypeElement) ( (DeclaredType) superclass ).asElement(), methods );
+      enumerateMethods( scope, typeUtils, (TypeElement) ( (DeclaredType) superclass ).asElement(), methods );
     }
     for ( final TypeMirror interfaceType : element.getInterfaces() )
     {
       final TypeElement interfaceElement = (TypeElement) ( (DeclaredType) interfaceType ).asElement();
-      enumerateMethods( interfaceElement, methods );
+      enumerateMethods( scope, typeUtils, interfaceElement, methods );
     }
     for ( final Element member : element.getEnclosedElements() )
     {
       if ( member.getKind() == ElementKind.METHOD )
       {
-        methods.put( member.toString(), (ExecutableElement) member );
+        final ExecutableType methodType =
+          (ExecutableType) typeUtils.asMemberOf( (DeclaredType) scope.asType(), member );
+        methods.put( member.getSimpleName() + methodType.toString(), (ExecutableElement) member );
       }
     }
   }
@@ -100,16 +106,6 @@ final class ProcessorUtil
 
       return true;
     }
-  }
-
-  @Nonnull
-  static ExecutableElement getFunctionalInterfaceMethod( @Nonnull final TypeElement element )
-  {
-    final ExecutableElement method = getMethods( element ).stream().
-      filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) ).
-      findAny().orElse( null );
-    assert null != method;
-    return method;
   }
 
   @SuppressWarnings( { "unchecked", "SameParameterValue" } )

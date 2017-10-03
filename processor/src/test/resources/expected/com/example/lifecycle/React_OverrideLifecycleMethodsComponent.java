@@ -21,20 +21,20 @@ final class React_OverrideLifecycleMethodsComponent extends NativeAdapterCompone
     return new OverrideLifecycleMethodsComponent();
   }
 
-  public void componentWillMount() {
-    performComponentWillMount();
-  }
-
-  public void componentWillUnmount() {
-    performComponentWillUnmount();
-  }
-
   public void componentDidUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState) {
     performComponentDidUpdate(nextProps,nextState);
   }
 
+  public void componentWillMount() {
+    performComponentWillMount();
+  }
+
   public void componentWillReceiveProps(@Nonnull final BaseProps nextProps) {
     performComponentWillReceiveProps(nextProps);
+  }
+
+  public void componentWillUnmount() {
+    performComponentWillUnmount();
   }
 
   public void componentWillUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState) {
