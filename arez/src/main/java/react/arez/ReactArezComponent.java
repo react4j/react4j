@@ -137,19 +137,17 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     if ( !Js.isTripleEqual( state, nextState ) )
     {
       // If state is not identical then we need to re-render ...
-      // unless it is only arez dependencies state that has updated in which case we can ignore
-      // as we only use this field to help debug and no direct impact on rendering
-      final boolean onlyDepsUpdated =
-        ReactArezConfig.shouldStoreDependenciesAsState() && !ArezJsUtil.isObjectShallowModified( state, nextState, DEPS_STATE_KEY );
-      if ( !onlyDepsUpdated )
-      {
-        return true;
-      }
+      // Previously we chose not to re-render if only DEPS_STATE_KEY that was updated but that
+      // meant deps in DevTools would not be update so now we just re-render anyway.
+      return true;
     }
+    else
+    {
     /*
      * We just compare the props shallowly and avoid a re-render if the props have not changed.
      */
-    return ArezJsUtil.isObjectShallowModified( component().props(), nextProps );
+      return ArezJsUtil.isObjectShallowModified( component().props(), nextProps );
+    }
   }
 
   /**
