@@ -20,7 +20,7 @@ tooling that stops you from using the toolkit incorrectly with no performance co
   * Ensure setState not called after component destroyed
   * Ensure refs is only accessed after component mounted
 
-### Must Haves
+### Medium Priorities
 
 * Add multiple render methods that return different values. Enhance code generator to ensure that
   the developer only overloads a single variant. Variants include;
@@ -36,6 +36,7 @@ tooling that stops you from using the toolkit incorrectly with no performance co
    Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
    element factories can be built by looking at html spec and auto-generating? Probably get away from writing build
    at end by overloading methods
+* Somehow declare props as interfaces in components and have implementation generated? 
 
 ### Low Priorities
 
