@@ -5,7 +5,6 @@ import elemental2.dom.DomGlobal;
 import org.realityforge.arez.Arez;
 import org.realityforge.arez.extras.WhyRun;
 import react.arez.ReactArezConsoleSpyEventProcessor;
-import react.core.BaseProps;
 import react.core.React;
 import react.dom.ReactDOM;
 
@@ -29,7 +28,6 @@ public class App
   public void onModuleLoad()
   {
     spyEvents();
-    ReactDOM.render( React.createElement( TodoList_.TYPE, new BaseProps() ),
-                     DomGlobal.document.getElementById( "todoapp" ) );
+    ReactDOM.render( React.createElement( TodoList_.TYPE ), DomGlobal.document.getElementById( "todoapp" ) );
   }
 }
