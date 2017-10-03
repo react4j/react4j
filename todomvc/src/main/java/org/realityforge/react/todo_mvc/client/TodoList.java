@@ -3,15 +3,10 @@ package org.realityforge.react.todo_mvc.client;
 import elemental2.dom.HTMLInputElement;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.react.todo_mvc.client.model.AppData;
 import org.realityforge.react.todo_mvc.client.model.FilterMode;
@@ -35,64 +30,8 @@ import static react.dom.DOM.*;
 @ReactComponent
 @ArezComponent
 class TodoList
-  extends ReactArezComponent<BaseProps, TodoList.State>
+  extends ReactArezComponent<BaseProps, BaseState>
 {
-  enum ActionType
-  {
-    EDIT, DESTROY, TOGGLE, CANCEL
-  }
-
-  @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class State
-    extends BaseState
-  {
-    // TODO: Move this state to view store of some sort so changing editingId does not redraw this entire TodoList component
-    // then have each TodoItem have a @computed property that controls whether they redraw?
-    String editingId;
-
-    @JsOverlay
-    static State create( @Nullable final String editingId )
-    {
-      final State state = new State();
-      state.editingId = editingId;
-      return state;
-    }
-  }
-
-  @EventHandler( TodoItem.OnAction.class )
-  @Action
-  void handleDoAction( final ActionType actionType, final Todo todo )
-  {
-    switch ( actionType )
-    {
-      case TOGGLE:
-        todo.toggle();
-        break;
-      case CANCEL:
-        setEditingId( null );
-        break;
-      case DESTROY:
-        AppData.model.destroy( todo );
-        break;
-      case EDIT:
-        setEditingId( todo.getId() );
-    }
-  }
-
-  @EventHandler( TodoItem.OnSave.class )
-  @Action
-  void handleSave( final Todo todoToSave, final String text )
-  {
-    AppData.service.save( todoToSave, text );
-    setEditingId( null );
-  }
-
-  @Action
-  void setEditingId( @Nullable final String editingId )
-  {
-    setState( State.create( editingId ) );
-  }
-
   @EventHandler( MouseEventHandler.class )
   void handleClearCompleted()
   {
@@ -180,9 +119,7 @@ class TodoList
   @Nonnull
   private ReactElement<?, ?> renderTodo( @Nonnull final Todo todo )
   {
-    final boolean isEditing = Objects.equals( state().editingId, todo.getId() );
-    final TodoItem.Props props = TodoItem.Props.create( todo, _handleSave( this ), _handleDoAction( this ), isEditing );
-    return React.createElement( TodoItem_.TYPE, props );
+    return React.createElement( TodoItem_.TYPE, TodoItem.Props.create( todo ) );
   }
 
   @Nullable

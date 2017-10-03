@@ -3,13 +3,14 @@ package org.realityforge.react.todo_mvc.client;
 import elemental2.dom.HTMLInputElement;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
+import org.realityforge.arez.annotations.Computed;
+import org.realityforge.react.todo_mvc.client.model.AppData;
 import org.realityforge.react.todo_mvc.client.model.Todo;
 import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
@@ -36,41 +37,18 @@ import static react.dom.DOM.*;
 class TodoItem
   extends ReactArezComponent<TodoItem.Props, TodoItem.State>
 {
-  @JsFunction
-  @FunctionalInterface
-  public interface OnSave
-  {
-    void save( @Nonnull Todo todo, @Nonnull String newContent );
-  }
-
-  @JsFunction
-  @FunctionalInterface
-  public interface OnAction
-  {
-    void action( @Nonnull TodoList.ActionType action, @Nonnull Todo todo );
-  }
-
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   public static class Props
     extends BaseProps
   {
     Todo todo;
-    boolean isEditing;
-    OnSave doSave;
-    OnAction doAction;
 
     @JsOverlay
-    static Props create( @Nonnull final Todo todo,
-                         @Nonnull final OnSave doSave,
-                         @Nonnull final OnAction doAction,
-                         final boolean isEditing )
+    static Props create( @Nonnull final Todo todo )
     {
       final TodoItem.Props props = new TodoItem.Props();
       props.key = todo.getId();
       props.todo = todo;
-      props.doAction = doAction;
-      props.doSave = doSave;
-      props.isEditing = isEditing;
       return props;
     }
   }
@@ -88,6 +66,14 @@ class TodoItem
     }
 
     String editText;
+  }
+
+  private boolean _isEditing;
+
+  @Computed
+  boolean isTodoBeingEdited()
+  {
+    return AppData.viewService.getTodoBeingEdited() == props().todo;
   }
 
   @Override
@@ -117,33 +103,28 @@ class TodoItem
     final Props props = props();
     if ( null != val && !val.isEmpty() )
     {
-      onSave( val, props );
+      AppData.service.save( props.todo, val );
+      AppData.viewService.setTodoBeingEdited( null );
+      setState( State.create( val ) );
     }
     else
     {
-      onDestroy();
+      AppData.model.destroy( props().todo );
     }
-  }
-
-  private void onSave( final String val, final Props props )
-  {
-    props.doSave.save( props.todo, val );
-    setState( State.create( val ) );
   }
 
   @EventHandler( FormEventHandler.class )
   @Action
   void onToggle()
   {
-    final Props props = props();
-    props.doAction.action( TodoList.ActionType.TOGGLE, props.todo );
+    props().todo.toggle();
   }
 
   @EventHandler( MouseEventHandler.class )
   @Action
   void onEdit()
   {
-    props().doAction.action( TodoList.ActionType.EDIT, props().todo );
+    AppData.viewService.setTodoBeingEdited( props().todo );
     setState( State.create( props().todo.getTitle() ) );
   }
 
@@ -151,22 +132,21 @@ class TodoItem
   @Action
   void onDestroy()
   {
-    final Props props = props();
-    props.doAction.action( TodoList.ActionType.DESTROY, props.todo );
+    AppData.model.destroy( props().todo );
   }
 
   @Action
   void onCancel()
   {
     setState( State.create( props().todo.getTitle() ) );
-    props().doAction.action( TodoList.ActionType.CANCEL, props().todo );
+    AppData.viewService.setTodoBeingEdited( null );
   }
 
   @EventHandler( FormEventHandler.class )
   @Action
   void handleChange( @Nonnull final FormEvent event )
   {
-    if ( props().isEditing )
+    if ( isTodoBeingEdited() )
     {
       final HTMLInputElement input = Js.cast( event.target );
       setState( State.create( input.value ) );
@@ -177,12 +157,19 @@ class TodoItem
   @Override
   protected void componentDidUpdate( @Nonnull final Props prevProps, @Nonnull final State prevState )
   {
-    if ( !prevProps.isEditing && props().isEditing )
+    final boolean todoBeingEdited = isTodoBeingEdited();
+    if ( !_isEditing && todoBeingEdited )
     {
+      _isEditing = true;
+      setState( State.create( state().editText ) );
       final HTMLInputElement input = getRefNamed( "editField" );
       assert null != input;
       input.focus();
       input.select();
+    }
+    else if ( _isEditing && !todoBeingEdited )
+    {
+      _isEditing = false;
     }
   }
 
@@ -192,7 +179,7 @@ class TodoItem
   {
     final Props props = props();
     final boolean completed = props.todo.isCompleted();
-    return li( new HtmlProps().className( classesFor( completed, props.isEditing ) ),
+    return li( new HtmlProps().className( classesFor( completed, isTodoBeingEdited() ) ),
                div( new HtmlProps().className( "view" ),
                     input( new InputProps()
                              .className( "toggle" )

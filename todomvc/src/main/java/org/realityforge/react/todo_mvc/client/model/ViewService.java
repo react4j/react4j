@@ -3,6 +3,7 @@ package org.realityforge.react.todo_mvc.client.model;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.realityforge.arez.Disposable;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Autorun;
 import org.realityforge.arez.annotations.Observable;
@@ -45,6 +46,16 @@ public class ViewService
   public void setFilterMode( @Nonnull final FilterMode filterMode )
   {
     _filterMode = Objects.requireNonNull( filterMode );
+  }
+
+  @Autorun
+  void updateTodoBeingEdited()
+  {
+    final Todo todoBeingEdited = getTodoBeingEdited();
+    if ( null != todoBeingEdited && Disposable.isDisposed( todoBeingEdited ) )
+    {
+      setTodoBeingEdited( null );
+    }
   }
 
   @Autorun

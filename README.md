@@ -13,8 +13,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 
 ### High Priority
 
-* Restructure the app in the same way as https://github.com/mobxjs/mobx-react-todomvc and verify  that
-  only the parts of the screen that need to re-render get re-rendered.
 * Complete React-Arez extension
 * Add invariant checks to make sure people are doing the right thing when interacting with react.
   * Make sure call setState in correct places setInitialState only in constructor.
