@@ -1,13 +1,12 @@
 package com.example.lifecycle;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import react.annotations.ReactComponent;
 import react.core.BaseProps;
 import react.core.BaseState;
 import react.core.Component;
 import react.core.ReactElement;
-import react.core.StatelessComponent;
-import static org.realityforge.braincheck.Guards.fail;
 
 @ReactComponent
 class OverrideLifecycleMethodsComponent
