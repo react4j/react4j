@@ -3,8 +3,8 @@ package org.realityforge.react.todo_mvc.client;
 import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
 import org.realityforge.arez.Arez;
-import org.realityforge.arez.browser.extras.spy.ConsoleSpyEventProcessor;
 import org.realityforge.arez.extras.WhyRun;
+import react.arez.ReactArezConsoleSpyEventProcessor;
 import react.core.BaseProps;
 import react.core.React;
 import react.dom.ReactDOM;
@@ -22,7 +22,7 @@ public class App
 
   private static void spyEvents()
   {
-    Arez.context().getSpy().addSpyEventHandler( new ConsoleSpyEventProcessor() );
+    Arez.context().getSpy().addSpyEventHandler( new ReactArezConsoleSpyEventProcessor() );
   }
 
   @Override

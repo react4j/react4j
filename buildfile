@@ -93,8 +93,12 @@ define 'react' do
 
     compile.with project('core').package(:jar, :classifier => :gwt),
                  project('core').compile.dependencies,
+                 :elemental2_core,
+                 :elemental2_dom,
                  :arez_core,
-                 :arez_annotations
+                 :arez_annotations,
+                 :arez_extras,
+                 :arez_browser_extras
 
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
