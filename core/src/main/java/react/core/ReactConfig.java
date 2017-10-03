@@ -42,15 +42,25 @@ public final class ReactConfig
     return c_provider;
   }
 
-  private static Provider createProvider()
+  /**
+   * Return true if react is compiled in development mode.
+   *
+   * @return true if react is compiled in development mode.
+   */
+  private static boolean isDevelopmentEnvironment()
   {
     final String environment = System.getProperty( "react.environment", "production" );
     if ( !"production".equals( environment ) && !"development".equals( environment ) )
     {
-      final String message = "System property 'react.environment' is set to invalid property " + environment;
+      final String message = "System property 'react.environment' is set to invalid value " + environment;
       throw new IllegalStateException( message );
     }
-    final boolean development = environment.equals( "development" );
+    return environment.equals( "development" );
+  }
+
+  private static Provider createProvider()
+  {
+    final boolean development = isDevelopmentEnvironment();
     final boolean enableNames =
       "true".equals( System.getProperty( "react.enable_component_names", development ? "true" : "false" ) );
     final boolean checkComponentStateInvariants =
