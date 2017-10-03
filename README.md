@@ -16,7 +16,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 * Complete React-Arez extension
 * Add invariant checks to make sure people are doing the right thing when interacting with react.
   * Make sure call setState in correct places setInitialState only in constructor.
-  * setState(null) should be a noop in both react16 and react15
   * Ensure setState not called after component destroyed
   * Ensure refs is only accessed after component mounted
 
