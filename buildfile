@@ -141,6 +141,9 @@ define 'react' do
     test.using :testng
     test.compile.with TEST_DEPS
 
+    # The generators are configured to generate to here.
+    iml.test_source_directories << _('generated/processors/test/java')
+
     iml.test_source_directories << _('src/test/resources/input')
     iml.test_source_directories << _('src/test/resources/expected')
     iml.test_source_directories << _('src/test/resources/bad_input')
