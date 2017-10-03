@@ -170,7 +170,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     //Add observable to cache
   }
 
-  @Action
   @Override
   protected void componentDidUpdate( @Nullable final P nextProps, @Nullable final S nextState )
   {
