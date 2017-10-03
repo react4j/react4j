@@ -189,7 +189,8 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       final List<Observable> dependencies = Arez.context().getSpy().getDependencies( _renderTracker );
       final JsPropertyMapOfAny deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), d ) );
-      final Object currentDeps = JsPropertyMap.of( state() ).get( DEPS_STATE_KEY );
+      final S state = component().state();
+      final Object currentDeps = null != state ? JsPropertyMap.of( state ).get( DEPS_STATE_KEY ) : null;
       if ( ArezJsUtil.isObjectShallowModified( currentDeps, deps ) )
       {
         setState( Js.<S>cast( JsPropertyMap.of( DEPS_STATE_KEY, deps ) ) );
