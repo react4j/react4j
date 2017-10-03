@@ -167,6 +167,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Override
   protected void componentDidMount()
   {
+    storeDependenciesAsState();
     //Add observable to cache
   }
 
