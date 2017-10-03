@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.realityforge.arez.annotations.Computed;
 
-public interface TodoRepositoryEx
-  extends TodoRepositoryExtension
+public interface TodoRepositoryExtension
+  extends TodoBaseRepositoryExtension
 {
   @Computed
   default boolean isEmpty()
