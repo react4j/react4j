@@ -2,6 +2,7 @@ package org.realityforge.react.todo_mvc.client;
 
 import javax.annotation.Nullable;
 import org.realityforge.arez.annotations.ArezComponent;
+import org.realityforge.arez.annotations.Computed;
 import org.realityforge.react.todo_mvc.client.model.AppData;
 import org.realityforge.react.todo_mvc.client.model.FilterMode;
 import react.annotations.EventHandler;
@@ -59,10 +60,16 @@ class Footer
       );
   }
 
+  @Computed
+  boolean hasCompletedItems()
+  {
+    return AppData.model.completedCount() > 0;
+  }
+
   @Nullable
   private ReactElement<?, ?> buildClearButton()
   {
-    if ( AppData.model.completedCount() > 0 )
+    if ( hasCompletedItems() )
     {
       return button( new BtnProps().className( "clear-completed" ).onClick( _handleClearCompleted( this ) ),
                      "Clear Completed" );
