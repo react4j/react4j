@@ -134,6 +134,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       return true;
     }
     final S state = component().state();
+    //noinspection SimplifiableIfStatement
     if ( !Js.isTripleEqual( state, nextState ) )
     {
       // If state is not identical then we need to re-render ...
