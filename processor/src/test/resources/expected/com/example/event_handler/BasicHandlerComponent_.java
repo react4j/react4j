@@ -29,7 +29,9 @@ final class BasicHandlerComponent_ {
   @Nonnull
   static Procedure _handleFoo(@Nonnull final BasicHandlerComponent component) {
     final Procedure handler = () -> component.handleFoo();
-    JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "BasicHandlerComponent.handleFoo" ) ) );
+    if( ReactConfig.enableComponentNames() ) {
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "BasicHandlerComponent.handleFoo" ) ) );
+    }
     return handler;
   }
 }

@@ -29,7 +29,9 @@ final class CustomNameComponent_ {
   @Nonnull
   static Procedure _handleFoo(@Nonnull final CustomNameComponent component) {
     final Procedure handler = () -> component.handleFoo();
-    JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomNameComponent.fox" ) ) );
+    if( ReactConfig.enableComponentNames() ) {
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomNameComponent.fox" ) ) );
+    }
     return handler;
   }
 }

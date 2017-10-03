@@ -119,13 +119,18 @@ final class Generator
     method.addStatement( "final $T handler = " + args + " -> component.$N(" + params + ")",
                          handlerType,
                          eventHandler.getMethod().getSimpleName() );
+
+    final CodeBlock.Builder block = CodeBlock.builder();
+    block.beginControlFlow( "if( $T.enableComponentNames() )", ReactConfig.class );
     final String code =
       "$T.defineProperty( $T.cast( handler ), \"name\", $T.cast( JsPropertyMap.of( \"value\", $S ) ) )";
-    method.addStatement( code,
-                         JsObject.class,
-                         Js.class,
-                         Js.class,
-                         descriptor.getName() + "." + eventHandler.getName() );
+    block.addStatement( code,
+                        JsObject.class,
+                        Js.class,
+                        Js.class,
+                        descriptor.getName() + "." + eventHandler.getName() );
+    block.endControlFlow();
+    method.addCode( block.build() );
     method.addStatement( "return handler" );
     return method;
   }

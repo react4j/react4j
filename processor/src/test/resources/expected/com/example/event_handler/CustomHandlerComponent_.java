@@ -28,7 +28,9 @@ final class CustomHandlerComponent_ {
   @Nonnull
   static CustomHandlerComponent.CustomHandler _handleFoo(@Nonnull final CustomHandlerComponent component) {
     final CustomHandlerComponent.CustomHandler handler = arg0 -> component.handleFoo(arg0);
-    JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomHandlerComponent.handleFoo" ) ) );
+    if( ReactConfig.enableComponentNames() ) {
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomHandlerComponent.handleFoo" ) ) );
+    }
     return handler;
   }
 }

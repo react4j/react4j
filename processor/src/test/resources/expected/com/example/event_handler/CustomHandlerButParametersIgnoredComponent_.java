@@ -28,7 +28,9 @@ final class CustomHandlerButParametersIgnoredComponent_ {
   @Nonnull
   static CustomHandlerButParametersIgnoredComponent.CustomHandler _handleFoo(@Nonnull final CustomHandlerButParametersIgnoredComponent component) {
     final CustomHandlerButParametersIgnoredComponent.CustomHandler handler = arg0 -> component.handleFoo();
-    JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomHandlerButParametersIgnoredComponent.handleFoo" ) ) );
+    if( ReactConfig.enableComponentNames() ) {
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomHandlerButParametersIgnoredComponent.handleFoo" ) ) );
+    }
     return handler;
   }
 }

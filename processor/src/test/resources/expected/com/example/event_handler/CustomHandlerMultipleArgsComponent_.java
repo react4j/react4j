@@ -28,7 +28,9 @@ final class CustomHandlerMultipleArgsComponent_ {
   @Nonnull
   static CustomHandlerMultipleArgsComponent.CustomHandler _handleFoo(@Nonnull final CustomHandlerMultipleArgsComponent component) {
     final CustomHandlerMultipleArgsComponent.CustomHandler handler = (arg0,arg1) -> component.handleFoo(arg0,arg1);
-    JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomHandlerMultipleArgsComponent.handleFoo" ) ) );
+    if( ReactConfig.enableComponentNames() ) {
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomHandlerMultipleArgsComponent.handleFoo" ) ) );
+    }
     return handler;
   }
 }
