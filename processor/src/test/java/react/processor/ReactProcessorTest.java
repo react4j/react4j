@@ -13,6 +13,7 @@ public class ReactProcessorTest
     return new Object[][]
       {
         new Object[]{ "com.example.arez.BasicArezReactComponent" },
+        new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent" },
         new Object[]{ "com.example.basic.BasicReactComponent" },
         new Object[]{ "com.example.basic.CustomNameReactComponent" },
         new Object[]{ "com.example.basic.CustomPropsAndStateReactComponent" },
