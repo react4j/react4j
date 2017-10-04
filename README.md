@@ -57,6 +57,9 @@ performance cost in production builds.
   to the `gwt-react` projects who we based most of our work on. Several files within the code-base remain as direct
   copies from the original `gwt-react` project.
 
+* It should go without saying that this toolkit owes it existence to the wonderful [ReactJS](https://reactjs.org/)
+  project.
+
 * The website is derived from the [Edition Template](https://github.com/CloudCannon/edition-jekyll-template)
   by [Cloud Cannon](https://cloudcannon.com/) that is licensed under the [MIT License](https://github.com/CloudCannon/edition-jekyll-template/blob/master/LICENSE).
   They also have amazing [tutorial website](https://learn.cloudcannon.com/) for developing jekyll based websites.
