@@ -16,10 +16,10 @@ final class ReactArezConfig
    *
    * @return true if arez should store dependencies on state of component.
    */
-  static boolean shouldStoreDependenciesAsState()
+  static boolean shouldStoreArezDataAsState()
   {
     return isDevelopmentMode() &&
-           "true".equals( System.getProperty( "react.arez.store_dependencies_as_state", "true" ) );
+           "true".equals( System.getProperty( "react.arez.store_arez_data_as_state", "true" ) );
   }
 
   /**

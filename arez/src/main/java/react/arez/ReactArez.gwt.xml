@@ -13,6 +13,6 @@
   <define-property name="react.arez.environment" values="development,production"/>
   <set-property name="react.arez.environment" value="production"/>
 
-  <define-property name="react.arez.store_dependencies_as_state" values="true,false"/>
-  <set-property name="react.arez.store_dependencies_as_state" value="false"/>
+  <define-property name="react.arez.store_arez_data_as_state" values="true,false"/>
+  <set-property name="react.arez.store_arez_data_as_state" value="false"/>
 </module>
