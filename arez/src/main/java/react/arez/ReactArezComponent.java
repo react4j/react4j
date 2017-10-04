@@ -155,16 +155,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  @Action( reportParameters = false )
-  protected void componentWillReceiveProps( @Nonnull final P nextProps )
-  {
-    _propsObservable.reportChanged();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   protected void componentDidMount()
   {
     storeArezDataAsState();
