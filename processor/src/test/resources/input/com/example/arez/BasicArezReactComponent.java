@@ -9,7 +9,7 @@ import react4j.core.BaseState;
 import react4j.core.ReactElement;
 
 @ReactComponent
-@ArezComponent
+@ArezComponent( allowEmpty = true )
 class BasicArezReactComponent
   extends ReactArezComponent<BaseProps, BaseState>
 {

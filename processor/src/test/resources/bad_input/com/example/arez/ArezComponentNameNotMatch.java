@@ -9,7 +9,7 @@ import react4j.core.BaseState;
 import react4j.core.ReactElement;
 
 @ReactComponent
-@ArezComponent( name = "X" )
+@ArezComponent( name = "X", allowEmpty = true )
 class ArezComponentNameNotMatch
   extends ReactArezComponent<BaseProps, BaseState>
 {

@@ -24,7 +24,7 @@ import static org.realityforge.react.todo_mvc.client.TodoList_.*;
 import static react4j.dom.DOM.*;
 
 @ReactComponent
-@ArezComponent
+@ArezComponent( allowEmpty = true )
 class TodoList
   extends ReactArezComponent<BaseProps, BaseState>
 {
