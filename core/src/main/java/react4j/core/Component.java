@@ -24,9 +24,22 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   @Nonnull
+  private ComponentPhase _phase = ComponentPhase.INITIALIZING;
+  @Nonnull
   private ComponentState _state = ComponentState.UNKNOWN;
   @Nullable
   private NativeComponent<P, S> _nativeComponent;
+
+  /**
+   * Set the phase of the component. Only used for invariant checking.
+   */
+  final void setPhase( @Nonnull final ComponentPhase phase )
+  {
+    invariant( ReactConfig::checkComponentStateInvariants,
+               () -> "Component.setComponentPhase() invoked on " + this +
+                     " when ReactConfig.checkComponentStateInvariants() is false" );
+    _phase = Objects.requireNonNull( phase );
+  }
 
   /**
    * Set the state of the component. Only used for invariant checking.
