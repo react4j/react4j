@@ -3,9 +3,9 @@ package org.realityforge.react.todo_mvc.client;
 import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
 import org.realityforge.arez.Arez;
-import react.arez.ReactArezConsoleSpyEventProcessor;
-import react.core.React;
-import react.dom.ReactDOM;
+import react4j.arez.ReactArezConsoleSpyEventProcessor;
+import react4j.core.React;
+import react4j.dom.ReactDOM;
 
 public class App
   implements EntryPoint

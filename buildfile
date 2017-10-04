@@ -15,8 +15,8 @@ REACT_TEST_OPTIONS =
     'react.environment' => 'development'
   }
 
-desc 'GWT-React: GWT Bindings for React framework'
-define 'react' do
+desc 'React4J: React in Java'
+define 'react4j' do
   project.group = 'org.realityforge.react'
   compile.options.source = '1.8'
   compile.options.target = '1.8'
@@ -31,7 +31,7 @@ define 'react' do
                  :jsinterop_base,
                  :jsinterop_base_sources
 
-    gwt_enhance(project, ['react.annotations.Annotations'])
+    gwt_enhance(project, ['react4j.annotations.Annotations'])
 
     package(:jar)
     package(:sources)
@@ -54,7 +54,7 @@ define 'react' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react.core.React react.core.ReactDev))
+    gwt_enhance(project, %w(react4j.core.React react4j.core.ReactDev))
 
     package(:jar)
     package(:sources)
@@ -78,7 +78,7 @@ define 'react' do
     test.options[:java_args] = ['-ea']
 
     generate_factory_source(project)
-    gwt_enhance(project, %w(react.dom.ReactDOM))
+    gwt_enhance(project, %w(react4j.dom.ReactDOM))
 
     package(:jar)
     package(:sources)
@@ -103,7 +103,7 @@ define 'react' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react.arez.ReactArez))
+    gwt_enhance(project, %w(react4j.arez.ReactArez))
 
     package(:jar)
     package(:sources)
@@ -170,7 +170,7 @@ define 'react' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react.dom.ReactDOM))
+    gwt_enhance(project, %w(react4j.dom.ReactDOM))
 
     package(:jar)
     package(:sources)
@@ -183,7 +183,7 @@ define 'react' do
     iml.main_source_directories << _('generated/processors/main/java')
   end
 
-  doc.from(projects(%w(react:annotations react:core react:dom react:arez react:processor))).using(:javadoc, :windowtitle => 'React')
+  doc.from(projects(%w(annotations core dom arez processor))).using(:javadoc, :windowtitle => 'React')
 
   iml.excluded_directories << project._('tmp/gwt')
   iml.excluded_directories << project._('tmp')

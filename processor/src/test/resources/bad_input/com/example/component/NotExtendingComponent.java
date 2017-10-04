@@ -1,6 +1,6 @@
 package com.example.component;
 
-import react.annotations.ReactComponent;
+import react4j.annotations.ReactComponent;
 
 @ReactComponent
 class NotExtendingComponent

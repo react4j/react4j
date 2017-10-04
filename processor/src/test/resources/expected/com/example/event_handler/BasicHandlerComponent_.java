@@ -7,10 +7,10 @@ import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react.core.Procedure;
-import react.core.ReactConfig;
+import react4j.core.Procedure;
+import react4j.core.ReactConfig;
 
-@Generated("react.processor.ReactProcessor")
+@Generated("react4j.processor.ReactProcessor")
 final class BasicHandlerComponent_ {
   public static final JsConstructorFn<React_BasicHandlerComponent> TYPE = getConstrutorFunction();
 

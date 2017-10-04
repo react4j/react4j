@@ -5,18 +5,18 @@ import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Computed;
 import org.realityforge.react.todo_mvc.client.model.AppData;
 import org.realityforge.react.todo_mvc.client.model.FilterMode;
-import react.annotations.EventHandler;
-import react.annotations.ReactComponent;
-import react.arez.ReactArezComponent;
-import react.core.BaseProps;
-import react.core.BaseState;
-import react.core.ReactElement;
-import react.dom.events.MouseEventHandler;
-import react.dom.proptypes.html.AnchorProps;
-import react.dom.proptypes.html.BtnProps;
-import react.dom.proptypes.html.HtmlProps;
+import react4j.annotations.EventHandler;
+import react4j.annotations.ReactComponent;
+import react4j.arez.ReactArezComponent;
+import react4j.core.BaseProps;
+import react4j.core.BaseState;
+import react4j.core.ReactElement;
+import react4j.dom.events.MouseEventHandler;
+import react4j.dom.proptypes.html.AnchorProps;
+import react4j.dom.proptypes.html.BtnProps;
+import react4j.dom.proptypes.html.HtmlProps;
 import static org.realityforge.react.todo_mvc.client.Footer_.*;
-import static react.dom.DOM.*;
+import static react4j.dom.DOM.*;
 
 @ReactComponent
 @ArezComponent

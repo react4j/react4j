@@ -2,11 +2,11 @@ package com.example.arez;
 
 import javax.annotation.Nullable;
 import org.realityforge.arez.annotations.ArezComponent;
-import react.annotations.ReactComponent;
-import react.arez.ReactArezComponent;
-import react.core.BaseProps;
-import react.core.BaseState;
-import react.core.ReactElement;
+import react4j.annotations.ReactComponent;
+import react4j.arez.ReactArezComponent;
+import react4j.core.BaseProps;
+import react4j.core.BaseState;
+import react4j.core.ReactElement;
 
 @ReactComponent( name = "X" )
 @ArezComponent

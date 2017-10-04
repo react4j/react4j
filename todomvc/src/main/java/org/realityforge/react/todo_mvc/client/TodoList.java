@@ -7,21 +7,21 @@ import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.react.todo_mvc.client.model.AppData;
-import react.annotations.EventHandler;
-import react.annotations.ReactComponent;
-import react.arez.ReactArezComponent;
-import react.core.BaseProps;
-import react.core.BaseState;
-import react.core.React;
-import react.core.ReactElement;
-import react.dom.events.FormEvent;
-import react.dom.events.FormEventHandler;
-import react.dom.events.MouseEventHandler;
-import react.dom.proptypes.html.HtmlProps;
-import react.dom.proptypes.html.InputProps;
-import react.dom.proptypes.html.attributeTypes.InputType;
+import react4j.annotations.EventHandler;
+import react4j.annotations.ReactComponent;
+import react4j.arez.ReactArezComponent;
+import react4j.core.BaseProps;
+import react4j.core.BaseState;
+import react4j.core.React;
+import react4j.core.ReactElement;
+import react4j.dom.events.FormEvent;
+import react4j.dom.events.FormEventHandler;
+import react4j.dom.events.MouseEventHandler;
+import react4j.dom.proptypes.html.HtmlProps;
+import react4j.dom.proptypes.html.InputProps;
+import react4j.dom.proptypes.html.attributeTypes.InputType;
 import static org.realityforge.react.todo_mvc.client.TodoList_.*;
-import static react.dom.DOM.*;
+import static react4j.dom.DOM.*;
 
 @ReactComponent
 @ArezComponent

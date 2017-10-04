@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <inherits name="react4j.arez.ReactArez"/>
+
+  <set-property name="react4j.arez.environment" value="development"/>
+
+  <set-property name="react4j.arez.store_arez_data_as_state" value="true"/>
+</module>

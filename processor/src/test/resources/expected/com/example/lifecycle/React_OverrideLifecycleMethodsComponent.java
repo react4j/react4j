@@ -4,12 +4,12 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
-import react.core.BaseProps;
-import react.core.BaseState;
-import react.core.NativeAdapterComponent;
+import react4j.core.BaseProps;
+import react4j.core.BaseState;
+import react4j.core.NativeAdapterComponent;
 
 @JsType
-@Generated("react.processor.ReactProcessor")
+@Generated("react4j.processor.ReactProcessor")
 final class React_OverrideLifecycleMethodsComponent extends NativeAdapterComponent<BaseProps, BaseState, OverrideLifecycleMethodsComponent> {
   @JsConstructor
   private React_OverrideLifecycleMethodsComponent(@Nonnull final BaseProps props) {

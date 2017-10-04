@@ -1,11 +1,11 @@
 package com.example.event_handler;
 
-import react.annotations.EventHandler;
-import react.annotations.ReactComponent;
-import react.core.BaseProps;
-import react.core.BaseState;
-import react.core.Component;
-import react.core.ReactElement;
+import react4j.annotations.EventHandler;
+import react4j.annotations.ReactComponent;
+import react4j.core.BaseProps;
+import react4j.core.BaseState;
+import react4j.core.Component;
+import react4j.core.ReactElement;
 
 @ReactComponent
 class BadNameComponent

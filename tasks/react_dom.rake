@@ -45,18 +45,18 @@ end
 def generate_factory
   factories = dom_factory_types
   content = <<HEADER
-package react.dom;
+package react4j.dom;
 
 import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
-import react.core.ReactElement;
-import react.core.util.JsUtil;
+import react4j.core.ReactElement;
+import react4j.core.util.JsUtil;
 HEADER
   factories.values.sort.uniq.each do |prop_type|
-    content += "import react.dom.proptypes.html.#{prop_type};\n"
+    content += "import react4j.dom.proptypes.html.#{prop_type};\n"
   end
 
   content += <<HEADER
@@ -134,7 +134,7 @@ def generate_factory_source(project)
   base_source_dir = project._(:generated, :reactgen, :main, :java)
   desc 'Generate the dom factories'
   t = project.task('reactgen') do
-    file = "#{base_source_dir}/react/dom/DOM.java"
+    file = "#{base_source_dir}/react4j/dom/DOM.java"
     mkdir_p File.dirname(file)
     IO.write(file, generate_factory)
   end
