@@ -101,7 +101,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     return component().props();
   }
 
-  @Action
+  @Action( reportParameters = false )
   @Override
   protected void setState( @Nonnull final S state )
   {
@@ -155,7 +155,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  @Action
+  @Action( reportParameters = false )
   protected void componentWillReceiveProps( @Nonnull final P nextProps )
   {
     _propsObservable.reportChanged();

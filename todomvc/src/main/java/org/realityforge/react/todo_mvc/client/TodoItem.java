@@ -153,7 +153,7 @@ class TodoItem
     }
   }
 
-  @Action
+  @Action( reportParameters = false )
   @Override
   protected void componentDidUpdate( @Nullable final Props prevProps, @Nullable final State prevState )
   {
