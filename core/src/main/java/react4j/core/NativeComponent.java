@@ -46,6 +46,7 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState>
   @JsProperty
   private P props;
 
+  @SuppressWarnings( "unused" )
   @JsProperty
   private JsPropertyMap<Object> refs;
 
