@@ -1,7 +1,6 @@
 package react.arez;
 
 import java.util.List;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
