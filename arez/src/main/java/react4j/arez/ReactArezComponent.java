@@ -130,12 +130,15 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   /**
    * {@inheritDoc}
    */
-  @Action( reportParameters = false )
   @Override
-  protected void setState( @Nonnull final S state )
+  protected final void setState( @Nonnull final S state )
   {
-    _stateObservable.reportChanged();
-    super.setState( state );
+    Arez.context().safeAction( toName( ".setState" ),
+                               true,
+                               () -> {
+                                 _stateObservable.reportChanged();
+                                 super.setState( state );
+                               } );
   }
 
   /**
