@@ -29,14 +29,6 @@ final class React_BasicArezReactComponent extends NativeAdapterComponent<BasePro
     performComponentDidUpdate(arg0,arg1);
   }
 
-  public void componentWillReceiveProps(@Nonnull final BaseProps arg0) {
-    performComponentWillReceiveProps(arg0);
-  }
-
-  public void componentWillUnmount() {
-    performComponentWillUnmount();
-  }
-
   public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1) {
     return performShouldComponentUpdate(arg0,arg1);
   }
