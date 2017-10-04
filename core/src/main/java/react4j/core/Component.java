@@ -99,9 +99,9 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   @Nullable
-  protected <T> T getRefNamed( @Nonnull final String refName )
+  protected <T> T getRef( @Nonnull final String name )
   {
-    return Js.cast( refs().get( refName ) );
+    return Js.cast( refs().get( name ) );
   }
 
   protected void setState( @Nonnull final S state )

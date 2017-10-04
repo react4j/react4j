@@ -169,7 +169,7 @@ class TodoItem
     {
       _isEditing = true;
       setState( State.create( state().editText ) );
-      final HTMLInputElement input = getRefNamed( "editField" );
+      final HTMLInputElement input = getRef( "editField" );
       assert null != input;
       input.focus();
       input.select();
