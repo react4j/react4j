@@ -149,7 +149,7 @@ class TodoItem
   }
 
   @EventHandler( FormEventHandler.class )
-  @Action
+  @Action( reportParameters = false )
   void handleChange( @Nonnull final FormEvent event )
   {
     if ( isTodoBeingEdited() )
