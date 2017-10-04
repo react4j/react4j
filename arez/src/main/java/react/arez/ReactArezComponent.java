@@ -85,7 +85,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     return "<default>";
   }
 
-  @Nullable
   @Override
   protected S state()
   {

@@ -81,13 +81,11 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
     return null != _nativeComponent;
   }
 
-  @Nullable
   protected S state()
   {
     return component().state();
   }
 
-  @Nullable
   protected P props()
   {
     return component().props();
