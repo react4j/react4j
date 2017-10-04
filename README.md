@@ -39,6 +39,9 @@ performance cost in production builds.
 * Add support for componentDidCatch() (React16)
 * Add support for portals (React16)
 * Figure out a way to support `getInitialProps()` on components.
+  - set "defaultProps" property on constructor function (same way that we set name). All we need to do is detect
+    if static property of correct name present on component and if so copy it across as part of annotation processing.
+    https://reactjs.org/docs/react-component.html#defaultprops
 
 # Credit
 
