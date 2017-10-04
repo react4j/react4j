@@ -14,10 +14,6 @@ performance cost in production builds.
 ### High Priority
 
 * Arez should override hook lifecycle methods not the one that the developer overwrite.
-* Add invariant checks to make sure people are doing the right thing when interacting with react.
-  * Make sure call setState in correct places setInitialState only in constructor.
-  * Ensure setState not called after component destroyed
-  * Ensure refs is only accessed after component mounted
 
 ### Medium Priorities
 

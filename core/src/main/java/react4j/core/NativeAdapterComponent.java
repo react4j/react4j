@@ -54,6 +54,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
+      _component.setPhase( ComponentPhase.INITIALIZING );
       _component.setState( ComponentState.INITIAL );
     }
     try
@@ -65,6 +66,7 @@ public abstract class NativeAdapterComponent<
       if ( ReactConfig.checkComponentStateInvariants() )
       {
         _component.setState( ComponentState.UNKNOWN );
+        _component.setPhase( ComponentPhase.MOUNTING );
       }
     }
   }
@@ -117,6 +119,7 @@ public abstract class NativeAdapterComponent<
       if ( ReactConfig.checkComponentStateInvariants() )
       {
         _component.setState( ComponentState.UNKNOWN );
+        _component.setPhase( ComponentPhase.UPDATING );
       }
     }
   }
@@ -158,6 +161,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
+      _component.setPhase( ComponentPhase.UNMOUNTING );
       _component.setState( ComponentState.COMPONENT_WILL_UNMOUNT );
     }
     try

@@ -155,6 +155,16 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   @Nullable
   protected <T> T getRef( @Nonnull final String name )
   {
+    if ( ReactConfig.checkComponentStateInvariants() )
+    {
+      apiInvariant( () -> ComponentPhase.INITIALIZING != _phase,
+                    () -> "Incorrectly invoked getRef() on " + this + " when component is initializing." );
+      apiInvariant( () -> ComponentPhase.MOUNTING != _phase || ComponentState.COMPONENT_DID_MOUNT == _state,
+                    () -> "Incorrectly invoked getRef() on " + this + " before componentDidMount() called." );
+      apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
+                    () -> "Incorrectly invoked getRef() on " + this + " when component is " +
+                          "unmounting or has unmounted." );
+    }
     return Js.cast( refs().get( name ) );
   }
 
@@ -167,6 +177,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    */
   protected void setState( @Nonnull final S state )
   {
+    invariantsSetState();
     component().setState( state );
   }
 
@@ -179,7 +190,27 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    */
   protected void setState( @Nonnull final SetStateCallback<P, S> callback )
   {
+    invariantsSetState();
     component().setState( callback );
+  }
+
+  /**
+   * Check invariants that should be true when invoking setState()
+   */
+  private void invariantsSetState()
+  {
+    if ( ReactConfig.checkComponentStateInvariants() )
+    {
+      apiInvariant( () -> ComponentState.COMPONENT_WILL_UPDATE != _state,
+                    () -> "Incorrectly invoked setState() on " + this + " in scope of " +
+                          "componentWillUpdate(). If you need to update state in response to " +
+                          "a prop change, use componentWillReceiveProps() instead." );
+      apiInvariant( () -> ComponentState.RENDER != _state,
+                    () -> "Incorrectly invoked setState() on " + this + " in scope of render()." );
+      apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
+                    () -> "Incorrectly invoked setState() on " + this + " when component is " +
+                          "unmounting or has unmounted." );
+    }
   }
 
   /**
@@ -191,6 +222,12 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   @Unsupported( "It is unclear whether there is value in supporting this" )
   protected final void forceUpdate()
   {
+    if ( ReactConfig.checkComponentStateInvariants() )
+    {
+      apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
+                    () -> "Incorrectly invoked forceUpdate() on " + this + " when component is " +
+                          "unmounting or has unmounted." );
+    }
     component().forceUpdate();
   }
 
