@@ -1,7 +1,6 @@
 package react4j.core;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
@@ -54,17 +53,6 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
                           "not in INITIAL state but in state " + _componentState );
     }
     component().setInitialState( state );
-  }
-
-  protected void setInitialState( @Nonnull final Supplier<S> state )
-  {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      apiInvariant( () -> ComponentState.INITIAL == _componentState,
-                    () -> "Attempted to invoke setInitialState on " + this + " when component is " +
-                          "not in INITIAL state but in state " + _componentState );
-    }
-    component().setInitialState( state.get() );
   }
 
   @Nonnull
