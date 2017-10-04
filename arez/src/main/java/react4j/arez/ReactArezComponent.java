@@ -210,7 +210,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  protected void componentDidUpdate( @Nullable final P nextProps, @Nullable final S nextState )
+  protected void componentDidUpdate( @Nullable final P prevProps, @Nullable final S prevState )
   {
     storeArezDataAsState();
   }
