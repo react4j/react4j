@@ -79,7 +79,13 @@ class TodoItem
   @Override
   protected void componentInitialize()
   {
-    setInitialState( () -> State.create( props().todo.getTitle() ) );
+    setInitialState( createInitialState() );
+  }
+
+  @Action
+  State createInitialState()
+  {
+    return State.create( props().todo.getTitle() );
   }
 
   @EventHandler( KeyboardEventHandler.class )
