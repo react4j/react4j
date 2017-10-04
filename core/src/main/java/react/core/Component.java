@@ -68,7 +68,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   @Nonnull
-  protected NativeComponent<P, S> component()
+  private NativeComponent<P, S> component()
   {
     invariant( () -> null != _nativeComponent,
                () -> "Invoked component() on " + this + " before a component has been bound." );

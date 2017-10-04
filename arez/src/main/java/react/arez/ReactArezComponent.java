@@ -56,14 +56,14 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
      * Force a re-render by requesting the merge of empty state literal.
      * It has no effect other than to force a reschedule.
      */
-    component().setState( Js.<S>cast( JsPropertyMap.of() ) );
+    super.setState( Js.<S>cast( JsPropertyMap.of() ) );
   }
 
   @Override
   protected void setInitialState( @Nonnull final Supplier<S> state )
   {
     final ArezContext context = Arez.context();
-    context.safeAction( toName( ".setInitialState" ), false, () -> component().setInitialState( state.get() ) );
+    context.safeAction( toName( ".setInitialState" ), false, () -> super.setInitialState( state.get() ) );
   }
 
   @ComponentId
@@ -89,14 +89,14 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected S state()
   {
     _stateObservable.reportObserved();
-    return component().state();
+    return super.state();
   }
 
   @Override
   protected P props()
   {
     _propsObservable.reportObserved();
-    return component().props();
+    return super.props();
   }
 
   @Action( reportParameters = false )
@@ -104,7 +104,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected void setState( @Nonnull final S state )
   {
     _stateObservable.reportChanged();
-    component().setState( state );
+    super.setState( state );
   }
 
   @Override
@@ -131,9 +131,8 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     {
       return true;
     }
-    final S state = component().state();
     //noinspection SimplifiableIfStatement
-    if ( !Js.isTripleEqual( state, nextState ) )
+    if ( !Js.isTripleEqual( super.state(), nextState ) )
     {
       // If state is not identical then we need to re-render ...
       // Previously we chose not to re-render if only AREZ_STATE_KEY that was updated but that
@@ -145,7 +144,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       /*
        * We just compare the props shallowly and avoid a re-render if the props have not changed.
        */
-      return ArezJsUtil.isObjectShallowModified( component().props(), nextProps );
+      return ArezJsUtil.isObjectShallowModified( super.props(), nextProps );
     }
   }
 
@@ -183,7 +182,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       data.set( "name", _renderTracker.getName() );
       data.set( "observer", _renderTracker );
       data.set( "deps", deps );
-      final S state = component().state();
+      final S state = super.state();
       final Object currentArezData = null != state ? JsPropertyMap.of( state ).get( AREZ_STATE_KEY ) : null;
       final Object currentDepsData = null != currentArezData ? JsPropertyMap.of( currentArezData ).get( "deps" ) : null;
       /*
@@ -193,7 +192,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       if ( ArezJsUtil.isObjectShallowModified( currentArezData, data, "deps" ) ||
            ArezJsUtil.isObjectShallowModified( currentDepsData, deps ) )
       {
-        component().setState( Js.<S>cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ) );
+        super.setState( Js.<S>cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ) );
       }
     }
   }
