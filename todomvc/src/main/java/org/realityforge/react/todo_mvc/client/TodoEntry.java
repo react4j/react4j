@@ -47,8 +47,7 @@ class TodoEntry
   @Override
   protected void componentInitialize()
   {
-    //TODO: Fix me. This is poor mans getInitialState()
-    setInitialState( () -> TodoEntry.State.create( "" ) );
+    setInitialState( TodoEntry.State.create( "" ) );
   }
 
   @EventHandler( KeyboardEventHandler.class )
