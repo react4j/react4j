@@ -57,7 +57,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
     _nativeComponent = Objects.requireNonNull( nativeComponent );
   }
 
-  protected void setInitialState( @Nonnull final S state )
+  protected final void setInitialState( @Nonnull final S state )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
