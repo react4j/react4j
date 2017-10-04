@@ -144,6 +144,12 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * If you need to interact with the browser, perform your work in {@link #componentDidMount()} or
    * the other lifecycle methods instead. Keeping render() pure makes components easier to
    * think about.</p>
+  @Unsupported( "It is unclear whether there is value in supporting this" )
+  protected final void forceUpdate()
+  {
+    component().forceUpdate();
+  }
+
    *
    * @return A single {@link ReactElement}
    */
