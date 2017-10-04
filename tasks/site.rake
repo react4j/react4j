@@ -1,9 +1,9 @@
 WORKSPACE_DIR = File.expand_path(File.dirname(__FILE__) + '/..')
-SITE_DIR = "#{WORKSPACE_DIR}/reports/site/arez"
+SITE_DIR = "#{WORKSPACE_DIR}/reports/site/react4j"
 
 desc 'Copy the javadocs to docs dir'
 task 'site:javadocs' do
-  javadocs_dir = "#{WORKSPACE_DIR}/target/arez/doc"
+  javadocs_dir = "#{WORKSPACE_DIR}/target/react4j/doc"
   file(javadocs_dir).invoke
   mkdir_p SITE_DIR
   cp_r javadocs_dir, "#{SITE_DIR}/api"
@@ -34,9 +34,9 @@ task 'site:link_check' do
 
   trap('INT') {webserver.shutdown}
   begin
-    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/arez"
+    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/react4j"
     # It does not follow frames in javadocs so run a separate pass over page that checks all javadocs
-    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/arez/api/index-all.html"
+    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/react4j/api/index-all.html"
   ensure
     webserver.shutdown
   end
