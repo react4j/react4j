@@ -68,11 +68,11 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Nullable
   private String toName( @Nonnull final String suffix )
   {
-    return Arez.context().areNamesEnabled() ? getNamePrefix() + suffix : null;
+    return Arez.context().areNamesEnabled() ? getComponentName() + suffix : null;
   }
 
   @ComponentName
-  protected String getNamePrefix()
+  protected String getComponentName()
   {
     // Arez will override this method so we can ignore the value here.
     return "<default>";
