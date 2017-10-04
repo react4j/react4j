@@ -48,3 +48,15 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 
 * Incorporate lifecycle documentation ala https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
   directly into javadocs or project docs.
+
+# Credit
+
+* This toolkit began as an experiment using [gwt-react](https://github.com/GWTReact/gwt-react) to build
+  a React/GWT hybrid application. Before too long we merged in all the `gwt-react` projects in and started
+  to co-evolve them into something that fit our needs better. Credit goes to Paul Stockley and other contributors
+  to the `gwt-react` projects who we based most of our work on. Several files within the code-base remain as direct
+  copies from the original `gwt-react` project.
+
+* The website is derived from the [Edition Template](https://github.com/CloudCannon/edition-jekyll-template)
+  by [Cloud Cannon](https://cloudcannon.com/) that is licensed under the [MIT License](https://github.com/CloudCannon/edition-jekyll-template/blob/master/LICENSE).
+  They also have amazing [tutorial website](https://learn.cloudcannon.com/) for developing jekyll based websites.
