@@ -54,7 +54,7 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState>
   {
   }
 
-  native void setState( S state );
+  native void setState( @Nonnull S state );
 
   native void setState( @Nonnull Component.SetStateCallback<P, S> callback );
 
