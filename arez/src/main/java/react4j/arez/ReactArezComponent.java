@@ -147,10 +147,13 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Override
   protected final void setState( @Nonnull final SetStateCallback<P, S> callback )
   {
-    super.setState( ( s, p ) -> {
-      _stateObservable.reportChanged();
-      return Arez.context().safeAction( toName( ".setStateCallback" ), true, () -> callback.onSetState( s, p ) );
-    } );
+    super.setState( ( s, p ) ->
+                      Arez.context().safeAction( toName( ".setStateCallback" ),
+                                                 true,
+                                                 () -> {
+                                                   _stateObservable.reportChanged();
+                                                   return callback.onSetState( s, p );
+                                                 } ) );
   }
 
   /**
