@@ -7,9 +7,9 @@ toc: true
 
 ---
 
-#### Design
+### Design
 
-##### Where is the equivalent of React's stateless function components?
+#### Where is the equivalent of React's stateless function components?
 
 The project originally supported stateless functional components defined by an interface that had
 a single render method. You could define the rendering of the method using a simple lambda method
