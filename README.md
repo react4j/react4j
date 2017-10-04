@@ -1,7 +1,7 @@
-# gwt-react-playground
+# react4j
 
-[![Build Status](https://secure.travis-ci.org/realityforge/gwt-react-playground.png?branch=master)](http://travis-ci.org/realityforge/gwt-react-playground)
-[<img src="https://img.shields.io/maven-central/v/org.realityforge.react/react.svg?label=latest%20release"/>](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.realityforge.react%22%20a%3A%22react%22)
+[![Build Status](https://secure.travis-ci.org/realityforge/react4j.png?branch=master)](http://travis-ci.org/realityforge/react4j)
+[<img src="https://img.shields.io/maven-central/v/org.realityforge.react4j/react4j.svg?label=latest%20release"/>](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.realityforge.react4j%22%20a%3A%22react4j%22)
 
 This project is used to experiment and a develop a GWT interface to React. The goal is to be able to
 seamlessly use the react component model from GWT and make use of the ecosystem of react development
