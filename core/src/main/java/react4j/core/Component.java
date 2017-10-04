@@ -77,7 +77,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
     return _nativeComponent;
   }
 
-  protected boolean isComponentBound()
+  protected final boolean isComponentBound()
   {
     return null != _nativeComponent;
   }
