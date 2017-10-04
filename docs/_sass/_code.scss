@@ -32,6 +32,8 @@ pre {
 blockquote > code,
 li > code,
 p > code {
+  background-color: $content-background-color;
+  color: $content-color;
   padding: 4px 6px;
   white-space: nowrap;
 }
