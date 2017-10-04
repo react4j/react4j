@@ -40,11 +40,6 @@ performance cost in production builds.
 * Add support for portals (React16)
 * Figure out a way to support `getInitialProps()` on components.
 
-### Really Low Priorities
-
-* Incorporate lifecycle documentation ala https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
-  directly into javadocs or project docs.
-
 # Credit
 
 * This toolkit began as an experiment using [gwt-react](https://github.com/GWTReact/gwt-react) to build
