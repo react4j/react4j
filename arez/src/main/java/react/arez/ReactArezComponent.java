@@ -145,9 +145,9 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     }
     else
     {
-    /*
-     * We just compare the props shallowly and avoid a re-render if the props have not changed.
-     */
+      /*
+       * We just compare the props shallowly and avoid a re-render if the props have not changed.
+       */
       return ArezJsUtil.isObjectShallowModified( component().props(), nextProps );
     }
   }
