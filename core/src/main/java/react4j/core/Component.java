@@ -93,7 +93,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   @Nonnull
-  protected JsPropertyMap<Object> refs()
+  protected final JsPropertyMap<Object> refs()
   {
     return component().refs();
   }
