@@ -14,7 +14,6 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 ### High Priority
 
 * Arez should override hook lifecycle methods not the one that the developer overwrite.
-* Complete React-Arez extension
 * Add invariant checks to make sure people are doing the right thing when interacting with react.
   * Make sure call setState in correct places setInitialState only in constructor.
   * Ensure setState not called after component destroyed

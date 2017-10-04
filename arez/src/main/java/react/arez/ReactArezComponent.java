@@ -169,7 +169,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected void componentDidMount()
   {
     storeArezDataAsState();
-    //Add observable to cache
   }
 
   /**
@@ -210,14 +209,5 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
         component().setState( Js.<S>cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ) );
       }
     }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void componentWillUnmount()
-  {
-    //Remove observable from cache
   }
 }
