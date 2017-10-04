@@ -40,7 +40,6 @@ import react.annotations.EventHandler;
 import react.annotations.ReactComponent;
 import react.core.Component;
 import react.core.Procedure;
-import react.core.StatelessComponent;
 import static javax.tools.Diagnostic.Kind.*;
 
 /**
@@ -288,14 +287,13 @@ public final class ReactProcessor
     final Elements elementUtils = processingEnv.getElementUtils();
     final Types typeUtils = processingEnv.getTypeUtils();
     final TypeElement componentType = elementUtils.getTypeElement( Component.class.getName() );
-    final TypeElement statelessComponentType = elementUtils.getTypeElement( StatelessComponent.class.getName() );
     final List<MethodDescriptor> overriddenLifecycleMethods =
       // Get all methods on type parent classes, and default methods from interfaces
       ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).stream()
         // Only keep methods that override the lifecycle methods
         .filter( m -> lifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
         //Remove those that come from the base classes
-        .filter( m -> m.getEnclosingElement() != componentType && m.getEnclosingElement() != statelessComponentType )
+        .filter( m -> m.getEnclosingElement() != componentType )
         .map( m -> new MethodDescriptor( m, (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), m ) ) )
         .collect( Collectors.toList() );
 
@@ -346,11 +344,6 @@ public final class ReactProcessor
     final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
     final TypeMirror rawComponentType = processingEnv.getTypeUtils().erasure( componentType.asType() );
 
-    final TypeElement statelessComponentType =
-      processingEnv.getElementUtils().getTypeElement( StatelessComponent.class.getName() );
-    final TypeMirror rawStatelessComponentType =
-      processingEnv.getTypeUtils().erasure( statelessComponentType.asType() );
-
     /*
      * Arez need not be on the classpath in which case this will return a null value to arezComponentType.
      * Our code should just gracefully handle this and perform none of the arez specific checks or generation.
@@ -365,7 +358,6 @@ public final class ReactProcessor
     final TypeMirror type = descriptor.getDeclaredType();
 
     final boolean isComponent = processingEnv.getTypeUtils().isSubtype( type, rawComponentType );
-    final boolean isStatelessComponent = processingEnv.getTypeUtils().isSubtype( type, rawStatelessComponentType );
     final boolean isArezComponent =
       null != rawArezComponentType && processingEnv.getTypeUtils().isSubtype( type, rawArezComponentType );
 

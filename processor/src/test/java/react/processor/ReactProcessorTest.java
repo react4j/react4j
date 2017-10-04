@@ -24,7 +24,6 @@ public class ReactProcessorTest
         new Object[]{ "com.example.event_handler.CustomHandlerMultipleArgsComponent" },
         new Object[]{ "com.example.event_handler.CustomNameComponent" },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
-        new Object[]{ "com.example.stateless.BasicStatelessComponent" },
         new Object[]{ "RootPackageReactComponent" }
       };
   }
