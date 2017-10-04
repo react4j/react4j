@@ -59,13 +59,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     super.setState( Js.<S>cast( JsPropertyMap.of() ) );
   }
 
-  @Override
-  protected void setInitialState( @Nonnull final Supplier<S> state )
-  {
-    final ArezContext context = Arez.context();
-    context.safeAction( toName( ".setInitialState" ), false, () -> super.setInitialState( state.get() ) );
-  }
-
   @ComponentId
   protected final int getArezComponentId()
   {
