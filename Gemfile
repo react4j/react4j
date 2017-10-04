@@ -6,4 +6,5 @@ gem 'github-pages'
 
 group :jekyll_plugins do
   gem 'jekyll-sitemap', '0.11.0'
+  gem 'jekyll-toc', '0.3.0'
 end
