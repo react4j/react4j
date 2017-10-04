@@ -92,6 +92,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
     return component().props();
   }
 
+  @Unsupported( "It is unclear what use case there is for getting all refs so this may be removed in the future" )
   @Nonnull
   protected final JsPropertyMap<Object> refs()
   {
