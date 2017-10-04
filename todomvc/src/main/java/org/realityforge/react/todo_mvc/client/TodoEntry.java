@@ -51,6 +51,15 @@ class TodoEntry
     setInitialState( () -> TodoEntry.State.create( "" ) );
   }
 
+  @Nonnull
+  @Override
+  protected State state()
+  {
+    final State state = super.state();
+    assert null != state;
+    return state;
+  }
+
   @EventHandler( KeyboardEventHandler.class )
   void handleNewTodoKeyDown( @Nonnull final KeyboardEvent event )
   {
