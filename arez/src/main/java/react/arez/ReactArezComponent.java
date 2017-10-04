@@ -79,14 +79,14 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   }
 
   @Override
-  protected S state()
+  protected final S state()
   {
     _stateObservable.reportObserved();
     return super.state();
   }
 
   @Override
-  protected P props()
+  protected final P props()
   {
     _propsObservable.reportObserved();
     return super.props();
