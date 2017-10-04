@@ -4,10 +4,23 @@ jdk:
 sudo: false
 rvm:
   - 2.3.1
+node_js:
+  - v6.10.3
+before_install:
+  # See https://gist.github.com/domenic/ec8b0fc8ab45f39403dd
+  # Generate key via "ssh-keygen -t rsa -b 4096 -C "peter@realityforge.org" -f ./deploy_id_rsa" and upload pub as deploy key for project
+  # Generate next line via "travis encrypt-file deploy_id_rsa"
+  - openssl aes-256-cbc -K $encrypted_757306a4cb52_key -iv $encrypted_757306a4cb52_iv -in etc/deploy_id_rsa.enc -out ../deploy_id_rsa -d
+  - chmod 600 ../deploy_id_rsa
+  - eval `ssh-agent -s` && ssh-add ../deploy_id_rsa
 install:
+  - nvm install v6.10.3
+  - nvm use v6.10.3
+  - npm install -g yarn
+  - yarn install
   - rvm use 2.3.1
   - gem install bundler
   - bundle install
-script: buildr clean package
+script: buildr clean package && buildr site:deploy
 git:
   depth: 10

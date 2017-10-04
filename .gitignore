@@ -8,3 +8,5 @@
 /tmp
 /generated
 /*/generated
+/.sass-cache
+/node_modules

@@ -1,0 +1,48 @@
+title: React4J User Manual
+url: "http://realityforge.org/react4j"
+baseurl: /react4j
+# This configuration controls whether all the menu items are open (true) or only current section (false)
+show_full_navigation: false
+
+permalink: pretty
+
+gems:
+  - jekyll-sitemap
+
+collections:
+  docs:
+    title: Documentation
+    permalink: /:path/
+    output: true
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: default
+  -
+    scope:
+      path: ""
+      type: "docs"
+    values:
+      seo:
+        type: Article
+      _comments:
+        category: Group navigation links with this field
+        order: Used to sort links in the navigation
+      _options:
+        content:
+          width: 800
+          height: 2000
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      _comments:
+        type: Marks the impact of this release
+
+types:
+  - minor
+  - major

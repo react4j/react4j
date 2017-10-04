@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "devDependencies": {
+    "broken-link-checker": "0.7.6"
+  }
+}
