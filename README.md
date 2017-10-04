@@ -46,8 +46,5 @@ tooling that stops you from using the toolkit incorrectly with no performance co
 
 ### Really Low Priorities
 
-* Consider introducing an interface for "React" API and swap out with a provider as required.
-* Consider enhancing `@ComponentId` so it can be overidden in subclasses and provide if to parent class.
-  i.e. Non-enhanced class can use it similarly to `@ComponentName`
 * Incorporate lifecycle documentation ala https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
   directly into javadocs or project docs.
