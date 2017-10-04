@@ -25,19 +25,19 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   @Nonnull
-  private ComponentState _componentState = ComponentState.UNKNOWN;
+  private ComponentState _state = ComponentState.UNKNOWN;
   @Nullable
   private NativeComponent<P, S> _nativeComponent;
 
   /**
    * Set the state of the component. Only used for invariant checking.
    */
-  final void setComponentState( @Nonnull final ComponentState componentState )
+  final void setState( @Nonnull final ComponentState state )
   {
     invariant( ReactConfig::checkComponentStateInvariants,
-               () -> "Component.setComponentState() invoked on " + this +
+               () -> "Component.setState() invoked on " + this +
                      " when ReactConfig.checkComponentStateInvariants() is false" );
-    _componentState = Objects.requireNonNull( componentState );
+    _state = Objects.requireNonNull( state );
   }
 
   final void bindComponent( @Nonnull final NativeComponent<P, S> nativeComponent )

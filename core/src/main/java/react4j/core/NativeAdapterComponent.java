@@ -7,7 +7,7 @@ import jsinterop.annotations.JsType;
 /**
  * This class provides a base class that designed to forward all lifecycle methods to a target component.
  * The target component is of type {@link Component}. This class is also responsible for calling
- * {@link Component#setComponentState(ComponentState)} before and after each call to the target component
+ * {@link Component#setState(ComponentState)} before and after each call to the target component
  * if {@link ReactConfig#checkComponentStateInvariants()} returns true. This will make it possible for the
  * target component to check that the application code is correctly interacting with the React component
  * framework. In production builds it is expected that the method calls will be inlined and the checks will
@@ -54,7 +54,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setComponentState( ComponentState.INITIAL );
+      _component.setState( ComponentState.INITIAL );
     }
     try
     {
@@ -64,7 +64,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setComponentState( ComponentState.UNKNOWN );
+        _component.setState( ComponentState.UNKNOWN );
       }
     }
   }
@@ -80,7 +80,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setComponentState( ComponentState.RENDER );
+      _component.setState( ComponentState.RENDER );
     }
     try
     {
@@ -90,7 +90,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setComponentState( ComponentState.UNKNOWN );
+        _component.setState( ComponentState.UNKNOWN );
       }
     }
   }
@@ -106,7 +106,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setComponentState( ComponentState.COMPONENT_DID_MOUNT );
+      _component.setState( ComponentState.COMPONENT_DID_MOUNT );
     }
     try
     {
@@ -116,7 +116,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setComponentState( ComponentState.UNKNOWN );
+        _component.setState( ComponentState.UNKNOWN );
       }
     }
   }
@@ -132,7 +132,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setComponentState( ComponentState.COMPONENT_WILL_MOUNT );
+      _component.setState( ComponentState.COMPONENT_WILL_MOUNT );
     }
     try
     {
@@ -142,7 +142,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setComponentState( ComponentState.UNKNOWN );
+        _component.setState( ComponentState.UNKNOWN );
       }
     }
   }
@@ -158,7 +158,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setComponentState( ComponentState.COMPONENT_WILL_UNMOUNT );
+      _component.setState( ComponentState.COMPONENT_WILL_UNMOUNT );
     }
     try
     {
@@ -168,7 +168,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setComponentState( ComponentState.UNKNOWN );
+        _component.setState( ComponentState.UNKNOWN );
       }
     }
   }
@@ -186,7 +186,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setComponentState( ComponentState.COMPONENT_WILL_UPDATE );
+      _component.setState( ComponentState.COMPONENT_WILL_UPDATE );
     }
     try
     {
@@ -196,7 +196,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setComponentState( ComponentState.UNKNOWN );
+        _component.setState( ComponentState.UNKNOWN );
       }
     }
   }
@@ -214,7 +214,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setComponentState( ComponentState.SHOULD_COMPONENT_UPDATE );
+      _component.setState( ComponentState.SHOULD_COMPONENT_UPDATE );
     }
     try
     {
@@ -224,7 +224,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setComponentState( ComponentState.UNKNOWN );
+        _component.setState( ComponentState.UNKNOWN );
       }
     }
   }
@@ -241,7 +241,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setComponentState( ComponentState.COMPONENT_WILL_RECEIVE_PROPS );
+      _component.setState( ComponentState.COMPONENT_WILL_RECEIVE_PROPS );
     }
     try
     {
@@ -251,7 +251,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setComponentState( ComponentState.UNKNOWN );
+        _component.setState( ComponentState.UNKNOWN );
       }
     }
   }
@@ -269,7 +269,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setComponentState( ComponentState.COMPONENT_DID_UPDATE );
+      _component.setState( ComponentState.COMPONENT_DID_UPDATE );
     }
     try
     {
@@ -279,7 +279,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setComponentState( ComponentState.UNKNOWN );
+        _component.setState( ComponentState.UNKNOWN );
       }
     }
   }
