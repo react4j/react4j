@@ -178,7 +178,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    *
    * Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState)} returns false.
    */
-  protected void componentDidUpdate( @Nullable final P nextProps, @Nullable final S nextState )
+  protected void componentDidUpdate( @Nullable final P prevProps, @Nullable final S prevState )
   {
   }
 
