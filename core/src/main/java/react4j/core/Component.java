@@ -61,9 +61,9 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      apiInvariant( () -> ComponentState.INITIAL == _componentState,
+      apiInvariant( () -> ComponentPhase.INITIALIZING == _phase,
                     () -> "Attempted to invoke setInitialState on " + this + " when component is " +
-                          "not in INITIAL state but in state " + _componentState );
+                          "not in INITIALIZING phase but in phase " + _phase + " and state " + _state );
     }
     component().setInitialState( state );
   }
