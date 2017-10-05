@@ -13,6 +13,12 @@ module Jekyll
   # {% file_content core:java:org/realityforge/arez/Unsupported.java start_line=5 end_line=10 %}
   # {% endhighlight %}
   #
+  # You can also strip whitespace via
+  #
+  # {% highlight java %}
+  # {% file_content core:java:org/realityforge/arez/Unsupported.java start_line=5 end_line=10 %}
+  # {% endhighlight %}
+  #
   class FileContent < Liquid::Tag
     def initialize(tag_name, markup, tokens)
       params = {}
@@ -60,6 +66,11 @@ module Jekyll
 
     attr_accessor :start_line
     attr_accessor :end_line
+    attr_writer :strip
+
+    def strip?
+      !@strip.nil? && (@strip == 'true' || @strip == '1')
+    end
 
     def render(context)
       content = IO.read(self.derive_filename)
@@ -77,7 +88,8 @@ module Jekyll
           raise "Specified a first_line that is after the last_line parameter when importing file #{self.derive_filename}"
         end
 
-        lines[first_line..last_line].join("\n")
+        content = lines[first_line..last_line].join("\n")
+        strip? ? content.strip! : content
       else
         content
       end
