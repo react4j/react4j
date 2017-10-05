@@ -28,9 +28,9 @@ CONTENT
   end
   dir = project.file(base_synthetic_module_dir => [t.name])
 
+  if ENV['GWT'].nil? || ENV['GWT'] == project.name
   dependencies =
     project.compile.dependencies + [project.compile.target] + extra_deps + [dir] + [Buildr.artifact(:gwt_user)]
-  unless ENV['GWT'] == 'no'
     project.gwt(gwt_modules.collect {|gwt_module| "#{gwt_module}Test"},
                 { :java_args => %w(-Xms512M -Xmx1024M), :js_exports => true, :dependencies => dependencies })
   end
