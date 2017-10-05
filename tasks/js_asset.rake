@@ -9,12 +9,12 @@ JS_ASSETS =
 JS_ASSET_GROUPS =
   {
     :core => {
-      'com.unpkg:react:js:16.0.0' => 'react/core/public/dev/react.js',
-      'com.unpkg:react:js:min:16.0.0' => 'react/core/public/react.js'
+      'com.unpkg:react:js:16.0.0' => 'react4j/core/public/dev/react.js',
+      'com.unpkg:react:js:min:16.0.0' => 'react4j/core/public/react.js'
     },
     :dom => {
-      'com.unpkg:react-dom:js:16.0.0' => 'react/core/public/dev/react-dom.js',
-      'com.unpkg:react-dom:js:min:16.0.0' => 'react/core/public/react-dom.js'
+      'com.unpkg:react-dom:js:16.0.0' => 'react4j/core/public/dev/react-dom.js',
+      'com.unpkg:react-dom:js:min:16.0.0' => 'react4j/core/public/react-dom.js'
     }
   }
 
