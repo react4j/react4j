@@ -173,7 +173,7 @@ define 'react4j' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react4j.dom.ReactDOM))
+    gwt_enhance(project, %w(org.realityforge.react.todo_mvc.todomvc))
 
     package(:jar)
     package(:sources)
