@@ -18,7 +18,7 @@ compiler working in the background.
 React4j aims to target J2CL this as early as possible, maintaining compatibility with GWT2.x for
 as long as possible and likely targeting GWT 3.x into the future. The library does this by using
 jsinterop everywhere and [elemental2](https://github.com/google/elemental2) to interact with the
-browser. 
+browser.
 
 #### Where is the equivalent of React's stateless function components?
 
