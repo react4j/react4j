@@ -13,6 +13,7 @@ performance cost in production builds.
 
 ### High Priority
 
+* Completely remove the need for `-generateJsInteropExports` by generating required properties on constructor function.
 * Arez should override hook lifecycle methods not the one that the developer overwrite.
 
 ### Medium Priorities
