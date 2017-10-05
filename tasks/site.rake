@@ -69,7 +69,6 @@ end
 
 desc 'Serve the website for developing documentation'
 task 'site:serve' do
-  rm_rf SITE_DIR
   mkdir_p File.dirname(SITE_DIR)
   sh "jekyll serve --source #{WORKSPACE_DIR}/docs --destination #{SITE_DIR}"
 end
