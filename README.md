@@ -15,6 +15,7 @@ performance cost in production builds.
 
 * Completely remove the need for `-generateJsInteropExports` by generating required properties on constructor function.
 * Arez should override hook lifecycle methods not the one that the developer overwrite.
+* Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
 ### Medium Priorities
 
