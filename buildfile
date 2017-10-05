@@ -15,6 +15,10 @@ REACT_TEST_OPTIONS =
     'react.environment' => 'development'
   }
 
+EXAMPLES = {
+  'hello_world' => 'react4j.examples.hello_world.HelloWorld'
+}
+
 desc 'React4j: An opinionated Java binding for React'
 define 'react4j' do
   project.group = 'org.realityforge.react'
@@ -152,6 +156,40 @@ define 'react4j' do
     iml.test_source_directories << _('src/test/resources/bad_input')
   end
 
+  define 'examples' do
+    pom.provided_dependencies.concat PROVIDED_DEPS
+
+    compile.with project('annotations').package(:jar, :classifier => :gwt),
+                 project('annotations').compile.dependencies,
+                 project('core').package(:jar, :classifier => :gwt),
+                 project('core').compile.dependencies,
+                 project('dom').package(:jar, :classifier => :gwt),
+                 project('dom').compile.dependencies,
+                 project('arez').package(:jar, :classifier => :gwt),
+                 project('arez').compile.dependencies,
+                 project('processor').package(:jar),
+                 project('processor').compile.dependencies,
+                 :arez_processor,
+                 :arez_extras,
+                 :arez_browser_extras,
+                 :gwt_user
+
+    test.options[:properties] = REACT_TEST_OPTIONS
+    test.options[:java_args] = ['-ea']
+
+    gwt_enhance(project, EXAMPLES.values, :modules_complete => true)
+
+    package(:jar)
+    package(:sources)
+    package(:javadoc)
+
+    test.using :testng
+    test.compile.with TEST_DEPS
+
+    # The generators are configured to generate to here.
+    iml.main_source_directories << _('generated/processors/main/java')
+  end
+
   define 'todomvc' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
@@ -193,6 +231,15 @@ define 'react4j' do
 
   ipr.add_default_testng_configuration(:jvm_args => '-ea -Dbraincheck.dynamic_provider=true -Dbraincheck.environment=development -Dreact.dynamic_provider=true -Dreact.environment=development -Dreact.output_fixture_data=false -Dreact.fixture_dir=processor/src/test/resources')
   ipr.add_component_from_artifact(:idea_codestyle)
+
+  EXAMPLES.each_pair do |key, gwt_module|
+    ipr.add_gwt_configuration(project('examples'),
+                              :name => "GWT: #{key}",
+                              :gwt_module => gwt_module,
+                              :start_javascript_debugger => false,
+                              :vm_parameters => "-Xmx2G -Djava.io.tmpdir=#{_('tmp/gwt')}",
+                              :shell_parameters => "-generateJsInteropExports -port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
+  end
 
   ipr.add_gwt_configuration(project('todomvc'),
                             :gwt_module => 'org.realityforge.react.todo_mvc.todomvc',
