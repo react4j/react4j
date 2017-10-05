@@ -63,5 +63,5 @@ javascript. This often resulted in lots of code being annotated with either `@Js
 experience was less than optimal.
 
 Building a parallel component hierarchy allowed us to remove the additional boilerplate and constraints required
-to export a native object to javascript. It also made it possible to validate the way that the code interoperates
+to export a native object to javascript. It also made it possible to validate the way that the code inter-operates
 with the native react runtime.
