@@ -1,7 +1,6 @@
 package org.realityforge.react.todo_mvc.client.model;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.realityforge.arez.annotations.Computed;
 
 public interface TodoRepositoryExtension
@@ -40,8 +39,6 @@ public interface TodoRepositoryExtension
   default List<Todo> filteredTodos()
   {
     final FilterMode filterMode = AppData.viewService.getFilterMode();
-    return AppData.model.findAll().stream().
-      filter( todo -> todo.shouldShowTodo( filterMode ) ).
-      collect( Collectors.toList() );
+    return self().toList( self().entities().stream().filter( todo -> todo.shouldShowTodo( filterMode ) ) );
   }
 }
