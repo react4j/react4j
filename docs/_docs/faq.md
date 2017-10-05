@@ -7,6 +7,19 @@ toc: true
 
 ### Design
 
+#### Will React4j work on later versions of GWT?
+
+React4j was designed from the ground up to be as forward compatible as possible with later
+versions of GWT. Google is currently working on J2CL (Java 2 Closure Compiler) which is a
+modern take on a java-to-javascript transpiler that targets a Closure Compiler annotated
+javascript output. This promises a modern take on the story with a even more advanced optimizing
+compiler working in the background.
+
+React4j aims to target J2CL this as early as possible, maintaining compatibility with GWT2.x for
+as long as possible and likely targeting GWT 3.x into the future. The library does this by using
+jsinterop everywhere and [elemental2](https://github.com/google/elemental2) to interact with the
+browser. 
+
 #### Where is the equivalent of React's stateless function components?
 
 The project originally supported stateless functional components defined by an interface that had
