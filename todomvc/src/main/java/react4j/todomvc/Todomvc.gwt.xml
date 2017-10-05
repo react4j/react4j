@@ -11,5 +11,5 @@
 
   <entry-point class='react4j.todomvc.App'/>
 
-  <source path='client'/>
+  <source path=''/>
 </module>
