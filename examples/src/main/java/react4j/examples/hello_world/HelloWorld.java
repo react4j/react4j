@@ -8,7 +8,6 @@ import static react4j.dom.DOM.*;
 public class HelloWorld
   implements EntryPoint
 {
-  @Override
   public void onModuleLoad()
   {
     ReactDOM.render( h1( "Hello World" ),
