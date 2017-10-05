@@ -65,3 +65,19 @@ experience was less than optimal.
 Building a parallel component hierarchy allowed us to remove the additional boilerplate and constraints required
 to export a native object to javascript. It also made it possible to validate the way that the code inter-operates
 with the native react runtime.
+
+#### Why does React4j manually export types to Javascript?
+
+GWT has `@JsType(isNative = false)` and yet the framework does not use it. The main reason is that this
+is not a use case the J2CL/GWT compiler team want to support. `@JsType(isNative = false)` is intended to
+be used to export classes for consumption by other javascript projects and requires that the consumers of
+the library pass command line arguments to the compiler to control which parts of the framework is exported
+to native javascript. React4j needs to export components in a particular shape so that the native javascript
+library knows how to use the components. Turning off exports or excluding the wrong elements would result in
+a broken library. As the J2CL/GWT team have taken a philosophical stance against controlling the
+export of code inside `.gwt.xml`, there is a strong possibility that users of React4j could end up with broken
+applications through incorrect build configuration.
+
+To avoid this scenario impacting users of React4j, the library manually exports the components to native code.
+Users of the library are free to use `@JsType(isNative = false)` and control it through the normal means but
+this should not impact the correctness of the React4j <=> react integration.
