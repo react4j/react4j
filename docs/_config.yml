@@ -6,6 +6,8 @@ show_full_navigation: false
 
 permalink: pretty
 
+keep_files: ["api", "examples"]
+
 gems:
   - jekyll-sitemap
 
