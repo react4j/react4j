@@ -8,6 +8,8 @@ permalink: pretty
 
 keep_files: ["api", "examples"]
 
+strict_front_matter: true
+
 gems:
   - jekyll-sitemap
 
