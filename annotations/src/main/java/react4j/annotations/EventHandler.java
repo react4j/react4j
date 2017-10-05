@@ -37,6 +37,8 @@ public @interface EventHandler
    * The type should be an interface and the interface should be annotated with
    * {@link jsinterop.annotations.JsFunction} to ensure that the method can be
    * given a useful debug name.
+   *
+   * @return the type of the callback.
    */
   Class value() default Procedure.class;
 
