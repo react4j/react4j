@@ -28,7 +28,7 @@ task 'site:examples' do
 
   EXAMPLES.keys.each do |name|
     content = IO.read(project._("src/main/webapp/#{name}.html"))
-    content = content.gsub("http://127.0.0.1:8888/#{name}/dev/",'').gsub('http://127.0.0.1:8888/', '')
+    content = content.gsub("http://127.0.0.1:8888/#{name}/dev/", '').gsub('http://127.0.0.1:8888/', '')
     IO.write("#{SITE_DIR}/examples/#{name}.html", content)
   end
 end
