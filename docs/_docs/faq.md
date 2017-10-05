@@ -13,7 +13,7 @@ toc: true
 
 The project originally supported stateless functional components defined by an interface that had
 a single render method. You could define the rendering of the method using a simple lambda method
-that accepted a prop. This resulted in code that looked like: 
+that accepted a prop. This resulted in code that looked like:
 
 ```java
 class MyComponent {
