@@ -188,6 +188,7 @@ define 'react4j' do
 
     # The generators are configured to generate to here.
     iml.main_source_directories << _('generated/processors/main/java')
+    no_uploads!
   end
 
   define 'todomvc' do
@@ -222,6 +223,7 @@ define 'react4j' do
 
     # The generators are configured to generate to here.
     iml.main_source_directories << _('generated/processors/main/java')
+    no_uploads!
   end
 
   doc.from(projects(%w(annotations core dom arez processor))).using(:javadoc, :windowtitle => 'React')
