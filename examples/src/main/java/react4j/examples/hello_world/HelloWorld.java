@@ -10,7 +10,6 @@ public class HelloWorld
 {
   public void onModuleLoad()
   {
-    ReactDOM.render( h1( "Hello World" ),
-                     document.getElementById( "app" ) );
+    ReactDOM.render( h1( "Hello World" ), document.getElementById( "app" ) );
   }
 }
