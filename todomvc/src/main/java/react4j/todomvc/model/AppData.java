@@ -1,4 +1,4 @@
-package org.realityforge.react.todo_mvc.client.model;
+package react4j.todomvc.model;
 
 import org.realityforge.arez.browser.extras.BrowserLocation;
 

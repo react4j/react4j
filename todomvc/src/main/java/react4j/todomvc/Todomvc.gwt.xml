@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='todomvc'>
   <inherits name="react4j.annotations.Annotations"/>
   <inherits name="react4j.arez.ReactArezDev"/>
@@ -10,7 +9,7 @@
 
   <set-property name="jre.checks.checkLevel" value="MINIMAL"/>
 
-  <entry-point class='org.realityforge.react.todo_mvc.client.App'/>
+  <entry-point class='react4j.todomvc.App'/>
 
   <source path='client'/>
 </module>

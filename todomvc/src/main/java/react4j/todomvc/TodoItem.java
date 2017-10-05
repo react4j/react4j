@@ -1,4 +1,4 @@
-package org.realityforge.react.todo_mvc.client;
+package react4j.todomvc;
 
 import elemental2.dom.HTMLInputElement;
 import javax.annotation.Nonnull;
@@ -10,8 +10,9 @@ import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Computed;
-import org.realityforge.react.todo_mvc.client.model.AppData;
-import org.realityforge.react.todo_mvc.client.model.Todo;
+import react4j.dom.DOM;
+import react4j.todomvc.model.AppData;
+import react4j.todomvc.model.Todo;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -29,7 +30,7 @@ import react4j.dom.proptypes.html.HtmlProps;
 import react4j.dom.proptypes.html.InputProps;
 import react4j.dom.proptypes.html.LabelProps;
 import react4j.dom.proptypes.html.attributeTypes.InputType;
-import static org.realityforge.react.todo_mvc.client.TodoItem_.*;
+import static react4j.todomvc.TodoItem_.*;
 import static react4j.dom.DOM.*;
 
 @ReactComponent
@@ -193,8 +194,8 @@ class TodoItem
                              .type( InputType.checkbox ).checked( completed )
                              .onChange( _onToggle( this ) )
                     ),
-                    label( new LabelProps().OnDoubleClick( _onEdit( this ) ),
-                           props.todo.getTitle() ),
+                    DOM.label( new LabelProps().OnDoubleClick( _onEdit( this ) ),
+                               props.todo.getTitle() ),
                     button( new BtnProps()
                               .className( "destroy" )
                               .onClick( _onDestroy( this ) )

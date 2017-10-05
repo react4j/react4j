@@ -1,4 +1,4 @@
-package org.realityforge.react.todo_mvc.client;
+package react4j.todomvc;
 
 import elemental2.dom.HTMLInputElement;
 import java.util.List;
@@ -6,7 +6,10 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.ArezComponent;
-import org.realityforge.react.todo_mvc.client.model.AppData;
+import react4j.todomvc.Footer_;
+import react4j.todomvc.TodoEntry_;
+import react4j.todomvc.TodoItem_;
+import react4j.todomvc.model.AppData;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -20,7 +23,7 @@ import react4j.dom.events.MouseEventHandler;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.dom.proptypes.html.InputProps;
 import react4j.dom.proptypes.html.attributeTypes.InputType;
-import static org.realityforge.react.todo_mvc.client.TodoList_.*;
+import static react4j.todomvc.TodoList_.*;
 import static react4j.dom.DOM.*;
 
 @ReactComponent

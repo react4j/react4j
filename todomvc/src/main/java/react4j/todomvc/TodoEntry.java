@@ -1,4 +1,4 @@
-package org.realityforge.react.todo_mvc.client;
+package react4j.todomvc;
 
 import elemental2.dom.HTMLInputElement;
 import javax.annotation.Nonnull;
@@ -9,7 +9,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
-import org.realityforge.react.todo_mvc.client.model.AppData;
+import react4j.todomvc.model.AppData;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -21,7 +21,7 @@ import react4j.dom.events.FormEventHandler;
 import react4j.dom.events.KeyboardEvent;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.proptypes.html.InputProps;
-import static org.realityforge.react.todo_mvc.client.TodoEntry_.*;
+import static react4j.todomvc.TodoEntry_.*;
 import static react4j.dom.DOM.*;
 
 @ReactComponent
