@@ -9,12 +9,37 @@ task 'site:javadocs' do
   cp_r javadocs_dir, "#{SITE_DIR}/api"
 end
 
+desc 'Copy the compiled examples to docs dir'
+task 'site:examples' do
+  project = Buildr.project('react4j:examples')
+  examples_dir = project._(:target, :generated, :gwt, 'react4j-examples')
+  file(examples_dir).invoke
+  mkdir_p SITE_DIR
+  rm_rf "#{SITE_DIR}/examples"
+  cp_r examples_dir, "#{SITE_DIR}/examples"
+  rm_f Dir["#{SITE_DIR}/examples/**/*.devmode.js"]
+  rm_f Dir["#{SITE_DIR}/examples/**/compilation-mappings.txt"]
+  rm_rf "#{SITE_DIR}/examples/WEB-INF"
+
+  public_js = Dir["#{SITE_DIR}/examples/*/*.js"].select do |filename|
+    !(filename =~ /.*\.cache.js$/ || filename =~ /.*\.nocache.js$/ || filename =~ /.*\.devmode.js$/)
+  end
+  mv public_js, "#{SITE_DIR}/examples"
+
+  EXAMPLES.keys.each do |name|
+    content = IO.read(project._("src/main/webapp/#{name}.html"))
+    content = content.gsub("http://127.0.0.1:8888/#{name}/dev/",'').gsub('http://127.0.0.1:8888/', '')
+    IO.write("#{SITE_DIR}/examples/#{name}.html", content)
+  end
+end
+
 desc 'Build the website'
 task 'site:build' do
   rm_rf SITE_DIR
   mkdir_p File.dirname(SITE_DIR)
   sh "jekyll build --source #{WORKSPACE_DIR}/docs --destination #{SITE_DIR}"
   task('site:javadocs').invoke
+  task('site:examples').invoke
 end
 
 desc 'Check that the website does not have any broken links'
