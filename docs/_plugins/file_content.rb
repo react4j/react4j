@@ -19,7 +19,8 @@ module Jekyll
 
       markup = markup.gsub(/(\s+)|("([^"\\]|\\.)*")|('([^'\\]|\\.)*')/m) {|m| $1 ? ' ' : $2 ? $2 : $3}.strip
       matches = indices(markup, / ([^ "'][^ ]+)| "(([^"\\]|\\.)*)"| '(([^'\\]|\\.)*)'/m)
-      matches.insert(0, [0, 0, matches[0][0]])
+      first = matches.length > 0 ? matches[0][0] : markup.length
+      matches.insert(0, [0, 0, first])
       matches.collect {|m, s, e| markup[s, e]}.collect {|e| e.split('=')}.each do |p|
         if 1 == p.size
           params['file'] = p[0]
@@ -29,8 +30,6 @@ module Jekyll
       end
 
       self.options = params
-
-      p params
 
       raise 'Missing expected file parameter. Use tag syntax such as {% file_content core:java:org/realityforge/arez/ArezContext.java start_line=23 end_line=23 %}' unless self.file
 
@@ -47,8 +46,6 @@ module Jekyll
         result << [match_start, string_start, length]
         last = string_start + length - 1 # + ($1 ? 0 : 1)
       end
-      p result
-      p string
       result
     end
 
