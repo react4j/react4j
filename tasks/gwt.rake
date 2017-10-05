@@ -39,6 +39,9 @@ CONTENT
     extra_deps.each do |dep|
       j.include("#{dep}/*")
     end
+    project.assets.paths.each do |path|
+      j.include("#{path}/*")
+    end
     j.include("#{project._(:source, :main, :java)}/*")
   end
 
