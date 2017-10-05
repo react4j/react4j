@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='hello_world'>
   <inherits name="react4j.core.React"/>
   <inherits name="react4j.dom.ReactDOM"/>
