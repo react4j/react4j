@@ -37,3 +37,15 @@ p > code {
   padding: 4px 6px;
   white-space: nowrap;
 }
+
+.example {
+  display: flex;
+
+  pre {
+    margin: 0;
+  }
+  figure {
+    margin: 0;
+    padding: 0;
+  }
+}
