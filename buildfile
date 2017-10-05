@@ -15,7 +15,7 @@ REACT_TEST_OPTIONS =
     'react.environment' => 'development'
   }
 
-desc 'React4J: React in Java'
+desc 'React4j: An opinionated Java binding for React'
 define 'react4j' do
   project.group = 'org.realityforge.react'
   compile.options.source = '1.8'
