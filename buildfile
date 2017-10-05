@@ -24,6 +24,7 @@ define 'react4j' do
 
   project.version = ENV['PRODUCT_VERSION'] if ENV['PRODUCT_VERSION']
 
+  desc 'Annotations for defining a react component'
   define 'annotations' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
@@ -38,6 +39,7 @@ define 'react4j' do
     package(:javadoc)
   end
 
+  desc 'The core react binding'
   define 'core' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
