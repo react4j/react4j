@@ -5,8 +5,6 @@ order: 1
 toc: true
 ---
 
----
-
 ### Design
 
 #### Where is the equivalent of React's stateless function components?
