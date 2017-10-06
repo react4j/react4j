@@ -41,7 +41,7 @@ CONTENT
     project.gwt(modules, { :java_args => %w(-Xms512M -Xmx1024M), :js_exports => true, :dependencies => dependencies })
   end
 
-  project.package(:jar, :classifier => :gwt).tap do |j|
+  project.package(:jar).tap do |j|
     extra_deps.each do |dep|
       j.include("#{dep}/*")
     end
