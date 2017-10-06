@@ -33,6 +33,7 @@ performance cost in production builds.
    Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
    element factories can be built by looking at html spec and auto-generating? Probably get away from writing build
    at end by overloading methods
+* Generate all the html props based on typings at https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
 * Somehow declare props as interfaces in components and have implementation generated?
 * In base class have configuration that warns on re-renders that produced duplicate values
 
