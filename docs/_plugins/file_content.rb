@@ -19,6 +19,18 @@ module Jekyll
   # {% file_content core:java:org/realityforge/arez/Unsupported.java start_line=5 end_line=10 %}
   # {% endhighlight %}
   #
+  # You can also omit the first part of the file reference in which case it will default to "doc-examples".
+  # The following two lines are equivalent:
+  #
+  # {% file_content java:org/realityforge/arez/Unsupported.java %}
+  # {% file_content doc-examples:java:org/realityforge/arez/Unsupported.java %}
+  #
+  # You can also omit the first two parts of the file reference in which case it will default to "doc-examples:java".
+  # The following two lines are equivalent:
+  #
+  # {% file_content org/realityforge/arez/Unsupported.java %}
+  # {% file_content doc-examples:java:org/realityforge/arez/Unsupported.java %}
+  #
   class FileContent < Liquid::Tag
     def initialize(tag_name, markup, tokens)
       params = {}
@@ -55,7 +67,7 @@ module Jekyll
       result
     end
 
-    FILE_PATTERN = /^([a-zA-Z]+)\:([a-zA-Z]+)\:([^\:]+)$/
+    FILE_PATTERN = /^(([a-zA-Z\-]+)\:)?(([a-zA-Z\-]+)\:)?([^\:]+)$/
 
     attr_reader :file
 
@@ -150,9 +162,9 @@ module Jekyll
     def derive_filename
       FILE_PATTERN =~ self.file
 
-      project = $1
-      category = $2
-      file = $3
+      project = $2 || 'doc-examples'
+      category = $4 || 'java'
+      file = $5
 
       workspace_dir = File.expand_path(File.dirname(__FILE__) + '/../../')
 
