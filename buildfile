@@ -112,7 +112,7 @@ define 'react4j' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react4j.arez.ReactArez))
+    gwt_enhance(project, %w(react4j.arez.ReactArez react4j.arez.ReactArezDev))
 
     package(:jar)
     package(:sources)
