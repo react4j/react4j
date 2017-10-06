@@ -34,7 +34,9 @@ define 'react4j' do
 
     compile.with PROVIDED_DEPS,
                  :jsinterop_base,
-                 :jsinterop_base_sources
+                 :jsinterop_base_sources,
+                 :jsinterop_annotations,
+                 :jsinterop_annotations_sources
 
     gwt_enhance(project, ['react4j.annotations.Annotations'])
 
