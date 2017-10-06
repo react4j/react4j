@@ -122,6 +122,27 @@ define 'react4j' do
     test.compile.with TEST_DEPS
   end
 
+  desc 'Interoperability with GWT Widget API'
+  define 'widget' do
+    pom.provided_dependencies.concat PROVIDED_DEPS
+
+    compile.with project('dom').package(:jar, :classifier => :gwt),
+                 project('dom').compile.dependencies,
+                 :gwt_user
+
+    test.options[:properties] = REACT_TEST_OPTIONS
+    test.options[:java_args] = ['-ea']
+
+    gwt_enhance(project, %w(react4j.widget.ReactWidget))
+
+    package(:jar)
+    package(:sources)
+    package(:javadoc)
+
+    test.using :testng
+    test.compile.with TEST_DEPS
+  end
+
   define 'processor' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
