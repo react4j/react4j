@@ -106,7 +106,7 @@ public final class ReactProcessor
           "Unexpected error will running the " + getClass().getName() + " processor. This has " +
           "resulted in a failure to process the code and has left the compiler in an invalid " +
           "state. Please report the failure to the developers so that it can be fixed.\n" +
-          " Report the error at: https://github.com/realityforge/gwt-react-playground/issues\n" +
+          " Report the error at: https://github.com/realityforge/react4j/issues\n" +
           "\n\n" +
           sw.toString();
         processingEnv.getMessager().printMessage( ERROR, message, element );
