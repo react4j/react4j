@@ -14,7 +14,7 @@ The "Hello World" of React4j that just returns a header is as simple as:
 
 <div class="example">
 {% highlight java %}
-{% file_content examples:java:react4j/examples/hello_world/HelloWorld.java "start_line=/ ReactDOM/" "end_line=/\;/" strip=true %}
+{% file_content react4j/examples/hello_world/HelloWorld.java "start_line=/ ReactDOM/" "end_line=/\;/" strip=true %}
 {% endhighlight %}
 </div>
 
@@ -24,12 +24,12 @@ serves a similar purpose as a webpack configuration.
 <div class="example">
 <div>
 {% highlight java %}
-{% file_content examples:java:react4j/examples/hello_world/HelloWorld.java %}
+{% file_content doc-examples:java:react4j/examples/hello_world/HelloWorld.java %}
 {% endhighlight %}
 &nbsp;
 
 {% highlight xml %}
-{% file_content examples:java:react4j/examples/hello_world/HelloWorld.gwt.xml %}
+{% file_content doc-examples:java:react4j/examples/hello_world/HelloWorld.gwt.xml %}
 {% endhighlight %}
 </div>
 <iframe src="{{ site.baseurl }}/examples/hello_world.html"></iframe>

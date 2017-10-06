@@ -156,7 +156,8 @@ define 'react4j' do
     iml.test_source_directories << _('src/test/resources/bad_input')
   end
 
-  define 'examples' do
+  desc 'Examples that are only used to illustrate ideas in documentation'
+  define 'doc-examples' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
     compile.with project('annotations').package(:jar, :classifier => :gwt),
@@ -235,7 +236,7 @@ define 'react4j' do
   ipr.add_component_from_artifact(:idea_codestyle)
 
   EXAMPLES.each_pair do |key, gwt_module|
-    ipr.add_gwt_configuration(project('examples'),
+    ipr.add_gwt_configuration(project('doc-examples'),
                               :name => "GWT: #{key}",
                               :gwt_module => gwt_module,
                               :start_javascript_debugger => false,

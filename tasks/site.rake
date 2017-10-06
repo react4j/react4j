@@ -11,8 +11,8 @@ end
 
 desc 'Copy the compiled examples to docs dir'
 task 'site:examples' do
-  project = Buildr.project('react4j:examples')
-  examples_dir = project._(:target, :generated, :gwt, 'react4j-examples')
+  project = Buildr.project('react4j:doc-examples')
+  examples_dir = project._(:target, :generated, :gwt, 'react4j-doc-examples')
   file(examples_dir).invoke
   mkdir_p SITE_DIR
   rm_rf "#{SITE_DIR}/examples"
