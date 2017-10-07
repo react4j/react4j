@@ -62,7 +62,7 @@ final class Generator
                          Modifier.STATIC,
                          Modifier.FINAL,
                          Modifier.PUBLIC ).
-        initializer( "getConstrutorFunction()" );
+        initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
@@ -141,7 +141,7 @@ final class Generator
     final ParameterizedTypeName constructorType = getJsConstructorFnType( descriptor );
 
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "getConstrutorFunction" ).
+      MethodSpec.methodBuilder( "getConstructorFunction" ).
         addAnnotation( Nonnull.class ).
         addModifiers( Modifier.STATIC, Modifier.PRIVATE ).
         returns( constructorType );
