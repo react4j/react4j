@@ -39,6 +39,8 @@ performance cost in production builds.
 
 ### Low Priorities
 
+* Should we rename setState to scheduleUpdate()???
+* Should Props and state fields be read-only abstractions?
 * Make sure setState is called withing scope of `componentWillReceiveProps` otherwise fail invariant check?
 * build in https://github.com/maicki/why-did-you-update
 * Add support for componentDidCatch() (React16)
