@@ -39,6 +39,7 @@ performance cost in production builds.
 
 ### Low Priorities
 
+* Make sure setState is called withing scope of `componentWillReceiveProps` otherwise fail invariant check?
 * build in https://github.com/maicki/why-did-you-update
 * Add support for componentDidCatch() (React16)
 * Add support for portals (React16)
