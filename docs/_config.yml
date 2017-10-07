@@ -12,6 +12,7 @@ strict_front_matter: true
 
 gems:
   - jekyll-sitemap
+  - jekyll-toc
 
 collections:
   docs:
