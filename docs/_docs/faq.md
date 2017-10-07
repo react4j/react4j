@@ -63,6 +63,14 @@ or use the lifecycle callback methods.
 So we removed StatelessComponent and simplified our application, the library and supporting tools. (The
 annotation processor is significantly simpler as a result of this change.)
 
+The react team has promised that at some point in the future, stateless functional components will have a
+better performance profile due to lower memory usage and low-level optimization opportunities within
+the react runtime. When this eventuates, it will be reasonably easy for React4j to take advantage of these
+enhancements with no changes to the way components are written. The annotation processor already analyzes
+the component to determine if the component uses state or any lifecycle methods are declared. If neither
+of these conditions are true, React4j could transparently expose the component as a stateless functional
+component and take advantage of the potential performance enhancements.
+
 #### Why is there both NativeComponent and Component classes?
 
 The project initially required that React4j components all extend the equivalent of the `NativeComponent`
