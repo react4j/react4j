@@ -77,7 +77,7 @@ define 'react4j' do
 
     js_assets(project, :dom)
 
-    compile.with project('core').package(:jar, :classifier => :gwt),
+    compile.with project('core').package(:jar),
                  project('core').compile.dependencies,
                  :elemental2_dom,
                  :elemental2_promise
@@ -99,7 +99,7 @@ define 'react4j' do
   define 'arez' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
-    compile.with project('core').package(:jar, :classifier => :gwt),
+    compile.with project('core').package(:jar),
                  project('core').compile.dependencies,
                  :elemental2_core,
                  :elemental2_dom,
@@ -126,7 +126,7 @@ define 'react4j' do
   define 'widget' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
-    compile.with project('dom').package(:jar, :classifier => :gwt),
+    compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
                  :gwt_user
 
@@ -183,13 +183,13 @@ define 'react4j' do
   define 'doc-examples' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
-    compile.with project('annotations').package(:jar, :classifier => :gwt),
+    compile.with project('annotations').package(:jar),
                  project('annotations').compile.dependencies,
-                 project('core').package(:jar, :classifier => :gwt),
+                 project('core').package(:jar),
                  project('core').compile.dependencies,
-                 project('dom').package(:jar, :classifier => :gwt),
+                 project('dom').package(:jar),
                  project('dom').compile.dependencies,
-                 project('arez').package(:jar, :classifier => :gwt),
+                 project('arez').package(:jar),
                  project('arez').compile.dependencies,
                  project('processor').package(:jar),
                  project('processor').compile.dependencies,
@@ -218,13 +218,13 @@ define 'react4j' do
   define 'todomvc' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
-    compile.with project('annotations').package(:jar, :classifier => :gwt),
+    compile.with project('annotations').package(:jar),
                  project('annotations').compile.dependencies,
-                 project('core').package(:jar, :classifier => :gwt),
+                 project('core').package(:jar),
                  project('core').compile.dependencies,
-                 project('dom').package(:jar, :classifier => :gwt),
+                 project('dom').package(:jar),
                  project('dom').compile.dependencies,
-                 project('arez').package(:jar, :classifier => :gwt),
+                 project('arez').package(:jar),
                  project('arez').compile.dependencies,
                  project('processor').package(:jar),
                  project('processor').compile.dependencies,
