@@ -78,7 +78,7 @@ class TodoItem
   }
 
   @Override
-  protected void componentInitialize()
+  protected void componentDidConstruct()
   {
     setInitialState( createInitialState() );
   }

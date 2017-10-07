@@ -45,7 +45,7 @@ class TodoEntry
   }
 
   @Override
-  protected void componentInitialize()
+  protected void componentDidConstruct()
   {
     setInitialState( TodoEntry.State.create( "" ) );
   }

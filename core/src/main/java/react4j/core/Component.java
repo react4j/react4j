@@ -244,7 +244,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * This method is invoked after the component is bound to a native react component.
    * This is a good place to perform initialization.
    */
-  protected void componentInitialize()
+  protected void componentDidConstruct()
   {
   }
 

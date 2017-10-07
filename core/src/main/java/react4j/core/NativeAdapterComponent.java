@@ -37,7 +37,7 @@ public abstract class NativeAdapterComponent<
     _component = createComponent();
     _component.bindComponent( this );
 
-    componentInitialize();
+    performComponentDidConstruct();
   }
 
   /**
@@ -50,7 +50,7 @@ public abstract class NativeAdapterComponent<
   /**
    * Initialize the target component.
    */
-  private void componentInitialize()
+  private void performComponentDidConstruct()
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -59,7 +59,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      _component.componentInitialize();
+      _component.componentDidConstruct();
     }
     finally
     {
