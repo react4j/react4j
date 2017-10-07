@@ -78,6 +78,19 @@ module Jekyll
 
     attr_accessor :start_line
     attr_accessor :end_line
+
+    attr_writer :include_start_line
+
+    def include_start_line?
+      @include_start_line.nil? || @include_start_line == 'true'
+    end
+
+    attr_writer :include_end_line
+
+    def include_end_line?
+      @include_end_line.nil? || @include_end_line == 'true'
+    end
+
     attr_writer :strip
 
     def strip?
@@ -117,19 +130,22 @@ module Jekyll
           # if end_line is a regex
           regex = /#{$1}/
           last_line = nil
+          found = false
           lines[first_line..9999999999999].each_with_index do |line, index|
             if line =~ regex
+              found = true
               last_line = first_line + index
               break
             end
           end
-          if last_line.nil?
-            raise "Unable to locate line that matches regex #{regex} in file #{self.derive_filename} when attempting to identify start line"
+          unless found
+            raise "Unable to locate line that matches regex #{regex} in file #{self.derive_filename} when attempting to identify end line"
           end
         else
           raise "The end_line parameter #{self.end_line} when importing file #{self.derive_filename} is not a number or a regex"
         end
       end
+      last_line -= 1 unless include_end_line?
       last_line
     end
 
@@ -156,6 +172,7 @@ module Jekyll
           raise "The start_line parameter #{self.start_line} when importing file #{self.derive_filename} is not a number or a regex"
         end
       end
+      first_line += 1 unless include_start_line?
       first_line
     end
 
