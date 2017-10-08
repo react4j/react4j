@@ -38,7 +38,7 @@ CONTENT
 
   if ENV['GWT'].nil? || ENV['GWT'] == project.name
     modules = modules_complete ? gwt_modules : gwt_modules.collect {|gwt_module| "#{gwt_module}Test"}
-    project.gwt(modules, { :java_args => %w(-Xms512M -Xmx1024M), :js_exports => true, :dependencies => dependencies })
+    project.gwt(modules, { :java_args => %w(-Xms512M -Xmx1024M), :dependencies => dependencies })
   end
 
   project.package(:jar).tap do |j|
@@ -57,6 +57,6 @@ CONTENT
   end
   project.iml.add_gwt_facet(config, :settings => {
     :compilerMaxHeapSize => '1024',
-    :compilerParameters => '-generateJsInteropExports -draftCompile -localWorkers 2 -strict'
+    :compilerParameters => '-draftCompile -localWorkers 2 -strict'
   }, :gwt_dev_artifact => :gwt_dev)
 end

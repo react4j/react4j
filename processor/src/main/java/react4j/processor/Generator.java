@@ -24,13 +24,13 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
+import jsinterop.base.JsPropertyMapOfAny;
+import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
+import react4j.core.util.JsUtil;
 
 final class Generator
 {
@@ -65,6 +65,10 @@ final class Generator
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
+    for ( final MethodDescriptor lifecycleMethod : descriptor.getLifecycleMethods() )
+    {
+      builder.addMethod( buildRawLifecycleMethod( descriptor, lifecycleMethod ).build() );
+    }
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
@@ -76,9 +80,30 @@ final class Generator
   }
 
   @Nonnull
+  private static MethodSpec.Builder buildRawLifecycleMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                             @Nonnull final MethodDescriptor lifecycleMethod )
+  {
+    final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( methodName + "_function" ).
+        addModifiers( Modifier.PRIVATE, Modifier.STATIC, Modifier.NATIVE ).
+        returns( ClassName.get( JsObject.class ) );
+    final String classname = descriptor.getNativeComponentClassName().toString();
+    final CodeBlock.Builder code = CodeBlock.builder();
+
+    final String innerCode = "return this.@" + classname + "::" + methodName + "(*)(arguments);";
+    code.add( "/*-{ return function() { " + innerCode + " } }-*/" );
+    method.addCode( code.build() );
+    return method;
+
+  }
+
+  @Nonnull
   private static ParameterizedTypeName getJsConstructorFnType( @Nonnull final ComponentDescriptor descriptor )
   {
-    return ParameterizedTypeName.get( ClassName.get( JsConstructorFn.class ),
+    return ParameterizedTypeName.get( ClassName.get( ComponentConstructorFunction.class ),
+                                      TypeName.get( descriptor.getPropsType().asType() ),
+                                      TypeName.get( descriptor.getStateType().asType() ),
                                       descriptor.getNativeComponentClassName() );
   }
 
@@ -146,26 +171,28 @@ final class Generator
         addModifiers( Modifier.STATIC, Modifier.PRIVATE ).
         returns( constructorType );
 
-    method.addStatement( "final $T constructorFn = $T.of( $T.class ) ",
-                         constructorType,
-                         JsConstructorFn.class,
+    method.addStatement( "final $T prototype = $T.getPrototypeForClass( $T.class )",
+                         JsPropertyMapOfAny.class,
+                         JsUtil.class,
                          descriptor.getNativeComponentClassName() );
-    method.addStatement( "$T.invariant( () -> null != constructorFn,\n" +
-                         "              () -> \"Unable to locate constructor function for " +
-                         descriptor.getName() + " defined by class " +
-                         descriptor.getElement().getQualifiedName().toString() + "\" )",
-                         Guards.class );
-    method.addStatement( "assert null != constructorFn" );
+    for ( final MethodDescriptor lifecycleMethod : descriptor.getLifecycleMethods() )
+    {
+      final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
+      method.addStatement( "prototype.set( $S, $N() )", methodName, methodName + "_function" );
+    }
 
+    method.addStatement( "final $T componentConstructor = $T::new",
+                         constructorType,
+                         descriptor.getNativeComponentClassName() );
     final CodeBlock.Builder codeBlock = CodeBlock.builder();
     codeBlock.beginControlFlow( "if ( $T.enableComponentNames() )", ReactConfig.class );
-    codeBlock.addStatement( "$T.of( constructorFn ).set( \"displayName\", $S )",
+    codeBlock.addStatement( "$T.of( componentConstructor ).set( \"displayName\", $S )",
                             JsPropertyMap.class,
                             descriptor.getName() );
     codeBlock.endControlFlow();
 
     method.addCode( codeBlock.build() );
-    method.addStatement( "return constructorFn" );
+    method.addStatement( "return componentConstructor" );
     return method;
   }
 
@@ -180,7 +207,6 @@ final class Generator
     //Ensure it can not be subclassed
     builder.addModifiers( Modifier.FINAL );
 
-    builder.addAnnotation( AnnotationSpec.builder( JsType.class ).build() );
     // Mark it as generated
     builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
       addMember( "value", "$S", ReactProcessor.class.getName() ).
@@ -202,7 +228,6 @@ final class Generator
       final MethodSpec.Builder method =
         MethodSpec.constructorBuilder().
           addAnnotation( JsConstructor.class ).
-          addModifiers( Modifier.PRIVATE ).
           addParameter( props.build() );
       method.addStatement( "super( props )" );
       builder.addMethod( method.build() );

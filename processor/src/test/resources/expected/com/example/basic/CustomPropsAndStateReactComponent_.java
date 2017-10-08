@@ -2,24 +2,23 @@ package com.example.basic;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
+import jsinterop.base.JsPropertyMapOfAny;
+import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
+import react4j.core.util.JsUtil;
 
 @Generated("react4j.processor.ReactProcessor")
 final class CustomPropsAndStateReactComponent_ {
-  public static final JsConstructorFn<React_CustomPropsAndStateReactComponent> TYPE = getConstrutorFunction();
+  public static final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, React_CustomPropsAndStateReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
-  private static JsConstructorFn<React_CustomPropsAndStateReactComponent> getConstrutorFunction() {
-    final JsConstructorFn<React_CustomPropsAndStateReactComponent> constructorFn = JsConstructorFn.of( React_CustomPropsAndStateReactComponent.class ) ;
-    Guards.invariant( () -> null != constructorFn,
-                      () -> "Unable to locate constructor function for CustomPropsAndStateReactComponent defined by class com.example.basic.CustomPropsAndStateReactComponent" );
-    assert null != constructorFn;
+  private static ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, React_CustomPropsAndStateReactComponent> getConstructorFunction() {
+    final JsPropertyMapOfAny prototype = JsUtil.getPrototypeForClass( React_CustomPropsAndStateReactComponent.class );
+    final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, React_CustomPropsAndStateReactComponent> componentConstructor = React_CustomPropsAndStateReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( constructorFn ).set( "displayName", "CustomPropsAndStateReactComponent" );
+      JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomPropsAndStateReactComponent" );
     }
-    return constructorFn;
+    return componentConstructor;
   }
 }

@@ -2,24 +2,25 @@ package com.example.basic;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
+import jsinterop.base.JsPropertyMapOfAny;
+import react4j.core.BaseProps;
+import react4j.core.BaseState;
+import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
+import react4j.core.util.JsUtil;
 
 @Generated("react4j.processor.ReactProcessor")
 public final class PublicReactComponent_ {
-  public static final JsConstructorFn<React_PublicReactComponent> TYPE = getConstrutorFunction();
+  public static final ComponentConstructorFunction<BaseProps, BaseState, React_PublicReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
-  private static JsConstructorFn<React_PublicReactComponent> getConstrutorFunction() {
-    final JsConstructorFn<React_PublicReactComponent> constructorFn = JsConstructorFn.of( React_PublicReactComponent.class ) ;
-    Guards.invariant( () -> null != constructorFn,
-                      () -> "Unable to locate constructor function for PublicReactComponent defined by class com.example.basic.PublicReactComponent" );
-    assert null != constructorFn;
+  private static ComponentConstructorFunction<BaseProps, BaseState, React_PublicReactComponent> getConstructorFunction() {
+    final JsPropertyMapOfAny prototype = JsUtil.getPrototypeForClass( React_PublicReactComponent.class );
+    final ComponentConstructorFunction<BaseProps, BaseState, React_PublicReactComponent> componentConstructor = React_PublicReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( constructorFn ).set( "displayName", "PublicReactComponent" );
+      JsPropertyMap.of( componentConstructor ).set( "displayName", "PublicReactComponent" );
     }
-    return constructorFn;
+    return componentConstructor;
   }
 }

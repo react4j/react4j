@@ -3,16 +3,14 @@ package com.example.arez;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsType;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.NativeAdapterComponent;
 
-@JsType
 @Generated("react4j.processor.ReactProcessor")
 final class React_BasicArezReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BasicArezReactComponent> {
   @JsConstructor
-  private React_BasicArezReactComponent(@Nonnull final BaseProps props) {
+  React_BasicArezReactComponent(@Nonnull final BaseProps props) {
     super( props );
   }
 

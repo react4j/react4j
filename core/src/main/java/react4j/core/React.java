@@ -25,7 +25,6 @@ import elemental2.core.Array;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsConstructorFn;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL )
 public class React
@@ -40,42 +39,30 @@ public class React
   /**
    * <p>Create and return a new {@link ReactElement} for the provided React component class.</p>
    *
-   * <p>Note that calling this method will have undefined results in the following circumstances:</p>
-   *
-   * <p>1) when invoked for Java classes that are not exported to JavaScript via {@link JsType}</p>
-   * <p>2) with Java classes exported to JavaScript under a different name (i.e. when the class was renamed using the 'namespace' and/or 'name' attributes
-   * of the {@link JsType} annotation)</p>
-   * <p>3) When class data is disabled when building</p>
-   *
-   * @param type  the {@link Class} object of a React component extending {@link NativeComponent}
+   * @param type the {@link Class} object of a React component extending {@link NativeComponent}
    * @return a {@link ReactElement}
    */
 
   public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
-  createElement( @Nonnull JsConstructorFn<T> type );
+  createElement( @Nonnull ComponentConstructorFunction<P, S, T> type );
 
   /**
    * <p>Create and return a new {@link ReactElement} for the provided React component class.</p>
-   *
-   * <p>Note that calling this method will have undefined results in the following circumstances:</p>
-   *
-   * <p>1) when invoked for Java classes that are not exported to JavaScript via {@link JsType}</p>
-   * <p>2) with Java classes exported to JavaScript under a different name (i.e. when the class was renamed using the 'namespace' and/or 'name' attributes
-   * of the {@link JsType} annotation)</p>
-   * <p>3) When class data is disabled when building</p>
    *
    * @param type  the {@link Class} object of a React component extending {@link NativeComponent}
    * @param props the props to pass to the element
    * @return a {@link ReactElement}
    */
   public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
-  createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props );
+  createElement( @Nonnull ComponentConstructorFunction<P, S, T> type, @Nonnull P props );
 
   public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
-  createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props, @Nonnull String value );
+  createElement( @Nonnull ComponentConstructorFunction<P, S, T> type, @Nonnull P props, @Nonnull String value );
 
   public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
-  createElement( @Nonnull JsConstructorFn<T> type, @Nonnull P props, @Nonnull ReactElement<?, ?>... child );
+  createElement( @Nonnull ComponentConstructorFunction<P, S, T> type,
+                 @Nonnull P props,
+                 @Nonnull ReactElement<?, ?>... child );
 
   /**
    * <p>Clone and return a new ReactElement using element as the starting point. The resulting

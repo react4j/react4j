@@ -4,25 +4,26 @@ import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.base.Js;
-import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
+import jsinterop.base.JsPropertyMapOfAny;
+import react4j.core.BaseProps;
+import react4j.core.BaseState;
+import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
+import react4j.core.util.JsUtil;
 
 @Generated("react4j.processor.ReactProcessor")
 final class CustomHandlerButParametersIgnoredComponent_ {
-  public static final JsConstructorFn<React_CustomHandlerButParametersIgnoredComponent> TYPE = getConstrutorFunction();
+  public static final ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerButParametersIgnoredComponent> TYPE = getConstructorFunction();
 
   @Nonnull
-  private static JsConstructorFn<React_CustomHandlerButParametersIgnoredComponent> getConstrutorFunction() {
-    final JsConstructorFn<React_CustomHandlerButParametersIgnoredComponent> constructorFn = JsConstructorFn.of( React_CustomHandlerButParametersIgnoredComponent.class ) ;
-    Guards.invariant( () -> null != constructorFn,
-                      () -> "Unable to locate constructor function for CustomHandlerButParametersIgnoredComponent defined by class com.example.event_handler.CustomHandlerButParametersIgnoredComponent" );
-    assert null != constructorFn;
+  private static ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerButParametersIgnoredComponent> getConstructorFunction() {
+    final JsPropertyMapOfAny prototype = JsUtil.getPrototypeForClass( React_CustomHandlerButParametersIgnoredComponent.class );
+    final ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerButParametersIgnoredComponent> componentConstructor = React_CustomHandlerButParametersIgnoredComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( constructorFn ).set( "displayName", "CustomHandlerButParametersIgnoredComponent" );
+      JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomHandlerButParametersIgnoredComponent" );
     }
-    return constructorFn;
+    return componentConstructor;
   }
 
   @Nonnull

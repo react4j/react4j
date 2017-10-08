@@ -2,7 +2,6 @@ package react4j.core;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsType;
 
 /**
  * This class provides a base class that designed to forward all lifecycle methods to a target component.
@@ -13,7 +12,6 @@ import jsinterop.annotations.JsType;
  * framework. In production builds it is expected that the method calls will be inlined and the checks will
  * be optimized away, having no significant performance impact.
  */
-@JsType
 public abstract class NativeAdapterComponent<
   P extends BaseProps,
   S extends BaseState,

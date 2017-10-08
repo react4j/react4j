@@ -264,14 +264,14 @@ define 'react4j' do
                               :gwt_module => gwt_module,
                               :start_javascript_debugger => false,
                               :vm_parameters => "-Xmx2G -Djava.io.tmpdir=#{_('tmp/gwt')}",
-                              :shell_parameters => "-generateJsInteropExports -port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
+                              :shell_parameters => "-port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
   end
 
   ipr.add_gwt_configuration(project('todomvc'),
                             :gwt_module => 'org.realityforge.react.todo_mvc.todomvc',
                             :start_javascript_debugger => false,
                             :vm_parameters => "-Xmx2G -Djava.io.tmpdir=#{_('tmp/gwt')}",
-                            :shell_parameters => "-generateJsInteropExports -port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
+                            :shell_parameters => "-port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
 
   ipr.add_component('CompilerConfiguration') do |component|
     component.annotationProcessing do |xml|

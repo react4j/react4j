@@ -2,24 +2,25 @@ package com.example.nested;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
+import jsinterop.base.JsPropertyMapOfAny;
+import react4j.core.BaseProps;
+import react4j.core.BaseState;
+import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
+import react4j.core.util.JsUtil;
 
 @Generated("react4j.processor.ReactProcessor")
 final class NestedNestedReactComponent$DeepNesting$BasicReactComponent_ {
-  public static final JsConstructorFn<NestedNestedReactComponent$DeepNesting$React_BasicReactComponent> TYPE = getConstrutorFunction();
+  public static final ComponentConstructorFunction<BaseProps, BaseState, NestedNestedReactComponent$DeepNesting$React_BasicReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
-  private static JsConstructorFn<NestedNestedReactComponent$DeepNesting$React_BasicReactComponent> getConstrutorFunction() {
-    final JsConstructorFn<NestedNestedReactComponent$DeepNesting$React_BasicReactComponent> constructorFn = JsConstructorFn.of( NestedNestedReactComponent$DeepNesting$React_BasicReactComponent.class ) ;
-    Guards.invariant( () -> null != constructorFn,
-                      () -> "Unable to locate constructor function for BasicReactComponent defined by class com.example.nested.NestedNestedReactComponent.DeepNesting.BasicReactComponent" );
-    assert null != constructorFn;
+  private static ComponentConstructorFunction<BaseProps, BaseState, NestedNestedReactComponent$DeepNesting$React_BasicReactComponent> getConstructorFunction() {
+    final JsPropertyMapOfAny prototype = JsUtil.getPrototypeForClass( NestedNestedReactComponent$DeepNesting$React_BasicReactComponent.class );
+    final ComponentConstructorFunction<BaseProps, BaseState, NestedNestedReactComponent$DeepNesting$React_BasicReactComponent> componentConstructor = NestedNestedReactComponent$DeepNesting$React_BasicReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( constructorFn ).set( "displayName", "BasicReactComponent" );
+      JsPropertyMap.of( componentConstructor ).set( "displayName", "BasicReactComponent" );
     }
-    return constructorFn;
+    return componentConstructor;
   }
 }
