@@ -1,5 +1,9 @@
 package react4j.core;
 
+/**
+ * Enum representing lifecycle method currently being invoked.
+ * This is used for invariant checking.
+ */
 enum ComponentState
 {
   INITIAL,
