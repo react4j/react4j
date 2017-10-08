@@ -37,7 +37,7 @@ performance cost in production builds.
 
 ### Low Priorities
 
-* Should we rename setState to scheduleUpdate()???
+* Should we rename setState to scheduleUpdate() or enqueueSetState???
 * Should Props and state fields be read-only abstractions?
 * build in https://github.com/maicki/why-did-you-update
 * Add support for componentDidCatch() (React16)
