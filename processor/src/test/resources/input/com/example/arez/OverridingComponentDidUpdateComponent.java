@@ -16,7 +16,7 @@ class OverridingComponentDidUpdateComponent
 {
   @Nullable
   @Override
-  protected ReactElement<?, ?> doRender()
+  protected ReactElement<?, ?> render()
   {
     return null;
   }

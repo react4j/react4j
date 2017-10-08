@@ -241,6 +241,19 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   protected abstract ReactElement<?, ?> render();
 
   /**
+   * Wrapper method for rendering the component.
+   * By default it just delegates to the {@link #render()} method.
+   * This method exists to give middleware a mechanism of wrapping calls to render
+   *
+   * @return the result of rendering.
+   */
+  @Nullable
+  protected ReactElement<?, ?> performRender()
+  {
+    return render();
+  }
+
+  /**
    * This method is invoked after the component is bound to a native react component.
    * This is a good place to perform initialization.
    */

@@ -156,22 +156,17 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
                                                  } ) );
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Nullable
   @Override
-  protected final ReactElement<?, ?> render()
+  protected ReactElement<?, ?> performRender()
   {
     _renderDepsChanged = false;
     /*
      * Need an uncheckedCast here rather than regular cast as otherwise GWT attempts to cast
      * this using a method that does not work. Unclear of the exact cause.
      */
-    return Js.uncheckedCast( Arez.context().safeTrack( _renderTracker, this::doRender ) );
+    return Js.uncheckedCast( Arez.context().safeTrack( _renderTracker, this::render ) );
   }
-
-  @Nullable
-  protected abstract ReactElement<?, ?> doRender();
 
   /**
    * {@inheritDoc}

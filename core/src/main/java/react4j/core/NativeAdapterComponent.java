@@ -84,7 +84,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      return _component.render();
+      return _component.performRender();
     }
     finally
     {
