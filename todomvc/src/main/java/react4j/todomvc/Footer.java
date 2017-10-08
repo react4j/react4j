@@ -3,8 +3,6 @@ package react4j.todomvc;
 import javax.annotation.Nullable;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Computed;
-import react4j.todomvc.model.AppData;
-import react4j.todomvc.model.FilterMode;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -15,8 +13,10 @@ import react4j.dom.events.MouseEventHandler;
 import react4j.dom.proptypes.html.AnchorProps;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.dom.proptypes.html.HtmlProps;
-import static react4j.todomvc.Footer_.*;
+import react4j.todomvc.model.AppData;
+import react4j.todomvc.model.FilterMode;
 import static react4j.dom.DOM.*;
+import static react4j.todomvc.Footer_.*;
 
 @ReactComponent
 @ArezComponent

@@ -10,15 +10,13 @@ import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Computed;
-import react4j.dom.DOM;
-import react4j.todomvc.model.AppData;
-import react4j.todomvc.model.Todo;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactElement;
+import react4j.dom.DOM;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.FormEvent;
 import react4j.dom.events.FormEventHandler;
@@ -30,8 +28,10 @@ import react4j.dom.proptypes.html.HtmlProps;
 import react4j.dom.proptypes.html.InputProps;
 import react4j.dom.proptypes.html.LabelProps;
 import react4j.dom.proptypes.html.attributeTypes.InputType;
-import static react4j.todomvc.TodoItem_.*;
+import react4j.todomvc.model.AppData;
+import react4j.todomvc.model.Todo;
 import static react4j.dom.DOM.*;
+import static react4j.todomvc.TodoItem_.*;
 
 @ReactComponent
 @ArezComponent

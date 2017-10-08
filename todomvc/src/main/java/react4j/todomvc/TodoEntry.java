@@ -9,7 +9,6 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
-import react4j.todomvc.model.AppData;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -21,8 +20,9 @@ import react4j.dom.events.FormEventHandler;
 import react4j.dom.events.KeyboardEvent;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.proptypes.html.InputProps;
-import static react4j.todomvc.TodoEntry_.*;
+import react4j.todomvc.model.AppData;
 import static react4j.dom.DOM.*;
+import static react4j.todomvc.TodoEntry_.*;
 
 @ReactComponent
 @ArezComponent

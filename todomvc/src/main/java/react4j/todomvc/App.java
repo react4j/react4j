@@ -3,7 +3,6 @@ package react4j.todomvc;
 import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
 import org.realityforge.arez.Arez;
-import react4j.todomvc.TodoList_;
 import react4j.arez.ReactArezConsoleSpyEventProcessor;
 import react4j.core.React;
 import react4j.dom.ReactDOM;
