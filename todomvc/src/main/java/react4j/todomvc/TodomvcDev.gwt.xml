@@ -1,0 +1,9 @@
+<module rename-to='todomvc'>
+  <inherits name="react4j.todomvc.Todomvc"/>
+  <inherits name="react4j.arez.ReactArezDev"/>
+  <inherits name="react4j.core.ReactDev"/>
+  <inherits name="org.realityforge.arez.ArezDev"/>
+  <inherits name="org.realityforge.braincheck.BrainCheckDev"/>
+
+  <source path='ignore'/>
+</module>

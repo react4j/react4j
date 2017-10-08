@@ -1,0 +1,12 @@
+<module rename-to='todomvc'>
+  <inherits name="react4j.todomvc.Todomvc"/>
+  <inherits name="com.google.gwt.core.Core"/>
+  <inherits name="com.google.gwt.useragent.UserAgent"/>
+
+  <set-property name="jre.checks.checkLevel" value="MINIMAL"/>
+  <set-configuration-property name="user.agent.runtimeWarning" value="false"/>
+
+  <collapse-all-properties/>
+
+  <source path='ignore'/>
+</module>

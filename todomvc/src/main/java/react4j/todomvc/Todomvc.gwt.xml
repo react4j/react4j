@@ -1,15 +1,12 @@
-<module rename-to='todomvc'>
+<module>
   <inherits name="react4j.annotations.Annotations"/>
-  <inherits name="react4j.arez.ReactArezDev"/>
-  <inherits name="react4j.core.ReactDev"/>
+  <inherits name="react4j.arez.ReactArez"/>
   <inherits name="react4j.dom.ReactDOM"/>
-  <inherits name="org.realityforge.arez.ArezDev"/>
-  <inherits name="org.realityforge.braincheck.BrainCheckDev"/>
   <inherits name="org.realityforge.arez.browser.extras.BrowserExtras"/>
 
-  <set-property name="jre.checks.checkLevel" value="MINIMAL"/>
-
   <entry-point class='react4j.todomvc.App'/>
+
+  <collapse-all-properties/>
 
   <source path=''/>
 </module>
