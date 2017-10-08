@@ -38,7 +38,7 @@ define 'react4j' do
                  :jsinterop_annotations,
                  :jsinterop_annotations_sources
 
-    gwt_enhance(project, ['react4j.annotations.Annotations'])
+    gwt_enhance(project)
 
     package(:jar)
     package(:sources)
@@ -62,7 +62,7 @@ define 'react4j' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react4j.core.React react4j.core.ReactDev))
+    gwt_enhance(project)
 
     package(:jar)
     package(:sources)
@@ -86,7 +86,7 @@ define 'react4j' do
     test.options[:java_args] = ['-ea']
 
     generate_factory_source(project)
-    gwt_enhance(project, %w(react4j.dom.ReactDOM))
+    gwt_enhance(project)
 
     package(:jar)
     package(:sources)
@@ -112,7 +112,7 @@ define 'react4j' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react4j.arez.ReactArez react4j.arez.ReactArezDev))
+    gwt_enhance(project)
 
     package(:jar)
     package(:sources)
@@ -133,7 +133,7 @@ define 'react4j' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react4j.widget.ReactWidget))
+    gwt_enhance(project)
 
     package(:jar)
     package(:sources)
@@ -201,7 +201,7 @@ define 'react4j' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, EXAMPLES.values, :modules_complete => true)
+    gwt_enhance(project, :modules_complete => true)
 
     package(:jar)
     package(:sources)
@@ -236,7 +236,7 @@ define 'react4j' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, %w(react4j.todomvc.Todomvc))
+    gwt_enhance(project)
 
     package(:jar)
     package(:sources)
