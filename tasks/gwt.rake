@@ -46,7 +46,11 @@ CONTENT
 
   if ENV['GWT'].nil? || ENV['GWT'] == project.name
     modules = modules_complete ? gwt_modules : gwt_modules.collect {|gwt_module| "#{gwt_module}Test"}
-    project.gwt(modules, { :java_args => %w(-Xms512M -Xmx1024M), :dependencies => dependencies })
+    modules.each do |m|
+      project.gwt([m], { :java_args => %w(-Xms512M -Xmx1024M),
+                         :dependencies => dependencies,
+                         :output_key => options[:output_key] || m })
+    end
   end
 
   project.package(:jar).tap do |j|
