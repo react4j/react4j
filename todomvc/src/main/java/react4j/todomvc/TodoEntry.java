@@ -53,7 +53,7 @@ class TodoEntry
   @EventHandler( KeyboardEventHandler.class )
   void handleNewTodoKeyDown( @Nonnull final KeyboardEvent event )
   {
-    if ( App.ENTER_KEY == event.keyCode )
+    if ( KeyCodes.ENTER_KEY == event.keyCode )
     {
       event.preventDefault();
       addNewTodo();

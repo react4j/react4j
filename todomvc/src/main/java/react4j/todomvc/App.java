@@ -10,9 +10,6 @@ import react4j.dom.ReactDOM;
 public class App
   implements EntryPoint
 {
-  static final int ESCAPE_KEY = 27;
-  static final int ENTER_KEY = 13;
-
   private static void spyEvents()
   {
     Arez.context().getSpy().addSpyEventHandler( new ReactArezConsoleSpyEventProcessor() );

@@ -92,11 +92,11 @@ class TodoItem
   @EventHandler( KeyboardEventHandler.class )
   void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
-    if ( event.which == App.ESCAPE_KEY )
+    if ( event.which == KeyCodes.ESCAPE_KEY )
     {
       onCancel();
     }
-    else if ( event.which == App.ENTER_KEY )
+    else if ( event.which == KeyCodes.ENTER_KEY )
     {
       onSubmitTodo();
     }
