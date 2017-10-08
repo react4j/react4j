@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 /**
  * This class provides a base class that designed to forward all lifecycle methods to a target component.
  * The target component is of type {@link Component}. This class is also responsible for calling
- * {@link Component#setState(ComponentState)} before and after each call to the target component
+ * {@link Component#setLifecycleMethod(LifecycleMethod)} before and after each call to the target component
  * if {@link ReactConfig#checkComponentStateInvariants()} returns true. This will make it possible for the
  * target component to check that the application code is correctly interacting with the React component
  * framework. In production builds it is expected that the method calls will be inlined and the checks will
@@ -52,8 +52,8 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
+      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_DID_CONSTRUCT );
       _component.setPhase( ComponentPhase.INITIALIZING );
-      _component.setState( ComponentState.INITIAL );
     }
     try
     {
@@ -63,7 +63,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setState( ComponentState.UNKNOWN );
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
         _component.setPhase( ComponentPhase.MOUNTING );
       }
     }
@@ -80,7 +80,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setState( ComponentState.RENDER );
+      _component.setLifecycleMethod( LifecycleMethod.RENDER );
     }
     try
     {
@@ -90,7 +90,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setState( ComponentState.UNKNOWN );
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
   }
@@ -106,7 +106,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setState( ComponentState.COMPONENT_DID_MOUNT );
+      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_DID_MOUNT );
     }
     try
     {
@@ -116,7 +116,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setState( ComponentState.UNKNOWN );
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
         _component.setPhase( ComponentPhase.UPDATING );
       }
     }
@@ -133,7 +133,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setState( ComponentState.COMPONENT_WILL_MOUNT );
+      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_WILL_MOUNT );
     }
     try
     {
@@ -143,7 +143,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setState( ComponentState.UNKNOWN );
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
   }
@@ -160,7 +160,7 @@ public abstract class NativeAdapterComponent<
     if ( ReactConfig.checkComponentStateInvariants() )
     {
       _component.setPhase( ComponentPhase.UNMOUNTING );
-      _component.setState( ComponentState.COMPONENT_WILL_UNMOUNT );
+      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_WILL_UNMOUNT );
     }
     try
     {
@@ -170,7 +170,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setState( ComponentState.UNKNOWN );
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
   }
@@ -188,7 +188,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setState( ComponentState.COMPONENT_WILL_UPDATE );
+      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_WILL_UPDATE );
     }
     try
     {
@@ -198,7 +198,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setState( ComponentState.UNKNOWN );
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
   }
@@ -216,7 +216,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setState( ComponentState.SHOULD_COMPONENT_UPDATE );
+      _component.setLifecycleMethod( LifecycleMethod.SHOULD_COMPONENT_UPDATE );
     }
     try
     {
@@ -226,7 +226,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setState( ComponentState.UNKNOWN );
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
   }
@@ -243,7 +243,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setState( ComponentState.COMPONENT_WILL_RECEIVE_PROPS );
+      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_WILL_RECEIVE_PROPS );
     }
     try
     {
@@ -253,7 +253,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setState( ComponentState.UNKNOWN );
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
   }
@@ -271,7 +271,7 @@ public abstract class NativeAdapterComponent<
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setState( ComponentState.COMPONENT_DID_UPDATE );
+      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_DID_UPDATE );
     }
     try
     {
@@ -281,7 +281,7 @@ public abstract class NativeAdapterComponent<
     {
       if ( ReactConfig.checkComponentStateInvariants() )
       {
-        _component.setState( ComponentState.UNKNOWN );
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
   }

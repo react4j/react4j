@@ -39,7 +39,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   @Nonnull
   private ComponentPhase _phase = ComponentPhase.INITIALIZING;
   @Nonnull
-  private ComponentState _state = ComponentState.UNKNOWN;
+  private LifecycleMethod _lifecycleMethod = LifecycleMethod.UNKNOWN;
   @Nullable
   private NativeComponent<P, S> _nativeComponent;
 
@@ -55,14 +55,14 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   /**
-   * Set the state of the component. Only used for invariant checking.
+   * Set the current lifecycle method of the component. Only used for invariant checking.
    */
-  final void setState( @Nonnull final ComponentState state )
+  final void setLifecycleMethod( @Nonnull final LifecycleMethod lifecycleMethod )
   {
     invariant( ReactConfig::checkComponentStateInvariants,
-               () -> "Component.setState() invoked on " + this +
+               () -> "Component.setLifecycleMethod() invoked on " + this +
                      " when ReactConfig.checkComponentStateInvariants() is false" );
-    _state = Objects.requireNonNull( state );
+    _lifecycleMethod = Objects.requireNonNull( lifecycleMethod );
   }
 
   final void bindComponent( @Nonnull final NativeComponent<P, S> nativeComponent )
@@ -83,7 +83,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
     {
       apiInvariant( () -> ComponentPhase.INITIALIZING == _phase,
                     () -> "Attempted to invoke setInitialState on " + this + " when component is " +
-                          "not in INITIALIZING phase but in phase " + _phase + " and state " + _state );
+                          "not in INITIALIZING phase but in phase " + _phase + " and state " + _lifecycleMethod );
     }
     component().setInitialState( state );
   }
@@ -159,7 +159,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
     {
       apiInvariant( () -> ComponentPhase.INITIALIZING != _phase,
                     () -> "Incorrectly invoked getRef() on " + this + " when component is initializing." );
-      apiInvariant( () -> ComponentPhase.MOUNTING != _phase || ComponentState.COMPONENT_DID_MOUNT == _state,
+      apiInvariant( () -> ComponentPhase.MOUNTING != _phase || LifecycleMethod.COMPONENT_DID_MOUNT == _lifecycleMethod,
                     () -> "Incorrectly invoked getRef() on " + this + " before componentDidMount() called." );
       apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
                     () -> "Incorrectly invoked getRef() on " + this + " when component is " +
@@ -201,11 +201,11 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      apiInvariant( () -> ComponentState.COMPONENT_WILL_UPDATE != _state,
+      apiInvariant( () -> LifecycleMethod.COMPONENT_WILL_UPDATE != _lifecycleMethod,
                     () -> "Incorrectly invoked setState() on " + this + " in scope of " +
                           "componentWillUpdate(). If you need to update state in response to " +
                           "a prop change, use componentWillReceiveProps() instead." );
-      apiInvariant( () -> ComponentState.RENDER != _state,
+      apiInvariant( () -> LifecycleMethod.RENDER != _lifecycleMethod,
                     () -> "Incorrectly invoked setState() on " + this + " in scope of render()." );
       apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
                     () -> "Incorrectly invoked setState() on " + this + " when component is " +
