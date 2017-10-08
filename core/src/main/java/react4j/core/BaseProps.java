@@ -8,5 +8,8 @@ public class BaseProps
 {
   public ReactElementChildren children;
   public String key;
-  public Object ref; //Either a String Id or RefCallback
+  /**
+   * The ref is either a string id or a ref callback.
+   */
+  public Object ref;
 }
