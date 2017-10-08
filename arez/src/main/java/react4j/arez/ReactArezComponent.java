@@ -10,6 +10,7 @@ import org.realityforge.arez.Arez;
 import org.realityforge.arez.ArezContext;
 import org.realityforge.arez.Observable;
 import org.realityforge.arez.Observer;
+import org.realityforge.arez.SafeFunction;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ComponentId;
 import org.realityforge.arez.annotations.ComponentName;
@@ -165,7 +166,8 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
      * Need an uncheckedCast here rather than regular cast as otherwise GWT attempts to cast
      * this using a method that does not work. Unclear of the exact cause.
      */
-    return Js.uncheckedCast( Arez.context().safeTrack( _renderTracker, this::render ) );
+    final SafeFunction<ReactElement<?, ?>> render = this::render;
+    return Js.uncheckedCast( Arez.context().safeTrack( _renderTracker, render ) );
   }
 
   /**
