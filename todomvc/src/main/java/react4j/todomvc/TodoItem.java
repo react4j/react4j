@@ -16,7 +16,6 @@ import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactElement;
-import react4j.dom.DOM;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.FormEvent;
 import react4j.dom.events.FormEventHandler;
@@ -194,7 +193,7 @@ class TodoItem
                              .type( InputType.checkbox ).checked( completed )
                              .onChange( _onToggle( this ) )
                     ),
-                    DOM.label( new LabelProps().OnDoubleClick( _onEdit( this ) ),
+                    label( new LabelProps().OnDoubleClick( _onEdit( this ) ),
                                props.todo.getTitle() ),
                     button( new BtnProps()
                               .className( "destroy" )
