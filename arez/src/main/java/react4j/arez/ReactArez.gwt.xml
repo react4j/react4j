@@ -2,7 +2,7 @@
 <module>
   <inherits name="react4j.core.React"/>
   <inherits name="org.realityforge.arez.Arez"/>
-  <inherits name="org.realityforge.arez.browser.extras.BrowserExtras"/>
+  <inherits name="org.realityforge.arez.browser.extras.spy.SpyExtras"/>
 
   <source path=''/>
 
