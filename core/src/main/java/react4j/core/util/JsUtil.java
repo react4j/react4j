@@ -4,6 +4,7 @@ import elemental2.core.Array;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import jsinterop.base.JsPropertyMapOfAny;
 
 /**
  * A collection of utilities for interoperability between Java and Javascript.
@@ -41,5 +42,15 @@ public final class JsUtil
    */
   public static native <T> Array<T> asJsArray( @Nonnull final List<T> input )/*-{
     return input.@java.util.ArrayList::array;
+  }-*/;
+
+  /**
+   * Return the prototype for the specified class.
+   * DO NOT USE THIS unless you really know what you are doing.
+   *
+   * @param clazz the class;
+   */
+  public static native JsPropertyMapOfAny getPrototypeForClass( @Nonnull final Class<?> clazz )/*-{
+    return @Class::getPrototypeForClass(Ljava/lang/Class;)(clazz);
   }-*/;
 }
