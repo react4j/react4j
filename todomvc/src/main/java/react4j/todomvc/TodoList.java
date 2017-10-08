@@ -90,13 +90,6 @@ class TodoList
   @Nullable
   private ReactElement<?, ?> renderFooter()
   {
-    if ( AppData.model.isNotEmpty() )
-    {
-      return React.createElement( Footer_.TYPE );
-    }
-    else
-    {
-      return null;
-    }
+    return AppData.model.isNotEmpty() ? React.createElement( Footer_.TYPE ) : null;
   }
 }
