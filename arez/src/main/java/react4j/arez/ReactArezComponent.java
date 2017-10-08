@@ -18,6 +18,7 @@ import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactElement;
+import react4j.core.util.JsUtil;
 
 /**
  * A base class for all Arez enabled components. This class makes the component
@@ -194,7 +195,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       /*
        * We just compare the props shallowly and avoid a re-render if the props have not changed.
        */
-      return ArezJsUtil.isObjectShallowModified( super.props(), nextProps );
+      return JsUtil.isObjectShallowModified( super.props(), nextProps );
     }
   }
 
@@ -239,8 +240,8 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
        * Do a shallow comparison against object and the deps. If either has changed then state needs to be updated.
        * We skip deps on shallow comparison of data as it is always recreated anew.
        */
-      if ( ArezJsUtil.isObjectShallowModified( currentArezData, data, "deps" ) ||
-           ArezJsUtil.isObjectShallowModified( currentDepsData, deps ) )
+      if ( JsUtil.isObjectShallowModified( currentArezData, data, "deps" ) ||
+           JsUtil.isObjectShallowModified( currentDepsData, deps ) )
       {
         super.setState( Js.<S>cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ) );
       }
