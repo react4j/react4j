@@ -17,6 +17,10 @@ performance cost in production builds.
 
 ### Medium Priorities
 
+* Generate subclass of component that
+  - Adds @ArezComponent where needed
+  - Caches the EventHandlers (so that can use equiv of PureComponent)
+  - Correctly interacts with dagger subsystem?
 * Add multiple render methods that return different values. Enhance code generator to ensure that
   the developer only overloads a single variant. Variants include;
   - renderAsElement
