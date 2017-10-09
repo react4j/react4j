@@ -71,6 +71,11 @@ the component to determine if the component uses state or any lifecycle methods 
 of these conditions are true, React4j could transparently expose the component as a stateless functional
 component and take advantage of the potential performance enhancements.
 
+Actually it turns out that functional components should be slightly faster in React 16 as there's no
+instance created to wrap them unlike in React 15. However this seems to be obscured by the slight overhead
+of React4j but when/if the performance becomes more discernible, expect React4j to begin supporting stateless
+functional components. 
+
 #### Why is there both NativeComponent and Component classes?
 
 The project initially required that React4j components all extend the equivalent of the `NativeComponent`
