@@ -17,6 +17,8 @@ performance cost in production builds.
 
 ### Medium Priorities
 
+* Avoid JSNI in generated React_X classes by instead generateing an `@JsType(isNative=true)` interface
+  that is implemented by the class 
 * Generate subclass of component that
   - Adds @ArezComponent where needed
   - Caches the EventHandlers (so that can use equiv of PureComponent)
@@ -41,6 +43,10 @@ performance cost in production builds.
 
 ### Low Priorities
 
+* Document differences between React and React4j.
+* Remove `Component.forceUpdate()` and instead add api `Component.scheduleRender(boolean force)` where `force=true`
+  will call the underlying `NativeComponent.forceUpdate()` and `force=false` is equivalent to `setState({})`.
+  Document this change in differences page.
 * Should we rename setState to scheduleUpdate() or enqueueSetState???
 * Should Props and state fields be read-only abstractions?
 * build in https://github.com/maicki/why-did-you-update
