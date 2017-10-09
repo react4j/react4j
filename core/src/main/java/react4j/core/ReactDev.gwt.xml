@@ -3,6 +3,8 @@
   <inherits name='react4j.core.React'/>
   <inherits name="org.realityforge.braincheck.BrainCheckDev"/>
 
+  <source path="ignored"/>
+
   <public path='public' includes="dev/*"/>
 
   <set-property name="react.environment" value="development"/>
