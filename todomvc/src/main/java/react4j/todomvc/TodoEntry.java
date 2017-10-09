@@ -97,5 +97,4 @@ class TodoEntry
                     .autoFocus( true )
     );
   }
-
 }
