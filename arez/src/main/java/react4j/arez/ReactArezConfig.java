@@ -5,6 +5,9 @@ package react4j.arez;
  */
 final class ReactArezConfig
 {
+  private static final boolean STORE_AREZ_DATA_AS_STATE =
+    "true".equals( System.getProperty( "react4j.arez.store_arez_data_as_state", "true" ) );
+
   private ReactArezConfig()
   {
   }
@@ -18,40 +21,6 @@ final class ReactArezConfig
    */
   static boolean shouldStoreArezDataAsState()
   {
-    return isDevelopmentMode() &&
-           "true".equals( System.getProperty( "react4j.arez.store_arez_data_as_state", "true" ) );
-  }
-
-  /**
-   * Return true if react-arez is compiled in development mode.
-   *
-   * @return true if react-arez is compiled in development mode.
-   */
-  private static boolean isDevelopmentMode()
-  {
-    final String environment =
-      System.getProperty( "react4j.arez.environment", isReactDevelopmentEnvironment() ? "development" : "production" );
-    if ( !"production".equals( environment ) && !"development".equals( environment ) )
-    {
-      final String message = "System property 'react4j.arez.environment' is set to invalid value " + environment;
-      throw new IllegalStateException( message );
-    }
-    return environment.equals( "development" );
-  }
-
-  /**
-   * Return true if react is compiled in development mode.
-   *
-   * @return true if react is compiled in development mode.
-   */
-  private static boolean isReactDevelopmentEnvironment()
-  {
-    final String environment = System.getProperty( "react4j.environment", "production" );
-    if ( !"production".equals( environment ) && !"development".equals( environment ) )
-    {
-      final String message = "System property 'react4j.environment' is set to invalid value " + environment;
-      throw new IllegalStateException( message );
-    }
-    return environment.equals( "development" );
+    return STORE_AREZ_DATA_AS_STATE;
   }
 }

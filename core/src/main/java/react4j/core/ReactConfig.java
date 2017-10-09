@@ -1,16 +1,33 @@
 package react4j.core;
 
-import org.jetbrains.annotations.TestOnly;
-
 /**
  * Location of all compile time configuration settings for framework.
  */
 public final class ReactConfig
 {
-  private static final Provider c_provider = createProvider();
+  private static final boolean PRODUCTION_MODE =
+    System.getProperty( "react.environment", "production" ).equals( "production" );
+  private static boolean ENABLE_NAMES =
+    "true".equals( System.getProperty( "arez.enable_component_names", PRODUCTION_MODE ? "false" : "true" ) );
+  private static final boolean CHECK_COMPONENT_STATE_INVARIANTS =
+    "true".equals( System.getProperty( "react.check_component_state_invariants",
+                                       PRODUCTION_MODE ? "false" : "true" ) );
 
   private ReactConfig()
   {
+  }
+
+  /**
+   * Return true if in production mode.
+   * Production mode sets the default values for other compile time constants to the variant
+   * that assumes your code is correct and does not generate additional assert or debug statements.
+   * The individual configuration settings can still be specified to override this value.
+   *
+   * @return true if in production mode.
+   */
+  public static boolean isProductionMode()
+  {
+    return PRODUCTION_MODE;
   }
 
   /**
@@ -21,7 +38,7 @@ public final class ReactConfig
    */
   public static boolean enableComponentNames()
   {
-    return c_provider.enableComponentNames();
+    return ENABLE_NAMES;
   }
 
   /**
@@ -33,124 +50,6 @@ public final class ReactConfig
    */
   public static boolean checkComponentStateInvariants()
   {
-    return c_provider.checkComponentStateInvariants();
-  }
-
-  @TestOnly
-  static Provider getProvider()
-  {
-    return c_provider;
-  }
-
-  /**
-   * Return true if react is compiled in development mode.
-   *
-   * @return true if react is compiled in development mode.
-   */
-  private static boolean isDevelopmentEnvironment()
-  {
-    final String environment = System.getProperty( "react.environment", "production" );
-    if ( !"production".equals( environment ) && !"development".equals( environment ) )
-    {
-      final String message = "System property 'react.environment' is set to invalid value " + environment;
-      throw new IllegalStateException( message );
-    }
-    return environment.equals( "development" );
-  }
-
-  private static Provider createProvider()
-  {
-    final boolean development = isDevelopmentEnvironment();
-    final boolean enableNames =
-      "true".equals( System.getProperty( "react.enable_component_names", development ? "true" : "false" ) );
-    final boolean checkComponentStateInvariants =
-      "true".equals( System.getProperty( "react.check_component_state_invariants", development ? "true" : "false" ) );
-
-    return System.getProperty( "react.dynamic_provider", "false" ).equals( "true" ) ?
-           new DynamicProvider( enableNames, checkComponentStateInvariants ) :
-           new StaticProvider( enableNames, checkComponentStateInvariants );
-  }
-
-  /**
-   * Abstraction used to provide configuration settings for React system.
-   * This abstraction is used to allow converting configuration to compile time
-   * constants during GWT and/or closure compiler phases and thus allow elimination of
-   * code during production variants of the runtime.
-   */
-  private interface Provider
-  {
-    boolean enableComponentNames();
-
-    boolean checkComponentStateInvariants();
-  }
-
-  /**
-   * A provider implementation that allows changing of values at runtime.
-   * Only really used during testing.
-   */
-  @TestOnly
-  static final class DynamicProvider
-    implements Provider
-  {
-    private boolean _enableComponentNames;
-    private boolean _checkComponentStateInvariants;
-
-    DynamicProvider( final boolean enableComponentNames, final boolean checkComponentStateInvariants )
-    {
-      _enableComponentNames = enableComponentNames;
-      _checkComponentStateInvariants = checkComponentStateInvariants;
-    }
-
-    void setEnableComponentNames( final boolean enableComponentNames )
-    {
-      _enableComponentNames = enableComponentNames;
-    }
-
-    void setCheckComponentStateInvariants( final boolean checkComponentStateInvariants )
-    {
-      _checkComponentStateInvariants = checkComponentStateInvariants;
-    }
-
-    @Override
-    public boolean enableComponentNames()
-    {
-      return _enableComponentNames;
-    }
-
-    @Override
-    public boolean checkComponentStateInvariants()
-    {
-      return _checkComponentStateInvariants;
-    }
-  }
-
-  /**
-   * The normal provider implementation for statically defining properties.
-   * Properties do not change at runtime and can be used by GWT and closure compiler
-   * to set values at compile time and eliminate dead/unused code.
-   */
-  private static final class StaticProvider
-    implements Provider
-  {
-    private final boolean _enableComponentNames;
-    private final boolean _checkComponentStateInvariants;
-
-    StaticProvider( final boolean enableComponentNames, final boolean checkComponentStateInvariants )
-    {
-      _enableComponentNames = enableComponentNames;
-      _checkComponentStateInvariants = checkComponentStateInvariants;
-    }
-
-    @Override
-    public boolean enableComponentNames()
-    {
-      return _enableComponentNames;
-    }
-
-    @Override
-    public boolean checkComponentStateInvariants()
-    {
-      return _checkComponentStateInvariants;
-    }
+    return CHECK_COMPONENT_STATE_INVARIANTS;
   }
 }

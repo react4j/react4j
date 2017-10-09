@@ -1,4 +1,4 @@
-package react4j.arez;
+package react4j.arez.spy;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
