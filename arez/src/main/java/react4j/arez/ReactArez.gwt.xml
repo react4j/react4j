@@ -3,7 +3,7 @@
   <inherits name="react4j.core.React"/>
   <inherits name="org.realityforge.arez.Arez"/>
 
-  <source path="" excludes="spy"/>
+  <source path="" includes="*.java"/>
 
   <!--
     These properties are all defined in react4j.arez.ReactArezConfig
