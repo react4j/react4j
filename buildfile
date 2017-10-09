@@ -101,7 +101,6 @@ define 'react4j' do
 
     compile.with project('core').package(:jar),
                  project('core').compile.dependencies,
-                 :elemental2_core,
                  :elemental2_dom,
                  :elemental2_promise,
                  :arez_core,
