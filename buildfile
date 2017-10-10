@@ -21,7 +21,7 @@ EXAMPLES = {
 
 desc 'React4j: An opinionated Java binding for React'
 define 'react4j' do
-  project.group = 'org.realityforge.react'
+  project.group = 'org.realityforge.react4j'
   compile.options.source = '1.8'
   compile.options.target = '1.8'
   compile.options.lint = 'all'
