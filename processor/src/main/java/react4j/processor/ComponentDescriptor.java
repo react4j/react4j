@@ -121,6 +121,18 @@ final class ComponentDescriptor
     return ClassName.get( getPackageName(), getNestedClassPrefix() + getNativeComponentName() );
   }
 
+  @Nonnull
+  String getNativeLifecycleInterfaceName()
+  {
+    return _element.getSimpleName() + "Lifecycle";
+  }
+
+  @Nonnull
+  ClassName getNativeLifecycleInterfaceClassName()
+  {
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + getNativeLifecycleInterfaceName() );
+  }
+
   boolean isArezComponent()
   {
     return _arezComponent;

@@ -8,7 +8,7 @@ import react4j.core.BaseState;
 import react4j.core.NativeAdapterComponent;
 
 @Generated("react4j.processor.ReactProcessor")
-final class React_OverridingComponentDidUpdateComponent extends NativeAdapterComponent<BaseProps, BaseState, OverridingComponentDidUpdateComponent> {
+final class React_OverridingComponentDidUpdateComponent extends NativeAdapterComponent<BaseProps, BaseState, OverridingComponentDidUpdateComponent> implements OverridingComponentDidUpdateComponentLifecycle {
   @JsConstructor
   React_OverridingComponentDidUpdateComponent(@Nonnull final BaseProps props) {
     super( props );
@@ -19,14 +19,17 @@ final class React_OverridingComponentDidUpdateComponent extends NativeAdapterCom
     return new Arez_OverridingComponentDidUpdateComponent();
   }
 
+  @Override
   public void componentDidMount() {
     performComponentDidMount();
   }
 
+  @Override
   public void componentDidUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState) {
     performComponentDidUpdate(nextProps,nextState);
   }
 
+  @Override
   public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1) {
     return performShouldComponentUpdate(arg0,arg1);
   }

@@ -8,7 +8,7 @@ import react4j.core.BaseState;
 import react4j.core.NativeAdapterComponent;
 
 @Generated("react4j.processor.ReactProcessor")
-final class React_PublicReactComponent extends NativeAdapterComponent<BaseProps, BaseState, PublicReactComponent> {
+final class React_PublicReactComponent extends NativeAdapterComponent<BaseProps, BaseState, PublicReactComponent> implements PublicReactComponentLifecycle {
   @JsConstructor
   React_PublicReactComponent(@Nonnull final BaseProps props) {
     super( props );

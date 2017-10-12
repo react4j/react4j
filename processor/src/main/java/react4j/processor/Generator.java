@@ -24,6 +24,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import jsinterop.base.JsPropertyMapOfAny;
@@ -65,10 +66,6 @@ final class Generator
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
-    for ( final MethodDescriptor lifecycleMethod : descriptor.getLifecycleMethods() )
-    {
-      builder.addMethod( buildRawLifecycleMethod( descriptor, lifecycleMethod ).build() );
-    }
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
@@ -77,25 +74,6 @@ final class Generator
     }
 
     return builder.build();
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildRawLifecycleMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                             @Nonnull final MethodDescriptor lifecycleMethod )
-  {
-    final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( methodName + "_function" ).
-        addModifiers( Modifier.PRIVATE, Modifier.STATIC, Modifier.NATIVE ).
-        returns( ClassName.get( JsObject.class ) );
-    final String classname = descriptor.getNativeComponentClassName().toString();
-    final CodeBlock.Builder code = CodeBlock.builder();
-
-    final String innerCode = "return this.@" + classname + "::" + methodName + "(*)(arguments);";
-    code.add( "/*-{ return function() { " + innerCode + " } }-*/" );
-    method.addCode( code.build() );
-    return method;
-
   }
 
   @Nonnull
@@ -171,16 +149,6 @@ final class Generator
         addModifiers( Modifier.STATIC, Modifier.PRIVATE ).
         returns( constructorType );
 
-    method.addStatement( "final $T prototype = $T.getPrototypeForClass( $T.class )",
-                         JsPropertyMapOfAny.class,
-                         JsUtil.class,
-                         descriptor.getNativeComponentClassName() );
-    for ( final MethodDescriptor lifecycleMethod : descriptor.getLifecycleMethods() )
-    {
-      final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
-      method.addStatement( "prototype.set( $S, $N() )", methodName, methodName + "_function" );
-    }
-
     method.addStatement( "final $T componentConstructor = $T::new",
                          constructorType,
                          descriptor.getNativeComponentClassName() );
@@ -219,6 +187,8 @@ final class Generator
                                  ClassName.get( descriptor.getElement() ) );
 
     builder.superclass( superType );
+
+    builder.addSuperinterface( descriptor.getNativeLifecycleInterfaceClassName() );
 
     // build the constructor
     {
@@ -270,6 +240,7 @@ final class Generator
         final MethodSpec.Builder method =
           MethodSpec.methodBuilder( methodName ).
             addModifiers( Modifier.PUBLIC ).
+            addAnnotation( Override.class ).
             returns( ClassName.get( lifecycleMethod.getMethodType().getReturnType() ) );
 
         ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
@@ -304,6 +275,53 @@ final class Generator
         sb.append( ")" );
 
         method.addStatement( sb.toString() );
+        builder.addMethod( method.build() );
+      }
+    }
+
+    return builder.build();
+  }
+
+  @Nonnull
+  static TypeSpec buildNativeLifecycleInterface( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final String name = descriptor.getNestedClassPrefix() + descriptor.getNativeLifecycleInterfaceName();
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( name );
+
+    // Mark it as generated
+    builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
+      addMember( "value", "$S", ReactProcessor.class.getName() ).
+      build() );
+
+    builder.addAnnotation( AnnotationSpec.builder( JsType.class ).
+      addMember( "isNative", "true" ).
+      build() );
+    // Lifecycle methods
+    {
+
+      for ( final MethodDescriptor lifecycleMethod : descriptor.getLifecycleMethods() )
+      {
+        final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
+        final MethodSpec.Builder method =
+          MethodSpec.methodBuilder( methodName ).
+            addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
+            returns( ClassName.get( lifecycleMethod.getMethodType().getReturnType() ) );
+
+        ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
+
+        final List<? extends VariableElement> sourceParameters = lifecycleMethod.getMethod().getParameters();
+        final List<? extends TypeMirror> sourceParameterTypes = lifecycleMethod.getMethodType().getParameterTypes();
+        final int parameterCount = sourceParameters.size();
+        for ( int i = 0; i < parameterCount; i++ )
+        {
+          final VariableElement parameter = sourceParameters.get( i );
+          final TypeMirror parameterType = sourceParameterTypes.get( i );
+          final String parameterName = parameter.getSimpleName().toString();
+          final ParameterSpec.Builder parameterSpec =
+            ParameterSpec.builder( TypeName.get( parameterType ), parameterName ).addAnnotation( Nonnull.class );
+          method.addParameter( parameterSpec.build() );
+        }
+
         builder.addMethod( method.build() );
       }
     }

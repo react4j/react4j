@@ -103,4 +103,6 @@ applications through incorrect build configuration.
 
 To avoid this scenario impacting users of React4j, the library manually exports the components to native code.
 Users of the library are free to use `@JsType(isNative = false)` and control it through the normal means but
-this should not impact the correctness of the React4j <=> react integration.
+this should not impact the correctness of the React4j <=> react integration. The amount of code that is manually
+exported to Javascript has been minimized and is mostly restricted to the equivalent of static class properties
+in ES6.

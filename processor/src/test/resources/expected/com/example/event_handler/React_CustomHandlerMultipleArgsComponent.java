@@ -8,7 +8,7 @@ import react4j.core.BaseState;
 import react4j.core.NativeAdapterComponent;
 
 @Generated("react4j.processor.ReactProcessor")
-final class React_CustomHandlerMultipleArgsComponent extends NativeAdapterComponent<BaseProps, BaseState, CustomHandlerMultipleArgsComponent> {
+final class React_CustomHandlerMultipleArgsComponent extends NativeAdapterComponent<BaseProps, BaseState, CustomHandlerMultipleArgsComponent> implements CustomHandlerMultipleArgsComponentLifecycle {
   @JsConstructor
   React_CustomHandlerMultipleArgsComponent(@Nonnull final BaseProps props) {
     super( props );

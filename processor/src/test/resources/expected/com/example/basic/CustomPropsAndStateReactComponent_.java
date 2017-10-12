@@ -3,10 +3,8 @@ package com.example.basic;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.base.JsPropertyMap;
-import jsinterop.base.JsPropertyMapOfAny;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
-import react4j.core.util.JsUtil;
 
 @Generated("react4j.processor.ReactProcessor")
 final class CustomPropsAndStateReactComponent_ {
@@ -14,7 +12,6 @@ final class CustomPropsAndStateReactComponent_ {
 
   @Nonnull
   private static ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, React_CustomPropsAndStateReactComponent> getConstructorFunction() {
-    final JsPropertyMapOfAny prototype = JsUtil.getPrototypeForClass( React_CustomPropsAndStateReactComponent.class );
     final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, React_CustomPropsAndStateReactComponent> componentConstructor = React_CustomPropsAndStateReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomPropsAndStateReactComponent" );

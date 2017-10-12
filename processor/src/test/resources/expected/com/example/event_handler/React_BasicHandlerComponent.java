@@ -8,7 +8,7 @@ import react4j.core.BaseState;
 import react4j.core.NativeAdapterComponent;
 
 @Generated("react4j.processor.ReactProcessor")
-final class React_BasicHandlerComponent extends NativeAdapterComponent<BaseProps, BaseState, BasicHandlerComponent> {
+final class React_BasicHandlerComponent extends NativeAdapterComponent<BaseProps, BaseState, BasicHandlerComponent> implements BasicHandlerComponentLifecycle {
   @JsConstructor
   React_BasicHandlerComponent(@Nonnull final BaseProps props) {
     super( props );

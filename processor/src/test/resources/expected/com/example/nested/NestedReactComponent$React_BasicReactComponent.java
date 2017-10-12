@@ -8,7 +8,7 @@ import react4j.core.BaseState;
 import react4j.core.NativeAdapterComponent;
 
 @Generated("react4j.processor.ReactProcessor")
-final class NestedReactComponent$React_BasicReactComponent extends NativeAdapterComponent<BaseProps, BaseState, NestedReactComponent.BasicReactComponent> {
+final class NestedReactComponent$React_BasicReactComponent extends NativeAdapterComponent<BaseProps, BaseState, NestedReactComponent.BasicReactComponent> implements NestedReactComponent$BasicReactComponentLifecycle {
   @JsConstructor
   NestedReactComponent$React_BasicReactComponent(@Nonnull final BaseProps props) {
     super( props );

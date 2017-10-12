@@ -8,7 +8,7 @@ import react4j.core.BaseState;
 import react4j.core.NativeAdapterComponent;
 
 @Generated("react4j.processor.ReactProcessor")
-final class React_CustomHandlerButParametersIgnoredComponent extends NativeAdapterComponent<BaseProps, BaseState, CustomHandlerButParametersIgnoredComponent> {
+final class React_CustomHandlerButParametersIgnoredComponent extends NativeAdapterComponent<BaseProps, BaseState, CustomHandlerButParametersIgnoredComponent> implements CustomHandlerButParametersIgnoredComponentLifecycle {
   @JsConstructor
   React_CustomHandlerButParametersIgnoredComponent(@Nonnull final BaseProps props) {
     super( props );

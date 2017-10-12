@@ -8,7 +8,7 @@ import react4j.core.BaseState;
 import react4j.core.NativeAdapterComponent;
 
 @Generated("react4j.processor.ReactProcessor")
-final class React_CustomNameReactComponent extends NativeAdapterComponent<BaseProps, BaseState, CustomNameReactComponent> {
+final class React_CustomNameReactComponent extends NativeAdapterComponent<BaseProps, BaseState, CustomNameReactComponent> implements CustomNameReactComponentLifecycle {
   @JsConstructor
   React_CustomNameReactComponent(@Nonnull final BaseProps props) {
     super( props );
