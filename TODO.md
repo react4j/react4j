@@ -24,6 +24,28 @@
    Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
    element factories can be built by looking at html spec and auto-generating? Probably get away from writing build
    at end by overloading methods
+   Looks like a good way to create factories is described at https://blog.jayway.com/2012/02/07/builder-pattern-with-a-twist/
+   with an existing annotation processor approach at https://github.com/ltearno/builder-generator where we could make some
+   parameters and potentially children required. Would need to synthesize from annotations. Maybe something like
+   
+```java
+@ReactComponent
+@ArezComponent
+class TodoEntry
+  extends ReactArezComponent<BaseProps, TodoEntry.State>
+{
+  @Prop(
+    attributes = {
+      @Attribute(name = "foo", type = Integer.class, mandatory = true),
+      @Attribute(name = "className", type = String.class, type = ClassNameAttribute.class )
+    }
+  )
+  static class State
+    extends AbstractState // AbstractState is generated
+  {
+  }
+```
+    
 * Generate all the html props based on typings at https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
 * Somehow declare props as interfaces in components and have implementation generated?
 * In base class have configuration that warns on re-renders that produced duplicate values
