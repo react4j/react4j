@@ -6,8 +6,6 @@
 
 ### Medium Priorities
 
-* Avoid JSNI in generated React_X classes by instead generateing an `@JsType(isNative=true)` interface
-  that is implemented by the class 
 * Generate subclass of component that
   - Adds @ArezComponent where needed
   - Caches the EventHandlers (so that can use equiv of PureComponent)
