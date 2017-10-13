@@ -2,7 +2,7 @@ module Jekyll
   #
   # A simple tag for generating url for api documentation.
   #
-  # {% api_url core:ArezContext %}
+  # {% api_url ArezContext %}
   #
   class ApiUrl < Liquid::Tag
     def initialize(tag_name, markup, tokens)
