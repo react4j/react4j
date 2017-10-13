@@ -214,21 +214,37 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   /**
+   * Schedule this component for re-rendering.
    * The component re-renders when state or props change but calling this method is another way to
-   * schedule the component to be re-rendered. If this method is called the {@link #shouldComponentUpdate(BaseProps, BaseState)}
-   * will be skipped. See the <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component documentation</a>
-   * for more details.
+   * schedule the component to be re-rendered.
+   *
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(BaseProps, BaseState)} will be skipped
+   * and it is equivalent to calling forceUpdate() on the native react component. See the
+   * <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component documentation</a> for more
+   * details.</p>
+   *
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(BaseProps, BaseState)} will be
+   * invoked. This is equivalent to calling setState({}) on the native react component.</p>
+   *
+   * @param force true to skip shouldComponentUpdate during re-render, false otherwise.
    */
-  @Unsupported( "It is unclear whether there is value in supporting this" )
-  protected final void forceUpdate()
+  protected final void scheduleRender( final boolean force )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
       apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
-                    () -> "Incorrectly invoked forceUpdate() on " + this + " when component is " +
+                    () -> "Incorrectly invoked scheduleRender() on " + this + " when component is " +
                           "unmounting or has unmounted." );
     }
-    component().forceUpdate();
+    if ( force )
+    {
+      component().forceUpdate();
+    }
+    else
+    {
+      // This schedules a re-render but will not skip shouldComponentUpdate
+      component().setState( Js.<S>uncheckedCast( JsPropertyMap.of() ) );
+    }
   }
 
   /**

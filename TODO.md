@@ -52,10 +52,7 @@ class TodoEntry
 
 ### Low Priorities
 
-* Document differences between React and React4j.
-* Remove `Component.forceUpdate()` and instead add api `Component.scheduleRender(boolean force)` where `force=true`
-  will call the underlying `NativeComponent.forceUpdate()` and `force=false` is equivalent to `setState({})`.
-  Document this change in differences page.
+* Document differences between React and React4j. Document the scheduleRender difference.
 * Should we rename setState to scheduleUpdate() or enqueueSetState???
 * Should Props and state fields be read-only abstractions?
 * build in https://github.com/maicki/why-did-you-update

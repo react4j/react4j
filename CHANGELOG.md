@@ -6,6 +6,9 @@
 * Add the missing inherit `com.google.gwt.user.UI` to `react4j.widget.ReactWidget.gwt.xml`.
 
 ##### Changed
+* 💥 Remove `Component.forceUpdate()` and replace it with the api `Component.scheduleRender(boolean force)`
+  where `force=true` calls the underlying `NativeComponent.forceUpdate()` and `force=false` is equivalent
+  to `setState({})`.
 * 💥 Changed the maven group coordinate from `org.realityforge.react` to `org.realityforge.react4j`
   so as to reflect project name change.
 * Began to automate the release and publishing of both the website to GitHub and the release artifacts
