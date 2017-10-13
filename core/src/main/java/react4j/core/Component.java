@@ -363,7 +363,8 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * See the <a href="https://reactjs.org/docs/react-component.html#shouldcomponentupdate">React Component documentation</a> for more details.
    *
    * <p>This method is invoked before rendering when new props or state are being received.
-   * This method is not called for the initial render or when {@link #forceUpdate()} is used.</p>
+   * This method is not called for the initial render or when {@link #scheduleRender(boolean)}} is called
+   * with the force parameter set to true.</p>
    *
    * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
    *
