@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.realityforge.anodoc.Unsupported;
 import static org.realityforge.braincheck.Guards.*;
 
 /**

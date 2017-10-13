@@ -2,7 +2,7 @@ require 'buildr/git_auto_version'
 require 'buildr/gpg'
 require 'buildr/single_intermediate_layout'
 
-PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations]
+PROVIDED_DEPS = [:javax_jsr305, :anodoc]
 TEST_DEPS = []
 
 # JDK options passed to test environment. Essentially turns assertions on.

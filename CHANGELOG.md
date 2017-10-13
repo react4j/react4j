@@ -13,6 +13,8 @@
   so as to reflect project name change.
 * Began to automate the release and publishing of both the website to GitHub and the release artifacts
   to Maven Central.
+* Replace usages of `org.jetbrains:annotations:jar` dependency with `org.realityforge.anodoc:anodoc:jar`
+  as that is the same dependency used in `arez`, `braincheck` and other upstream dependencies.
 
 ### [v0.02](https://github.com/realityforge/react4j/tree/v0.02) (2017-10-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.01...v0.02)
