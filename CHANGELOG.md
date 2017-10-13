@@ -5,6 +5,8 @@
 ##### Changed
 * 💥 Changed the maven group coordinate from `org.realityforge.react` to `org.realityforge.react4j`
   so as to reflect project name change.
+* Began to automate the release and publishing of both the website to GitHub and the release artifacts
+  to Maven Central.
 
 ### [v0.02](https://github.com/realityforge/react4j/tree/v0.02) (2017-10-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.01...v0.02)
