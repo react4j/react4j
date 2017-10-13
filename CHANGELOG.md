@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+##### Fixed
+* Add the missing inherit `com.google.gwt.user.UI` to `react4j.widget.ReactWidget.gwt.xml`.
+
 ##### Changed
 * 💥 Changed the maven group coordinate from `org.realityforge.react` to `org.realityforge.react4j`
   so as to reflect project name change.
