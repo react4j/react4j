@@ -31,7 +31,7 @@ artifacts:
   arez_extras: org.realityforge.arez:arez-extras:jar:gwt:0.10
   arez_browser_extras: org.realityforge.arez:arez-browser-extras:jar:gwt:0.10
 
-  braincheck: org.realityforge.braincheck:braincheck:jar:gwt:1.1.0
+  braincheck: org.realityforge.braincheck:braincheck:jar:gwt:1.2.0
 
   guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.92
 
