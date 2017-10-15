@@ -47,7 +47,7 @@ final class Generator
 
     builder.superclass( descriptor.getClassName() );
 
-    if( descriptor.isArezComponent() )
+    if ( descriptor.isArezComponent() )
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( ClassName.get( "org.realityforge.arez.annotations", "ArezComponent" ) ).
