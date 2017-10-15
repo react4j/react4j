@@ -6,6 +6,7 @@
 
 ### Medium Priorities
 
+* Inline native react component and lifecycle into enhanced class as static inner classes. Aimed to reduce cruft.
 * Generate subclass of component that
   - Adds @ArezComponent where needed, aswell as @Action on all @EventHandlers except those marked with @NotTracked
     (@NotTracked is specific to ReactArez?)
