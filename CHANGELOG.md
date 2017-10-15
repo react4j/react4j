@@ -11,6 +11,8 @@
 * **\[processor\]** Add an explicit check to verify that `@EventHandler` annotated methods do not have the same
   logical name nor do they overload each other (i.e. have the same method name but with different parameters).
   Either scenario will result in compilation errors and these checks just make the failure reason explicit.
+* **\[arez\]** Make sure `ReactArezComponent` implements `componentWillUnmount` lifecycle method and cleans up
+  the arez resources.
 
 ##### Changed
 * 💥 **\[arez\]** Classes extending `ReactArezComponent` must NOT be annotated with `@ArezComponent` as the

@@ -15,5 +15,7 @@ interface OverridingComponentDidUpdateComponentLifecycle {
 
   void componentDidUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState);
 
+  void componentWillUnmount();
+
   boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1);
 }

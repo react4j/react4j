@@ -30,6 +30,11 @@ final class React_ComponentWithNoAutoActionEventHandler extends NativeAdapterCom
   }
 
   @Override
+  public void componentWillUnmount() {
+    performComponentWillUnmount();
+  }
+
+  @Override
   public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1) {
     return performShouldComponentUpdate(arg0,arg1);
   }

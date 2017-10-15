@@ -15,5 +15,7 @@ interface ComponentWithAnnotatedParameterEventHandlerLifecycle {
 
   void componentDidUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1);
 
+  void componentWillUnmount();
+
   boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1);
 }

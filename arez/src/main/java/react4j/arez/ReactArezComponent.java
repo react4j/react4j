@@ -214,6 +214,21 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   }
 
   /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void componentWillUnmount()
+  {
+    /*
+     * Dispose of all the arez resources. Necessary particularly for render tracker that should
+     * not receive notifications of updates are component has been unmounted.
+     */
+    _propsObservable.dispose();
+    _stateObservable.dispose();
+    _renderTracker.dispose();
+  }
+
+  /**
    * Store arez data such as dependencies on the state of component.
    * This is only done if {@link ReactArezConfig#shouldStoreArezDataAsState()} returns true and is primarily
    * done to make it easy to debug from within React DevTools.
