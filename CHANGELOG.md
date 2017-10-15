@@ -14,7 +14,7 @@
   generated subclass will be annotated instead.
 * **\[processor\]** Change the output of processor so that the method that previously provided the constructor
   function and the event handlers is now a subclass of the component.
-* 💥 Remove `Component.forceUpdate()` and replace it with the api `Component.scheduleRender(boolean force)`
+* **\[core\]** 💥 Remove `Component.forceUpdate()` and replace it with the api `Component.scheduleRender(boolean force)`
   where `force=true` calls the underlying `NativeComponent.forceUpdate()` and `force=false` is equivalent
   to `setState({})`.
 * 💥 Changed the maven group coordinate from `org.realityforge.react` to `org.realityforge.react4j`
