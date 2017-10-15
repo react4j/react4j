@@ -21,7 +21,6 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -237,6 +236,28 @@ public final class ReactProcessor
                                          eventHandlerType.getQualifiedName() + " that has more than 1 abstract " +
                                          "method and thus is not a functional interface", method );
     }
+
+    if ( descriptor.isArezComponent() )
+    {
+      final AnnotationMirror nonActionAnnotation = method.getAnnotationMirrors().stream().
+        filter( m -> m.getAnnotationType().toString().equals( "react4j.arez.NoAutoAction" ) ).
+        findAny().orElse( null );
+      if ( null == nonActionAnnotation )
+      {
+        final AnnotationMirror actionAnnotation = method.getAnnotationMirrors().stream().
+          filter( m -> m.getAnnotationType().toString().equals( "org.realityforge.arez.annotations.Action" ) ).
+          findAny().orElse( null );
+        if ( null != actionAnnotation )
+        {
+          throw new ReactProcessorException( "Method annotated with @EventHandler is also annotated with " +
+                                             "@org.realityforge.arez.annotations.Action but is not annotated with " +
+                                             "@react4j.arez.NoAutoAction which would stop react4j from also " +
+                                             "annotating the method with @Action. Please remove @Action or add " +
+                                             "@NoAutoAction annotation.", method );
+        }
+      }
+    }
+
     return new EventHandlerDescriptor( name, method, methodType, eventHandlerType, eventHandlerMethods.get( 0 ) );
   }
 

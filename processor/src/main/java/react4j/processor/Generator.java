@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -88,6 +89,19 @@ final class Generator
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
     {
       builder.addMethod( buildEventHandlerBuilderMethod( descriptor, eventHandler ).build() );
+    }
+    if ( descriptor.isArezComponent() )
+    {
+      for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
+      {
+        final AnnotationMirror nonActionAnnotation = eventHandler.getMethod().getAnnotationMirrors().stream().
+          filter( m -> m.getAnnotationType().toString().equals( "react4j.arez.NoAutoAction" ) ).
+          findAny().orElse( null );
+        if ( null == nonActionAnnotation )
+        {
+          builder.addMethod( buildEventHandlerActionMethod( eventHandler ).build() );
+        }
+      }
     }
 
     return builder.build();
@@ -178,6 +192,42 @@ final class Generator
     block.endControlFlow();
     method.addCode( block.build() );
     method.addStatement( "return handler" );
+    return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildEventHandlerActionMethod( @Nonnull final EventHandlerDescriptor eventHandler )
+  {
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( eventHandler.getMethod().getSimpleName().toString() ).
+        returns( TypeName.get( eventHandler.getMethodType().getReturnType() ) );
+    ProcessorUtil.copyTypeParameters( eventHandler.getMethodType(), method );
+    ProcessorUtil.copyAccessModifiers( eventHandler.getMethod(), method );
+    ProcessorUtil.copyDocumentedAnnotations( eventHandler.getMethod(), method );
+
+    final AnnotationSpec.Builder annotation =
+      AnnotationSpec.builder( ClassName.get( "org.realityforge.arez.annotations", "Action" ) ).
+        addMember( "reportParameters", "false" );
+    method.addAnnotation( annotation.build() );
+
+    final int paramCount = eventHandler.getMethod().getParameters().size();
+    for ( int i = 0; i < paramCount; i++ )
+    {
+      final TypeMirror paramType = eventHandler.getMethodType().getParameterTypes().get( i );
+      final ParameterSpec.Builder parameter =
+        ParameterSpec.builder( TypeName.get( paramType ), "arg" + i, Modifier.FINAL );
+      ProcessorUtil.copyDocumentedAnnotations( eventHandler.getMethod().getParameters().get( i ), parameter );
+      method.addParameter( parameter.build() );
+    }
+    final String params =
+      0 == paramCount ?
+      "" :
+      IntStream.range( 0, paramCount ).mapToObj( i -> "arg" + i ).collect( Collectors.joining( "," ) );
+
+    final boolean isVoid = eventHandler.getMethodType().getReturnType().getKind() == TypeKind.VOID;
+
+    method.addStatement( ( isVoid ? "" : "return " ) + "super.$N(" + params + ")",
+                         eventHandler.getMethod().getSimpleName() );
     return method;
   }
 

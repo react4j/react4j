@@ -6,12 +6,8 @@
 
 ### Medium Priorities
 
-* Auto add @Action annotations when subclass `ReactArezComponent`
 * Inline native react component and lifecycle into enhanced class as static inner classes. Aimed to reduce cruft.
-* Generate subclass of component that
-  - Adds @ArezComponent where needed, aswell as @Action on all @EventHandlers except those marked with @NotTracked
-    (@NotTracked is specific to ReactArez?)
-  - Correctly interacts with dagger subsystem?
+* Figure out how components can interact with with dagger
 * Add multiple render methods that return different values. Enhance code generator to ensure that
   the developer only overloads a single variant. Variants include;
   - renderAsElement

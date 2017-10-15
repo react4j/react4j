@@ -11,7 +11,10 @@
 
 ##### Changed
 * 💥 **\[arez\]** Classes extending `ReactArezComponent` must NOT be annotated with `@ArezComponent` as the
-  generated subclass will be annotated instead.
+  generated subclass will be annotated instead. Any `@EventHandler` annotated method have the `@Action` annotation
+  added by default and it is an error for the developer to explicitly annotate an `@EventHandler` with an `@Action`
+  annotation. This behaviour can be aborted by annotating the method with `@NoAutoAction` in which case the
+  developer is responsible for adding the `@Action` annotation if needed.
 * **\[processor\]** Change the output of processor so that the method that previously provided the constructor
   function and the event handlers is now a subclass of the component.
 * **\[core\]** 💥 Remove `Component.forceUpdate()` and replace it with the api `Component.scheduleRender(boolean force)`

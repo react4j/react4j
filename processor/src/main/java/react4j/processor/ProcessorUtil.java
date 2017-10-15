@@ -1,14 +1,18 @@
 package react4j.processor;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
+import java.lang.annotation.Documented;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -71,6 +75,44 @@ final class ProcessorUtil
     if ( element.getModifiers().contains( Modifier.PUBLIC ) )
     {
       builder.addModifiers( Modifier.PUBLIC );
+    }
+  }
+
+  static void copyAccessModifiers( @Nonnull final ExecutableElement element, @Nonnull final MethodSpec.Builder builder )
+  {
+    if ( element.getModifiers().contains( Modifier.PUBLIC ) )
+    {
+      builder.addModifiers( Modifier.PUBLIC );
+    }
+    else if ( element.getModifiers().contains( Modifier.PROTECTED ) )
+    {
+      builder.addModifiers( Modifier.PROTECTED );
+    }
+  }
+
+  static void copyDocumentedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                         @Nonnull final MethodSpec.Builder builder )
+  {
+    for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )
+    {
+      final DeclaredType annotationType = annotation.getAnnotationType();
+      if ( !annotationType.toString().startsWith( "react4j.annotations." ) &&
+           null != annotationType.asElement().getAnnotation( Documented.class ) )
+      {
+        builder.addAnnotation( AnnotationSpec.get( annotation ) );
+      }
+    }
+  }
+
+  static void copyDocumentedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                         @Nonnull final ParameterSpec.Builder builder )
+  {
+    for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )
+    {
+      if ( null != annotation.getAnnotationType().asElement().getAnnotation( Documented.class ) )
+      {
+        builder.addAnnotation( AnnotationSpec.get( annotation ) );
+      }
     }
   }
 

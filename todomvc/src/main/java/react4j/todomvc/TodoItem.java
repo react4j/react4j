@@ -100,7 +100,6 @@ class TodoItem
   }
 
   @EventHandler( FocusEventHandler.class )
-  @Action
   void onSubmitTodo()
   {
     final String val = state().editText;
@@ -118,14 +117,12 @@ class TodoItem
   }
 
   @EventHandler( FormEventHandler.class )
-  @Action
   void onToggle()
   {
     props().todo.toggle();
   }
 
   @EventHandler( MouseEventHandler.class )
-  @Action
   void onEdit()
   {
     AppData.viewService.setTodoBeingEdited( props().todo );
@@ -133,13 +130,11 @@ class TodoItem
   }
 
   @EventHandler( MouseEventHandler.class )
-  @Action
   void onDestroy()
   {
     AppData.model.destroy( props().todo );
   }
 
-  @Action
   void onCancel()
   {
     setState( State.create( props().todo.getTitle() ) );
@@ -147,7 +142,6 @@ class TodoItem
   }
 
   @EventHandler( FormEventHandler.class )
-  @Action( reportParameters = false )
   void handleChange( @Nonnull final FormEvent event )
   {
     if ( isTodoBeingEdited() )
