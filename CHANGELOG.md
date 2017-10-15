@@ -8,6 +8,9 @@
 
 ##### Fixed
 * Add the missing inherit `com.google.gwt.user.UI` to `react4j.widget.ReactWidget.gwt.xml`.
+* **\[processor\]** Add an explicit check to verify that `@EventHandler` annotated methods do not have the same
+  logical name nor do they overload each other (i.e. have the same method name but with different parameters).
+  Either scenario will result in compilation errors and these checks just make the failure reason explicit.
 
 ##### Changed
 * 💥 **\[arez\]** Classes extending `ReactArezComponent` must NOT be annotated with `@ArezComponent` as the

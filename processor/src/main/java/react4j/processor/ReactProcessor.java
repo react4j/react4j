@@ -170,6 +170,23 @@ public final class ReactProcessor
                                            "with the annotation jsinterop.annotations.JsFunction.",
                                            eventHandler.getMethod() );
       }
+      final EventHandlerDescriptor matched = eventHandlers.stream()
+        .filter( h -> h != eventHandler && h.getName().equals( eventHandler.getName() ) )
+        .findAny().orElse( null );
+      if ( null != matched )
+      {
+        throw new ReactProcessorException( "The @EventHandler has the same name as the event handler defined by " +
+                                           matched.getMethod() + ".", eventHandler.getMethod() );
+      }
+      final EventHandlerDescriptor matched2 = eventHandlers.stream()
+        .filter( h -> h != eventHandler &&
+                      h.getMethod().getSimpleName().equals( eventHandler.getMethod().getSimpleName() ) )
+        .findAny().orElse( null );
+      if ( null != matched2 )
+      {
+        throw new ReactProcessorException( "The @EventHandler has the same method name as the event handler defined " +
+                                           "by " + matched2.getMethod() + ".", eventHandler.getMethod() );
+      }
       final ExecutableType methodType = eventHandler.getMethodType();
       final List<? extends TypeMirror> parameters = methodType.getParameterTypes();
       if ( !parameters.isEmpty() )
