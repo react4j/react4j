@@ -6,6 +6,7 @@ import com.google.testing.compile.JavaFileObjects;
 import com.google.testing.compile.JavaSourceSubjectFactory;
 import com.google.testing.compile.JavaSourcesSubjectFactory;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.tools.JavaFileObject;
 import org.realityforge.arez.processor.ArezProcessor;
-import static com.google.common.truth.Truth.assert_;
+import static com.google.common.truth.Truth.*;
 import static org.testng.Assert.*;
 
 @SuppressWarnings( "Duplicates" )
@@ -60,7 +61,7 @@ abstract class AbstractReactProcessorTest
   void assertSuccessfulCompile( @Nonnull final String inputResource, @Nonnull final String... expectedOutputResources )
     throws Exception
   {
-    final JavaFileObject source = JavaFileObjects.forResource( inputResource );
+    final JavaFileObject source = fixture( inputResource );
     assertSuccessfulCompile( Collections.singletonList( source ), Arrays.asList( expectedOutputResources ) );
   }
 
@@ -95,7 +96,7 @@ abstract class AbstractReactProcessorTest
         Files.copy( fileObject.openInputStream(), target );
       }
     }
-    final JavaFileObject firstExpected = JavaFileObjects.forResource( outputs.get( 0 ) );
+    final JavaFileObject firstExpected = fixture( outputs.get( 0 ) );
     final JavaFileObject[] restExpected =
       outputs.stream().skip( 1 ).map( JavaFileObjects::forResource ).
         collect( Collectors.toList() ).
@@ -127,7 +128,7 @@ abstract class AbstractReactProcessorTest
                                             @Nonnull final String errorMessageFragment )
     throws Exception
   {
-    final JavaFileObject source = JavaFileObjects.forResource( inputResource );
+    final JavaFileObject source = fixture( inputResource );
     assert_().about( JavaSourceSubjectFactory.javaSource() ).
       that( source ).
       processedWith( new ReactProcessor(), new ArezProcessor() ).
@@ -135,12 +136,24 @@ abstract class AbstractReactProcessorTest
       withErrorContaining( errorMessageFragment );
   }
 
+  @Nonnull
+  private JavaFileObject fixture( @Nonnull final String path )
+  {
+    try
+    {
+      return JavaFileObjects.forResource( fixtureDir().resolve( path ).toUri().toURL() );
+    }
+    catch ( final MalformedURLException e )
+    {
+      throw new IllegalStateException( e );
+    }
+  }
+
+  @Nonnull
   private Path fixtureDir()
   {
     final String fixtureDir = System.getProperty( "react.fixture_dir" );
-    assertNotNull( fixtureDir,
-                   "Expected System.getProperty( \"react.fixture_dir\" ) to return fixture directory if arez.output_fixture_data=true" );
-
+    assertNotNull( fixtureDir, "Expected System.getProperty( \"react.fixture_dir\" ) to return fixture directory" );
     return new File( fixtureDir ).toPath();
   }
 
