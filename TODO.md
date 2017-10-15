@@ -6,7 +6,6 @@
 
 ### Medium Priorities
 
-* Auto add `@Action` to subclass implementations of lifecycle methods that are expected to require it.
 * Inline native react component and lifecycle into enhanced class as static inner classes. Aimed to reduce cruft.
 * Figure out how components can interact with with dagger
 * Add multiple render methods that return different values. Enhance code generator to ensure that
