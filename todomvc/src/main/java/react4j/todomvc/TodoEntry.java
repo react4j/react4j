@@ -7,7 +7,6 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import org.realityforge.arez.annotations.Action;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -54,18 +53,12 @@ class TodoEntry
     if ( KeyCodes.ENTER_KEY == event.keyCode )
     {
       event.preventDefault();
-      addNewTodo();
-    }
-  }
-
-  @Action
-  void addNewTodo()
-  {
-    final String val = state().newTodo.trim();
-    if ( val.length() > 0 )
-    {
-      AppData.service.addTodo( val );
-      setTodoText( "" );
+      final String val = state().newTodo.trim();
+      if ( val.length() > 0 )
+      {
+        AppData.service.addTodo( val );
+        setTodoText( "" );
+      }
     }
   }
 
@@ -76,8 +69,7 @@ class TodoEntry
     setTodoText( input.value );
   }
 
-  @Action
-  void setTodoText( @Nonnull final String value )
+  private void setTodoText( @Nonnull final String value )
   {
     setState( State.create( value ) );
   }
