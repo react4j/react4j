@@ -60,11 +60,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   private void onRenderDepsChanged()
   {
     _renderDepsChanged = true;
-    /*
-     * Force a re-render by requesting the merge of empty state literal.
-     * It has no effect other than to force a reschedule.
-     */
-    super.setState( Js.<S>cast( JsPropertyMap.of() ) );
+    scheduleRender( false );
   }
 
   /**
