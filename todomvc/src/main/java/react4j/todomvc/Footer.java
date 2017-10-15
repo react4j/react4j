@@ -1,7 +1,6 @@
 package react4j.todomvc;
 
 import javax.annotation.Nullable;
-import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Computed;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
@@ -19,7 +18,6 @@ import static react4j.dom.DOM.*;
 import static react4j.todomvc.Footer_.*;
 
 @ReactComponent
-@ArezComponent
 class Footer
   extends ReactArezComponent<BaseProps, BaseState>
 {

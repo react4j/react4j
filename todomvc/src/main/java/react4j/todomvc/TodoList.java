@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
-import org.realityforge.arez.annotations.ArezComponent;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -24,7 +23,6 @@ import static react4j.dom.DOM.*;
 import static react4j.todomvc.TodoList_.*;
 
 @ReactComponent
-@ArezComponent( allowEmpty = true )
 class TodoList
   extends ReactArezComponent<BaseProps, BaseState>
 {

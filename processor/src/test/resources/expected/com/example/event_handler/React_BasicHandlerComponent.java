@@ -16,6 +16,6 @@ final class React_BasicHandlerComponent extends NativeAdapterComponent<BaseProps
 
   @Override
   protected BasicHandlerComponent createComponent() {
-    return new BasicHandlerComponent();
+    return new BasicHandlerComponent_();
   }
 }

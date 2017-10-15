@@ -16,6 +16,6 @@ final class React_CustomNameReactComponent extends NativeAdapterComponent<BasePr
 
   @Override
   protected CustomNameReactComponent createComponent() {
-    return new CustomNameReactComponent();
+    return new CustomNameReactComponent_();
   }
 }

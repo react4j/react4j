@@ -8,7 +8,6 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
-import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Computed;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
@@ -33,7 +32,6 @@ import static react4j.dom.DOM.*;
 import static react4j.todomvc.TodoItem_.*;
 
 @ReactComponent
-@ArezComponent
 class TodoItem
   extends ReactArezComponent<TodoItem.Props, TodoItem.State>
 {
@@ -194,7 +192,7 @@ class TodoItem
                              .onChange( _onToggle( this ) )
                     ),
                     label( new LabelProps().OnDoubleClick( _onEdit( this ) ),
-                               props.todo.getTitle() ),
+                           props.todo.getTitle() ),
                     button( new BtnProps()
                               .className( "destroy" )
                               .onClick( _onDestroy( this ) )

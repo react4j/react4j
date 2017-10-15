@@ -16,6 +16,6 @@ final class React_PublicReactComponent extends NativeAdapterComponent<BaseProps,
 
   @Override
   protected PublicReactComponent createComponent() {
-    return new PublicReactComponent();
+    return new PublicReactComponent_();
   }
 }

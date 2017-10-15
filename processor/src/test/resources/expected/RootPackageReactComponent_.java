@@ -7,7 +7,7 @@ import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-final class RootPackageReactComponent_ {
+class RootPackageReactComponent_ extends RootPackageReactComponent {
   public static final ComponentConstructorFunction<BaseProps, BaseState, React_RootPackageReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull

@@ -118,7 +118,7 @@ public final class ReactProcessor
     throws IOException, ReactProcessorException
   {
     final ComponentDescriptor descriptor = parse( element );
-    emitTypeSpec( descriptor.getPackageName(), Generator.buildConstructorFactory( descriptor ) );
+    emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildNativeLifecycleInterface( descriptor ) );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildNativeComponent( descriptor ) );
   }
@@ -372,27 +372,11 @@ public final class ReactProcessor
       final AnnotationMirror arezAnnotation = typeElement.getAnnotationMirrors().stream().
         filter( m -> m.getAnnotationType().toString().equals( "org.realityforge.arez.annotations.ArezComponent" ) ).
         findAny().orElse( null );
-      if ( null == arezAnnotation )
+      if ( null != arezAnnotation )
       {
         throw new ReactProcessorException( "@ReactComponent target extends react4j.arez.ReactArezComponent and should " +
-                                           "be annotated with org.realityforge.arez.annotations.ArezComponent but " +
-                                           "is not", typeElement );
-      }
-      final ExecutableElement nameKey = arezAnnotation.getElementValues().keySet().stream().
-        filter( k -> "name".equals( k.getSimpleName().toString() ) ).
-        findAny().orElse( null );
-      final AnnotationValue nameAnnotation = arezAnnotation.getElementValues().get( nameKey );
-      if ( null == nameAnnotation &&
-           !descriptor.getName().equals( descriptor.getElement().getSimpleName().toString() ) )
-      {
-        throw new ReactProcessorException( "@ArezComponent annotation does not specify a name value but " +
-                                           "@ReactComponent annotation specified a name that does not match " +
-                                           "default name value for @ArezComponent", typeElement );
-      }
-      else if ( null != nameAnnotation && !nameAnnotation.getValue().equals( descriptor.getName() ) )
-      {
-        throw new ReactProcessorException( "@ArezComponent annotation specified name parameter but it does not " +
-                                           "match the name of the @ReactComponent", typeElement );
+                                           "not be annotated with org.realityforge.arez.annotations.ArezComponent as " +
+                                           "React4j will add annotation", typeElement );
       }
     }
 

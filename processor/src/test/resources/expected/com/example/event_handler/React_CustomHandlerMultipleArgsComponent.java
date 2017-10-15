@@ -16,6 +16,6 @@ final class React_CustomHandlerMultipleArgsComponent extends NativeAdapterCompon
 
   @Override
   protected CustomHandlerMultipleArgsComponent createComponent() {
-    return new CustomHandlerMultipleArgsComponent();
+    return new CustomHandlerMultipleArgsComponent_();
   }
 }

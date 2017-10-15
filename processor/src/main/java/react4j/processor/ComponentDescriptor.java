@@ -1,6 +1,7 @@
 package react4j.processor;
 
 import com.squareup.javapoet.ClassName;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -92,6 +93,12 @@ final class ComponentDescriptor
   }
 
   @Nonnull
+  ClassName getClassName()
+  {
+    return ClassName.get( getElement() );
+  }
+
+  @Nonnull
   TypeElement getElement()
   {
     return _element;
@@ -104,9 +111,29 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  String getConstructorFactoryName()
+  String getEnhancedName()
   {
     return _element.getSimpleName() + "_";
+  }
+
+  @Nonnull
+  ClassName getEnhancedClassName()
+  {
+    final ClassName className = ClassName.get( getElement() );
+    final ArrayList<String> names = new ArrayList<>( className.simpleNames() );
+    final String cname = getElement().getSimpleName() + "_";
+    if ( names.size() > 1 )
+    {
+      names.remove( names.size() - 1 );
+      names.add( cname );
+      return ClassName.get( getPackageName(),
+                            names.get( 0 ),
+                            names.subList( 1, names.size() ).toArray( new String[ 0 ] ) );
+    }
+    else
+    {
+      return ClassName.get( getPackageName(), cname );
+    }
   }
 
   @Nonnull
@@ -131,6 +158,13 @@ final class ComponentDescriptor
   ClassName getNativeLifecycleInterfaceClassName()
   {
     return ClassName.get( getPackageName(), getNestedClassPrefix() + getNativeLifecycleInterfaceName() );
+  }
+
+  @Nonnull
+  ClassName getClassNameToConstruct()
+  {
+    final String cname = ( isArezComponent() ? "Arez_" : "" ) + getElement().getSimpleName() + "_";
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + cname );
   }
 
   boolean isArezComponent()

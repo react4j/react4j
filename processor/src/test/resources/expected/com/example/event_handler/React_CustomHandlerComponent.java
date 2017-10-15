@@ -16,6 +16,6 @@ final class React_CustomHandlerComponent extends NativeAdapterComponent<BaseProp
 
   @Override
   protected CustomHandlerComponent createComponent() {
-    return new CustomHandlerComponent();
+    return new CustomHandlerComponent_();
   }
 }

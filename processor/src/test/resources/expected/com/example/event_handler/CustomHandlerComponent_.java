@@ -11,8 +11,11 @@ import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-final class CustomHandlerComponent_ {
+class CustomHandlerComponent_ extends CustomHandlerComponent {
   public static final ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerComponent> TYPE = getConstructorFunction();
+
+  @Nonnull
+  private final CustomHandlerComponent.CustomHandler _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerComponent> getConstructorFunction() {
@@ -25,7 +28,12 @@ final class CustomHandlerComponent_ {
 
   @Nonnull
   static CustomHandlerComponent.CustomHandler _handleFoo(@Nonnull final CustomHandlerComponent component) {
-    final CustomHandlerComponent.CustomHandler handler = arg0 -> component.handleFoo(arg0);
+    return ((CustomHandlerComponent_) component)._handleFoo;
+  }
+
+  @Nonnull
+  private CustomHandlerComponent.CustomHandler create_handleFoo() {
+    final CustomHandlerComponent.CustomHandler handler = arg0 -> this.handleFoo(arg0);
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomHandlerComponent.handleFoo" ) ) );
     }

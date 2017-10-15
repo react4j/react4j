@@ -16,6 +16,6 @@ final class NestedReactComponent$React_BasicReactComponent extends NativeAdapter
 
   @Override
   protected NestedReactComponent.BasicReactComponent createComponent() {
-    return new NestedReactComponent.BasicReactComponent();
+    return new NestedReactComponent$BasicReactComponent_();
   }
 }

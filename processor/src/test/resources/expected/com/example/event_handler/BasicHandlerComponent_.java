@@ -12,8 +12,11 @@ import react4j.core.Procedure;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-final class BasicHandlerComponent_ {
+class BasicHandlerComponent_ extends BasicHandlerComponent {
   public static final ComponentConstructorFunction<BaseProps, BaseState, React_BasicHandlerComponent> TYPE = getConstructorFunction();
+
+  @Nonnull
+  private final Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction<BaseProps, BaseState, React_BasicHandlerComponent> getConstructorFunction() {
@@ -26,7 +29,12 @@ final class BasicHandlerComponent_ {
 
   @Nonnull
   static Procedure _handleFoo(@Nonnull final BasicHandlerComponent component) {
-    final Procedure handler = () -> component.handleFoo();
+    return ((BasicHandlerComponent_) component)._handleFoo;
+  }
+
+  @Nonnull
+  private Procedure create_handleFoo() {
+    final Procedure handler = () -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "BasicHandlerComponent.handleFoo" ) ) );
     }

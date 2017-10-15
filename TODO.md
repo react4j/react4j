@@ -9,7 +9,6 @@
 * Generate subclass of component that
   - Adds @ArezComponent where needed, aswell as @Action on all @EventHandlers except those marked with @NotTracked
     (@NotTracked is specific to ReactArez?)
-  - Caches the EventHandlers (so that can use equiv of PureComponent)
   - Correctly interacts with dagger subsystem?
 * Add multiple render methods that return different values. Enhance code generator to ensure that
   the developer only overloads a single variant. Variants include;

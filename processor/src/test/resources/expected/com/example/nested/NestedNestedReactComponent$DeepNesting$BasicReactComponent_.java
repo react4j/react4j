@@ -9,7 +9,7 @@ import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-final class NestedNestedReactComponent$DeepNesting$BasicReactComponent_ {
+class NestedNestedReactComponent$DeepNesting$BasicReactComponent_ extends NestedNestedReactComponent.DeepNesting.BasicReactComponent {
   public static final ComponentConstructorFunction<BaseProps, BaseState, NestedNestedReactComponent$DeepNesting$React_BasicReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull

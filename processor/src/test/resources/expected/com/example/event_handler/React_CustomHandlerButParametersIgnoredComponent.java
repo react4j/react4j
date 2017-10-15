@@ -16,6 +16,6 @@ final class React_CustomHandlerButParametersIgnoredComponent extends NativeAdapt
 
   @Override
   protected CustomHandlerButParametersIgnoredComponent createComponent() {
-    return new CustomHandlerButParametersIgnoredComponent();
+    return new CustomHandlerButParametersIgnoredComponent_();
   }
 }

@@ -8,7 +8,6 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.Action;
-import org.realityforge.arez.annotations.ArezComponent;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -25,7 +24,6 @@ import static react4j.dom.DOM.*;
 import static react4j.todomvc.TodoEntry_.*;
 
 @ReactComponent
-@ArezComponent
 class TodoEntry
   extends ReactArezComponent<BaseProps, TodoEntry.State>
 {

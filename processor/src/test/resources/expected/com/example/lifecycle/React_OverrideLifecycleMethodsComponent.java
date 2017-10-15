@@ -16,7 +16,7 @@ final class React_OverrideLifecycleMethodsComponent extends NativeAdapterCompone
 
   @Override
   protected OverrideLifecycleMethodsComponent createComponent() {
-    return new OverrideLifecycleMethodsComponent();
+    return new OverrideLifecycleMethodsComponent_();
   }
 
   @Override

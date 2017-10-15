@@ -9,7 +9,7 @@ import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-public final class PublicReactComponent_ {
+public class PublicReactComponent_ extends PublicReactComponent {
   public static final ComponentConstructorFunction<BaseProps, BaseState, React_PublicReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull

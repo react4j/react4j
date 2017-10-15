@@ -7,7 +7,7 @@ import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-final class CustomPropsAndStateReactComponent_ {
+class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactComponent {
   public static final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, React_CustomPropsAndStateReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull

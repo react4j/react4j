@@ -16,7 +16,7 @@ final class React_BasicArezReactComponent extends NativeAdapterComponent<BasePro
 
   @Override
   protected BasicArezReactComponent createComponent() {
-    return new Arez_BasicArezReactComponent();
+    return new Arez_BasicArezReactComponent_();
   }
 
   @Override

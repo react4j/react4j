@@ -12,8 +12,11 @@ import react4j.core.Procedure;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-final class CustomNameComponent_ {
+class CustomNameComponent_ extends CustomNameComponent {
   public static final ComponentConstructorFunction<BaseProps, BaseState, React_CustomNameComponent> TYPE = getConstructorFunction();
+
+  @Nonnull
+  private final Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction<BaseProps, BaseState, React_CustomNameComponent> getConstructorFunction() {
@@ -26,7 +29,12 @@ final class CustomNameComponent_ {
 
   @Nonnull
   static Procedure _handleFoo(@Nonnull final CustomNameComponent component) {
-    final Procedure handler = () -> component.handleFoo();
+    return ((CustomNameComponent_) component)._handleFoo;
+  }
+
+  @Nonnull
+  private Procedure create_handleFoo() {
+    final Procedure handler = () -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomNameComponent.fox" ) ) );
     }

@@ -10,7 +10,6 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import elemental2.core.JsObject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -27,11 +26,9 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import jsinterop.base.JsPropertyMapOfAny;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
-import react4j.core.util.JsUtil;
 
 final class Generator
 {
@@ -40,17 +37,27 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildConstructorFactory( @Nonnull final ComponentDescriptor descriptor )
+  static TypeSpec buildEnhancedComponent( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeElement element = descriptor.getElement();
 
-    final String name = descriptor.getNestedClassPrefix() + descriptor.getConstructorFactoryName();
+    final String name = descriptor.getNestedClassPrefix() + descriptor.getEnhancedName();
     final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
 
-    ProcessorUtil.copyAccessModifiers( element, builder );
+    builder.superclass( descriptor.getClassName() );
 
-    //Ensure it can not be subclassd
-    builder.addModifiers( Modifier.FINAL );
+    if( descriptor.isArezComponent() )
+    {
+      final AnnotationSpec.Builder annotation =
+        AnnotationSpec.builder( ClassName.get( "org.realityforge.arez.annotations", "ArezComponent" ) ).
+          addMember( "name", "$S", descriptor.getName() ).
+          addMember( "singleton", "false" ).
+          addMember( "disposable", "true" ).
+          addMember( "allowEmpty", "true" );
+      builder.addAnnotation( annotation.build() );
+    }
+
+    ProcessorUtil.copyAccessModifiers( element, builder );
 
     // Mark it as generated
     builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
@@ -66,11 +73,21 @@ final class Generator
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
+    for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
+    {
+      builder.addField( buildEventHandlerField( eventHandler ).build() );
+    }
+
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
     {
-      builder.addMethod( buildEventHandlerMethod( descriptor, eventHandler ).build() );
+      builder.addMethod( buildStaticEventHandlerMethod( descriptor, eventHandler ).build() );
+    }
+
+    for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
+    {
+      builder.addMethod( buildEventHandlerBuilderMethod( descriptor, eventHandler ).build() );
     }
 
     return builder.build();
@@ -86,12 +103,23 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildEventHandlerMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                             @Nonnull final EventHandlerDescriptor eventHandler )
+  private static FieldSpec.Builder buildEventHandlerField( @Nonnull final EventHandlerDescriptor eventHandler )
   {
     final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
+    final String handlerName = "_" + eventHandler.getMethod().getSimpleName().toString();
+    return FieldSpec.builder( handlerType, handlerName, Modifier.FINAL, Modifier.PRIVATE ).
+      addAnnotation( Nonnull.class ).
+      initializer( "create$N()", handlerName );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildStaticEventHandlerMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                                   @Nonnull final EventHandlerDescriptor eventHandler )
+  {
+    final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
+    final String handlerName = "_" + eventHandler.getMethod().getSimpleName();
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "_" + eventHandler.getMethod().getSimpleName() ).
+      MethodSpec.methodBuilder( handlerName ).
         addAnnotation( Nonnull.class ).
         returns( handlerType );
 
@@ -101,6 +129,21 @@ final class Generator
       ParameterSpec.builder( TypeName.get( descriptor.getElement().asType() ), "component", Modifier.FINAL ).
         addAnnotation( Nonnull.class );
     method.addParameter( parameter.build() );
+
+    method.addStatement( "return (($T) component).$N", descriptor.getEnhancedClassName(), handlerName );
+    return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildEventHandlerBuilderMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                                    @Nonnull final EventHandlerDescriptor eventHandler )
+  {
+    final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( "create_" + eventHandler.getMethod().getSimpleName() ).
+        addModifiers( Modifier.PRIVATE ).
+        addAnnotation( Nonnull.class ).
+        returns( handlerType );
 
     final ExecutableElement target = eventHandler.getEventHandlerMethod();
     final int targetParameterCount = target.getParameters().size();
@@ -119,7 +162,7 @@ final class Generator
       "" :
       IntStream.range( 0, paramCount ).mapToObj( i -> "arg" + i ).collect( Collectors.joining( "," ) );
 
-    method.addStatement( "final $T handler = " + args + " -> component.$N(" + params + ")",
+    method.addStatement( "final $T handler = " + args + " -> this.$N(" + params + ")",
                          handlerType,
                          eventHandler.getMethod().getSimpleName() );
 
@@ -167,8 +210,6 @@ final class Generator
   @Nonnull
   static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor )
   {
-    final TypeElement element = descriptor.getElement();
-
     final String name = descriptor.getNestedClassPrefix() + descriptor.getNativeComponentName();
     final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
 
@@ -210,24 +251,7 @@ final class Generator
           addAnnotation( Override.class ).
           addModifiers( Modifier.PROTECTED ).
           returns( ClassName.get( descriptor.getElement() ) );
-      final ClassName className = ClassName.get( descriptor.getElement() );
-      final ArrayList<String> names = new ArrayList<>( className.simpleNames() );
-      final String cname = ( descriptor.isArezComponent() ? "Arez_" : "" ) + element.getSimpleName();
-      final ClassName target;
-      if ( names.size() > 1 )
-      {
-        names.remove( names.size() - 1 );
-        names.add( cname );
-        target =
-          ClassName.get( className.packageName(),
-                         names.get( 0 ),
-                         names.subList( 1, names.size() ).toArray( new String[ 0 ] ) );
-      }
-      else
-      {
-        target = ClassName.get( className.packageName(), cname );
-      }
-      method.addStatement( "return new $T()", target );
+      method.addStatement( "return new $T()", descriptor.getClassNameToConstruct() );
       builder.addMethod( method.build() );
     }
 

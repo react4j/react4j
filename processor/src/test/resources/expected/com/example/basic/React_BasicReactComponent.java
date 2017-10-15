@@ -16,6 +16,6 @@ final class React_BasicReactComponent extends NativeAdapterComponent<BaseProps, 
 
   @Override
   protected BasicReactComponent createComponent() {
-    return new BasicReactComponent();
+    return new BasicReactComponent_();
   }
 }

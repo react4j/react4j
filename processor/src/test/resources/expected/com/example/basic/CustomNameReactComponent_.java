@@ -9,7 +9,7 @@ import react4j.core.ComponentConstructorFunction;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-final class CustomNameReactComponent_ {
+class CustomNameReactComponent_ extends CustomNameReactComponent {
   public static final ComponentConstructorFunction<BaseProps, BaseState, React_CustomNameReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull

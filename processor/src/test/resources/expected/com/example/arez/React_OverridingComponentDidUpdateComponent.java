@@ -16,7 +16,7 @@ final class React_OverridingComponentDidUpdateComponent extends NativeAdapterCom
 
   @Override
   protected OverridingComponentDidUpdateComponent createComponent() {
-    return new Arez_OverridingComponentDidUpdateComponent();
+    return new Arez_OverridingComponentDidUpdateComponent_();
   }
 
   @Override

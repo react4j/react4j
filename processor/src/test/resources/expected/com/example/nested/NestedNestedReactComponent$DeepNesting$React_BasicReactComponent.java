@@ -16,6 +16,6 @@ final class NestedNestedReactComponent$DeepNesting$React_BasicReactComponent ext
 
   @Override
   protected NestedNestedReactComponent.DeepNesting.BasicReactComponent createComponent() {
-    return new NestedNestedReactComponent.DeepNesting.BasicReactComponent();
+    return new NestedNestedReactComponent$DeepNesting$BasicReactComponent_();
   }
 }

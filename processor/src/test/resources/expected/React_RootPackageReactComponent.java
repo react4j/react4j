@@ -14,6 +14,6 @@ final class React_RootPackageReactComponent extends NativeAdapterComponent<BaseP
 
   @Override
   protected RootPackageReactComponent createComponent() {
-    return new RootPackageReactComponent();
+    return new RootPackageReactComponent_();
   }
 }

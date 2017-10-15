@@ -14,6 +14,6 @@ final class React_CustomPropsAndStateReactComponent extends NativeAdapterCompone
 
   @Override
   protected CustomPropsAndStateReactComponent createComponent() {
-    return new CustomPropsAndStateReactComponent();
+    return new CustomPropsAndStateReactComponent_();
   }
 }
