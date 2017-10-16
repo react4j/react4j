@@ -283,3 +283,9 @@ define 'react4j' do
     end
   end
 end
+
+Buildr.projects.each do |project|
+  project.clean do
+    rm_rf project._(:generated)
+  end
+end
