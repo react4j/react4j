@@ -203,16 +203,11 @@ define 'react4j' do
 
     gwt_enhance(project, :modules_complete => true, :output_key => 'react4j-doc-examples')
 
-    package(:jar)
-    package(:sources)
-    package(:javadoc)
-
     test.using :testng
     test.compile.with TEST_DEPS
 
     # The generators are configured to generate to here.
     iml.main_source_directories << _('generated/processors/main/java')
-    no_uploads!
   end
 
   define 'todomvc' do
@@ -238,16 +233,11 @@ define 'react4j' do
 
     gwt_enhance(project, :modules_complete => true)
 
-    package(:jar)
-    package(:sources)
-    package(:javadoc)
-
     test.using :testng
     test.compile.with TEST_DEPS
 
     # The generators are configured to generate to here.
     iml.main_source_directories << _('generated/processors/main/java')
-    no_uploads!
   end
 
   doc.from(projects(%w(annotations core dom arez processor))).using(:javadoc, :windowtitle => 'React')
