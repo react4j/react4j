@@ -7,7 +7,7 @@
 #
 def gwt_enhance(project, options = {})
   modules_complete = !!options[:modules_complete]
-  package_jars = !!options[:package_jars]
+  package_jars = options[:package_jars].nil? ? true : !!options[:package_jars]
 
   extra_deps = project.iml.main_generated_resource_directories.flatten.compact.collect do |a|
     a.is_a?(String) ? file(a) : a
