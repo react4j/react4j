@@ -201,7 +201,7 @@ define 'react4j' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, :modules_complete => true, :output_key => 'react4j-doc-examples')
+    gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
 
     test.using :testng
     test.compile.with TEST_DEPS
@@ -231,7 +231,7 @@ define 'react4j' do
     test.options[:properties] = REACT_TEST_OPTIONS
     test.options[:java_args] = ['-ea']
 
-    gwt_enhance(project, :modules_complete => true)
+    gwt_enhance(project, :modules_complete => true, :package_jars => false)
 
     test.using :testng
     test.compile.with TEST_DEPS

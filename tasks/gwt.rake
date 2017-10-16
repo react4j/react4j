@@ -7,6 +7,7 @@
 #
 def gwt_enhance(project, options = {})
   modules_complete = !!options[:modules_complete]
+  package_jars = !!options[:package_jars]
 
   extra_deps = project.iml.main_generated_resource_directories.flatten.compact.collect do |a|
     a.is_a?(String) ? file(a) : a
@@ -61,7 +62,7 @@ CONTENT
       j.include("#{path}/*")
     end
     j.include("#{project._(:source, :main, :java)}/*")
-  end
+  end if package_jars
 
   config = {}
   gwt_modules.each do |gwt_module|
