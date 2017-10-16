@@ -30,32 +30,22 @@ abstract class AbstractReactProcessorTest
     final String[] elements = classname.contains( "." ) ? classname.split( "\\." ) : new String[]{ classname };
     final StringBuilder input = new StringBuilder();
     final StringBuilder factory = new StringBuilder();
-    final StringBuilder nativeComponent = new StringBuilder();
     input.append( "input" );
     factory.append( "expected" );
-    nativeComponent.append( "expected" );
     for ( int i = 0; i < elements.length; i++ )
     {
       input.append( '/' );
       input.append( elements[ i ] );
       factory.append( '/' );
       factory.append( elements[ i ] );
-      nativeComponent.append( '/' );
-      final boolean isLastElement = i == elements.length - 1;
-      if ( isLastElement )
-      {
-        nativeComponent.append( "React_" );
-      }
-      nativeComponent.append( elements[ i ] );
-      if ( isLastElement )
+      if ( i == elements.length - 1 )
       {
         factory.append( "_" );
       }
     }
     input.append( ".java" );
     factory.append( ".java" );
-    nativeComponent.append( ".java" );
-    assertSuccessfulCompile( input.toString(), factory.toString(), nativeComponent.toString() );
+    assertSuccessfulCompile( input.toString(), factory.toString() );
   }
 
   void assertSuccessfulCompile( @Nonnull final String inputResource, @Nonnull final String... expectedOutputResources )

@@ -23,7 +23,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -104,6 +103,12 @@ final class Generator
       }
     }
 
+    if ( !descriptor.getLifecycleMethods().isEmpty() )
+    {
+      builder.addType( buildNativeLifecycleInterface( descriptor ) );
+    }
+    builder.addType( buildNativeComponent( descriptor ) );
+
     return builder.build();
   }
 
@@ -113,7 +118,7 @@ final class Generator
     return ParameterizedTypeName.get( ClassName.get( ComponentConstructorFunction.class ),
                                       TypeName.get( descriptor.getPropsType().asType() ),
                                       TypeName.get( descriptor.getStateType().asType() ),
-                                      descriptor.getNativeComponentClassName() );
+                                      ClassName.bestGuess( "NativeReactComponent" ) );
   }
 
   @Nonnull
@@ -244,7 +249,7 @@ final class Generator
 
     method.addStatement( "final $T componentConstructor = $T::new",
                          constructorType,
-                         descriptor.getNativeComponentClassName() );
+                         ClassName.bestGuess( "NativeReactComponent" ) );
     final CodeBlock.Builder codeBlock = CodeBlock.builder();
     codeBlock.beginControlFlow( "if ( $T.enableComponentNames() )", ReactConfig.class );
     codeBlock.addStatement( "$T.of( componentConstructor ).set( \"displayName\", $S )",
@@ -258,18 +263,13 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor )
+  private static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor )
   {
-    final String name = descriptor.getNestedClassPrefix() + descriptor.getNativeComponentName();
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "NativeReactComponent" );
 
     //Ensure it can not be subclassed
     builder.addModifiers( Modifier.FINAL );
-
-    // Mark it as generated
-    builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
-      addMember( "value", "$S", ReactProcessor.class.getName() ).
-      build() );
+    builder.addModifiers( Modifier.STATIC );
 
     final TypeName superType =
       ParameterizedTypeName.get( ClassName.get( NativeAdapterComponent.class ),
@@ -279,7 +279,10 @@ final class Generator
 
     builder.superclass( superType );
 
-    builder.addSuperinterface( descriptor.getNativeLifecycleInterfaceClassName() );
+    if ( !descriptor.getLifecycleMethods().isEmpty() )
+    {
+      builder.addSuperinterface( ClassName.bestGuess( "Lifecycle" ) );
+    }
 
     // build the constructor
     {
@@ -288,7 +291,6 @@ final class Generator
           addAnnotation( Nonnull.class );
       final MethodSpec.Builder method =
         MethodSpec.constructorBuilder().
-          addAnnotation( JsConstructor.class ).
           addParameter( props.build() );
       method.addStatement( "super( props )" );
       builder.addMethod( method.build() );
@@ -357,19 +359,16 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildNativeLifecycleInterface( @Nonnull final ComponentDescriptor descriptor )
+  private static TypeSpec buildNativeLifecycleInterface( @Nonnull final ComponentDescriptor descriptor )
   {
-    final String name = descriptor.getNestedClassPrefix() + descriptor.getNativeLifecycleInterfaceName();
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( name );
-
-    // Mark it as generated
-    builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
-      addMember( "value", "$S", ReactProcessor.class.getName() ).
-      build() );
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Lifecycle" );
 
     builder.addAnnotation( AnnotationSpec.builder( JsType.class ).
       addMember( "isNative", "true" ).
       build() );
+
+    builder.addModifiers( Modifier.STATIC );
+
     // Lifecycle methods
     {
 

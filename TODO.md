@@ -6,7 +6,6 @@
 
 ### Medium Priorities
 
-* Inline native react component and lifecycle into enhanced class as static inner classes. Aimed to reduce cruft.
 * Figure out how components can interact with with dagger
 * Add multiple render methods that return different values. Enhance code generator to ensure that
   the developer only overloads a single variant. Variants include;

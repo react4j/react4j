@@ -8,18 +8,19 @@ import jsinterop.base.JsPropertyMap;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
+import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class CustomHandlerMultipleArgsComponent_ extends CustomHandlerMultipleArgsComponent {
-  public static final ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerMultipleArgsComponent> TYPE = getConstructorFunction();
+  public static final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
   private final CustomHandlerMultipleArgsComponent.CustomHandler _handleFoo = create_handleFoo();
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerMultipleArgsComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerMultipleArgsComponent> componentConstructor = React_CustomHandlerMultipleArgsComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomHandlerMultipleArgsComponent" );
     }
@@ -38,5 +39,16 @@ class CustomHandlerMultipleArgsComponent_ extends CustomHandlerMultipleArgsCompo
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomHandlerMultipleArgsComponent.handleFoo" ) ) );
     }
     return handler;
+  }
+
+  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, CustomHandlerMultipleArgsComponent> {
+    NativeReactComponent(@Nonnull final BaseProps props) {
+      super( props );
+    }
+
+    @Override
+    protected CustomHandlerMultipleArgsComponent createComponent() {
+      return new CustomHandlerMultipleArgsComponent_();
+    }
   }
 }

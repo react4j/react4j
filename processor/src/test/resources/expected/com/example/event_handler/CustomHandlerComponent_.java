@@ -8,18 +8,19 @@ import jsinterop.base.JsPropertyMap;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
+import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class CustomHandlerComponent_ extends CustomHandlerComponent {
-  public static final ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerComponent> TYPE = getConstructorFunction();
+  public static final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
   private final CustomHandlerComponent.CustomHandler _handleFoo = create_handleFoo();
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, React_CustomHandlerComponent> componentConstructor = React_CustomHandlerComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomHandlerComponent" );
     }
@@ -38,5 +39,16 @@ class CustomHandlerComponent_ extends CustomHandlerComponent {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomHandlerComponent.handleFoo" ) ) );
     }
     return handler;
+  }
+
+  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, CustomHandlerComponent> {
+    NativeReactComponent(@Nonnull final BaseProps props) {
+      super( props );
+    }
+
+    @Override
+    protected CustomHandlerComponent createComponent() {
+      return new CustomHandlerComponent_();
+    }
   }
 }

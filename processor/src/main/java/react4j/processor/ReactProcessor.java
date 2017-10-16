@@ -118,8 +118,6 @@ public final class ReactProcessor
   {
     final ComponentDescriptor descriptor = parse( element );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
-    emitTypeSpec( descriptor.getPackageName(), Generator.buildNativeLifecycleInterface( descriptor ) );
-    emitTypeSpec( descriptor.getPackageName(), Generator.buildNativeComponent( descriptor ) );
   }
 
   private void emitTypeSpec( @Nonnull final String packageName, @Nonnull final TypeSpec typeSpec )

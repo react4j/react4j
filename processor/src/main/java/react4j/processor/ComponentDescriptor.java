@@ -137,30 +137,6 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  String getNativeComponentName()
-  {
-    return "React_" + _element.getSimpleName();
-  }
-
-  @Nonnull
-  ClassName getNativeComponentClassName()
-  {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + getNativeComponentName() );
-  }
-
-  @Nonnull
-  String getNativeLifecycleInterfaceName()
-  {
-    return _element.getSimpleName() + "Lifecycle";
-  }
-
-  @Nonnull
-  ClassName getNativeLifecycleInterfaceClassName()
-  {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + getNativeLifecycleInterfaceName() );
-  }
-
-  @Nonnull
   ClassName getClassNameToConstruct()
   {
     final String cname = ( isArezComponent() ? "Arez_" : "" ) + getElement().getSimpleName() + "_";

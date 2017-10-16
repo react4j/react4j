@@ -21,7 +21,10 @@
   annotation. This behaviour can be aborted by annotating the method with `@NoAutoAction` in which case the
   developer is responsible for adding the `@Action` annotation if needed.
 * **\[processor\]** Change the output of processor so that the method that previously provided the constructor
-  function and the event handlers is now a subclass of the component.
+  function and the event handlers is now a subclass of the component. Also move the lifecycle class and native
+  component adapter as static subclasses of this single enhanced component class. This means that React4j generates
+  a single java file for each component. The intent is to make it easier to understand what is happening underneath
+  the covers.
 * **\[core\]** 💥 Remove `Component.forceUpdate()` and replace it with the api `Component.scheduleRender(boolean force)`
   where `force=true` calls the underlying `NativeComponent.forceUpdate()` and `force=false` is equivalent
   to `setState({})`.

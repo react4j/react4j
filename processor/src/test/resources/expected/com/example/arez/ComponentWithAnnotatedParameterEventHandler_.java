@@ -3,6 +3,7 @@ package com.example.arez;
 import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.arez.annotations.Action;
@@ -10,6 +11,7 @@ import org.realityforge.arez.annotations.ArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
+import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
@@ -20,7 +22,7 @@ import react4j.core.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotatedParameterEventHandler {
-  public static final ComponentConstructorFunction<BaseProps, BaseState, React_ComponentWithAnnotatedParameterEventHandler> TYPE = getConstructorFunction();
+  public static final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
   private final ComponentWithAnnotatedParameterEventHandler.CustomHandler2 _handleFoo = create_handleFoo();
@@ -29,8 +31,8 @@ class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotate
   private final ComponentWithAnnotatedParameterEventHandler.CustomHandler _handleFoo2 = create_handleFoo2();
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, React_ComponentWithAnnotatedParameterEventHandler> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, React_ComponentWithAnnotatedParameterEventHandler> componentConstructor = React_ComponentWithAnnotatedParameterEventHandler::new;
+  private static ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "ComponentWithAnnotatedParameterEventHandler" );
     }
@@ -78,5 +80,49 @@ class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotate
   )
   void handleFoo2(@Nonnull final String arg0) {
     super.handleFoo2(arg0);
+  }
+
+  @JsType(
+      isNative = true
+  )
+  interface Lifecycle {
+    void componentDidMount();
+
+    void componentDidUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1);
+
+    void componentWillUnmount();
+
+    boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1);
+  }
+
+  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, ComponentWithAnnotatedParameterEventHandler> implements Lifecycle {
+    NativeReactComponent(@Nonnull final BaseProps props) {
+      super( props );
+    }
+
+    @Override
+    protected ComponentWithAnnotatedParameterEventHandler createComponent() {
+      return new Arez_ComponentWithAnnotatedParameterEventHandler_();
+    }
+
+    @Override
+    public void componentDidMount() {
+      performComponentDidMount();
+    }
+
+    @Override
+    public void componentDidUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1) {
+      performComponentDidUpdate(arg0,arg1);
+    }
+
+    @Override
+    public void componentWillUnmount() {
+      performComponentWillUnmount();
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1) {
+      return performShouldComponentUpdate(arg0,arg1);
+    }
   }
 }
