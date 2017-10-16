@@ -60,7 +60,7 @@ task 'site:link_check' do
 
   trap('INT') {webserver.shutdown}
   begin
-    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/react4j --exclude https://github.com/realityforge/react4j/compare/ --exclude https://github.com/realityforge/react4j/settings --exclude https://medium.freecodecamp.org/"
+    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/react4j --exclude https://github.com/realityforge/react4j/compare/ --exclude https://github.com/realityforge/react4j/settings --exclude https://medium.freecodecamp.org/ --exclude https://docs.oracle.com/javase/8/docs/api"
     # It does not follow frames in javadocs so run a separate pass over page that checks all javadocs
     sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/react4j/api/index-all.html"
   ensure
