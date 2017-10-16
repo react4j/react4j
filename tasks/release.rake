@@ -104,7 +104,7 @@ CONTENT
       changelog = changelog.gsub("# Change Log\n",<<HEADER)
 # Change Log
 
-## Unreleased
+### Unreleased
 HEADER
       IO.write('CHANGELOG.md', changelog)
 

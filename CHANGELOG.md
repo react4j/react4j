@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+### Unreleased
 
 ##### Added
 * Cached javascript functions created for methods annotated with `@EventHandler`. This allows the equivalent
