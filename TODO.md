@@ -57,5 +57,3 @@ class TodoEntry
   - set "defaultProps" property on constructor function (same way that we set name). All we need to do is detect
     if static property of correct name present on component and if so copy it across as part of annotation processing.
     https://reactjs.org/docs/react-component.html#defaultprops
-* It is unclear why we need to wrap setState in ReactArezComponent as that will surely trigger a re-render naturally -
-  is it only for other things like @Autorun? If so we should document it.

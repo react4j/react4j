@@ -40,8 +40,15 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
 
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
+  /**
+   * Props are observable in case @Autorun actions want to observe props and re-run on change.
+   */
   @Nonnull
   private final Observable _propsObservable;
+  /**
+   * State is marked as observable, not because it will help schedule renders (as changes to the underlying
+   * state triggers renders) but to allow @Autorun actions to observe state and be updated when it is updated.
+   */
   @Nonnull
   private final Observable _stateObservable;
   @Nonnull
