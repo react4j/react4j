@@ -87,7 +87,7 @@ CONTENT
       # Zapwhite only runs agains files added to git so we have to do this dance
       `bundle exec zapwhite`
       sh "git add #{filename}"
-      sh "git commit -m \"Update site to add new about the #{ENV['PRODUCT_VERSION']} release\""
+      sh "git commit -m \"Update site to add news about the #{ENV['PRODUCT_VERSION']} release\""
     end
 
     stage('BuildWebsite', 'Build the website to ensure site still builds') do
