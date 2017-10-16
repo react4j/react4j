@@ -250,7 +250,7 @@ define 'react4j' do
             'DOM Packages' => 'react4j.dom*',
             'Annotation Packages' => 'react4j.annotations*:react4j.processor*',
             'Arez Packages' => 'react4j.arez*',
-            'GWT WIdget Integration Packages' => 'react4j.widget*'
+            'GWT Widget Integration Packages' => 'react4j.widget*'
           }
     )
 
