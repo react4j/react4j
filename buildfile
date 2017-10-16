@@ -168,7 +168,7 @@ define 'react4j' do
     package(:javadoc)
 
     test.using :testng
-    test.options[:properties] = {'react4j.fixture_dir' => _('src/test/resources')}
+    test.options[:properties] = { 'react4j.fixture_dir' => _('src/test/resources') }
     test.compile.with TEST_DEPS
 
     # The generators are configured to generate to here.
