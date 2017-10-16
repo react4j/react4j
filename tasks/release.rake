@@ -7,7 +7,7 @@ def stage(stage_name, description, options = {})
       yield
     rescue Exception => e
       puts '💣 Error completing stage.'
-      puts "Fix the error and re-run release process passing: STAGE=#{stage_name}"
+      puts "Fix the error and re-run release process passing: STAGE=#{stage_name} PREVIOUS_PRODUCT_VERSION=#{ENV['PREVIOUS_PRODUCT_VERSION']} PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']}"
       raise e
     end
     ENV['STAGE'] = nil unless options[:always_run]
