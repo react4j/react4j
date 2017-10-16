@@ -48,8 +48,7 @@ class TodoEntry
 
 ### Low Priorities
 
-* Document differences between React and React4j. Document the scheduleRender difference.
-* Should we rename setState to scheduleUpdate() or enqueueSetState???
+* Document differences between React and React4j. Document the scheduleRender and scheduleStateUpdate difference.
 * Should Props and state fields be read-only abstractions?
 * build in https://github.com/maicki/why-did-you-update
 * Add support for componentDidCatch() (React16)

@@ -71,7 +71,7 @@ class TodoEntry
 
   private void setTodoText( @Nonnull final String value )
   {
-    setState( State.create( value ) );
+    scheduleStateUpdate( State.create( value ) );
   }
 
   @Nullable

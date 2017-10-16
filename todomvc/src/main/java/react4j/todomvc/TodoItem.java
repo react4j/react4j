@@ -108,7 +108,7 @@ class TodoItem
     {
       AppData.service.save( props.todo, val );
       AppData.viewService.setTodoBeingEdited( null );
-      setState( State.create( val ) );
+      scheduleStateUpdate( State.create( val ) );
     }
     else
     {
@@ -126,7 +126,7 @@ class TodoItem
   void onEdit()
   {
     AppData.viewService.setTodoBeingEdited( props().todo );
-    setState( State.create( props().todo.getTitle() ) );
+    scheduleStateUpdate( State.create( props().todo.getTitle() ) );
   }
 
   @EventHandler( MouseEventHandler.class )
@@ -137,7 +137,7 @@ class TodoItem
 
   void onCancel()
   {
-    setState( State.create( props().todo.getTitle() ) );
+    scheduleStateUpdate( State.create( props().todo.getTitle() ) );
     AppData.viewService.setTodoBeingEdited( null );
   }
 
@@ -147,7 +147,7 @@ class TodoItem
     if ( isTodoBeingEdited() )
     {
       final HTMLInputElement input = Js.cast( event.target );
-      setState( State.create( input.value ) );
+      scheduleStateUpdate( State.create( input.value ) );
     }
   }
 
@@ -160,7 +160,7 @@ class TodoItem
     if ( !_isEditing && todoBeingEdited )
     {
       _isEditing = true;
-      setState( State.create( state().editText ) );
+      scheduleStateUpdate( State.create( state().editText ) );
       final HTMLInputElement input = getRef( "editField" );
       assert null != input;
       input.focus();

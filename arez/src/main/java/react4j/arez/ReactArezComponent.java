@@ -129,13 +129,13 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  protected final void setState( @Nonnull final S state )
+  protected final void scheduleStateUpdate( @Nonnull final S state )
   {
-    Arez.context().safeAction( toName( ".setState" ),
+    Arez.context().safeAction( toName( ".scheduleStateUpdate" ),
                                true,
                                () -> {
                                  _stateObservable.reportChanged();
-                                 super.setState( state );
+                                 super.scheduleStateUpdate( state );
                                } );
   }
 
@@ -143,15 +143,15 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  protected final void setState( @Nonnull final SetStateCallback<P, S> callback )
+  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
   {
-    super.setState( ( s, p ) ->
-                      Arez.context().safeAction( toName( ".setStateCallback" ),
-                                                 true,
-                                                 () -> {
-                                                   _stateObservable.reportChanged();
-                                                   return callback.onSetState( s, p );
-                                                 } ) );
+    super.scheduleStateUpdate( ( s, p ) ->
+                                 Arez.context().safeAction( toName( ".setStateCallback" ),
+                                                            true,
+                                                            () -> {
+                                                              _stateObservable.reportChanged();
+                                                              return callback.onSetState( s, p );
+                                                            } ) );
   }
 
   @Nullable
@@ -254,7 +254,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       if ( JsUtil.isObjectShallowModified( currentArezData, data, "deps" ) ||
            JsUtil.isObjectShallowModified( currentDepsData, deps ) )
       {
-        super.setState( Js.<S>cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ) );
+        super.scheduleStateUpdate( Js.<S>cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ) );
       }
     }
   }

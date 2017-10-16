@@ -176,7 +176,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    *
    * @param state the object literal representing state.
    */
-  protected void setState( @Nonnull final S state )
+  protected void scheduleStateUpdate( @Nonnull final S state )
   {
     invariantsSetState();
     component().setState( state );
@@ -189,7 +189,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    *
    * @param callback the callback that will will be invoked to update state.
    */
-  protected void setState( @Nonnull final SetStateCallback<P, S> callback )
+  protected void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
   {
     invariantsSetState();
     component().setState( callback );
@@ -203,13 +203,13 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
     if ( ReactConfig.checkComponentStateInvariants() )
     {
       apiInvariant( () -> LifecycleMethod.COMPONENT_WILL_UPDATE != _lifecycleMethod,
-                    () -> "Incorrectly invoked setState() on " + this + " in scope of " +
+                    () -> "Incorrectly invoked scheduleStateUpdate() on " + this + " in scope of " +
                           "componentWillUpdate(). If you need to update state in response to " +
                           "a prop change, use componentWillReceiveProps() instead." );
       apiInvariant( () -> LifecycleMethod.RENDER != _lifecycleMethod,
-                    () -> "Incorrectly invoked setState() on " + this + " in scope of render()." );
+                    () -> "Incorrectly invoked scheduleStateUpdate() on " + this + " in scope of render()." );
       apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
-                    () -> "Incorrectly invoked setState() on " + this + " when component is " +
+                    () -> "Incorrectly invoked scheduleStateUpdate() on " + this + " when component is " +
                           "unmounting or has unmounted." );
     }
   }
@@ -313,7 +313,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * This method is invoked before a mounted component receives new props.
    * If you need to update the state in response to prop changes (for example, to reset it), you
    * may compare the {@link #props()} and supplied nextProps and perform state transitions using
-   * {@link #setState(BaseState)} in this method.
+   * {@link #scheduleStateUpdate(BaseState)} in this method.
    * See the <a href="https://reactjs.org/docs/react-component.html#componentwillreceiveprops">React Component documentation</a> for more details.
    *
    * <p>Note that React may call this method even if the props have not changed, so make sure to
@@ -321,7 +321,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * parent component causes your component to re-render.</p>
    *
    * <p>React doesn't call this method with initial props during mounting. It only calls this method
-   * if some of component's props may update. Calling {@link #setState(BaseState)} generally doesn't trigger
+   * if some of component's props may update. Calling {@link #scheduleStateUpdate(BaseState)} generally doesn't trigger
    * this method.</p>
    */
   protected void componentWillReceiveProps( @Nonnull final P nextProps )
@@ -344,7 +344,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * called for the initial render.
    * See the <a href="https://reactjs.org/docs/react-component.html#componentwillupdate">React Component documentation</a> for more details.
    *
-   * <p>Note that you cannot call {@link #setState(BaseState)} here. If you need to update state in
+   * <p>Note that you cannot call {@link #scheduleStateUpdate(BaseState)} here. If you need to update state in
    * response to a prop change, use {@link #componentWillReceiveProps(BaseProps)} instead.</p>
    *
    * <p>Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState)}
