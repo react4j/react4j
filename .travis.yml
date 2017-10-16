@@ -22,7 +22,7 @@ install:
 - rvm use 2.3.1
 - gem install bundler
 - bundle install
-script: buildr clean site:deploy package publish_if_tagged
+script: buildr site:deploy package publish_if_tagged
 git:
   depth: 10
 env:
