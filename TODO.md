@@ -27,7 +27,6 @@
    
 ```java
 @ReactComponent
-@ArezComponent
 class TodoEntry
   extends ReactArezComponent<BaseProps, TodoEntry.State>
 {
