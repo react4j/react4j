@@ -9,6 +9,8 @@ be able to use existing react component libraries and toolkits from Java but thi
 The project also aims to also develop guards that stop you from using the toolkit incorrectly with no
 performance cost in production builds.
 
+For more information about React4j, please see the [Website](http://realityforge.org/react4j/).
+
 # Credit
 
 * [Stock Software](http://www.stocksoftware.com.au/) for providing significant support in building and maintaining
