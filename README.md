@@ -11,6 +11,9 @@ performance cost in production builds.
 
 # Credit
 
+* [Stock Software](http://www.stocksoftware.com.au/) for providing significant support in building and maintaining
+  React4j, particularly at it's inception.
+
 * This toolkit began as an experiment using [gwt-react](https://github.com/GWTReact/gwt-react) to build
   a React/GWT hybrid application. Before too long we merged in all the `gwt-react` projects in and started
   to co-evolve them into something that fit our needs better. Credit goes to Paul Stockley and other contributors
