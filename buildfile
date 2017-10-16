@@ -240,7 +240,7 @@ define 'react4j' do
     iml.main_source_directories << _('generated/processors/main/java')
   end
 
-  doc.from(projects(%w(annotations core dom arez processor))).using(:javadoc, :windowtitle => 'React')
+  doc.from(projects(%w(annotations core dom arez processor widget))).using(:javadoc, :windowtitle => 'React')
 
   iml.excluded_directories << project._('tmp/gwt')
   iml.excluded_directories << project._('tmp')
