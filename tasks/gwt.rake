@@ -54,13 +54,12 @@ CONTENT
     end
   end
 
-  project.assets.paths.each do |path|
-    j.include("#{path}/*")
-  end
-
   project.package(:jar).tap do |j|
     extra_deps.each do |dep|
       j.include("#{dep}/*")
+    end
+    project.assets.paths.each do |path|
+      j.include("#{path}/*")
     end
     j.include("#{project._(:source, :main, :java)}/*")
   end if package_jars
