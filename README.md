@@ -15,10 +15,10 @@ performance cost in production builds.
   React4j, particularly at it's inception.
 
 * This toolkit began as an experiment using [gwt-react](https://github.com/GWTReact/gwt-react) to build
-  a React/GWT hybrid application. Before too long we merged in all the `gwt-react` projects in and started
-  to co-evolve them into something that fit our needs better. Credit goes to Paul Stockley and other contributors
-  to the `gwt-react` projects who we based most of our work on. Several files within the code-base remain as direct
-  copies from the original `gwt-react` project.
+  a React/GWT hybrid application. Before too long we merged and forked the `gwt-react` projects and began to
+  evolve this into a product that fit our needs better. Credit goes to Paul Stockley and other contributors
+  to the `gwt-react` projects who we based most of our initial work on. Several files within the code-base remain
+  as direct copies from the original `gwt-react` project.
 
 * It should go without saying that this toolkit owes it existence to the wonderful [ReactJS](https://reactjs.org/)
   project.
