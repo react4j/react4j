@@ -1,26 +1,32 @@
 language: ruby
 jdk:
-  - oraclejdk8
+- oraclejdk8
 sudo: false
 rvm:
-  - 2.3.1
+- 2.3.1
 node_js:
-  - v6.10.3
+- v6.10.3
 before_install:
-  # See https://gist.github.com/domenic/ec8b0fc8ab45f39403dd
-  # Generate key via "ssh-keygen -t rsa -b 4096 -C "peter@realityforge.org" -f ./deploy_id_rsa" and upload pub as deploy key for project
-  # Generate next line via "travis encrypt-file deploy_id_rsa"
-  - openssl aes-256-cbc -K $encrypted_757306a4cb52_key -iv $encrypted_757306a4cb52_iv -in etc/deploy_id_rsa.enc -out ../deploy_id_rsa -d
-  - chmod 600 ../deploy_id_rsa
-  - eval `ssh-agent -s` && ssh-add ../deploy_id_rsa
+- openssl aes-256-cbc -K $encrypted_dca3c32be0a4_key -iv $encrypted_dca3c32be0a4_iv
+  -in etc/secrets -out ../secrets.tar -d
+- "(cd ../ && tar xvf secrets.tar)"
+- chmod 600 ../release.asc
+- gpg --import ../release.asc
+- chmod 600 ../deploy
+- eval `ssh-agent -s` && ssh-add ../deploy
 install:
-  - nvm install v6.10.3
-  - nvm use v6.10.3
-  - npm install -g yarn
-  - yarn install
-  - rvm use 2.3.1
-  - gem install bundler
-  - bundle install
+- nvm install v6.10.3
+- nvm use v6.10.3
+- npm install -g yarn
+- yarn install
+- rvm use 2.3.1
+- gem install bundler
+- bundle install
 script: buildr clean site:deploy package publish_if_tagged
 git:
   depth: 10
+env:
+  global:
+  - secure: UbCNldmuPS5GDoaspFZdrjYuSF8TSiXjPw4Cb6rnjXD60CNYqfW5kdK3btsdtvpJvRHtYmGun4+iOPYZXhpMu6w8GDwu86gFcm/jGAZ7oqXIWzWGzCeizauovbF2g24PLwFBLa8+V6RH608lDXACbJbwl9WWUGA/HMy9wUpgl8vWKyz9JVzKm1YRhZyCgsUvOYa54kkEBCXXjeQdxSKdhXl6xmoswxbOOEbi35GQZ9HPNG8j1oo6N+FysuA2VN0oB7mpfXwOibohO4M50R9phE6CBXx2VvaqhVuUNVMu0VOzKd2cGlLQsVy8wpt1zDBqdeLwBMS0XKBxJN93RYWFLEdX82jMa+oz94XMIc/CD06bZMKb5ao4Fldf/hhcscL2tIw4qIzKpF02BTaNYgZ/fRMptyyUn0+8xDvkNm2blMD0VeYRq/CufSxO4e6ooYIzPv/MdhbksNFtCOh2yFndm/pMFczehyRK0nYBIVXj7/mk4DVrYKt4iSoXO1Jeyj0JWLjz5r3bA375t9uJeHabxmx8S77bLnsurblmr66JuQ7/zy2DzZ7NoH8E2v+n1DHQA/LaLA5SV2/b08qDOocboFDHiEe5pL3LLewLxGHAD5t8mDwsw9pb0MnbDOazoHgGIXR+kJLOQX67z0TWysxsMedbRpuSdIFahstX8i/rkzM=
+  - secure: nxT2eF3ebwghjcFHOv+AuyOy9kBkcdmta2QxaEQD0sO0eKbbJwHaBm8mdf2w7odCD5S48QO+KcrQr5iQH2b0sbINaVeHrWcrqfz5Dy8RyDs9s85OL60ufcEc7WSl8cYMmLaH3I2tIf4gUJEtyWXJP52bR9ZOe3zvbjRqpVLxYZbgPzUr7c+Irg7cuT5rY+6g7t5GGHUCzsEfKoWjtBKc2eCZ1CRk7C8UXmjei9sxwLeFT16LtI8YrwAe3Z6Lpueoq3HJgduslEjDbt59Up0covAX2+XTVcb+scbT0fz11sESbt5z+4O3nTcDmBuqWVSWzhpflgslb2Kg1p0V4fDSsFzLYp/ldFdh9tohHX/fBQEq20W7YrJnY2d6mWBnI1t80CQaTznkpIroeiF1CQHziPB+JgOTUncfskI6gf3wbSa361MSkIVnid2kQpvZsZ/nEe1m/ibHssov0NT57TKwtUv6PYGA8fMWfC/F5o2KMYZPi7Cnd8LDaDuC4FpzVtQu0UJPQVaBqM6gCvFr0EU2lrFUgUHNLWzpFrmdD+F89TJ1v4X88RWm3NqMbEBl6KquHkNUwQqTSFPHmdRfWXkyP/EMx3ZZkrvOZZp7zG6kcirraCtLNwksEcKCKjBni+w3iXS8mrsKRC4KIxXiv7qrMeeZL0LXpqa5pinOXBo9Po8=
+  - secure: WKJbzbMXfHDxJVI+z9qHJS3NrTgLZCwPQGgVZRC0nauOuMjfMYbpb4wnwDc2zec0IQt8tCpS+t0663CKzCKkMYD7GZtS80KQ0IaF6cNy4XEEKzbkjQKNgEBTlZk8MBWK1+APhJrXr0imiFVmQo2r/xatEmGOjWkBcitRprZrOQGH33c7wwGoI5VzAjuQz6KKibmefx+6cFOVqO/T3mpUNipcKX5ZeeAgNpd/K6Q8iaXv29GShgpPnOPBxSOVO2QYDQNZjS3Yl29AUsszeOIJ7gc+HaazF0n0uljI58NFeVlAPP5HcmvXAhl61dP9mPNOfzmh1Py1XmVObyKsr2CTHea8yqGzgbya+Q2eKfOFX8F7b/w94oPlMaRMrig1FPDBJWMKX3i/V0lctictQKfdYrCQfC+QD1eITZ4X7+lS6PN4rPtOB+HIU4so2zB02vGkM8/uSN6c0g7aoZsbUPusMrbMBWnOWlDtGE9k4pRjB7A6GaG89V7rEh6NQ3ZtBKVqYsz11YhYvarCnCumOeCagR8FpQcXyoEpYLUYs2n0crDyuZ5QGqBigRstA+3gQHAbq/oOHkPtEkV4Bcu3GlYuuBIXwrRlb3cgNnUUMn7vitNlsfJLuGGHU67Ya3MjT5irdDGrLaENQ+1hRX8x22Hbwjt1Eowm+gsMrUhzaFP5Yjc=
