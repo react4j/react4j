@@ -15,6 +15,9 @@
   the arez resources.
 
 ##### Changed
+* 💥 Change all the compile time constant property keys from being prefixed by `react.` to being prefixed
+  by `react4j.` to align with project name change. This should impact downstream users if the builtin modules
+  are inherited from and no custom properties were set.
 * 💥 **\[arez\]** Classes extending `ReactArezComponent` must NOT be annotated with `@ArezComponent` as the
   generated subclass will be annotated instead. Any `@EventHandler` annotated method have the `@Action` annotation
   added by default and it is an error for the developer to explicitly annotate an `@EventHandler` with an `@Action`

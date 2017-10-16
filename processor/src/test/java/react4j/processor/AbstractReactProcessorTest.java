@@ -142,13 +142,13 @@ abstract class AbstractReactProcessorTest
   @Nonnull
   private Path fixtureDir()
   {
-    final String fixtureDir = System.getProperty( "react.fixture_dir" );
-    assertNotNull( fixtureDir, "Expected System.getProperty( \"react.fixture_dir\" ) to return fixture directory" );
+    final String fixtureDir = System.getProperty( "react4j.fixture_dir" );
+    assertNotNull( fixtureDir, "Expected System.getProperty( \"react4j.fixture_dir\" ) to return fixture directory" );
     return new File( fixtureDir ).toPath();
   }
 
   private boolean outputFiles()
   {
-    return System.getProperty( "react.output_fixture_data", "false" ).equals( "true" );
+    return System.getProperty( "react4j.output_fixture_data", "false" ).equals( "true" );
   }
 }

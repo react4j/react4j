@@ -7,6 +7,6 @@
 
   <public path='public' includes="dev/*"/>
 
-  <set-property name="react.environment" value="development"/>
-  <set-property name="react.enable_component_names" value="true"/>
+  <set-property name="react4j.environment" value="development"/>
+  <set-property name="react4j.enable_component_names" value="true"/>
 </module>

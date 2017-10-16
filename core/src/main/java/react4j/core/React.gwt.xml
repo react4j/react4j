@@ -13,12 +13,12 @@
     See that class for a better understanding of what these properties do.
   -->
 
-  <define-property name="react.environment" values="development,production"/>
-  <set-property name="react.environment" value="production"/>
+  <define-property name="react4j.environment" values="development,production"/>
+  <set-property name="react4j.environment" value="production"/>
 
-  <define-property name="react.enable_component_names" values="true,false"/>
-  <set-property name="react.enable_component_names" value="false"/>
+  <define-property name="react4j.enable_component_names" values="true,false"/>
+  <set-property name="react4j.enable_component_names" value="false"/>
 
-  <define-property name="react.check_component_state_invariants" values="true,false"/>
-  <set-property name="react.check_component_state_invariants" value="false"/>
+  <define-property name="react4j.check_component_state_invariants" values="true,false"/>
+  <set-property name="react4j.check_component_state_invariants" value="false"/>
 </module>
