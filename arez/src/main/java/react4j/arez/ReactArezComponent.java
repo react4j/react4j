@@ -148,10 +148,21 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     super.scheduleStateUpdate( ( s, p ) ->
                                  Arez.context().safeAction( toName( ".setStateCallback" ),
                                                             true,
-                                                            () -> {
-                                                              _stateObservable.reportChanged();
-                                                              return callback.onSetState( s, p );
-                                                            } ) );
+                                                            () -> callSetStateCallback( callback, s, p ) ) );
+  }
+
+  @Nullable
+  private S callSetStateCallback( @Nonnull final SetStateCallback<P, S> callback,
+                                  @Nullable final S s,
+                                  @Nullable final P p )
+  {
+    final S state = callback.onSetState( s, p );
+    if ( null != state )
+    {
+      // If and only if state will be modified should we mark it as modified
+      _stateObservable.reportChanged();
+    }
+    return state;
   }
 
   @Nullable
