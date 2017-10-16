@@ -240,7 +240,19 @@ define 'react4j' do
     iml.main_source_directories << _('generated/processors/main/java')
   end
 
-  doc.from(projects(%w(annotations core dom arez processor widget))).using(:javadoc, :windowtitle => 'React')
+  doc.from(projects(%w(annotations core dom arez processor widget))).
+    using(:javadoc,
+          :windowtitle => 'React4j API Documentation',
+          :linksource => true,
+          :link => %w(http://realityforge.org/arez/api https://docs.oracle.com/javase/8/docs/api http://www.gwtproject.org/javadoc/latest),
+          :group => {
+            'Core Packages' => 'react4j.core*',
+            'DOM Packages' => 'react4j.dom*',
+            'Annotation Packages' => 'react4j.annotations*:react4j.processor*',
+            'Arez Packages' => 'react4j.arez*',
+            'GWT WIdget Integration Packages' => 'react4j.widget*'
+          }
+    )
 
   iml.excluded_directories << project._('tmp/gwt')
   iml.excluded_directories << project._('tmp')
