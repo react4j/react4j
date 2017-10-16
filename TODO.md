@@ -24,7 +24,7 @@
    Looks like a good way to create factories is described at https://blog.jayway.com/2012/02/07/builder-pattern-with-a-twist/
    with an existing annotation processor approach at https://github.com/ltearno/builder-generator where we could make some
    parameters and potentially children required. Would need to synthesize from annotations. Maybe something like
-   
+
 ```java
 @ReactComponent
 class TodoEntry
@@ -41,7 +41,7 @@ class TodoEntry
   {
   }
 ```
-    
+
 * Generate all the html props based on typings at https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
 * Somehow declare props as interfaces in components and have implementation generated?
 * In base class have configuration that warns on re-renders that produced duplicate values

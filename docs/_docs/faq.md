@@ -74,9 +74,9 @@ component and take advantage of the potential performance enhancements.
 Actually it turns out that functional components should be slightly faster in React 16 as there's no
 instance created to wrap them unlike in React 15. However this seems to be obscured by the slight overhead
 of React4j but when/if the performance becomes more discernible, expect React4j to begin supporting stateless
-functional components. 
+functional components.
 
-It should be noted that a month or two after we had made this decision the article 
+It should be noted that a month or two after we had made this decision the article
 ["7 Reasons to Outlaw React’s Functional Components"](https://medium.freecodecamp.org/7-reasons-to-outlaw-reacts-functional-components-ff5b5ae09b7c)
 was published and a similar sentiment arose in the Javascript community.
 
