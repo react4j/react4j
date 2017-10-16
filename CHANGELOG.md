@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Changed
+* **\[core\]** 💥 Replace `Component.setState(...)` with `Component.scheduleStateUpdate(...)` so that it
+  accurately reflects intent.
+
 ### [v0.03](https://github.com/realityforge/react4j/tree/v0.03) (2017-10-16)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.02...v0.03)
 
@@ -31,8 +35,6 @@
   component adapter as static subclasses of this single enhanced component class. This means that React4j generates
   a single java file for each component. The intent is to make it easier to understand what is happening underneath
   the covers.
-* **\[core\]** 💥 Replace `Component.setState(...)` with `Component.scheduleStateUpdate(...)` so that it
-  accurately reflects intent.
 * **\[core\]** 💥 Remove `Component.forceUpdate()` and replace it with the api `Component.scheduleRender(boolean force)`
   where `force=true` calls the underlying `NativeComponent.forceUpdate()` and `force=false` is equivalent
   to `setState({})`.
