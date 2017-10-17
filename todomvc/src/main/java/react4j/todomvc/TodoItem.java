@@ -135,7 +135,7 @@ class TodoItem
     AppData.model.destroy( props().todo );
   }
 
-  void onCancel()
+  private void onCancel()
   {
     scheduleStateUpdate( State.create( props().todo.getTitle() ) );
     AppData.viewService.setTodoBeingEdited( null );
