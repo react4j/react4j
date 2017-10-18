@@ -356,6 +356,10 @@ public final class ReactProcessor
     }
   }
 
+  /**
+   * Return the set of lifecycle methods as defined on the base component class.
+   * Used to compare against those on type class to see if they override.
+   */
   @Nonnull
   private HashMap<String, ExecutableElement> getComponentLifecycleMethods()
   {
