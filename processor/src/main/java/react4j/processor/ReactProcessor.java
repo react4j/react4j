@@ -71,7 +71,7 @@ public final class ReactProcessor
   @Override
   public boolean process( final Set<? extends TypeElement> annotations, final RoundEnvironment env )
   {
-    // Clear lifecycle method cache to avoid potential inter-run problems
+    // Clear method caches to avoid potential inter-run problems
     _componentLifecycleMethods.clear();
 
     final Set<? extends Element> elements = env.getElementsAnnotatedWith( ReactComponent.class );
