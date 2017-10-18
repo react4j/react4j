@@ -28,6 +28,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import react4j.core.Procedure;
 import react4j.core.ReactElement;
+import react4j.core.RenderResult;
 import react4j.dom.proptypes.html.HtmlGlobalFields;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL )
@@ -109,4 +110,19 @@ public class ReactDOM
   public static native <P extends HtmlGlobalFields> DOMElement<P> createElement( @Nonnull String type,
                                                                                  @Nullable P props,
                                                                                  @Nullable ReactElement<?, ?>... children );
+
+  /**
+   * Create and return a new ReactElement of the given type with specified children.
+   *
+   * @param <P>      The type of the props. It should match the associated tag name.
+   * @param type     A HTML tag name (eg. 'div', 'span', etc)
+   * @param props    The props to pass to the element.
+   * @param children The child elements.
+   * @return the created DOMElement
+   */
+  @Nonnull
+  @JsMethod( namespace = "React" )
+  public static native <P extends HtmlGlobalFields> DOMElement<P> createElement( @Nonnull String type,
+                                                                                 @Nullable P props,
+                                                                                 @Nullable RenderResult... children );
 }

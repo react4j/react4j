@@ -72,11 +72,11 @@ public abstract class NativeAdapterComponent<
   /**
    * Call render on the target component.
    *
-   * @return the react component.
+   * @return the output of rendering.
    * @see Component#render()
    */
   @Nullable
-  public final ReactElement<?, ?> render()
+  public final RenderResult render()
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {

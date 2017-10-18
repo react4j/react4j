@@ -29,7 +29,7 @@ class Footer
 
   @Nullable
   @Override
-  protected ReactElement<?, ?> render()
+  protected ReactElement<?, ?> renderAsElement()
   {
     final int count = AppData.model.totalCount();
     final String activeTodoWord = "item" + ( count == 1 ? "" : "s" );

@@ -174,7 +174,7 @@ class TodoItem
 
   @Nullable
   @Override
-  protected ReactElement<?, ?> render()
+  protected ReactElement<?, ?> renderAsElement()
   {
     final Props props = props();
     final boolean completed = props.todo.isCompleted();

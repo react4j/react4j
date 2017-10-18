@@ -41,7 +41,7 @@ class TodoList
 
   @Nullable
   @Override
-  protected ReactElement<?, ?> render()
+  protected ReactElement<?, ?> renderAsElement()
   {
     return
       div(

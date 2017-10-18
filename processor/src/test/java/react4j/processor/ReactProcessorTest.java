@@ -1,6 +1,9 @@
 package react4j.processor;
 
+import java.util.Arrays;
+import java.util.Collections;
 import javax.annotation.Nonnull;
+import javax.tools.JavaFileObject;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -27,6 +30,11 @@ public class ReactProcessorTest
         new Object[]{ "com.example.event_handler.CustomHandlerMultipleArgsComponent" },
         new Object[]{ "com.example.event_handler.CustomNameComponent" },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
+        new Object[]{ "com.example.render.BaseRenderComponent" },
+        new Object[]{ "com.example.render.RenderAsArrayComponent" },
+        new Object[]{ "com.example.render.RenderAsElementComponent" },
+        new Object[]{ "com.example.render.RenderAsJsArrayComponent" },
+        new Object[]{ "com.example.render.RenderAsStringComponent" },
         new Object[]{ "RootPackageReactComponent" }
       };
   }
@@ -52,6 +60,16 @@ public class ReactProcessorTest
   {
     assertSuccessfulCompile( "input/com/example/nested/NestedNestedReactComponent.java",
                              "expected/com/example/nested/NestedNestedReactComponent$DeepNesting$BasicReactComponent_.java" );
+  }
+
+  @Test
+  public void renderFromParent()
+    throws Exception
+  {
+    final JavaFileObject source1 = fixture( "input/com/example/render/MyParent.java" );
+    final JavaFileObject source2 = fixture( "input/com/example/render/RenderFromParentComponent.java" );
+    assertSuccessfulCompile( Arrays.asList( source1, source2 ),
+                             Collections.singletonList( "expected/com/example/render/RenderFromParentComponent_.java" ) );
   }
 
   @DataProvider( name = "failedCompiles" )
@@ -99,7 +117,13 @@ public class ReactProcessorTest
         new Object[]{ "com.example.event_handler.TooFewParamsComponent",
                       "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type com.example.event_handler.TooFewParamsComponent.CustomHandler that has handler method with 2 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method onMouseEvent." },
         new Object[]{ "com.example.event_handler.TooManyParamsComponent",
-                      "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react4j.core.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." }
+                      "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react4j.core.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." },
+        new Object[]{ "com.example.render.MissingRenderComponent",
+                      "The react component does not override any render methods." },
+        new Object[]{ "com.example.render.MultipleRenderComponent",
+                      "The react component has two candidate render methods renderAsString and render defined on the same type com.example.render.MultipleRenderComponent." },
+        new Object[]{ "com.example.render.MultipleRenderInNestedComponent",
+                      "The react component has two candidate render methods renderAsString and render defined on the same type com.example.render.MultipleRenderInNestedComponent.MyComponent." }
       };
   }
 

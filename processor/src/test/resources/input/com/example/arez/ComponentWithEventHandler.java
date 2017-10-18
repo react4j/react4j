@@ -7,7 +7,7 @@ import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
-import react4j.core.ReactElement;
+import react4j.core.RenderResult;
 
 @ReactComponent
 class ComponentWithEventHandler
@@ -21,7 +21,7 @@ class ComponentWithEventHandler
 
   @Nullable
   @Override
-  protected ReactElement<?, ?> render()
+  protected RenderResult render()
   {
     return null;
   }

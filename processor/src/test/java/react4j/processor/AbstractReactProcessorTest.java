@@ -55,8 +55,7 @@ abstract class AbstractReactProcessorTest
     assertSuccessfulCompile( Collections.singletonList( source ), Arrays.asList( expectedOutputResources ) );
   }
 
-  private void assertSuccessfulCompile( @Nonnull final List<JavaFileObject> inputs,
-                                        @Nonnull final List<String> outputs )
+  void assertSuccessfulCompile( @Nonnull final List<JavaFileObject> inputs, @Nonnull final List<String> outputs )
     throws Exception
   {
     // Arez processor required so that our tests emit all the right outputs
@@ -127,7 +126,7 @@ abstract class AbstractReactProcessorTest
   }
 
   @Nonnull
-  private JavaFileObject fixture( @Nonnull final String path )
+  protected final JavaFileObject fixture( @Nonnull final String path )
   {
     try
     {

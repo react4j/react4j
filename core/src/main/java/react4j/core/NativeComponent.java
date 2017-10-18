@@ -34,7 +34,7 @@ abstract class NativeComponent<P extends BaseProps, S extends BaseState>
 
   @JsMethod
   @Nullable
-  protected abstract ReactElement<?, ?> render();
+  protected abstract RenderResult render();
 
   @JsOverlay
   @Nullable

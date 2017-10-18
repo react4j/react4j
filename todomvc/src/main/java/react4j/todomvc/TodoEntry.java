@@ -76,7 +76,7 @@ class TodoEntry
 
   @Nullable
   @Override
-  protected ReactElement<?, ?> render()
+  protected ReactElement<?, ?> renderAsElement()
   {
     return input( new InputProps()
                     .className( "new-todo" )

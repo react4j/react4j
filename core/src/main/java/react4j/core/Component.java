@@ -1,5 +1,6 @@
 package react4j.core;
 
+import elemental2.core.Array;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -251,11 +252,65 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   /**
    * Render the component.
    * See the <a href="https://reactjs.org/docs/react-component.html#render">React Component documentation</a> for more details.
+   * The developer can either override this method or override one of the renderAs* methods. If the developer overrides
+   * one of the renderAs* then the annotation processor will override this method. It is an error to override multiple
+   * render methods.
    *
    * @return the result of rendering.
    */
   @Nullable
-  protected abstract ReactElement<?, ?> render();
+  protected RenderResult render()
+  {
+    return null;
+  }
+
+  /**
+   * Render the component as a string.
+   * See {@link #render()} for further details.
+   *
+   * @return the result of rendering.
+   */
+  @Nullable
+  protected String renderAsString()
+  {
+    return null;
+  }
+
+  /**
+   * Render the component as a react element.
+   * See {@link #render()} for further details.
+   *
+   * @return the result of rendering.
+   */
+  @Nullable
+  protected ReactElement<?, ?> renderAsElement()
+  {
+    return null;
+  }
+
+  /**
+   * Render the component as an array.
+   * See {@link #render()} for further details.
+   *
+   * @return the result of rendering.
+   */
+  @Nullable
+  protected RenderResult[] renderAsArray()
+  {
+    return null;
+  }
+
+  /**
+   * Render the component as a javascript array.
+   * See {@link #render()} for further details.
+   *
+   * @return the result of rendering.
+   */
+  @Nullable
+  protected Array<RenderResult> renderAsJsArray()
+  {
+    return null;
+  }
 
   /**
    * Wrapper method for rendering the component.
@@ -265,7 +320,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @return the result of rendering.
    */
   @Nullable
-  protected ReactElement<?, ?> performRender()
+  protected RenderResult performRender()
   {
     return render();
   }

@@ -1,5 +1,6 @@
 package react4j.core;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
@@ -15,5 +16,11 @@ public class ReactElement<P extends BaseProps, T>
    */
   protected ReactElement()
   {
+  }
+
+  @JsOverlay
+  public final RenderResult asRenderResult()
+  {
+    return RenderResult.of( this );
   }
 }

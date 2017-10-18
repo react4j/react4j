@@ -7,14 +7,6 @@
 ### Medium Priorities
 
 * Figure out how components can interact with with dagger
-* Add multiple render methods that return different values. Enhance code generator to ensure that
-  the developer only overloads a single variant. Variants include;
-  - renderAsElement
-  - renderAsString (React16?)
-  - renderAsChildren (React16?)
-  - renderAsList (React16?)
-  - renderAsArray (React16?)
-  - Perhaps we go down the same path as Elemental uses for unions?
 * Figure out a way to define dom factories in java that are optimized away in production such that
    `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
    compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`

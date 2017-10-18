@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -29,6 +30,7 @@ import jsinterop.base.JsPropertyMap;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
+import react4j.core.RenderResult;
 
 final class Generator
 {
@@ -83,6 +85,12 @@ final class Generator
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
     {
       builder.addMethod( buildStaticEventHandlerMethod( descriptor, eventHandler ).build() );
+    }
+
+    final MethodDescriptor renderMethod = descriptor.getRenderMethod();
+    if ( !renderMethod.getMethod().getSimpleName().toString().equals( "render" ) )
+    {
+      builder.addMethod( buildRenderAdapterMethod( renderMethod ).build() );
     }
 
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
@@ -151,6 +159,17 @@ final class Generator
 
     method.addStatement( "return (($T) component).$N", descriptor.getEnhancedClassName(), handlerName );
     return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildRenderAdapterMethod( @Nonnull final MethodDescriptor renderMethod )
+  {
+    return MethodSpec.methodBuilder( "render" ).
+      addModifiers( Modifier.PROTECTED ).
+      addAnnotation( Override.class ).
+      addAnnotation( Nullable.class ).
+      returns( RenderResult.class ).
+      addStatement( "return $T.of( $N() )", RenderResult.class, renderMethod.getMethod().getSimpleName().toString() );
   }
 
   @Nonnull

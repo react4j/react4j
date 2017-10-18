@@ -30,6 +30,11 @@ final class ComponentDescriptor
   @Nullable
   private TypeElement _stateType;
   /**
+   * Render method overridden by the user.
+   */
+  @Nullable
+  private MethodDescriptor _renderMethod;
+  /**
    * Lifecycle methods that are overridden by the user and need to be proxied from the native object.
    */
   @Nullable
@@ -188,6 +193,18 @@ final class ComponentDescriptor
       name.insert( 0, t.getSimpleName() + "$" );
     }
     return name.toString();
+  }
+
+  @Nonnull
+  MethodDescriptor getRenderMethod()
+  {
+    assert null != _renderMethod;
+    return _renderMethod;
+  }
+
+  void setRenderMethod( @Nonnull final MethodDescriptor renderMethod )
+  {
+    _renderMethod = Objects.requireNonNull( renderMethod );
   }
 
   @Nonnull

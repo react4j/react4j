@@ -2,6 +2,17 @@
 
 ### Unreleased
 
+##### Added
+* Added `RenderResult` union type that abstracts over the results of rendering from a component. It is designed
+  to support the types supported by React16, namely `ReactElement`, `String` and arrays of values to render.
+
+##### Changed
+* **\[core\]** Change the return type of `Component.render()` method to `RenderResult` and add a default
+  implementation that returns `null`. Also provide several other render method variants as part of the base
+  component implementation `Component.renderAsString()`, `Component.renderAsElement()`, `Component.renderAsJsArray()`
+  and `Component.renderAsArray()`. The developer is expected to override a single render method variant and
+  the annotation processor will ensure the enhanced class uses that render method variant to render the component.
+
 ### [v0.04](https://github.com/realityforge/react4j/tree/v0.04) (2017-10-16)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.03...v0.04)
 
