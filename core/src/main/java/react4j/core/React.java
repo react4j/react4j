@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 
 /**
  * Native interface to native runtime for creating component.
@@ -47,7 +48,9 @@ public final class React
   ReactElement<P, T> createElement( @Nonnull final ComponentConstructorFunction<P, S, T> type,
                                     @Nullable final P props )
   {
-    return createElement( type, props, null );
+    // Need to pass through undefined to react otherwise the debugger tool displays
+    // children as null rather than omitting children
+    return createElement( type, props, Js.uncheckedCast( Js.undefined() ) );
   }
 
   /**
