@@ -23,6 +23,7 @@ SOFTWARE. */
 
 import elemental2.core.Array;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
@@ -54,7 +55,7 @@ public class React
    * @return a {@link ReactElement}
    */
   public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
-  createElement( @Nonnull ComponentConstructorFunction<P, S, T> type, @Nonnull P props );
+  createElement( @Nonnull ComponentConstructorFunction<P, S, T> type, @Nullable P props );
 
   public static native <P extends BaseProps, S extends BaseState, T extends NativeComponent<P, S>> ReactElement<P, T>
   createElement( @Nonnull ComponentConstructorFunction<P, S, T> type, @Nonnull P props, @Nonnull String value );

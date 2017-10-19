@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Fixed
+* Fixed nullability annotations on `React.createElement`.
+
 ##### Added
 * Added `i` method to DOM factory.
 
