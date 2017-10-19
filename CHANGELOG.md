@@ -3,8 +3,9 @@
 ### Unreleased
 
 ##### Fixed
-* Fixed nullability annotations on `React.createElement`.
-* Added nullability annotations to `React.cloneElement`.
+* Rewrite the `react4j.core.React` class, moving some code to java where possible and eliminating as yet unused
+  code. Some code (i.e. code to interact with children) has yet to be imported. The children parameter has been
+  replaced by RenderResult.
 
 ##### Added
 * Added `i` method to DOM factory.
