@@ -76,8 +76,8 @@ public class React
    * @param props   the props to merge
    * @return the cloned element
    */
-  public static native <P extends BaseProps, T> ReactElement<P, T> cloneElement( ReactElement<P, T> element,
-                                                                                 P props );
+  public static native <P extends BaseProps, T> ReactElement<P, T> cloneElement( @Nonnull ReactElement<P, T> element,
+                                                                                 @Nullable P props );
 
   public static native boolean isValidElement( Object object );
 

@@ -4,6 +4,7 @@
 
 ##### Fixed
 * Fixed nullability annotations on `React.createElement`.
+* Added nullability annotations to `React.cloneElement`.
 
 ##### Added
 * Added `i` method to DOM factory.
