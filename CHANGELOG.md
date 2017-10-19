@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Added
+* Added `i` method to DOM factory.
+
 ##### Changed
 * Move to GWT 2.8.2.
 

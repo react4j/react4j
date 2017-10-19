@@ -19,6 +19,7 @@ def dom_factory_types
     'h4' => 'HtmlProps',
     'h5' => 'HtmlProps',
     'h6' => 'HtmlProps',
+    'i' => 'HtmlProps',
     'iframe' => 'IFrameProps',
     'img' => 'ImgProps',
     'input' => 'InputProps',
