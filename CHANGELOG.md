@@ -3,7 +3,7 @@
 ### Unreleased
 
 ##### Changed
-* Move to developing against GWT 2.8.2.
+* Move to GWT 2.8.2.
 
 ### [v0.05](https://github.com/realityforge/react4j/tree/v0.05) (2017-10-19)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.04...v0.05)
