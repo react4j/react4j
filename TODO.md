@@ -2,6 +2,7 @@
 
 ### High Priority
 
+* Document differences between React and React4j. Document the scheduleRender and scheduleStateUpdate difference.
 * Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
 ### Medium Priorities
@@ -35,13 +36,12 @@ class TodoEntry
 ```
 
 * Generate all the html props based on typings at https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
+* Props and state fields should be read-only abstractions? Mutations create new objects?
 * Somehow declare props as interfaces in components and have implementation generated?
-* In base class have configuration that warns on re-renders that produced duplicate values
 
 ### Low Priorities
 
-* Document differences between React and React4j. Document the scheduleRender and scheduleStateUpdate difference.
-* Should Props and state fields be read-only abstractions?
+* In base class have configuration that warns on re-renders that produced duplicate values
 * build in https://github.com/maicki/why-did-you-update
 * Add support for componentDidCatch() (React16)
 * Add support for portals (React16)
