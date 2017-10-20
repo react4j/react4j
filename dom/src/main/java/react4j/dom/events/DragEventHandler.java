@@ -6,5 +6,5 @@ import jsinterop.annotations.JsFunction;
 @FunctionalInterface
 public interface DragEventHandler
 {
-  public void onDragEvent( DragEvent event );
+  void onDragEvent( DragEvent event );
 }
