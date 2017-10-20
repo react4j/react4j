@@ -68,9 +68,6 @@ HEADER
 @Generated( "GwtReact" )
 public final class DOM
 {
-  /**
-   * This is a static class.
-   */
   private DOM()
   {
   }
