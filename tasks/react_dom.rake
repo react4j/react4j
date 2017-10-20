@@ -66,7 +66,7 @@ HEADER
  * DOM provides convenience wrappers around React.createElement for DOM components.
  */
 @Generated( "GwtReact" )
-public class DOM
+public final class DOM
 {
   /**
    * This is a static class.
