@@ -6,7 +6,7 @@ import react4j.annotations.ReactComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
-import react4j.core.RenderElement;
+import react4j.core.ReactNode;
 
 @ReactComponent
 class RenderAsJsArrayComponent
@@ -14,7 +14,7 @@ class RenderAsJsArrayComponent
 {
   @Nullable
   @Override
-  protected Array<RenderElement> renderAsJsArray()
+  protected Array<ReactNode> renderAsJsArray()
   {
     return super.renderAsJsArray();
   }

@@ -5,7 +5,7 @@ import react4j.annotations.ReactComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
-import react4j.core.RenderElement;
+import react4j.core.ReactNode;
 
 @ReactComponent
 class BaseRenderComponent
@@ -13,7 +13,7 @@ class BaseRenderComponent
 {
   @Nullable
   @Override
-  protected RenderElement render()
+  protected ReactNode render()
   {
     return super.render();
   }

@@ -7,7 +7,7 @@ import react4j.arez.NoAutoAction;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
-import react4j.core.RenderElement;
+import react4j.core.ReactNode;
 
 @ReactComponent
 class ComponentWithNoAutoActionEventHandler
@@ -15,7 +15,7 @@ class ComponentWithNoAutoActionEventHandler
 {
   @Nullable
   @Override
-  protected RenderElement render()
+  protected ReactNode render()
   {
     return null;
   }

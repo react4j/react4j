@@ -9,7 +9,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.core.BaseProps;
 import react4j.core.ReactElement;
-import react4j.core.RenderElement;
+import react4j.core.ReactNode;
 import react4j.dom.proptypes.html.HtmlGlobalFields;
 
 /**
@@ -18,7 +18,7 @@ import react4j.dom.proptypes.html.HtmlGlobalFields;
 public abstract class AbstractBuilder<T extends AbstractBuilder>
 {
   private final BaseProps _props = new BaseProps();
-  private final Array<RenderElement> _children = new Array<>();
+  private final Array<ReactNode> _children = new Array<>();
 
   @ForceInline
   public final T ref( @Nonnull final RefConsumer refCallback )
@@ -43,36 +43,36 @@ public abstract class AbstractBuilder<T extends AbstractBuilder>
   @ForceInline
   public final T children( @Nullable final ReactElement<?, ?>[] child )
   {
-    return child( RenderElement.of( child ) );
+    return child( ReactNode.of( child ) );
   }
 
   @ForceInline
   public final T child( @Nullable final ReactElement<?, ?> child )
   {
-    return child( RenderElement.of( child ) );
+    return child( ReactNode.of( child ) );
   }
 
   @ForceInline
   public final T child( @Nullable final String child )
   {
-    return child( RenderElement.of( child ) );
+    return child( ReactNode.of( child ) );
   }
 
-  public final T child( @Nullable final RenderElement child )
+  public final T child( @Nullable final ReactNode child )
   {
     _children.concat( child );
     return asT();
   }
 
   @Nonnull
-  public abstract RenderElement build();
+  public abstract ReactNode build();
 
   @Nonnull
-  protected final RenderElement build( @Nonnull final String input )
+  protected final ReactNode build( @Nonnull final String input )
   {
     final HtmlGlobalFields props = Js.uncheckedCast( _props );
-    final RenderElement[] children = Js.uncheckedCast( _children );
-    return RenderElement.of( ReactDOM.createElement( input, props, Js.uncheckedCast( children ) ) );
+    final ReactNode[] children = Js.uncheckedCast( _children );
+    return ReactNode.of( ReactDOM.createElement( input, props, Js.uncheckedCast( children ) ) );
   }
 
   @ForceInline

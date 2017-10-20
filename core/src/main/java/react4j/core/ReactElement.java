@@ -19,8 +19,8 @@ public class ReactElement<P extends BaseProps, T>
   }
 
   @JsOverlay
-  public final RenderElement asRenderResult()
+  public final ReactNode asRenderResult()
   {
-    return RenderElement.of( this );
+    return ReactNode.of( this );
   }
 }
