@@ -68,7 +68,7 @@ public final class React
     >
   ReactElement<P, T> createElement( @Nonnull ComponentConstructorFunction<P, S, T> type,
                                     @Nullable P props,
-                                    @Nullable RenderResult child );
+                                    @Nullable RenderElement child );
 
   /**
    * Clone and return a new ReactElement using element as the starting point. The resulting

@@ -97,13 +97,13 @@ HEADER
   @Nonnull
   public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props, @Nonnull final String content )
   {
-    return ReactDOM.createElement( "#{key}", props, content );
+    return ReactDOM.createElement( "#{key}", props, text( content ) );
   }
 
   @Nonnull
   public static DOMElement<#{prop_type}> #{key}( @Nonnull final String content )
   {
-    return ReactDOM.createElement( "#{key}", null, content );
+    return ReactDOM.createElement( "#{key}", null, text( content ) );
   }
 
   @Nonnull

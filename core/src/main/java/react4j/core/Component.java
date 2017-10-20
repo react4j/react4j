@@ -259,7 +259,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @return the result of rendering.
    */
   @Nullable
-  protected RenderResult render()
+  protected RenderElement render()
   {
     return null;
   }
@@ -295,7 +295,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @return the result of rendering.
    */
   @Nullable
-  protected RenderResult[] renderAsArray()
+  protected RenderElement[] renderAsArray()
   {
     return null;
   }
@@ -307,7 +307,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @return the result of rendering.
    */
   @Nullable
-  protected Array<RenderResult> renderAsJsArray()
+  protected Array<RenderElement> renderAsJsArray()
   {
     return null;
   }
@@ -320,7 +320,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @return the result of rendering.
    */
   @Nullable
-  protected RenderResult performRender()
+  protected RenderElement performRender()
   {
     return render();
   }

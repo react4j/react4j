@@ -17,7 +17,7 @@ import org.realityforge.arez.annotations.ComponentName;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
-import react4j.core.RenderResult;
+import react4j.core.RenderElement;
 import react4j.core.util.JsUtil;
 
 /**
@@ -174,7 +174,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
 
   @Nullable
   @Override
-  protected RenderResult performRender()
+  protected RenderElement performRender()
   {
     _renderDepsChanged = false;
     /*
@@ -182,7 +182,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
      * this using a method that does not work. Unclear of the exact cause. Also need to extract
      * the function to a separate variable otherwise JDT failes to determine type.
      */
-    final SafeFunction<RenderResult> render = this::render;
+    final SafeFunction<RenderElement> render = this::render;
     return Js.uncheckedCast( Arez.context().safeTrack( _renderTracker, render ) );
   }
 

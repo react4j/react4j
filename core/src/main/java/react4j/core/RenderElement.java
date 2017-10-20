@@ -10,10 +10,10 @@ import jsinterop.base.Js;
  * Union type representing possible output of render method.
  */
 @JsType( isNative = true, name = "?", namespace = JsPackage.GLOBAL )
-public interface RenderResult
+public interface RenderElement
 {
   @JsOverlay
-  static RenderResult of( final String string )
+  static RenderElement of( final String string )
   {
     return Js.cast( string );
   }
@@ -27,31 +27,31 @@ public interface RenderResult
    * @return the render result.
    */
   @JsOverlay
-  static RenderResult of( final ReactElementChildren children )
+  static RenderElement of( final ReactElementChildren children )
   {
     return Js.cast( children );
   }
 
   @JsOverlay
-  static RenderResult of( final ReactElement<?, ?> element )
+  static RenderElement of( final ReactElement<?, ?> element )
   {
     return Js.cast( element );
   }
 
   @JsOverlay
-  static RenderResult of( final ReactElement<?, ?>... elements )
+  static RenderElement of( final ReactElement<?, ?>... elements )
   {
     return Js.cast( elements );
   }
 
   @JsOverlay
-  static RenderResult of( final Array<RenderResult> elements )
+  static RenderElement of( final Array<RenderElement> elements )
   {
     return Js.cast( elements );
   }
 
   @JsOverlay
-  static RenderResult of( final RenderResult... elements )
+  static RenderElement of( final RenderElement... elements )
   {
     return Js.cast( elements );
   }
@@ -69,7 +69,7 @@ public interface RenderResult
   }
 
   @JsOverlay
-  default RenderResult[] asRenderResult()
+  default RenderElement[] asRenderResult()
   {
     return Js.cast( this );
   }

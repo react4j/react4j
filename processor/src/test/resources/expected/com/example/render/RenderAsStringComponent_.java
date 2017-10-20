@@ -9,7 +9,7 @@ import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
-import react4j.core.RenderResult;
+import react4j.core.RenderElement;
 
 @Generated("react4j.processor.ReactProcessor")
 class RenderAsStringComponent_ extends RenderAsStringComponent {
@@ -26,8 +26,8 @@ class RenderAsStringComponent_ extends RenderAsStringComponent {
 
   @Override
   @Nullable
-  protected RenderResult render() {
-    return RenderResult.of( renderAsString() );
+  protected RenderElement render() {
+    return RenderElement.of( renderAsString() );
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, RenderAsStringComponent> {

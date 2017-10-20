@@ -30,7 +30,6 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import react4j.core.Procedure;
 import react4j.core.ReactElement;
-import react4j.core.RenderResult;
 import react4j.dom.proptypes.html.HtmlGlobalFields;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL )
@@ -111,7 +110,6 @@ public class ReactDOM
    */
   @Nonnull
   @JsMethod( namespace = "React" )
-  public static native <P extends HtmlGlobalFields> DOMElement<P> createElement( @Nonnull String type,
-                                                                                 @Nullable P props,
-                                                                                 @Nullable RenderResult children );
+  public static native <P extends HtmlGlobalFields>
+  DOMElement<P> createElement( @Nonnull String type, @Nullable P props, @Nullable ReactElement<?, ?>... children );
 }

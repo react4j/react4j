@@ -30,7 +30,7 @@ import jsinterop.base.JsPropertyMap;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
-import react4j.core.RenderResult;
+import react4j.core.RenderElement;
 
 final class Generator
 {
@@ -168,8 +168,8 @@ final class Generator
       addModifiers( Modifier.PROTECTED ).
       addAnnotation( Override.class ).
       addAnnotation( Nullable.class ).
-      returns( RenderResult.class ).
-      addStatement( "return $T.of( $N() )", RenderResult.class, renderMethod.getMethod().getSimpleName().toString() );
+      returns( RenderElement.class ).
+      addStatement( "return $T.of( $N() )", RenderElement.class, renderMethod.getMethod().getSimpleName().toString() );
   }
 
   @Nonnull

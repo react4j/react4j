@@ -76,7 +76,7 @@ public abstract class NativeAdapterComponent<
    * @see Component#render()
    */
   @Nullable
-  public final RenderResult render()
+  public final RenderElement render()
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
