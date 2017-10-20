@@ -13,6 +13,7 @@
 ##### Changed
 * Move to GWT 2.8.2.
 * 💥 Rename `RenderResult` to `ReactNode`.
+* Annotated the event handlers in `react4j.dom.events` package with `@FocusEventHandler`.
 
 ### [v0.05](https://github.com/realityforge/react4j/tree/v0.05) (2017-10-19)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.04...v0.05)
