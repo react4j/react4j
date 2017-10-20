@@ -89,11 +89,11 @@ class TodoItem
   @EventHandler( KeyboardEventHandler.class )
   void handleKeyDown( @Nonnull final KeyboardEvent event )
   {
-    if ( event.which == KeyCodes.ESCAPE_KEY )
+    if ( KeyCodes.ESCAPE_KEY == event.getWhich() )
     {
       onCancel();
     }
-    else if ( event.which == KeyCodes.ENTER_KEY )
+    else if ( KeyCodes.ENTER_KEY == event.getWhich() )
     {
       onSubmitTodo();
     }
@@ -146,7 +146,7 @@ class TodoItem
   {
     if ( isTodoBeingEdited() )
     {
-      final HTMLInputElement input = Js.cast( event.target );
+      final HTMLInputElement input = Js.cast( event.getTarget() );
       scheduleStateUpdate( State.create( input.value ) );
     }
   }

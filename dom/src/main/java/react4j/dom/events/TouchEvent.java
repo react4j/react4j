@@ -1,18 +1,64 @@
 package react4j.dom.events;
 
+import elemental2.dom.TouchList;
+import javax.annotation.Nonnull;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsType;
 
 @JsType( isNative = true )
+@SuppressWarnings( "unused" )
 public class TouchEvent
-  extends SyntheticEvent
+  extends SyntheticEvent<elemental2.dom.TouchEvent>
 {
-  public boolean altKey;
-  public TouchList changedTouches;
-  public boolean ctrlKey;
-  public boolean metaKey;
-  public boolean shiftKey;
-  public TouchList targetTouches;
-  public TouchList touches;
+  private boolean altKey;
+  private TouchList changedTouches;
+  private boolean ctrlKey;
+  private boolean metaKey;
+  private boolean shiftKey;
+  private TouchList targetTouches;
+  private TouchList touches;
 
-  public native boolean getModifierState( String key );
+  public native boolean getModifierState( @Nonnull String key );
+
+  @JsOverlay
+  public final boolean isAltKey()
+  {
+    return altKey;
+  }
+
+  @JsOverlay
+  public final TouchList getChangedTouches()
+  {
+    return changedTouches;
+  }
+
+  @JsOverlay
+  public final boolean isCtrlKey()
+  {
+    return ctrlKey;
+  }
+
+  @JsOverlay
+  public final boolean isMetaKey()
+  {
+    return metaKey;
+  }
+
+  @JsOverlay
+  public final boolean isShiftKey()
+  {
+    return shiftKey;
+  }
+
+  @JsOverlay
+  public final TouchList getTargetTouches()
+  {
+    return targetTouches;
+  }
+
+  @JsOverlay
+  public final TouchList getTouches()
+  {
+    return touches;
+  }
 }

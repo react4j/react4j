@@ -1,13 +1,39 @@
 package react4j.dom.events;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsType;
 
 @JsType( isNative = true )
+@SuppressWarnings( "unused" )
 public class WheelEvent
-  extends SyntheticEvent
+  extends SyntheticEvent<elemental2.dom.WheelEvent>
 {
-  public int deltaMode;
-  public int deltaX;
-  public int deltaY;
-  public int deltaZ;
+  private int deltaMode;
+  private int deltaX;
+  private int deltaY;
+  private int deltaZ;
+
+  @JsOverlay
+  public final int getDeltaMode()
+  {
+    return deltaMode;
+  }
+
+  @JsOverlay
+  public final int getDeltaX()
+  {
+    return deltaX;
+  }
+
+  @JsOverlay
+  public final int getDeltaY()
+  {
+    return deltaY;
+  }
+
+  @JsOverlay
+  public final int getDeltaZ()
+  {
+    return deltaZ;
+  }
 }

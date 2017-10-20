@@ -35,7 +35,7 @@ class TodoList
   @EventHandler( FormEventHandler.class )
   void handleToggleAll( FormEvent event )
   {
-    final HTMLInputElement input = Js.cast( event.target );
+    final HTMLInputElement input = Js.cast( event.getTarget() );
     AppData.service.toggleAll( input.checked );
   }
 

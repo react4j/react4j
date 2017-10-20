@@ -50,7 +50,7 @@ class TodoEntry
   @EventHandler( KeyboardEventHandler.class )
   void handleNewTodoKeyDown( @Nonnull final KeyboardEvent event )
   {
-    if ( KeyCodes.ENTER_KEY == event.keyCode )
+    if ( KeyCodes.ENTER_KEY == event.getKeyCode() )
     {
       event.preventDefault();
       final String val = state().newTodo.trim();
@@ -65,7 +65,7 @@ class TodoEntry
   @EventHandler( FormEventHandler.class )
   void handleChange( @Nonnull final FormEvent event )
   {
-    final HTMLInputElement input = Js.cast( event.target );
+    final HTMLInputElement input = Js.cast( event.getTarget() );
     setTodoText( input.value );
   }
 

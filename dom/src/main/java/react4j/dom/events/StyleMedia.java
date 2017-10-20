@@ -1,11 +1,19 @@
 package react4j.dom.events;
 
+import javax.annotation.Nonnull;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsType;
 
 @JsType( isNative = true )
 public class StyleMedia
 {
-  public String type;
+  private String type;
 
-  public native boolean matchMedium( String mediaquery );
+  public native boolean matchMedium( @Nonnull String mediaquery );
+
+  @JsOverlay
+  public final String getType()
+  {
+    return type;
+  }
 }
