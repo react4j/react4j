@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.06](https://github.com/realityforge/react4j/tree/v0.06) (2017-10-23)
+[Full Changelog](https://github.com/realityforge/react4j/compare/v0.05...v0.06)
 
 ##### Fixed
 * Rewrite the `react4j.core.React` class, moving some code to java where possible and eliminating as yet unused
