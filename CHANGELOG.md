@@ -12,6 +12,7 @@
 
 ##### Changed
 * Move to GWT 2.8.2.
+* Upgrade to Arez 0.17.
 * 💥 Rename `RenderResult` to `ReactNode`.
 * Annotated the event handlers in `react4j.dom.events` package with `@FocusEventHandler`.
 * 💥 Convert public fields of event in `react4j.dom.events` package to private and add overlay methods to access
