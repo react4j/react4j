@@ -3,6 +3,7 @@
   <inherits name="react4j.arez.ReactArez"/>
   <inherits name="react4j.arez.spy.ReactArezSpy"/>
   <inherits name="react4j.dom.ReactDOM"/>
+  <inherits name="org.realityforge.arez.component.Component"/>
   <inherits name="org.realityforge.arez.browser.extras.BrowserExtras"/>
 
   <entry-point class='react4j.todomvc.App'/>
