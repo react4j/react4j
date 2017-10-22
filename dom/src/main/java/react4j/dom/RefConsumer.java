@@ -16,4 +16,3 @@ public interface RefConsumer
    */
   void accept( Object reference );
 }
-
