@@ -79,6 +79,7 @@ define 'react4j' do
 
     compile.with project('core').package(:jar),
                  project('core').compile.dependencies,
+                 :gwt_user, # for the javaemul.internal.annotations annotations
                  :elemental2_dom,
                  :elemental2_promise
 
