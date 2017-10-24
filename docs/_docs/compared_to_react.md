@@ -10,7 +10,6 @@ javascript so there are some features thar just don't make sense to implement in
 environment. There are also some features of React that exist for legacy reasons so are not
 implemented in React4j.
 
-
 ### JSX
 
 Most react code uses [JSX](https://facebook.github.io/jsx/) to build component hierarchies. JSX is an xml-like
