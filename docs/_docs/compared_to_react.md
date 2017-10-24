@@ -72,3 +72,8 @@ that follows. In some cases this is more verbose than the equivalent JSX and som
 {% file_content react4j/examples/factory_example/FactoryExample.java "start_line=/^  {/" "end_line=/^  }/" include_start_line=false include_end_line=false strip=true %}
 {% endhighlight %}
 </div>
+
+### Stateless Function Components
+
+Stateless function components or SFCs are often used in React but not so much in React4j. The reasoning for this is
+in the answer to the FAQ question ["Where is the equivalent of React's stateless function components?"]({{ site.baseurl }}/faq/#where-is-the-equivalent-of-reacts-stateless-function-components) 
