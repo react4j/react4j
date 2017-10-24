@@ -77,3 +77,14 @@ that follows. In some cases this is more verbose than the equivalent JSX and som
 
 Stateless function components or SFCs are often used in React but not so much in React4j. The reasoning for this is
 in the answer to the FAQ question ["Where is the equivalent of React's stateless function components?"]({{ site.baseurl }}/faq/#where-is-the-equivalent-of-reacts-stateless-function-components) 
+
+### Context
+
+React4j does not support the ["context"](https://reactjs.org/docs/context.html) API from React. The context api
+allows you to pass data through the component tree without having to pass the props down manually at every level.
+However the react docs state at length that this is an experimental API likely to change in the future.
+
+The main use cases for this API seems to be to pass environment settings and global services into components.
+Java already has several well thought out solutions in this space, the most popular candidate for GWT applications
+being [Dagger](https://google.github.io/dagger/). Rather than adopt the context API, React4j has decided to encourage
+the use of java native solutions such as Dagger.
