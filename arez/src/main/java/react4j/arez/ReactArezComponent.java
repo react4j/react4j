@@ -64,6 +64,16 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     _renderTracker = context.tracker( toName( ".render" ), false, this::onRenderDepsChanged );
   }
 
+  /**
+   * Return true if the render dependencies have been marked as changed and component has yet to be re-rendered.
+   *
+   * @return true if render dependencies changed, false otherwise.
+   */
+  protected final boolean hasRenderDepsChanged()
+  {
+    return _renderDepsChanged;
+  }
+
   private void onRenderDepsChanged()
   {
     _renderDepsChanged = true;
@@ -192,7 +202,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Override
   protected boolean shouldComponentUpdate( @Nullable final P nextProps, @Nullable final S nextState )
   {
-    if ( _renderDepsChanged )
+    if ( hasRenderDepsChanged() )
     {
       return true;
     }

@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Added
+* **\[arez\]** Add `ReactArezComponent.hasRenderDepsChanged()` that exposes flag indicating whether Arez has
+  determined that the component needs to be re-rendered.
+
 ##### Changed
 * Upgrade to BrainCheck 1.3.0 so assertion failures open the debugger.
 
