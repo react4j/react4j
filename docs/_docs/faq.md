@@ -110,3 +110,17 @@ Users of the library are free to use `@JsType(isNative = false)` and control it 
 this should not impact the correctness of the React4j <=> react integration. The amount of code that is manually
 exported to Javascript has been minimized and is mostly restricted to the equivalent of static class properties
 in ES6 and a constructor function.
+
+### Arez Integration
+
+#### Which components should extend ReactArezComponent?
+
+Any component that uses arez observable properties or computed properties within the `render()` method should
+extend `ReactArezComponent`. This ensures that the component is scheduled for re-render when the data changes.
+
+Sometimes you want to share a generic component between projects and rather than passing arez reactive components
+into the component and making the generic component extend `ReactArezComponent` you can instead pass in simple
+values as props into the generic component. The container component will still extend `ReactArezComponent` and
+will be re-rendered when the observable and/or computed properties change and will pass new props to the generic
+component forcing it to re-render. This is slightly less optimized but allows you to create generic components
+like `ToggleButton` rather than domain specific `TodoToggleAllButton`.
