@@ -16,7 +16,7 @@ Most react code uses [JSX](https://facebook.github.io/jsx/) to build component h
 syntax extension that is processed by a transpilers to transform the xml-like expression tokens into standard
 ECMAScript.
 
-Consider the following JSX to render a drop-down list:  
+Consider the following JSX to render a drop-down list:
 
 ```xml
 <Dropdown>
@@ -27,7 +27,7 @@ Consider the following JSX to render a drop-down list:
     <MenuItem>Do Something Else</MenuItem>
   </Menu>
 </Dropdown>
-``` 
+```
 
 This would be transpiled into:
 
@@ -76,7 +76,7 @@ that follows. In some cases this is more verbose than the equivalent JSX and som
 ### Stateless Function Components
 
 Stateless function components or SFCs are often used in React but not so much in React4j. The reasoning for this is
-in the answer to the FAQ question ["Where is the equivalent of React's stateless function components?"]({{ site.baseurl }}/faq/#where-is-the-equivalent-of-reacts-stateless-function-components) 
+in the answer to the FAQ question ["Where is the equivalent of React's stateless function components?"]({{ site.baseurl }}/faq/#where-is-the-equivalent-of-reacts-stateless-function-components)
 
 ### Context
 
