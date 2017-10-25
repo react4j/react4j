@@ -33,3 +33,35 @@ Arez's `@Action` annotation. React4j will already schedule a re-render when prop
 these observable means that Arez components such as `@Autorun` methods on the component can observe and react to
 changes in `props` or `state` values.
 
+As most event handlers within a `ReactArezComponent` component will either access or mutate observable state, the
+helper methods generated as a result of annotating a method with `@EventHandler` will default to being annotated with
+arez's `@Action` annotation. If you do not wish an event handler to be run as an action you can annotate the event
+handler with the [@NoAutoAction]({% api_url arez.NoAutoAction %}) annotation. This can be useful if you want to
+explicitly control the actions parameters (i.e. to make the action run in a read-only transaction) or you want to
+optimize a frequently called event handkler by removing the overhead associated with annotating a method with
+`@Action`.
+
+Below is a `Footer` component extracted from a [TodoMVC](http://todomvc.com/) implementation. It accesses the
+observable state `AppData.model.totalCount()`, `AppData.viewService.getFilterMode()` and
+`AppData.model.completedCount()` and will re-render each time any of these values change.
+
+<div class="example">
+{% highlight java %}
+{% file_content react4j/examples/arez/step1/Footer.java "start_line=/^@ReactComponent/" "end_line=/^}/" %}
+{% endhighlight %}
+</div>
+
+## Optimizing the component
+
+However this is not the most efficient component. There are several scenarios where the component wil re-render
+but produce identical output. This is inefficient as React4j will take time to re-render the component to the
+virtual DOM and then additional time to reconcile the virtual DOM against the actual DOM.
+
+Whether this inefficiency has any impact on the user experience will depend upon the application. In particular
+it will depend on how frequently the observable data changes, what other parts of the view are updated when the
+same observable data changes and how dynamic and complex the remainder of the view is. It is often the case that
+re-rendering the entire component is perfectly fine and will have no impact on the users experience, as in the
+case with a [TodoMVC](http://todomvc.com/) implementation.
+
+However let's assue that this component needs to be optimizes and walk through the steps that would be required to
+optimize the component to reduce the scope and frequency of re-renders.
