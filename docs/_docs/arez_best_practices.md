@@ -8,7 +8,7 @@ The combination of [Arez](http://realityforge.org/arez) and React4j creates a po
 the application state and React4j transforms the application state into a view. The React4jArez library provides
 the mechanisms for synchronizing the application state with the view. Both React4j and Arez are based on functional
 principles and trade higher memory usage for faster execution speed.
- 
+
 React reduces the number of expensive DOM updates through the use of a virtual DOM. The application builds a future
 view and this is reconciled against the current view and only differences are applied to the actual DOM.
 
