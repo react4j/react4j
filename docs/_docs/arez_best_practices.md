@@ -33,7 +33,3 @@ Arez's `@Action` annotation. React4j will already schedule a re-render when prop
 these observable means that Arez components such as `@Autorun` methods on the component can observe and react to
 changes in `props` or `state` values.
 
-
-
-The `render()` method will not be able to modify any
-observable
