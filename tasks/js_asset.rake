@@ -38,6 +38,6 @@ def js_assets(project, group_name)
   end
   task = project.file(base_js_resources_dir => [t.name])
 
-  project.iml.main_source_directories << base_js_resources_dir
+  project.iml.main_generated_source_directories << base_js_resources_dir
   project.assets.paths << task
 end

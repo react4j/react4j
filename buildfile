@@ -208,7 +208,7 @@ define 'react4j' do
     test.compile.with TEST_DEPS
 
     # The generators are configured to generate to here.
-    iml.main_source_directories << _('generated/processors/main/java')
+    iml.main_generated_source_directories << _('generated/processors/main/java')
   end
 
   define 'todomvc' do
@@ -239,7 +239,7 @@ define 'react4j' do
     test.compile.with TEST_DEPS
 
     # The generators are configured to generate to here.
-    iml.main_source_directories << _('generated/processors/main/java')
+    iml.main_generated_source_directories << _('generated/processors/main/java')
   end
 
   doc.from(projects(%w(annotations core dom arez processor widget))).
