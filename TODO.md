@@ -50,3 +50,14 @@ class TodoEntry
   - set "defaultProps" property on constructor function (same way that we set name). All we need to do is detect
     if static property of correct name present on component and if so copy it across as part of annotation processing.
     https://reactjs.org/docs/react-component.html#defaultprops
+
+
+#### Arez DevTools
+
+Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need
+mechanisms to enable and disable. Possibly we also need to support looking at dependencies of components. Do we
+do this by caching arez components on WeakHashmap in componentDidMount/componentWillUnmount and then supporting
+accessing transitive dependency tree via UI?
+
+Possibly we also need the ability to browse the repositories in the application. Register repositories on
+startup and then browse via tables?
