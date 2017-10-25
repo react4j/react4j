@@ -124,3 +124,12 @@ values as props into the generic component. The container component will still e
 will be re-rendered when the observable and/or computed properties change and will pass new props to the generic
 component forcing it to re-render. This is slightly less optimized but allows you to create generic components
 like `ToggleButton` rather than domain specific `TodoToggleAllButton`.
+
+#### Should components implement custom shouldComponentUpdate() method?
+
+The `ReactArezComponent` class already implements an optimized `shouldComponentUpdate()` that will only trigger
+a re-render if the dependent observable/computed properties have changed, the state has changed or a shallow
+comparison of props produces no differences. In most scenarios, it is not necessary to override
+`shouldComponentUpdate()` but if you **need** to override the method `shouldComponentUpdate()` then it is possible
+however you should return true if `ReactArezComponent.hasRenderDepsChanged()` returns true to ensure integration
+works as expected.
