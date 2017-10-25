@@ -238,8 +238,8 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected void componentWillUnmount()
   {
     /*
-     * Dispose of all the arez resources. Necessary particularly for render tracker that should
-     * not receive notifications of updates are component has been unmounted.
+     * Dispose of all the arez resources. Necessary particularly for the render tracker that should
+     * not receive notifications of updates after the component has been unmounted.
      */
     _propsObservable.dispose();
     _stateObservable.dispose();
