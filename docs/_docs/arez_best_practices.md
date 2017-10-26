@@ -10,15 +10,14 @@ the mechanisms for synchronizing the application state with the view. Both React
 principles and trade higher memory usage for faster execution speed.
 
 React reduces the number of expensive DOM updates through the use of a virtual DOM. The application builds a future
-view and this is reconciled against the current view and only differences are applied to the actual DOM.
+view and this is reconciled against the current view and any differences are applied to the DOM.
 
 Arez is built around a data flow graph where state modifications flow through the graph updating nodes only as
 required. Data nodes are always up to date and perform the minimum amount of work based on the graph definition.
 
-The React4jArez library bridges the two systems, triggering view updates when the state updates. The library aims
-for an optimal solution so that for a React4j component only changes to data that is accessed during the render
-will cause the component to re-render. The developer controls the scope of the re-render by controlling the size
-of the component.
+The React4jArez library bridges the two systems, triggering view updates when the state updates. Changes to observable
+data that a `ReactArezComponent` component uses during rendering whill schedule the component for re-rendering. The
+developer controls the scope of the re-render by controlling the size of the component.
 
 ## Getting Started
 
