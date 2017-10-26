@@ -195,10 +195,11 @@ Then there would be a separate arez component to observe the intent and perform 
 {% endhighlight %}
 </div>
 
-This approach where you separate intent and have another component that performs the remote call Means that
+This approach where you separate intent and have another component that performs the remote call means that
 your unit tests are much more focused and simpler to understand. It has the disadvantage that it requires more
-verbose code constructs and can result in more abstraction and indirection which can be a negative in smaller
-applications.
+verbose code constructs and can result in more abstraction and indirection. In a small application with a single
+developer this can have a negative effect. Larger applications with larger teams may benefit from the higher
+level of abstraction. 
 
 ### Avoid arez annotations other than @Computed and @Action in React4j components
 
