@@ -59,5 +59,4 @@ class Footer
               null
       );
   }
-
 }
