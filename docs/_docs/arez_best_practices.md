@@ -129,3 +129,20 @@ than the cost of determining which parts of the application to optimize).
 Arez and React4j is such a powerful combination that many of the best practices that you use when building a
 React4j application no longer make sense after you integrate Arez. However this section will try to give some
 helpful suggestions that simplify your development experience.
+
+### UI state should be modelled with Arez Observable State
+
+Often applications start by just modelling the application domain classes as observable state. So an application
+has observable entities to model `Employee`, `Sale`, `Customer` etc. However it is extremely useful to model user
+interface state such as which tab is visible, the current application place or route, whether a button is visible
+etc. using observable state. This provides a single, unified mechanism for reacting to changes and updating the user
+interface.
+
+In an ideal world, we should be able to persist the arez observable state, relaunch the web page and load the
+observable state and the application should appear just as it was before the relaunch.
+
+The question often arises, when should you use React4j component level state. In most cases this state is no
+longer necessary however it sometimes makes sense to use it if:
+
+* The component would otherwise be a generic component and need not extend `ReactArezComponent` otherwise.
+* The state never needs to be shared with any other component.
