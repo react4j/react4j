@@ -64,7 +64,7 @@ same observable data changes and how dynamic and complex the remainder of the vi
 re-rendering the entire component is perfectly fine and will have no impact on the users experience, as in the
 case with a [TodoMVC](http://todomvc.com/) implementation.
 
-However let's assume that this component needs to be optimizes and walk through the steps that would be required to
+However let's assume that this component needs to be optimized and walk through the steps that would be required to
 optimize the component to reduce the scope and frequency of re-renders.
 
 ### Use @Computed
@@ -90,7 +90,7 @@ Using computed properties is one of the easiest and least intrusive mechanisms f
 ### Extract Components
 
 If we return to React's DevTools and turn "Highlight Updates" on again. The next thing you will notice is that the
-component is re-rendered any time a Todo is added or reoved as the value for the expression
+component is re-rendered any time a Todo is added or removed as the value for the expression
 `AppData.model.totalCount()` changes. Unfortunately `@Computed` will not help us here as the html output changes
 every time a re-render occurs. However we can decide to limit the scope of the rendering by extracting a component
 that encapsulates the html that changes.
@@ -106,9 +106,9 @@ This component can be rendered via an expression such as `React.createElement( F
 The `FooterTodoCount` component will still be re-rendered every time a Todo is added or removed but the scope
 of the re-render is much smaller and thus the amount of work that React4j has to do is much smaller.
 
-We could also extract another component to manage the links and only re-renders when the `filterMode` observable
-property changes but decided against this as it is a relatively infrequent event. The final `Footer` component looks
-something like:
+We could also extract another component to manage the links and only re-render this new component when the
+`filterMode` observable property changes but we have decided against this as it is a relatively infrequent event.
+The final `Footer` component looks something like:
 
 <div class="example">
 {% highlight java %}
