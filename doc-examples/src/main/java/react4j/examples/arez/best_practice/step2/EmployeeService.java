@@ -12,7 +12,7 @@ public class EmployeeService
   private String _errorMessage;
   private boolean _loadEmployeeData;
 
-  @Observable
+  @Observable( name = "loadEmployeeData" )
   public boolean shouldLoadEmployeeData()
   {
     return _loadEmployeeData;
