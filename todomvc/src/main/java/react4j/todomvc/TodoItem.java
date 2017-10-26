@@ -182,7 +182,8 @@ class TodoItem
                div( new HtmlProps().className( "view" ),
                     input( new InputProps()
                              .className( "toggle" )
-                             .type( InputType.checkbox ).checked( completed )
+                             .type( InputType.checkbox )
+                             .checked( completed )
                              .onChange( _onToggle( this ) )
                     ),
                     label( new LabelProps().OnDoubleClick( _onEdit( this ) ),
