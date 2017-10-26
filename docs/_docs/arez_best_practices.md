@@ -37,7 +37,7 @@ helper methods generated as a result of annotating a method with `@EventHandler`
 arez's `@Action` annotation. If you do not wish an event handler to be run as an action you can annotate the event
 handler with the [@NoAutoAction]({% api_url arez.NoAutoAction %}) annotation. This can be useful if you want to
 explicitly control the actions parameters (i.e. to make the action run in a read-only transaction) or you want to
-optimize a frequently called event handkler by removing the overhead associated with annotating a method with
+optimize a frequently called event handler by removing the overhead associated with annotating a method with
 `@Action`.
 
 Below is a `Footer` component extracted from a [TodoMVC](http://todomvc.com/) implementation. It accesses the
