@@ -155,3 +155,54 @@ provide the business logic. The business logic method in the Arez components are
 components. This makes it much easier to reuse, refactor and test the business logic. In most cases
 the business logic can be tested outside the browser in pure java. Another advantage is tha it makes it much easier
 to understand.
+
+### Separate network interactions from React4j components and other arez business logic components
+
+Network interactions can be notoriously difficult to test. They are business logic and should not be put in
+your React4j components and instead should be triggered from arez components.
+
+One approach is to extract the service API calls behind an interface and pass the service interface into the
+constructor of the arez component. This way the unit tests can pass in a mock API service during testing.
+
+Consider the example where you have an action that wants to transitions to a view listing employees and wants
+to load all the employee data for the view. A typical example using the "extract a remote service interface"
+strategy would be:
+
+<div class="example">
+{% highlight java %}
+{% file_content react4j/examples/arez/best_practice/step1/EmployeeService.java "start_line=/^@ArezComponent/" "end_line=/^}/" %}
+{% endhighlight %}
+</div>
+
+Another approach that is even easier to test and arguably easier to understand is to have the the `@Action`
+annotated method set state the defines the "intent" to perform a remote service and then have a separate arez
+component that uses an `@Autorun` method that observes the "intent" and performs remote call when the intent
+indicates that it is required.
+
+So this results in some minor modifications to the employee service so that the action is implemented as follows:
+
+<div class="example">
+{% highlight java %}
+{% file_content react4j/examples/arez/best_practice/step2/EmployeeService.java "start_line=/private boolean _loadEmployeeData/" "end_line=/EXAMPLE ENDS HERE/" include_end_line=false strip_block=true %}
+{% endhighlight %}
+</div>
+
+Then there would be a separate arez component to observe the intent and perform the remote call:
+
+<div class="example">
+{% highlight java %}
+{% file_content react4j/examples/arez/best_practice/step2/EmployeeDataLoader.java "start_line=/@ArezComponent/" %}
+{% endhighlight %}
+</div>
+
+This approach where you separate intent and have another component that performs the remote call Means that
+your unit tests are much more focused and simpler to understand. It has the disadvantage that it requires more
+verbose code constructs and can result in more abstraction and indirection which can be a negative in smaller
+applications.
+
+### Avoid arez annotations other than @Computed and @Action in React4j components
+
+Following the above best practices, you will find you rarely if ever need to annotate any methods in a
+`ReactArezComponent` subclass with any Arez annotations other than `@Computed` and `@Action` and as most
+uses of `@Action` are in `@EventHandler` annotated methods that default to being annotated with an `@Action`
+you may find that is rarely a good use case for using `@Action` in your react components.
