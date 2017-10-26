@@ -7,6 +7,7 @@ import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
+import react4j.core.React;
 import react4j.core.ReactElement;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.proptypes.html.AnchorProps;
@@ -31,15 +32,10 @@ class Footer
   @Override
   protected ReactElement<?, ?> renderAsElement()
   {
-    final int count = AppData.model.totalCount();
-    final String activeTodoWord = "item" + ( count == 1 ? "" : "s" );
     final FilterMode filterMode = AppData.viewService.getFilterMode();
     return
       footer( new HtmlProps().className( "footer" ),
-              span( new HtmlProps().className( "todo-count" ),
-                    strong( Integer.toString( count ) ),
-                    text( " " + activeTodoWord + " left" )
-              ),
+              React.createElement( FooterTodoCount_.TYPE ),
               ul( new HtmlProps().className( "filters" ),
                   li( a( new AnchorProps()
                            .className( FilterMode.ALL == filterMode ? "selected" : "" )
