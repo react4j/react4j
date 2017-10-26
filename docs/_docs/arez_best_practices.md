@@ -64,3 +64,60 @@ case with a [TodoMVC](http://todomvc.com/) implementation.
 
 However let's assume that this component needs to be optimizes and walk through the steps that would be required to
 optimize the component to reduce the scope and frequency of re-renders.
+
+### Use @Computed
+
+If you turn on "Highlight Updates" in React's DevTools you will notice that the whole component re-renders any time
+a Todo is toggled from "complete" to "not complete" or vice-versa. However the html output only changes if the
+number of completed Todos changes from 0 to not zero or from not zero to zero.
+
+To eliminate these unnecessary renders, the simplest approach is to extract the expression
+`AppData.model.completedCount() > 0` into a separate `@Computed` method. The `render()` method will only be scheduled
+to render if the value returned from the `@Computed` method changes.
+
+This method will look like:
+
+<div class="example">
+{% highlight java %}
+{% file_content react4j/examples/arez/step2/Footer.java "start_line=/@Computed/" "end_line=/^}/" include_end_line=false strip_block=true %}
+{% endhighlight %}
+</div>
+
+Using computed properties is one of the easiest and least intrusive mechanisms for optimizing components.
+
+### Extract Components
+
+If we return to React's DevTools and turn "Highlight Updates" on again. The next thing you will notice is that the
+component is re-rendered any time a Todo is added or reoved as the value for the expression
+`AppData.model.totalCount()` changes. Unfortunately `@Computed` will not help us here as the html output changes
+every time a re-render occurs. However we can decide to limit the scope of the rendering by extracting a component
+that encapsulates the html that changes.
+
+<div class="example">
+{% highlight java %}
+{% file_content react4j/examples/arez/step2/FooterTodoCount.java "start_line=/@ReactComponent/" %}
+{% endhighlight %}
+</div>
+
+This component can be rendered via an expression such as `React.createElement( FooterTodoCount_.TYPE )`.
+
+The `FooterTodoCount` component will still be re-rendered every time a Todo is added or removed but the scope
+of the re-render is much smaller and thus the amount of work that React4j has to do is much smaller.
+
+We could also extract another component to manage the links and only re-renders when the `filterMode` observable
+property changes but decided against this as it is a relatively infrequent event. The final `Footer` component looks
+something like:
+
+<div class="example">
+{% highlight java %}
+{% file_content react4j/examples/arez/step2/Footer.java "start_line=/^@ReactComponent/" "end_line=/^}/" %}
+{% endhighlight %}
+</div>
+
+### On Optimizing
+
+Ultimately measuring performance and optimizing when needed to keep within your performance budget is the ideal
+goal. It is important to know which parts of your application need to be fast and which parts are
+less important to optimize. In some cases, the application is small enough to never need optimization while
+in others optimizing components by default may be a good option (i.e. if the cost of optimization is lower
+than the cost of determining which parts of the application to optimize).
