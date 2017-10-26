@@ -133,3 +133,13 @@ comparison of props produces no differences. In most scenarios, it is not necess
 `shouldComponentUpdate()` but if you **need** to override the method `shouldComponentUpdate()` then it is possible
 however you should return true if `ReactArezComponent.hasRenderDepsChanged()` returns true to ensure integration
 works as expected.
+
+#### Why is there an 'arez' key in component state?
+
+Components that extend `ReactArezComponent` will automatically have a key `arez` set if the configuration
+property `react4j.arez.store_arez_data_as_state` is set to `true`. This can be done manually or by inheriting
+from the GWT module `react4j.arez.ReactArezDev`. The purpose of this is to give the developer a quick visual 
+indication of the direct arez dependencies of the `ReactArezComponent`. It began as a stop-gap measure until
+a "Arez DevTools" tool was implemented but remained as people found it useful. This should NOT be enabled in
+production code as updating the dependency information can cause a re-render of the component even though there
+is no actual changes to the content rendered in the browser.
