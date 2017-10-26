@@ -50,7 +50,7 @@ class TodoList
                      React.createElement( TodoEntry_.TYPE )
              ),
              renderMainSection(),
-             renderFooter()
+             AppData.model.isNotEmpty() ? React.createElement( Footer_.TYPE ) : null
         )
       );
   }
@@ -83,11 +83,5 @@ class TodoList
     return AppData.model.filteredTodos().stream().
       map( todo -> React.createElement( TodoItem_.TYPE, TodoItem.Props.create( todo ) ) ).
       collect( Collectors.toList() );
-  }
-
-  @Nullable
-  private ReactElement<?, ?> renderFooter()
-  {
-    return AppData.model.isNotEmpty() ? React.createElement( Footer_.TYPE ) : null;
   }
 }
