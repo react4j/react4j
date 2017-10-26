@@ -262,6 +262,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       _propsObservable.dispose();
       _stateObservable.dispose();
       _renderTracker.dispose();
+      Disposable.dispose( this );
     } );
   }
 

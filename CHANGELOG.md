@@ -9,6 +9,9 @@
   use one of these individually. Instead they were wrapped in an action that disposes all of the reactive elements
   in one go eliminating many of these problems. (i.e. when a `@Computed` method uses a `prop()` and is used
   inside the `render()` function).
+* Invoke `Disposable.dispose( this )` in `ReactArezComponent.componentWillUnmount()` so that all the other reactive
+  elements on the component are disposed at the same time. This is most useful to stop `@Autorun` and `@Computed`
+  methods on the component from running after the component is unmounted.
 
 ##### Added
 * **\[arez\]** Add `ReactArezComponent.hasRenderDepsChanged()` that exposes flag indicating whether Arez has
