@@ -63,5 +63,5 @@ same observable data changes and how dynamic and complex the remainder of the vi
 re-rendering the entire component is perfectly fine and will have no impact on the users experience, as in the
 case with a [TodoMVC](http://todomvc.com/) implementation.
 
-However let's assue that this component needs to be optimizes and walk through the steps that would be required to
+However let's assume that this component needs to be optimizes and walk through the steps that would be required to
 optimize the component to reduce the scope and frequency of re-renders.
