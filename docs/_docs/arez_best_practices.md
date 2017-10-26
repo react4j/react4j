@@ -50,6 +50,8 @@ observable state `AppData.model.totalCount()`, `AppData.viewService.getFilterMod
 {% endhighlight %}
 </div>
 
+---
+
 ## Optimizing the component
 
 However this is not the most efficient component. There are several scenarios where the component wil re-render
