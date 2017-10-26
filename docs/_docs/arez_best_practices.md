@@ -1,5 +1,5 @@
 ---
-title: Arez Best Practices
+title: Arez
 category: General
 order: 3
 ---
