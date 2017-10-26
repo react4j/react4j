@@ -54,7 +54,10 @@ class Footer
                            .href( "#completed" ), "Completed" )
                   )
               ),
-              buildClearButton()
+              hasCompletedItems() ?
+              button( new BtnProps().className( "clear-completed" ).onClick( _handleClearCompleted( this ) ),
+                      "Clear Completed" ) :
+              null
       );
   }
 
@@ -62,20 +65,6 @@ class Footer
   boolean hasCompletedItems()
   {
     return AppData.model.completedCount() > 0;
-  }
-
-  @Nullable
-  private ReactElement<?, ?> buildClearButton()
-  {
-    if ( hasCompletedItems() )
-    {
-      return button( new BtnProps().className( "clear-completed" ).onClick( _handleClearCompleted( this ) ),
-                     "Clear Completed" );
-    }
-    else
-    {
-      return null;
-    }
   }
 
   private static String selected( final boolean condition )
