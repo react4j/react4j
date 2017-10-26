@@ -42,15 +42,15 @@ class Footer
               ),
               ul( new HtmlProps().className( "filters" ),
                   li( a( new AnchorProps()
-                           .className( selected( FilterMode.ALL == filterMode ) )
+                           .className( FilterMode.ALL == filterMode ? "selected" : "" )
                            .href( "#" ), "All" )
                   ),
                   li( a( new AnchorProps()
-                           .className( selected( FilterMode.ACTIVE == filterMode ) )
+                           .className( FilterMode.ACTIVE == filterMode ? "selected" : "" )
                            .href( "#active" ), "Active" )
                   ),
                   li( a( new AnchorProps()
-                           .className( selected( FilterMode.COMPLETED == filterMode ) )
+                           .className( FilterMode.COMPLETED == filterMode ? "selected" : "" )
                            .href( "#completed" ), "Completed" )
                   )
               ),
@@ -65,10 +65,5 @@ class Footer
   boolean hasCompletedItems()
   {
     return AppData.model.completedCount() > 0;
-  }
-
-  private static String selected( final boolean condition )
-  {
-    return condition ? "selected" : "";
   }
 }
