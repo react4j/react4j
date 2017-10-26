@@ -16,7 +16,7 @@ Arez is built around a data flow graph where state modifications flow through th
 required. Data nodes are always up to date and perform the minimum amount of work based on the graph definition.
 
 The React4jArez library bridges the two systems, triggering view updates when the state updates. Changes to observable
-data that a `ReactArezComponent` component uses during rendering whill schedule the component for re-rendering. The
+data that a `ReactArezComponent` component uses during rendering will schedule the component for re-rendering. The
 developer controls the scope of the re-render by controlling the size of the component.
 
 ## Getting Started
