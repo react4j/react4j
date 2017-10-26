@@ -7,7 +7,8 @@
   time starting with props, state and finally the render tracker. However this caused observers to react to each
   individual element being disposed which could cause assertion failures if an observer was scheduled that could
   use one of these individually. Instead they were wrapped in an action that disposes all of the reactive elements
-  in one go eliminating many of these problems.
+  in one go eliminating many of these problems. (i.e. when a `@Computed` method uses a `prop()` and is used
+  inside the `render()` function).
 
 ##### Added
 * **\[arez\]** Add `ReactArezComponent.hasRenderDepsChanged()` that exposes flag indicating whether Arez has
