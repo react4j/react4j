@@ -143,3 +143,15 @@ indication of the direct arez dependencies of the `ReactArezComponent`. It began
 a "Arez DevTools" tool was implemented but remained as people found it useful. This should NOT be enabled in
 production code as updating the dependency information can cause a re-render of the component even though there
 is no actual changes to the content rendered in the browser.
+
+#### Why can't render methods update observable state?
+
+Arez has the concept of read-write and read-only transactions and observable state should only be modified in
+read-write transactions. This is enforced in development mode and assertion failures will occur if you attempt
+to modify observable state in a read-only transaction. The `render()` method is deliberately wrapped in a read-only
+transaction. 
+
+The main reason for this is to disallow a render triggering further renders and to stop potentially long render
+times as other observers react to changes in observable state. The underlying react library also considers this
+pattern a very bad idea conceptually and performance-wise and likewise blocks calling `setState()` from within
+the render method.
