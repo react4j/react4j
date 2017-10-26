@@ -8,6 +8,7 @@ import jsinterop.base.JsPropertyMap;
 import jsinterop.base.JsPropertyMapOfAny;
 import org.realityforge.arez.Arez;
 import org.realityforge.arez.ArezContext;
+import org.realityforge.arez.Disposable;
 import org.realityforge.arez.Observable;
 import org.realityforge.arez.Observer;
 import org.realityforge.arez.SafeFunction;
@@ -41,6 +42,12 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
   /**
+   * Context associated the component.
+   * TODO: Replace this with @ContextRef when that is implemented.
+   */
+  @Nonnull
+  private final ArezContext _context;
+  /**
    * Props are observable in case @Autorun actions want to observe props and re-run on change.
    */
   @Nonnull
@@ -58,10 +65,10 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected ReactArezComponent()
   {
     _arezComponentId = c_nextComponentId++;
-    final ArezContext context = Arez.context();
-    _propsObservable = context.createObservable( toName( ".props" ) );
-    _stateObservable = context.createObservable( toName( ".state" ) );
-    _renderTracker = context.tracker( toName( ".render" ), false, this::onRenderDepsChanged );
+    _context = Arez.context();
+    _propsObservable = _context.createObservable( toName( ".props" ) );
+    _stateObservable = _context.createObservable( toName( ".state" ) );
+    _renderTracker = _context.tracker( toName( ".render" ), false, this::onRenderDepsChanged );
   }
 
   /**
@@ -247,13 +254,15 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Override
   protected void componentWillUnmount()
   {
-    /*
-     * Dispose of all the arez resources. Necessary particularly for the render tracker that should
-     * not receive notifications of updates after the component has been unmounted.
-     */
-    _propsObservable.dispose();
-    _stateObservable.dispose();
-    _renderTracker.dispose();
+    _context.safeAction( toName( ".componentWillUnmount" ), () -> {
+      /*
+       * Dispose of all the arez resources. Necessary particularly for the render tracker that should
+       * not receive notifications of updates after the component has been unmounted.
+       */
+      _propsObservable.dispose();
+      _stateObservable.dispose();
+      _renderTracker.dispose();
+    } );
   }
 
   /**

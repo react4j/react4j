@@ -50,7 +50,7 @@ class TodoEntry
   - set "defaultProps" property on constructor function (same way that we set name). All we need to do is detect
     if static property of correct name present on component and if so copy it across as part of annotation processing.
     https://reactjs.org/docs/react-component.html#defaultprops
-
+* Arez: Replace access to context with Arez's @ContextRef when that is implemented.
 
 #### Arez DevTools
 

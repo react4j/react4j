@@ -2,6 +2,13 @@
 
 ### Unreleased
 
+##### Fixed
+* The `ReactArezComponent.componentWillUnmount` would dispose the manually created reactive elements one at a
+  time starting with props, state and finally the render tracker. However this caused observers to react to each
+  individual element being disposed which could cause assertion failures if an observer was scheduled that could
+  use one of these individually. Instead they were wrapped in an action that disposes all of the reactive elements
+  in one go eliminating many of these problems.
+
 ##### Added
 * **\[arez\]** Add `ReactArezComponent.hasRenderDepsChanged()` that exposes flag indicating whether Arez has
   determined that the component needs to be re-rendered.
