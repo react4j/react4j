@@ -145,7 +145,7 @@ observable state and the application should appear just as it was before the rel
 The question often arises, when should you use React4j component level state. In most cases this state is no
 longer necessary however it sometimes makes sense to use it if:
 
-* The component would otherwise be a generic component and need not extend `ReactArezComponent` otherwise.
+* The component would otherwise be a generic component and need not extend `ReactArezComponent`.
 * The state never needs to be shared with any other component.
 
 ### Avoid writing "business logic" in your React4j components
