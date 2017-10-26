@@ -52,6 +52,8 @@ class TodoEntry
     https://reactjs.org/docs/react-component.html#defaultprops
 * Arez: Replace access to context with Arez's @ContextRef when that is implemented.
 
+* Add TodoMVC to web site in both production and development mode so it is easy to describe it in the documentation.
+
 #### Arez DevTools
 
 Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need
