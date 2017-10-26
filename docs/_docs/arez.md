@@ -153,8 +153,8 @@ longer necessary however it sometimes makes sense to use it if:
 In an ideal world your Arez/React4j application, React4j should just be providing the view and Arez should
 provide the business logic. The business logic method in the Arez components are then called from React4j
 components. This makes it much easier to reuse, refactor and test the business logic. In most cases
-the business logic can be tested outside the browser in pure java. Another advantage is tha it makes it much easier
-to understand.
+the business logic can be tested outside the browser in pure java. Another advantage is that it makes the
+application much easier to understand.
 
 ### Separate network interactions from React4j components and other arez business logic components
 
