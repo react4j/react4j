@@ -146,3 +146,11 @@ longer necessary however it sometimes makes sense to use it if:
 
 * The component would otherwise be a generic component and need not extend `ReactArezComponent` otherwise.
 * The state never needs to be shared with any other component.
+
+### Avoid writing "business logic" in your React4j components
+
+In an ideal world your Arez/React4j application, React4j should just be providing the view and Arez should
+provide the business logic. The business logic method in the Arez components are then called from React4j
+components. This makes it much easier to reuse, refactor and test the business logic. In most cases
+the business logic can be tested outside the browser in pure java. Another advantage is tha it makes it much easier
+to understand.
