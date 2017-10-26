@@ -164,7 +164,7 @@ your React4j components and instead should be triggered from arez components.
 One approach is to extract the service API calls behind an interface and pass the service interface into the
 constructor of the arez component. This way the unit tests can pass in a mock API service during testing.
 
-Consider the example where you have an action that wants to transitions to a view listing employees and wants
+Consider the example where you have an action that wants to transition to a view listing employees and wants
 to load all the employee data for the view. A typical example using the "extract a remote service interface"
 strategy would be:
 
