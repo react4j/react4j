@@ -5,6 +5,8 @@
 ##### Added
 * **\[arez\]** Add `ReactArezComponent.hasRenderDepsChanged()` that exposes flag indicating whether Arez has
   determined that the component needs to be re-rendered.
+* **\[arez\]** Update the `react4j.arez.ReactArezDev` GWT module to inherit from the `org.realityforge.arez.ArezDev`
+  GWT module. This ensures that assertions, and invariant checks are enabled in development mode.
 
 ##### Changed
 * Upgrade to BrainCheck 1.3.0 so assertion failures open the debugger.
