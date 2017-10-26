@@ -79,6 +79,12 @@ module Jekyll
     attr_accessor :start_line
     attr_accessor :end_line
 
+    attr_writer :strip_block
+
+    def strip_block?
+      @strip_block.nil? ? false : @strip_block == 'true'
+    end
+
     attr_writer :include_start_line
 
     def include_start_line?
@@ -113,7 +119,20 @@ module Jekyll
           raise "Specified a first_line that is after the last_line parameter when importing file #{self.derive_filename}"
         end
 
-        content = lines[first_line..last_line].join("\n")
+        lines = lines[first_line..last_line]
+        if strip_block?
+          whitespace_at_start = lines.empty? ? 10000000 : lines[0].length
+          lines.each do |line|
+            if 0 != line.length
+              line_whitespace = line.length - line.lstrip.length
+              whitespace_at_start = whitespace_at_start < line_whitespace ? whitespace_at_start : line_whitespace
+            end
+          end
+          (0...(lines.size)).each do |i|
+            lines[i] = lines[i][whitespace_at_start...10000000]
+          end
+        end
+        content = lines.join("\n")
         strip? ? content.strip! : content
       else
         content
