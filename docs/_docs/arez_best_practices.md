@@ -123,3 +123,9 @@ goal. It is important to know which parts of your application need to be fast an
 less important to optimize. In some cases, the application is small enough to never need optimization while
 in others optimizing components by default may be a good option (i.e. if the cost of optimization is lower
 than the cost of determining which parts of the application to optimize).
+
+## Best Practices
+
+Arez and React4j is such a powerful combination that many of the best practices that you use when building a
+React4j application no longer make sense after you integrate Arez. However this section will try to give some
+helpful suggestions that simplify your development experience.
