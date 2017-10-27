@@ -89,7 +89,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Nullable
   private String toName( @Nonnull final String suffix )
   {
-    return _context.areNamesEnabled() ? getComponentName() + suffix : null;
+    return Arez.areNamesEnabled() ? getComponentName() + suffix : null;
   }
 
   /**
@@ -190,7 +190,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    */
   private void storeArezDataAsState()
   {
-    if ( ReactArezConfig.shouldStoreArezDataAsState() && _context.areSpiesEnabled() )
+    if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() )
     {
       final List<Observable> dependencies = _context.getSpy().getDependencies( _renderTracker );
       final JsPropertyMapOfAny deps = JsPropertyMap.of();

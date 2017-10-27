@@ -9,7 +9,7 @@ import org.realityforge.arez.ArezContext;
 public final class ArezSpyUtil
 {
   private static final ReactArezConsoleSpyEventProcessor PROCESSOR =
-    Arez.context().areSpiesEnabled() ? new ReactArezConsoleSpyEventProcessor() : null;
+    Arez.areSpiesEnabled() ? new ReactArezConsoleSpyEventProcessor() : null;
   private static boolean c_loggingEnabled;
 
   /**
@@ -27,7 +27,7 @@ public final class ArezSpyUtil
   public static void enableSpyEventLogging()
   {
     final ArezContext context = Arez.context();
-    if ( context.areSpiesEnabled() && !isSpyEventLoggingEnabled() )
+    if ( Arez.areSpiesEnabled() && !isSpyEventLoggingEnabled() )
     {
       context.getSpy().addSpyEventHandler( PROCESSOR );
       c_loggingEnabled = true;
@@ -41,7 +41,7 @@ public final class ArezSpyUtil
   public static void disableSpyEventLogging()
   {
     final ArezContext context = Arez.context();
-    if ( context.areSpiesEnabled() && isSpyEventLoggingEnabled() )
+    if ( Arez.areSpiesEnabled() && isSpyEventLoggingEnabled() )
     {
       context.getSpy().removeSpyEventHandler( PROCESSOR );
       c_loggingEnabled = false;
