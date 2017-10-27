@@ -21,6 +21,7 @@
 
 ##### Changed
 * Upgrade to BrainCheck 1.3.0 so assertion failures open the debugger.
+* Upgrade to Arez 0.18.
 * 💥 Update the `ReactArezComponent` implementation so that `props` and `state` are made not observable. This
   dramatically simplified the code and conceptual model for `ReactArezComponent` components. This has meant that
   components can no longer define `@Autorun` or `@Track` methods that will react to changes in `props` or `state`
