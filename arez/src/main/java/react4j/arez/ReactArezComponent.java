@@ -116,7 +116,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     /*
      * Need an uncheckedCast here rather than regular cast as otherwise GWT attempts to cast
      * this using a method that does not work. Unclear of the exact cause. Also need to extract
-     * the function to a separate variable otherwise JDT failes to determine type.
+     * the function to a separate variable otherwise JDT fails to determine type.
      */
     final SafeFunction<ReactNode> render = this::render;
     return Js.uncheckedCast( _context.safeTrack( _renderTracker, render ) );
