@@ -21,6 +21,12 @@
 
 ##### Changed
 * Upgrade to BrainCheck 1.3.0 so assertion failures open the debugger.
+* 💥 Update the `ReactArezComponent` implementation so that `props` and `state` are made not observable. This
+  dramatically simplified the code and conceptual model for `ReactArezComponent` components. This has meant that
+  components can no longer define `@Autorun` or `@Track` methods that will react to changes in `props` or `state`
+  but this was considered a "bad" practice and discouraged anyway.
+* 💥 Update the `Component` implementation to make the `props()`, `state()` and `scheduleStateUpdate(...)` methods
+  final.
 
 ### [v0.06](https://github.com/realityforge/react4j/tree/v0.06) (2017-10-23)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.05...v0.06)

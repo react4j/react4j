@@ -26,12 +26,6 @@ The simplest approach to defining an Arez enabled component is simply to extend
 within the scope of a read-only, tracking (Arez) transaction. Changes to the observable state accessed within the
 scope of the `render()` will schedule the component for re-rendering.
 
-Extending `ReactArezComponent` will also make the `props()` and `state()` methods observable which means that they
-can only be accessed within the scope of a transaction such as in the `render()` method or in methods annotated with
-Arez's `@Action` annotation. React4j will already schedule a re-render when props or state are modified but making
-these observable means that Arez methods such as `@Autorun` methods on the component can observe and react to
-changes in `props` or `state` values.
-
 As most event handlers within a `ReactArezComponent` component will either access or mutate observable state, the
 helper methods generated as a result of annotating a method with `@EventHandler` will default to being annotated with
 arez's `@Action` annotation. If you do not wish an event handler to be run as an action you can annotate the event

@@ -47,17 +47,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    */
   @Nonnull
   private final ArezContext _context;
-  /**
-   * Props are observable in case @Autorun actions want to observe props and re-run on change.
-   */
-  @Nonnull
-  private final Observable _propsObservable;
-  /**
-   * State is marked as observable, not because it will help schedule renders (as changes to the underlying
-   * state triggers renders) but to allow @Autorun actions to observe state and be updated when it is updated.
-   */
-  @Nonnull
-  private final Observable _stateObservable;
   @Nonnull
   private final Observer _renderTracker;
   private boolean _renderDepsChanged;
@@ -66,8 +55,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   {
     _arezComponentId = c_nextComponentId++;
     _context = Arez.context();
-    _propsObservable = _context.createObservable( toName( ".props" ) );
-    _stateObservable = _context.createObservable( toName( ".state" ) );
     _renderTracker = _context.tracker( toName( ".render" ), false, this::onRenderDepsChanged );
   }
 
@@ -119,74 +106,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   {
     // Arez will override this method so we can ignore the value here.
     return "<default>";
-  }
-
-  /**
-   * Retrieve the component state.
-   * This method must be called within the scope of an Arez transaction as
-   * it will mark the state as "observed"
-   *
-   * @return the component state.
-   */
-  @Override
-  protected final S state()
-  {
-    _stateObservable.reportObserved();
-    return super.state();
-  }
-
-  /**
-   * Retrieve the component props.
-   * This method must be called within the scope of an Arez transaction as
-   * it will mark the props as "observed"
-   *
-   * @return the component props.
-   */
-  @Override
-  protected final P props()
-  {
-    _propsObservable.reportObserved();
-    return super.props();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected final void scheduleStateUpdate( @Nonnull final S state )
-  {
-    Arez.context().safeAction( toName( ".scheduleStateUpdate" ),
-                               true,
-                               () -> {
-                                 _stateObservable.reportChanged();
-                                 super.scheduleStateUpdate( state );
-                               } );
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
-  {
-    super.scheduleStateUpdate( ( s, p ) ->
-                                 Arez.context().safeAction( toName( ".setStateCallback" ),
-                                                            true,
-                                                            () -> callSetStateCallback( callback, s, p ) ) );
-  }
-
-  @Nullable
-  private S callSetStateCallback( @Nonnull final SetStateCallback<P, S> callback,
-                                  @Nullable final S s,
-                                  @Nullable final P p )
-  {
-    final S state = callback.onSetState( s, p );
-    if ( null != state )
-    {
-      // If and only if state will be modified should we mark it as modified
-      _stateObservable.reportChanged();
-    }
-    return state;
   }
 
   @Nullable
@@ -259,8 +178,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
        * Dispose of all the arez resources. Necessary particularly for the render tracker that should
        * not receive notifications of updates after the component has been unmounted.
        */
-      _propsObservable.dispose();
-      _stateObservable.dispose();
       _renderTracker.dispose();
       Disposable.dispose( this );
     } );
