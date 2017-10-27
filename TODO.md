@@ -2,7 +2,7 @@
 
 ### High Priority
 
-* Document differences between React and React4j. Document the scheduleRender and scheduleStateUpdate difference.
+* Document differences between React and React4j. Document the scheduleRender difference.
 * Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
 ### Medium Priorities

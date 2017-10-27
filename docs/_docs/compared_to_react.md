@@ -10,6 +10,15 @@ javascript so there are some features thar just don't make sense to implement in
 environment. There are also some features of React that exist for legacy reasons so are not
 implemented in React4j.
 
+### setState versus scheduleStateUpdate
+
+In React, [`setState(...)`](https://reactjs.org/docs/react-component.html#setstate) enqueues changes to the
+component state and tells React that this component and its children need to be re-rendered with the updated
+state. This can be confusing to new users who sometimes try to read the state property immediately after calling
+`setState(...)` and the "old" value is returned. To avoid this confusion React4j decided to rename this method
+to [scheduleStateUpdate()]({% api_url core.Component scheduleStateUpdate(S)%}). This continues to be the primary
+method you use to update the user interface in response to event handlers and server responses.
+
 ### JSX
 
 Most react code uses [JSX](https://facebook.github.io/jsx/) to build component hierarchies. JSX is an xml-like
