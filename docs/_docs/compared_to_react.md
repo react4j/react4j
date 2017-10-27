@@ -19,6 +19,17 @@ state. This can be confusing to new users who sometimes try to read the state pr
 to [scheduleStateUpdate()]({% api_url core.Component scheduleStateUpdate(S)%}). This continues to be the primary
 method you use to update the user interface in response to event handlers and server responses.
 
+### forceUpdate versus scheduleRender
+
+In React, [`forceUpdate(...)`](https://reactjs.org/docs/react-component.html#forceupdate) tells the runtime
+to schedule the component for re-rendering. If this method is invoked it will skip the `shouldComponentUpdate()`
+method. It is not an uncommon pattern for a component to schedule a re-render by invoking `setState({})` if you
+still want the component to call `shouldComponentUpdate()` lifecycle method. To unify these two mechanisms for
+scheduling a render, React4j decided to define the method to [scheduleRender(boolean force)]({% api_url core.Component scheduleRender(boolean) %}).
+If you pass `force = true` then `forceUpdate()` will be invoked on the underlying react component otherwise
+`setState({})` will be invoked. In both React and React4j, explicitly scheduling a re-render should be avoided
+but if you need to do it you can.
+
 ### JSX
 
 Most react code uses [JSX](https://facebook.github.io/jsx/) to build component hierarchies. JSX is an xml-like
