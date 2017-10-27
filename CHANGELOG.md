@@ -3,6 +3,9 @@
 ### Unreleased
 
 ##### Fixed
+* Ensure that `ReactArezComponent` runs all actions using the context in which the component was created. This avoids
+  assertion failures if Arez is used in multi-Xone configuration error and the creation and rendering of components
+  occurs in different zones.
 * The `ReactArezComponent.componentWillUnmount` would dispose the manually created reactive elements one at a
   time starting with props, state and finally the render tracker. However this caused observers to react to each
   individual element being disposed which could cause assertion failures if an observer was scheduled that could

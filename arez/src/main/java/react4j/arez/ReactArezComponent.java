@@ -119,7 +119,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
      * the function to a separate variable otherwise JDT failes to determine type.
      */
     final SafeFunction<ReactNode> render = this::render;
-    return Js.uncheckedCast( Arez.context().safeTrack( _renderTracker, render ) );
+    return Js.uncheckedCast( _context.safeTrack( _renderTracker, render ) );
   }
 
   /**
@@ -190,9 +190,9 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    */
   private void storeArezDataAsState()
   {
-    if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.context().areSpiesEnabled() )
+    if ( ReactArezConfig.shouldStoreArezDataAsState() && _context.areSpiesEnabled() )
     {
-      final List<Observable> dependencies = Arez.context().getSpy().getDependencies( _renderTracker );
+      final List<Observable> dependencies = _context.getSpy().getDependencies( _renderTracker );
       final JsPropertyMapOfAny deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), d ) );
       final JsPropertyMapOfAny data = JsPropertyMap.of();
