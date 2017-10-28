@@ -15,6 +15,7 @@ import org.realityforge.arez.SafeFunction;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ComponentId;
 import org.realityforge.arez.annotations.ComponentName;
+import org.realityforge.arez.annotations.ContextRef;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
@@ -41,12 +42,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
 
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
-  /**
-   * Context associated the component.
-   * TODO: Replace this with @ContextRef when that is implemented.
-   */
-  @Nonnull
-  private final ArezContext _context;
   @Nonnull
   private final Observer _renderTracker;
   private boolean _renderDepsChanged;
@@ -54,8 +49,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected ReactArezComponent()
   {
     _arezComponentId = c_nextComponentId++;
-    _context = Arez.context();
-    _renderTracker = _context.tracker( toName( ".render" ), false, this::onRenderDepsChanged );
+    _renderTracker = Arez.context().tracker( toName( ".render" ), false, this::onRenderDepsChanged );
   }
 
   /**
@@ -72,6 +66,20 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   {
     _renderDepsChanged = true;
     scheduleRender( false );
+  }
+
+  /**
+   * Return the arez context that this component is associated with.
+   * The component is associated with the context that was active when it was created
+   * and can only react to observables associated with the same context.
+   *
+   * @return the arez context that this component is associated with.
+   */
+  @ContextRef
+  @Nonnull
+  protected ArezContext getContext()
+  {
+    throw new IllegalStateException();
   }
 
   /**
@@ -119,7 +127,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
      * the function to a separate variable otherwise JDT fails to determine type.
      */
     final SafeFunction<ReactNode> render = this::render;
-    return Js.uncheckedCast( _context.safeTrack( _renderTracker, render ) );
+    return Js.uncheckedCast( getContext().safeTrack( _renderTracker, render ) );
   }
 
   /**
@@ -173,7 +181,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Override
   protected void componentWillUnmount()
   {
-    _context.safeAction( toName( ".componentWillUnmount" ), () -> {
+    getContext().safeAction( toName( ".componentWillUnmount" ), () -> {
       /*
        * Dispose of all the arez resources. Necessary particularly for the render tracker that should
        * not receive notifications of updates after the component has been unmounted.
@@ -192,7 +200,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   {
     if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() )
     {
-      final List<Observable> dependencies = _context.getSpy().getDependencies( _renderTracker );
+      final List<Observable> dependencies = getContext().getSpy().getDependencies( _renderTracker );
       final JsPropertyMapOfAny deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), d ) );
       final JsPropertyMapOfAny data = JsPropertyMap.of();
