@@ -35,7 +35,7 @@ class TodoEntry
 ```
 
 * Generate all the html props based on typings at https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
-* Props and state fields should be read-only abstractions? Mutations create new objects?
+* Props and state fields should be read-only abstractions. Mutations create new objects?
 * Somehow declare props as interfaces in components and have implementation generated?
 
 ### Low Priorities
