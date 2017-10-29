@@ -16,10 +16,7 @@ import react4j.core.Procedure;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    name = "ComponentWithEventHandler",
-    singleton = false,
-    disposable = true,
-    allowEmpty = true
+    name = "ComponentWithEventHandler"
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithEventHandler_ extends ComponentWithEventHandler {

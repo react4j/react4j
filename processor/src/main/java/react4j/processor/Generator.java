@@ -52,10 +52,7 @@ final class Generator
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( ClassName.get( "org.realityforge.arez.annotations", "ArezComponent" ) ).
-          addMember( "name", "$S", descriptor.getName() ).
-          addMember( "singleton", "false" ).
-          addMember( "disposable", "true" ).
-          addMember( "allowEmpty", "true" );
+          addMember( "name", "$S", descriptor.getName() );
       builder.addAnnotation( annotation.build() );
     }
 

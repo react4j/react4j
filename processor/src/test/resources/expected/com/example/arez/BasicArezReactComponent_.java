@@ -12,10 +12,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    name = "BasicArezReactComponent",
-    singleton = false,
-    disposable = true,
-    allowEmpty = true
+    name = "BasicArezReactComponent"
 )
 @Generated("react4j.processor.ReactProcessor")
 class BasicArezReactComponent_ extends BasicArezReactComponent {

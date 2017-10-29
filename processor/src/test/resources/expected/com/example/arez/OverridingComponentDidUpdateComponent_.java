@@ -12,10 +12,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    name = "OverridingComponentDidUpdateComponent",
-    singleton = false,
-    disposable = true,
-    allowEmpty = true
+    name = "OverridingComponentDidUpdateComponent"
 )
 @Generated("react4j.processor.ReactProcessor")
 class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdateComponent {

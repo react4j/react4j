@@ -15,10 +15,7 @@ import react4j.core.Procedure;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    name = "ComponentWithNoAutoActionEventHandler",
-    singleton = false,
-    disposable = true,
-    allowEmpty = true
+    name = "ComponentWithNoAutoActionEventHandler"
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEventHandler {

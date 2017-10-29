@@ -15,10 +15,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    name = "ComponentWithAnnotatedParameterEventHandler",
-    singleton = false,
-    disposable = true,
-    allowEmpty = true
+    name = "ComponentWithAnnotatedParameterEventHandler"
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotatedParameterEventHandler {
