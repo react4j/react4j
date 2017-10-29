@@ -8,6 +8,9 @@
   in `ReactArezComponent`.
 * Use Arez's `@ObserverRef` annotation to get access to the `Observer` for render rather than relying on
   custom code in `ReactArezComponent`.
+* 💥 Changed the access modifier on the `TYPE` field in the enhanced component class from public to private.
+  Creation of `ReactElement` instances is now done by invoking the factory methods named `_create` that
+  have been added to the enhanced component class.
 
 ### [v0.07](https://github.com/realityforge/react4j/tree/v0.07) (2017-10-27)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.06...v0.07)

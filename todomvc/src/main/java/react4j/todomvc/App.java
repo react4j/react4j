@@ -3,7 +3,6 @@ package react4j.todomvc;
 import com.google.gwt.core.client.EntryPoint;
 import elemental2.dom.DomGlobal;
 import react4j.arez.spy.ArezSpyUtil;
-import react4j.core.React;
 import react4j.dom.ReactDOM;
 
 public class App
@@ -13,6 +12,6 @@ public class App
   public void onModuleLoad()
   {
     ArezSpyUtil.enableSpyEventLogging();
-    ReactDOM.render( React.createElement( TodoList_.TYPE ), DomGlobal.document.getElementById( "todoapp" ) );
+    ReactDOM.render( TodoList.create(), DomGlobal.document.getElementById( "todoapp" ) );
   }
 }

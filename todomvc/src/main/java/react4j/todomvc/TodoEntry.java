@@ -41,6 +41,12 @@ class TodoEntry
     }
   }
 
+  @Nonnull
+  static ReactElement<BaseProps, NativeReactComponent> create()
+  {
+    return _create();
+  }
+
   @Override
   protected void componentDidConstruct()
   {

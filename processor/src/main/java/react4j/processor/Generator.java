@@ -29,7 +29,9 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
+import react4j.core.React;
 import react4j.core.ReactConfig;
+import react4j.core.ReactElement;
 import react4j.core.ReactNode;
 
 final class Generator
@@ -68,7 +70,7 @@ final class Generator
                          "TYPE",
                          Modifier.STATIC,
                          Modifier.FINAL,
-                         Modifier.PUBLIC ).
+                         Modifier.PRIVATE ).
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
@@ -76,6 +78,10 @@ final class Generator
     {
       builder.addField( buildEventHandlerField( eventHandler ).build() );
     }
+
+    builder.addMethod( buildFactoryMethod( descriptor ).build() );
+    builder.addMethod( buildFactory2Method( descriptor ).build() );
+    builder.addMethod( buildFactory3Method( descriptor ).build() );
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
@@ -123,6 +129,14 @@ final class Generator
     return ParameterizedTypeName.get( ClassName.get( ComponentConstructorFunction.class ),
                                       TypeName.get( descriptor.getPropsType().asType() ),
                                       TypeName.get( descriptor.getStateType().asType() ),
+                                      ClassName.bestGuess( "NativeReactComponent" ) );
+  }
+
+  @Nonnull
+  private static ParameterizedTypeName getReactElementType( @Nonnull final ComponentDescriptor descriptor )
+  {
+    return ParameterizedTypeName.get( ClassName.get( ReactElement.class ),
+                                      TypeName.get( descriptor.getPropsType().asType() ),
                                       ClassName.bestGuess( "NativeReactComponent" ) );
   }
 
@@ -250,6 +264,42 @@ final class Generator
     method.addStatement( ( isVoid ? "" : "return " ) + "super.$N(" + params + ")",
                          eventHandler.getMethod().getSimpleName() );
     return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildFactoryMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    return MethodSpec.methodBuilder( "_create" ).
+      addAnnotation( Nonnull.class ).
+      addModifiers( Modifier.STATIC ).
+      returns( getReactElementType( descriptor ) ).
+      addStatement( "return $T.createElement( TYPE )", React.class );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildFactory2Method( @Nonnull final ComponentDescriptor descriptor )
+  {
+    return MethodSpec.methodBuilder( "_create" ).
+      addAnnotation( Nonnull.class ).
+      addModifiers( Modifier.STATIC ).
+      returns( getReactElementType( descriptor ) ).
+      addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
+        addAnnotation( Nullable.class ).build() ).
+      addStatement( "return $T.createElement( TYPE, props )", React.class );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildFactory3Method( @Nonnull final ComponentDescriptor descriptor )
+  {
+    return MethodSpec.methodBuilder( "_create" ).
+      addAnnotation( Nonnull.class ).
+      addModifiers( Modifier.STATIC ).
+      returns( getReactElementType( descriptor ) ).
+      addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
+        addAnnotation( Nullable.class ).build() ).
+      addParameter( ParameterSpec.builder( ReactNode.class, "child", Modifier.FINAL ).
+        addAnnotation( Nullable.class ).build() ).
+      addStatement( "return $T.createElement( TYPE, props, child )", React.class );
   }
 
   @Nonnull

@@ -1,6 +1,7 @@
 package react4j.todomvc;
 
 import elemental2.dom.HTMLInputElement;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
@@ -64,6 +65,12 @@ class TodoItem
     }
 
     String editText;
+  }
+
+  @Nonnull
+  static ReactElement<TodoItem.Props, NativeReactComponent> create( @Nonnull final TodoItem.Props props )
+  {
+    return _create( Objects.requireNonNull( props ) );
   }
 
   private boolean _isEditing;

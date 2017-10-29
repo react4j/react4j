@@ -1,5 +1,6 @@
 package react4j.todomvc;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.realityforge.arez.annotations.Computed;
 import react4j.annotations.EventHandler;
@@ -7,7 +8,6 @@ import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
-import react4j.core.React;
 import react4j.core.ReactElement;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.proptypes.html.AnchorProps;
@@ -28,6 +28,12 @@ class Footer
     AppData.service.clearCompleted();
   }
 
+  @Nonnull
+  static ReactElement<BaseProps, NativeReactComponent> create()
+  {
+    return _create();
+  }
+
   @Nullable
   @Override
   protected ReactElement<?, ?> renderAsElement()
@@ -35,7 +41,7 @@ class Footer
     final FilterMode filterMode = AppData.viewService.getFilterMode();
     return
       footer( new HtmlProps().className( "footer" ),
-              React.createElement( FooterTodoCount_.TYPE ),
+              FooterTodoCount.create(),
               ul( new HtmlProps().className( "filters" ),
                   li( a( new AnchorProps()
                            .className( FilterMode.ALL == filterMode ? "selected" : "" )

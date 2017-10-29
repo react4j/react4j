@@ -1,5 +1,6 @@
 package react4j.todomvc;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -9,11 +10,18 @@ import react4j.core.ReactElement;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.todomvc.model.AppData;
 import static react4j.dom.DOM.*;
+import static react4j.todomvc.FooterTodoCount_.*;
 
 @ReactComponent
 class FooterTodoCount
   extends ReactArezComponent<BaseProps, BaseState>
 {
+  @Nonnull
+  static ReactElement<BaseProps, FooterTodoCount_.NativeReactComponent> create()
+  {
+    return _create();
+  }
+
   @Nullable
   @Override
   protected ReactElement<?, ?> renderAsElement()

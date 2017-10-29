@@ -3,6 +3,7 @@ package react4j.todomvc;
 import elemental2.dom.HTMLInputElement;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import react4j.annotations.EventHandler;
@@ -10,7 +11,6 @@ import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
-import react4j.core.React;
 import react4j.core.ReactElement;
 import react4j.dom.events.FormEvent;
 import react4j.dom.events.FormEventHandler;
@@ -39,6 +39,12 @@ class TodoList
     AppData.service.toggleAll( input.checked );
   }
 
+  @Nonnull
+  static ReactElement<BaseProps, NativeReactComponent> create()
+  {
+    return _create();
+  }
+
   @Nullable
   @Override
   protected ReactElement<?, ?> renderAsElement()
@@ -47,10 +53,10 @@ class TodoList
       div(
         div( header( new HtmlProps().className( "header" ),
                      h1( "todos" ),
-                     React.createElement( TodoEntry_.TYPE )
+                     TodoEntry.create()
              ),
              renderMainSection(),
-             AppData.model.isNotEmpty() ? React.createElement( Footer_.TYPE ) : null
+             AppData.model.isNotEmpty() ? Footer.create() : null
         )
       );
   }
@@ -81,7 +87,7 @@ class TodoList
   private List<ReactElement<?, ?>> renderTodoItems()
   {
     return AppData.model.filteredTodos().stream().
-      map( todo -> React.createElement( TodoItem_.TYPE, TodoItem.Props.create( todo ) ) ).
+      map( todo -> TodoItem.create( TodoItem.Props.create( todo ) ) ).
       collect( Collectors.toList() );
   }
 }
