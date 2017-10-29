@@ -2,6 +2,9 @@
 
 ### High Priority
 
+* Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
+  state and context? 
+
 * Implement context:
   - contextTypes defined on component constructor - (key -> validation function)
   - constructor(props, context)
