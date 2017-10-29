@@ -2,6 +2,15 @@
 
 ### High Priority
 
+* Implement context:
+  - contextTypes defined on component constructor - (key -> validation function)
+  - constructor(props, context)
+  - componentWillReceiveProps(nextProps, nextContext)
+  - shouldComponentUpdate(nextProps, nextState, nextContext)
+  - componentWillUpdate(nextProps, nextState, nextContext)
+
+* Port transition code ala https://github.com/reactjs/react-transition-group
+
 * Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
 ### Medium Priorities
