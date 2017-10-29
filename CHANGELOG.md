@@ -6,6 +6,8 @@
 * Upgrade to Arez 0.22.
 * Use Arez's `@ContextRef` annotation to get access to `ArezContext` rather than relying on custom code
   in `ReactArezComponent`.
+* Use Arez's `@ObserverRef` annotation to get access to the `Observer` for render rather than relying on
+  custom code in `ReactArezComponent`.
 
 ### [v0.07](https://github.com/realityforge/react4j/tree/v0.07) (2017-10-27)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.06...v0.07)

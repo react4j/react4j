@@ -11,11 +11,12 @@ import org.realityforge.arez.ArezContext;
 import org.realityforge.arez.Disposable;
 import org.realityforge.arez.Observable;
 import org.realityforge.arez.Observer;
-import org.realityforge.arez.SafeFunction;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ComponentId;
-import org.realityforge.arez.annotations.ComponentName;
 import org.realityforge.arez.annotations.ContextRef;
+import org.realityforge.arez.annotations.ObserverRef;
+import org.realityforge.arez.annotations.OnDepsChanged;
+import org.realityforge.arez.annotations.Track;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
@@ -42,14 +43,11 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
 
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
-  @Nonnull
-  private final Observer _renderTracker;
   private boolean _renderDepsChanged;
 
   protected ReactArezComponent()
   {
     _arezComponentId = c_nextComponentId++;
-    _renderTracker = Arez.context().tracker( toName( ".render" ), false, this::onRenderDepsChanged );
   }
 
   /**
@@ -62,7 +60,8 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     return _renderDepsChanged;
   }
 
-  private void onRenderDepsChanged()
+  @OnDepsChanged
+  protected final void onRenderDepsChanged()
   {
     _renderDepsChanged = true;
     scheduleRender( false );
@@ -94,40 +93,20 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     return _arezComponentId;
   }
 
-  @Nullable
-  private String toName( @Nonnull final String suffix )
+  @ObserverRef
+  @Nonnull
+  protected Observer getRenderObserver()
   {
-    return Arez.areNamesEnabled() ? getComponentName() + suffix : null;
+    throw new IllegalStateException();
   }
 
-  /**
-   * Return the name of the component according to Arez.
-   * This method is overridden by the Arez annotation processor.
-   * This method can be invoked by the user if they want to manually create more reactive components
-   * (i.e. {@link Observable}s, {@link Action}s etc. However it ias highly recommended that the normal
-   * annotation driven approach be used instead.
-   *
-   * @return the name of the component according to Arez.
-   */
-  @ComponentName
-  protected String getComponentName()
-  {
-    // Arez will override this method so we can ignore the value here.
-    return "<default>";
-  }
-
+  @Track( name = "render" )
   @Nullable
   @Override
   protected ReactNode performRender()
   {
     _renderDepsChanged = false;
-    /*
-     * Need an uncheckedCast here rather than regular cast as otherwise GWT attempts to cast
-     * this using a method that does not work. Unclear of the exact cause. Also need to extract
-     * the function to a separate variable otherwise JDT fails to determine type.
-     */
-    final SafeFunction<ReactNode> render = this::render;
-    return Js.uncheckedCast( getContext().safeTrack( _renderTracker, render ) );
+    return super.performRender();
   }
 
   /**
@@ -181,14 +160,11 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   @Override
   protected void componentWillUnmount()
   {
-    getContext().safeAction( toName( ".componentWillUnmount" ), () -> {
-      /*
-       * Dispose of all the arez resources. Necessary particularly for the render tracker that should
-       * not receive notifications of updates after the component has been unmounted.
-       */
-      _renderTracker.dispose();
-      Disposable.dispose( this );
-    } );
+    /*
+     * Dispose of all the arez resources. Necessary particularly for the render tracker that should
+     * not receive notifications of updates after the component has been unmounted.
+     */
+    Disposable.dispose( this );
   }
 
   /**
@@ -200,12 +176,13 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   {
     if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() )
     {
-      final List<Observable> dependencies = getContext().getSpy().getDependencies( _renderTracker );
+      final Observer renderTracker = getRenderObserver();
+      final List<Observable> dependencies = getContext().getSpy().getDependencies( renderTracker );
       final JsPropertyMapOfAny deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), d ) );
       final JsPropertyMapOfAny data = JsPropertyMap.of();
-      data.set( "name", _renderTracker.getName() );
-      data.set( "observer", _renderTracker );
+      data.set( "name", renderTracker.getName() );
+      data.set( "observer", renderTracker );
       data.set( "deps", deps );
       final S state = state();
       final Object currentArezData = null != state ? JsPropertyMap.of( state ).get( AREZ_STATE_KEY ) : null;
