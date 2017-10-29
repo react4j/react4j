@@ -3,7 +3,7 @@
 ### Unreleased
 
 ##### Changed
-* Upgrade to Arez 0.21.
+* Upgrade to Arez 0.22.
 * Use Arez's `@ContextRef` annotation to get access to `ArezContext` rather than relying on custom code
   in `ReactArezComponent`.
 
