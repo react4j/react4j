@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Fixed
+* Fixed bug introduced when `ReactDOM.createElement(String,Props)` variant was converted from native method
+  to an overlay method.
+
 ### [v0.08](https://github.com/realityforge/react4j/tree/v0.08) (2017-10-29)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.07...v0.08)
 

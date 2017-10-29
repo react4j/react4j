@@ -27,7 +27,6 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import jsinterop.base.Js;
 import react4j.core.Procedure;
 import react4j.core.ReactElement;
 import react4j.dom.proptypes.html.HtmlGlobalFields;
@@ -92,12 +91,9 @@ public class ReactDOM
    * @return the created DOMElement
    */
   @Nonnull
-  @JsOverlay
-  public static <P extends HtmlGlobalFields> DOMElement<P> createElement( @Nonnull final String type,
-                                                                          @Nullable final P props )
-  {
-    return createElement( type, props, Js.uncheckedCast( Js.undefined() ) );
-  }
+  @JsMethod( namespace = "React" )
+  public static native <P extends HtmlGlobalFields>
+  DOMElement<P> createElement( @Nonnull String type, @Nullable P props );
 
   /**
    * Create and return a new ReactElement of the given type with specified children.

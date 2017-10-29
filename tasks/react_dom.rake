@@ -101,6 +101,12 @@ HEADER
   }
 
   @Nonnull
+  public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props )
+  {
+    return ReactDOM.createElement( "#{key}", props );
+  }
+
+  @Nonnull
   public static DOMElement<#{prop_type}> #{key}( @Nonnull final String content )
   {
     return ReactDOM.createElement( "#{key}", null, text( content ) );
