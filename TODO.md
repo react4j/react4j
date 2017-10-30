@@ -74,3 +74,17 @@ accessing transitive dependency tree via UI?
 
 Possibly we also need the ability to browse the repositories in the application. Register repositories on
 startup and then browse via tables?
+
+#### Compiler optimizations
+
+(Sourced from [ReactJS Changelog](https://reactjs.org/blog/2015/10/07/react-v0.14.html#compiler-optimizations))
+Implement these compiler optimizations sourced from Babel 5.8.24 and newer. Both of these transforms should be enabled
+only in production (e.g., just before minifying your code) because although they improve runtime performance, they make
+warning messages more cryptic and skip important checks that happen in development mode, including propTypes.
+
+* Inlining React elements: The optimisation.react.inlineElements transform converts JSX elements to object literals
+  like {type: 'div', props: ...} instead of calls to React.createElement.
+* Constant hoisting for React elements: The optimisation.react.constantElements transform hoists element creation to
+  the top level for subtrees that are fully static, which reduces calls to React.createElement and the resulting
+  allocations. More importantly, it tells React that the subtree hasn’t changed so React can completely skip it
+  when reconciling.
