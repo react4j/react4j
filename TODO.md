@@ -65,6 +65,8 @@ class TodoEntry
 
 * Add TodoMVC to web site in both production and development mode so it is easy to describe it in the documentation.
 
+* Support RenderNode converting from numbers
+
 #### Arez DevTools
 
 Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need
