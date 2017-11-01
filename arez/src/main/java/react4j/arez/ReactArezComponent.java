@@ -177,7 +177,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() )
     {
       final Observer renderTracker = getRenderObserver();
-      final List<Observable> dependencies = getContext().getSpy().getDependencies( renderTracker );
+      final List<Observable<?>> dependencies = getContext().getSpy().getDependencies( renderTracker );
       final JsPropertyMapOfAny deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), d ) );
       final JsPropertyMapOfAny data = JsPropertyMap.of();

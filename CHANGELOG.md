@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Changed
+* 💥 Upgrade to Arez 0.23.
+
 ### [v0.09](https://github.com/realityforge/react4j/tree/v0.09) (2017-10-30)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.08...v0.09)
 
