@@ -67,6 +67,10 @@ class TodoEntry
 
 * Support RenderNode converting from numbers
 
+* EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
+  schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
+  and will need to be marked as runImmediately=false)
+
 #### Arez DevTools
 
 Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need
