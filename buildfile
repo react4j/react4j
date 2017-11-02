@@ -9,7 +9,6 @@ TEST_DEPS = []
 REACT_TEST_OPTIONS =
   {
     'braincheck.environment' => 'development',
-    'react4j.dynamic_provider' => 'true',
     'react4j.logger' => 'proxy',
     'react4j.environment' => 'development'
   }
@@ -260,7 +259,7 @@ define 'react4j' do
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
 
-  ipr.add_default_testng_configuration(:jvm_args => '-ea -Dbraincheck.dynamic_provider=true -Dbraincheck.environment=development -Dreact4j.dynamic_provider=true -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources')
+  ipr.add_default_testng_configuration(:jvm_args => '-ea -Dbraincheck.dynamic_provider=true -Dbraincheck.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources')
   ipr.add_component_from_artifact(:idea_codestyle)
 
   EXAMPLES.each_pair do |key, gwt_module|
