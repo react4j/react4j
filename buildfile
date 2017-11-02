@@ -8,7 +8,6 @@ TEST_DEPS = []
 # JDK options passed to test environment. Essentially turns assertions on.
 REACT_TEST_OPTIONS =
   {
-    'braincheck.dynamic_provider' => 'true',
     'braincheck.environment' => 'development',
     'react4j.dynamic_provider' => 'true',
     'react4j.logger' => 'proxy',
