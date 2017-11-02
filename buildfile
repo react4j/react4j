@@ -9,7 +9,6 @@ TEST_DEPS = []
 REACT_TEST_OPTIONS =
   {
     'braincheck.environment' => 'development',
-    'react4j.logger' => 'proxy',
     'react4j.environment' => 'development'
   }
 
