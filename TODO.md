@@ -16,6 +16,7 @@
 * Port transition code ala
   - https://github.com/reactjs/react-transition-group
   - https://reactcommunity.org/react-transition-group/
+  or maybe https://react-move.js.org/
 
 * Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
