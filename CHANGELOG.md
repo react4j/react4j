@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Fixed
+* Fixed bug in `DragEvent` where field name was `clipboardData` rather than `dataTransfer`.
+
 ##### Changed
 * Upgrade to Arez 0.24.
 

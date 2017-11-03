@@ -9,11 +9,11 @@ import jsinterop.annotations.JsType;
 public class DragEvent
   extends SyntheticEvent<elemental2.dom.DragEvent>
 {
-  private DataTransfer clipboardData;
+  private DataTransfer dataTransfer;
 
   @JsOverlay
-  public final DataTransfer getClipboardData()
+  public final DataTransfer getDataTransfer()
   {
-    return clipboardData;
+    return dataTransfer;
   }
 }
