@@ -10,6 +10,17 @@ javascript so there are some features thar just don't make sense to implement in
 environment. There are also some features of React that exist for legacy reasons so are not
 implemented in React4j.
 
+### The constructor versus componentDidConstruct
+
+In React, components perform initialization in their constructor except for "Stateless Function Components" (SFCs)
+which do not need initialization as they are stateless. However, we found that in many react applications there are
+a lot of SFCs or stateful components that perform no initialization or only perform event handler binding (which
+is not used in React4j). As such we found it to be unnecessary boilerplate and complexity.
+
+In React4j, we decided that components need not define a constructor and could instead make use of the default
+constructor automatically provided by the runtime. If you wanted to perform per-component initialization you can
+override the lifecycle method `componentDidConstruct`. In practice we found it was rarely used.
+
 ### setState versus scheduleStateUpdate
 
 In React, [`setState(...)`](https://reactjs.org/docs/react-component.html#setstate) enqueues changes to the
