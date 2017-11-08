@@ -9,7 +9,7 @@ import org.realityforge.arez.annotations.Autorun;
 import org.realityforge.arez.annotations.Observable;
 import org.realityforge.arez.browser.extras.BrowserLocation;
 
-@ArezComponent( singleton = true )
+@ArezComponent( nameIncludesId = false )
 public class ViewService
 {
   @Nonnull

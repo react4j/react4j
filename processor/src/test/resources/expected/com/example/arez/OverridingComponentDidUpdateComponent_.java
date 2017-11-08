@@ -16,7 +16,7 @@ import react4j.core.ReactElement;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    name = "OverridingComponentDidUpdateComponent"
+    type = "OverridingComponentDidUpdateComponent"
 )
 @Generated("react4j.processor.ReactProcessor")
 class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdateComponent {

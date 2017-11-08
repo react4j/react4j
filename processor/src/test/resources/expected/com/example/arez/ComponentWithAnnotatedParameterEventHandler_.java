@@ -19,7 +19,7 @@ import react4j.core.ReactElement;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    name = "ComponentWithAnnotatedParameterEventHandler"
+    type = "ComponentWithAnnotatedParameterEventHandler"
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotatedParameterEventHandler {

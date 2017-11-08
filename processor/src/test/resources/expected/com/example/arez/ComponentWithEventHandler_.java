@@ -20,7 +20,7 @@ import react4j.core.ReactElement;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    name = "ComponentWithEventHandler"
+    type = "ComponentWithEventHandler"
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithEventHandler_ extends ComponentWithEventHandler {

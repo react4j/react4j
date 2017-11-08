@@ -19,7 +19,7 @@ import react4j.core.ReactElement;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    name = "ComponentWithNoAutoActionEventHandler"
+    type = "ComponentWithNoAutoActionEventHandler"
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEventHandler {

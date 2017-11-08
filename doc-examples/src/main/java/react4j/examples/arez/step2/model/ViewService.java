@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Observable;
 
-@ArezComponent( singleton = true )
+@ArezComponent( nameIncludesId = false )
 public class ViewService
 {
   @Nonnull
