@@ -18,7 +18,7 @@
 * 💥 **\[dom\]** Add nullability annotations in `ReactDOM` to document expected behaviour.
 * 💥 **\[dom\]** Rewrote `ReactDOM.render(ReactNode,Element)` as an overlay method.
 * 💥 **\[dom\]** Rewrote `ReactDOM` and javadocs to align with the official React documentation except where it
-  is less precise where actual behaviour was documented..
+  is less precise where actual behaviour was documented.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)
