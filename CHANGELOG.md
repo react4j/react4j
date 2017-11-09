@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Added
+* **\[dom\]** Add `ReactDOM.createPortal()` method to support React 16 portals.
+
 ##### Fixed
 * Make sure the type of `ReactElementChildren` does not imply a prototype.
 

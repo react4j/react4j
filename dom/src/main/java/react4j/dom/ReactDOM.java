@@ -44,6 +44,23 @@ public class ReactDOM
   }
 
   /**
+   * Portals provide a first-class way to render children into a DOM node that exists outside the DOM hierarchy
+   * of the parent component.
+   *
+   * <p>Even though a portal can be anywhere in the DOM tree, it behaves like a normal React child in every
+   * other way. Features like context work exactly the same regardless of whether the child is a portal, as
+   * the portal still exists in the React tree regardless of position in the DOM tree.</p>
+   *
+   * <p>This includes event bubbling. An event fired from inside a portal will propagate to ancestors in
+   * the containing React tree, even if those elements are not ancestors in the DOM tree.</p>
+   *
+   * @param children  the react node to render.
+   * @param container the DOM element to render into.
+   * @return the new portal.
+   */
+  public static native ReactPortal createPortal( ReactNode children, Element container );
+
+  /**
    * <p>Render a ReactElement&lt;?, ?&gt; into the DOM in the supplied container and return a reference to
    * the component (or returns nothing for stateless components).</p>
    *
