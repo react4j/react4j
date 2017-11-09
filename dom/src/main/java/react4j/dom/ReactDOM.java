@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
+import elemental2.dom.Element;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsMethod;
@@ -29,6 +30,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import react4j.core.Procedure;
 import react4j.core.ReactElement;
+import react4j.core.ReactNode;
 import react4j.dom.proptypes.html.HtmlGlobalFields;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL )
@@ -55,9 +57,11 @@ public class ReactDOM
    * @param container the DOM container to render into
    * @return a reference to the component or returns nothing for stateless components
    */
-  public static native <C> ReactElement<?, ?> render( ReactElement<?, ?> element, C container );
+  @Nullable
+  public static native ReactElement<?, ?> render( @Nonnull ReactElement<?, ?> element, @Nonnull Element container );
 
-  public static native <C> ReactElement<?, ?> render( ReactElement<?, ?> element, C container, Procedure onUpdate );
+  @Nullable
+  public static native ReactElement<?, ?> render( @Nonnull ReactElement<?, ?> element, @Nonnull Element container, Procedure onUpdate );
 
   /**
    * Remove a mounted React component from the DOM and clean up its event handlers and state. If
@@ -66,7 +70,7 @@ public class ReactDOM
    * @param container the DOM container containing the react component to unmount
    * @return <code>true</code> if the the component was unmounted
    */
-  public static native <C> boolean unmountComponentAtNode( C container );
+  public static native boolean unmountComponentAtNode( @Nonnull Element container );
 
   /**
    * Create and return a new ReactElement of the given type.
@@ -107,5 +111,5 @@ public class ReactDOM
   @Nonnull
   @JsMethod( namespace = "React" )
   public static native <P extends HtmlGlobalFields>
-  DOMElement<P> createElement( @Nonnull String type, @Nullable P props, @Nullable ReactElement<?, ?>... children );
+  DOMElement<P> createElement( @Nonnull String type, @Nullable P props, @Nullable ReactNode... children );
 }

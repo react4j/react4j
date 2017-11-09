@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import jsinterop.base.Js;
 import react4j.core.ReactElement;
 import react4j.dom.ReactDOM;
 
@@ -42,7 +43,7 @@ public class ReactWidget
   public void onAttach()
   {
     super.onAttach();
-    ReactDOM.render( _reactElement, _element );
+    ReactDOM.render( _reactElement, Js.uncheckedCast( _element ) );
 
   }
 
@@ -52,7 +53,7 @@ public class ReactWidget
   @Override
   public void onDetach()
   {
-    ReactDOM.unmountComponentAtNode( _element );
+    ReactDOM.unmountComponentAtNode( Js.uncheckedCast( _element ) );
     super.onDetach();
   }
 }
