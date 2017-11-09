@@ -76,6 +76,8 @@ class TodoEntry
 
 * Remove support for string refs as they are deprecated and slated for removal.
 
+* Remove ReactElementChildren interface as it is just a ReactNode instance.
+
 #### Arez DevTools
 
 Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need
