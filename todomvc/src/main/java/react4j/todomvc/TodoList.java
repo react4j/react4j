@@ -12,6 +12,7 @@ import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactElement;
+import react4j.core.ReactNode;
 import react4j.dom.events.FormEvent;
 import react4j.dom.events.FormEventHandler;
 import react4j.dom.events.MouseEventHandler;
@@ -84,7 +85,7 @@ class TodoList
     }
   }
 
-  private List<ReactElement<?, ?>> renderTodoItems()
+  private List<ReactNode> renderTodoItems()
   {
     return AppData.model.filteredTodos().stream().
       map( todo -> TodoItem.create( TodoItem.Props.create( todo ) ) ).

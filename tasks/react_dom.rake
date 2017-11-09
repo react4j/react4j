@@ -53,7 +53,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
-import react4j.core.ReactElement;
+import react4j.core.ReactNode;
 import react4j.core.util.JsUtil;
 HEADER
   factories.values.sort.uniq.each do |prop_type|
@@ -73,9 +73,9 @@ public final class DOM
   }
 
   @Nonnull
-  public static ReactElement<?, ?> text( @Nonnull final String content )
+  public static ReactNode text( @Nonnull final String content )
   {
-    return Js.uncheckedCast( content );
+    return ReactNode.of( content );
   }
 
 HEADER
@@ -83,13 +83,13 @@ HEADER
     content += <<HEADER
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactElement<?, ?>... child )
+  public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactNode... child )
   {
     return ReactDOM.createElement( "#{key}", props, child );
   }
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}( @Nullable final ReactElement<?, ?>... child )
+  public static DOMElement<#{prop_type}> #{key}( @Nullable final ReactNode... child )
   {
     return ReactDOM.createElement( "#{key}", null, child );
   }
@@ -119,9 +119,9 @@ HEADER
   }
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props, @Nonnull final List<ReactElement<?, ?>> children )
+  public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props, @Nonnull final List<ReactNode> children )
   {
-    return #{key}( props, Js.<ReactElement<?, ?>[]>uncheckedCast( JsUtil.asJsArray( children ) ) );
+    return #{key}( props, Js.<ReactNode[]>uncheckedCast( JsUtil.asJsArray( children ) ) );
   }
 HEADER
   end

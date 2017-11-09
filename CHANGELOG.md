@@ -10,6 +10,7 @@
 
 ##### Changed
 * 💥 **\[core\]** Make `ReactElement` implement the `ReactNode` interface to simplify code base.
+* 💥 **\[dom\]** Change the DOM factory to accept and return instances of `ReactNode` rather than `ReactElement`.
 * 💥 **\[dom\]** Change children parameter of `ReactDOM.createElement()` to be a `ReactNode`.
 * 💥 **\[dom\]** Change element parameter of `ReactDOM.render()` to be a `ReactNode` so can render arbitrary nodes
   such as strings, portals etc.
