@@ -70,15 +70,17 @@ public class ReactDOM
    * <p>If the optional callback is provided, it will be executed after the component is rendered
    * or updated.</p>
    *
-   * @param element   the react element to render
+   * @param node      the react node to render.
    * @param container the DOM container to render into
    * @return a reference to the component or returns nothing for stateless components
    */
   @Nullable
-  public static native ReactElement<?, ?> render( @Nonnull ReactElement<?, ?> element, @Nonnull Element container );
+  public static native ReactElement<?, ?> render( @Nonnull ReactNode node, @Nonnull Element container );
 
   @Nullable
-  public static native ReactElement<?, ?> render( @Nonnull ReactElement<?, ?> element, @Nonnull Element container, Procedure onUpdate );
+  public static native ReactElement<?, ?> render( @Nonnull ReactNode node,
+                                                  @Nonnull Element container,
+                                                  @Nullable Procedure onUpdate );
 
   /**
    * Remove a mounted React component from the DOM and clean up its event handlers and state. If

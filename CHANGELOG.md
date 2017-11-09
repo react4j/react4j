@@ -11,6 +11,8 @@
 ##### Changed
 * 💥 **\[core\]** Make `ReactElement` implement the `ReactNode` interface to simplify code base.
 * 💥 **\[dom\]** Change children parameter of `ReactDOM.createElement()` to be a `ReactNode`.
+* 💥 **\[dom\]** Change element parameter of `ReactDOM.render()` to be a `ReactNode` so can render arbitrary nodes
+  such as strings, portals etc.
 * 💥 **\[dom\]** Explicitly type the containers in `ReactDOM` as Elemental2 `Element` instances.
 * 💥 **\[dom\]** Add nullability annotations in `ReactDOM` to docunent expected behaviour.
 
