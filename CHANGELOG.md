@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Fixed
+* Make sure the type of `ReactElementChildren` does not imply a prototype.
+
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)
 
