@@ -6,9 +6,9 @@
 * Make sure the type of `ReactElementChildren` does not imply a prototype.
 
 ##### Changed
-* **\[dom\]** Change children parameter of `ReactDOM.createElement()` to be a `ReactNode`.
-* **\[dom\]** Explicitly type the containers in `ReactDOM` as Elemental2 `Element` instances.
-* **\[dom\]** Add nullability annotations in `ReactDOM` to docunent expected behaviour.
+* 💥 **\[dom\]** Change children parameter of `ReactDOM.createElement()` to be a `ReactNode`.
+* 💥 **\[dom\]** Explicitly type the containers in `ReactDOM` as Elemental2 `Element` instances.
+* 💥 **\[dom\]** Add nullability annotations in `ReactDOM` to docunent expected behaviour.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)
