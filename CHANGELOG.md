@@ -7,6 +7,7 @@
 
 ##### Fixed
 * Make sure the type of `ReactElementChildren` does not imply a prototype.
+* 💥 **\[core\]** Make sure the type of `DOMElement` does not imply a prototype.
 
 ##### Changed
 * 💥 **\[core\]** Make `ReactElement` implement the `ReactNode` interface to simplify code base.
