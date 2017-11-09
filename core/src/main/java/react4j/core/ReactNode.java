@@ -69,12 +69,6 @@ public interface ReactNode
   }
 
   @JsOverlay
-  default ReactNode[] asRenderResult()
-  {
-    return Js.cast( this );
-  }
-
-  @JsOverlay
   default boolean isString()
   {
     return (Object) this instanceof String;

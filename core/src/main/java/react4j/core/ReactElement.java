@@ -1,11 +1,11 @@
 package react4j.core;
 
-import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class ReactElement<P extends BaseProps, T>
+  implements ReactNode
 {
   public T type;
   public P props;
@@ -16,11 +16,5 @@ public class ReactElement<P extends BaseProps, T>
    */
   protected ReactElement()
   {
-  }
-
-  @JsOverlay
-  public final ReactNode asRenderResult()
-  {
-    return ReactNode.of( this );
   }
 }

@@ -9,6 +9,7 @@
 * Make sure the type of `ReactElementChildren` does not imply a prototype.
 
 ##### Changed
+* 💥 **\[core\]** Make `ReactElement` implement the `ReactNode` interface to simplify code base.
 * 💥 **\[dom\]** Change children parameter of `ReactDOM.createElement()` to be a `ReactNode`.
 * 💥 **\[dom\]** Explicitly type the containers in `ReactDOM` as Elemental2 `Element` instances.
 * 💥 **\[dom\]** Add nullability annotations in `ReactDOM` to docunent expected behaviour.
