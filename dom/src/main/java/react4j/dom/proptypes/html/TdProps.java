@@ -3,7 +3,6 @@ package react4j.dom.proptypes.html;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.ReactRefCallback;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
@@ -36,28 +35,6 @@ public class TdProps
   public final TdProps rowSpan( int i )
   {
     setRowSpan( i );
-    return self();
-  }
-
-  //React Specific
-  @JsOverlay
-  public final TdProps ref( String s )
-  {
-    ref = s;
-    return self();
-  }
-
-  @JsOverlay
-  public final TdProps ref( ReactRefCallback callback )
-  {
-    ref = callback;
-    return self();
-  }
-
-  @JsOverlay
-  public final TdProps key( String s )
-  {
-    key = s;
     return self();
   }
 

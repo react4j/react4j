@@ -3,7 +3,6 @@ package react4j.dom.proptypes.html;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.ReactRefCallback;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.FormEventHandler;
@@ -239,27 +238,6 @@ public class InputProps
   public final InputProps defaultValue( String s )
   {
     setDefaultValue( s );
-    return self();
-  }
-
-  @JsOverlay
-  public final InputProps ref( String s )
-  {
-    ref = s;
-    return self();
-  }
-
-  @JsOverlay
-  public final InputProps ref( ReactRefCallback callback )
-  {
-    ref = callback;
-    return self();
-  }
-
-  @JsOverlay
-  public final InputProps key( String s )
-  {
-    key = s;
     return self();
   }
 

@@ -3,7 +3,6 @@ package react4j.dom.proptypes.html;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.ReactRefCallback;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
@@ -50,28 +49,6 @@ public class IFrameProps
   public final IFrameProps width( int i )
   {
     setWidth( Integer.toString( i ) );
-    return self();
-  }
-
-  //React Specific
-  @JsOverlay
-  public final IFrameProps ref( String s )
-  {
-    ref = s;
-    return self();
-  }
-
-  @JsOverlay
-  public final IFrameProps ref( ReactRefCallback callback )
-  {
-    ref = callback;
-    return self();
-  }
-
-  @JsOverlay
-  public final IFrameProps key( String s )
-  {
-    key = s;
     return self();
   }
 

@@ -3,7 +3,6 @@ package react4j.dom.proptypes.html;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.ReactRefCallback;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
@@ -14,37 +13,6 @@ import react4j.dom.events.TouchEventHandler;
 public class HtmlProps
   extends HtmlGlobalFields<HtmlProps>
 {
-
-  //React Specific
-
-  @JsOverlay
-  public final HtmlProps dangerouslySetInnerHTML( String s )
-  {
-    setDangerouslyInnerHTML( s );
-    return self();
-  }
-
-  @JsOverlay
-  public final HtmlProps ref( String s )
-  {
-    ref = s;
-    return self();
-  }
-
-  @JsOverlay
-  public final HtmlProps ref( ReactRefCallback callback )
-  {
-    ref = callback;
-    return self();
-  }
-
-  @JsOverlay
-  public final HtmlProps key( String s )
-  {
-    key = s;
-    return self();
-  }
-
   //Applicable Event Handlers
 
   // Focus Events

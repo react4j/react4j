@@ -39,12 +39,4 @@ public class OptionProps
     setValue( s );
     return self();
   }
-
-  //React Specific
-  @JsOverlay
-  public final OptionProps key( String s )
-  {
-    key = s;
-    return self();
-  }
 }

@@ -11,6 +11,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import jsinterop.base.JsPropertyMapOfAny;
 import react4j.core.BaseProps;
+import react4j.core.ReactRefCallback;
 import react4j.dom.events.ClipboardEventHandler;
 import react4j.dom.events.CompositionEventHandler;
 import react4j.dom.events.DragEventHandler;
@@ -28,15 +29,42 @@ import react4j.dom.proptypes.html.attributeTypes.YesNo;
 public class HtmlGlobalFields<T extends HtmlGlobalFields>
   extends BaseProps
 {
+  @JsOverlay
+  public final T ref( String s )
+  {
+    ref = s;
+    return self();
+  }
 
   @JsOverlay
-  public final void setDangerouslyInnerHTML( String __html )
+  public final T ref( ReactRefCallback callback )
   {
-    setDangerouslySetInnerHTML( JsPropertyMap.of( "__html", __html ) );
+    ref = callback;
+    return self();
+  }
+
+  @JsOverlay
+  public final T key( String s )
+  {
+    key = s;
+    return self();
+  }
+
+  @JsOverlay
+  public final T dangerouslySetInnerHTML( @Nonnull final String html )
+  {
+    setDangerouslyInnerHTML( html );
+    return self();
+  }
+
+  @JsOverlay
+  private void setDangerouslyInnerHTML( @Nonnull final String html )
+  {
+    setDangerouslySetInnerHTML( JsPropertyMap.of( "__html", html ) );
   }
 
   @JsProperty
-  protected native void setDangerouslySetInnerHTML( JsPropertyMapOfAny __html );
+  protected native void setDangerouslySetInnerHTML( @Nonnull JsPropertyMapOfAny __html );
 
   //React Specific
   @JsProperty

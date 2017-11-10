@@ -3,7 +3,6 @@ package react4j.dom.proptypes.html;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.ReactRefCallback;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
@@ -70,29 +69,6 @@ public class AnchorProps
   public final AnchorProps type( String t )
   {
     setType( t );
-    return self();
-  }
-
-  //React Specific
-
-  @JsOverlay
-  public final AnchorProps ref( String s )
-  {
-    ref = s;
-    return self();
-  }
-
-  @JsOverlay
-  public final AnchorProps ref( ReactRefCallback callback )
-  {
-    ref = callback;
-    return self();
-  }
-
-  @JsOverlay
-  public final AnchorProps key( String s )
-  {
-    key = s;
     return self();
   }
 

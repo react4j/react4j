@@ -3,7 +3,6 @@ package react4j.dom.proptypes.html;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.ReactRefCallback;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
@@ -22,28 +21,6 @@ public class ColProps
   public final ColProps span( int i )
   {
     setSpan( i );
-    return self();
-  }
-
-  //React Specific
-  @JsOverlay
-  public final ColProps ref( String s )
-  {
-    ref = s;
-    return self();
-  }
-
-  @JsOverlay
-  public final ColProps ref( ReactRefCallback callback )
-  {
-    ref = callback;
-    return self();
-  }
-
-  @JsOverlay
-  public final ColProps key( String s )
-  {
-    key = s;
     return self();
   }
 

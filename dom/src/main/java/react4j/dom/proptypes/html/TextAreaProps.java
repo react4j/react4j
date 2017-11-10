@@ -3,7 +3,6 @@ package react4j.dom.proptypes.html;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.ReactRefCallback;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.FormEventHandler;
@@ -117,27 +116,6 @@ public class TextAreaProps
   public final TextAreaProps defaultValue( String s )
   {
     setDefaultValue( s );
-    return self();
-  }
-
-  @JsOverlay
-  public final TextAreaProps ref( String s )
-  {
-    ref = s;
-    return self();
-  }
-
-  @JsOverlay
-  public final TextAreaProps ref( ReactRefCallback callback )
-  {
-    ref = callback;
-    return self();
-  }
-
-  @JsOverlay
-  public final TextAreaProps key( String s )
-  {
-    key = s;
     return self();
   }
 
