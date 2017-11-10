@@ -18,7 +18,7 @@ public class LabelProps
   extends HtmlGlobalFields<LabelProps>
 {
   @JsOverlay
-  public final LabelProps HtmlFor( String s )
+  public final LabelProps htmlFor( String s )
   {
     setHtmlFor( s );
     return self();
