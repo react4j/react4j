@@ -8,7 +8,7 @@ import jsinterop.annotations.JsType;
 public class BaseProps
 {
   @Nullable
-  public ReactElementChildren children;
+  public ReactNode children;
   @Nullable
   public String key;
   @Nullable

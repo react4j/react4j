@@ -55,20 +55,6 @@ public interface ReactNode
     return Js.cast( string );
   }
 
-  /**
-   * Convert children to a render result.
-   * The children type is already an abstraction over one of the underlying render results
-   * so no explicit conversion required.
-   *
-   * @param children the react element children.
-   * @return the render result.
-   */
-  @JsOverlay
-  static ReactNode of( final ReactElementChildren children )
-  {
-    return Js.cast( children );
-  }
-
   @JsOverlay
   static ReactNode of( final ReactElement<?, ?> element )
   {
