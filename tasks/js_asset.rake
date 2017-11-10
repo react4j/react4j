@@ -31,7 +31,8 @@ end
 def js_assets(project, group_name)
   base_js_resources_dir = project._(:generated, :js_assets, :src, :main, :resources)
   group = JS_ASSET_GROUPS[group_name] || (raise "Unable to locate group #{group_name}")
-  t = project.task('js_resources_dir') do
+  desc 'Copy Javascript assets to generated dir'
+  t = project.task('js_resources') do
     group.each_pair do |spec, target|
       copy_js_asset(spec, "#{base_js_resources_dir}/#{target}")
     end
