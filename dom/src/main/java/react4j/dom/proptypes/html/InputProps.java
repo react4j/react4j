@@ -12,14 +12,13 @@ import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
 import react4j.dom.proptypes.html.attributeTypes.InputType;
 import react4j.dom.proptypes.html.attributeTypes.OnOff;
-import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 /**
  * Props for input elements. Refer to http://www.w3schools.com/tags/tag_input.asp
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class InputProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<InputProps>
 {
 
   @JsOverlay
@@ -261,106 +260,6 @@ public class InputProps
   public final InputProps key( String s )
   {
     key = s;
-    return this;
-  }
-
-  //Global HTML props
-
-  @JsOverlay
-  public final InputProps accessKey( String s )
-  {
-    setAccessKey( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps className( String s )
-  {
-    setClassName( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps contentEditable( boolean b )
-  {
-    setContentEditable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps contextMenu( String s )
-  {
-    setContextMenu( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps dir( String s )
-  {
-    setDir( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps draggable( boolean b )
-  {
-    setDraggable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps hidden( boolean b )
-  {
-    setHidden( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps id( String s )
-  {
-    setId( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps lang( String s )
-  {
-    setLang( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps spellcheck( boolean b )
-  {
-    setSpellCheck( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps style( CssProps s )
-  {
-    setStyle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps tabIndex( int i )
-  {
-    setTabIndex( i );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps title( String s )
-  {
-    setTitle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final InputProps translate( YesNo s )
-  {
-    setTranslate( s.name() );
     return this;
   }
 

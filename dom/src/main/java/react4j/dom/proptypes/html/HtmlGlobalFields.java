@@ -1,9 +1,13 @@
 package react4j.dom.proptypes.html;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import jsinterop.base.JsPropertyMapOfAny;
 import react4j.core.BaseProps;
@@ -18,9 +22,10 @@ import react4j.dom.events.ReactEventHandler;
 import react4j.dom.events.TouchEventHandler;
 import react4j.dom.events.UIEventHandler;
 import react4j.dom.events.WheelEventHandler;
+import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-public class HtmlGlobalFields
+public class HtmlGlobalFields<T extends HtmlGlobalFields>
   extends BaseProps
 {
 
@@ -61,6 +66,13 @@ public class HtmlGlobalFields
 
   @JsProperty
   public native String getAccessKey();
+
+  @JsOverlay
+  public final T accessKey( String accessKey )
+  {
+    setAccessKey( accessKey );
+    return asT();
+  }
 
   @JsProperty
   public native void setAccessKey( String accessKey );
@@ -158,6 +170,13 @@ public class HtmlGlobalFields
   @JsProperty
   public native String getClassName();
 
+  @JsOverlay
+  public final T className( String... classnames )
+  {
+    setClassName( Arrays.stream( classnames ).collect( Collectors.joining( " " ) ) );
+    return asT();
+  }
+
   @JsProperty
   public native void setClassName( String className );
 
@@ -182,11 +201,25 @@ public class HtmlGlobalFields
   @JsProperty
   public native boolean isContentEditable();
 
+  @JsOverlay
+  public final T contentEditable( boolean contentEditable )
+  {
+    setContentEditable( contentEditable );
+    return asT();
+  }
+
   @JsProperty
   public native void setContentEditable( boolean contentEditable );
 
   @JsProperty
   public native String getContextMenu();
+
+  @JsOverlay
+  public final T contextMenu( String contextMenu )
+  {
+    setContextMenu( contextMenu );
+    return asT();
+  }
 
   @JsProperty
   public native void setContextMenu( String contextMenu );
@@ -233,6 +266,13 @@ public class HtmlGlobalFields
   @JsProperty
   public native String getDir();
 
+  @JsOverlay
+  public final T dir( String dir )
+  {
+    setDir( dir );
+    return asT();
+  }
+
   @JsProperty
   public native void setDir( String dir );
 
@@ -250,6 +290,13 @@ public class HtmlGlobalFields
 
   @JsProperty
   public native boolean isDraggable();
+
+  @JsOverlay
+  public final T draggable( boolean draggable )
+  {
+    setDraggable( draggable );
+    return asT();
+  }
 
   @JsProperty
   public native void setDraggable( boolean draggable );
@@ -317,6 +364,13 @@ public class HtmlGlobalFields
   @JsProperty
   public native boolean isHidden();
 
+  @JsOverlay
+  public final T hidden( boolean hidden )
+  {
+    setHidden( hidden );
+    return asT();
+  }
+
   @JsProperty
   public native void setHidden( boolean hidden );
 
@@ -358,6 +412,13 @@ public class HtmlGlobalFields
 
   @JsProperty
   public native String getId();
+
+  @JsOverlay
+  public final T id( String id )
+  {
+    setId( id );
+    return asT();
+  }
 
   @JsProperty
   public native void setId( String id );
@@ -406,6 +467,13 @@ public class HtmlGlobalFields
 
   @JsProperty
   public native String getLang();
+
+  @JsOverlay
+  public final T lang( String lang )
+  {
+    setLang( lang );
+    return asT();
+  }
 
   @JsProperty
   public native void setLang( String lang );
@@ -659,6 +727,13 @@ public class HtmlGlobalFields
   @JsProperty
   public native boolean isSpellCheck();
 
+  @JsOverlay
+  public final T spellCheck( boolean spellCheck )
+  {
+    setSpellCheck( spellCheck );
+    return asT();
+  }
+
   @JsProperty
   public native void setSpellCheck( boolean spellCheck );
 
@@ -701,6 +776,13 @@ public class HtmlGlobalFields
   @JsProperty
   public native CssProps getStyle();
 
+  @JsOverlay
+  public final T style( CssProps style )
+  {
+    setStyle( style );
+    return asT();
+  }
+
   @JsProperty
   public native void setStyle( CssProps style );
 
@@ -712,6 +794,13 @@ public class HtmlGlobalFields
 
   @JsProperty
   public native int getTabIndex();
+
+  @JsOverlay
+  public final T tabIndex( int tabIndex )
+  {
+    setTabIndex( tabIndex );
+    return asT();
+  }
 
   @JsProperty
   public native void setTabIndex( int tabIndex );
@@ -725,6 +814,13 @@ public class HtmlGlobalFields
   @JsProperty
   public native String getTitle();
 
+  @JsOverlay
+  public final T title( String title )
+  {
+    setTitle( title );
+    return asT();
+  }
+
   @JsProperty
   public native void setTitle( String title );
 
@@ -736,6 +832,13 @@ public class HtmlGlobalFields
 
   @JsProperty
   public native String getTranslate();
+
+  @JsOverlay
+  public final T translate( YesNo s )
+  {
+    setTranslate( s.name() );
+    return asT();
+  }
 
   @JsProperty
   public native void setTranslate( String translate );
@@ -1293,4 +1396,11 @@ public class HtmlGlobalFields
 
   @JsProperty
   public native void setOnWheel( WheelEventHandler onWheel );
+
+  @JsOverlay
+  @Nonnull
+  protected final T asT()
+  {
+    return Js.uncheckedCast( this );
+  }
 }

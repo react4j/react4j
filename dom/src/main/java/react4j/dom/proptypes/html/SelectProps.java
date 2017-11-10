@@ -10,14 +10,13 @@ import react4j.dom.events.FormEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
-import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 /**
  * Props for select elements. Refer to http://www.w3schools.com/tags/tag_select.asp
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class SelectProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<SelectProps>
 {
 
   @JsOverlay
@@ -102,105 +101,6 @@ public class SelectProps
   public final SelectProps key( String s )
   {
     key = s;
-    return this;
-  }
-
-  //Global HTML props
-  @JsOverlay
-  public final SelectProps accessKey( String s )
-  {
-    setAccessKey( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps className( String s )
-  {
-    setClassName( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps contentEditable( boolean b )
-  {
-    setContentEditable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps contextMenu( String s )
-  {
-    setContextMenu( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps dir( String s )
-  {
-    setDir( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps draggable( boolean b )
-  {
-    setDraggable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps hidden( boolean b )
-  {
-    setHidden( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps id( String s )
-  {
-    setId( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps lang( String s )
-  {
-    setLang( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps spellcheck( boolean b )
-  {
-    setSpellCheck( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps style( CssProps s )
-  {
-    setStyle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps tabIndex( int i )
-  {
-    setTabIndex( i );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps title( String s )
-  {
-    setTitle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final SelectProps translate( YesNo s )
-  {
-    setTranslate( s.name() );
     return this;
   }
 

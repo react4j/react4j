@@ -9,14 +9,13 @@ import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
-import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 /**
  * Props for input elements. Refer to http://www.w3schools.com/tags/tag_iframe.asp
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class IFrameProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<IFrameProps>
 {
 
   @JsOverlay
@@ -73,105 +72,6 @@ public class IFrameProps
   public final IFrameProps key( String s )
   {
     key = s;
-    return this;
-  }
-
-  //Global HTML props
-  @JsOverlay
-  public final IFrameProps accessKey( String s )
-  {
-    setAccessKey( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps className( String s )
-  {
-    setClassName( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps contentEditable( boolean b )
-  {
-    setContentEditable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps contextMenu( String s )
-  {
-    setContextMenu( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps dir( String s )
-  {
-    setDir( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps draggable( boolean b )
-  {
-    setDraggable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps hidden( boolean b )
-  {
-    setHidden( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps id( String s )
-  {
-    setId( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps lang( String s )
-  {
-    setLang( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps spellcheck( boolean b )
-  {
-    setSpellCheck( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps style( CssProps s )
-  {
-    setStyle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps tabIndex( int i )
-  {
-    setTabIndex( i );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps title( String s )
-  {
-    setTitle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final IFrameProps translate( YesNo s )
-  {
-    setTranslate( s.name() );
     return this;
   }
 

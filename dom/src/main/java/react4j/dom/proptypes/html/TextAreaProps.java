@@ -11,14 +11,13 @@ import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
 import react4j.dom.proptypes.html.attributeTypes.OnOff;
-import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 /**
  * Props for input elements. Refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class TextAreaProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<TextAreaProps>
 {
 
   @JsOverlay
@@ -139,106 +138,6 @@ public class TextAreaProps
   public final TextAreaProps key( String s )
   {
     key = s;
-    return this;
-  }
-
-  //Global HTML props
-
-  @JsOverlay
-  public final TextAreaProps accessKey( String s )
-  {
-    setAccessKey( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps className( String s )
-  {
-    setClassName( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps contentEditable( boolean b )
-  {
-    setContentEditable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps contextMenu( String s )
-  {
-    setContextMenu( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps dir( String s )
-  {
-    setDir( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps draggable( boolean b )
-  {
-    setDraggable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps hidden( boolean b )
-  {
-    setHidden( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps id( String s )
-  {
-    setId( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps lang( String s )
-  {
-    setLang( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps spellcheck( boolean b )
-  {
-    setSpellCheck( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps style( CssProps s )
-  {
-    setStyle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps tabIndex( int i )
-  {
-    setTabIndex( i );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps title( String s )
-  {
-    setTitle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TextAreaProps translate( YesNo s )
-  {
-    setTranslate( s.name() );
     return this;
   }
 

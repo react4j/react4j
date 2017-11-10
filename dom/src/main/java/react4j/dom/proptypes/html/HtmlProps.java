@@ -9,11 +9,10 @@ import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
-import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class HtmlProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<HtmlProps>
 {
 
   //React Specific
@@ -43,119 +42,6 @@ public class HtmlProps
   public final HtmlProps key( String s )
   {
     key = s;
-    return this;
-  }
-
-  //Global HTML props
-  @JsOverlay
-  public final HtmlProps accessKey( String s )
-  {
-    setAccessKey( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps className( String s )
-  {
-    setClassName( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps className( String s1, String s2 )
-  {
-    setClassName( s1 + " " + s2 );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps className( String s1, String s2, String s3 )
-  {
-    setClassName( s1 + " " + s2 + " " + s3 );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps contentEditable( boolean b )
-  {
-    setContentEditable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps contextMenu( String s )
-  {
-    setContextMenu( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps dir( String s )
-  {
-    setDir( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps draggable( boolean b )
-  {
-    setDraggable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps hidden( boolean b )
-  {
-    setHidden( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps id( String s )
-  {
-    setId( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps lang( String s )
-  {
-    setLang( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps style( CssProps s )
-  {
-    setStyle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps spellcheck( boolean b )
-  {
-    setSpellCheck( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps tabIndex( int i )
-  {
-    setTabIndex( i );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps title( String s )
-  {
-    setTitle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final HtmlProps translate( YesNo s )
-  {
-    setTranslate( s.name() );
     return this;
   }
 

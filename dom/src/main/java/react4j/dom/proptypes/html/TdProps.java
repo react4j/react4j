@@ -9,14 +9,13 @@ import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
-import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 /**
  * Props for td elements. Refer to http://www.w3schools.com/tags/tag_td.asp
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class TdProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<TdProps>
 {
 
   @JsOverlay
@@ -59,105 +58,6 @@ public class TdProps
   public final TdProps key( String s )
   {
     key = s;
-    return this;
-  }
-
-  //Global HTML props
-  @JsOverlay
-  public final TdProps accessKey( String s )
-  {
-    setAccessKey( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps className( String s )
-  {
-    setClassName( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps contentEditable( boolean b )
-  {
-    setContentEditable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps contextMenu( String s )
-  {
-    setContextMenu( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps dir( String s )
-  {
-    setDir( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps draggable( boolean b )
-  {
-    setDraggable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps hidden( boolean b )
-  {
-    setHidden( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps id( String s )
-  {
-    setId( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps lang( String s )
-  {
-    setLang( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps spellcheck( boolean b )
-  {
-    setSpellCheck( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps style( CssProps s )
-  {
-    setStyle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps tabIndex( int i )
-  {
-    setTabIndex( i );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps title( String s )
-  {
-    setTitle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final TdProps translate( YesNo s )
-  {
-    setTranslate( s.name() );
     return this;
   }
 

@@ -10,14 +10,13 @@ import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
 import react4j.dom.proptypes.html.attributeTypes.AudioPreload;
-import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 /**
  * Props for audio elements. Refer to http://www.w3schools.com/tags/tag_audio.asp
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class AudioProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<AudioProps>
 {
 
   @JsOverlay
@@ -81,105 +80,6 @@ public class AudioProps
   public final AudioProps key( String s )
   {
     key = s;
-    return this;
-  }
-
-  //Global HTML props
-  @JsOverlay
-  public final AudioProps accessKey( String s )
-  {
-    setAccessKey( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps className( String s )
-  {
-    setClassName( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps contentEditable( boolean b )
-  {
-    setContentEditable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps contextMenu( String s )
-  {
-    setContextMenu( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps dir( String s )
-  {
-    setDir( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps draggable( boolean b )
-  {
-    setDraggable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps hidden( boolean b )
-  {
-    setHidden( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps id( String s )
-  {
-    setId( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps lang( String s )
-  {
-    setLang( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps spellcheck( boolean b )
-  {
-    setSpellCheck( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps style( CssProps s )
-  {
-    setStyle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps tabIndex( int i )
-  {
-    setTabIndex( i );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps title( String s )
-  {
-    setTitle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final AudioProps translate( YesNo s )
-  {
-    setTranslate( s.name() );
     return this;
   }
 

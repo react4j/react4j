@@ -9,7 +9,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class SourceProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<SourceProps>
 {
 
   @JsOverlay

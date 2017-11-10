@@ -13,14 +13,13 @@ import react4j.dom.events.TouchEventHandler;
 import react4j.dom.proptypes.html.attributeTypes.FormMethod;
 import react4j.dom.proptypes.html.attributeTypes.OnOff;
 import react4j.dom.proptypes.html.attributeTypes.Target;
-import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 /**
  * Props for form elements. Refer to http://www.w3schools.com/tags/tag_form.asp
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class FormProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<FormProps>
 {
 
   @JsOverlay
@@ -105,105 +104,6 @@ public class FormProps
   public final FormProps key( String s )
   {
     key = s;
-    return this;
-  }
-
-  //Global HTML props
-  @JsOverlay
-  public final FormProps accessKey( String s )
-  {
-    setAccessKey( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps className( String s )
-  {
-    setClassName( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps contentEditable( boolean b )
-  {
-    setContentEditable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps contextMenu( String s )
-  {
-    setContextMenu( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps dir( String s )
-  {
-    setDir( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps draggable( boolean b )
-  {
-    setDraggable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps hidden( boolean b )
-  {
-    setHidden( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps id( String s )
-  {
-    setId( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps lang( String s )
-  {
-    setLang( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps spellcheck( boolean b )
-  {
-    setSpellCheck( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps style( CssProps s )
-  {
-    setStyle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps tabIndex( int i )
-  {
-    setTabIndex( i );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps title( String s )
-  {
-    setTitle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final FormProps translate( YesNo s )
-  {
-    setTranslate( s.name() );
     return this;
   }
 

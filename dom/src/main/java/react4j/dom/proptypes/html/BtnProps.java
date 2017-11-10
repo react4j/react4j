@@ -11,14 +11,13 @@ import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
 import react4j.dom.proptypes.html.attributeTypes.ButtonType;
-import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 /**
  * Props for button elements. Refer to http://www.w3schools.com/tags/tag_button.asp
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class BtnProps
-  extends HtmlGlobalFields
+  extends HtmlGlobalFields<BtnProps>
 {
 
   @JsOverlay
@@ -132,106 +131,6 @@ public class BtnProps
   public final BtnProps key( String s )
   {
     key = s;
-    return this;
-  }
-
-  //Global HTML props
-
-  @JsOverlay
-  public final BtnProps accessKey( String s )
-  {
-    setAccessKey( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps className( String s )
-  {
-    setClassName( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps contentEditable( boolean b )
-  {
-    setContentEditable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps contextMenu( String s )
-  {
-    setContextMenu( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps dir( String s )
-  {
-    setDir( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps draggable( boolean b )
-  {
-    setDraggable( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps hidden( boolean b )
-  {
-    setHidden( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps id( String s )
-  {
-    setId( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps lang( String s )
-  {
-    setLang( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps spellcheck( boolean b )
-  {
-    setSpellCheck( b );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps style( CssProps s )
-  {
-    setStyle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps tabIndex( int i )
-  {
-    setTabIndex( i );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps title( String s )
-  {
-    setTitle( s );
-    return this;
-  }
-
-  @JsOverlay
-  public final BtnProps translate( YesNo s )
-  {
-    setTranslate( s.name() );
     return this;
   }
 
