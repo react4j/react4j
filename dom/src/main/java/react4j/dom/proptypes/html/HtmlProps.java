@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -17,14 +18,14 @@ public class HtmlProps
 
   // Focus Events
   @JsOverlay
-  public final HtmlProps onBlur( FocusEventHandler handler )
+  public final HtmlProps onBlur( @Nonnull final FocusEventHandler handler )
   {
     setOnBlur( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onFocus( FocusEventHandler handler )
+  public final HtmlProps onFocus( @Nonnull final FocusEventHandler handler )
   {
     setOnFocus( handler );
     return self();
@@ -32,147 +33,147 @@ public class HtmlProps
 
   // Keyboard Events
   @JsOverlay
-  public final HtmlProps onKeyDown( KeyboardEventHandler handler )
+  public final HtmlProps onKeyDown( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onKeyPress( KeyboardEventHandler handler )
+  public final HtmlProps onKeyPress( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onKeyUp( KeyboardEventHandler handler )
+  public final HtmlProps onKeyUp( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onClick( MouseEventHandler handler )
+  public final HtmlProps onClick( @Nonnull final MouseEventHandler handler )
   {
     setOnClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onContextMenu( MouseEventHandler handler )
+  public final HtmlProps onContextMenu( @Nonnull final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onDoubleClick( MouseEventHandler handler )
+  public final HtmlProps onDoubleClick( @Nonnull final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onDrag( DragEventHandler handler )
+  public final HtmlProps onDrag( @Nonnull final DragEventHandler handler )
   {
     setOnDrag( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onDragEnd( DragEventHandler handler )
+  public final HtmlProps onDragEnd( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onDragEnter( DragEventHandler handler )
+  public final HtmlProps onDragEnter( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onDragExit( DragEventHandler handler )
+  public final HtmlProps onDragExit( @Nonnull final DragEventHandler handler )
   {
     setOnDragExit( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onDragLeave( DragEventHandler handler )
+  public final HtmlProps onDragLeave( @Nonnull final DragEventHandler handler )
   {
     setOnDragLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onDragOver( DragEventHandler handler )
+  public final HtmlProps onDragOver( @Nonnull final DragEventHandler handler )
   {
     setOnDragOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onDragStart( DragEventHandler handler )
+  public final HtmlProps onDragStart( @Nonnull final DragEventHandler handler )
   {
     setOnDragStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onDrop( DragEventHandler handler )
+  public final HtmlProps onDrop( @Nonnull final DragEventHandler handler )
   {
     setOnDrop( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onMouseDown( MouseEventHandler handler )
+  public final HtmlProps onMouseDown( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onMouseEnter( MouseEventHandler handler )
+  public final HtmlProps onMouseEnter( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onMouseLeave( MouseEventHandler handler )
+  public final HtmlProps onMouseLeave( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onMouseMove( MouseEventHandler handler )
+  public final HtmlProps onMouseMove( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onMouseOut( MouseEventHandler handler )
+  public final HtmlProps onMouseOut( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onMouseOver( MouseEventHandler handler )
+  public final HtmlProps onMouseOver( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onMouseUp( MouseEventHandler handler )
+  public final HtmlProps onMouseUp( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
     return self();
@@ -180,28 +181,28 @@ public class HtmlProps
 
   // Touch Events
   @JsOverlay
-  public final HtmlProps onTouchCancel( TouchEventHandler handler )
+  public final HtmlProps onTouchCancel( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onTouchEnd( TouchEventHandler handler )
+  public final HtmlProps onTouchEnd( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onTouchMove( TouchEventHandler handler )
+  public final HtmlProps onTouchMove( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final HtmlProps onTouchStart( TouchEventHandler handler )
+  public final HtmlProps onTouchStart( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
     return self();

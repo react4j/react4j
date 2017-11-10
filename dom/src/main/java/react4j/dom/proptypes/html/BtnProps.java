@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -116,14 +117,14 @@ public class BtnProps
 
   // Focus Events
   @JsOverlay
-  public final BtnProps onBlur( FocusEventHandler handler )
+  public final BtnProps onBlur( @Nonnull final FocusEventHandler handler )
   {
     setOnBlur( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onFocus( FocusEventHandler handler )
+  public final BtnProps onFocus( @Nonnull final FocusEventHandler handler )
   {
     setOnFocus( handler );
     return self();
@@ -131,7 +132,7 @@ public class BtnProps
 
   // Form Events
   @JsOverlay
-  public final BtnProps onSubmit( FormEventHandler handler )
+  public final BtnProps onSubmit( @Nonnull final FormEventHandler handler )
   {
     setOnSubmit( handler );
     return self();
@@ -139,147 +140,147 @@ public class BtnProps
 
   // Keyboard Events
   @JsOverlay
-  public final BtnProps onKeyDown( KeyboardEventHandler handler )
+  public final BtnProps onKeyDown( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onKeyPress( KeyboardEventHandler handler )
+  public final BtnProps onKeyPress( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onKeyUp( KeyboardEventHandler handler )
+  public final BtnProps onKeyUp( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onClick( MouseEventHandler handler )
+  public final BtnProps onClick( @Nonnull final MouseEventHandler handler )
   {
     setOnClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onContextMenu( MouseEventHandler handler )
+  public final BtnProps onContextMenu( @Nonnull final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onDoubleClick( MouseEventHandler handler )
+  public final BtnProps onDoubleClick( @Nonnull final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onDrag( DragEventHandler handler )
+  public final BtnProps onDrag( @Nonnull final DragEventHandler handler )
   {
     setOnDrag( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onDragEnd( DragEventHandler handler )
+  public final BtnProps onDragEnd( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onDragEnter( DragEventHandler handler )
+  public final BtnProps onDragEnter( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onDragExit( DragEventHandler handler )
+  public final BtnProps onDragExit( @Nonnull final DragEventHandler handler )
   {
     setOnDragExit( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onDragLeave( DragEventHandler handler )
+  public final BtnProps onDragLeave( @Nonnull final DragEventHandler handler )
   {
     setOnDragLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onDragOver( DragEventHandler handler )
+  public final BtnProps onDragOver( @Nonnull final DragEventHandler handler )
   {
     setOnDragOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onDragStart( DragEventHandler handler )
+  public final BtnProps onDragStart( @Nonnull final DragEventHandler handler )
   {
     setOnDragStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onDrop( DragEventHandler handler )
+  public final BtnProps onDrop( @Nonnull final DragEventHandler handler )
   {
     setOnDrop( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onMouseDown( MouseEventHandler handler )
+  public final BtnProps onMouseDown( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onMouseEnter( MouseEventHandler handler )
+  public final BtnProps onMouseEnter( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onMouseLeave( MouseEventHandler handler )
+  public final BtnProps onMouseLeave( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onMouseMove( MouseEventHandler handler )
+  public final BtnProps onMouseMove( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onMouseOut( MouseEventHandler handler )
+  public final BtnProps onMouseOut( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onMouseOver( MouseEventHandler handler )
+  public final BtnProps onMouseOver( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onMouseUp( MouseEventHandler handler )
+  public final BtnProps onMouseUp( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
     return self();
@@ -287,28 +288,28 @@ public class BtnProps
 
   // Touch Events
   @JsOverlay
-  public final BtnProps onTouchCancel( TouchEventHandler handler )
+  public final BtnProps onTouchCancel( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onTouchEnd( TouchEventHandler handler )
+  public final BtnProps onTouchEnd( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onTouchMove( TouchEventHandler handler )
+  public final BtnProps onTouchMove( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final BtnProps onTouchStart( TouchEventHandler handler )
+  public final BtnProps onTouchStart( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
     return self();

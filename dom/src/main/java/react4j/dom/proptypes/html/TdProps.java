@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -42,14 +43,14 @@ public class TdProps
 
   // Focus Events
   @JsOverlay
-  public final TdProps onBlur( FocusEventHandler handler )
+  public final TdProps onBlur( @Nonnull final FocusEventHandler handler )
   {
     setOnBlur( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onFocus( FocusEventHandler handler )
+  public final TdProps onFocus( @Nonnull final FocusEventHandler handler )
   {
     setOnFocus( handler );
     return self();
@@ -57,147 +58,147 @@ public class TdProps
 
   // Keyboard Events
   @JsOverlay
-  public final TdProps onKeyDown( KeyboardEventHandler handler )
+  public final TdProps onKeyDown( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onKeyPress( KeyboardEventHandler handler )
+  public final TdProps onKeyPress( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onKeyUp( KeyboardEventHandler handler )
+  public final TdProps onKeyUp( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onClick( MouseEventHandler handler )
+  public final TdProps onClick( @Nonnull final MouseEventHandler handler )
   {
     setOnClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onContextMenu( MouseEventHandler handler )
+  public final TdProps onContextMenu( @Nonnull final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onDoubleClick( MouseEventHandler handler )
+  public final TdProps onDoubleClick( @Nonnull final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onDrag( DragEventHandler handler )
+  public final TdProps onDrag( @Nonnull final DragEventHandler handler )
   {
     setOnDrag( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onDragEnd( DragEventHandler handler )
+  public final TdProps onDragEnd( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onDragEnter( DragEventHandler handler )
+  public final TdProps onDragEnter( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onDragExit( DragEventHandler handler )
+  public final TdProps onDragExit( @Nonnull final DragEventHandler handler )
   {
     setOnDragExit( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onDragLeave( DragEventHandler handler )
+  public final TdProps onDragLeave( @Nonnull final DragEventHandler handler )
   {
     setOnDragLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onDragOver( DragEventHandler handler )
+  public final TdProps onDragOver( @Nonnull final DragEventHandler handler )
   {
     setOnDragOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onDragStart( DragEventHandler handler )
+  public final TdProps onDragStart( @Nonnull final DragEventHandler handler )
   {
     setOnDragStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onDrop( DragEventHandler handler )
+  public final TdProps onDrop( @Nonnull final DragEventHandler handler )
   {
     setOnDrop( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onMouseDown( MouseEventHandler handler )
+  public final TdProps onMouseDown( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onMouseEnter( MouseEventHandler handler )
+  public final TdProps onMouseEnter( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onMouseLeave( MouseEventHandler handler )
+  public final TdProps onMouseLeave( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onMouseMove( MouseEventHandler handler )
+  public final TdProps onMouseMove( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onMouseOut( MouseEventHandler handler )
+  public final TdProps onMouseOut( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onMouseOver( MouseEventHandler handler )
+  public final TdProps onMouseOver( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onMouseUp( MouseEventHandler handler )
+  public final TdProps onMouseUp( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
     return self();
@@ -205,28 +206,28 @@ public class TdProps
 
   // Touch Events
   @JsOverlay
-  public final TdProps onTouchCancel( TouchEventHandler handler )
+  public final TdProps onTouchCancel( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onTouchEnd( TouchEventHandler handler )
+  public final TdProps onTouchEnd( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onTouchMove( TouchEventHandler handler )
+  public final TdProps onTouchMove( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final TdProps onTouchStart( TouchEventHandler handler )
+  public final TdProps onTouchStart( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
     return self();

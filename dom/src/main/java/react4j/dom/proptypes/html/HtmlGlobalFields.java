@@ -1071,13 +1071,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native FocusEventHandler getOnFocus();
 
   @JsProperty
-  public native void setOnFocus( FocusEventHandler onFocus );
+  public native void setOnFocus( @Nonnull final FocusEventHandler onFocus );
 
   @JsProperty
   public native FocusEventHandler getOnBlur();
 
   @JsProperty
-  public native void setOnBlur( FocusEventHandler onBlur );
+  public native void setOnBlur( @Nonnull final FocusEventHandler onBlur );
 
   // Form Events
 
@@ -1085,19 +1085,19 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native FormEventHandler getOnChange();
 
   @JsProperty
-  public native void setOnChange( FormEventHandler onChange );
+  public native void setOnChange( @Nonnull final FormEventHandler onChange );
 
   @JsProperty
   public native FormEventHandler getOnInput();
 
   @JsProperty
-  public native void setOnInput( FormEventHandler onInput );
+  public native void setOnInput( @Nonnull final FormEventHandler onInput );
 
   @JsProperty
   public native FormEventHandler getOnSubmit();
 
   @JsProperty
-  public native void setOnSubmit( FormEventHandler onSubmit );
+  public native void setOnSubmit( @Nonnull final FormEventHandler onSubmit );
 
   // Image Events
 
@@ -1105,13 +1105,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native ReactEventHandler getOnLoad();
 
   @JsProperty
-  public native void setOnLoad( ReactEventHandler onLoad );
+  public native void setOnLoad( @Nonnull final ReactEventHandler onLoad );
 
   @JsProperty
   public native ReactEventHandler getOnError();
 
   @JsProperty
-  public native void setOnError( ReactEventHandler onError );
+  public native void setOnError( @Nonnull final ReactEventHandler onError );
 
   // Keyboard Events
 
@@ -1119,19 +1119,19 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native KeyboardEventHandler getOnKeyDown();
 
   @JsProperty
-  public native void setOnKeyDown( KeyboardEventHandler onKeyDown );
+  public native void setOnKeyDown( @Nonnull final KeyboardEventHandler onKeyDown );
 
   @JsProperty
   public native KeyboardEventHandler getOnKeyPress();
 
   @JsProperty
-  public native void setOnKeyPress( KeyboardEventHandler onKeyPress );
+  public native void setOnKeyPress( @Nonnull final KeyboardEventHandler onKeyPress );
 
   @JsProperty
   public native KeyboardEventHandler getOnKeyUp();
 
   @JsProperty
-  public native void setOnKeyUp( KeyboardEventHandler onKeyUp );
+  public native void setOnKeyUp( @Nonnull final KeyboardEventHandler onKeyUp );
 
   // Media Events
 
@@ -1139,133 +1139,133 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native ReactEventHandler getOnAbort();
 
   @JsProperty
-  public native void setOnAbort( ReactEventHandler onAbort );
+  public native void setOnAbort( @Nonnull final ReactEventHandler onAbort );
 
   @JsProperty
   public native ReactEventHandler getOnCanPlay();
 
   @JsProperty
-  public native void setOnCanPlay( ReactEventHandler onCanPlay );
+  public native void setOnCanPlay( @Nonnull final ReactEventHandler onCanPlay );
 
   @JsProperty
   public native ReactEventHandler getOnCanPlayThrough();
 
   @JsProperty
-  public native void setOnCanPlayThrough( ReactEventHandler onCanPlayThrough );
+  public native void setOnCanPlayThrough( @Nonnull final ReactEventHandler onCanPlayThrough );
 
   @JsProperty
   public native ReactEventHandler getOnDurationChange();
 
   @JsProperty
-  public native void setOnDurationChange( ReactEventHandler onDurationChange );
+  public native void setOnDurationChange( @Nonnull final ReactEventHandler onDurationChange );
 
   @JsProperty
   public native ReactEventHandler getOnEmptied();
 
   @JsProperty
-  public native void setOnEmptied( ReactEventHandler onEmptied );
+  public native void setOnEmptied( @Nonnull final ReactEventHandler onEmptied );
 
   @JsProperty
   public native ReactEventHandler getOnEncrypted();
 
   @JsProperty
-  public native void setOnEncrypted( ReactEventHandler onEncrypted );
+  public native void setOnEncrypted( @Nonnull final ReactEventHandler onEncrypted );
 
   @JsProperty
   public native ReactEventHandler getOnEnded();
 
   @JsProperty
-  public native void setOnEnded( ReactEventHandler onEnded );
+  public native void setOnEnded( @Nonnull final ReactEventHandler onEnded );
 
   @JsProperty
   public native ReactEventHandler getOnLoadedData();
 
   @JsProperty
-  public native void setOnLoadedData( ReactEventHandler onLoadedData );
+  public native void setOnLoadedData( @Nonnull final ReactEventHandler onLoadedData );
 
   @JsProperty
   public native ReactEventHandler getOnLoadedMetadata();
 
   @JsProperty
-  public native void setOnLoadedMetadata( ReactEventHandler onLoadedMetadata );
+  public native void setOnLoadedMetadata( @Nonnull final ReactEventHandler onLoadedMetadata );
 
   @JsProperty
   public native ReactEventHandler getOnLoadStart();
 
   @JsProperty
-  public native void setOnLoadStart( ReactEventHandler onLoadStart );
+  public native void setOnLoadStart( @Nonnull final ReactEventHandler onLoadStart );
 
   @JsProperty
   public native ReactEventHandler getOnPause();
 
   @JsProperty
-  public native void setOnPause( ReactEventHandler onPause );
+  public native void setOnPause( @Nonnull final ReactEventHandler onPause );
 
   @JsProperty
   public native ReactEventHandler getOnPlay();
 
   @JsProperty
-  public native void setOnPlay( ReactEventHandler onPlay );
+  public native void setOnPlay( @Nonnull final ReactEventHandler onPlay );
 
   @JsProperty
   public native ReactEventHandler getOnPlaying();
 
   @JsProperty
-  public native void setOnPlaying( ReactEventHandler onPlaying );
+  public native void setOnPlaying( @Nonnull final ReactEventHandler onPlaying );
 
   @JsProperty
   public native ReactEventHandler getOnProgress();
 
   @JsProperty
-  public native void setOnProgress( ReactEventHandler onProgress );
+  public native void setOnProgress( @Nonnull final ReactEventHandler onProgress );
 
   @JsProperty
   public native ReactEventHandler getOnRateChange();
 
   @JsProperty
-  public native void setOnRateChange( ReactEventHandler onRateChange );
+  public native void setOnRateChange( @Nonnull final ReactEventHandler onRateChange );
 
   @JsProperty
   public native ReactEventHandler getOnSeeked();
 
   @JsProperty
-  public native void setOnSeeked( ReactEventHandler onSeeked );
+  public native void setOnSeeked( @Nonnull final ReactEventHandler onSeeked );
 
   @JsProperty
   public native ReactEventHandler getOnSeeking();
 
   @JsProperty
-  public native void setOnSeeking( ReactEventHandler onSeeking );
+  public native void setOnSeeking( @Nonnull final ReactEventHandler onSeeking );
 
   @JsProperty
   public native ReactEventHandler getOnStalled();
 
   @JsProperty
-  public native void setOnStalled( ReactEventHandler onStalled );
+  public native void setOnStalled( @Nonnull final ReactEventHandler onStalled );
 
   @JsProperty
   public native ReactEventHandler getOnSuspend();
 
   @JsProperty
-  public native void setOnSuspend( ReactEventHandler onSuspend );
+  public native void setOnSuspend( @Nonnull final ReactEventHandler onSuspend );
 
   @JsProperty
   public native ReactEventHandler getOnTimeUpdate();
 
   @JsProperty
-  public native void setOnTimeUpdate( ReactEventHandler onTimeUpdate );
+  public native void setOnTimeUpdate( @Nonnull final ReactEventHandler onTimeUpdate );
 
   @JsProperty
   public native ReactEventHandler getOnVolumeChange();
 
   @JsProperty
-  public native void setOnVolumeChange( ReactEventHandler onVolumeChange );
+  public native void setOnVolumeChange( @Nonnull final ReactEventHandler onVolumeChange );
 
   @JsProperty
   public native ReactEventHandler getOnWaiting();
 
   @JsProperty
-  public native void setOnWaiting( ReactEventHandler onWaiting );
+  public native void setOnWaiting( @Nonnull final ReactEventHandler onWaiting );
 
   // MouseEvents
 
@@ -1273,109 +1273,109 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native MouseEventHandler getOnClick();
 
   @JsProperty
-  public native void setOnClick( MouseEventHandler onClick );
+  public native void setOnClick( @Nonnull final MouseEventHandler onClick );
 
   @JsProperty
   public native MouseEventHandler getOnContextMenu();
 
   @JsProperty
-  public native void setOnContextMenu( MouseEventHandler onContextMenu );
+  public native void setOnContextMenu( @Nonnull final MouseEventHandler onContextMenu );
 
   @JsProperty
   public native MouseEventHandler getOnDoubleClick();
 
   @JsProperty
-  public native void setOnDoubleClick( MouseEventHandler onDoubleClick );
+  public native void setOnDoubleClick( @Nonnull final MouseEventHandler onDoubleClick );
 
   @JsProperty
   public native DragEventHandler getOnDrag();
 
   @JsProperty
-  public native void setOnDrag( DragEventHandler onDrag );
+  public native void setOnDrag( @Nonnull final DragEventHandler onDrag );
 
   @JsProperty
   public native DragEventHandler getOnDragEnd();
 
   @JsProperty
-  public native void setOnDragEnd( DragEventHandler onDragEnd );
+  public native void setOnDragEnd( @Nonnull final DragEventHandler onDragEnd );
 
   @JsProperty
   public native DragEventHandler getOnDragEnter();
 
   @JsProperty
-  public native void setOnDragEnter( DragEventHandler onDragEnter );
+  public native void setOnDragEnter( @Nonnull final DragEventHandler onDragEnter );
 
   @JsProperty
   public native DragEventHandler getOnDragExit();
 
   @JsProperty
-  public native void setOnDragExit( DragEventHandler onDragExit );
+  public native void setOnDragExit( @Nonnull final DragEventHandler onDragExit );
 
   @JsProperty
   public native DragEventHandler getOnDragLeave();
 
   @JsProperty
-  public native void setOnDragLeave( DragEventHandler onDragLeave );
+  public native void setOnDragLeave( @Nonnull final DragEventHandler onDragLeave );
 
   @JsProperty
   public native DragEventHandler getOnDragOver();
 
   @JsProperty
-  public native void setOnDragOver( DragEventHandler onDragOver );
+  public native void setOnDragOver( @Nonnull final DragEventHandler onDragOver );
 
   @JsProperty
   public native DragEventHandler getOnDragStart();
 
   @JsProperty
-  public native void setOnDragStart( DragEventHandler onDragStart );
+  public native void setOnDragStart( @Nonnull final DragEventHandler onDragStart );
 
   @JsProperty
   public native DragEventHandler getOnDrop();
 
   @JsProperty
-  public native void setOnDrop( DragEventHandler onDrop );
+  public native void setOnDrop( @Nonnull final DragEventHandler onDrop );
 
   @JsProperty
   public native MouseEventHandler getOnMouseDown();
 
   @JsProperty
-  public native void setOnMouseDown( MouseEventHandler onMouseDown );
+  public native void setOnMouseDown( @Nonnull final MouseEventHandler onMouseDown );
 
   @JsProperty
   public native MouseEventHandler getOnMouseEnter();
 
   @JsProperty
-  public native void setOnMouseEnter( MouseEventHandler onMouseEnter );
+  public native void setOnMouseEnter( @Nonnull final MouseEventHandler onMouseEnter );
 
   @JsProperty
   public native MouseEventHandler getOnMouseLeave();
 
   @JsProperty
-  public native void setOnMouseLeave( MouseEventHandler onMouseLeave );
+  public native void setOnMouseLeave( @Nonnull final MouseEventHandler onMouseLeave );
 
   @JsProperty
   public native MouseEventHandler getOnMouseMove();
 
   @JsProperty
-  public native void setOnMouseMove( MouseEventHandler onMouseMove );
+  public native void setOnMouseMove( @Nonnull final MouseEventHandler onMouseMove );
 
   @JsProperty
   public native MouseEventHandler getOnMouseOut();
 
   @JsProperty
-  public native void setOnMouseOut( MouseEventHandler onMouseOut );
+  public native void setOnMouseOut( @Nonnull final MouseEventHandler onMouseOut );
 
   @JsProperty
   public native MouseEventHandler getOnMouseOver();
 
   @JsProperty
-  public native void setOnMouseOver( MouseEventHandler onMouseOver );
+  public native void setOnMouseOver( @Nonnull final MouseEventHandler onMouseOver );
 
   @JsProperty
   public native MouseEventHandler getOnMouseUp();
 
   @JsProperty
-  public native void setOnMouseUp( MouseEventHandler onMouseUp );
+  public native void setOnMouseUp( @Nonnull final MouseEventHandler onMouseUp );
 
   // Selection Events
 
@@ -1383,7 +1383,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native ReactEventHandler getOnSelect();
 
   @JsProperty
-  public native void setOnSelect( ReactEventHandler onSelect );
+  public native void setOnSelect( @Nonnull final ReactEventHandler onSelect );
 
   // Touch Events
 
@@ -1391,25 +1391,25 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native TouchEventHandler getOnTouchCancel();
 
   @JsProperty
-  public native void setOnTouchCancel( TouchEventHandler onTouchCancel );
+  public native void setOnTouchCancel( @Nonnull final TouchEventHandler onTouchCancel );
 
   @JsProperty
   public native TouchEventHandler getOnTouchEnd();
 
   @JsProperty
-  public native void setOnTouchEnd( TouchEventHandler onTouchEnd );
+  public native void setOnTouchEnd( @Nonnull final TouchEventHandler onTouchEnd );
 
   @JsProperty
   public native TouchEventHandler getOnTouchMove();
 
   @JsProperty
-  public native void setOnTouchMove( TouchEventHandler onTouchMove );
+  public native void setOnTouchMove( @Nonnull final TouchEventHandler onTouchMove );
 
   @JsProperty
   public native TouchEventHandler getOnTouchStart();
 
   @JsProperty
-  public native void setOnTouchStart( TouchEventHandler onTouchStart );
+  public native void setOnTouchStart( @Nonnull final TouchEventHandler onTouchStart );
 
   // UI Events
   @JsProperty

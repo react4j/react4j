@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -64,14 +65,14 @@ public class ImgProps
 
   // Focus Events
   @JsOverlay
-  public final ImgProps onBlur( FocusEventHandler handler )
+  public final ImgProps onBlur( @Nonnull final FocusEventHandler handler )
   {
     setOnBlur( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onFocus( FocusEventHandler handler )
+  public final ImgProps onFocus( @Nonnull final FocusEventHandler handler )
   {
     setOnFocus( handler );
     return self();
@@ -79,14 +80,14 @@ public class ImgProps
 
   // Image Events
   @JsOverlay
-  public final ImgProps onLoad( ReactEventHandler handler )
+  public final ImgProps onLoad( @Nonnull final ReactEventHandler handler )
   {
     setOnLoad( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onError( ReactEventHandler handler )
+  public final ImgProps onError( @Nonnull final ReactEventHandler handler )
   {
     setOnError( handler );
     return self();
@@ -94,21 +95,21 @@ public class ImgProps
 
   // Keyboard Events
   @JsOverlay
-  public final ImgProps onKeyDown( KeyboardEventHandler handler )
+  public final ImgProps onKeyDown( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onKeyPress( KeyboardEventHandler handler )
+  public final ImgProps onKeyPress( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onKeyUp( KeyboardEventHandler handler )
+  public final ImgProps onKeyUp( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
     return self();
@@ -116,154 +117,154 @@ public class ImgProps
 
   // Media Events
   @JsOverlay
-  public final ImgProps onAbort( ReactEventHandler handler )
+  public final ImgProps onAbort( @Nonnull final ReactEventHandler handler )
   {
     setOnAbort( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onCanPlay( ReactEventHandler handler )
+  public final ImgProps onCanPlay( @Nonnull final ReactEventHandler handler )
   {
     setOnCanPlay( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onCanPlayThrough( ReactEventHandler handler )
+  public final ImgProps onCanPlayThrough( @Nonnull final ReactEventHandler handler )
   {
     setOnCanPlayThrough( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDurationChange( ReactEventHandler handler )
+  public final ImgProps onDurationChange( @Nonnull final ReactEventHandler handler )
   {
     setOnDurationChange( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onEmptied( ReactEventHandler handler )
+  public final ImgProps onEmptied( @Nonnull final ReactEventHandler handler )
   {
     setOnEmptied( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onEncrypted( ReactEventHandler handler )
+  public final ImgProps onEncrypted( @Nonnull final ReactEventHandler handler )
   {
     setOnEncrypted( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onEnded( ReactEventHandler handler )
+  public final ImgProps onEnded( @Nonnull final ReactEventHandler handler )
   {
     setOnEnded( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onLoadedData( ReactEventHandler handler )
+  public final ImgProps onLoadedData( @Nonnull final ReactEventHandler handler )
   {
     setOnLoadedData( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onLoadedMetadata( ReactEventHandler handler )
+  public final ImgProps onLoadedMetadata( @Nonnull final ReactEventHandler handler )
   {
     setOnLoadedMetadata( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onLoadStart( ReactEventHandler handler )
+  public final ImgProps onLoadStart( @Nonnull final ReactEventHandler handler )
   {
     setOnLoadStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onPause( ReactEventHandler handler )
+  public final ImgProps onPause( @Nonnull final ReactEventHandler handler )
   {
     setOnPause( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onPlay( ReactEventHandler handler )
+  public final ImgProps onPlay( @Nonnull final ReactEventHandler handler )
   {
     setOnPlay( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onPlaying( ReactEventHandler handler )
+  public final ImgProps onPlaying( @Nonnull final ReactEventHandler handler )
   {
     setOnPlaying( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onProgress( ReactEventHandler handler )
+  public final ImgProps onProgress( @Nonnull final ReactEventHandler handler )
   {
     setOnProgress( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onRateChange( ReactEventHandler handler )
+  public final ImgProps onRateChange( @Nonnull final ReactEventHandler handler )
   {
     setOnRateChange( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onSeeked( ReactEventHandler handler )
+  public final ImgProps onSeeked( @Nonnull final ReactEventHandler handler )
   {
     setOnSeeked( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onSeeking( ReactEventHandler handler )
+  public final ImgProps onSeeking( @Nonnull final ReactEventHandler handler )
   {
     setOnSeeking( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onStalled( ReactEventHandler handler )
+  public final ImgProps onStalled( @Nonnull final ReactEventHandler handler )
   {
     setOnStalled( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onSuspend( ReactEventHandler handler )
+  public final ImgProps onSuspend( @Nonnull final ReactEventHandler handler )
   {
     setOnSuspend( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onTimeUpdate( ReactEventHandler handler )
+  public final ImgProps onTimeUpdate( @Nonnull final ReactEventHandler handler )
   {
     setOnTimeUpdate( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onVolumeChange( ReactEventHandler handler )
+  public final ImgProps onVolumeChange( @Nonnull final ReactEventHandler handler )
   {
     setOnVolumeChange( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onWaiting( ReactEventHandler handler )
+  public final ImgProps onWaiting( @Nonnull final ReactEventHandler handler )
   {
     setOnWaiting( handler );
     return self();
@@ -271,126 +272,126 @@ public class ImgProps
 
   // MouseEvents
   @JsOverlay
-  public final ImgProps onClick( MouseEventHandler handler )
+  public final ImgProps onClick( @Nonnull final MouseEventHandler handler )
   {
     setOnClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onContextMenu( MouseEventHandler handler )
+  public final ImgProps onContextMenu( @Nonnull final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDoubleClick( MouseEventHandler handler )
+  public final ImgProps onDoubleClick( @Nonnull final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDrag( DragEventHandler handler )
+  public final ImgProps onDrag( @Nonnull final DragEventHandler handler )
   {
     setOnDrag( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDragEnd( DragEventHandler handler )
+  public final ImgProps onDragEnd( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDragEnter( DragEventHandler handler )
+  public final ImgProps onDragEnter( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDragExit( DragEventHandler handler )
+  public final ImgProps onDragExit( @Nonnull final DragEventHandler handler )
   {
     setOnDragExit( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDragLeave( DragEventHandler handler )
+  public final ImgProps onDragLeave( @Nonnull final DragEventHandler handler )
   {
     setOnDragLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDragOver( DragEventHandler handler )
+  public final ImgProps onDragOver( @Nonnull final DragEventHandler handler )
   {
     setOnDragOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDragStart( DragEventHandler handler )
+  public final ImgProps onDragStart( @Nonnull final DragEventHandler handler )
   {
     setOnDragStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onDrop( DragEventHandler handler )
+  public final ImgProps onDrop( @Nonnull final DragEventHandler handler )
   {
     setOnDrop( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onMouseDown( MouseEventHandler handler )
+  public final ImgProps onMouseDown( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onMouseEnter( MouseEventHandler handler )
+  public final ImgProps onMouseEnter( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onMouseLeave( MouseEventHandler handler )
+  public final ImgProps onMouseLeave( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onMouseMove( MouseEventHandler handler )
+  public final ImgProps onMouseMove( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onMouseOut( MouseEventHandler handler )
+  public final ImgProps onMouseOut( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onMouseOver( MouseEventHandler handler )
+  public final ImgProps onMouseOver( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onMouseUp( MouseEventHandler handler )
+  public final ImgProps onMouseUp( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
     return self();
@@ -398,28 +399,28 @@ public class ImgProps
 
   // Touch Events
   @JsOverlay
-  public final ImgProps onTouchCancel( TouchEventHandler handler )
+  public final ImgProps onTouchCancel( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onTouchEnd( TouchEventHandler handler )
+  public final ImgProps onTouchEnd( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onTouchMove( TouchEventHandler handler )
+  public final ImgProps onTouchMove( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final ImgProps onTouchStart( TouchEventHandler handler )
+  public final ImgProps onTouchStart( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
     return self();

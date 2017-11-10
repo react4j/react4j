@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -85,14 +86,14 @@ public class SelectProps
 
   // Focus Events
   @JsOverlay
-  public final SelectProps onBlur( FocusEventHandler handler )
+  public final SelectProps onBlur( @Nonnull final FocusEventHandler handler )
   {
     setOnBlur( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onFocus( FocusEventHandler handler )
+  public final SelectProps onFocus( @Nonnull final FocusEventHandler handler )
   {
     setOnFocus( handler );
     return self();
@@ -100,7 +101,7 @@ public class SelectProps
 
   // Form Events
   @JsOverlay
-  public final SelectProps onChange( FormEventHandler handler )
+  public final SelectProps onChange( @Nonnull final FormEventHandler handler )
   {
     setOnChange( handler );
     return self();
@@ -108,147 +109,147 @@ public class SelectProps
 
   // Keyboard Events
   @JsOverlay
-  public final SelectProps onKeyDown( KeyboardEventHandler handler )
+  public final SelectProps onKeyDown( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onKeyPress( KeyboardEventHandler handler )
+  public final SelectProps onKeyPress( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onKeyUp( KeyboardEventHandler handler )
+  public final SelectProps onKeyUp( @Nonnull final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onClick( MouseEventHandler handler )
+  public final SelectProps onClick( @Nonnull final MouseEventHandler handler )
   {
     setOnClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onContextMenu( MouseEventHandler handler )
+  public final SelectProps onContextMenu( @Nonnull final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onDoubleClick( MouseEventHandler handler )
+  public final SelectProps onDoubleClick( @Nonnull final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onDrag( DragEventHandler handler )
+  public final SelectProps onDrag( @Nonnull final DragEventHandler handler )
   {
     setOnDrag( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onDragEnd( DragEventHandler handler )
+  public final SelectProps onDragEnd( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onDragEnter( DragEventHandler handler )
+  public final SelectProps onDragEnter( @Nonnull final DragEventHandler handler )
   {
     setOnDragEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onDragExit( DragEventHandler handler )
+  public final SelectProps onDragExit( @Nonnull final DragEventHandler handler )
   {
     setOnDragExit( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onDragLeave( DragEventHandler handler )
+  public final SelectProps onDragLeave( @Nonnull final DragEventHandler handler )
   {
     setOnDragLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onDragOver( DragEventHandler handler )
+  public final SelectProps onDragOver( @Nonnull final DragEventHandler handler )
   {
     setOnDragOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onDragStart( DragEventHandler handler )
+  public final SelectProps onDragStart( @Nonnull final DragEventHandler handler )
   {
     setOnDragStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onDrop( DragEventHandler handler )
+  public final SelectProps onDrop( @Nonnull final DragEventHandler handler )
   {
     setOnDrop( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onMouseDown( MouseEventHandler handler )
+  public final SelectProps onMouseDown( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onMouseEnter( MouseEventHandler handler )
+  public final SelectProps onMouseEnter( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onMouseLeave( MouseEventHandler handler )
+  public final SelectProps onMouseLeave( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onMouseMove( MouseEventHandler handler )
+  public final SelectProps onMouseMove( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onMouseOut( MouseEventHandler handler )
+  public final SelectProps onMouseOut( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onMouseOver( MouseEventHandler handler )
+  public final SelectProps onMouseOver( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onMouseUp( MouseEventHandler handler )
+  public final SelectProps onMouseUp( @Nonnull final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
     return self();
@@ -256,28 +257,28 @@ public class SelectProps
 
   // Touch Events
   @JsOverlay
-  public final SelectProps onTouchCancel( TouchEventHandler handler )
+  public final SelectProps onTouchCancel( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onTouchEnd( TouchEventHandler handler )
+  public final SelectProps onTouchEnd( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onTouchMove( TouchEventHandler handler )
+  public final SelectProps onTouchMove( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final SelectProps onTouchStart( TouchEventHandler handler )
+  public final SelectProps onTouchStart( @Nonnull final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
     return self();

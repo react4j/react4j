@@ -28,6 +28,7 @@
   duplicating them in every subclass. This includes the methods: `accessKey`, `className`, `contentEditable`,
   `contextMenu`, `dir`, `draggable`, `hidden`, `id`, `lang`, `style`, `spellcheck`, `tabIndex`, `title` and
   `translate`.
+* **\[dom\]** Add nullability annotations for event handlers in html props classes.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)
