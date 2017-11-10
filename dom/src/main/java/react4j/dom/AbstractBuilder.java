@@ -10,6 +10,7 @@ import jsinterop.base.JsPropertyMap;
 import react4j.core.BaseProps;
 import react4j.core.ReactElement;
 import react4j.core.ReactNode;
+import react4j.core.RefConsumer;
 import react4j.dom.proptypes.html.HtmlGlobalFields;
 
 /**

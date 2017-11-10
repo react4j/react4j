@@ -33,6 +33,7 @@
   the creation of fluent setters for all setters that are actually used.
 * 💥 **\[dom\]** Change the event handlers on `LabelProps` to use camel case rather than pascal case. i.e. Rename the
   fluent event handlers from `OnX` to `onX`
+* 💥 **\[core\]** Move `react.dom.RefConsumer` to `react.core.RefConsumer`.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)

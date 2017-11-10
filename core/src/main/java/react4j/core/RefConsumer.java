@@ -1,4 +1,4 @@
-package react4j.dom;
+package react4j.core;
 
 import jsinterop.annotations.JsFunction;
 
