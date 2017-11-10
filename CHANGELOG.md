@@ -31,6 +31,8 @@
 * **\[dom\]** Add nullability annotations for event handlers in html props classes.
 * 💥 **\[dom\]** Change the non-fluent setters in `HtmlGlobalFields` to be protected access. The goal is to encourage
   the creation of fluent setters for all setters that are actually used.
+* 💥 **\[dom\]** Change the event handlers on `LabelProps` to use camel case rather than pascal case. i.e. Rename the
+  fluent event handlers from `OnX` to `onX`
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)
