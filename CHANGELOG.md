@@ -22,6 +22,12 @@
 * 💥 **\[dom\]** Rewrote `ReactDOM` and javadocs to align with the official React documentation except where it
   is less precise where actual behaviour was documented.
 * 💥 **\[core\]** Upgrade to react 16.1.0.
+* **\[dom\]** Move the react-specific `@JsOverlay` methods into `HtmlGlobalFields` parent class rather than
+  duplicating them in every subclass.
+* **\[dom\]** Move the global html props `@JsOverlay` methods into `HtmlGlobalFields` parent class rather than
+  duplicating them in every subclass. This includes the methods: `accessKey`, `className`, `contentEditable`,
+  `contextMenu`, `dir`, `draggable`, `hidden`, `id`, `lang`, `style`, `spellcheck`, `tabIndex`, `title` and
+  `translate`.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)
