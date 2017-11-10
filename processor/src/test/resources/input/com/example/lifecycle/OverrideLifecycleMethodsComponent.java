@@ -46,6 +46,11 @@ class OverrideLifecycleMethodsComponent
   }
 
   @Override
+  protected void componentDidMount()
+  {
+  }
+
+  @Override
   protected void componentDidCatch( @Nonnull final Error error, @Nonnull final ReactErrorInfo info )
   {
   }

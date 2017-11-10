@@ -48,6 +48,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
       isNative = true
   )
   interface Lifecycle {
+    void componentDidMount();
+
     void componentDidUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState);
 
     void componentWillMount();
@@ -71,6 +73,11 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     @Override
     protected OverrideLifecycleMethodsComponent createComponent() {
       return new OverrideLifecycleMethodsComponent_();
+    }
+
+    @Override
+    public void componentDidMount() {
+      performComponentDidMount();
     }
 
     @Override
