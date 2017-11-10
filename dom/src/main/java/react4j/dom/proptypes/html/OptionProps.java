@@ -11,7 +11,6 @@ import jsinterop.annotations.JsType;
 public class OptionProps
   extends HtmlGlobalFields<OptionProps>
 {
-
   @JsOverlay
   public final OptionProps disabled( boolean b )
   {
