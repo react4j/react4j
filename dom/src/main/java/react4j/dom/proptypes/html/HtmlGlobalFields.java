@@ -71,26 +71,26 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native boolean isDefaultChecked();
 
   @JsProperty
-  public native void setDefaultChecked( boolean defaultChecked );
+  protected native void setDefaultChecked( boolean defaultChecked );
 
   @JsProperty
   public native String getDefaultValue();
 
   @JsProperty
-  public native void setDefaultValue( String defaultValue );
+  protected native void setDefaultValue( String defaultValue );
 
   // Standard HTML Attributes
   @JsProperty
   public native String getAccept();
 
   @JsProperty
-  public native void setAccept( String accept );
+  protected native void setAccept( String accept );
 
   @JsProperty
   public native String getAcceptCharset();
 
   @JsProperty
-  public native void setAcceptCharset( String acceptCharset );
+  protected native void setAcceptCharset( String acceptCharset );
 
   @JsProperty
   public native String getAccessKey();
@@ -103,97 +103,97 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setAccessKey( String accessKey );
+  protected native void setAccessKey( String accessKey );
 
   @JsProperty
   public native String getAction();
 
   @JsProperty
-  public native void setAction( String action );
+  protected native void setAction( String action );
 
   @JsProperty
   public native boolean isAllowFullScreen();
 
   @JsProperty
-  public native void setAllowFullScreen( boolean allowFullScreen );
+  protected native void setAllowFullScreen( boolean allowFullScreen );
 
   @JsProperty
   public native boolean isAllowTransparency();
 
   @JsProperty
-  public native void setAllowTransparency( boolean allowTransparency );
+  protected native void setAllowTransparency( boolean allowTransparency );
 
   @JsProperty
   public native String getAlt();
 
   @JsProperty
-  public native void setAlt( String alt );
+  protected native void setAlt( String alt );
 
   @JsProperty
   public native boolean isAsync();
 
   @JsProperty
-  public native void setAsync( boolean async );
+  protected native void setAsync( boolean async );
 
   @JsProperty
   public native String getAutoComplete();
 
   @JsProperty
-  public native void setAutoComplete( String autoComplete );
+  protected native void setAutoComplete( String autoComplete );
 
   @JsProperty
   public native boolean isAutoFocus();
 
   @JsProperty
-  public native void setAutoFocus( boolean autoFocus );
+  protected native void setAutoFocus( boolean autoFocus );
 
   @JsProperty
   public native boolean isAutoPlay();
 
   @JsProperty
-  public native void setAutoPlay( boolean autoPlay );
+  protected native void setAutoPlay( boolean autoPlay );
 
   @JsProperty
   public native boolean isCapture();
 
   @JsProperty
-  public native void setCapture( boolean capture );
+  protected native void setCapture( boolean capture );
 
   @JsProperty
   public native String getCellPadding();
 
   @JsProperty
-  public native void setCellPadding( String cellPadding );
+  protected native void setCellPadding( String cellPadding );
 
   @JsProperty
   public native String getCellSpacing();
 
   @JsProperty
-  public native void setCellSpacing( String cellSpacing );
+  protected native void setCellSpacing( String cellSpacing );
 
   @JsProperty
   public native String getCharSet();
 
   @JsProperty
-  public native void setCharSet( String charSet );
+  protected native void setCharSet( String charSet );
 
   @JsProperty
   public native String getChallenge();
 
   @JsProperty
-  public native void setChallenge( String challenge );
+  protected native void setChallenge( String challenge );
 
   @JsProperty
   public native boolean isChecked();
 
   @JsProperty
-  public native void setChecked( boolean checked );
+  protected native void setChecked( boolean checked );
 
   @JsProperty
   public native String getClassID();
 
   @JsProperty
-  public native void setClassID( String classID );
+  protected native void setClassID( String classID );
 
   @JsProperty
   public native String getClassName();
@@ -206,25 +206,25 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setClassName( String className );
+  protected native void setClassName( String className );
 
   @JsProperty
   public native int getCols();
 
   @JsProperty
-  public native void setCols( int cols );
+  protected native void setCols( int cols );
 
   @JsProperty
   public native int getColSpan();
 
   @JsProperty
-  public native void setColSpan( int colSpan );
+  protected native void setColSpan( int colSpan );
 
   @JsProperty
   public native String getContent();
 
   @JsProperty
-  public native void setContent( String content );
+  protected native void setContent( String content );
 
   @JsProperty
   public native boolean isContentEditable();
@@ -237,7 +237,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setContentEditable( boolean contentEditable );
+  protected native void setContentEditable( boolean contentEditable );
 
   @JsProperty
   public native String getContextMenu();
@@ -250,46 +250,46 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setContextMenu( String contextMenu );
+  protected native void setContextMenu( String contextMenu );
 
   @JsProperty
   public native boolean isControls();
 
   @JsProperty
-  public native void setControls( boolean controls );
+  protected native void setControls( boolean controls );
 
   @JsProperty
   public native String getCoords();
 
   @JsProperty
-  public native void setCoords( String coords );
+  protected native void setCoords( String coords );
 
   @JsProperty
   public native String getCrossOrigin();
 
   @JsProperty
-  public native void setCrossOrigin( String crossOrigin );
+  protected native void setCrossOrigin( String crossOrigin );
 
   @JsProperty
   public native String getData();
 
   @JsProperty
-  public native void setData( String data );
+  protected native void setData( String data );
 
   @JsProperty
   public native String getDateTime();
 
   @JsProperty
-  public native void setDateTime( String dateTime );
+  protected native void setDateTime( String dateTime );
 
   //@JsProperty public native boolean is_default();
-  //@JsProperty public native void set_default(boolean _default);
+  //@JsProperty protected native void set_default(boolean _default);
 
   @JsProperty
   public native boolean isDefer();
 
   @JsProperty
-  public native void setDefer( boolean defer );
+  protected native void setDefer( boolean defer );
 
   @JsProperty
   public native String getDir();
@@ -302,19 +302,19 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setDir( String dir );
+  protected native void setDir( String dir );
 
   @JsProperty
   public native boolean isDisabled();
 
   @JsProperty
-  public native void setDisabled( boolean disabled );
+  protected native void setDisabled( boolean disabled );
 
   @JsProperty
   public native String getDownload();
 
   @JsProperty
-  public native void setDownload( String download );
+  protected native void setDownload( String download );
 
   @JsProperty
   public native boolean isDraggable();
@@ -327,67 +327,67 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setDraggable( boolean draggable );
+  protected native void setDraggable( boolean draggable );
 
   @JsProperty
   public native String getEncType();
 
   @JsProperty
-  public native void setEncType( String encType );
+  protected native void setEncType( String encType );
 
   @JsProperty
   public native String getForm();
 
   @JsProperty
-  public native void setForm( String form );
+  protected native void setForm( String form );
 
   @JsProperty
   public native String getFormAction();
 
   @JsProperty
-  public native void setFormAction( String formAction );
+  protected native void setFormAction( String formAction );
 
   @JsProperty
   public native String getFormEncType();
 
   @JsProperty
-  public native void setFormEncType( String formEncType );
+  protected native void setFormEncType( String formEncType );
 
   @JsProperty
   public native String getFormMethod();
 
   @JsProperty
-  public native void setFormMethod( String formMethod );
+  protected native void setFormMethod( String formMethod );
 
   @JsProperty
   public native boolean isFormNoValidate();
 
   @JsProperty
-  public native void setFormNoValidate( boolean formNoValidate );
+  protected native void setFormNoValidate( boolean formNoValidate );
 
   @JsProperty
   public native String getFormTarget();
 
   @JsProperty
-  public native void setFormTarget( String formTarget );
+  protected native void setFormTarget( String formTarget );
 
   @JsProperty
   public native String getFrameBorder();
 
   @JsProperty
-  public native void setFrameBorder( String frameBorder );
+  protected native void setFrameBorder( String frameBorder );
 
   @JsProperty
   public native String getHeaders();
 
   @JsProperty
-  public native void setHeaders( String headers );
+  protected native void setHeaders( String headers );
 
   @JsProperty
   public native String getHeight();
 
   @JsProperty
-  public native void setHeight( String height );
+  protected native void setHeight( String height );
 
   @JsProperty
   public native boolean isHidden();
@@ -400,43 +400,43 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setHidden( boolean hidden );
+  protected native void setHidden( boolean hidden );
 
   @JsProperty
   public native int getHigh();
 
   @JsProperty
-  public native void setHigh( int high );
+  protected native void setHigh( int high );
 
   @JsProperty
   public native String getHref();
 
   @JsProperty
-  public native void setHref( String href );
+  protected native void setHref( String href );
 
   @JsProperty
   public native String getHrefLang();
 
   @JsProperty
-  public native void setHrefLang( String hrefLang );
+  protected native void setHrefLang( String hrefLang );
 
   @JsProperty
   public native String getHtmlFor();
 
   @JsProperty
-  public native void setHtmlFor( String htmlFor );
+  protected native void setHtmlFor( String htmlFor );
 
   @JsProperty
   public native String getHttpEquiv();
 
   @JsProperty
-  public native void setHttpEquiv( String httpEquiv );
+  protected native void setHttpEquiv( String httpEquiv );
 
   @JsProperty
   public native String getIcon();
 
   @JsProperty
-  public native void setIcon( String icon );
+  protected native void setIcon( String icon );
 
   @JsProperty
   public native String getId();
@@ -449,49 +449,49 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setId( String id );
+  protected native void setId( String id );
 
   @JsProperty
   public native String getInputMode();
 
   @JsProperty
-  public native void setInputMode( String inputMode );
+  protected native void setInputMode( String inputMode );
 
   @JsProperty
   public native String getIntegrity();
 
   @JsProperty
-  public native void setIntegrity( String integrity );
+  protected native void setIntegrity( String integrity );
 
   @JsProperty
   public native String getIs();
 
   @JsProperty
-  public native void setIs( String is );
+  protected native void setIs( String is );
 
   @JsProperty
   public native String getKeyParams();
 
   @JsProperty
-  public native void setKeyParams( String keyParams );
+  protected native void setKeyParams( String keyParams );
 
   @JsProperty
   public native String getKeyType();
 
   @JsProperty
-  public native void setKeyType( String keyType );
+  protected native void setKeyType( String keyType );
 
   @JsProperty
   public native String getKind();
 
   @JsProperty
-  public native void setKind( String kind );
+  protected native void setKind( String kind );
 
   @JsProperty
   public native String getLabel();
 
   @JsProperty
-  public native void setLabel( String label );
+  protected native void setLabel( String label );
 
   @JsProperty
   public native String getLang();
@@ -504,253 +504,253 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setLang( String lang );
+  protected native void setLang( String lang );
 
   @JsProperty
   public native String getList();
 
   @JsProperty
-  public native void setList( String list );
+  protected native void setList( String list );
 
   @JsProperty
   public native boolean isLoop();
 
   @JsProperty
-  public native void setLoop( boolean loop );
+  protected native void setLoop( boolean loop );
 
   @JsProperty
   public native int getLow();
 
   @JsProperty
-  public native void setLow( int low );
+  protected native void setLow( int low );
 
   @JsProperty
   public native String getManifest();
 
   @JsProperty
-  public native void setManifest( String manifest );
+  protected native void setManifest( String manifest );
 
   @JsProperty
   public native int getMarginHeight();
 
   @JsProperty
-  public native void setMarginHeight( int marginHeight );
+  protected native void setMarginHeight( int marginHeight );
 
   @JsProperty
   public native int getMarginWidth();
 
   @JsProperty
-  public native void setMarginWidth( int marginWidth );
+  protected native void setMarginWidth( int marginWidth );
 
   @JsProperty
   public native String getMax();
 
   @JsProperty
-  public native void setMax( String max );
+  protected native void setMax( String max );
 
   @JsProperty
   public native int getMaxLength();
 
   @JsProperty
-  public native void setMaxLength( int maxLength );
+  protected native void setMaxLength( int maxLength );
 
   @JsProperty
   public native String getMedia();
 
   @JsProperty
-  public native void setMedia( String media );
+  protected native void setMedia( String media );
 
   @JsProperty
   public native String getMediaGroup();
 
   @JsProperty
-  public native void setMediaGroup( String mediaGroup );
+  protected native void setMediaGroup( String mediaGroup );
 
   @JsProperty
   public native String getMethod();
 
   @JsProperty
-  public native void setMethod( String method );
+  protected native void setMethod( String method );
 
   @JsProperty
   public native String getMin();
 
   @JsProperty
-  public native void setMin( String min );
+  protected native void setMin( String min );
 
   @JsProperty
   public native int getMinLength();
 
   @JsProperty
-  public native void setMinLength( int minLength );
+  protected native void setMinLength( int minLength );
 
   @JsProperty
   public native boolean isMultiple();
 
   @JsProperty
-  public native void setMultiple( boolean multiple );
+  protected native void setMultiple( boolean multiple );
 
   @JsProperty
   public native boolean isMuted();
 
   @JsProperty
-  public native void setMuted( boolean muted );
+  protected native void setMuted( boolean muted );
 
   @JsProperty
   public native String getName();
 
   @JsProperty
-  public native void setName( String name );
+  protected native void setName( String name );
 
   @JsProperty
   public native boolean isNoValidate();
 
   @JsProperty
-  public native void setNoValidate( boolean noValidate );
+  protected native void setNoValidate( boolean noValidate );
 
   @JsProperty
   public native boolean isOpen();
 
   @JsProperty
-  public native void setOpen( boolean open );
+  protected native void setOpen( boolean open );
 
   @JsProperty
   public native int getOptimum();
 
   @JsProperty
-  public native void setOptimum( int optimum );
+  protected native void setOptimum( int optimum );
 
   @JsProperty
   public native String getPattern();
 
   @JsProperty
-  public native void setPattern( String pattern );
+  protected native void setPattern( String pattern );
 
   @JsProperty
   public native String getPlaceholder();
 
   @JsProperty
-  public native void setPlaceholder( String placeholder );
+  protected native void setPlaceholder( String placeholder );
 
   @JsProperty
   public native String getPoster();
 
   @JsProperty
-  public native void setPoster( String poster );
+  protected native void setPoster( String poster );
 
   @JsProperty
   public native String getPreload();
 
   @JsProperty
-  public native void setPreload( String preload );
+  protected native void setPreload( String preload );
 
   @JsProperty
   public native String getRadioGroup();
 
   @JsProperty
-  public native void setRadioGroup( String radioGroup );
+  protected native void setRadioGroup( String radioGroup );
 
   @JsProperty
   public native boolean isReadOnly();
 
   @JsProperty
-  public native void setReadOnly( boolean readOnly );
+  protected native void setReadOnly( boolean readOnly );
 
   @JsProperty
   public native String getRel();
 
   @JsProperty
-  public native void setRel( String rel );
+  protected native void setRel( String rel );
 
   @JsProperty
   public native String getReferrerPolicy();
 
   @JsProperty
-  public native void setReferrerPolicy( String rel );
+  protected native void setReferrerPolicy( String rel );
 
   @JsProperty
   public native boolean isRequired();
 
   @JsProperty
-  public native void setRequired( boolean required );
+  protected native void setRequired( boolean required );
 
   @JsProperty
   public native String getRole();
 
   @JsProperty
-  public native void setRole( String role );
+  protected native void setRole( String role );
 
   @JsProperty
   public native int getRows();
 
   @JsProperty
-  public native void setRows( int rows );
+  protected native void setRows( int rows );
 
   @JsProperty
   public native int getRowSpan();
 
   @JsProperty
-  public native void setRowSpan( int rowSpan );
+  protected native void setRowSpan( int rowSpan );
 
   @JsProperty
   public native String getSandbox();
 
   @JsProperty
-  public native void setSandbox( String sandbox );
+  protected native void setSandbox( String sandbox );
 
   @JsProperty
   public native String getScope();
 
   @JsProperty
-  public native void setScope( String scope );
+  protected native void setScope( String scope );
 
   @JsProperty
   public native boolean isScoped();
 
   @JsProperty
-  public native void setScoped( boolean scoped );
+  protected native void setScoped( boolean scoped );
 
   @JsProperty
   public native String getScrolling();
 
   @JsProperty
-  public native void setScrolling( String scrolling );
+  protected native void setScrolling( String scrolling );
 
   @JsProperty
   public native boolean isSeamless();
 
   @JsProperty
-  public native void setSeamless( boolean seamless );
+  protected native void setSeamless( boolean seamless );
 
   @JsProperty
   public native boolean isSelected();
 
   @JsProperty
-  public native void setSelected( boolean selected );
+  protected native void setSelected( boolean selected );
 
   @JsProperty
   public native String getShape();
 
   @JsProperty
-  public native void setShape( String shape );
+  protected native void setShape( String shape );
 
   @JsProperty
   public native int getSize();
 
   @JsProperty
-  public native void setSize( int size );
+  protected native void setSize( int size );
 
   @JsProperty
   public native String getSizes();
 
   @JsProperty
-  public native void setSizes( String sizes );
+  protected native void setSizes( String sizes );
 
   @JsProperty
   public native int getSpan();
 
   @JsProperty
-  public native void setSpan( int span );
+  protected native void setSpan( int span );
 
   @JsProperty
   public native boolean isSpellCheck();
@@ -763,43 +763,43 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setSpellCheck( boolean spellCheck );
+  protected native void setSpellCheck( boolean spellCheck );
 
   @JsProperty
   public native String getSrc();
 
   @JsProperty
-  public native void setSrc( String src );
+  protected native void setSrc( String src );
 
   @JsProperty
   public native String getSrcDoc();
 
   @JsProperty
-  public native void setSrcDoc( String srcDoc );
+  protected native void setSrcDoc( String srcDoc );
 
   @JsProperty
   public native String getSrcLang();
 
   @JsProperty
-  public native void setSrcLang( String srcLang );
+  protected native void setSrcLang( String srcLang );
 
   @JsProperty
   public native String getSrcSet();
 
   @JsProperty
-  public native void setSrcSet( String srcSet );
+  protected native void setSrcSet( String srcSet );
 
   @JsProperty
   public native int getStart();
 
   @JsProperty
-  public native void setStart( int start );
+  protected native void setStart( int start );
 
   @JsProperty
   public native String getStep();
 
   @JsProperty
-  public native void setStep( String step );
+  protected native void setStep( String step );
 
   @JsProperty
   public native CssProps getStyle();
@@ -812,13 +812,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setStyle( CssProps style );
+  protected native void setStyle( CssProps style );
 
   @JsProperty
   public native String getSummary();
 
   @JsProperty
-  public native void setSummary( String summary );
+  protected native void setSummary( String summary );
 
   @JsProperty
   public native int getTabIndex();
@@ -831,13 +831,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setTabIndex( int tabIndex );
+  protected native void setTabIndex( int tabIndex );
 
   @JsProperty
   public native String getTarget();
 
   @JsProperty
-  public native void setTarget( String target );
+  protected native void setTarget( String target );
 
   @JsProperty
   public native String getTitle();
@@ -850,13 +850,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setTitle( String title );
+  protected native void setTitle( String title );
 
   @JsProperty
   public native String getType();
 
   @JsProperty
-  public native void setType( String type );
+  protected native void setType( String type );
 
   @JsProperty
   public native String getTranslate();
@@ -869,37 +869,37 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsProperty
-  public native void setTranslate( String translate );
+  protected native void setTranslate( String translate );
 
   @JsProperty
   public native String getUseMap();
 
   @JsProperty
-  public native void setUseMap( String useMap );
+  protected native void setUseMap( String useMap );
 
   @JsProperty
   public native String getValue();
 
   @JsProperty
-  public native void setValue( String value );
+  protected native void setValue( String value );
 
   @JsProperty
   public native String getWidth();
 
   @JsProperty
-  public native void setWidth( String width );
+  protected native void setWidth( String width );
 
   @JsProperty
   public native String getWmode();
 
   @JsProperty
-  public native void setWmode( String wmode );
+  protected native void setWmode( String wmode );
 
   @JsProperty
   public native String getWrap();
 
   @JsProperty
-  public native void setWrap( String wrap );
+  protected native void setWrap( String wrap );
 
   // RDFa Attributes
 
@@ -907,49 +907,49 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getAbout();
 
   @JsProperty
-  public native void setAbout( String about );
+  protected native void setAbout( String about );
 
   @JsProperty
   public native String getDatatype();
 
   @JsProperty
-  public native void setDatatype( String datatype );
+  protected native void setDatatype( String datatype );
 
   @JsProperty
   public native String getInlist();
 
   @JsProperty
-  public native void setInlist( String inlist );
+  protected native void setInlist( String inlist );
 
   @JsProperty
   public native String getPrefix();
 
   @JsProperty
-  public native void setPrefix( String prefix );
+  protected native void setPrefix( String prefix );
 
   @JsProperty
   public native String getProperty();
 
   @JsProperty
-  public native void setProperty( String property );
+  protected native void setProperty( String property );
 
   @JsProperty
   public native String getResource();
 
   @JsProperty
-  public native void setResource( String resource );
+  protected native void setResource( String resource );
 
   @JsProperty
   public native String getTypeof();
 
   @JsProperty
-  public native void setTypeof( String typeof );
+  protected native void setTypeof( String typeof );
 
   @JsProperty
   public native String getVocab();
 
   @JsProperty
-  public native void setVocab( String vocab );
+  protected native void setVocab( String vocab );
 
   // Non-standard Attributes
 
@@ -957,73 +957,73 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getAutoCapitalize();
 
   @JsProperty
-  public native void setAutoCapitalize( String autoCapitalize );
+  protected native void setAutoCapitalize( String autoCapitalize );
 
   @JsProperty
   public native String getAutoCorrect();
 
   @JsProperty
-  public native void setAutoCorrect( String autoCorrect );
+  protected native void setAutoCorrect( String autoCorrect );
 
   @JsProperty
   public native String getAutoSave();
 
   @JsProperty
-  public native void setAutoSave( String autoSave );
+  protected native void setAutoSave( String autoSave );
 
   @JsProperty
   public native String getColor();
 
   @JsProperty
-  public native void setColor( String color );
+  protected native void setColor( String color );
 
   @JsProperty
   public native String getItemProp();
 
   @JsProperty
-  public native void setItemProp( String itemProp );
+  protected native void setItemProp( String itemProp );
 
   @JsProperty
   public native boolean isItemScope();
 
   @JsProperty
-  public native void setItemScope( boolean itemScope );
+  protected native void setItemScope( boolean itemScope );
 
   @JsProperty
   public native String getItemType();
 
   @JsProperty
-  public native void setItemType( String itemType );
+  protected native void setItemType( String itemType );
 
   @JsProperty
   public native String getItemID();
 
   @JsProperty
-  public native void setItemID( String itemID );
+  protected native void setItemID( String itemID );
 
   @JsProperty
   public native String getItemRef();
 
   @JsProperty
-  public native void setItemRef( String itemRef );
+  protected native void setItemRef( String itemRef );
 
   @JsProperty
   public native int getResults();
 
   @JsProperty
-  public native void setResults( int results );
+  protected native void setResults( int results );
 
   @JsProperty
   public native String getSecurity();
 
   @JsProperty
-  public native void setSecurity( String security );
+  protected native void setSecurity( String security );
 
   @JsProperty
   public native boolean isUnselectable();
 
   @JsProperty
-  public native void setUnselectable( boolean unselectable );
+  protected native void setUnselectable( boolean unselectable );
 
   // Clipboard Events
 
@@ -1031,19 +1031,19 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native ClipboardEventHandler getOnCopy();
 
   @JsProperty
-  public native void setOnCopy( ClipboardEventHandler onCopy );
+  protected native void setOnCopy( ClipboardEventHandler onCopy );
 
   @JsProperty
   public native ClipboardEventHandler getOnCut();
 
   @JsProperty
-  public native void setOnCut( ClipboardEventHandler onCut );
+  protected native void setOnCut( ClipboardEventHandler onCut );
 
   @JsProperty
   public native ClipboardEventHandler getOnPaste();
 
   @JsProperty
-  public native void setOnPaste( ClipboardEventHandler onPaste );
+  protected native void setOnPaste( ClipboardEventHandler onPaste );
 
   // Composition Events
 
@@ -1051,19 +1051,19 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native CompositionEventHandler getOnCompositionEnd();
 
   @JsProperty
-  public native void setOnCompositionEnd( CompositionEventHandler onCompositionEnd );
+  protected native void setOnCompositionEnd( CompositionEventHandler onCompositionEnd );
 
   @JsProperty
   public native CompositionEventHandler getOnCompositionStart();
 
   @JsProperty
-  public native void setOnCompositionStart( CompositionEventHandler onCompositionStart );
+  protected native void setOnCompositionStart( CompositionEventHandler onCompositionStart );
 
   @JsProperty
   public native CompositionEventHandler getOnCompositionUpdate();
 
   @JsProperty
-  public native void setOnCompositionUpdate( CompositionEventHandler onCompositionUpdate );
+  protected native void setOnCompositionUpdate( CompositionEventHandler onCompositionUpdate );
 
   // Focus Events
 
@@ -1071,13 +1071,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native FocusEventHandler getOnFocus();
 
   @JsProperty
-  public native void setOnFocus( @Nonnull final FocusEventHandler onFocus );
+  protected native void setOnFocus( @Nonnull final FocusEventHandler onFocus );
 
   @JsProperty
   public native FocusEventHandler getOnBlur();
 
   @JsProperty
-  public native void setOnBlur( @Nonnull final FocusEventHandler onBlur );
+  protected native void setOnBlur( @Nonnull final FocusEventHandler onBlur );
 
   // Form Events
 
@@ -1085,19 +1085,19 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native FormEventHandler getOnChange();
 
   @JsProperty
-  public native void setOnChange( @Nonnull final FormEventHandler onChange );
+  protected native void setOnChange( @Nonnull final FormEventHandler onChange );
 
   @JsProperty
   public native FormEventHandler getOnInput();
 
   @JsProperty
-  public native void setOnInput( @Nonnull final FormEventHandler onInput );
+  protected native void setOnInput( @Nonnull final FormEventHandler onInput );
 
   @JsProperty
   public native FormEventHandler getOnSubmit();
 
   @JsProperty
-  public native void setOnSubmit( @Nonnull final FormEventHandler onSubmit );
+  protected native void setOnSubmit( @Nonnull final FormEventHandler onSubmit );
 
   // Image Events
 
@@ -1105,13 +1105,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native ReactEventHandler getOnLoad();
 
   @JsProperty
-  public native void setOnLoad( @Nonnull final ReactEventHandler onLoad );
+  protected native void setOnLoad( @Nonnull final ReactEventHandler onLoad );
 
   @JsProperty
   public native ReactEventHandler getOnError();
 
   @JsProperty
-  public native void setOnError( @Nonnull final ReactEventHandler onError );
+  protected native void setOnError( @Nonnull final ReactEventHandler onError );
 
   // Keyboard Events
 
@@ -1119,19 +1119,19 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native KeyboardEventHandler getOnKeyDown();
 
   @JsProperty
-  public native void setOnKeyDown( @Nonnull final KeyboardEventHandler onKeyDown );
+  protected native void setOnKeyDown( @Nonnull final KeyboardEventHandler onKeyDown );
 
   @JsProperty
   public native KeyboardEventHandler getOnKeyPress();
 
   @JsProperty
-  public native void setOnKeyPress( @Nonnull final KeyboardEventHandler onKeyPress );
+  protected native void setOnKeyPress( @Nonnull final KeyboardEventHandler onKeyPress );
 
   @JsProperty
   public native KeyboardEventHandler getOnKeyUp();
 
   @JsProperty
-  public native void setOnKeyUp( @Nonnull final KeyboardEventHandler onKeyUp );
+  protected native void setOnKeyUp( @Nonnull final KeyboardEventHandler onKeyUp );
 
   // Media Events
 
@@ -1139,133 +1139,133 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native ReactEventHandler getOnAbort();
 
   @JsProperty
-  public native void setOnAbort( @Nonnull final ReactEventHandler onAbort );
+  protected native void setOnAbort( @Nonnull final ReactEventHandler onAbort );
 
   @JsProperty
   public native ReactEventHandler getOnCanPlay();
 
   @JsProperty
-  public native void setOnCanPlay( @Nonnull final ReactEventHandler onCanPlay );
+  protected native void setOnCanPlay( @Nonnull final ReactEventHandler onCanPlay );
 
   @JsProperty
   public native ReactEventHandler getOnCanPlayThrough();
 
   @JsProperty
-  public native void setOnCanPlayThrough( @Nonnull final ReactEventHandler onCanPlayThrough );
+  protected native void setOnCanPlayThrough( @Nonnull final ReactEventHandler onCanPlayThrough );
 
   @JsProperty
   public native ReactEventHandler getOnDurationChange();
 
   @JsProperty
-  public native void setOnDurationChange( @Nonnull final ReactEventHandler onDurationChange );
+  protected native void setOnDurationChange( @Nonnull final ReactEventHandler onDurationChange );
 
   @JsProperty
   public native ReactEventHandler getOnEmptied();
 
   @JsProperty
-  public native void setOnEmptied( @Nonnull final ReactEventHandler onEmptied );
+  protected native void setOnEmptied( @Nonnull final ReactEventHandler onEmptied );
 
   @JsProperty
   public native ReactEventHandler getOnEncrypted();
 
   @JsProperty
-  public native void setOnEncrypted( @Nonnull final ReactEventHandler onEncrypted );
+  protected native void setOnEncrypted( @Nonnull final ReactEventHandler onEncrypted );
 
   @JsProperty
   public native ReactEventHandler getOnEnded();
 
   @JsProperty
-  public native void setOnEnded( @Nonnull final ReactEventHandler onEnded );
+  protected native void setOnEnded( @Nonnull final ReactEventHandler onEnded );
 
   @JsProperty
   public native ReactEventHandler getOnLoadedData();
 
   @JsProperty
-  public native void setOnLoadedData( @Nonnull final ReactEventHandler onLoadedData );
+  protected native void setOnLoadedData( @Nonnull final ReactEventHandler onLoadedData );
 
   @JsProperty
   public native ReactEventHandler getOnLoadedMetadata();
 
   @JsProperty
-  public native void setOnLoadedMetadata( @Nonnull final ReactEventHandler onLoadedMetadata );
+  protected native void setOnLoadedMetadata( @Nonnull final ReactEventHandler onLoadedMetadata );
 
   @JsProperty
   public native ReactEventHandler getOnLoadStart();
 
   @JsProperty
-  public native void setOnLoadStart( @Nonnull final ReactEventHandler onLoadStart );
+  protected native void setOnLoadStart( @Nonnull final ReactEventHandler onLoadStart );
 
   @JsProperty
   public native ReactEventHandler getOnPause();
 
   @JsProperty
-  public native void setOnPause( @Nonnull final ReactEventHandler onPause );
+  protected native void setOnPause( @Nonnull final ReactEventHandler onPause );
 
   @JsProperty
   public native ReactEventHandler getOnPlay();
 
   @JsProperty
-  public native void setOnPlay( @Nonnull final ReactEventHandler onPlay );
+  protected native void setOnPlay( @Nonnull final ReactEventHandler onPlay );
 
   @JsProperty
   public native ReactEventHandler getOnPlaying();
 
   @JsProperty
-  public native void setOnPlaying( @Nonnull final ReactEventHandler onPlaying );
+  protected native void setOnPlaying( @Nonnull final ReactEventHandler onPlaying );
 
   @JsProperty
   public native ReactEventHandler getOnProgress();
 
   @JsProperty
-  public native void setOnProgress( @Nonnull final ReactEventHandler onProgress );
+  protected native void setOnProgress( @Nonnull final ReactEventHandler onProgress );
 
   @JsProperty
   public native ReactEventHandler getOnRateChange();
 
   @JsProperty
-  public native void setOnRateChange( @Nonnull final ReactEventHandler onRateChange );
+  protected native void setOnRateChange( @Nonnull final ReactEventHandler onRateChange );
 
   @JsProperty
   public native ReactEventHandler getOnSeeked();
 
   @JsProperty
-  public native void setOnSeeked( @Nonnull final ReactEventHandler onSeeked );
+  protected native void setOnSeeked( @Nonnull final ReactEventHandler onSeeked );
 
   @JsProperty
   public native ReactEventHandler getOnSeeking();
 
   @JsProperty
-  public native void setOnSeeking( @Nonnull final ReactEventHandler onSeeking );
+  protected native void setOnSeeking( @Nonnull final ReactEventHandler onSeeking );
 
   @JsProperty
   public native ReactEventHandler getOnStalled();
 
   @JsProperty
-  public native void setOnStalled( @Nonnull final ReactEventHandler onStalled );
+  protected native void setOnStalled( @Nonnull final ReactEventHandler onStalled );
 
   @JsProperty
   public native ReactEventHandler getOnSuspend();
 
   @JsProperty
-  public native void setOnSuspend( @Nonnull final ReactEventHandler onSuspend );
+  protected native void setOnSuspend( @Nonnull final ReactEventHandler onSuspend );
 
   @JsProperty
   public native ReactEventHandler getOnTimeUpdate();
 
   @JsProperty
-  public native void setOnTimeUpdate( @Nonnull final ReactEventHandler onTimeUpdate );
+  protected native void setOnTimeUpdate( @Nonnull final ReactEventHandler onTimeUpdate );
 
   @JsProperty
   public native ReactEventHandler getOnVolumeChange();
 
   @JsProperty
-  public native void setOnVolumeChange( @Nonnull final ReactEventHandler onVolumeChange );
+  protected native void setOnVolumeChange( @Nonnull final ReactEventHandler onVolumeChange );
 
   @JsProperty
   public native ReactEventHandler getOnWaiting();
 
   @JsProperty
-  public native void setOnWaiting( @Nonnull final ReactEventHandler onWaiting );
+  protected native void setOnWaiting( @Nonnull final ReactEventHandler onWaiting );
 
   // MouseEvents
 
@@ -1273,109 +1273,109 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native MouseEventHandler getOnClick();
 
   @JsProperty
-  public native void setOnClick( @Nonnull final MouseEventHandler onClick );
+  protected native void setOnClick( @Nonnull final MouseEventHandler onClick );
 
   @JsProperty
   public native MouseEventHandler getOnContextMenu();
 
   @JsProperty
-  public native void setOnContextMenu( @Nonnull final MouseEventHandler onContextMenu );
+  protected native void setOnContextMenu( @Nonnull final MouseEventHandler onContextMenu );
 
   @JsProperty
   public native MouseEventHandler getOnDoubleClick();
 
   @JsProperty
-  public native void setOnDoubleClick( @Nonnull final MouseEventHandler onDoubleClick );
+  protected native void setOnDoubleClick( @Nonnull final MouseEventHandler onDoubleClick );
 
   @JsProperty
   public native DragEventHandler getOnDrag();
 
   @JsProperty
-  public native void setOnDrag( @Nonnull final DragEventHandler onDrag );
+  protected native void setOnDrag( @Nonnull final DragEventHandler onDrag );
 
   @JsProperty
   public native DragEventHandler getOnDragEnd();
 
   @JsProperty
-  public native void setOnDragEnd( @Nonnull final DragEventHandler onDragEnd );
+  protected native void setOnDragEnd( @Nonnull final DragEventHandler onDragEnd );
 
   @JsProperty
   public native DragEventHandler getOnDragEnter();
 
   @JsProperty
-  public native void setOnDragEnter( @Nonnull final DragEventHandler onDragEnter );
+  protected native void setOnDragEnter( @Nonnull final DragEventHandler onDragEnter );
 
   @JsProperty
   public native DragEventHandler getOnDragExit();
 
   @JsProperty
-  public native void setOnDragExit( @Nonnull final DragEventHandler onDragExit );
+  protected native void setOnDragExit( @Nonnull final DragEventHandler onDragExit );
 
   @JsProperty
   public native DragEventHandler getOnDragLeave();
 
   @JsProperty
-  public native void setOnDragLeave( @Nonnull final DragEventHandler onDragLeave );
+  protected native void setOnDragLeave( @Nonnull final DragEventHandler onDragLeave );
 
   @JsProperty
   public native DragEventHandler getOnDragOver();
 
   @JsProperty
-  public native void setOnDragOver( @Nonnull final DragEventHandler onDragOver );
+  protected native void setOnDragOver( @Nonnull final DragEventHandler onDragOver );
 
   @JsProperty
   public native DragEventHandler getOnDragStart();
 
   @JsProperty
-  public native void setOnDragStart( @Nonnull final DragEventHandler onDragStart );
+  protected native void setOnDragStart( @Nonnull final DragEventHandler onDragStart );
 
   @JsProperty
   public native DragEventHandler getOnDrop();
 
   @JsProperty
-  public native void setOnDrop( @Nonnull final DragEventHandler onDrop );
+  protected native void setOnDrop( @Nonnull final DragEventHandler onDrop );
 
   @JsProperty
   public native MouseEventHandler getOnMouseDown();
 
   @JsProperty
-  public native void setOnMouseDown( @Nonnull final MouseEventHandler onMouseDown );
+  protected native void setOnMouseDown( @Nonnull final MouseEventHandler onMouseDown );
 
   @JsProperty
   public native MouseEventHandler getOnMouseEnter();
 
   @JsProperty
-  public native void setOnMouseEnter( @Nonnull final MouseEventHandler onMouseEnter );
+  protected native void setOnMouseEnter( @Nonnull final MouseEventHandler onMouseEnter );
 
   @JsProperty
   public native MouseEventHandler getOnMouseLeave();
 
   @JsProperty
-  public native void setOnMouseLeave( @Nonnull final MouseEventHandler onMouseLeave );
+  protected native void setOnMouseLeave( @Nonnull final MouseEventHandler onMouseLeave );
 
   @JsProperty
   public native MouseEventHandler getOnMouseMove();
 
   @JsProperty
-  public native void setOnMouseMove( @Nonnull final MouseEventHandler onMouseMove );
+  protected native void setOnMouseMove( @Nonnull final MouseEventHandler onMouseMove );
 
   @JsProperty
   public native MouseEventHandler getOnMouseOut();
 
   @JsProperty
-  public native void setOnMouseOut( @Nonnull final MouseEventHandler onMouseOut );
+  protected native void setOnMouseOut( @Nonnull final MouseEventHandler onMouseOut );
 
   @JsProperty
   public native MouseEventHandler getOnMouseOver();
 
   @JsProperty
-  public native void setOnMouseOver( @Nonnull final MouseEventHandler onMouseOver );
+  protected native void setOnMouseOver( @Nonnull final MouseEventHandler onMouseOver );
 
   @JsProperty
   public native MouseEventHandler getOnMouseUp();
 
   @JsProperty
-  public native void setOnMouseUp( @Nonnull final MouseEventHandler onMouseUp );
+  protected native void setOnMouseUp( @Nonnull final MouseEventHandler onMouseUp );
 
   // Selection Events
 
@@ -1383,7 +1383,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native ReactEventHandler getOnSelect();
 
   @JsProperty
-  public native void setOnSelect( @Nonnull final ReactEventHandler onSelect );
+  protected native void setOnSelect( @Nonnull final ReactEventHandler onSelect );
 
   // Touch Events
 
@@ -1391,39 +1391,39 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native TouchEventHandler getOnTouchCancel();
 
   @JsProperty
-  public native void setOnTouchCancel( @Nonnull final TouchEventHandler onTouchCancel );
+  protected native void setOnTouchCancel( @Nonnull final TouchEventHandler onTouchCancel );
 
   @JsProperty
   public native TouchEventHandler getOnTouchEnd();
 
   @JsProperty
-  public native void setOnTouchEnd( @Nonnull final TouchEventHandler onTouchEnd );
+  protected native void setOnTouchEnd( @Nonnull final TouchEventHandler onTouchEnd );
 
   @JsProperty
   public native TouchEventHandler getOnTouchMove();
 
   @JsProperty
-  public native void setOnTouchMove( @Nonnull final TouchEventHandler onTouchMove );
+  protected native void setOnTouchMove( @Nonnull final TouchEventHandler onTouchMove );
 
   @JsProperty
   public native TouchEventHandler getOnTouchStart();
 
   @JsProperty
-  public native void setOnTouchStart( @Nonnull final TouchEventHandler onTouchStart );
+  protected native void setOnTouchStart( @Nonnull final TouchEventHandler onTouchStart );
 
   // UI Events
   @JsProperty
   public native UIEventHandler getOnScroll();
 
   @JsProperty
-  public native void setOnScroll( UIEventHandler onScroll );
+  protected native void setOnScroll( UIEventHandler onScroll );
 
   // Wheel Events
   @JsProperty
   public native WheelEventHandler getOnWheel();
 
   @JsProperty
-  public native void setOnWheel( WheelEventHandler onWheel );
+  protected native void setOnWheel( WheelEventHandler onWheel );
 
   @JsOverlay
   @Nonnull
