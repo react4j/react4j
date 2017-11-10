@@ -71,7 +71,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T accessKey( String accessKey )
   {
     setAccessKey( accessKey );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -174,7 +174,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T className( String... classnames )
   {
     setClassName( Arrays.stream( classnames ).collect( Collectors.joining( " " ) ) );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -205,7 +205,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T contentEditable( boolean contentEditable )
   {
     setContentEditable( contentEditable );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -218,7 +218,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T contextMenu( String contextMenu )
   {
     setContextMenu( contextMenu );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -270,7 +270,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T dir( String dir )
   {
     setDir( dir );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -295,7 +295,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T draggable( boolean draggable )
   {
     setDraggable( draggable );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -368,7 +368,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T hidden( boolean hidden )
   {
     setHidden( hidden );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -417,7 +417,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T id( String id )
   {
     setId( id );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -472,7 +472,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T lang( String lang )
   {
     setLang( lang );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -731,7 +731,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T spellCheck( boolean spellCheck )
   {
     setSpellCheck( spellCheck );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -780,7 +780,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T style( CssProps style )
   {
     setStyle( style );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -799,7 +799,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T tabIndex( int tabIndex )
   {
     setTabIndex( tabIndex );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -818,7 +818,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T title( String title )
   {
     setTitle( title );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -837,7 +837,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public final T translate( YesNo s )
   {
     setTranslate( s.name() );
-    return asT();
+    return self();
   }
 
   @JsProperty
@@ -1399,7 +1399,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
 
   @JsOverlay
   @Nonnull
-  protected final T asT()
+  protected final T self()
   {
     return Js.uncheckedCast( this );
   }
