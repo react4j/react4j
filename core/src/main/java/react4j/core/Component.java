@@ -1,6 +1,7 @@
 package react4j.core;
 
 import elemental2.core.Array;
+import elemental2.core.Error;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -374,6 +375,23 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * @param nextState the new state of the component.
    */
   protected void componentWillUpdate( @Nullable final P nextProps, @Nullable final S nextState )
+  {
+  }
+
+  /**
+   * The componentDidCatch() method works like a JavaScript catch {} block, but for components.
+   * Only class components can be error boundaries. In practice, most of the time you’ll want to
+   * declare an error boundary component once and use it throughout your application.
+   *
+   * <p>Note that error boundaries only catch errors in the components below them in the tree. An
+   * error boundary can’t catch an error within itself. If an error boundary fails trying to render
+   * the error message, the error will propagate to the closest error boundary above it. This, too,
+   * is similar to how catch {} block works in JavaScript.</p>
+   *
+   * @param error the error that has been thrown.
+   * @param info  information about component stack during thrown error.
+   */
+  protected void componentDidCatch( @Nonnull final Error error, @Nonnull final ReactErrorInfo info )
   {
   }
 

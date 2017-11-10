@@ -1,5 +1,6 @@
 package react4j.core;
 
+import elemental2.core.Error;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -276,6 +277,34 @@ public abstract class NativeAdapterComponent<
     try
     {
       _component.componentDidUpdate( nextProps, nextState );
+    }
+    finally
+    {
+      if ( ReactConfig.checkComponentStateInvariants() )
+      {
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
+      }
+    }
+  }
+
+  /**
+   * Call componentDidCatch on the target component.
+   * It is expected that the subclass will implement a public method componentDidCatch() that
+   * delegates to this method to perform the work.
+   *
+   * @param error the error that has been thrown.
+   * @param info  information about component stack during thrown error.
+   * @see Component#componentDidCatch(Error, ReactErrorInfo)
+   */
+  protected final void performComponentDidCatch( @Nonnull final Error error, @Nonnull final ReactErrorInfo info )
+  {
+    if ( ReactConfig.checkComponentStateInvariants() )
+    {
+      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_DID_CATCH );
+    }
+    try
+    {
+      _component.componentDidCatch( error, info );
     }
     finally
     {

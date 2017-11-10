@@ -59,6 +59,7 @@ public final class ReactProcessor
                    "componentWillReceiveProps",
                    "componentWillUnmount",
                    "componentWillUpdate",
+                   "componentDidCatch",
                    "shouldComponentUpdate" );
   private static final List<String> RENDER_METHODS =
     Arrays.asList( "render",

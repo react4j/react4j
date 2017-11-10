@@ -1,5 +1,6 @@
 package com.example.lifecycle;
 
+import elemental2.core.Error;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,6 +13,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.React;
 import react4j.core.ReactConfig;
 import react4j.core.ReactElement;
+import react4j.core.ReactErrorInfo;
 import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
@@ -56,6 +58,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
 
     void componentWillUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState);
 
+    void componentDidCatch(@Nonnull Error error, @Nonnull ReactErrorInfo info);
+
     boolean shouldComponentUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState);
   }
 
@@ -92,6 +96,11 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     @Override
     public void componentWillUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState) {
       performComponentWillUpdate(nextProps,nextState);
+    }
+
+    @Override
+    public void componentDidCatch(@Nonnull final Error error, @Nonnull final ReactErrorInfo info) {
+      performComponentDidCatch(error,info);
     }
 
     @Override

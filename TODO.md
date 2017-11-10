@@ -59,7 +59,6 @@ class TodoEntry
 * In base class have configuration that warns on re-renders that produced duplicate values. Note: that the tool to do
   this no longer works in React 16 but the ReactJS team expect something will replace it in the future.
 * build in https://github.com/maicki/why-did-you-update
-* Add support for componentDidCatch() (React16)
 * Implement the "children" utilities in java or bind to native implementation.
 * Figure out a way to support `getInitialProps()` on components.
   - set "defaultProps" property on constructor function (same way that we set name). All we need to do is detect
