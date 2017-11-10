@@ -17,7 +17,6 @@ import react4j.dom.events.TouchEventHandler;
 public class IFrameProps
   extends HtmlGlobalFields<IFrameProps>
 {
-
   @JsOverlay
   public final IFrameProps height( int i )
   {

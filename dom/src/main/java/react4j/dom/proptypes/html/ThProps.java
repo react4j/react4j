@@ -18,7 +18,6 @@ import react4j.dom.proptypes.html.attributeTypes.HeaderScope;
 public class ThProps
   extends HtmlGlobalFields<ThProps>
 {
-
   @JsOverlay
   public final ThProps colSpan( int i )
   {

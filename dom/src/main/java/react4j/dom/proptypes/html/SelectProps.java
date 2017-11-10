@@ -18,7 +18,6 @@ import react4j.dom.events.TouchEventHandler;
 public class SelectProps
   extends HtmlGlobalFields<SelectProps>
 {
-
   @JsOverlay
   public final SelectProps autoFocus( boolean b )
   {

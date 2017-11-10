@@ -18,7 +18,6 @@ import react4j.dom.proptypes.html.attributeTypes.AudioPreload;
 public class AudioProps
   extends HtmlGlobalFields<AudioProps>
 {
-
   @JsOverlay
   public final AudioProps autoPlay( boolean b )
   {

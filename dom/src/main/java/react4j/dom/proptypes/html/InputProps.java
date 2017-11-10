@@ -20,7 +20,6 @@ import react4j.dom.proptypes.html.attributeTypes.OnOff;
 public class InputProps
   extends HtmlGlobalFields<InputProps>
 {
-
   @JsOverlay
   public final InputProps accept( String s )
   {

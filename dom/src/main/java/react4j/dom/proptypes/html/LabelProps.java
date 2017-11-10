@@ -17,7 +17,6 @@ import react4j.dom.events.TouchEventHandler;
 public class LabelProps
   extends HtmlGlobalFields<LabelProps>
 {
-
   @JsOverlay
   public final LabelProps HtmlFor( String s )
   {

@@ -11,7 +11,6 @@ import jsinterop.annotations.JsType;
 public class OptGroupProps
   extends HtmlGlobalFields<OptGroupProps>
 {
-
   @JsOverlay
   public final OptGroupProps disabled( boolean b )
   {

@@ -11,7 +11,6 @@ import jsinterop.annotations.JsType;
 public class SourceProps
   extends HtmlGlobalFields<SourceProps>
 {
-
   @JsOverlay
   public final SourceProps media( String s )
   {

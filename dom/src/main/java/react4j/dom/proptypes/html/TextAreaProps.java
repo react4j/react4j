@@ -19,7 +19,6 @@ import react4j.dom.proptypes.html.attributeTypes.OnOff;
 public class TextAreaProps
   extends HtmlGlobalFields<TextAreaProps>
 {
-
   @JsOverlay
   public final TextAreaProps autoComplete( OnOff s )
   {

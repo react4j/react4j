@@ -19,7 +19,6 @@ import react4j.dom.proptypes.html.attributeTypes.ButtonType;
 public class BtnProps
   extends HtmlGlobalFields<BtnProps>
 {
-
   @JsOverlay
   public final BtnProps autoFocus( boolean b )
   {

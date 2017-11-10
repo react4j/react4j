@@ -21,7 +21,6 @@ import react4j.dom.proptypes.html.attributeTypes.Target;
 public class FormProps
   extends HtmlGlobalFields<FormProps>
 {
-
   @JsOverlay
   public final FormProps acceptCharset( String s )
   {

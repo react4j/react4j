@@ -18,7 +18,6 @@ import react4j.dom.events.TouchEventHandler;
 public class ImgProps
   extends HtmlGlobalFields<ImgProps>
 {
-
   @JsOverlay
   public final ImgProps alt( String s )
   {

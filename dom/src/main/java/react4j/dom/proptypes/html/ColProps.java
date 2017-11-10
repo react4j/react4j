@@ -17,7 +17,6 @@ import react4j.dom.events.TouchEventHandler;
 public class ColProps
   extends HtmlGlobalFields<ColProps>
 {
-
   @JsOverlay
   public final ColProps span( int i )
   {
