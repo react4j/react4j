@@ -11,7 +11,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import jsinterop.base.JsPropertyMapOfAny;
 import react4j.core.BaseProps;
-import react4j.core.ReactRefCallback;
+import react4j.core.RefConsumer;
 import react4j.dom.events.ClipboardEventHandler;
 import react4j.dom.events.CompositionEventHandler;
 import react4j.dom.events.DragEventHandler;
@@ -30,14 +30,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   extends BaseProps
 {
   @JsOverlay
-  public final T ref( String s )
-  {
-    ref = s;
-    return self();
-  }
-
-  @JsOverlay
-  public final T ref( ReactRefCallback callback )
+  public final T ref( @Nonnull final RefConsumer callback )
   {
     ref = callback;
     return self();

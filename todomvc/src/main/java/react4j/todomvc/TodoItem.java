@@ -36,6 +36,9 @@ import static react4j.todomvc.TodoItem_.*;
 class TodoItem
   extends ReactArezComponent<TodoItem.Props, TodoItem.State>
 {
+  @Nullable
+  private HTMLInputElement _editField;
+
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   public static class Props
     extends BaseProps
@@ -168,10 +171,9 @@ class TodoItem
     {
       _isEditing = true;
       scheduleStateUpdate( State.create( state().editText ) );
-      final HTMLInputElement input = getRef( "editField" );
-      assert null != input;
-      input.focus();
-      input.select();
+      assert null != _editField;
+      _editField.focus();
+      _editField.select();
     }
     else if ( _isEditing && !todoBeingEdited )
     {
@@ -201,7 +203,7 @@ class TodoItem
                     )
                ),
                input( new InputProps()
-                        .ref( "editField" )
+                        .ref( e -> _editField = (HTMLInputElement) e )
                         .className( "edit" )
                         .defaultValue( state().editText )
                         .onBlur( _onSubmitTodo( this ) )

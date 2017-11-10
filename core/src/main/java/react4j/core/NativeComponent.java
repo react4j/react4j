@@ -24,9 +24,6 @@ abstract class NativeComponent<P extends BaseProps, S extends BaseState>
   private P props;
   @JsProperty
   private S state;
-  @SuppressWarnings( "unused" )
-  @JsProperty
-  private JsPropertyMap<Object> refs;
 
   NativeComponent( @SuppressWarnings( "unused" ) @Nonnull final P props )
   {
@@ -61,10 +58,4 @@ abstract class NativeComponent<P extends BaseProps, S extends BaseState>
   }
 
   final native void forceUpdate();
-
-  @JsOverlay
-  final JsPropertyMap<Object> refs()
-  {
-    return refs;
-  }
 }

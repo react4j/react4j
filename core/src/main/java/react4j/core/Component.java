@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.anodoc.Unsupported;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -134,40 +133,6 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   protected final P props()
   {
     return component().props();
-  }
-
-  /**
-   * Return the map of refs from native components.
-   *
-   * @return the map of refs from native components.
-   */
-  @Unsupported( "It is unclear what use case there is for getting all refs so this may be removed in the future" )
-  @Nonnull
-  protected final JsPropertyMap<Object> refs()
-  {
-    return component().refs();
-  }
-
-  /**
-   * Return a ref with specific name.
-   *
-   * @param name the name of the ref.
-   * @return the ref with specific name or null.
-   */
-  @Nullable
-  protected <T> T getRef( @Nonnull final String name )
-  {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      apiInvariant( () -> ComponentPhase.INITIALIZING != _phase,
-                    () -> "Incorrectly invoked getRef() on " + this + " when component is initializing." );
-      apiInvariant( () -> ComponentPhase.MOUNTING != _phase || LifecycleMethod.COMPONENT_DID_MOUNT == _lifecycleMethod,
-                    () -> "Incorrectly invoked getRef() on " + this + " before componentDidMount() called." );
-      apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
-                    () -> "Incorrectly invoked getRef() on " + this + " when component is " +
-                          "unmounting or has unmounted." );
-    }
-    return Js.cast( refs().get( name ) );
   }
 
   /**
