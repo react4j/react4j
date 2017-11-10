@@ -193,7 +193,7 @@ class TodoItem
                              .checked( completed )
                              .onChange( _onToggle( this ) )
                     ),
-                    label( new LabelProps().OnDoubleClick( _onEdit( this ) ),
+                    label( new LabelProps().onDoubleClick( _onEdit( this ) ),
                            props.todo.getTitle() ),
                     button( new BtnProps()
                               .className( "destroy" )
