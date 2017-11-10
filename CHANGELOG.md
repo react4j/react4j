@@ -29,7 +29,7 @@
   `contextMenu`, `dir`, `draggable`, `hidden`, `id`, `lang`, `style`, `spellcheck`, `tabIndex`, `title` and
   `translate`.
 * **\[dom\]** Add nullability annotations for event handlers in html props classes.
-* **\[dom\]** Change the non-fluent setters in `HtmlGlobalFields` to be protected access. The goal is to encourage
+* 💥 **\[dom\]** Change the non-fluent setters in `HtmlGlobalFields` to be protected access. The goal is to encourage
   the creation of fluent setters for all setters that are actually used.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
