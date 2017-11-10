@@ -17,61 +17,60 @@ import react4j.dom.events.TouchEventHandler;
 public class AnchorProps
   extends HtmlGlobalFields<AnchorProps>
 {
-
   @JsOverlay
   public final AnchorProps download( String s )
   {
     setDownload( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps href( String s )
   {
     setHref( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps hrefLang( String s )
   {
     setHrefLang( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps media( String s )
   {
     setMedia( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps rel( String s )
   {
     setRel( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps referrerPolicy( String s )
   {
     setReferrerPolicy( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps target( String s )
   {
     setTarget( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps type( String t )
   {
     setType( t );
-    return this;
+    return self();
   }
 
   //React Specific
@@ -80,21 +79,21 @@ public class AnchorProps
   public final AnchorProps ref( String s )
   {
     ref = s;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps ref( ReactRefCallback callback )
   {
     ref = callback;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps key( String s )
   {
     key = s;
-    return this;
+    return self();
   }
 
   //Applicable Event Handlers
@@ -104,14 +103,14 @@ public class AnchorProps
   public final AnchorProps onBlur( FocusEventHandler handler )
   {
     setOnBlur( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onFocus( FocusEventHandler handler )
   {
     setOnFocus( handler );
-    return this;
+    return self();
   }
 
   // Keyboard Events
@@ -119,147 +118,147 @@ public class AnchorProps
   public final AnchorProps onKeyDown( KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onKeyPress( KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onKeyUp( KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onClick( MouseEventHandler handler )
   {
     setOnClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onContextMenu( MouseEventHandler handler )
   {
     setOnContextMenu( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onDoubleClick( MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onDrag( DragEventHandler handler )
   {
     setOnDrag( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onDragEnd( DragEventHandler handler )
   {
     setOnDragEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onDragEnter( DragEventHandler handler )
   {
     setOnDragEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onDragExit( DragEventHandler handler )
   {
     setOnDragExit( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onDragLeave( DragEventHandler handler )
   {
     setOnDragLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onDragOver( DragEventHandler handler )
   {
     setOnDragOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onDragStart( DragEventHandler handler )
   {
     setOnDragStart( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onDrop( DragEventHandler handler )
   {
     setOnDrop( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onMouseDown( MouseEventHandler handler )
   {
     setOnMouseDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onMouseEnter( MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onMouseLeave( MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onMouseMove( MouseEventHandler handler )
   {
     setOnMouseMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onMouseOut( MouseEventHandler handler )
   {
     setOnMouseOut( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onMouseOver( MouseEventHandler handler )
   {
     setOnMouseOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onMouseUp( MouseEventHandler handler )
   {
     setOnMouseUp( handler );
-    return this;
+    return self();
   }
 
   // Touch Events
@@ -267,27 +266,27 @@ public class AnchorProps
   public final AnchorProps onTouchCancel( TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onTouchEnd( TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onTouchMove( TouchEventHandler handler )
   {
     setOnTouchMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final AnchorProps onTouchStart( TouchEventHandler handler )
   {
     setOnTouchStart( handler );
-    return this;
+    return self();
   }
 }

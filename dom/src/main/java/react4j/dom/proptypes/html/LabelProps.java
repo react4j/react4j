@@ -22,14 +22,14 @@ public class LabelProps
   public final LabelProps HtmlFor( String s )
   {
     setHtmlFor( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps form( String s )
   {
     setForm( s );
-    return this;
+    return self();
   }
 
   //React Specific
@@ -37,21 +37,21 @@ public class LabelProps
   public final LabelProps ref( String s )
   {
     ref = s;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps ref( ReactRefCallback callback )
   {
     ref = callback;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps key( String s )
   {
     key = s;
-    return this;
+    return self();
   }
 
   //Applicable Event Handlers
@@ -62,14 +62,14 @@ public class LabelProps
   public final LabelProps OnBlur( FocusEventHandler handler )
   {
     setOnBlur( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnFocus( FocusEventHandler handler )
   {
     setOnFocus( handler );
-    return this;
+    return self();
   }
 
   // Keyboard Events
@@ -77,147 +77,147 @@ public class LabelProps
   public final LabelProps OnKeyDown( KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnKeyPress( KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnKeyUp( KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnClick( MouseEventHandler handler )
   {
     setOnClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnContextMenu( MouseEventHandler handler )
   {
     setOnContextMenu( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnDoubleClick( MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnDrag( DragEventHandler handler )
   {
     setOnDrag( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnDragEnd( DragEventHandler handler )
   {
     setOnDragEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnDragEnter( DragEventHandler handler )
   {
     setOnDragEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnDragExit( DragEventHandler handler )
   {
     setOnDragExit( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnDragLeave( DragEventHandler handler )
   {
     setOnDragLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnDragOver( DragEventHandler handler )
   {
     setOnDragOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnDragStart( DragEventHandler handler )
   {
     setOnDragStart( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnDrop( DragEventHandler handler )
   {
     setOnDrop( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnMouseDown( MouseEventHandler handler )
   {
     setOnMouseDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnMouseEnter( MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnMouseLeave( MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnMouseMove( MouseEventHandler handler )
   {
     setOnMouseMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnMouseOut( MouseEventHandler handler )
   {
     setOnMouseOut( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnMouseOver( MouseEventHandler handler )
   {
     setOnMouseOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnMouseUp( MouseEventHandler handler )
   {
     setOnMouseUp( handler );
-    return this;
+    return self();
   }
 
   // Touch Events
@@ -225,27 +225,27 @@ public class LabelProps
   public final LabelProps OnTouchCancel( TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnTouchEnd( TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnTouchMove( TouchEventHandler handler )
   {
     setOnTouchMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final LabelProps OnTouchStart( TouchEventHandler handler )
   {
     setOnTouchStart( handler );
-    return this;
+    return self();
   }
 }

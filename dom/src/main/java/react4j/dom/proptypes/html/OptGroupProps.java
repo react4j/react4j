@@ -16,13 +16,13 @@ public class OptGroupProps
   public final OptGroupProps disabled( boolean b )
   {
     setDisabled( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final OptGroupProps label( String s )
   {
     setLabel( s );
-    return this;
+    return self();
   }
 }

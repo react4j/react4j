@@ -22,7 +22,7 @@ public class ColProps
   public final ColProps span( int i )
   {
     setSpan( i );
-    return this;
+    return self();
   }
 
   //React Specific
@@ -30,21 +30,21 @@ public class ColProps
   public final ColProps ref( String s )
   {
     ref = s;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps ref( ReactRefCallback callback )
   {
     ref = callback;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps key( String s )
   {
     key = s;
-    return this;
+    return self();
   }
 
   //Applicable Event Handlers
@@ -54,14 +54,14 @@ public class ColProps
   public final ColProps onBlur( FocusEventHandler handler )
   {
     setOnBlur( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onFocus( FocusEventHandler handler )
   {
     setOnFocus( handler );
-    return this;
+    return self();
   }
 
   // Keyboard Events
@@ -69,147 +69,147 @@ public class ColProps
   public final ColProps onKeyDown( KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onKeyPress( KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onKeyUp( KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onClick( MouseEventHandler handler )
   {
     setOnClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onContextMenu( MouseEventHandler handler )
   {
     setOnContextMenu( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onDoubleClick( MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onDrag( DragEventHandler handler )
   {
     setOnDrag( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onDragEnd( DragEventHandler handler )
   {
     setOnDragEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onDragEnter( DragEventHandler handler )
   {
     setOnDragEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onDragExit( DragEventHandler handler )
   {
     setOnDragExit( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onDragLeave( DragEventHandler handler )
   {
     setOnDragLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onDragOver( DragEventHandler handler )
   {
     setOnDragOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onDragStart( DragEventHandler handler )
   {
     setOnDragStart( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onDrop( DragEventHandler handler )
   {
     setOnDrop( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onMouseDown( MouseEventHandler handler )
   {
     setOnMouseDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onMouseEnter( MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onMouseLeave( MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onMouseMove( MouseEventHandler handler )
   {
     setOnMouseMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onMouseOut( MouseEventHandler handler )
   {
     setOnMouseOut( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onMouseOver( MouseEventHandler handler )
   {
     setOnMouseOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onMouseUp( MouseEventHandler handler )
   {
     setOnMouseUp( handler );
-    return this;
+    return self();
   }
 
   // Touch Events
@@ -217,27 +217,27 @@ public class ColProps
   public final ColProps onTouchCancel( TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onTouchEnd( TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onTouchMove( TouchEventHandler handler )
   {
     setOnTouchMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ColProps onTouchStart( TouchEventHandler handler )
   {
     setOnTouchStart( handler );
-    return this;
+    return self();
   }
 }

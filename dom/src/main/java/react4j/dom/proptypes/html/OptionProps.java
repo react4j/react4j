@@ -16,28 +16,28 @@ public class OptionProps
   public final OptionProps disabled( boolean b )
   {
     setDisabled( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final OptionProps label( String s )
   {
     setLabel( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final OptionProps selected( boolean b )
   {
     setSelected( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final OptionProps value( String s )
   {
     setValue( s );
-    return this;
+    return self();
   }
 
   //React Specific
@@ -45,6 +45,6 @@ public class OptionProps
   public final OptionProps key( String s )
   {
     key = s;
-    return this;
+    return self();
   }
 }

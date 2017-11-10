@@ -23,28 +23,28 @@ public class ThProps
   public final ThProps colSpan( int i )
   {
     setColSpan( i );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps headers( String headerId )
   {
     setHeaders( headerId );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps rowSpan( int i )
   {
     setRowSpan( i );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps scope( HeaderScope s )
   {
     setScope( s.name() );
-    return this;
+    return self();
   }
 
   //React Specific
@@ -52,21 +52,21 @@ public class ThProps
   public final ThProps ref( String s )
   {
     ref = s;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps ref( ReactRefCallback callback )
   {
     ref = callback;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps key( String s )
   {
     key = s;
-    return this;
+    return self();
   }
 
   //Applicable Event Handlers
@@ -76,14 +76,14 @@ public class ThProps
   public final ThProps onBlur( FocusEventHandler handler )
   {
     setOnBlur( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onFocus( FocusEventHandler handler )
   {
     setOnFocus( handler );
-    return this;
+    return self();
   }
 
   // Keyboard Events
@@ -91,147 +91,147 @@ public class ThProps
   public final ThProps onKeyDown( KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onKeyPress( KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onKeyUp( KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onClick( MouseEventHandler handler )
   {
     setOnClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onContextMenu( MouseEventHandler handler )
   {
     setOnContextMenu( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onDoubleClick( MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onDrag( DragEventHandler handler )
   {
     setOnDrag( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onDragEnd( DragEventHandler handler )
   {
     setOnDragEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onDragEnter( DragEventHandler handler )
   {
     setOnDragEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onDragExit( DragEventHandler handler )
   {
     setOnDragExit( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onDragLeave( DragEventHandler handler )
   {
     setOnDragLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onDragOver( DragEventHandler handler )
   {
     setOnDragOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onDragStart( DragEventHandler handler )
   {
     setOnDragStart( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onDrop( DragEventHandler handler )
   {
     setOnDrop( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onMouseDown( MouseEventHandler handler )
   {
     setOnMouseDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onMouseEnter( MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onMouseLeave( MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onMouseMove( MouseEventHandler handler )
   {
     setOnMouseMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onMouseOut( MouseEventHandler handler )
   {
     setOnMouseOut( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onMouseOver( MouseEventHandler handler )
   {
     setOnMouseOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onMouseUp( MouseEventHandler handler )
   {
     setOnMouseUp( handler );
-    return this;
+    return self();
   }
 
   // Touch Events
@@ -239,27 +239,27 @@ public class ThProps
   public final ThProps onTouchCancel( TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onTouchEnd( TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onTouchMove( TouchEventHandler handler )
   {
     setOnTouchMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final ThProps onTouchStart( TouchEventHandler handler )
   {
     setOnTouchStart( handler );
-    return this;
+    return self();
   }
 }

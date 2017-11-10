@@ -25,203 +25,203 @@ public class InputProps
   public final InputProps accept( String s )
   {
     setAccept( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps alt( String s )
   {
     setAlt( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps async( boolean b )
   {
     setAsync( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps autoComplete( OnOff s )
   {
     setAutoComplete( s.name() );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps autoFocus( boolean b )
   {
     setAutoFocus( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps checked( boolean b )
   {
     setChecked( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps disabled( boolean b )
   {
     setDisabled( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps form( String s )
   {
     setForm( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps formAction( String s )
   {
     setFormAction( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps formEncType( String s )
   {
     setFormEncType( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps formMethod( String s )
   {
     setFormMethod( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps formNoValidate( boolean b )
   {
     setFormNoValidate( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps formTarget( String s )
   {
     setFormTarget( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps height( String s )
   {
     setHeight( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps list( String s )
   {
     setList( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps max( String s )
   {
     setMax( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps maxLength( int b )
   {
     setMaxLength( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps min( String s )
   {
     setMin( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps multiple( boolean b )
   {
     setMultiple( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps name( String s )
   {
     setName( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps placeHolder( String s )
   {
     setPlaceholder( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps readonly( boolean b )
   {
     setReadOnly( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps required( boolean b )
   {
     setRequired( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps size( int b )
   {
     setSize( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps src( String s )
   {
     setSrc( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps step( String s )
   {
     setStep( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps type( InputType t )
   {
     setType( t.name() );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps value( String s )
   {
     setValue( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps width( int i )
   {
     setWidth( Integer.toString( i ) );
-    return this;
+    return self();
   }
 
   //React Specific
@@ -230,7 +230,7 @@ public class InputProps
   public final InputProps defaultChecked( boolean b )
   {
     setDefaultChecked( b );
-    return this;
+    return self();
   }
 
   ;
@@ -239,28 +239,28 @@ public class InputProps
   public final InputProps defaultValue( String s )
   {
     setDefaultValue( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps ref( String s )
   {
     ref = s;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps ref( ReactRefCallback callback )
   {
     ref = callback;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps key( String s )
   {
     key = s;
-    return this;
+    return self();
   }
 
   //Applicable Event Handlers
@@ -270,14 +270,14 @@ public class InputProps
   public final InputProps onBlur( FocusEventHandler handler )
   {
     setOnBlur( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onFocus( FocusEventHandler handler )
   {
     setOnFocus( handler );
-    return this;
+    return self();
   }
 
   // Form Events
@@ -285,7 +285,7 @@ public class InputProps
   public final InputProps onChange( FormEventHandler handler )
   {
     setOnChange( handler );
-    return this;
+    return self();
   }
 
   // Keyboard Events
@@ -293,147 +293,147 @@ public class InputProps
   public final InputProps onKeyDown( KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onKeyPress( KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onKeyUp( KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onClick( MouseEventHandler handler )
   {
     setOnClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onContextMenu( MouseEventHandler handler )
   {
     setOnContextMenu( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onDoubleClick( MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onDrag( DragEventHandler handler )
   {
     setOnDrag( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onDragEnd( DragEventHandler handler )
   {
     setOnDragEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onDragEnter( DragEventHandler handler )
   {
     setOnDragEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onDragExit( DragEventHandler handler )
   {
     setOnDragExit( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onDragLeave( DragEventHandler handler )
   {
     setOnDragLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onDragOver( DragEventHandler handler )
   {
     setOnDragOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onDragStart( DragEventHandler handler )
   {
     setOnDragStart( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onDrop( DragEventHandler handler )
   {
     setOnDrop( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onMouseDown( MouseEventHandler handler )
   {
     setOnMouseDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onMouseEnter( MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onMouseLeave( MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onMouseMove( MouseEventHandler handler )
   {
     setOnMouseMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onMouseOut( MouseEventHandler handler )
   {
     setOnMouseOut( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onMouseOver( MouseEventHandler handler )
   {
     setOnMouseOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onMouseUp( MouseEventHandler handler )
   {
     setOnMouseUp( handler );
-    return this;
+    return self();
   }
 
   // Touch Events
@@ -441,27 +441,27 @@ public class InputProps
   public final InputProps onTouchCancel( TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onTouchEnd( TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onTouchMove( TouchEventHandler handler )
   {
     setOnTouchMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final InputProps onTouchStart( TouchEventHandler handler )
   {
     setOnTouchStart( handler );
-    return this;
+    return self();
   }
 }

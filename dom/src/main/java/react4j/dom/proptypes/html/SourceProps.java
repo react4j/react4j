@@ -16,20 +16,20 @@ public class SourceProps
   public final SourceProps media( String s )
   {
     setMedia( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final SourceProps src( String s )
   {
     setSrc( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final SourceProps type( String s )
   {
     setType( s );
-    return this;
+    return self();
   }
 }

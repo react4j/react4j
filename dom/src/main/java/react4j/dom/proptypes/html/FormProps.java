@@ -26,63 +26,63 @@ public class FormProps
   public final FormProps acceptCharset( String s )
   {
     setAcceptCharset( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps action( String s )
   {
     setAction( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps autoComplete( OnOff s )
   {
     setAutoComplete( s.name() );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps formEncType( String s )
   {
     setFormEncType( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps formMethod( FormMethod s )
   {
     setFormMethod( s.name() );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps name( String s )
   {
     setName( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps formNoValidate( boolean b )
   {
     setFormNoValidate( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps formTarget( Target t )
   {
     setFormTarget( t.name() );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps formTarget( String s )
   {
     setFormTarget( s );
-    return this;
+    return self();
   }
 
   //React Specific
@@ -90,21 +90,21 @@ public class FormProps
   public final FormProps ref( String s )
   {
     ref = s;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps ref( ReactRefCallback callback )
   {
     ref = callback;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps key( String s )
   {
     key = s;
-    return this;
+    return self();
   }
 
   //Applicable Event Handlers
@@ -114,14 +114,14 @@ public class FormProps
   public final FormProps onBlur( FocusEventHandler handler )
   {
     setOnBlur( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onFocus( FocusEventHandler handler )
   {
     setOnFocus( handler );
-    return this;
+    return self();
   }
 
   // Form Events
@@ -129,21 +129,21 @@ public class FormProps
   public final FormProps onChange( FormEventHandler handler )
   {
     setOnChange( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onInput( FormEventHandler handler )
   {
     setOnInput( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onSubmit( FormEventHandler handler )
   {
     setOnSubmit( handler );
-    return this;
+    return self();
   }
 
   // Keyboard Events
@@ -151,147 +151,147 @@ public class FormProps
   public final FormProps onKeyDown( KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onKeyPress( KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onKeyUp( KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onClick( MouseEventHandler handler )
   {
     setOnClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onContextMenu( MouseEventHandler handler )
   {
     setOnContextMenu( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onDoubleClick( MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onDrag( DragEventHandler handler )
   {
     setOnDrag( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onDragEnd( DragEventHandler handler )
   {
     setOnDragEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onDragEnter( DragEventHandler handler )
   {
     setOnDragEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onDragExit( DragEventHandler handler )
   {
     setOnDragExit( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onDragLeave( DragEventHandler handler )
   {
     setOnDragLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onDragOver( DragEventHandler handler )
   {
     setOnDragOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onDragStart( DragEventHandler handler )
   {
     setOnDragStart( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onDrop( DragEventHandler handler )
   {
     setOnDrop( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onMouseDown( MouseEventHandler handler )
   {
     setOnMouseDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onMouseEnter( MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onMouseLeave( MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onMouseMove( MouseEventHandler handler )
   {
     setOnMouseMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onMouseOut( MouseEventHandler handler )
   {
     setOnMouseOut( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onMouseOver( MouseEventHandler handler )
   {
     setOnMouseOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onMouseUp( MouseEventHandler handler )
   {
     setOnMouseUp( handler );
-    return this;
+    return self();
   }
 
   // Touch Events
@@ -299,27 +299,27 @@ public class FormProps
   public final FormProps onTouchCancel( TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onTouchEnd( TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onTouchMove( TouchEventHandler handler )
   {
     setOnTouchMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final FormProps onTouchStart( TouchEventHandler handler )
   {
     setOnTouchStart( handler );
-    return this;
+    return self();
   }
 }

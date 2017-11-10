@@ -24,91 +24,91 @@ public class TextAreaProps
   public final TextAreaProps autoComplete( OnOff s )
   {
     setAutoComplete( s.name() );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps autoFocus( boolean b )
   {
     setAutoFocus( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps cols( int b )
   {
     setCols( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps disabled( boolean b )
   {
     setDisabled( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps form( String s )
   {
     setForm( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps maxLength( int l )
   {
     setMaxLength( l );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps minLength( int l )
   {
     setMinLength( l );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps name( String s )
   {
     setName( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps placeHolder( String s )
   {
     setPlaceholder( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps readonly( boolean b )
   {
     setReadOnly( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps required( boolean b )
   {
     setRequired( b );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps rows( int l )
   {
     setRows( l );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps value( String s )
   {
     setValue( s );
-    return this;
+    return self();
   }
 
   //React Specific
@@ -117,28 +117,28 @@ public class TextAreaProps
   public final TextAreaProps defaultValue( String s )
   {
     setDefaultValue( s );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps ref( String s )
   {
     ref = s;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps ref( ReactRefCallback callback )
   {
     ref = callback;
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps key( String s )
   {
     key = s;
-    return this;
+    return self();
   }
 
   //Applicable Event Handlers
@@ -148,14 +148,14 @@ public class TextAreaProps
   public final TextAreaProps onBlur( FocusEventHandler handler )
   {
     setOnBlur( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onFocus( FocusEventHandler handler )
   {
     setOnFocus( handler );
-    return this;
+    return self();
   }
 
   // Form Events
@@ -163,7 +163,7 @@ public class TextAreaProps
   public final TextAreaProps onChange( FormEventHandler handler )
   {
     setOnChange( handler );
-    return this;
+    return self();
   }
 
   // Keyboard Events
@@ -171,147 +171,147 @@ public class TextAreaProps
   public final TextAreaProps onKeyDown( KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onKeyPress( KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onKeyUp( KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onClick( MouseEventHandler handler )
   {
     setOnClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onContextMenu( MouseEventHandler handler )
   {
     setOnContextMenu( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onDoubleClick( MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onDrag( DragEventHandler handler )
   {
     setOnDrag( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onDragEnd( DragEventHandler handler )
   {
     setOnDragEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onDragEnter( DragEventHandler handler )
   {
     setOnDragEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onDragExit( DragEventHandler handler )
   {
     setOnDragExit( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onDragLeave( DragEventHandler handler )
   {
     setOnDragLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onDragOver( DragEventHandler handler )
   {
     setOnDragOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onDragStart( DragEventHandler handler )
   {
     setOnDragStart( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onDrop( DragEventHandler handler )
   {
     setOnDrop( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onMouseDown( MouseEventHandler handler )
   {
     setOnMouseDown( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onMouseEnter( MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onMouseLeave( MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onMouseMove( MouseEventHandler handler )
   {
     setOnMouseMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onMouseOut( MouseEventHandler handler )
   {
     setOnMouseOut( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onMouseOver( MouseEventHandler handler )
   {
     setOnMouseOver( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onMouseUp( MouseEventHandler handler )
   {
     setOnMouseUp( handler );
-    return this;
+    return self();
   }
 
   // Touch Events
@@ -319,27 +319,27 @@ public class TextAreaProps
   public final TextAreaProps onTouchCancel( TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onTouchEnd( TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onTouchMove( TouchEventHandler handler )
   {
     setOnTouchMove( handler );
-    return this;
+    return self();
   }
 
   @JsOverlay
   public final TextAreaProps onTouchStart( TouchEventHandler handler )
   {
     setOnTouchStart( handler );
-    return this;
+    return self();
   }
 }
