@@ -124,7 +124,6 @@ public class WindowPortal
   {
     assert null != _externalWindow;
     assert null != _element;
-    Js.debugger();
     getWindowDocument().removeChild( _element );
     _externalWindow.close();
   }
