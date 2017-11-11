@@ -60,6 +60,9 @@ class TodoEntry
 * Props and state fields should be read-only abstractions. Mutations create new objects?
 * Somehow declare props as interfaces in components and have implementation generated?
 
+* For html props we could just generated via ruby and existing patterns fter looking at pages like:
+  - https://www.w3schools.com/tags/ref_standardattributes.asp
+
 ### Low Priorities
 
 * In base class have configuration that warns on re-renders that produced duplicate values. Note: that the tool to do
@@ -100,3 +103,12 @@ warning messages more cryptic and skip important checks that happen in developme
   the top level for subtrees that are fully static, which reduces calls to React.createElement and the resulting
   allocations. More importantly, it tells React that the subtree hasn’t changed so React can completely skip it
   when reconciling.
+
+
+#### Window Portal Notes
+
+* https://www.npmjs.com/package/react-portal
+
+Copying styles from source document -
+
+* https://hackernoon.com/using-a-react-16-portal-to-do-something-cool-2a2d627b0202
