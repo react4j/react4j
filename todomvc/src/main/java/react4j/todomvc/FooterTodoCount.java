@@ -7,6 +7,7 @@ import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactElement;
+import react4j.core.ReactNode;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.todomvc.model.AppData;
 import static react4j.dom.DOM.*;
@@ -24,7 +25,7 @@ class FooterTodoCount
 
   @Nullable
   @Override
-  protected ReactElement<?, ?> renderAsElement()
+  protected ReactNode render()
   {
     final int count = AppData.model.totalCount();
     final String activeTodoWord = "item" + ( count == 1 ? "" : "s" );

@@ -48,7 +48,7 @@ class TodoList
 
   @Nullable
   @Override
-  protected ReactElement<?, ?> renderAsElement()
+  protected ReactNode render()
   {
     return
       div(
@@ -63,7 +63,7 @@ class TodoList
   }
 
   @Nullable
-  private ReactElement<?, ?> renderMainSection()
+  private ReactNode renderMainSection()
   {
     if ( AppData.model.isNotEmpty() )
     {

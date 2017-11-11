@@ -64,7 +64,6 @@ public final class ReactProcessor
   private static final List<String> RENDER_METHODS =
     Arrays.asList( "render",
                    "renderAsString",
-                   "renderAsElement",
                    "renderAsArray",
                    "renderAsJsArray" );
 

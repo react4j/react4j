@@ -243,18 +243,6 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   /**
-   * Render the component as a react element.
-   * See {@link #render()} for further details.
-   *
-   * @return the result of rendering.
-   */
-  @Nullable
-  protected ReactElement<?, ?> renderAsElement()
-  {
-    return null;
-  }
-
-  /**
    * Render the component as an array.
    * See {@link #render()} for further details.
    *

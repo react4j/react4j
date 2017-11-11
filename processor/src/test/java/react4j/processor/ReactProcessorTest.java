@@ -32,7 +32,6 @@ public class ReactProcessorTest
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
         new Object[]{ "com.example.render.BaseRenderComponent" },
         new Object[]{ "com.example.render.RenderAsArrayComponent" },
-        new Object[]{ "com.example.render.RenderAsElementComponent" },
         new Object[]{ "com.example.render.RenderAsJsArrayComponent" },
         new Object[]{ "com.example.render.RenderAsStringComponent" },
         new Object[]{ "RootPackageReactComponent" }

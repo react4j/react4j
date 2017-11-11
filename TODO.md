@@ -20,7 +20,7 @@
 
 * Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
-* renderAsElement can be removed as can renderAsString possibly all but render + renderAsArray
+* renderAsString can be removed possibly all but render + renderAsArray
 
 * _create(...) methods in enhanced component should return `ReactNode`
 

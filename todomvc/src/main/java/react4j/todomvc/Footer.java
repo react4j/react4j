@@ -9,6 +9,7 @@ import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactElement;
+import react4j.core.ReactNode;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.proptypes.html.AnchorProps;
 import react4j.dom.proptypes.html.BtnProps;
@@ -36,7 +37,7 @@ class Footer
 
   @Nullable
   @Override
-  protected ReactElement<?, ?> renderAsElement()
+  protected ReactNode render()
   {
     final FilterMode filterMode = AppData.viewService.getFilterMode();
     return

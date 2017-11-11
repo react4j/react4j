@@ -13,6 +13,7 @@ import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactElement;
+import react4j.core.ReactNode;
 import react4j.dom.events.FormEvent;
 import react4j.dom.events.FormEventHandler;
 import react4j.dom.events.KeyboardEvent;
@@ -82,7 +83,7 @@ class TodoEntry
 
   @Nullable
   @Override
-  protected ReactElement<?, ?> renderAsElement()
+  protected ReactNode render()
   {
     return input( new InputProps()
                     .className( "new-todo" )
