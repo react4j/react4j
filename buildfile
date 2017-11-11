@@ -209,6 +209,28 @@ define 'react4j' do
     iml.main_generated_source_directories << _('generated/processors/main/java')
   end
 
+  # These will one day move to a separate repository once the API stabilizes
+  desc 'Other assorted components'
+  define 'extras' do
+    pom.provided_dependencies.concat PROVIDED_DEPS
+
+    compile.with project('dom').package(:jar),
+                 project('dom').compile.dependencies,
+                 project('processor').package(:jar),
+                 project('processor').compile.dependencies
+
+    test.options[:properties] = REACT_TEST_OPTIONS
+    test.options[:java_args] = ['-ea']
+
+    gwt_enhance(project)
+
+    test.using :testng
+    test.compile.with TEST_DEPS
+
+    # The generators are configured to generate to here.
+    iml.main_generated_source_directories << _('generated/processors/main/java')
+  end
+
   define 'todomvc' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 

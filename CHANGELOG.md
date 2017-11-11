@@ -4,6 +4,10 @@
 
 ##### Added
 * **\[dom\]** Add `ReactDOM.createPortal()` method to support React 16 portals.
+* **\[extras\]** Add an "extras" module that will contain non-core utilities and components that are useful across
+  a broad range of applications. Over time as React4J stabilizes it is expected that they will migrate out to be
+  managed externally. Until then it is a useful place for the components and utilities to live while they co-evolve.
+* **\[extras\]** Add the `WindowPortal` component that creates a portal to a new top level window.
 
 ##### Fixed
 * 💥 **\[core\]** Make sure the type of `ReactElementChildren` does not imply a prototype.

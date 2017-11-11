@@ -1,0 +1,6 @@
+<module>
+  <inherits name="react4j.annotations.Annotations"/>
+  <inherits name="react4j.dom.ReactDOM"/>
+
+  <source path=''/>
+</module>
