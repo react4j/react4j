@@ -31,7 +31,7 @@ import static react4j.extras.WindowPortal_.*;
 @ReactComponent
 @Unsupported
 public class WindowPortal
-  extends Component<Props, BaseState>
+  extends Component<WindowPortal.Props, BaseState>
 {
   @FunctionalInterface
   public interface OnCloseCallback
