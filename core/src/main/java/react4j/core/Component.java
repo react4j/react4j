@@ -231,18 +231,6 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   /**
-   * Render the component as a string.
-   * See {@link #render()} for further details.
-   *
-   * @return the result of rendering.
-   */
-  @Nullable
-  protected String renderAsString()
-  {
-    return null;
-  }
-
-  /**
    * Render the component as an array.
    * See {@link #render()} for further details.
    *

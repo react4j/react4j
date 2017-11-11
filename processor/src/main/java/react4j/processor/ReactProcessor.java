@@ -63,7 +63,6 @@ public final class ReactProcessor
                    "shouldComponentUpdate" );
   private static final List<String> RENDER_METHODS =
     Arrays.asList( "render",
-                   "renderAsString",
                    "renderAsArray",
                    "renderAsJsArray" );
 

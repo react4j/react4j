@@ -44,7 +44,7 @@ class RenderFromParentComponent_ extends RenderFromParentComponent {
   @Override
   @Nullable
   protected ReactNode render() {
-    return ReactNode.of( renderAsString() );
+    return ReactNode.of( renderAsArray() );
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, RenderFromParentComponent> {

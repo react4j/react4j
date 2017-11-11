@@ -44,6 +44,7 @@
 * 💥 **\[core\]** Add support for the `componentDidCatch` lifecycle method introduced in React 16.
 * 💥 **\[core\]** Removed `Component.renderAsElement()` as `ReactElement` now implements `ReactNode` and thus
   `Component.render()` is a better alternative.
+* 💥 **\[core\]** Removed `Component.renderAsString()` as it is trivial to wrap a string in a `ReactNode`.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)

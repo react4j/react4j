@@ -33,7 +33,6 @@ public class ReactProcessorTest
         new Object[]{ "com.example.render.BaseRenderComponent" },
         new Object[]{ "com.example.render.RenderAsArrayComponent" },
         new Object[]{ "com.example.render.RenderAsJsArrayComponent" },
-        new Object[]{ "com.example.render.RenderAsStringComponent" },
         new Object[]{ "RootPackageReactComponent" }
       };
   }
@@ -120,9 +119,9 @@ public class ReactProcessorTest
         new Object[]{ "com.example.render.MissingRenderComponent",
                       "The react component does not override any render methods." },
         new Object[]{ "com.example.render.MultipleRenderComponent",
-                      "The react component has two candidate render methods renderAsString and render defined on the same type com.example.render.MultipleRenderComponent." },
+                      "The react component has two candidate render methods renderAsArray and render defined on the same type com.example.render.MultipleRenderComponent." },
         new Object[]{ "com.example.render.MultipleRenderInNestedComponent",
-                      "The react component has two candidate render methods renderAsString and render defined on the same type com.example.render.MultipleRenderInNestedComponent.MyComponent." }
+                      "The react component has two candidate render methods renderAsArray and render defined on the same type com.example.render.MultipleRenderInNestedComponent.MyComponent." }
       };
   }
 

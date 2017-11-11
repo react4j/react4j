@@ -22,9 +22,9 @@ class MultipleRenderInNestedComponent
 
     @Nullable
     @Override
-    protected String renderAsString()
+    protected ReactNode[] renderAsArray()
     {
-      return super.renderAsString();
+      return super.renderAsArray();
     }
   }
 }
