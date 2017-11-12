@@ -2,6 +2,7 @@ package react4j.dom.proptypes.html;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import javaemul.internal.annotations.DoNotAutobox;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
@@ -55,6 +56,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   private void setDangerouslyInnerHTML( @Nonnull final String html )
   {
     setDangerouslySetInnerHTML( JsPropertyMap.of( "__html", html ) );
+  }
+
+  @JsOverlay
+  public final T prop( @Nonnull final String key, @DoNotAutobox final Object value )
+  {
+    JsPropertyMap.of( this ).set( key, value );
+    return self();
   }
 
   @JsProperty
