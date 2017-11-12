@@ -372,8 +372,8 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * <p>Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState, BaseContext)}
    * returns false.</p>
    *
-   * @param nextProps the new properties of the component.
-   * @param nextState the new state of the component.
+   * @param nextProps   the new properties of the component.
+   * @param nextState   the new state of the component.
    * @param nextContext the new context of the component.
    */
   protected void componentWillUpdate( @Nullable final P nextProps,
@@ -416,8 +416,8 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * React may treat this method  as a hint rather than a strict directive, and returning false may still result
    * in a re-rendering of the component.</p>
    *
-   * @param nextProps the new properties of the component.
-   * @param nextState the new state of the component.
+   * @param nextProps   the new properties of the component.
+   * @param nextState   the new state of the component.
    * @param nextContext the new context of the component.
    * @return true in case the component should be updated
    */
