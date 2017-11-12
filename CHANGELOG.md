@@ -5,6 +5,9 @@
 ##### Fixed
 * Make sure the `react4j-extras` module is correctly defined and can be released to Maven Central.
 
+##### Changed
+* **\[dom\]** Refactor the props methods that accept or return event handlers allow null event handlers.
+
 ### [v0.13](https://github.com/realityforge/react4j/tree/v0.13) (2017-11-13)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.12...v0.13)
 

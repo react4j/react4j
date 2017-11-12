@@ -3,6 +3,7 @@ package react4j.dom.proptypes.html;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -1021,244 +1022,282 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   // Clipboard Events
 
   @JsProperty
+  @Nullable
   public native ClipboardEventHandler getOnCopy();
 
   @JsProperty
-  protected native void setOnCopy( ClipboardEventHandler onCopy );
+  protected native void setOnCopy( @Nullable final ClipboardEventHandler onCopy );
 
   @JsProperty
+  @Nullable
   public native ClipboardEventHandler getOnCut();
 
   @JsProperty
-  protected native void setOnCut( ClipboardEventHandler onCut );
+  protected native void setOnCut( @Nullable final ClipboardEventHandler onCut );
 
   @JsProperty
+  @Nullable
   public native ClipboardEventHandler getOnPaste();
 
   @JsProperty
-  protected native void setOnPaste( ClipboardEventHandler onPaste );
+  protected native void setOnPaste( @Nullable final ClipboardEventHandler onPaste );
 
   // Composition Events
 
   @JsProperty
+  @Nullable
   public native CompositionEventHandler getOnCompositionEnd();
 
   @JsProperty
-  protected native void setOnCompositionEnd( CompositionEventHandler onCompositionEnd );
+  protected native void setOnCompositionEnd( @Nullable final CompositionEventHandler onCompositionEnd );
 
   @JsProperty
+  @Nullable
   public native CompositionEventHandler getOnCompositionStart();
 
   @JsProperty
-  protected native void setOnCompositionStart( CompositionEventHandler onCompositionStart );
+  protected native void setOnCompositionStart( @Nullable final CompositionEventHandler onCompositionStart );
 
   @JsProperty
+  @Nullable
   public native CompositionEventHandler getOnCompositionUpdate();
 
   @JsProperty
-  protected native void setOnCompositionUpdate( CompositionEventHandler onCompositionUpdate );
+  protected native void setOnCompositionUpdate( @Nullable final CompositionEventHandler onCompositionUpdate );
 
   // Focus Events
 
   @JsProperty
+  @Nullable
   public native FocusEventHandler getOnFocus();
 
   @JsProperty
-  protected native void setOnFocus( @Nonnull final FocusEventHandler onFocus );
+  protected native void setOnFocus( @Nullable final FocusEventHandler onFocus );
 
   @JsProperty
+  @Nullable
   public native FocusEventHandler getOnBlur();
 
   @JsProperty
-  protected native void setOnBlur( @Nonnull final FocusEventHandler onBlur );
+  protected native void setOnBlur( @Nullable final FocusEventHandler onBlur );
 
   // Form Events
 
   @JsProperty
+  @Nullable
   public native FormEventHandler getOnChange();
 
   @JsProperty
-  protected native void setOnChange( @Nonnull final FormEventHandler onChange );
+  protected native void setOnChange( @Nullable final FormEventHandler onChange );
 
   @JsProperty
+  @Nullable
   public native FormEventHandler getOnInput();
 
   @JsProperty
-  protected native void setOnInput( @Nonnull final FormEventHandler onInput );
+  protected native void setOnInput( @Nullable final FormEventHandler onInput );
 
   @JsProperty
+  @Nullable
   public native FormEventHandler getOnSubmit();
 
   @JsProperty
-  protected native void setOnSubmit( @Nonnull final FormEventHandler onSubmit );
+  protected native void setOnSubmit( @Nullable final FormEventHandler onSubmit );
 
   // Image Events
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnLoad();
 
   @JsProperty
-  protected native void setOnLoad( @Nonnull final ReactEventHandler onLoad );
+  protected native void setOnLoad( @Nullable final ReactEventHandler onLoad );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnError();
 
   @JsProperty
-  protected native void setOnError( @Nonnull final ReactEventHandler onError );
+  protected native void setOnError( @Nullable final ReactEventHandler onError );
 
   // Keyboard Events
 
   @JsProperty
+  @Nullable
   public native KeyboardEventHandler getOnKeyDown();
 
   @JsProperty
-  protected native void setOnKeyDown( @Nonnull final KeyboardEventHandler onKeyDown );
+  protected native void setOnKeyDown( @Nullable final KeyboardEventHandler onKeyDown );
 
   @JsProperty
+  @Nullable
   public native KeyboardEventHandler getOnKeyPress();
 
   @JsProperty
-  protected native void setOnKeyPress( @Nonnull final KeyboardEventHandler onKeyPress );
+  protected native void setOnKeyPress( @Nullable final KeyboardEventHandler onKeyPress );
 
   @JsProperty
+  @Nullable
   public native KeyboardEventHandler getOnKeyUp();
 
   @JsProperty
-  protected native void setOnKeyUp( @Nonnull final KeyboardEventHandler onKeyUp );
+  protected native void setOnKeyUp( @Nullable final KeyboardEventHandler onKeyUp );
 
   // Media Events
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnAbort();
 
   @JsProperty
-  protected native void setOnAbort( @Nonnull final ReactEventHandler onAbort );
+  protected native void setOnAbort( @Nullable final ReactEventHandler onAbort );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnCanPlay();
 
   @JsProperty
-  protected native void setOnCanPlay( @Nonnull final ReactEventHandler onCanPlay );
+  protected native void setOnCanPlay( @Nullable final ReactEventHandler onCanPlay );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnCanPlayThrough();
 
   @JsProperty
-  protected native void setOnCanPlayThrough( @Nonnull final ReactEventHandler onCanPlayThrough );
+  protected native void setOnCanPlayThrough( @Nullable final ReactEventHandler onCanPlayThrough );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnDurationChange();
 
   @JsProperty
-  protected native void setOnDurationChange( @Nonnull final ReactEventHandler onDurationChange );
+  protected native void setOnDurationChange( @Nullable final ReactEventHandler onDurationChange );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnEmptied();
 
   @JsProperty
-  protected native void setOnEmptied( @Nonnull final ReactEventHandler onEmptied );
+  protected native void setOnEmptied( @Nullable final ReactEventHandler onEmptied );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnEncrypted();
 
   @JsProperty
-  protected native void setOnEncrypted( @Nonnull final ReactEventHandler onEncrypted );
+  protected native void setOnEncrypted( @Nullable final ReactEventHandler onEncrypted );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnEnded();
 
   @JsProperty
-  protected native void setOnEnded( @Nonnull final ReactEventHandler onEnded );
+  protected native void setOnEnded( @Nullable final ReactEventHandler onEnded );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnLoadedData();
 
   @JsProperty
-  protected native void setOnLoadedData( @Nonnull final ReactEventHandler onLoadedData );
+  protected native void setOnLoadedData( @Nullable final ReactEventHandler onLoadedData );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnLoadedMetadata();
 
   @JsProperty
-  protected native void setOnLoadedMetadata( @Nonnull final ReactEventHandler onLoadedMetadata );
+  protected native void setOnLoadedMetadata( @Nullable final ReactEventHandler onLoadedMetadata );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnLoadStart();
 
   @JsProperty
-  protected native void setOnLoadStart( @Nonnull final ReactEventHandler onLoadStart );
+  protected native void setOnLoadStart( @Nullable final ReactEventHandler onLoadStart );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnPause();
 
   @JsProperty
-  protected native void setOnPause( @Nonnull final ReactEventHandler onPause );
+  protected native void setOnPause( @Nullable final ReactEventHandler onPause );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnPlay();
 
   @JsProperty
-  protected native void setOnPlay( @Nonnull final ReactEventHandler onPlay );
+  protected native void setOnPlay( @Nullable final ReactEventHandler onPlay );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnPlaying();
 
   @JsProperty
-  protected native void setOnPlaying( @Nonnull final ReactEventHandler onPlaying );
+  protected native void setOnPlaying( @Nullable final ReactEventHandler onPlaying );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnProgress();
 
   @JsProperty
-  protected native void setOnProgress( @Nonnull final ReactEventHandler onProgress );
+  protected native void setOnProgress( @Nullable final ReactEventHandler onProgress );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnRateChange();
 
   @JsProperty
-  protected native void setOnRateChange( @Nonnull final ReactEventHandler onRateChange );
+  protected native void setOnRateChange( @Nullable final ReactEventHandler onRateChange );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnSeeked();
 
   @JsProperty
-  protected native void setOnSeeked( @Nonnull final ReactEventHandler onSeeked );
+  protected native void setOnSeeked( @Nullable final ReactEventHandler onSeeked );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnSeeking();
 
   @JsProperty
-  protected native void setOnSeeking( @Nonnull final ReactEventHandler onSeeking );
+  protected native void setOnSeeking( @Nullable final ReactEventHandler onSeeking );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnStalled();
 
   @JsProperty
-  protected native void setOnStalled( @Nonnull final ReactEventHandler onStalled );
+  protected native void setOnStalled( @Nullable final ReactEventHandler onStalled );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnSuspend();
 
   @JsProperty
-  protected native void setOnSuspend( @Nonnull final ReactEventHandler onSuspend );
+  protected native void setOnSuspend( @Nullable final ReactEventHandler onSuspend );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnTimeUpdate();
 
   @JsProperty
-  protected native void setOnTimeUpdate( @Nonnull final ReactEventHandler onTimeUpdate );
+  protected native void setOnTimeUpdate( @Nullable final ReactEventHandler onTimeUpdate );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnVolumeChange();
 
   @JsProperty
-  protected native void setOnVolumeChange( @Nonnull final ReactEventHandler onVolumeChange );
+  protected native void setOnVolumeChange( @Nullable final ReactEventHandler onVolumeChange );
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnWaiting();
 
   @JsProperty
-  protected native void setOnWaiting( @Nonnull final ReactEventHandler onWaiting );
+  protected native void setOnWaiting( @Nullable final ReactEventHandler onWaiting );
 
   // MouseEvents
 
@@ -1266,153 +1305,177 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native MouseEventHandler getOnClick();
 
   @JsProperty
-  protected native void setOnClick( @Nonnull final MouseEventHandler onClick );
+  protected native void setOnClick( @Nullable final MouseEventHandler onClick );
 
   @JsProperty
+  @Nullable
   public native MouseEventHandler getOnContextMenu();
 
   @JsProperty
-  protected native void setOnContextMenu( @Nonnull final MouseEventHandler onContextMenu );
+  protected native void setOnContextMenu( @Nullable final MouseEventHandler onContextMenu );
 
   @JsProperty
+  @Nullable
   public native MouseEventHandler getOnDoubleClick();
 
   @JsProperty
-  protected native void setOnDoubleClick( @Nonnull final MouseEventHandler onDoubleClick );
+  protected native void setOnDoubleClick( @Nullable final MouseEventHandler onDoubleClick );
 
   @JsProperty
+  @Nullable
   public native DragEventHandler getOnDrag();
 
   @JsProperty
-  protected native void setOnDrag( @Nonnull final DragEventHandler onDrag );
+  protected native void setOnDrag( @Nullable final DragEventHandler onDrag );
 
   @JsProperty
+  @Nullable
   public native DragEventHandler getOnDragEnd();
 
   @JsProperty
-  protected native void setOnDragEnd( @Nonnull final DragEventHandler onDragEnd );
+  protected native void setOnDragEnd( @Nullable final DragEventHandler onDragEnd );
 
   @JsProperty
+  @Nullable
   public native DragEventHandler getOnDragEnter();
 
   @JsProperty
-  protected native void setOnDragEnter( @Nonnull final DragEventHandler onDragEnter );
+  protected native void setOnDragEnter( @Nullable final DragEventHandler onDragEnter );
 
   @JsProperty
+  @Nullable
   public native DragEventHandler getOnDragExit();
 
   @JsProperty
-  protected native void setOnDragExit( @Nonnull final DragEventHandler onDragExit );
+  protected native void setOnDragExit( @Nullable final DragEventHandler onDragExit );
 
   @JsProperty
+  @Nullable
   public native DragEventHandler getOnDragLeave();
 
   @JsProperty
-  protected native void setOnDragLeave( @Nonnull final DragEventHandler onDragLeave );
+  protected native void setOnDragLeave( @Nullable final DragEventHandler onDragLeave );
 
   @JsProperty
+  @Nullable
   public native DragEventHandler getOnDragOver();
 
   @JsProperty
-  protected native void setOnDragOver( @Nonnull final DragEventHandler onDragOver );
+  protected native void setOnDragOver( @Nullable final DragEventHandler onDragOver );
 
   @JsProperty
+  @Nullable
   public native DragEventHandler getOnDragStart();
 
   @JsProperty
-  protected native void setOnDragStart( @Nonnull final DragEventHandler onDragStart );
+  protected native void setOnDragStart( @Nullable final DragEventHandler onDragStart );
 
   @JsProperty
+  @Nullable
   public native DragEventHandler getOnDrop();
 
   @JsProperty
-  protected native void setOnDrop( @Nonnull final DragEventHandler onDrop );
+  protected native void setOnDrop( @Nullable final DragEventHandler onDrop );
 
   @JsProperty
+  @Nullable
   public native MouseEventHandler getOnMouseDown();
 
   @JsProperty
-  protected native void setOnMouseDown( @Nonnull final MouseEventHandler onMouseDown );
+  protected native void setOnMouseDown( @Nullable final MouseEventHandler onMouseDown );
 
   @JsProperty
+  @Nullable
   public native MouseEventHandler getOnMouseEnter();
 
   @JsProperty
-  protected native void setOnMouseEnter( @Nonnull final MouseEventHandler onMouseEnter );
+  protected native void setOnMouseEnter( @Nullable final MouseEventHandler onMouseEnter );
 
   @JsProperty
+  @Nullable
   public native MouseEventHandler getOnMouseLeave();
 
   @JsProperty
-  protected native void setOnMouseLeave( @Nonnull final MouseEventHandler onMouseLeave );
+  protected native void setOnMouseLeave( @Nullable final MouseEventHandler onMouseLeave );
 
   @JsProperty
+  @Nullable
   public native MouseEventHandler getOnMouseMove();
 
   @JsProperty
-  protected native void setOnMouseMove( @Nonnull final MouseEventHandler onMouseMove );
+  protected native void setOnMouseMove( @Nullable final MouseEventHandler onMouseMove );
 
   @JsProperty
+  @Nullable
   public native MouseEventHandler getOnMouseOut();
 
   @JsProperty
-  protected native void setOnMouseOut( @Nonnull final MouseEventHandler onMouseOut );
+  protected native void setOnMouseOut( @Nullable final MouseEventHandler onMouseOut );
 
   @JsProperty
+  @Nullable
   public native MouseEventHandler getOnMouseOver();
 
   @JsProperty
-  protected native void setOnMouseOver( @Nonnull final MouseEventHandler onMouseOver );
+  protected native void setOnMouseOver( @Nullable final MouseEventHandler onMouseOver );
 
   @JsProperty
+  @Nullable
   public native MouseEventHandler getOnMouseUp();
 
   @JsProperty
-  protected native void setOnMouseUp( @Nonnull final MouseEventHandler onMouseUp );
+  protected native void setOnMouseUp( @Nullable final MouseEventHandler onMouseUp );
 
   // Selection Events
 
   @JsProperty
+  @Nullable
   public native ReactEventHandler getOnSelect();
 
   @JsProperty
-  protected native void setOnSelect( @Nonnull final ReactEventHandler onSelect );
+  protected native void setOnSelect( @Nullable final ReactEventHandler onSelect );
 
   // Touch Events
 
   @JsProperty
+  @Nullable
   public native TouchEventHandler getOnTouchCancel();
 
   @JsProperty
-  protected native void setOnTouchCancel( @Nonnull final TouchEventHandler onTouchCancel );
+  protected native void setOnTouchCancel( @Nullable final TouchEventHandler onTouchCancel );
 
   @JsProperty
+  @Nullable
   public native TouchEventHandler getOnTouchEnd();
 
   @JsProperty
-  protected native void setOnTouchEnd( @Nonnull final TouchEventHandler onTouchEnd );
+  protected native void setOnTouchEnd( @Nullable final TouchEventHandler onTouchEnd );
 
   @JsProperty
+  @Nullable
   public native TouchEventHandler getOnTouchMove();
 
   @JsProperty
-  protected native void setOnTouchMove( @Nonnull final TouchEventHandler onTouchMove );
+  protected native void setOnTouchMove( @Nullable final TouchEventHandler onTouchMove );
 
   @JsProperty
+  @Nullable
   public native TouchEventHandler getOnTouchStart();
 
   @JsProperty
-  protected native void setOnTouchStart( @Nonnull final TouchEventHandler onTouchStart );
+  protected native void setOnTouchStart( @Nullable final TouchEventHandler onTouchStart );
 
   // UI Events
   @JsProperty
+  @Nullable
   public native UIEventHandler getOnScroll();
 
   @JsProperty
-  protected native void setOnScroll( UIEventHandler onScroll );
+  protected native void setOnScroll( @Nullable final UIEventHandler onScroll );
 
   // Wheel Events
   @JsProperty
+  @Nullable
   public native WheelEventHandler getOnWheel();
 
   @JsProperty

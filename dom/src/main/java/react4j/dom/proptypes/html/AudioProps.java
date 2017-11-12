@@ -1,6 +1,6 @@
 package react4j.dom.proptypes.html;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -64,14 +64,14 @@ public class AudioProps
 
   // Focus Events
   @JsOverlay
-  public final AudioProps onBlur( @Nonnull final FocusEventHandler handler )
+  public final AudioProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onFocus( @Nonnull final FocusEventHandler handler )
+  public final AudioProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
     return self();
@@ -79,147 +79,147 @@ public class AudioProps
 
   // Keyboard Events
   @JsOverlay
-  public final AudioProps onKeyDown( @Nonnull final KeyboardEventHandler handler )
+  public final AudioProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onKeyPress( @Nonnull final KeyboardEventHandler handler )
+  public final AudioProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onKeyUp( @Nonnull final KeyboardEventHandler handler )
+  public final AudioProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onClick( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onContextMenu( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onDoubleClick( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onDrag( @Nonnull final DragEventHandler handler )
+  public final AudioProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onDragEnd( @Nonnull final DragEventHandler handler )
+  public final AudioProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onDragEnter( @Nonnull final DragEventHandler handler )
+  public final AudioProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onDragExit( @Nonnull final DragEventHandler handler )
+  public final AudioProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onDragLeave( @Nonnull final DragEventHandler handler )
+  public final AudioProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onDragOver( @Nonnull final DragEventHandler handler )
+  public final AudioProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onDragStart( @Nonnull final DragEventHandler handler )
+  public final AudioProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onDrop( @Nonnull final DragEventHandler handler )
+  public final AudioProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onMouseDown( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onMouseEnter( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onMouseLeave( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onMouseMove( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onMouseOut( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onMouseOver( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onMouseUp( @Nonnull final MouseEventHandler handler )
+  public final AudioProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
     return self();
@@ -227,28 +227,28 @@ public class AudioProps
 
   // Touch Events
   @JsOverlay
-  public final AudioProps onTouchCancel( @Nonnull final TouchEventHandler handler )
+  public final AudioProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onTouchEnd( @Nonnull final TouchEventHandler handler )
+  public final AudioProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onTouchMove( @Nonnull final TouchEventHandler handler )
+  public final AudioProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final AudioProps onTouchStart( @Nonnull final TouchEventHandler handler )
+  public final AudioProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
     return self();

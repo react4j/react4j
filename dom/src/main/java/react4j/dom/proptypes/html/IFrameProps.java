@@ -1,6 +1,6 @@
 package react4j.dom.proptypes.html;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -57,14 +57,14 @@ public class IFrameProps
   //TODO refine
   // Focus Events
   @JsOverlay
-  public final IFrameProps onBlur( @Nonnull final FocusEventHandler handler )
+  public final IFrameProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onFocus( @Nonnull final FocusEventHandler handler )
+  public final IFrameProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
     return self();
@@ -72,147 +72,147 @@ public class IFrameProps
 
   // Keyboard Events
   @JsOverlay
-  public final IFrameProps onKeyDown( @Nonnull final KeyboardEventHandler handler )
+  public final IFrameProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onKeyPress( @Nonnull final KeyboardEventHandler handler )
+  public final IFrameProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onKeyUp( @Nonnull final KeyboardEventHandler handler )
+  public final IFrameProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onClick( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onContextMenu( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onDoubleClick( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onDrag( @Nonnull final DragEventHandler handler )
+  public final IFrameProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onDragEnd( @Nonnull final DragEventHandler handler )
+  public final IFrameProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onDragEnter( @Nonnull final DragEventHandler handler )
+  public final IFrameProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onDragExit( @Nonnull final DragEventHandler handler )
+  public final IFrameProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onDragLeave( @Nonnull final DragEventHandler handler )
+  public final IFrameProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onDragOver( @Nonnull final DragEventHandler handler )
+  public final IFrameProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onDragStart( @Nonnull final DragEventHandler handler )
+  public final IFrameProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onDrop( @Nonnull final DragEventHandler handler )
+  public final IFrameProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onMouseDown( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onMouseEnter( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onMouseLeave( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onMouseMove( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onMouseOut( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onMouseOver( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onMouseUp( @Nonnull final MouseEventHandler handler )
+  public final IFrameProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
     return self();
@@ -220,28 +220,28 @@ public class IFrameProps
 
   // Touch Events
   @JsOverlay
-  public final IFrameProps onTouchCancel( @Nonnull final TouchEventHandler handler )
+  public final IFrameProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onTouchEnd( @Nonnull final TouchEventHandler handler )
+  public final IFrameProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onTouchMove( @Nonnull final TouchEventHandler handler )
+  public final IFrameProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final IFrameProps onTouchStart( @Nonnull final TouchEventHandler handler )
+  public final IFrameProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
     return self();

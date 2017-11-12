@@ -1,6 +1,6 @@
 package react4j.dom.proptypes.html;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -245,14 +245,14 @@ public class InputProps
 
   // Focus Events
   @JsOverlay
-  public final InputProps onBlur( @Nonnull final FocusEventHandler handler )
+  public final InputProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onFocus( @Nonnull final FocusEventHandler handler )
+  public final InputProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
     return self();
@@ -260,7 +260,7 @@ public class InputProps
 
   // Form Events
   @JsOverlay
-  public final InputProps onChange( @Nonnull final FormEventHandler handler )
+  public final InputProps onChange( @Nullable final FormEventHandler handler )
   {
     setOnChange( handler );
     return self();
@@ -268,147 +268,147 @@ public class InputProps
 
   // Keyboard Events
   @JsOverlay
-  public final InputProps onKeyDown( @Nonnull final KeyboardEventHandler handler )
+  public final InputProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onKeyPress( @Nonnull final KeyboardEventHandler handler )
+  public final InputProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onKeyUp( @Nonnull final KeyboardEventHandler handler )
+  public final InputProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onClick( @Nonnull final MouseEventHandler handler )
+  public final InputProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onContextMenu( @Nonnull final MouseEventHandler handler )
+  public final InputProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onDoubleClick( @Nonnull final MouseEventHandler handler )
+  public final InputProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onDrag( @Nonnull final DragEventHandler handler )
+  public final InputProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onDragEnd( @Nonnull final DragEventHandler handler )
+  public final InputProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onDragEnter( @Nonnull final DragEventHandler handler )
+  public final InputProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onDragExit( @Nonnull final DragEventHandler handler )
+  public final InputProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onDragLeave( @Nonnull final DragEventHandler handler )
+  public final InputProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onDragOver( @Nonnull final DragEventHandler handler )
+  public final InputProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onDragStart( @Nonnull final DragEventHandler handler )
+  public final InputProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onDrop( @Nonnull final DragEventHandler handler )
+  public final InputProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onMouseDown( @Nonnull final MouseEventHandler handler )
+  public final InputProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onMouseEnter( @Nonnull final MouseEventHandler handler )
+  public final InputProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onMouseLeave( @Nonnull final MouseEventHandler handler )
+  public final InputProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onMouseMove( @Nonnull final MouseEventHandler handler )
+  public final InputProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onMouseOut( @Nonnull final MouseEventHandler handler )
+  public final InputProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onMouseOver( @Nonnull final MouseEventHandler handler )
+  public final InputProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onMouseUp( @Nonnull final MouseEventHandler handler )
+  public final InputProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
     return self();
@@ -416,28 +416,28 @@ public class InputProps
 
   // Touch Events
   @JsOverlay
-  public final InputProps onTouchCancel( @Nonnull final TouchEventHandler handler )
+  public final InputProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onTouchEnd( @Nonnull final TouchEventHandler handler )
+  public final InputProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onTouchMove( @Nonnull final TouchEventHandler handler )
+  public final InputProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final InputProps onTouchStart( @Nonnull final TouchEventHandler handler )
+  public final InputProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
     return self();

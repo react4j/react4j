@@ -1,6 +1,6 @@
 package react4j.dom.proptypes.html;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -123,14 +123,14 @@ public class TextAreaProps
 
   // Focus Events
   @JsOverlay
-  public final TextAreaProps onBlur( @Nonnull final FocusEventHandler handler )
+  public final TextAreaProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onFocus( @Nonnull final FocusEventHandler handler )
+  public final TextAreaProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
     return self();
@@ -138,7 +138,7 @@ public class TextAreaProps
 
   // Form Events
   @JsOverlay
-  public final TextAreaProps onChange( @Nonnull final FormEventHandler handler )
+  public final TextAreaProps onChange( @Nullable final FormEventHandler handler )
   {
     setOnChange( handler );
     return self();
@@ -146,147 +146,147 @@ public class TextAreaProps
 
   // Keyboard Events
   @JsOverlay
-  public final TextAreaProps onKeyDown( @Nonnull final KeyboardEventHandler handler )
+  public final TextAreaProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onKeyPress( @Nonnull final KeyboardEventHandler handler )
+  public final TextAreaProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onKeyUp( @Nonnull final KeyboardEventHandler handler )
+  public final TextAreaProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onClick( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onContextMenu( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onDoubleClick( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onDrag( @Nonnull final DragEventHandler handler )
+  public final TextAreaProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onDragEnd( @Nonnull final DragEventHandler handler )
+  public final TextAreaProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onDragEnter( @Nonnull final DragEventHandler handler )
+  public final TextAreaProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onDragExit( @Nonnull final DragEventHandler handler )
+  public final TextAreaProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onDragLeave( @Nonnull final DragEventHandler handler )
+  public final TextAreaProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onDragOver( @Nonnull final DragEventHandler handler )
+  public final TextAreaProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onDragStart( @Nonnull final DragEventHandler handler )
+  public final TextAreaProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onDrop( @Nonnull final DragEventHandler handler )
+  public final TextAreaProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onMouseDown( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onMouseEnter( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onMouseLeave( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onMouseMove( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onMouseOut( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onMouseOver( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onMouseUp( @Nonnull final MouseEventHandler handler )
+  public final TextAreaProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
     return self();
@@ -294,28 +294,28 @@ public class TextAreaProps
 
   // Touch Events
   @JsOverlay
-  public final TextAreaProps onTouchCancel( @Nonnull final TouchEventHandler handler )
+  public final TextAreaProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onTouchEnd( @Nonnull final TouchEventHandler handler )
+  public final TextAreaProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onTouchMove( @Nonnull final TouchEventHandler handler )
+  public final TextAreaProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
     return self();
   }
 
   @JsOverlay
-  public final TextAreaProps onTouchStart( @Nonnull final TouchEventHandler handler )
+  public final TextAreaProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
     return self();
