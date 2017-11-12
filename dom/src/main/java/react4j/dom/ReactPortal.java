@@ -5,12 +5,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.BaseProps;
 import react4j.core.ReactNode;
 
 @SuppressWarnings( "NullableProblems" )
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-public class ReactPortal<P extends BaseProps, T>
+public class ReactPortal
   implements ReactNode
 {
   @Nullable

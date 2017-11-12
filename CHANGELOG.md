@@ -10,6 +10,7 @@
 * 💥 **\[dom\]** Replace `DOMElement` with `ReactNode` and remove `DOMElement`.
 * 💥 **\[dom\]** Add `HtlmGlobalFields.prop()` fluent method to simplify adding arbitrary props.
 * 💥 **\[dom\]** Remove `react4j.dom.AbstractBuilder` until the idea is more fully developed.
+* 💥 **\[dom\]** Remove unused type parameters from `ReactPortal`.
 
 ### [v0.13](https://github.com/realityforge/react4j/tree/v0.13) (2017-11-13)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.12...v0.13)
