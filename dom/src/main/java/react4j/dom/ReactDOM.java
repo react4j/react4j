@@ -36,7 +36,7 @@ public class ReactDOM
    * @param container the DOM element to render into.
    * @return the new portal.
    */
-  public static native ReactPortal createPortal( ReactNode children, Element container );
+  public static native ReactPortal createPortal( @Nonnull ReactNode children, @Nonnull Element container );
 
   /**
    * Render a React element into the DOM in the supplied container.
