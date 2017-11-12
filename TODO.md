@@ -3,7 +3,7 @@
 ### High Priority
 
 * Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
-  state and context?
+  state and context? Seems like `@Inject` for fields with different qualifiers should be sufficient.
 
 * Port transition code ala
   - https://github.com/reactjs/react-transition-group
