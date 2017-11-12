@@ -10,7 +10,6 @@ import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.React;
 import react4j.core.ReactConfig;
-import react4j.core.ReactElement;
 import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
@@ -18,17 +17,17 @@ class RenderFromParentComponent_ extends RenderFromParentComponent {
   private static final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
-  static ReactElement<BaseProps, NativeReactComponent> _create() {
+  static ReactNode _create() {
     return React.createElement( TYPE );
   }
 
   @Nonnull
-  static ReactElement<BaseProps, NativeReactComponent> _create(@Nullable final BaseProps props) {
+  static ReactNode _create(@Nullable final BaseProps props) {
     return React.createElement( TYPE, props );
   }
 
   @Nonnull
-  static ReactElement<BaseProps, NativeReactComponent> _create(@Nullable final BaseProps props, @Nullable final ReactNode child) {
+  static ReactNode _create(@Nullable final BaseProps props, @Nullable final ReactNode child) {
     return React.createElement( TYPE, props, child );
   }
 

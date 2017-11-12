@@ -20,8 +20,6 @@
 
 * Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
-* _create(...) methods in enhanced component should return `ReactNode`
-
 * Move repository to https://github.com/react4j
 
 ### Medium Priorities

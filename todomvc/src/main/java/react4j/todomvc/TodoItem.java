@@ -15,7 +15,6 @@ import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
-import react4j.core.ReactElement;
 import react4j.core.ReactNode;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.FormEvent;
@@ -72,7 +71,7 @@ class TodoItem
   }
 
   @Nonnull
-  static ReactElement<TodoItem.Props, NativeReactComponent> create( @Nonnull final TodoItem.Props props )
+  static ReactNode create( @Nonnull final TodoItem.Props props )
   {
     return _create( Objects.requireNonNull( props ) );
   }

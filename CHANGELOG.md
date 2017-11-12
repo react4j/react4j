@@ -45,6 +45,8 @@
 * 💥 **\[core\]** Removed `Component.renderAsElement()` as `ReactElement` now implements `ReactNode` and thus
   `Component.render()` is a better alternative.
 * 💥 **\[core\]** Removed `Component.renderAsString()` as it is trivial to wrap a string in a `ReactNode`.
+* 💥 **\[processor\]** Update the annotation processor so that the enhanced component classes generate the `_create`
+  methods with a return type of `ReactNode`.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)

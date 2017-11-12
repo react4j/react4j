@@ -6,7 +6,6 @@ import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
-import react4j.core.ReactElement;
 import react4j.core.ReactNode;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.examples.arez.step2.model.AppData;
@@ -18,7 +17,7 @@ class FooterTodoCount
   extends ReactArezComponent<BaseProps, BaseState>
 {
   @Nonnull
-  static ReactElement<BaseProps, NativeReactComponent> create()
+  static ReactNode create()
   {
     return _create();
   }
