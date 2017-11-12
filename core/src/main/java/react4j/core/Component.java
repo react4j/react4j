@@ -343,6 +343,8 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * <p>React doesn't call this method with initial props during mounting. It only calls this method
    * if some of component's props may update. Calling {@link #scheduleStateUpdate(BaseState)} generally doesn't trigger
    * this method.</p>
+   *
+   * @param nextProps   the new properties of the component.
    * @param nextContext the new context of the component.
    */
   protected void componentWillReceiveProps( @Nonnull final P nextProps, @Nonnull final C nextContext )
