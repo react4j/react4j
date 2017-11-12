@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,6 +61,7 @@ public final class ReactProcessor
                    "componentWillUnmount",
                    "componentWillUpdate",
                    "componentDidCatch",
+                   "getChildContext",
                    "shouldComponentUpdate" );
   private static final List<String> RENDER_METHODS =
     Arrays.asList( "render",
@@ -152,6 +154,7 @@ public final class ReactProcessor
     determineComponentType( descriptor, typeElement );
     determinePropsAndStateTypes( descriptor );
     determineLifecycleMethods( typeElement, descriptor );
+    determineChildContextTypes( descriptor );
     determineRenderMethod( typeElement, descriptor );
     determineEventHandlers( descriptor );
 
@@ -388,7 +391,7 @@ public final class ReactProcessor
       final MethodDescriptor candidate = overriddenRenderMethods.get( size - 1 );
       if ( size > 1 )
       {
-        final TypeElement enclosingElement = (TypeElement)candidate.getMethod().getEnclosingElement();
+        final TypeElement enclosingElement = (TypeElement) candidate.getMethod().getEnclosingElement();
         final TypeMirror candidateType = candidate.getMethodType().getReceiverType();
         final MethodDescriptor other = overriddenRenderMethods.get( size - 2 );
         final TypeMirror otherType = other.getMethodType().getReceiverType();
@@ -517,7 +520,7 @@ public final class ReactProcessor
   {
     final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
     final List<? extends TypeParameterElement> typeParameters = componentType.getTypeParameters();
-    assert 2 == typeParameters.size();
+    assert 3 == typeParameters.size();
 
     final TypeParameterElement propsTypeParameter = typeParameters.get( 0 );
     assert propsTypeParameter.getSimpleName().toString().equals( "P" );
@@ -528,6 +531,28 @@ public final class ReactProcessor
     assert stateTypeParameter.getSimpleName().toString().equals( "S" );
     final TypeElement stateType = resolveToElement( descriptor, stateTypeParameter );
     descriptor.setStateType( stateType );
+
+    final TypeParameterElement contextTypeParameter = typeParameters.get( 2 );
+    assert contextTypeParameter.getSimpleName().toString().equals( "C" );
+    final TypeElement contextType = resolveToElement( descriptor, contextTypeParameter );
+
+    final Map<String, TypeMirror> contextTypeFields =
+      ProcessorUtil.getFields( contextType, processingEnv.getTypeUtils() );
+
+    descriptor.setContextType( contextType, contextTypeFields );
+  }
+
+  private void determineChildContextTypes( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final MethodDescriptor getChildContext = descriptor.getLifecycleMethods().stream().
+      filter( m -> m.getMethod().getSimpleName().toString().equals( "getChildContext" ) ).findFirst().orElse( null );
+    if ( null != getChildContext )
+    {
+      final DeclaredType returnType = (DeclaredType) getChildContext.getMethodType().getReturnType();
+      final Map<String, TypeMirror> childContextTypeFields =
+        ProcessorUtil.getFields( (TypeElement) returnType.asElement(), processingEnv.getTypeUtils() );
+    descriptor.setChildContextTypeFields( childContextTypeFields );
+    }
   }
 
   @Nonnull

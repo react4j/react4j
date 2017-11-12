@@ -16,23 +16,25 @@ import javax.annotation.Nullable;
 public abstract class NativeAdapterComponent<
   P extends BaseProps,
   S extends BaseState,
-  C extends Component<P, S>
+  C extends BaseContext,
+  I extends Component<P, S, C>
   >
-  extends NativeComponent<P, S>
+  extends NativeComponent<P, S, C>
 {
   /**
    * The target component that all lifecycle methods are forwarded to.
    */
-  private final C _component;
+  private final I _component;
 
   /**
    * Create a component that designed to delegate to a target component.
    *
    * @param props the initial props.
    */
-  protected NativeAdapterComponent( @Nonnull final P props )
+  protected NativeAdapterComponent( @Nonnull final P props,
+                                    @Nonnull final C context )
   {
-    super( props );
+    super( props, context );
     _component = createComponent();
     _component.bindComponent( this );
 
@@ -44,7 +46,7 @@ public abstract class NativeAdapterComponent<
    *
    * @return a new instance of the target component.
    */
-  protected abstract C createComponent();
+  protected abstract I createComponent();
 
   /**
    * Initialize the target component.
@@ -181,11 +183,14 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method componentWillUpdate() that
    * delegates to this method to perform the work.
    *
-   * @param nextProps the props.
-   * @param nextState the state.
-   * @see Component#componentWillUpdate(BaseProps, BaseState)
+   * @param nextProps   the new properties of the component.
+   * @param nextState   the state.
+   * @param nextContext the new context of the component.
+   * @see Component#componentWillUpdate(BaseProps, BaseState, BaseContext)
    */
-  protected final void performComponentWillUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  protected final void performComponentWillUpdate( @Nonnull final P nextProps,
+                                                   @Nonnull final S nextState,
+                                                   @Nonnull final C nextContext )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -193,7 +198,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      _component.componentWillUpdate( nextProps, nextState );
+      _component.componentWillUpdate( nextProps, nextState, nextContext );
     }
     finally
     {
@@ -209,11 +214,14 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method shouldComponentUpdate() that
    * delegates to this method to perform the work.
    *
-   * @param nextProps the props.
-   * @param nextState the state.
-   * @see Component#shouldComponentUpdate(BaseProps, BaseState)
+   * @param nextProps   the new properties of the component.
+   * @param nextState   the new state of the component.
+   * @param nextContext the new context of the component.
+   * @see Component#shouldComponentUpdate(BaseProps, BaseState, BaseContext)
    */
-  protected final boolean performShouldComponentUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  protected final boolean performShouldComponentUpdate( @Nonnull final P nextProps,
+                                                        @Nonnull final S nextState,
+                                                        @Nullable final C nextContext )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -221,7 +229,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      return _component.shouldComponentUpdate( nextProps, nextState );
+      return _component.shouldComponentUpdate( nextProps, nextState, nextContext );
     }
     finally
     {
@@ -237,10 +245,11 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method componentWillReceiveProps() that
    * delegates to this method to perform the work.
    *
-   * @param nextProps the props.
-   * @see Component#componentWillReceiveProps(BaseProps)
+   * @param nextProps   the new properties of the component.
+   * @param nextContext the new context of the component.
+   * @see Component#componentWillReceiveProps(BaseProps, BaseContext)
    */
-  protected final void performComponentWillReceiveProps( @Nonnull final P nextProps )
+  protected final void performComponentWillReceiveProps( @Nonnull final P nextProps, @Nonnull final C nextContext )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -248,7 +257,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      _component.componentWillReceiveProps( nextProps );
+      _component.componentWillReceiveProps( nextProps, nextContext );
     }
     finally
     {
@@ -264,8 +273,8 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method componentDidUpdate() that
    * delegates to this method to perform the work.
    *
-   * @param nextProps the props.
-   * @param nextState the state.
+   * @param nextProps the new properties of the component.
+   * @param nextState the new state of the component.
    * @see Component#componentDidUpdate(BaseProps, BaseState)
    */
   protected final void performComponentDidUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
@@ -313,5 +322,19 @@ public abstract class NativeAdapterComponent<
         _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
+  }
+
+  /**
+   * Call getChildContext on the target component.
+   * It is expected that the subclass will implement a public method getChildContext() that
+   * delegates to this method to perform the work.
+   *
+   * @return the child context.
+   * @see Component#getChildContext()
+   */
+  @SuppressWarnings( "unchecked" )
+  protected final <CC extends BaseChildContext> CC performGetChildContext()
+  {
+    return (CC) _component.getChildContext();
   }
 }

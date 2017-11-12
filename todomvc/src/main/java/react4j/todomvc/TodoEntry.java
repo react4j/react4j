@@ -10,6 +10,7 @@ import jsinterop.base.Js;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactNode;
@@ -24,7 +25,7 @@ import static react4j.todomvc.TodoEntry_.*;
 
 @ReactComponent
 class TodoEntry
-  extends ReactArezComponent<BaseProps, TodoEntry.State>
+  extends ReactArezComponent<BaseProps, TodoEntry.State, BaseContext>
 {
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   static class State

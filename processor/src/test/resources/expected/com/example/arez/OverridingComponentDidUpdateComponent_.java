@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.arez.annotations.ArezComponent;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
@@ -19,7 +20,7 @@ import react4j.core.ReactNode;
 )
 @Generated("react4j.processor.ReactProcessor")
 class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdateComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
   static ReactNode _create() {
@@ -37,8 +38,8 @@ class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdat
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "OverridingComponentDidUpdateComponent" );
     }
@@ -55,12 +56,12 @@ class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdat
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1);
+    boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1, @Nonnull BaseContext arg2);
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, OverridingComponentDidUpdateComponent> implements Lifecycle {
-    NativeReactComponent(@Nonnull final BaseProps props) {
-      super( props );
+  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, OverridingComponentDidUpdateComponent> implements Lifecycle {
+    NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
+      super( props, context );
     }
 
     @Override
@@ -84,8 +85,8 @@ class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdat
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1, @Nonnull final BaseContext arg2) {
+      return performShouldComponentUpdate(arg0,arg1,arg2);
     }
   }
 }

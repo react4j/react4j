@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
@@ -17,7 +18,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
   static ReactNode _create() {
@@ -35,8 +36,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
     }
@@ -53,20 +54,20 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
 
     void componentWillMount();
 
-    void componentWillReceiveProps(@Nonnull BaseProps nextProps);
+    void componentWillReceiveProps(@Nonnull BaseProps nextProps, @Nonnull BaseContext nextContext);
 
     void componentWillUnmount();
 
-    void componentWillUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState);
+    void componentWillUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState, @Nonnull BaseContext nextContext);
 
     void componentDidCatch(@Nonnull Error error, @Nonnull ReactErrorInfo info);
 
-    boolean shouldComponentUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState);
+    boolean shouldComponentUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState, @Nonnull BaseContext nextContext);
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, OverrideLifecycleMethodsComponent> implements Lifecycle {
-    NativeReactComponent(@Nonnull final BaseProps props) {
-      super( props );
+  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, OverrideLifecycleMethodsComponent> implements Lifecycle {
+    NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
+      super( props, context );
     }
 
     @Override
@@ -90,8 +91,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public void componentWillReceiveProps(@Nonnull final BaseProps nextProps) {
-      performComponentWillReceiveProps(nextProps);
+    public void componentWillReceiveProps(@Nonnull final BaseProps nextProps, @Nonnull final BaseContext nextContext) {
+      performComponentWillReceiveProps(nextProps,nextContext);
     }
 
     @Override
@@ -100,8 +101,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public void componentWillUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState) {
-      performComponentWillUpdate(nextProps,nextState);
+    public void componentWillUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
+      performComponentWillUpdate(nextProps,nextState,nextContext);
     }
 
     @Override
@@ -110,8 +111,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState) {
-      return performShouldComponentUpdate(nextProps,nextState);
+    public boolean shouldComponentUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
+      return performShouldComponentUpdate(nextProps,nextState,nextContext);
     }
   }
 }

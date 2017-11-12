@@ -10,7 +10,9 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import elemental2.core.JsObject;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -27,8 +29,10 @@ import javax.lang.model.type.TypeMirror;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import jsinterop.base.JsPropertyMapOfAny;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
+import react4j.core.PropType;
 import react4j.core.React;
 import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
@@ -128,6 +132,7 @@ final class Generator
     return ParameterizedTypeName.get( ClassName.get( ComponentConstructorFunction.class ),
                                       TypeName.get( descriptor.getPropsType().asType() ),
                                       TypeName.get( descriptor.getStateType().asType() ),
+                                      TypeName.get( descriptor.getContextType().asType() ),
                                       ClassName.bestGuess( "NativeReactComponent" ) );
   }
 
@@ -315,6 +320,33 @@ final class Generator
     codeBlock.endControlFlow();
 
     method.addCode( codeBlock.build() );
+
+    final Map<String, TypeMirror> childContextTypeFields =
+      descriptor.hasChildContextFields() ? descriptor.getChildContextTypeFields() : Collections.emptyMap();
+    final Map<String, TypeMirror> contextTypeFields = descriptor.getContextTypeFields();
+    if ( !childContextTypeFields.isEmpty() || !contextTypeFields.isEmpty() )
+    {
+      method.addStatement( "final $T valid = () -> null", PropType.class );
+    }
+    if ( !contextTypeFields.isEmpty() )
+    {
+      method.addStatement( "final $T contextTypes = $T.of()", JsPropertyMapOfAny.class, JsPropertyMap.class );
+      for ( final String contextKey : contextTypeFields.keySet() )
+      {
+        method.addStatement( "contextTypes.set( $S, valid )", contextKey );
+      }
+      method.addStatement( "$T.of( componentConstructor ).set( \"contextTypes\", contextTypes )", JsPropertyMap.class );
+    }
+    if ( !childContextTypeFields.isEmpty() )
+    {
+      method.addStatement( "final $T childContextTypes = $T.of()", JsPropertyMapOfAny.class, JsPropertyMap.class );
+      for ( final String childContextKey : childContextTypeFields.keySet() )
+      {
+        method.addStatement( "childContextTypes.set( $S, valid )", childContextKey );
+      }
+      method.addStatement( "$T.of( componentConstructor ).set( \"childContextTypes\", childContextTypes )",
+                           JsPropertyMap.class );
+    }
     method.addStatement( "return componentConstructor" );
     return method;
   }
@@ -332,6 +364,7 @@ final class Generator
       ParameterizedTypeName.get( ClassName.get( NativeAdapterComponent.class ),
                                  ClassName.get( descriptor.getPropsType().asType() ),
                                  ClassName.get( descriptor.getStateType().asType() ),
+                                 ClassName.get( descriptor.getContextType().asType() ),
                                  ClassName.get( descriptor.getElement() ) );
 
     builder.superclass( superType );
@@ -346,10 +379,14 @@ final class Generator
       final ParameterSpec.Builder props =
         ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
           addAnnotation( Nonnull.class );
+      final ParameterSpec.Builder context =
+        ParameterSpec.builder( ClassName.get( descriptor.getContextType() ), "context", Modifier.FINAL ).
+          addAnnotation( Nonnull.class );
       final MethodSpec.Builder method =
         MethodSpec.constructorBuilder().
-          addParameter( props.build() );
-      method.addStatement( "super( props )" );
+          addParameter( props.build() ).
+          addParameter( context.build() );
+      method.addStatement( "super( props, context )" );
       builder.addMethod( method.build() );
     }
 

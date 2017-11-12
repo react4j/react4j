@@ -27,8 +27,9 @@ public final class React
   public static <
     P extends BaseProps,
     S extends BaseState,
-    T extends NativeComponent<P, S>>
-  ReactElement<P, T> createElement( @Nonnull final ComponentConstructorFunction<P, S, T> type )
+    C extends BaseContext,
+    T extends NativeComponent<P, S, C>>
+  ReactElement<P, T> createElement( @Nonnull final ComponentConstructorFunction<P, S, C, T> type )
   {
     return createElement( type, null );
   }
@@ -44,8 +45,9 @@ public final class React
   public static <
     P extends BaseProps,
     S extends BaseState,
-    T extends NativeComponent<P, S>>
-  ReactElement<P, T> createElement( @Nonnull final ComponentConstructorFunction<P, S, T> type,
+    C extends BaseContext,
+    T extends NativeComponent<P, S, C>>
+  ReactElement<P, T> createElement( @Nonnull final ComponentConstructorFunction<P, S, C, T> type,
                                     @Nullable final P props )
   {
     // Need to pass through undefined to react otherwise the debugger tool displays
@@ -64,9 +66,10 @@ public final class React
   public static native <
     P extends BaseProps,
     S extends BaseState,
-    T extends NativeComponent<P, S>
+    C extends BaseContext,
+    T extends NativeComponent<P, S, C>
     >
-  ReactElement<P, T> createElement( @Nonnull ComponentConstructorFunction<P, S, T> type,
+  ReactElement<P, T> createElement( @Nonnull ComponentConstructorFunction<P, S, C, T> type,
                                     @Nullable P props,
                                     @Nullable ReactNode child );
 

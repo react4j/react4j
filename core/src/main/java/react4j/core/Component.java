@@ -16,7 +16,7 @@ import static org.realityforge.braincheck.Guards.*;
  * @param <P> the type of props that this component supports.
  * @param <S> the type of state that this component maintains.
  */
-public abstract class Component<P extends BaseProps, S extends BaseState>
+public abstract class Component<P extends BaseProps, S extends BaseState, C extends BaseContext>
 {
   /**
    * Callback function for updating state.
@@ -43,7 +43,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   @Nonnull
   private LifecycleMethod _lifecycleMethod = LifecycleMethod.UNKNOWN;
   @Nullable
-  private NativeComponent<P, S> _nativeComponent;
+  private NativeComponent<P, S, C> _nativeComponent;
 
   /**
    * Set the phase of the component. Only used for invariant checking.
@@ -67,7 +67,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
     _lifecycleMethod = Objects.requireNonNull( lifecycleMethod );
   }
 
-  final void bindComponent( @Nonnull final NativeComponent<P, S> nativeComponent )
+  final void bindComponent( @Nonnull final NativeComponent<P, S, C> nativeComponent )
   {
     _nativeComponent = Objects.requireNonNull( nativeComponent );
   }
@@ -94,7 +94,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * Return the native react component.
    */
   @Nonnull
-  private NativeComponent<P, S> component()
+  private NativeComponent<P, S, C> component()
   {
     invariant( () -> null != _nativeComponent,
                () -> "Invoked component() on " + this + " before a component has been bound." );
@@ -134,6 +134,18 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   protected final P props()
   {
     return component().props();
+  }
+
+  /**
+   * Return the component context from the native component.
+   * This may be null if no context is present.
+   *
+   * @return the component context if any.
+   */
+  @Nullable
+  protected final C context()
+  {
+    return component().context();
   }
 
   /**
@@ -186,12 +198,12 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * The component re-renders when state or props change but calling this method is another way to
    * schedule the component to be re-rendered.
    *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(BaseProps, BaseState)} will be skipped
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(BaseProps, BaseState, BaseContext)} will be skipped
    * and it is equivalent to calling forceUpdate() on the native react component. See the
    * <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component documentation</a> for more
    * details.</p>
    *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(BaseProps, BaseState)} will be
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(BaseProps, BaseState, BaseContext)} will be
    * invoked. This is equivalent to calling setState({}) on the native react component.</p>
    *
    * @param force true to skip shouldComponentUpdate during re-render, false otherwise.
@@ -268,6 +280,17 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
   }
 
   /**
+   * Return the context published by this component to child components.
+   *
+   * @return the child context if any.
+   */
+  @Nullable
+  protected BaseChildContext getChildContext()
+  {
+    return null;
+  }
+
+  /**
    * This method is invoked after the component is bound to a native react component.
    * This is a good place to perform initialization.
    */
@@ -320,8 +343,9 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * <p>React doesn't call this method with initial props during mounting. It only calls this method
    * if some of component's props may update. Calling {@link #scheduleStateUpdate(BaseState)} generally doesn't trigger
    * this method.</p>
+   * @param nextContext the new context of the component.
    */
-  protected void componentWillReceiveProps( @Nonnull final P nextProps )
+  protected void componentWillReceiveProps( @Nonnull final P nextProps, @Nonnull final C nextContext )
   {
   }
 
@@ -342,15 +366,18 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    * See the <a href="https://reactjs.org/docs/react-component.html#componentwillupdate">React Component documentation</a> for more details.
    *
    * <p>Note that you cannot call {@link #scheduleStateUpdate(BaseState)} here. If you need to update state in
-   * response to a prop change, use {@link #componentWillReceiveProps(BaseProps)} instead.</p>
+   * response to a prop change, use {@link #componentWillReceiveProps(BaseProps, BaseContext)} instead.</p>
    *
-   * <p>Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState)}
+   * <p>Note: This method will not be invoked if {@link #shouldComponentUpdate(BaseProps, BaseState, BaseContext)}
    * returns false.</p>
    *
    * @param nextProps the new properties of the component.
    * @param nextState the new state of the component.
+   * @param nextContext the new context of the component.
    */
-  protected void componentWillUpdate( @Nullable final P nextProps, @Nullable final S nextState )
+  protected void componentWillUpdate( @Nullable final P nextProps,
+                                      @Nullable final S nextState,
+                                      @Nonnull final C nextContext )
   {
   }
 
@@ -383,16 +410,19 @@ public abstract class Component<P extends BaseProps, S extends BaseState>
    *
    * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
    *
-   * <p>If this method returns false, then {@link #componentWillUpdate(BaseProps, BaseState)}, {@link #render()}, and
-   * {@link #componentDidUpdate(BaseProps, BaseState)} will not be invoked. In the future React may
-   * treat this method  as a hint rather than a strict directive, and returning false may still result
+   * <p>If this method returns false, then {@link #componentWillUpdate(BaseProps, BaseState, BaseContext)},
+   * {@link #render()}, and {@link #componentDidUpdate(BaseProps, BaseState)} will not be invoked. In the future
+   * React may treat this method  as a hint rather than a strict directive, and returning false may still result
    * in a re-rendering of the component.</p>
    *
    * @param nextProps the new properties of the component.
    * @param nextState the new state of the component.
+   * @param nextContext the new context of the component.
    * @return true in case the component should be updated
    */
-  protected boolean shouldComponentUpdate( @Nullable final P nextProps, @Nullable final S nextState )
+  protected boolean shouldComponentUpdate( @Nullable final P nextProps,
+                                           @Nullable final S nextState,
+                                           @Nullable final C nextContext )
   {
     return true;
   }

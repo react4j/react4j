@@ -1,9 +1,11 @@
-package com.example.render;
+package com.example.context;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+import react4j.core.BaseChildContext;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -14,7 +16,7 @@ import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class RenderAsJsArrayComponent_ extends RenderAsJsArrayComponent {
+class BasicProviderComponent_ extends BasicProviderComponent {
   private static final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
@@ -36,25 +38,31 @@ class RenderAsJsArrayComponent_ extends RenderAsJsArrayComponent {
   private static ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "RenderAsJsArrayComponent" );
+      JsPropertyMap.of( componentConstructor ).set( "displayName", "BasicProviderComponent" );
     }
     return componentConstructor;
   }
 
-  @Override
-  @Nullable
-  protected ReactNode render() {
-    return ReactNode.of( renderAsJsArray() );
+  @JsType(
+      isNative = true
+  )
+  interface Lifecycle {
+    BaseChildContext getChildContext();
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, RenderAsJsArrayComponent> {
+  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, BasicProviderComponent> implements Lifecycle {
     NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
       super( props, context );
     }
 
     @Override
-    protected RenderAsJsArrayComponent createComponent() {
-      return new RenderAsJsArrayComponent_();
+    protected BasicProviderComponent createComponent() {
+      return new BasicProviderComponent_();
+    }
+
+    @Override
+    public BaseChildContext getChildContext() {
+      return performGetChildContext();
     }
   }
 }

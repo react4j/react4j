@@ -6,6 +6,7 @@ import org.realityforge.arez.annotations.Computed;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactNode;
@@ -20,7 +21,7 @@ import static react4j.todomvc.Footer_.*;
 
 @ReactComponent
 class Footer
-  extends ReactArezComponent<BaseProps, BaseState>
+  extends ReactArezComponent<BaseProps, BaseState, BaseContext>
 {
   @EventHandler( MouseEventHandler.class )
   void handleClearCompleted()

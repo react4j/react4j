@@ -4,6 +4,7 @@ import elemental2.core.Error;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.annotations.ReactComponent;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
@@ -12,7 +13,7 @@ import react4j.core.ReactNode;
 
 @ReactComponent
 class OverrideLifecycleMethodsComponent
-  extends Component<BaseProps, BaseState>
+  extends Component<BaseProps, BaseState, BaseContext>
 {
   @Override
   protected ReactNode render()
@@ -31,7 +32,7 @@ class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected void componentWillReceiveProps( @Nonnull final BaseProps nextProps )
+  protected void componentWillReceiveProps( @Nonnull final BaseProps nextProps, @Nonnull final BaseContext nextContext )
   {
   }
 
@@ -41,7 +42,9 @@ class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected void componentWillUpdate( @Nullable final BaseProps nextProps, @Nullable final BaseState nextState )
+  protected void componentWillUpdate( @Nullable final BaseProps nextProps,
+                                      @Nullable final BaseState nextState,
+                                      @Nonnull final BaseContext nextContext )
   {
   }
 
@@ -56,8 +59,10 @@ class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  public boolean shouldComponentUpdate( @Nullable final BaseProps nextProps, @Nullable final BaseState nextState )
+  protected boolean shouldComponentUpdate( @Nullable final BaseProps nextProps,
+                                           @Nullable final BaseState nextState,
+                                           @Nullable final BaseContext nextContext )
   {
-    return super.shouldComponentUpdate( nextProps, nextState );
+    return super.shouldComponentUpdate( nextProps, nextState, nextContext );
   }
 }

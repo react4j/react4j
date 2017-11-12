@@ -7,7 +7,6 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsPropertyMap;
 
 /**
  * The react native component.
@@ -17,15 +16,18 @@ import jsinterop.base.JsPropertyMap;
  * @param <S> the type of state this component maintains
  */
 @JsType( isNative = true, namespace = "React", name = "Component" )
-abstract class NativeComponent<P extends BaseProps, S extends BaseState>
+abstract class NativeComponent<P extends BaseProps, S extends BaseState, C extends BaseContext>
 {
   @SuppressWarnings( "unused" )
   @JsProperty
   private P props;
   @JsProperty
   private S state;
+  @JsProperty
+  private C context;
 
-  NativeComponent( @SuppressWarnings( "unused" ) @Nonnull final P props )
+  NativeComponent( @SuppressWarnings( "unused" ) @Nonnull final P props,
+                   @SuppressWarnings( "unused" ) @Nonnull final C context )
   {
   }
 
@@ -45,6 +47,13 @@ abstract class NativeComponent<P extends BaseProps, S extends BaseState>
   final S state()
   {
     return state;
+  }
+
+  @JsOverlay
+  @Nullable
+  final C context()
+  {
+    return context;
   }
 
   final native void setState( @Nonnull S state );

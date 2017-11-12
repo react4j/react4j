@@ -9,13 +9,14 @@ import jsinterop.annotations.JsFunction;
  */
 @FunctionalInterface
 @JsFunction
-public interface ComponentConstructorFunction<P extends BaseProps, S extends BaseState, C extends NativeComponent<P, S>>
+public interface ComponentConstructorFunction<P extends BaseProps, S extends BaseState, C extends BaseContext, I extends NativeComponent<P, S, C>>
 {
   /**
    * Construct a component based on specified properties.
    *
-   * @param props the component props.
+   * @param props   the component props.
+   * @param context the component context.
    * @return the component.
    */
-  C construct( P props );
+  I construct( P props, C context );
 }

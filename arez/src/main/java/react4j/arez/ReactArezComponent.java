@@ -17,6 +17,7 @@ import org.realityforge.arez.annotations.ContextRef;
 import org.realityforge.arez.annotations.ObserverRef;
 import org.realityforge.arez.annotations.OnDepsChanged;
 import org.realityforge.arez.annotations.Track;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
@@ -33,8 +34,8 @@ import react4j.core.util.JsUtil;
  * of an Arez transaction. (Typically this means it needs to be accessed within the
  * scope of a {@link Action} annotated method or within the scope of the render method.</p>
  */
-public abstract class ReactArezComponent<P extends BaseProps, S extends BaseState>
-  extends Component<P, S>
+public abstract class ReactArezComponent<P extends BaseProps, S extends BaseState, C extends BaseContext>
+  extends Component<P, S, C>
 {
   /**
    * Key used to store the arez data in state.
@@ -113,7 +114,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  protected boolean shouldComponentUpdate( @Nullable final P nextProps, @Nullable final S nextState )
+  protected boolean shouldComponentUpdate( @Nullable final P nextProps, @Nullable final S nextState, @Nullable final C nextContext )
   {
     if ( hasRenderDepsChanged() )
     {

@@ -5,14 +5,6 @@
 * Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
   state and context?
 
-* Implement context:
-  - https://reactjs.org/docs/context.html
-  - contextTypes defined on component constructor - (key -> validation function)
-  - constructor(props, context)
-  - componentWillReceiveProps(nextProps, nextContext)
-  - shouldComponentUpdate(nextProps, nextState, nextContext)
-  - componentWillUpdate(nextProps, nextState, nextContext)
-
 * Port transition code ala
   - https://github.com/reactjs/react-transition-group
   - https://reactcommunity.org/react-transition-group/

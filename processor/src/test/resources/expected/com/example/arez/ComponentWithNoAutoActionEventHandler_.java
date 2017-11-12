@@ -8,6 +8,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.arez.annotations.ArezComponent;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
@@ -22,7 +23,7 @@ import react4j.core.ReactNode;
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEventHandler {
-  private static final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
   private final Procedure _handleFoo = create_handleFoo();
@@ -43,8 +44,8 @@ class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEv
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "ComponentWithNoAutoActionEventHandler" );
     }
@@ -75,12 +76,12 @@ class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEv
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1);
+    boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1, @Nonnull BaseContext arg2);
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, ComponentWithNoAutoActionEventHandler> implements Lifecycle {
-    NativeReactComponent(@Nonnull final BaseProps props) {
-      super( props );
+  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ComponentWithNoAutoActionEventHandler> implements Lifecycle {
+    NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
+      super( props, context );
     }
 
     @Override
@@ -104,8 +105,8 @@ class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEv
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1, @Nonnull final BaseContext arg2) {
+      return performShouldComponentUpdate(arg0,arg1,arg2);
     }
   }
 }

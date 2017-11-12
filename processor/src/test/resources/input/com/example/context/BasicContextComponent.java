@@ -1,4 +1,4 @@
-package com.example.basic;
+package com.example.context;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -10,22 +10,14 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class CustomPropsAndStateReactComponent
-  extends Component<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, BaseContext>
+class BasicContextComponent
+  extends Component<BaseProps, BaseState, BasicContextComponent.Context>
 {
-
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  public static class Props
-    extends BaseProps
+  static class Context
+    extends BaseContext
   {
-    boolean someField;
-  }
-
-  @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  static class State
-    extends BaseState
-  {
-    String someText;
+    String newTodo;
   }
 
   @Override

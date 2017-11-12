@@ -8,6 +8,8 @@
   a broad range of applications. Over time as React4J stabilizes it is expected that they will migrate out to be
   managed externally. Until then it is a useful place for the components and utilities to live while they co-evolve.
 * **\[extras\]** Add the `WindowPortal` component that creates a portal to a new top level window.
+* **\[core\]** Add initial support for Reacts concept of "Context". React4j supports writing context consumer
+  components as well as context provider components.
 
 ##### Fixed
 * 💥 **\[core\]** Make sure the type of `ReactElementChildren` does not imply a prototype.

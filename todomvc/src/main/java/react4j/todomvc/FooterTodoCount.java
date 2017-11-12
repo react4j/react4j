@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactNode;
@@ -14,7 +15,7 @@ import static react4j.todomvc.FooterTodoCount_.*;
 
 @ReactComponent
 class FooterTodoCount
-  extends ReactArezComponent<BaseProps, BaseState>
+  extends ReactArezComponent<BaseProps, BaseState, BaseContext>
 {
   @Nonnull
   static ReactNode create()

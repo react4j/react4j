@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
@@ -17,7 +18,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class BasicHandlerComponent_ extends BasicHandlerComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
 
   @Nonnull
   private final Procedure _handleFoo = create_handleFoo();
@@ -38,8 +39,8 @@ class BasicHandlerComponent_ extends BasicHandlerComponent {
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "BasicHandlerComponent" );
     }
@@ -60,9 +61,9 @@ class BasicHandlerComponent_ extends BasicHandlerComponent {
     return handler;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BasicHandlerComponent> {
-    NativeReactComponent(@Nonnull final BaseProps props) {
-      super( props );
+  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, BasicHandlerComponent> {
+    NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
+      super( props, context );
     }
 
     @Override

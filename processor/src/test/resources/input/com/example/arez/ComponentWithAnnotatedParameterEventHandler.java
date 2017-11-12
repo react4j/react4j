@@ -6,13 +6,14 @@ import jsinterop.annotations.JsFunction;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
+import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ReactNode;
 
 @ReactComponent
 class ComponentWithAnnotatedParameterEventHandler
-  extends ReactArezComponent<BaseProps, BaseState>
+  extends ReactArezComponent<BaseProps, BaseState, BaseContext>
 {
   @JsFunction
   public interface CustomHandler

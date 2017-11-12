@@ -1,8 +1,9 @@
-package com.example.event_handler;
+package com.example.context;
 
-import jsinterop.annotations.JsFunction;
-import react4j.annotations.EventHandler;
+import javax.annotation.Nullable;
+import jsinterop.base.JsPropertyMap;
 import react4j.annotations.ReactComponent;
+import react4j.core.BaseChildContext;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -10,23 +11,19 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class TooFewParamsComponent
+class BasicProviderComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
-  @JsFunction
-  public interface CustomHandler
+  @Nullable
+  @Override
+  protected BaseChildContext getChildContext()
   {
-    void onMouseEvent( Object o1, Object o2 );
+    return super.getChildContext();
   }
 
   @Override
   protected ReactNode render()
   {
     return null;
-  }
-
-  @EventHandler( CustomHandler.class )
-  void handleFoo( int i )
-  {
   }
 }

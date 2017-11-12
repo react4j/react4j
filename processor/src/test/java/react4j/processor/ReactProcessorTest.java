@@ -24,6 +24,8 @@ public class ReactProcessorTest
         new Object[]{ "com.example.basic.CustomNameReactComponent" },
         new Object[]{ "com.example.basic.CustomPropsAndStateReactComponent" },
         new Object[]{ "com.example.basic.PublicReactComponent" },
+        new Object[]{ "com.example.context.BasicContextComponent" },
+        new Object[]{ "com.example.context.BasicProviderComponent" },
         new Object[]{ "com.example.event_handler.BasicHandlerComponent" },
         new Object[]{ "com.example.event_handler.CustomHandlerButParametersIgnoredComponent" },
         new Object[]{ "com.example.event_handler.CustomHandlerComponent" },
