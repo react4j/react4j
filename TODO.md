@@ -83,6 +83,8 @@ accessing transitive dependency tree via UI?
 Possibly we also need the ability to browse the repositories in the application. Register repositories on
 startup and then browse via tables?
 
+* See https://github.com/gaearon/redux-devtools
+
 #### Compiler optimizations
 
 (Sourced from [ReactJS Changelog](https://reactjs.org/blog/2015/10/07/react-v0.14.html#compiler-optimizations))
@@ -100,6 +102,8 @@ warning messages more cryptic and skip important checks that happen in developme
 
 #### Window Portal Notes
 
+* https://github.com/beardedtim/react-child-window/blob/master/index.jsx
+* https://www.w3schools.com/jsref/met_win_open.asp
 * https://www.npmjs.com/package/react-portal
 
 Copying styles from source document -
