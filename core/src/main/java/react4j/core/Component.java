@@ -127,7 +127,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
 
   /**
    * Return the component props from the native component.
-   * This may be null if no probs were supplied.
+   * This may be null if no props were supplied.
    *
    * @return the component state.
    */
