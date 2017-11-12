@@ -299,7 +299,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
   }
 
   /**
-   * This method is invoked after a component is attatched to the DOM.
+   * This method is invoked after a component is attached to the DOM.
    * Initialization that requires DOM nodes should go here.
    * Setting state in this method will trigger a re-rendering.
    * See the <a href="https://reactjs.org/docs/react-component.html#componentdidmount">React Component documentation</a> for more details.
