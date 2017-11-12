@@ -14,6 +14,11 @@
 
 * Move repository to https://github.com/react4j
 
+* Document Context
+  - how to write a provider
+  - how to write a consumer
+  - pitfalls of a consumer (link to React docs? - https://reactjs.org/docs/context.html)
+
 ### Medium Priorities
 
 * Figure out how components can interact with with dagger
