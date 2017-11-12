@@ -20,16 +20,17 @@ public final class React
   /**
    * Create a ReactElement for the specified React component with no props or children.
    *
+   * @param <P>  the type of the component props.
+   * @param <C>  the type of the component context.
    * @param type the constructor function for the native React component.
    * @return a new ReactElement.
    */
   @JsOverlay
   public static <
     P extends BaseProps,
-    S extends BaseState,
-    C extends BaseContext,
-    T extends NativeComponent<P, S, C>>
-  ReactElement<P, T> createElement( @Nonnull final ComponentConstructorFunction<P, S, C, T> type )
+    C extends BaseContext
+    >
+  ReactElement<P, ComponentConstructorFunction<P, C>> createElement( @Nonnull final ComponentConstructorFunction<P, C> type )
   {
     return createElement( type, null );
   }
@@ -44,11 +45,10 @@ public final class React
   @JsOverlay
   public static <
     P extends BaseProps,
-    S extends BaseState,
-    C extends BaseContext,
-    T extends NativeComponent<P, S, C>>
-  ReactElement<P, T> createElement( @Nonnull final ComponentConstructorFunction<P, S, C, T> type,
-                                    @Nullable final P props )
+    C extends BaseContext
+    >
+  ReactElement<P, ComponentConstructorFunction<P, C>> createElement( @Nonnull final ComponentConstructorFunction<P, C> type,
+                                                                     @Nullable final P props )
   {
     // Need to pass through undefined to react otherwise the debugger tool displays
     // children as null rather than omitting children
@@ -58,6 +58,8 @@ public final class React
   /**
    * Create a ReactElement for the specified React component.
    *
+   * @param <P>   the type of the component props.
+   * @param <C>   the type of the component context.
    * @param type  the constructor function for the native React component.
    * @param props the props to pass to the component.
    * @param child the child/children of the react component.
@@ -65,13 +67,11 @@ public final class React
    */
   public static native <
     P extends BaseProps,
-    S extends BaseState,
-    C extends BaseContext,
-    T extends NativeComponent<P, S, C>
+    C extends BaseContext
     >
-  ReactElement<P, T> createElement( @Nonnull ComponentConstructorFunction<P, S, C, T> type,
-                                    @Nullable P props,
-                                    @Nullable ReactNode child );
+  ReactElement<P, ComponentConstructorFunction<P, C>> createElement( @Nonnull ComponentConstructorFunction<P, C> type,
+                                                                     @Nullable P props,
+                                                                     @Nullable ReactNode child );
 
   /**
    * Clone and return a new ReactElement using element as the starting point. The resulting
@@ -80,6 +80,8 @@ public final class React
    * ref from the original element will be preserved. There is no special behavior for merging
    * any props (unlike cloneWithProps).
    *
+   * @param <P>     the type of the component props.
+   * @param <T>     the type of the component.
    * @param element the element to clone
    * @param props   the props to merge
    * @return the cloned element

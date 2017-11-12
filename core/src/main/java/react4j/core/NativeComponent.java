@@ -10,13 +10,12 @@ import jsinterop.annotations.JsType;
 
 /**
  * The react native component.
- * This class is not part of the public API and is purely an implementation detail.
  *
  * @param <P> the type of props this component expects
  * @param <S> the type of state this component maintains
  */
 @JsType( isNative = true, namespace = "React", name = "Component" )
-abstract class NativeComponent<P extends BaseProps, S extends BaseState, C extends BaseContext>
+public abstract class NativeComponent<P extends BaseProps, S extends BaseState, C extends BaseContext>
 {
   @SuppressWarnings( "unused" )
   @JsProperty
@@ -33,7 +32,7 @@ abstract class NativeComponent<P extends BaseProps, S extends BaseState, C exten
 
   @JsMethod
   @Nullable
-  protected abstract ReactNode render();
+  abstract ReactNode render();
 
   @JsOverlay
   @Nullable

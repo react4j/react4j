@@ -13,7 +13,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactComponent {
-  private static final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
   static ReactNode _create() {
@@ -31,8 +31,8 @@ class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactCompone
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, BaseContext, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, BaseContext> getConstructorFunction() {
+    final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomPropsAndStateReactComponent" );
     }

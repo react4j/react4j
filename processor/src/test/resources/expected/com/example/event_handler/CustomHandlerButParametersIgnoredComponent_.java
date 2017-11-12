@@ -17,7 +17,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class CustomHandlerButParametersIgnoredComponent_ extends CustomHandlerButParametersIgnoredComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
   private final CustomHandlerButParametersIgnoredComponent.CustomHandler _handleFoo = create_handleFoo();
@@ -38,8 +38,8 @@ class CustomHandlerButParametersIgnoredComponent_ extends CustomHandlerButParame
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomHandlerButParametersIgnoredComponent" );
     }

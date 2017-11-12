@@ -50,6 +50,8 @@
 * 💥 **\[processor\]** Update the annotation processor so that the enhanced component classes generate the `_create`
   methods with a return type of `ReactNode`.
 * 💥 **\[core\]** Add nullability annotations onto `ReactElement`.
+* 💥 **\[core\]** Reduce the number of type parameters required to implement `ComponentConstructorFunction`. As a
+  result make the `NativeComponent` class public.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)

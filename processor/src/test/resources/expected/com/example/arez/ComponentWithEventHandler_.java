@@ -24,7 +24,7 @@ import react4j.core.ReactNode;
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithEventHandler_ extends ComponentWithEventHandler {
-  private static final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
   private final Procedure _handleFoo = create_handleFoo();
@@ -48,8 +48,8 @@ class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "ComponentWithEventHandler" );
     }

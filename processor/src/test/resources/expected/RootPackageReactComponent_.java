@@ -13,7 +13,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class RootPackageReactComponent_ extends RootPackageReactComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
   static ReactNode _create() {
@@ -31,8 +31,8 @@ class RootPackageReactComponent_ extends RootPackageReactComponent {
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "RootPackageReactComponent" );
     }

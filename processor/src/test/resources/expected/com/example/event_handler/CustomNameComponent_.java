@@ -18,7 +18,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class CustomNameComponent_ extends CustomNameComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
   private final Procedure _handleFoo = create_handleFoo();
@@ -39,8 +39,8 @@ class CustomNameComponent_ extends CustomNameComponent {
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, BaseContext, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomNameComponent" );
     }

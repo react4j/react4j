@@ -131,9 +131,7 @@ final class Generator
   {
     return ParameterizedTypeName.get( ClassName.get( ComponentConstructorFunction.class ),
                                       TypeName.get( descriptor.getPropsType().asType() ),
-                                      TypeName.get( descriptor.getStateType().asType() ),
-                                      TypeName.get( descriptor.getContextType().asType() ),
-                                      ClassName.bestGuess( "NativeReactComponent" ) );
+                                      TypeName.get( descriptor.getContextType().asType() ) );
   }
 
   @Nonnull

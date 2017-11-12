@@ -73,8 +73,6 @@ class TodoEntry
   schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
   and will need to be marked as runImmediately=false)
 
-* ComponentConstructorFunction should use ? typing to reduce it's "overhead"
-
 #### Arez DevTools
 
 Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need

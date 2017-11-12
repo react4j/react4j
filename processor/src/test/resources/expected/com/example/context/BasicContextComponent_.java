@@ -16,7 +16,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class BasicContextComponent_ extends BasicContextComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseState, BasicContextComponent.Context, NativeReactComponent> TYPE = getConstructorFunction();
+  private static final ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> TYPE = getConstructorFunction();
 
   @Nonnull
   static ReactNode _create() {
@@ -34,8 +34,8 @@ class BasicContextComponent_ extends BasicContextComponent {
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseState, BasicContextComponent.Context, NativeReactComponent> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseState, BasicContextComponent.Context, NativeReactComponent> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       JsPropertyMap.of( componentConstructor ).set( "displayName", "BasicContextComponent" );
     }
