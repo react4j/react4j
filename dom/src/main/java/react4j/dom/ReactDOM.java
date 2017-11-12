@@ -86,13 +86,12 @@ public class ReactDOM
   /**
    * Create and return a new ReactElement of the given type.
    *
-   * @param <P>  The type of the props. It should match the associated tag name.
    * @param type A HTML tag name (eg. 'div', 'span', etc)
-   * @return the created DOMElement
+   * @return the created ReactNode
    */
   @Nonnull
   @JsOverlay
-  public static <P extends HtmlGlobalFields> DOMElement<P> createElement( @Nonnull final String type )
+  public static ReactNode createElement( @Nonnull final String type )
   {
     return createElement( type, null );
   }
@@ -103,12 +102,12 @@ public class ReactDOM
    * @param <P>   The type of the props. It should match the associated tag name.
    * @param type  A HTML tag name (eg. 'div', 'span', etc)
    * @param props The props to pass to the element.
-   * @return the created DOMElement
+   * @return the created ReactNode
    */
   @Nonnull
   @JsMethod( namespace = "React" )
   public static native <P extends HtmlGlobalFields>
-  DOMElement<P> createElement( @Nonnull String type, @Nullable P props );
+  ReactNode createElement( @Nonnull String type, @Nullable P props );
 
   /**
    * Create and return a new ReactElement of the given type with specified children.
@@ -122,5 +121,5 @@ public class ReactDOM
   @Nonnull
   @JsMethod( namespace = "React" )
   public static native <P extends HtmlGlobalFields>
-  DOMElement<P> createElement( @Nonnull String type, @Nullable P props, @Nullable ReactNode... children );
+  ReactNode createElement( @Nonnull String type, @Nullable P props, @Nullable ReactNode... children );
 }

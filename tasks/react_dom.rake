@@ -83,43 +83,43 @@ HEADER
     content += <<HEADER
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactNode... child )
+  public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactNode... child )
   {
     return ReactDOM.createElement( "#{key}", props, child );
   }
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}( @Nullable final ReactNode... child )
+  public static ReactNode #{key}( @Nullable final ReactNode... child )
   {
     return ReactDOM.createElement( "#{key}", null, child );
   }
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props, @Nonnull final String content )
+  public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final String content )
   {
     return ReactDOM.createElement( "#{key}", props, text( content ) );
   }
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props )
+  public static ReactNode #{key}( @Nonnull final #{prop_type} props )
   {
     return ReactDOM.createElement( "#{key}", props );
   }
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}( @Nonnull final String content )
+  public static ReactNode #{key}( @Nonnull final String content )
   {
     return ReactDOM.createElement( "#{key}", null, text( content ) );
   }
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}()
+  public static ReactNode #{key}()
   {
     return ReactDOM.createElement( "#{key}", null );
   }
 
   @Nonnull
-  public static DOMElement<#{prop_type}> #{key}( @Nonnull final #{prop_type} props, @Nonnull final List<ReactNode> children )
+  public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final List<ReactNode> children )
   {
     return #{key}( props, Js.<ReactNode[]>uncheckedCast( JsUtil.asJsArray( children ) ) );
   }
