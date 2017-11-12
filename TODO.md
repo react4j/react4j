@@ -58,7 +58,7 @@ class TodoEntry
 * Props and state fields should be read-only abstractions. Mutations create new objects?
 * Somehow declare props as interfaces in components and have implementation generated?
 
-* For html props we could just generated via ruby and existing patterns fter looking at pages like:
+* For html props we could just generated via ruby and existing patterns after looking at pages like:
   - https://www.w3schools.com/tags/ref_standardattributes.asp
 
 ### Low Priorities
