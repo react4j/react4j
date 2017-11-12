@@ -1,5 +1,7 @@
 package react4j.core;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
@@ -7,8 +9,12 @@ import jsinterop.annotations.JsType;
 public class ReactElement<P extends BaseProps, T>
   implements ReactNode
 {
+  @SuppressWarnings( "NullableProblems" )
+  @Nonnull
   public T type;
+  @Nullable
   public P props;
+  @Nullable
   public String key;
 
   /**

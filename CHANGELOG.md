@@ -47,6 +47,7 @@
 * 💥 **\[core\]** Removed `Component.renderAsString()` as it is trivial to wrap a string in a `ReactNode`.
 * 💥 **\[processor\]** Update the annotation processor so that the enhanced component classes generate the `_create`
   methods with a return type of `ReactNode`.
+* 💥 **\[core\]** Add nullability annotations onto `ReactElement`.
 
 ### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)
