@@ -142,7 +142,6 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    *
    * @return the component context if any.
    */
-  @Nullable
   protected final C context()
   {
     return component().context();
