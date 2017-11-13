@@ -551,7 +551,7 @@ public final class ReactProcessor
       final DeclaredType returnType = (DeclaredType) getChildContext.getMethodType().getReturnType();
       final Map<String, TypeMirror> childContextTypeFields =
         ProcessorUtil.getFields( (TypeElement) returnType.asElement(), processingEnv.getTypeUtils() );
-    descriptor.setChildContextTypeFields( childContextTypeFields );
+      descriptor.setChildContextTypeFields( childContextTypeFields );
     }
   }
 
