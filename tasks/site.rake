@@ -77,23 +77,26 @@ task 'site:deploy' => ['site:build'] do
   # Verify the site is valid first
   task('site:link_check').invoke
 
-  origin_url = `git remote get-url origin`
+  # Only publish the site off the master branch if running out of Travis
+  if ENV['TRAVIS_BRANCH'].nil? || ENV['TRAVIS_BRANCH'] == 'master'
+    origin_url = `git remote get-url origin`
 
-  travis_build_number = ENV['TRAVIS_BUILD_NUMBER']
-  if travis_build_number
-    origin_url = origin_url.gsub('https://github.com/', 'git@github.com:')
-  end
+    travis_build_number = ENV['TRAVIS_BUILD_NUMBER']
+    if travis_build_number
+      origin_url = origin_url.gsub('https://github.com/', 'git@github.com:')
+    end
 
-  in_dir(SITE_DIR) do
-    sh 'git init'
-    sh 'git add .'
-    message =
-      travis_build_number.nil? ?
-        'Publish website' :
-        "Publish website - Travis build: #{travis_build_number}"
+    in_dir(SITE_DIR) do
+      sh 'git init'
+      sh 'git add .'
+      message =
+        travis_build_number.nil? ?
+          'Publish website' :
+          "Publish website - Travis build: #{travis_build_number}"
 
-    sh "git commit -m \"#{message}\""
-    sh "git remote add origin #{origin_url}"
-    sh 'git push -f origin master:gh-pages'
+      sh "git commit -m \"#{message}\""
+      sh "git remote add origin #{origin_url}"
+      sh 'git push -f origin master:gh-pages'
+    end
   end
 end
