@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.14](https://github.com/realityforge/react4j/tree/v0.14) (2017-11-13)
+[Full Changelog](https://github.com/realityforge/react4j/compare/v0.13...v0.14)
 
 ##### Fixed
 * Make sure the `react4j-extras` module is correctly defined and can be released to Maven Central.
