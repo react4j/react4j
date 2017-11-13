@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Fixed
+* Make sure the `NativeComponent.render()` method is public otherwise the GWT compiler get's confused and
+  generates self-recursive method for `render()`.
+
 ### [v0.14](https://github.com/realityforge/react4j/tree/v0.14) (2017-11-13)
 [Full Changelog](https://github.com/realityforge/react4j/compare/v0.13...v0.14)
 

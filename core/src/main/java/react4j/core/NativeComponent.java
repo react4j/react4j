@@ -32,7 +32,7 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState, 
 
   @JsMethod
   @Nullable
-  abstract ReactNode render();
+  public abstract ReactNode render();
 
   @JsOverlay
   @Nullable
