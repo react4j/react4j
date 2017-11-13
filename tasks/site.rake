@@ -23,7 +23,7 @@ task 'site:examples' do
   rm_rf "#{SITE_DIR}/examples/WEB-INF"
 
   public_js = Dir["#{SITE_DIR}/examples/*/*.js"].select do |filename|
-    !(filename =~ /.*\.cache.js$/ || filename =~ /.*\.nocache.js$/ )
+    !(filename =~ /.*\.cache.js$/ || filename =~ /.*\.nocache.js$/)
   end
   mv public_js, "#{SITE_DIR}/examples"
 
