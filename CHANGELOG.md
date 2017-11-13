@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.15](https://github.com/realityforge/react4j/tree/v0.15) (2017-11-14)
+[Full Changelog](https://github.com/realityforge/react4j/compare/v0.14...v0.15)
 
 ##### Added
 * **\[processor\]** Initial support added for React's `"defaultProps"` added. The component defines a static,
