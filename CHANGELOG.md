@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+##### Added
+* **\[processor\]** Initial support added for React's `"defaultProps"` added. The component defines a static,
+  non-private methods named `getInitialProps()` on the component class. This method is invoked when the component
+  constructor is created and the results are defined as the default properties.
+
 ##### Fixed
 * Make sure the `NativeComponent.render()` method is public otherwise the GWT compiler get's confused and
   generates self-recursive method for `render()`.

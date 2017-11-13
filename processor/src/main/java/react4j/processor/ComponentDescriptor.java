@@ -59,6 +59,11 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<EventHandlerDescriptor> _eventHandlers;
+  /**
+   * This is a static method that retrieves the default properties for a component.
+   */
+  @Nullable
+  private ExecutableElement _defaultPropsMethod;
 
   ComponentDescriptor( @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
@@ -289,5 +294,22 @@ final class ComponentDescriptor
   void setEventHandlers( @Nonnull final List<EventHandlerDescriptor> eventHandlers )
   {
     _eventHandlers = Objects.requireNonNull( eventHandlers );
+  }
+
+  boolean hasDefaultPropsMethod()
+  {
+    return null != _defaultPropsMethod;
+  }
+
+  @Nonnull
+  ExecutableElement getDefaultPropsMethod()
+  {
+    assert null != _defaultPropsMethod;
+    return _defaultPropsMethod;
+  }
+
+  void setDefaultPropsMethod( @Nonnull final ExecutableElement defaultPropsMethod )
+  {
+    _defaultPropsMethod = Objects.requireNonNull( defaultPropsMethod );
   }
 }

@@ -41,6 +41,15 @@ If you pass `force = true` then `forceUpdate()` will be invoked on the underlyin
 `setState({})` will be invoked. In both React and React4j, explicitly scheduling a re-render should be avoided
 but if you need to do it you can.
 
+### getInitialProps versus defaultProps
+
+In React, a static property named [`defaultProps`](https://reactjs.org/docs/react-component.html#defaultprops) on the
+class or constructor tells the react runtime the default props for a component. The props provided by the developer
+are merged into these props. The equivalent in React4j is the `getInitialProps()` static method on the component
+class. This method is called when the component constructor function is created and the results are set as the default
+props for the component. The method must be static, non-private, have no parameters, throw no exceptions and must
+return a value that is compatible with the prop type for the component.
+
 ### JSX
 
 Most react code uses [JSX](https://facebook.github.io/jsx/) to build component hierarchies. JSX is an xml-like

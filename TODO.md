@@ -62,10 +62,6 @@ class TodoEntry
   this no longer works in React 16 but the ReactJS team expect something will replace it in the future.
 * build in https://github.com/maicki/why-did-you-update
 * Implement the "children" utilities in java or bind to native implementation.
-* Figure out a way to support `getInitialProps()` on components.
-  - set "defaultProps" property on constructor function (same way that we set name). All we need to do is detect
-    if static property of correct name present on component and if so copy it across as part of annotation processing.
-    https://reactjs.org/docs/react-component.html#defaultprops
 
 * Add TodoMVC to web site in both production and development mode so it is easy to describe it in the documentation.
 

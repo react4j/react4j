@@ -157,8 +157,41 @@ public final class ReactProcessor
     determineChildContextTypes( descriptor );
     determineRenderMethod( typeElement, descriptor );
     determineEventHandlers( descriptor );
+    determineDefaultPropsMethod( descriptor );
 
     return descriptor;
+  }
+
+  private void determineDefaultPropsMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final List<ExecutableElement> defaultPropsMethods =
+      ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
+        .filter( m -> m.getSimpleName().toString().equals( "getInitialProps" ) )
+        .collect( Collectors.toList() );
+
+    if ( !defaultPropsMethods.isEmpty() )
+    {
+      for ( final ExecutableElement method : defaultPropsMethods )
+      {
+        final ExecutableType methodType =
+          (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
+
+        if ( methodType.getThrownTypes().isEmpty() &&
+             methodType.getParameterTypes().isEmpty() &&
+             method.getModifiers().contains( Modifier.STATIC ) &&
+             !method.getModifiers().contains( Modifier.PRIVATE ) &&
+             processingEnv.getTypeUtils()
+               .isAssignable( methodType.getReturnType(), descriptor.getPropsType().asType() ) )
+        {
+          descriptor.setDefaultPropsMethod( method );
+          return;
+        }
+      }
+      throw new ReactProcessorException( "The getInitialProps method does not satisfy constraints. The method must " +
+                                         "be static, non-private, have no parameters, throw no exceptions and must " +
+                                         "return a value that is compatible with the prop type for the component.",
+                                         descriptor.getElement() );
+    }
   }
 
   private void determineEventHandlers( @Nonnull final ComponentDescriptor descriptor )

@@ -345,6 +345,13 @@ final class Generator
       method.addStatement( "$T.of( componentConstructor ).set( \"childContextTypes\", childContextTypes )",
                            JsPropertyMap.class );
     }
+    if ( descriptor.hasDefaultPropsMethod() )
+    {
+      method.addStatement( "$T.of( componentConstructor ).set( \"defaultProps\", $T.$N() )",
+                           JsPropertyMap.class,
+                           descriptor.getClassName(),
+                           descriptor.getDefaultPropsMethod().getSimpleName().toString() );
+    }
     method.addStatement( "return componentConstructor" );
     return method;
   }
