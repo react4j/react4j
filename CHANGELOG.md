@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.16](https://github.com/react4j/react4j/tree/v0.16) (2017-11-14)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.15...v0.16)
 
 ##### Changed
 * 💥 Move react4j from `https://github.com/realityforge/react4j` to it's own organization `https://github.com/react4j`.
