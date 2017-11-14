@@ -12,8 +12,6 @@
 
 * Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
-* Move repository to https://github.com/react4j
-
 * Document Context
   - how to write a provider
   - how to write a consumer

@@ -2,8 +2,11 @@
 
 ### Unreleased
 
-### [v0.15](https://github.com/realityforge/react4j/tree/v0.15) (2017-11-14)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.14...v0.15)
+##### Changed
+* 💥 Move react4j from `https://github.com/realityforge/react4j` to it's own organization `https://github.com/react4j`.
+
+### [v0.15](https://github.com/react4j/react4j/tree/v0.15) (2017-11-14)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.14...v0.15)
 
 ##### Added
 * **\[processor\]** Initial support added for React's `"defaultProps"` added. The component defines a static,
@@ -14,8 +17,8 @@
 * Make sure the `NativeComponent.render()` method is public otherwise the GWT compiler get's confused and
   generates self-recursive method for `render()`.
 
-### [v0.14](https://github.com/realityforge/react4j/tree/v0.14) (2017-11-13)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.13...v0.14)
+### [v0.14](https://github.com/react4j/react4j/tree/v0.14) (2017-11-13)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.13...v0.14)
 
 ##### Fixed
 * Make sure the `react4j-extras` module is correctly defined and can be released to Maven Central.
@@ -27,8 +30,8 @@
 * 💥 **\[dom\]** Remove `react4j.dom.AbstractBuilder` until the idea is more fully developed.
 * 💥 **\[dom\]** Remove unused type parameters from `ReactPortal`.
 
-### [v0.13](https://github.com/realityforge/react4j/tree/v0.13) (2017-11-13)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.12...v0.13)
+### [v0.13](https://github.com/react4j/react4j/tree/v0.13) (2017-11-13)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.12...v0.13)
 
 ##### Added
 * **\[dom\]** Add `ReactDOM.createPortal()` method to support React 16 portals.
@@ -81,14 +84,14 @@
 * 💥 **\[core\]** Reduce the number of type parameters required to implement `ComponentConstructorFunction`. As a
   result make the `NativeComponent` class public.
 
-### [v0.12](https://github.com/realityforge/react4j/tree/v0.12) (2017-11-09)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.11...v0.12)
+### [v0.12](https://github.com/react4j/react4j/tree/v0.12) (2017-11-09)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.11...v0.12)
 
 ##### Changed
 * Upgrade to Arez 0.25.
 
-### [v0.11](https://github.com/realityforge/react4j/tree/v0.11) (2017-11-03)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.10...v0.11)
+### [v0.11](https://github.com/react4j/react4j/tree/v0.11) (2017-11-03)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.10...v0.11)
 
 ##### Fixed
 * Fixed bug in `DragEvent` where field name was `clipboardData` rather than `dataTransfer`.
@@ -96,21 +99,21 @@
 ##### Changed
 * Upgrade to Arez 0.24.
 
-### [v0.10](https://github.com/realityforge/react4j/tree/v0.10) (2017-11-01)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.09...v0.10)
+### [v0.10](https://github.com/react4j/react4j/tree/v0.10) (2017-11-01)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.09...v0.10)
 
 ##### Changed
 * 💥 Upgrade to Arez 0.23.
 
-### [v0.09](https://github.com/realityforge/react4j/tree/v0.09) (2017-10-30)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.08...v0.09)
+### [v0.09](https://github.com/react4j/react4j/tree/v0.09) (2017-10-30)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.08...v0.09)
 
 ##### Fixed
 * Fixed bug introduced when `ReactDOM.createElement(String,Props)` variant was converted from native method
   to an overlay method.
 
-### [v0.08](https://github.com/realityforge/react4j/tree/v0.08) (2017-10-29)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.07...v0.08)
+### [v0.08](https://github.com/react4j/react4j/tree/v0.08) (2017-10-29)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.07...v0.08)
 
 ##### Changed
 * Upgrade to Arez 0.22.
@@ -122,8 +125,8 @@
   Creation of `ReactElement` instances is now done by invoking the factory methods named `_create` that
   have been added to the enhanced component class.
 
-### [v0.07](https://github.com/realityforge/react4j/tree/v0.07) (2017-10-27)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.06...v0.07)
+### [v0.07](https://github.com/react4j/react4j/tree/v0.07) (2017-10-27)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.06...v0.07)
 
 ##### Fixed
 * Ensure that `ReactArezComponent` runs all actions using the context in which the component was created. This avoids
@@ -155,8 +158,8 @@
 * 💥 Update the `Component` implementation to make the `props()`, `state()` and `scheduleStateUpdate(...)` methods
   final.
 
-### [v0.06](https://github.com/realityforge/react4j/tree/v0.06) (2017-10-23)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.05...v0.06)
+### [v0.06](https://github.com/react4j/react4j/tree/v0.06) (2017-10-23)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.05...v0.06)
 
 ##### Fixed
 * Rewrite the `react4j.core.React` class, moving some code to java where possible and eliminating as yet unused
@@ -174,8 +177,8 @@
 * 💥 Convert public fields of event in `react4j.dom.events` package to private and add overlay methods to access
   the fields.
 
-### [v0.05](https://github.com/realityforge/react4j/tree/v0.05) (2017-10-19)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.04...v0.05)
+### [v0.05](https://github.com/react4j/react4j/tree/v0.05) (2017-10-19)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.04...v0.05)
 
 ##### Added
 * Added `RenderResult` union type that abstracts over the results of rendering from a component. It is designed
@@ -188,8 +191,8 @@
   and `Component.renderAsArray()`. The developer is expected to override a single render method variant and
   the annotation processor will ensure the enhanced class uses that render method variant to render the component.
 
-### [v0.04](https://github.com/realityforge/react4j/tree/v0.04) (2017-10-16)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.03...v0.04)
+### [v0.04](https://github.com/react4j/react4j/tree/v0.04) (2017-10-16)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.03...v0.04)
 
 ##### Changed
 * **\[core\]** 💥 Replace `Component.setState(...)` with `Component.scheduleStateUpdate(...)` so that it
@@ -197,8 +200,8 @@
 * Link Javadocs with Arez, GWT and JRE javadocs so as to improve the experience of looking up docs.
 * Complete the automation of releasing to Maven central.
 
-### [v0.03](https://github.com/realityforge/react4j/tree/v0.03) (2017-10-16)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.02...v0.03)
+### [v0.03](https://github.com/react4j/react4j/tree/v0.03) (2017-10-16)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.02...v0.03)
 
 ##### Added
 * Cached javascript functions created for methods annotated with `@EventHandler`. This allows the equivalent
@@ -236,8 +239,8 @@
 * Replace usages of `org.jetbrains:annotations:jar` dependency with `org.realityforge.anodoc:anodoc:jar`
   as that is the same dependency used in `arez`, `braincheck` and other upstream dependencies.
 
-### [v0.02](https://github.com/realityforge/react4j/tree/v0.02) (2017-10-09)
-[Full Changelog](https://github.com/realityforge/react4j/compare/v0.01...v0.02)
+### [v0.02](https://github.com/react4j/react4j/tree/v0.02) (2017-10-09)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.01...v0.02)
 
 ##### Fixed
 * Upgraded `braincheck` dependency to ensure that invariant checks are correctly compiled out during
@@ -250,9 +253,9 @@
 * Made sure that `ReactElement` does not expect a native type named `ReactElement` and is an `Object`.
 
 ##### Added
-* ✨ Added [ArezSpyUtil](http://realityforge.org/react4j/api/react4j/arez/spy/ArezSpyUtil.html) to simplify the
+* ✨ Added [ArezSpyUtil](http://react4j.github.io/react4j/api/react4j/arez/spy/ArezSpyUtil.html) to simplify the
   setup of Arez spy console logger during development and debugging.
-* ✨ Added [ReactWidget](http://realityforge.org/react4j/api/react4j/widget/ReactWidget.html) that simplifies
+* ✨ Added [ReactWidget](http://react4j.github.io/react4j/api/react4j/widget/ReactWidget.html) that simplifies
   integration with applications still using GWT Widgets.
 
 ##### Changed
@@ -265,7 +268,7 @@
 * 💥 Stopped shipping artifacts with a classifier of `gwt` as there is no consumer of the library that is not
   gwt based. This essentially entails shipping the `.gwt.xml` and source files inside the main jar artifact.
 
-### [v0.01](https://github.com/realityforge/react4j/tree/v0.01) (2017-10-06)
-[Full Changelog](https://github.com/realityforge/react4j/compare/934ed5a707bfdab7959e9af5a793575a42a780ff...v0.01)
+### [v0.01](https://github.com/react4j/react4j/tree/v0.01) (2017-10-06)
+[Full Changelog](https://github.com/react4j/react4j/compare/934ed5a707bfdab7959e9af5a793575a42a780ff...v0.01)
 
  ‎🎉	Initial super-alpha release ‎🎉.

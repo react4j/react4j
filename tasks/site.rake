@@ -60,7 +60,7 @@ task 'site:link_check' do
 
   trap('INT') {webserver.shutdown}
   begin
-    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/react4j --exclude https://github.com/realityforge/react4j/compare/ --exclude https://github.com/realityforge/react4j/settings --exclude https://medium.freecodecamp.org/ --exclude https://docs.oracle.com/javase/8/docs/api"
+    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/react4j --exclude https://github.com/react4j/react4j/compare/ --exclude https://github.com/react4j/react4j/settings --exclude https://medium.freecodecamp.org/ --exclude https://docs.oracle.com/javase/8/docs/api"
   ensure
     webserver.shutdown
   end

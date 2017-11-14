@@ -1,6 +1,6 @@
 # react4j
 
-[![Build Status](https://secure.travis-ci.org/realityforge/react4j.png?branch=master)](http://travis-ci.org/realityforge/react4j)
+[![Build Status](https://secure.travis-ci.org/react4j/react4j.png?branch=master)](http://travis-ci.org/react4j/react4j)
 [<img src="https://img.shields.io/maven-central/v/org.realityforge.react4j/react4j-core.svg?label=latest%20release"/>](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.realityforge.react4j%22)
 
 The goal of this project is to be able to seamlessly use the [react component model](https://reactjs.org/docs/react-component.html)
@@ -11,11 +11,11 @@ performance cost in production builds.
 
 Arez is under heavy development and sometimes the documentation does not keep up to date. However the goal of
 the toolkit is to be easy to use and this includes clear and concise documentation. If something is unclear
-please [report it as a bug](https://github.com/realityforge/react4j/issues) because it *is* a bug. If a new user
+please [report it as a bug](https://github.com/react4j/react4j/issues) because it *is* a bug. If a new user
 has a bad time then then we need to fix the problem.
 
-For more information about React4j, please see the [Website](http://realityforge.org/react4j/). For the source code
-and project support please visit the [GitHub project](https://github.com/realityforge/react4j).
+For more information about React4j, please see the [Website](http://react4j.github.io/react4j/). For the source code
+and project support please visit the [GitHub project](https://github.com/react4j/react4j).
 
 # Credit
 

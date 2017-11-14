@@ -51,8 +51,8 @@ task 'perform_release' do
     stage('PatchChangelog', 'Patch the changelog to update from previous release') do
       changelog = IO.read('CHANGELOG.md')
       changelog = changelog.gsub("### Unreleased\n",<<HEADER)
-### [v#{ENV['PRODUCT_VERSION']}](https://github.com/realityforge/react4j/tree/v#{ENV['PRODUCT_VERSION']}) (#{ENV['RELEASE_DATE']})
-[Full Changelog](https://github.com/realityforge/react4j/compare/v#{ENV['PREVIOUS_PRODUCT_VERSION']}...v#{ENV['PRODUCT_VERSION']})
+### [v#{ENV['PRODUCT_VERSION']}](https://github.com/react4j/react4j/tree/v#{ENV['PRODUCT_VERSION']}) (#{ENV['RELEASE_DATE']})
+[Full Changelog](https://github.com/react4j/react4j/compare/v#{ENV['PREVIOUS_PRODUCT_VERSION']}...v#{ENV['PRODUCT_VERSION']})
 HEADER
       IO.write('CHANGELOG.md', changelog)
 
@@ -76,7 +76,7 @@ title: React4j #{ENV['PRODUCT_VERSION']} released
 type: minor
 ---
 
-[Full Changelog](https://github.com/realityforge/react4j/compare/v#{ENV['PREVIOUS_PRODUCT_VERSION']}...v#{ENV['PRODUCT_VERSION']})
+[Full Changelog](https://github.com/react4j/react4j/compare/v#{ENV['PREVIOUS_PRODUCT_VERSION']}...v#{ENV['PRODUCT_VERSION']})
 
 Changes in this release:
 
