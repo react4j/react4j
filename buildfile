@@ -238,6 +238,7 @@ define 'react4j' do
     iml.main_generated_source_directories << _('generated/processors/main/java')
   end
 
+  # This should be moved to a separate project once the APIs have stabilized.
   desc 'Sample TodoMVC implementation used during development'
   define 'todomvc' do
     pom.provided_dependencies.concat PROVIDED_DEPS
