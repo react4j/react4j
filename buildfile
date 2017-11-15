@@ -42,7 +42,7 @@ define 'react4j' do
     package(:javadoc)
   end
 
-  desc 'The core react binding'
+  desc 'React4j core binding'
   define 'core' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
@@ -69,6 +69,7 @@ define 'react4j' do
     test.compile.with TEST_DEPS
   end
 
+  desc 'React4j DOM binding'
   define 'dom' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
@@ -94,6 +95,7 @@ define 'react4j' do
     test.compile.with TEST_DEPS
   end
 
+  desc 'React4j-Arez Integration'
   define 'arez' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
@@ -140,6 +142,7 @@ define 'react4j' do
     test.compile.with TEST_DEPS
   end
 
+  desc 'The Annotation processor'
   define 'processor' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
@@ -235,6 +238,7 @@ define 'react4j' do
     iml.main_generated_source_directories << _('generated/processors/main/java')
   end
 
+  desc 'Sample TodoMVC implementation used during development'
   define 'todomvc' do
     pom.provided_dependencies.concat PROVIDED_DEPS
 
