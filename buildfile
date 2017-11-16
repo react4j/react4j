@@ -285,7 +285,6 @@ define 'react4j' do
           }
     )
 
-  iml.excluded_directories << project._('tmp/gwt')
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
 
