@@ -16,6 +16,8 @@
 
 * Consider ways or reorganizing - Use react+reason-react as inspiration?
 
+* Extract TodoMVC and port a hackernews clone ala https://github.com/reasonml-community/reason-react-hacker-news
+
 * Document Context
   - how to write a provider
   - how to write a consumer
