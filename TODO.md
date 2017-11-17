@@ -12,6 +12,8 @@
 
 * Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
+* Integrate Logo into website. Maybe decide on color palette and update icon to match color palette.
+
 * Document Context
   - how to write a provider
   - how to write a consumer
