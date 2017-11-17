@@ -14,6 +14,8 @@
 
 * Integrate Logo into website. Maybe decide on color palette and update icon to match color palette.
 
+* Consider ways or reorganizing - Use react+reason-react as inspiration?
+
 * Document Context
   - how to write a provider
   - how to write a consumer
