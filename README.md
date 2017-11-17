@@ -9,7 +9,7 @@ be able to use existing react component libraries and toolkits from Java but thi
 The project also aims to also develop guards that stop you from using the toolkit incorrectly with no
 performance cost in production builds.
 
-Arez is under heavy development and sometimes the documentation does not keep up to date. However the goal of
+React4j is under heavy development and sometimes the documentation does not keep up to date. However the goal of
 the toolkit is to be easy to use and this includes clear and concise documentation. If something is unclear
 please [report it as a bug](https://github.com/react4j/react4j/issues) because it *is* a bug. If a new user
 has a bad time then then we need to fix the problem.
