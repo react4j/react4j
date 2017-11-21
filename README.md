@@ -1,3 +1,5 @@
+<p align="center"><img src="/docs/_icons/React4j.png" alt="Arez" width="120"></p>
+
 # react4j
 
 [![Build Status](https://secure.travis-ci.org/react4j/react4j.png?branch=master)](http://travis-ci.org/react4j/react4j)
