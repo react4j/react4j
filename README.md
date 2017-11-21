@@ -1,6 +1,6 @@
 <p align="center"><img src="/docs/_icons/React4j.png" alt="Arez" width="120"></p>
 
-# react4j
+# React4j
 
 [![Build Status](https://secure.travis-ci.org/react4j/react4j.png?branch=master)](http://travis-ci.org/react4j/react4j)
 [<img src="https://img.shields.io/maven-central/v/org.realityforge.react4j/react4j-core.svg?label=latest%20release"/>](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.realityforge.react4j%22)
