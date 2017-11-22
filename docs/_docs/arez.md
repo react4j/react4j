@@ -4,7 +4,7 @@ category: General
 order: 3
 ---
 
-The combination of [Arez](https://arez.github.io/arez) and React4j creates a powerful toolkit. Arez manages
+The combination of [Arez](https://arez.github.io) and React4j creates a powerful toolkit. Arez manages
 the application state and React4j transforms the application state into a view. The React4jArez library provides
 the mechanisms for synchronizing the application state with the view. Both React4j and Arez are based on functional
 principles and trade higher memory usage for faster execution speed.
