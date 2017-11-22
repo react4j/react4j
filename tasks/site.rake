@@ -34,12 +34,23 @@ task 'site:examples' do
   end
 end
 
+desc 'Copy the favicons to docs dir'
+task 'site:favicons' do
+  # The favicons were generated via https://www.favicon-generator.org/ but there
+  # is a lot of icons that are generated from tool so we put it in a subdirectory
+  # and copy to the site as part of the build
+  favicons_dir = "#{WORKSPACE_DIR}/docs/_favicons"
+  mkdir_p SITE_DIR
+  cp_r Dir["#{favicons_dir}/*"], SITE_DIR
+end
+
 desc 'Build the website'
 task 'site:build' do
   rm_rf SITE_DIR
   mkdir_p File.dirname(SITE_DIR)
   sh "jekyll build --source #{WORKSPACE_DIR}/docs --destination #{SITE_DIR}"
   task('site:javadocs').invoke
+  task('site:favicons').invoke
   task('site:examples').invoke
 end
 
