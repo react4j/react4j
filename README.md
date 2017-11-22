@@ -16,7 +16,7 @@ the toolkit is to be easy to use and this includes clear and concise documentati
 please [report it as a bug](https://github.com/react4j/react4j/issues) because it *is* a bug. If a new user
 has a bad time then then we need to fix the problem.
 
-For more information about React4j, please see the [Website](http://react4j.github.io/react4j/). For the source code
+For more information about React4j, please see the [Website](https://react4j.github.io/). For the source code
 and project support please visit the [GitHub project](https://github.com/react4j/react4j).
 
 # Credit
