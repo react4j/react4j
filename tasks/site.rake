@@ -60,7 +60,7 @@ task 'site:link_check' do
 
   trap('INT') {webserver.shutdown}
   begin
-    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/react4j --exclude https://github.com/react4j/react4j/compare/ --exclude https://github.com/react4j/react4j/settings --exclude https://medium.freecodecamp.org/ --exclude https://docs.oracle.com/javase/8/docs/api"
+    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port}/react4j --exclude https://github.com/react4j/react4j/compare/ --exclude https://medium.freecodecamp.org/ --exclude https://docs.oracle.com/javase/8/docs/api"
   ensure
     webserver.shutdown
   end
@@ -79,7 +79,7 @@ task 'site:deploy' => ['site:build'] do
 
   # Only publish the site off the master branch if running out of Travis
   if ENV['TRAVIS_BRANCH'].nil? || ENV['TRAVIS_BRANCH'] == 'master'
-    origin_url = `git remote get-url origin`
+    origin_url = 'https://github.com/react4j/react4j.github.io.git'
 
     travis_build_number = ENV['TRAVIS_BUILD_NUMBER']
     if travis_build_number
@@ -96,7 +96,7 @@ task 'site:deploy' => ['site:build'] do
 
       sh "git commit -m \"#{message}\""
       sh "git remote add origin #{origin_url}"
-      sh 'git push -f origin master:gh-pages'
+      sh 'git push -f origin master:master'
     end
   end
 end
