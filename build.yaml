@@ -5,7 +5,7 @@ repositories:
    - https://stocksoftware.artifactoryonline.com/stocksoftware/oss
 
 artifacts:
-  idea_codestyle: au.com.stocksoftware.idea.codestyle:idea-codestyle:xml:1.11
+  idea_codestyle: au.com.stocksoftware.idea.codestyle:idea-codestyle:xml:1.12
 
   anodoc: org.realityforge.anodoc:anodoc:jar:1.0.0
 
