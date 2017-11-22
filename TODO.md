@@ -2,6 +2,8 @@
 
 ### High Priority
 
+* Use `_` rather than `$` as separator for nested classes
+
 * Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
   state and context? Seems like `@Inject` for fields with different qualifiers should be sufficient.
 
