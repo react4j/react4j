@@ -16,7 +16,7 @@
 
 * Integrate Logo into website. Maybe decide on color palette and update icon to match color palette.
 
-* Consider ways or reorganizing - Use react+reason-react as inspiration?
+* Consider ways or reorganizing - Use react+reason-react as inspiration? Also EmberJS as inspiration - https://www.emberjs.com/
 
 * Extract TodoMVC and port a hackernews clone ala https://github.com/reasonml-community/reason-react-hacker-news
 
