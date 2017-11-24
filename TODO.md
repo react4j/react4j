@@ -85,6 +85,8 @@ startup and then browse via tables?
 
 * See https://github.com/gaearon/redux-devtools
 
+Once this is done remove the setting of dependencies in state as can trigger infinite state updates in some scenarios.
+
 #### Compiler optimizations
 
 (Sourced from [ReactJS Changelog](https://reactjs.org/blog/2015/10/07/react-v0.14.html#compiler-optimizations))
