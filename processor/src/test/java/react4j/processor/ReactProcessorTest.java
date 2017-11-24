@@ -55,7 +55,7 @@ public class ReactProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( "input/com/example/nested/NestedReactComponent.java",
-                             "expected/com/example/nested/NestedReactComponent$BasicReactComponent_.java" );
+                             "expected/com/example/nested/NestedReactComponent_BasicReactComponent_.java" );
   }
 
   @Test
@@ -63,7 +63,7 @@ public class ReactProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( "input/com/example/nested/NestedNestedReactComponent.java",
-                             "expected/com/example/nested/NestedNestedReactComponent$DeepNesting$BasicReactComponent_.java" );
+                             "expected/com/example/nested/NestedNestedReactComponent_DeepNesting_BasicReactComponent_.java" );
   }
 
   @Test

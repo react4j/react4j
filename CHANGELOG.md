@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+##### Changed
+* 💥 **\[processor\]** Changed the naming convention of the classes generated from nested static classes.
+  Previously the name components were separated by a `$` but this is the same convention that is used by
+  nested classes and thus a nested class could have aname collision with a generated class. Instead the
+  `_` character has been used to separate name components.
+
 ### [v0.16](https://github.com/react4j/react4j/tree/v0.16) (2017-11-14)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.15...v0.16)
 

@@ -14,7 +14,7 @@ import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class NestedReactComponent$BasicReactComponent_ extends NestedReactComponent.BasicReactComponent {
+class NestedNestedReactComponent_DeepNesting_BasicReactComponent_ extends NestedNestedReactComponent.DeepNesting.BasicReactComponent {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
@@ -41,14 +41,14 @@ class NestedReactComponent$BasicReactComponent_ extends NestedReactComponent.Bas
     return componentConstructor;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, NestedReactComponent.BasicReactComponent> {
+  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, NestedNestedReactComponent.DeepNesting.BasicReactComponent> {
     NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
       super( props, context );
     }
 
     @Override
-    protected NestedReactComponent.BasicReactComponent createComponent() {
-      return new NestedReactComponent$BasicReactComponent_();
+    protected NestedNestedReactComponent.DeepNesting.BasicReactComponent createComponent() {
+      return new NestedNestedReactComponent_DeepNesting_BasicReactComponent_();
     }
   }
 }
