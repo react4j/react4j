@@ -73,8 +73,8 @@ class TodoEntry
   schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
   and will need to be marked as runImmediately=false)
 
-* Remove dependency on `react4j.annotations` and `react4j.core` from `react4j.processor` project. AIm is to isolate
-  processor.
+* Remove dependency on `elemental2.*`, `react4j.annotations`, `react4j.core` and `jsinterop.*` from
+  `react4j.processor` project. The aim is to isolate processor so easier to evolve.
 
 * Shade processor deps via https://github.com/lyubomyr-shaydariv/ant-shade-task
 
