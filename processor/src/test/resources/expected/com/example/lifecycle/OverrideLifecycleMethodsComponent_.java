@@ -58,11 +58,13 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
 
     void componentWillUnmount();
 
-    void componentWillUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState, @Nonnull BaseContext nextContext);
+    void componentWillUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState,
+        @Nonnull BaseContext nextContext);
 
     void componentDidCatch(@Nonnull Error error, @Nonnull ReactErrorInfo info);
 
-    boolean shouldComponentUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState, @Nonnull BaseContext nextContext);
+    boolean shouldComponentUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState,
+        @Nonnull BaseContext nextContext);
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, OverrideLifecycleMethodsComponent> implements Lifecycle {
@@ -81,7 +83,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState) {
+    public void componentDidUpdate(@Nonnull final BaseProps nextProps,
+        @Nonnull final BaseState nextState) {
       performComponentDidUpdate(nextProps,nextState);
     }
 
@@ -91,7 +94,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public void componentWillReceiveProps(@Nonnull final BaseProps nextProps, @Nonnull final BaseContext nextContext) {
+    public void componentWillReceiveProps(@Nonnull final BaseProps nextProps,
+        @Nonnull final BaseContext nextContext) {
       performComponentWillReceiveProps(nextProps,nextContext);
     }
 
@@ -101,7 +105,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public void componentWillUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
+    public void componentWillUpdate(@Nonnull final BaseProps nextProps,
+        @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
       performComponentWillUpdate(nextProps,nextState,nextContext);
     }
 
@@ -111,7 +116,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
+    public boolean shouldComponentUpdate(@Nonnull final BaseProps nextProps,
+        @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
       return performShouldComponentUpdate(nextProps,nextState,nextContext);
     }
   }

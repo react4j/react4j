@@ -56,7 +56,8 @@ class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdat
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1, @Nonnull BaseContext arg2);
+    boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1,
+        @Nonnull BaseContext arg2);
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, OverridingComponentDidUpdateComponent> implements Lifecycle {
@@ -75,7 +76,8 @@ class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdat
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final BaseProps nextProps, @Nonnull final BaseState nextState) {
+    public void componentDidUpdate(@Nonnull final BaseProps nextProps,
+        @Nonnull final BaseState nextState) {
       performComponentDidUpdate(nextProps,nextState);
     }
 
@@ -85,7 +87,8 @@ class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdat
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1, @Nonnull final BaseContext arg2) {
+    public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0,
+        @Nonnull final BaseState arg1, @Nonnull final BaseContext arg2) {
       return performShouldComponentUpdate(arg0,arg1,arg2);
     }
   }

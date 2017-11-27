@@ -39,7 +39,7 @@ artifacts:
 
   autoservice: com.google.auto.service:auto-service:jar:1.0-rc3
   autocommon: com.google.auto:auto-common:jar:0.8
-  javapoet: com.squareup:javapoet:jar:1.7.0
+  javapoet: com.squareup:javapoet:jar:1.8.0
   guava: com.google.guava:guava:jar:21.0
 
   #test deps

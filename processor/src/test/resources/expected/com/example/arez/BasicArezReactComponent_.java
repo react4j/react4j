@@ -56,7 +56,8 @@ class BasicArezReactComponent_ extends BasicArezReactComponent {
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1, @Nonnull BaseContext arg2);
+    boolean shouldComponentUpdate(@Nonnull BaseProps arg0, @Nonnull BaseState arg1,
+        @Nonnull BaseContext arg2);
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, BasicArezReactComponent> implements Lifecycle {
@@ -85,7 +86,8 @@ class BasicArezReactComponent_ extends BasicArezReactComponent {
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0, @Nonnull final BaseState arg1, @Nonnull final BaseContext arg2) {
+    public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0,
+        @Nonnull final BaseState arg1, @Nonnull final BaseContext arg2) {
       return performShouldComponentUpdate(arg0,arg1,arg2);
     }
   }

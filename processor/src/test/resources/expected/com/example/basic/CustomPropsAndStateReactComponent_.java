@@ -26,7 +26,8 @@ class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactCompone
   }
 
   @Nonnull
-  static ReactNode _create(@Nullable final CustomPropsAndStateReactComponent.Props props, @Nullable final ReactNode child) {
+  static ReactNode _create(@Nullable final CustomPropsAndStateReactComponent.Props props,
+      @Nullable final ReactNode child) {
     return React.createElement( TYPE, props, child );
   }
 
@@ -40,7 +41,8 @@ class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactCompone
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, BaseContext, CustomPropsAndStateReactComponent> {
-    NativeReactComponent(@Nonnull final CustomPropsAndStateReactComponent.Props props, @Nonnull final BaseContext context) {
+    NativeReactComponent(@Nonnull final CustomPropsAndStateReactComponent.Props props,
+        @Nonnull final BaseContext context) {
       super( props, context );
     }
 
