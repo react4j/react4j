@@ -36,11 +36,6 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import jsinterop.annotations.JsFunction;
-import react4j.annotations.EventHandler;
-import react4j.annotations.ReactComponent;
-import react4j.core.Component;
-import react4j.core.Procedure;
 import static javax.tools.Diagnostic.Kind.*;
 
 /**
@@ -87,7 +82,9 @@ public final class ReactProcessor
     _componentLifecycleMethods.clear();
     _componentRenderMethods.clear();
 
-    final Set<? extends Element> elements = env.getElementsAnnotatedWith( ReactComponent.class );
+    final TypeElement annotation =
+      processingEnv.getElementUtils().getTypeElement( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME );
+    final Set<? extends Element> elements = env.getElementsAnnotatedWith( annotation );
     processElements( elements );
     return false;
   }
@@ -145,9 +142,7 @@ public final class ReactProcessor
   @Nonnull
   private ComponentDescriptor parse( @Nonnull final TypeElement typeElement )
   {
-    final ReactComponent component = typeElement.getAnnotation( ReactComponent.class );
-    assert null != component;
-    final String name = deriveComponentName( typeElement, component );
+    final String name = deriveComponentName( typeElement );
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
     final ComponentDescriptor descriptor = new ComponentDescriptor( name, packageElement, typeElement );
 
@@ -198,7 +193,7 @@ public final class ReactProcessor
   {
     final List<EventHandlerDescriptor> eventHandlers =
       ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
-        .filter( m -> null != m.getAnnotation( EventHandler.class ) )
+        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME ) )
         .map( m -> createEventHandlerDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
     for ( final EventHandlerDescriptor eventHandler : eventHandlers )
@@ -210,7 +205,7 @@ public final class ReactProcessor
         throw new ReactProcessorException( "The @EventHandler specified an invalid type that is not an interface.",
                                            eventHandler.getMethod() );
       }
-      if ( null == handlerType.getAnnotation( JsFunction.class ) )
+      if ( null == ProcessorUtil.findAnnotationByType( handlerType, Constants.JS_FUNCTION_CLASSNAME ) )
       {
         throw new ReactProcessorException( "The @EventHandler specified an invalid type that is not annotated " +
                                            "with the annotation jsinterop.annotations.JsFunction.",
@@ -279,7 +274,7 @@ public final class ReactProcessor
   private EventHandlerDescriptor createEventHandlerDescriptor( @Nonnull final ComponentDescriptor descriptor,
                                                                @Nonnull final ExecutableElement method )
   {
-    final String name = deriveEventHandlerName( method, method.getAnnotation( EventHandler.class ) );
+    final String name = deriveEventHandlerName( method );
     final TypeElement eventHandlerType = getEventHandlerType( method );
     final ExecutableType methodType =
       (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
@@ -328,29 +323,36 @@ public final class ReactProcessor
   private TypeElement getEventHandlerType( @Nonnull final ExecutableElement method )
   {
     final DeclaredType typeMirror =
-      ProcessorUtil.getTypeMirrorAnnotationParameter( method, "value", EventHandler.class );
+      ProcessorUtil.getTypeMirrorAnnotationParameter( processingEnv.getElementUtils(),
+                                                      method,
+                                                      "value",
+                                                      Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME );
     if ( null != typeMirror )
     {
       return (TypeElement) processingEnv.getTypeUtils().asElement( typeMirror );
     }
     else
     {
-      return processingEnv.getElementUtils().getTypeElement( Procedure.class.getName() );
+      return processingEnv.getElementUtils().getTypeElement( Constants.PROCEDURE_CLASSNAME );
     }
   }
 
   @Nonnull
-  private String deriveEventHandlerName( @Nonnull final ExecutableElement method,
-                                         @Nonnull final EventHandler annotation )
+  private String deriveEventHandlerName( @Nonnull final ExecutableElement method )
     throws ReactProcessorException
   {
-    if ( ProcessorUtil.isSentinelName( annotation.name() ) )
+    final String name =
+      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                 method,
+                                                 "name",
+                                                 Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME ).getValue();
+
+    if ( ProcessorUtil.isSentinelName( name ) )
     {
       return method.getSimpleName().toString();
     }
     else
     {
-      final String name = annotation.name();
       if ( name.isEmpty() || !ProcessorUtil.isJavaIdentifier( name ) )
       {
         throw new ReactProcessorException( "Method annotated with @EventHandler specified invalid name " + name,
@@ -371,7 +373,7 @@ public final class ReactProcessor
     final Collection<ExecutableElement> lifecycleMethods = getComponentLifecycleMethods().values();
     final Elements elementUtils = processingEnv.getElementUtils();
     final Types typeUtils = processingEnv.getTypeUtils();
-    final TypeElement componentType = elementUtils.getTypeElement( Component.class.getName() );
+    final TypeElement componentType = elementUtils.getTypeElement( Constants.COMPONENT_CLASSNAME );
     final List<MethodDescriptor> overriddenLifecycleMethods =
       // Get all methods on type parent classes, and default methods from interfaces
       ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).stream()
@@ -396,7 +398,7 @@ public final class ReactProcessor
     final Collection<ExecutableElement> renderMethods = getComponentRenderMethods().values();
     final Elements elementUtils = processingEnv.getElementUtils();
     final Types typeUtils = processingEnv.getTypeUtils();
-    final TypeElement componentType = elementUtils.getTypeElement( Component.class.getName() );
+    final TypeElement componentType = elementUtils.getTypeElement( Constants.COMPONENT_CLASSNAME );
     final List<MethodDescriptor> overriddenRenderMethods =
       // Get all methods on type parent classes, and default methods from interfaces
       ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).stream()
@@ -441,15 +443,20 @@ public final class ReactProcessor
   }
 
   @Nonnull
-  private String deriveComponentName( @Nonnull final TypeElement typeElement, @Nonnull final ReactComponent component )
+  private String deriveComponentName( @Nonnull final TypeElement typeElement )
   {
-    if ( ProcessorUtil.isSentinelName( component.name() ) )
+    final String name =
+      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                 typeElement,
+                                                 "name",
+                                                 Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME ).getValue();
+
+    if ( ProcessorUtil.isSentinelName( name ) )
     {
       return typeElement.getSimpleName().toString();
     }
     else
     {
-      final String name = component.name();
       if ( name.isEmpty() || !ProcessorUtil.isJavaIdentifier( name ) )
       {
         throw new ReactProcessorException( "The @ReactComponent specified an invalid name. Name should be follow " +
@@ -468,7 +475,7 @@ public final class ReactProcessor
   {
     if ( _componentLifecycleMethods.isEmpty() )
     {
-      final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
+      final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
       for ( final ExecutableElement method : ProcessorUtil.getMethods( componentType, processingEnv.getTypeUtils() ) )
       {
         final String methodName = method.getSimpleName().toString();
@@ -491,7 +498,7 @@ public final class ReactProcessor
   {
     if ( _componentRenderMethods.isEmpty() )
     {
-      final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
+      final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
       for ( final ExecutableElement method : ProcessorUtil.getMethods( componentType, processingEnv.getTypeUtils() ) )
       {
         final String methodName = method.getSimpleName().toString();
@@ -508,7 +515,7 @@ public final class ReactProcessor
   private void determineComponentType( @Nonnull final ComponentDescriptor descriptor,
                                        @Nonnull final TypeElement typeElement )
   {
-    final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
+    final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
     final TypeMirror rawComponentType = processingEnv.getTypeUtils().erasure( componentType.asType() );
 
     /*
@@ -551,7 +558,7 @@ public final class ReactProcessor
 
   private void determinePropsAndStateTypes( @Nonnull final ComponentDescriptor descriptor )
   {
-    final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Component.class.getName() );
+    final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
     final List<? extends TypeParameterElement> typeParameters = componentType.getTypeParameters();
     assert 3 == typeParameters.size();
 

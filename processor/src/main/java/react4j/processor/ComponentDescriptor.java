@@ -16,7 +16,6 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import react4j.annotations.EventHandler;
 
 final class ComponentDescriptor
 {
@@ -277,7 +276,7 @@ final class ComponentDescriptor
     for ( final MethodDescriptor method : _lifecycleMethods )
     {
       final ExecutableElement m = method.getMethod();
-      if ( null != m.getAnnotation( EventHandler.class ) )
+      if ( null != ProcessorUtil.findAnnotationByType( m, Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME ) )
       {
         throw new ReactProcessorException( "@EventHandler target must not be a lifecycle method", m );
       }

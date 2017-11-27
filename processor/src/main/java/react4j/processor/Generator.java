@@ -25,19 +25,30 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import jsinterop.annotations.JsType;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
-import jsinterop.base.JsPropertyMapOfAny;
-import react4j.core.ComponentConstructorFunction;
-import react4j.core.NativeAdapterComponent;
-import react4j.core.PropType;
-import react4j.core.React;
-import react4j.core.ReactConfig;
-import react4j.core.ReactNode;
 
 final class Generator
 {
+  private static final ClassName ACTION_CLASSNAME = ClassName.get( "org.realityforge.arez.annotations", "Action" );
+  private static final ClassName AREZ_COMPONENT_CLASSNAME =
+    ClassName.get( "org.realityforge.arez.annotations", "ArezComponent" );
+
+  private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
+
+  private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
+  private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
+  private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
+  private static final ClassName JS_PROPERTY_MAP_OF_ANY_CLASSNAME =
+    ClassName.get( "jsinterop.base", "JsPropertyMapOfAny" );
+
+  private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
+    ClassName.get( "react4j.core", "ComponentConstructorFunction" );
+  private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j.core", "ReactNode" );
+  private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
+    ClassName.get( "react4j.core", "NativeAdapterComponent" );
+  private static final ClassName REACT_PROP_TYPE_CLASSNAME = ClassName.get( "react4j.core", "PropType" );
+  private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j.core", "React" );
+  private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j.core", "ReactConfig" );
+
   private Generator()
   {
   }
@@ -55,8 +66,7 @@ final class Generator
     if ( descriptor.isArezComponent() )
     {
       final AnnotationSpec.Builder annotation =
-        AnnotationSpec.builder( ClassName.get( "org.realityforge.arez.annotations", "ArezComponent" ) ).
-          addMember( "type", "$S", descriptor.getName() );
+        AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).addMember( "type", "$S", descriptor.getName() );
       builder.addAnnotation( annotation.build() );
     }
 
@@ -128,7 +138,7 @@ final class Generator
   @Nonnull
   private static ParameterizedTypeName getJsConstructorFnType( @Nonnull final ComponentDescriptor descriptor )
   {
-    return ParameterizedTypeName.get( ClassName.get( ComponentConstructorFunction.class ),
+    return ParameterizedTypeName.get( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
                                       TypeName.get( descriptor.getPropsType().asType() ),
                                       TypeName.get( descriptor.getContextType().asType() ) );
   }
@@ -172,8 +182,8 @@ final class Generator
       addModifiers( Modifier.PROTECTED ).
       addAnnotation( Override.class ).
       addAnnotation( Nullable.class ).
-      returns( ReactNode.class ).
-      addStatement( "return $T.of( $N() )", ReactNode.class, renderMethod.getMethod().getSimpleName().toString() );
+      returns( REACT_NODE_CLASSNAME ).
+      addStatement( "return $T.of( $N() )", REACT_NODE_CLASSNAME, renderMethod.getMethod().getSimpleName().toString() );
   }
 
   @Nonnull
@@ -209,14 +219,14 @@ final class Generator
                          eventHandler.getMethod().getSimpleName() );
 
     final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if( $T.enableComponentNames() )", ReactConfig.class );
+    block.beginControlFlow( "if( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
     final String code =
       "$T.defineProperty( $T.cast( handler ), \"name\", $T.cast( $T.of( \"value\", $S ) ) )";
     block.addStatement( code,
-                        ClassName.get( "elemental2.core", "JsObject" ),
-                        Js.class,
-                        Js.class,
-                        JsPropertyMap.class,
+                        JS_OBJECT_CLASSNAME,
+                        JS_CLASSNAME,
+                        JS_CLASSNAME,
+                        JS_PROPERTY_MAP_CLASSNAME,
                         descriptor.getName() + "." + eventHandler.getName() );
     block.endControlFlow();
     method.addCode( block.build() );
@@ -235,7 +245,7 @@ final class Generator
     ProcessorUtil.copyDocumentedAnnotations( eventHandler.getMethod(), method );
 
     final AnnotationSpec.Builder annotation =
-      AnnotationSpec.builder( ClassName.get( "org.realityforge.arez.annotations", "Action" ) ).
+      AnnotationSpec.builder( ACTION_CLASSNAME ).
         addMember( "reportParameters", "false" );
     method.addAnnotation( annotation.build() );
 
@@ -266,8 +276,8 @@ final class Generator
     return MethodSpec.methodBuilder( "_create" ).
       addAnnotation( Nonnull.class ).
       addModifiers( Modifier.STATIC ).
-      returns( ClassName.get( ReactNode.class ) ).
-      addStatement( "return $T.createElement( TYPE )", React.class );
+      returns( REACT_NODE_CLASSNAME ).
+      addStatement( "return $T.createElement( TYPE )", REACT_CLASSNAME );
   }
 
   @Nonnull
@@ -276,10 +286,10 @@ final class Generator
     return MethodSpec.methodBuilder( "_create" ).
       addAnnotation( Nonnull.class ).
       addModifiers( Modifier.STATIC ).
-      returns( ClassName.get( ReactNode.class ) ).
+      returns( REACT_NODE_CLASSNAME ).
       addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
         addAnnotation( Nullable.class ).build() ).
-      addStatement( "return $T.createElement( TYPE, props )", React.class );
+      addStatement( "return $T.createElement( TYPE, props )", REACT_CLASSNAME );
   }
 
   @Nonnull
@@ -288,12 +298,12 @@ final class Generator
     return MethodSpec.methodBuilder( "_create" ).
       addAnnotation( Nonnull.class ).
       addModifiers( Modifier.STATIC ).
-      returns( ClassName.get( ReactNode.class ) ).
+      returns( REACT_NODE_CLASSNAME ).
       addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
         addAnnotation( Nullable.class ).build() ).
-      addParameter( ParameterSpec.builder( ReactNode.class, "child", Modifier.FINAL ).
+      addParameter( ParameterSpec.builder( REACT_NODE_CLASSNAME, "child", Modifier.FINAL ).
         addAnnotation( Nullable.class ).build() ).
-      addStatement( "return $T.createElement( TYPE, props, child )", React.class );
+      addStatement( "return $T.createElement( TYPE, props, child )", REACT_CLASSNAME );
   }
 
   @Nonnull
@@ -311,9 +321,9 @@ final class Generator
                          constructorType,
                          ClassName.bestGuess( "NativeReactComponent" ) );
     final CodeBlock.Builder codeBlock = CodeBlock.builder();
-    codeBlock.beginControlFlow( "if ( $T.enableComponentNames() )", ReactConfig.class );
+    codeBlock.beginControlFlow( "if ( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
     codeBlock.addStatement( "$T.of( componentConstructor ).set( \"displayName\", $S )",
-                            JsPropertyMap.class,
+                            JS_PROPERTY_MAP_CLASSNAME,
                             descriptor.getName() );
     codeBlock.endControlFlow();
 
@@ -324,31 +334,36 @@ final class Generator
     final Map<String, TypeMirror> contextTypeFields = descriptor.getContextTypeFields();
     if ( !childContextTypeFields.isEmpty() || !contextTypeFields.isEmpty() )
     {
-      method.addStatement( "final $T valid = () -> null", PropType.class );
+      method.addStatement( "final $T valid = () -> null", REACT_PROP_TYPE_CLASSNAME );
     }
     if ( !contextTypeFields.isEmpty() )
     {
-      method.addStatement( "final $T contextTypes = $T.of()", JsPropertyMapOfAny.class, JsPropertyMap.class );
+      method.addStatement( "final $T contextTypes = $T.of()",
+                           JS_PROPERTY_MAP_OF_ANY_CLASSNAME,
+                           JS_PROPERTY_MAP_CLASSNAME );
       for ( final String contextKey : contextTypeFields.keySet() )
       {
         method.addStatement( "contextTypes.set( $S, valid )", contextKey );
       }
-      method.addStatement( "$T.of( componentConstructor ).set( \"contextTypes\", contextTypes )", JsPropertyMap.class );
+      method.addStatement( "$T.of( componentConstructor ).set( \"contextTypes\", contextTypes )",
+                           JS_PROPERTY_MAP_CLASSNAME );
     }
     if ( !childContextTypeFields.isEmpty() )
     {
-      method.addStatement( "final $T childContextTypes = $T.of()", JsPropertyMapOfAny.class, JsPropertyMap.class );
+      method.addStatement( "final $T childContextTypes = $T.of()",
+                           JS_PROPERTY_MAP_OF_ANY_CLASSNAME,
+                           JS_PROPERTY_MAP_CLASSNAME );
       for ( final String childContextKey : childContextTypeFields.keySet() )
       {
         method.addStatement( "childContextTypes.set( $S, valid )", childContextKey );
       }
       method.addStatement( "$T.of( componentConstructor ).set( \"childContextTypes\", childContextTypes )",
-                           JsPropertyMap.class );
+                           JS_PROPERTY_MAP_CLASSNAME );
     }
     if ( descriptor.hasDefaultPropsMethod() )
     {
       method.addStatement( "$T.of( componentConstructor ).set( \"defaultProps\", $T.$N() )",
-                           JsPropertyMap.class,
+                           JS_PROPERTY_MAP_CLASSNAME,
                            descriptor.getClassName(),
                            descriptor.getDefaultPropsMethod().getSimpleName().toString() );
     }
@@ -366,7 +381,7 @@ final class Generator
     builder.addModifiers( Modifier.STATIC );
 
     final TypeName superType =
-      ParameterizedTypeName.get( ClassName.get( NativeAdapterComponent.class ),
+      ParameterizedTypeName.get( REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME,
                                  ClassName.get( descriptor.getPropsType().asType() ),
                                  ClassName.get( descriptor.getStateType().asType() ),
                                  ClassName.get( descriptor.getContextType().asType() ),
@@ -462,7 +477,7 @@ final class Generator
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Lifecycle" );
 
-    builder.addAnnotation( AnnotationSpec.builder( JsType.class ).
+    builder.addAnnotation( AnnotationSpec.builder( JS_TYPE_CLASSNAME ).
       addMember( "isNative", "true" ).
       build() );
 

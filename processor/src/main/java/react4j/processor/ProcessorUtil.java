@@ -25,6 +25,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 final class ProcessorUtil
@@ -181,16 +182,55 @@ final class ProcessorUtil
 
   @SuppressWarnings( { "unchecked", "SameParameterValue" } )
   @Nullable
-  static DeclaredType getTypeMirrorAnnotationParameter( @Nonnull final Element typeElement,
+  static DeclaredType getTypeMirrorAnnotationParameter( @Nonnull final Elements elements,
+                                                        @Nonnull final Element typeElement,
                                                         @Nonnull final String parameterName,
-                                                        @Nonnull final Class<?> annotationType )
+                                                        @Nonnull final String annotationClassName )
   {
-    final AnnotationMirror mirror = typeElement.getAnnotationMirrors().stream().
-      filter( a -> a.getAnnotationType().toString().equals( annotationType.getName() ) ).findFirst().orElse( null );
-    assert null != mirror;
-    final ExecutableElement annotationKey = mirror.getElementValues().keySet().stream().
-      filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
-    final AnnotationValue annotationValue = mirror.getElementValues().get( annotationKey );
+    final AnnotationValue annotationValue =
+      findAnnotationValue( elements, typeElement, parameterName, annotationClassName );
     return null == annotationValue ? null : (DeclaredType) annotationValue.getValue();
+  }
+
+  @Nonnull
+  static AnnotationValue getAnnotationValue( @Nonnull final Elements elements,
+                                             @Nonnull final Element typeElement,
+                                             @Nonnull final String parameterName,
+                                             @Nonnull final String annotationClassName )
+  {
+    final AnnotationValue value = findAnnotationValue( elements, typeElement, parameterName, annotationClassName );
+    assert null != value;
+    return value;
+  }
+
+  @Nullable
+  static AnnotationValue findAnnotationValue( @Nonnull final Elements elements,
+                                              @Nonnull final Element typeElement,
+                                              @Nonnull final String parameterName,
+                                              @Nonnull final String annotationClassName )
+  {
+    final AnnotationMirror mirror = getAnnotationByType( typeElement, annotationClassName );
+    final Map<? extends ExecutableElement, ? extends AnnotationValue> values =
+      elements.getElementValuesWithDefaults( mirror );
+    final ExecutableElement annotationKey = values.keySet().stream().
+      filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
+    return values.get( annotationKey );
+  }
+
+  @Nonnull
+  static AnnotationMirror getAnnotationByType( @Nonnull final Element typeElement,
+                                               @Nonnull final String annotationClassName )
+  {
+    AnnotationMirror mirror = findAnnotationByType( typeElement, annotationClassName );
+    assert null != mirror;
+    return mirror;
+  }
+
+  @Nullable
+  static AnnotationMirror findAnnotationByType( @Nonnull final Element typeElement,
+                                                @Nonnull final String annotationClassName )
+  {
+    return typeElement.getAnnotationMirrors().stream().
+      filter( a -> a.getAnnotationType().toString().equals( annotationClassName ) ).findFirst().orElse( null );
   }
 }

@@ -9,12 +9,12 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ArezComponent;
+import react4j.annotations.EventHandler;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
-import react4j.core.Procedure;
 import react4j.core.React;
 import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
@@ -27,7 +27,7 @@ class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
-  private final Procedure _handleFoo = create_handleFoo();
+  private final EventHandler.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private final ComponentWithEventHandler.CustomHandler _handleFoo2 = create_handleFoo2();
@@ -57,7 +57,7 @@ class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   }
 
   @Nonnull
-  static Procedure _handleFoo(@Nonnull final ComponentWithEventHandler component) {
+  static EventHandler.Procedure _handleFoo(@Nonnull final ComponentWithEventHandler component) {
     return ((ComponentWithEventHandler_) component)._handleFoo;
   }
 
@@ -67,8 +67,8 @@ class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   }
 
   @Nonnull
-  private Procedure create_handleFoo() {
-    final Procedure handler = () -> this.handleFoo();
+  private EventHandler.Procedure create_handleFoo() {
+    final EventHandler.Procedure handler = () -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithEventHandler.handleFoo" ) ) );
     }

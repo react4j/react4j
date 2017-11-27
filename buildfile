@@ -150,17 +150,15 @@ define 'react4j' do
                  :autocommon,
                  :javapoet,
                  :guava,
-                 PROVIDED_DEPS,
-                 :jsinterop_base,
-                 :jsinterop_annotations,
-                 project('annotations').package(:jar),
-                 project('core').package(:jar)
+                 PROVIDED_DEPS
 
     test.with :compile_testing,
               Java.tools_jar,
               :truth,
               project('arez').package(:jar),
               project('arez').compile.dependencies,
+              project('annotations').package(:jar),
+              project('annotations').compile.dependencies,
               :arez_processor,
               :gwt_user,
               :gwt_dev
@@ -220,6 +218,8 @@ define 'react4j' do
 
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
+                 project('annotations').package(:jar),
+                 project('annotations').compile.dependencies,
                  project('processor').package(:jar),
                  project('processor').compile.dependencies
 
@@ -276,6 +276,7 @@ define 'react4j' do
     using(:javadoc,
           :windowtitle => 'React4j API Documentation',
           :linksource => true,
+          :timestamp => false,
           :link => %w(https://arez.github.io/api https://docs.oracle.com/javase/8/docs/api http://www.gwtproject.org/javadoc/latest/),
           :group => {
             'Core Packages' => 'react4j.core*',
