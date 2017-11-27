@@ -180,34 +180,35 @@ final class ProcessorUtil
     }
   }
 
-  @SuppressWarnings( { "unchecked", "SameParameterValue" } )
+  @SuppressWarnings( "SameParameterValue" )
   @Nullable
   static DeclaredType getTypeMirrorAnnotationParameter( @Nonnull final Elements elements,
                                                         @Nonnull final Element typeElement,
-                                                        @Nonnull final String parameterName,
-                                                        @Nonnull final String annotationClassName )
+                                                        @Nonnull final String annotationClassName,
+                                                        @Nonnull final String parameterName )
   {
     final AnnotationValue annotationValue =
-      findAnnotationValue( elements, typeElement, parameterName, annotationClassName );
+      findAnnotationValue( elements, typeElement, annotationClassName, parameterName );
     return null == annotationValue ? null : (DeclaredType) annotationValue.getValue();
   }
 
+  @SuppressWarnings( "SameParameterValue" )
   @Nonnull
   static AnnotationValue getAnnotationValue( @Nonnull final Elements elements,
                                              @Nonnull final Element typeElement,
-                                             @Nonnull final String parameterName,
-                                             @Nonnull final String annotationClassName )
+                                             @Nonnull final String annotationClassName,
+                                             @Nonnull final String parameterName )
   {
-    final AnnotationValue value = findAnnotationValue( elements, typeElement, parameterName, annotationClassName );
+    final AnnotationValue value = findAnnotationValue( elements, typeElement, annotationClassName, parameterName );
     assert null != value;
     return value;
   }
 
   @Nullable
-  static AnnotationValue findAnnotationValue( @Nonnull final Elements elements,
-                                              @Nonnull final Element typeElement,
-                                              @Nonnull final String parameterName,
-                                              @Nonnull final String annotationClassName )
+  private static AnnotationValue findAnnotationValue( @Nonnull final Elements elements,
+                                                      @Nonnull final Element typeElement,
+                                                      @Nonnull final String annotationClassName,
+                                                      @Nonnull final String parameterName )
   {
     final AnnotationMirror mirror = getAnnotationByType( typeElement, annotationClassName );
     final Map<? extends ExecutableElement, ? extends AnnotationValue> values =
@@ -218,8 +219,8 @@ final class ProcessorUtil
   }
 
   @Nonnull
-  static AnnotationMirror getAnnotationByType( @Nonnull final Element typeElement,
-                                               @Nonnull final String annotationClassName )
+  private static AnnotationMirror getAnnotationByType( @Nonnull final Element typeElement,
+                                                       @Nonnull final String annotationClassName )
   {
     AnnotationMirror mirror = findAnnotationByType( typeElement, annotationClassName );
     assert null != mirror;

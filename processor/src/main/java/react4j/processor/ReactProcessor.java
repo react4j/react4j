@@ -325,8 +325,8 @@ public final class ReactProcessor
     final DeclaredType typeMirror =
       ProcessorUtil.getTypeMirrorAnnotationParameter( processingEnv.getElementUtils(),
                                                       method,
-                                                      "value",
-                                                      Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME );
+                                                      Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME,
+                                                      "value" );
     if ( null != typeMirror )
     {
       return (TypeElement) processingEnv.getTypeUtils().asElement( typeMirror );
@@ -344,8 +344,8 @@ public final class ReactProcessor
     final String name =
       (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                                  method,
-                                                 "name",
-                                                 Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME ).getValue();
+                                                 Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME,
+                                                 "name" ).getValue();
 
     if ( ProcessorUtil.isSentinelName( name ) )
     {
@@ -448,8 +448,8 @@ public final class ReactProcessor
     final String name =
       (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                                  typeElement,
-                                                 "name",
-                                                 Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME ).getValue();
+                                                 Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                 "name" ).getValue();
 
     if ( ProcessorUtil.isSentinelName( name ) )
     {
