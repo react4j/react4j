@@ -150,10 +150,11 @@ define 'react4j' do
                  :autocommon,
                  :javapoet,
                  :guava,
+                 PROVIDED_DEPS,
+                 :jsinterop_base,
+                 :jsinterop_annotations,
                  project('annotations').package(:jar),
-                 project('annotations').compile.dependencies,
-                 project('core').package(:jar),
-                 project('core').compile.dependencies
+                 project('core').package(:jar)
 
     test.with :compile_testing,
               Java.tools_jar,

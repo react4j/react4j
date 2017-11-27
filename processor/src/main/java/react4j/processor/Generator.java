@@ -9,7 +9,6 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import elemental2.core.JsObject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -214,7 +213,7 @@ final class Generator
     final String code =
       "$T.defineProperty( $T.cast( handler ), \"name\", $T.cast( JsPropertyMap.of( \"value\", $S ) ) )";
     block.addStatement( code,
-                        JsObject.class,
+                        ClassName.get( "elemental2.core", "JsObject" ),
                         Js.class,
                         Js.class,
                         descriptor.getName() + "." + eventHandler.getName() );
