@@ -211,11 +211,12 @@ final class Generator
     final CodeBlock.Builder block = CodeBlock.builder();
     block.beginControlFlow( "if( $T.enableComponentNames() )", ReactConfig.class );
     final String code =
-      "$T.defineProperty( $T.cast( handler ), \"name\", $T.cast( JsPropertyMap.of( \"value\", $S ) ) )";
+      "$T.defineProperty( $T.cast( handler ), \"name\", $T.cast( $T.of( \"value\", $S ) ) )";
     block.addStatement( code,
                         ClassName.get( "elemental2.core", "JsObject" ),
                         Js.class,
                         Js.class,
+                        JsPropertyMap.class,
                         descriptor.getName() + "." + eventHandler.getName() );
     block.endControlFlow();
     method.addCode( block.build() );
