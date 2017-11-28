@@ -12,6 +12,7 @@
 * **\[processor\]** Remove direct dependency on `react4j.annotations` and `react4j.core` packages
   from `processor` artifact.
 * **\[processor\]** Upgrade the version of javapoet to 1.8.0.
+* Upgrade Arez to version 0.27.
 
 ### [v0.16](https://github.com/react4j/react4j/tree/v0.16) (2017-11-14)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.15...v0.16)
