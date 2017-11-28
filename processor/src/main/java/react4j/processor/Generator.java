@@ -28,6 +28,9 @@ import javax.lang.model.type.TypeMirror;
 
 final class Generator
 {
+  static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
+  static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
+
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "org.realityforge.arez.annotations", "Action" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "org.realityforge.arez.annotations", "ArezComponent" );
@@ -149,7 +152,7 @@ final class Generator
     final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
     final String handlerName = "_" + eventHandler.getMethod().getSimpleName().toString();
     return FieldSpec.builder( handlerType, handlerName, Modifier.FINAL, Modifier.PRIVATE ).
-      addAnnotation( Nonnull.class ).
+      addAnnotation( NONNULL_CLASSNAME ).
       initializer( "create$N()", handlerName );
   }
 
@@ -161,14 +164,14 @@ final class Generator
     final String handlerName = "_" + eventHandler.getMethod().getSimpleName();
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( handlerName ).
-        addAnnotation( Nonnull.class ).
+        addAnnotation( NONNULL_CLASSNAME ).
         returns( handlerType );
 
     method.addModifiers( Modifier.STATIC );
 
     final ParameterSpec.Builder parameter =
       ParameterSpec.builder( TypeName.get( descriptor.getElement().asType() ), "component", Modifier.FINAL ).
-        addAnnotation( Nonnull.class );
+        addAnnotation( NONNULL_CLASSNAME );
     method.addParameter( parameter.build() );
 
     method.addStatement( "return (($T) component).$N", descriptor.getEnhancedClassName(), handlerName );
@@ -181,7 +184,7 @@ final class Generator
     return MethodSpec.methodBuilder( "render" ).
       addModifiers( Modifier.PROTECTED ).
       addAnnotation( Override.class ).
-      addAnnotation( Nullable.class ).
+      addAnnotation( NULLABLE_CLASSNAME ).
       returns( REACT_NODE_CLASSNAME ).
       addStatement( "return $T.of( $N() )", REACT_NODE_CLASSNAME, renderMethod.getMethod().getSimpleName().toString() );
   }
@@ -288,7 +291,7 @@ final class Generator
       addModifiers( Modifier.STATIC ).
       returns( REACT_NODE_CLASSNAME ).
       addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
-        addAnnotation( Nullable.class ).build() ).
+        addAnnotation( NULLABLE_CLASSNAME ).build() ).
       addStatement( "return $T.createElement( TYPE, props )", REACT_CLASSNAME );
   }
 
@@ -300,9 +303,9 @@ final class Generator
       addModifiers( Modifier.STATIC ).
       returns( REACT_NODE_CLASSNAME ).
       addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
-        addAnnotation( Nullable.class ).build() ).
+        addAnnotation( NULLABLE_CLASSNAME ).build() ).
       addParameter( ParameterSpec.builder( REACT_NODE_CLASSNAME, "child", Modifier.FINAL ).
-        addAnnotation( Nullable.class ).build() ).
+        addAnnotation( NULLABLE_CLASSNAME ).build() ).
       addStatement( "return $T.createElement( TYPE, props, child )", REACT_CLASSNAME );
   }
 
