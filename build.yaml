@@ -7,6 +7,8 @@ repositories:
 artifacts:
   idea_codestyle: au.com.stocksoftware.idea.codestyle:idea-codestyle:xml:1.12
 
+  shade_task: org.realityforge.ant.shade:ant-shade-task:jar:0.1
+
   anodoc: org.realityforge.anodoc:anodoc:jar:1.0.0
 
   javax_jsr305: com.google.code.findbugs:jsr305:jar:3.0.1
