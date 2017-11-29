@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.19](https://github.com/react4j/react4j/tree/v0.19) (2017-11-29)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.18...v0.19)
 
 ##### Changed
 * **\[processor\]** Remove a few more direct dependencies on the `javax.annotation.Nonnull` annotation
