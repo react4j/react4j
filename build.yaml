@@ -1,8 +1,8 @@
 repositories:
   remote:
    - http://repo1.maven.org/maven2
-   - https://stocksoftware.artifactoryonline.com/stocksoftware/public
-   - https://stocksoftware.artifactoryonline.com/stocksoftware/oss
+   - https://stocksoftware.jfrog.io/stocksoftware/public
+   - https://stocksoftware.jfrog.io/stocksoftware/oss
 
 artifacts:
   idea_codestyle: au.com.stocksoftware.idea.codestyle:idea-codestyle:xml:1.12
