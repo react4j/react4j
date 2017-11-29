@@ -3,7 +3,7 @@
 ### Unreleased
 
 ##### Changed
-* Upgrade Arez to version 0.29.
+* Upgrade Arez to version 0.30.
 * **\[processor\]** Remove the direct dependency on the `javax.annotation.Nonnull` and
   `javax.annotation.Nullable` annotations from the `react4j-processor` artifact.
 * **\[processor\]** Shade the processor dependencies so that the only jar required during annotation processing
