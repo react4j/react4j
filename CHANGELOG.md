@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.18](https://github.com/react4j/react4j/tree/v0.18) (2017-11-29)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.17...v0.18)
 
 ##### Changed
 * Upgrade Arez to version 0.30.
