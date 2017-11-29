@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -28,8 +27,8 @@ import javax.lang.model.type.TypeMirror;
 
 final class Generator
 {
-  static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
-  static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
+  private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
+  private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
 
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "org.realityforge.arez.annotations", "Action" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
@@ -197,7 +196,7 @@ final class Generator
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "create_" + eventHandler.getMethod().getSimpleName() ).
         addModifiers( Modifier.PRIVATE ).
-        addAnnotation( Nonnull.class ).
+        addAnnotation( NONNULL_CLASSNAME ).
         returns( handlerType );
 
     final ExecutableElement target = eventHandler.getEventHandlerMethod();
@@ -277,7 +276,7 @@ final class Generator
   private static MethodSpec.Builder buildFactoryMethod()
   {
     return MethodSpec.methodBuilder( "_create" ).
-      addAnnotation( Nonnull.class ).
+      addAnnotation( NONNULL_CLASSNAME ).
       addModifiers( Modifier.STATIC ).
       returns( REACT_NODE_CLASSNAME ).
       addStatement( "return $T.createElement( TYPE )", REACT_CLASSNAME );
@@ -287,7 +286,7 @@ final class Generator
   private static MethodSpec.Builder buildFactory2Method( @Nonnull final ComponentDescriptor descriptor )
   {
     return MethodSpec.methodBuilder( "_create" ).
-      addAnnotation( Nonnull.class ).
+      addAnnotation( NONNULL_CLASSNAME ).
       addModifiers( Modifier.STATIC ).
       returns( REACT_NODE_CLASSNAME ).
       addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
@@ -299,7 +298,7 @@ final class Generator
   private static MethodSpec.Builder buildFactory3Method( @Nonnull final ComponentDescriptor descriptor )
   {
     return MethodSpec.methodBuilder( "_create" ).
-      addAnnotation( Nonnull.class ).
+      addAnnotation( NONNULL_CLASSNAME ).
       addModifiers( Modifier.STATIC ).
       returns( REACT_NODE_CLASSNAME ).
       addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
@@ -316,7 +315,7 @@ final class Generator
 
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "getConstructorFunction" ).
-        addAnnotation( Nonnull.class ).
+        addAnnotation( NONNULL_CLASSNAME ).
         addModifiers( Modifier.STATIC, Modifier.PRIVATE ).
         returns( constructorType );
 
@@ -401,10 +400,10 @@ final class Generator
     {
       final ParameterSpec.Builder props =
         ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
-          addAnnotation( Nonnull.class );
+          addAnnotation( NONNULL_CLASSNAME );
       final ParameterSpec.Builder context =
         ParameterSpec.builder( ClassName.get( descriptor.getContextType() ), "context", Modifier.FINAL ).
-          addAnnotation( Nonnull.class );
+          addAnnotation( NONNULL_CLASSNAME );
       final MethodSpec.Builder method =
         MethodSpec.constructorBuilder().
           addParameter( props.build() ).
@@ -449,7 +448,7 @@ final class Generator
           final String parameterName = parameter.getSimpleName().toString();
           final ParameterSpec.Builder parameterSpec =
             ParameterSpec.builder( TypeName.get( parameterType ), parameterName, Modifier.FINAL ).
-              addAnnotation( Nonnull.class );
+              addAnnotation( NONNULL_CLASSNAME );
           method.addParameter( parameterSpec.build() );
           params.add( parameterName );
         }
@@ -508,7 +507,7 @@ final class Generator
           final TypeMirror parameterType = sourceParameterTypes.get( i );
           final String parameterName = parameter.getSimpleName().toString();
           final ParameterSpec.Builder parameterSpec =
-            ParameterSpec.builder( TypeName.get( parameterType ), parameterName ).addAnnotation( Nonnull.class );
+            ParameterSpec.builder( TypeName.get( parameterType ), parameterName ).addAnnotation( NONNULL_CLASSNAME );
           method.addParameter( parameterSpec.build() );
         }
 

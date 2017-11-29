@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Changed
+* **\[processor\]** Remove a few more direct dependencies on the `javax.annotation.Nonnull` annotation
+  from the `react4j-processor` artifact.
+
 ### [v0.18](https://github.com/react4j/react4j/tree/v0.18) (2017-11-29)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.17...v0.18)
 
