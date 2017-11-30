@@ -257,39 +257,6 @@ define 'react4j' do
     iml.main_generated_source_directories << _('generated/processors/main/java')
   end
 
-  # This should be moved to a separate project once the APIs have stabilized.
-  desc 'Sample TodoMVC implementation used during development'
-  define 'todomvc' do
-    pom.provided_dependencies.concat PROVIDED_DEPS
-
-    compile.with project('annotations').package(:jar),
-                 project('annotations').compile.dependencies,
-                 project('core').package(:jar),
-                 project('core').compile.dependencies,
-                 project('dom').package(:jar),
-                 project('dom').compile.dependencies,
-                 project('arez').package(:jar),
-                 project('arez').compile.dependencies,
-                 project('processor').package(:jar),
-                 project('processor').compile.dependencies,
-                 :arez_processor,
-                 :arez_component,
-                 :arez_extras,
-                 :arez_browser_extras,
-                 :gwt_user
-
-    test.options[:properties] = REACT_TEST_OPTIONS
-    test.options[:java_args] = ['-ea']
-
-    gwt_enhance(project, :modules_complete => true, :package_jars => false)
-
-    test.using :testng
-    test.compile.with TEST_DEPS
-
-    # The generators are configured to generate to here.
-    iml.main_generated_source_directories << _('generated/processors/main/java')
-  end
-
   doc.from(projects(%w(annotations core dom arez processor widget))).
     using(:javadoc,
           :windowtitle => 'React4j API Documentation',
@@ -320,7 +287,10 @@ define 'react4j' do
                               :shell_parameters => "-port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
   end
 
-  ipr.add_gwt_configuration(project('todomvc'),
+  ipr.extra_modules << '../react4j-todomvc/react4j-todomvc.iml'
+  ipr.add_gwt_configuration(project,
+                            :name => 'TodoMVCDev',
+                            :iml_name => 'react4j-todomvc',
                             :gwt_module => 'react4j.todomvc.TodomvcDev',
                             :start_javascript_debugger => false,
                             :vm_parameters => "-Xmx2G -Djava.io.tmpdir=#{_('tmp/gwt')}",

@@ -69,6 +69,8 @@ class TodoEntry
 
 * Add TodoMVC to web site in both production and development mode so it is easy to describe it in the documentation.
 
+* Upgrade and build TodoMVC as part of the release process.
+
 * EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
   schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
   and will need to be marked as runImmediately=false)
