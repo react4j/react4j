@@ -287,14 +287,8 @@ define 'react4j' do
                               :shell_parameters => "-port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
   end
 
-  ipr.extra_modules << '../react4j-todomvc/react4j-todomvc.iml'
-  ipr.add_gwt_configuration(project,
-                            :name => 'TodoMVCDev',
-                            :iml_name => 'react4j-todomvc',
-                            :gwt_module => 'react4j.todomvc.TodomvcDev',
-                            :start_javascript_debugger => false,
-                            :vm_parameters => "-Xmx2G -Djava.io.tmpdir=#{_('tmp/gwt')}",
-                            :shell_parameters => "-port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
+  # Uncomment this to add todomvc project into IDE
+  # ipr.extra_modules << '../react4j-todomvc/react4j-todomvc.iml'
 
   ipr.add_component('CompilerConfiguration') do |component|
     component.annotationProcessing do |xml|
