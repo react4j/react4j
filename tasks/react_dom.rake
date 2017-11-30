@@ -144,6 +144,6 @@ def generate_factory_source(project)
   end
   dir = project.file(base_source_dir => [t.name])
 
-  project.compile.from base_source_dir
+  project.compile.from dir
   project.iml.main_generated_source_directories << dir
 end
