@@ -4,6 +4,7 @@
 
 ##### Changed
 * Upgrade Arez to version 0.31.
+* Upgrade Buildr to version 1.5.4.
 
 ### [v0.19](https://github.com/react4j/react4j/tree/v0.19) (2017-11-29)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.18...v0.19)
