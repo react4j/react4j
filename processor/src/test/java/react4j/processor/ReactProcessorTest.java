@@ -15,6 +15,7 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
+        new Object[]{ "com.example.arez.AutorunArezReactComponent" },
         new Object[]{ "com.example.arez.BasicArezReactComponent" },
         new Object[]{ "com.example.arez.ComponentWithAnnotatedParameterEventHandler" },
         new Object[]{ "com.example.arez.ComponentWithEventHandler" },

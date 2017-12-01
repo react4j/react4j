@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[arez\]** Enhance `ReactArezComponent` so that autoruns are not scheduled when the component is created but are
+  instead scheduled after the `componentDidConstruct` lifecycle method was invoked. This ensures that `@Autorun`
+  methods are not invoked when the component is invalid (i.e. when the native component has not been attached or
+  when the `componentDidConstruct` method has yet to complete.)
+
 ##### Changed
 * **\[arez\]** Upgrade Arez to version 0.32.
 * Upgrade Buildr to version 1.5.4.

@@ -52,6 +52,23 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   }
 
   /**
+   * After construction of the object. Schedule any autoruns attached to component.
+   */
+  @Override
+  protected final void performComponentDidConstruct()
+  {
+    super.performComponentDidConstruct();
+    triggerScheduler();
+  }
+
+  /**
+   * Template method overridden by annotation processor if there are autoruns to schedule.
+   */
+  protected void triggerScheduler()
+  {
+  }
+
+  /**
    * Return true if the render dependencies have been marked as changed and component has yet to be re-rendered.
    *
    * @return true if render dependencies changed, false otherwise.

@@ -60,7 +60,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      _component.componentDidConstruct();
+      _component.performComponentDidConstruct();
     }
     finally
     {

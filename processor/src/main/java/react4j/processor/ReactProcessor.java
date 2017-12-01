@@ -558,8 +558,18 @@ public final class ReactProcessor
       ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).
         stream().anyMatch( this::hasInjectAnnotation );
 
+    final boolean runArezScheduler =
+      ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).
+        stream().anyMatch( this::hasAutorunAnnotation );
+
     descriptor.setNeedsInjection( needsInjection );
     descriptor.setArezComponent( isArezComponent );
+    descriptor.setRunArezScheduler( runArezScheduler );
+  }
+
+  private boolean hasAutorunAnnotation( final Element method )
+  {
+    return null != ProcessorUtil.findAnnotationByType( method, Constants.AUTORUN_ANNOTATION_CLASSNAME );
   }
 
   private boolean hasInjectAnnotation( final Element method )

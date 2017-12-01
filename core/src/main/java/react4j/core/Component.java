@@ -290,6 +290,16 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
   }
 
   /**
+   * Wrapper method for constructing the component.
+   * By default it just delegates to the {@link #componentDidConstruct()} method.
+   * This method exists to give middleware a mechanism to hook into component construction lifecycle.
+   */
+  protected void performComponentDidConstruct()
+  {
+    componentDidConstruct();
+  }
+
+  /**
    * This method is invoked after the component is bound to a native react component.
    * This is a good place to perform initialization.
    */

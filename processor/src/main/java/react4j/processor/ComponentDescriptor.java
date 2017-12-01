@@ -27,6 +27,7 @@ final class ComponentDescriptor
   private final TypeElement _element;
   private boolean _arezComponent;
   private boolean _needsInjection;
+  private boolean _runArezScheduler;
   @Nullable
   private TypeElement _propsType;
   @Nullable
@@ -185,6 +186,16 @@ final class ComponentDescriptor
   void setArezComponent( final boolean arezComponent )
   {
     _arezComponent = arezComponent;
+  }
+
+  boolean shouldRunArezScheduler()
+  {
+    return _runArezScheduler;
+  }
+
+  void setRunArezScheduler( final boolean runArezScheduler )
+  {
+    _runArezScheduler = runArezScheduler;
   }
 
   @Nonnull

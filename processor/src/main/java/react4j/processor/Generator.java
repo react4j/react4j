@@ -114,6 +114,15 @@ final class Generator
       builder.addMethod( MethodSpec.constructorBuilder().addAnnotation( INJECT_CLASSNAME ).build() );
     }
 
+    if ( descriptor.shouldRunArezScheduler() && descriptor.isArezComponent() )
+    {
+      builder.addMethod( MethodSpec.methodBuilder( "triggerScheduler" ).
+        addAnnotation( Override.class ).
+        addModifiers( Modifier.PROTECTED, Modifier.FINAL ).
+        addStatement( "getContext().triggerScheduler()" ).
+        build() );
+    }
+
     final MethodDescriptor renderMethod = descriptor.getRenderMethod();
     if ( !renderMethod.getMethod().getSimpleName().toString().equals( "render" ) )
     {
