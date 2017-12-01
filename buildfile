@@ -5,14 +5,6 @@ require 'buildr/gwt'
 require 'buildr/jacoco'
 
 PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations, :anodoc]
-TEST_DEPS = []
-
-# JDK options passed to test environment. Essentially turns assertions on.
-REACT_TEST_OPTIONS =
-  {
-    'braincheck.environment' => 'development',
-    'react4j.environment' => 'development'
-  }
 
 EXAMPLES = {
   'hello_world' => 'react4j.examples.hello_world.HelloWorld'
@@ -58,17 +50,11 @@ define 'react4j' do
                  :jsinterop_annotations_sources,
                  :braincheck
 
-    test.options[:properties] = REACT_TEST_OPTIONS
-    test.options[:java_args] = ['-ea']
-
     gwt_enhance(project)
 
     package(:jar)
     package(:sources)
     package(:javadoc)
-
-    test.using :testng
-    test.compile.with TEST_DEPS
   end
 
   desc 'React4j DOM binding'
@@ -83,18 +69,12 @@ define 'react4j' do
                  :elemental2_dom,
                  :elemental2_promise
 
-    test.options[:properties] = REACT_TEST_OPTIONS
-    test.options[:java_args] = ['-ea']
-
     generate_factory_source(project)
     gwt_enhance(project)
 
     package(:jar)
     package(:sources)
     package(:javadoc)
-
-    test.using :testng
-    test.compile.with TEST_DEPS
   end
 
   desc 'React4j-Arez Integration'
@@ -110,17 +90,11 @@ define 'react4j' do
                  :arez_extras,
                  :arez_browser_extras
 
-    test.options[:properties] = REACT_TEST_OPTIONS
-    test.options[:java_args] = ['-ea']
-
     gwt_enhance(project)
 
     package(:jar)
     package(:sources)
     package(:javadoc)
-
-    test.using :testng
-    test.compile.with TEST_DEPS
   end
 
   desc 'Interoperability with GWT Widget API'
@@ -131,17 +105,11 @@ define 'react4j' do
                  project('dom').compile.dependencies,
                  :gwt_user
 
-    test.options[:properties] = REACT_TEST_OPTIONS
-    test.options[:java_args] = ['-ea']
-
     gwt_enhance(project)
 
     package(:jar)
     package(:sources)
     package(:javadoc)
-
-    test.using :testng
-    test.compile.with TEST_DEPS
   end
 
   desc 'The Annotation processor'
@@ -219,13 +187,7 @@ define 'react4j' do
                  :arez_browser_extras,
                  :gwt_user
 
-    test.options[:properties] = REACT_TEST_OPTIONS
-    test.options[:java_args] = ['-ea']
-
     gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
-
-    test.using :testng
-    test.compile.with TEST_DEPS
 
     # The generators are configured to generate to here.
     iml.main_generated_source_directories << _('generated/processors/main/java')
@@ -243,17 +205,11 @@ define 'react4j' do
                  project('processor').package(:jar),
                  project('processor').compile.dependencies
 
-    test.options[:properties] = REACT_TEST_OPTIONS
-    test.options[:java_args] = ['-ea']
-
     package(:jar)
     package(:sources)
     package(:javadoc)
 
     gwt_enhance(project)
-
-    test.using :testng
-    test.compile.with TEST_DEPS
 
     # The generators are configured to generate to here.
     iml.main_generated_source_directories << _('generated/processors/main/java')
