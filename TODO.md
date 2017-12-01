@@ -75,6 +75,11 @@ class TodoEntry
   schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
   and will need to be marked as runImmediately=false)
 
+* If a `@ReactComponent` has an `inject` parameter set to `true` then it support constructor based injection.
+  This would involve verifying component has a single constructor and allowing this constructor to have parameters.
+  The enhanced subclass would expose this constructor and annotated it with `@Inject` (unless it was an
+  `@ArezComponent` in which case it would just set the required `inject = true` parameter on arez annotation).
+
 #### Arez DevTools
 
 Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need

@@ -20,6 +20,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
@@ -67,6 +68,31 @@ final class ProcessorUtil
         final ExecutableType methodType =
           (ExecutableType) typeUtils.asMemberOf( (DeclaredType) scope.asType(), member );
         methods.put( member.getSimpleName() + methodType.toString(), (ExecutableElement) member );
+      }
+    }
+  }
+
+  @Nonnull
+  static List<VariableElement> getFieldElements( @Nonnull final TypeElement element )
+  {
+    final Map<String, VariableElement> methodMap = new LinkedHashMap<>();
+    enumerateFieldElements( element, methodMap );
+    return new ArrayList<>( methodMap.values() );
+  }
+
+  private static void enumerateFieldElements( @Nonnull final TypeElement element,
+                                              @Nonnull final Map<String, VariableElement> fields )
+  {
+    final TypeMirror superclass = element.getSuperclass();
+    if ( TypeKind.NONE != superclass.getKind() )
+    {
+      enumerateFieldElements( (TypeElement) ( (DeclaredType) superclass ).asElement(), fields );
+    }
+    for ( final Element member : element.getEnclosedElements() )
+    {
+      if ( member.getKind() == ElementKind.FIELD )
+      {
+        fields.put( member.getSimpleName().toString(), (VariableElement) member );
       }
     }
   }

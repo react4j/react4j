@@ -5,6 +5,11 @@
 ##### Changed
 * Upgrade Arez to version 0.31.
 * Upgrade Buildr to version 1.5.4.
+* **\[processor\]** Detect the presence of the `@Inject` annotation on fields or methods of classes annotated with
+  `@ReactComponent`. If detected then ensure that the enhanced component either; sets the `inject = true` parameter
+  on the `@ArezComponent` annotation for arez components or defines a default constructor with an `@Inject` annotation
+  for non-arez components. This is the first step to enabling integration of React4j components with injection
+  frameworks such as Dagger2 or Google GIN.
 
 ### [v0.19](https://github.com/react4j/react4j/tree/v0.19) (2017-11-29)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.18...v0.19)

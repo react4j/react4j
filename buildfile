@@ -129,6 +129,7 @@ define 'react4j' do
               project('arez').compile.dependencies,
               project('annotations').package(:jar),
               project('annotations').compile.dependencies,
+              :javax_inject,
               :arez_processor,
               :gwt_user,
               :gwt_dev

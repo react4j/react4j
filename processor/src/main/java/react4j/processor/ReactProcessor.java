@@ -553,7 +553,18 @@ public final class ReactProcessor
       }
     }
 
+    final boolean needsInjection =
+      ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( this::hasInjectAnnotation ) ||
+      ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).
+        stream().anyMatch( this::hasInjectAnnotation );
+
+    descriptor.setNeedsInjection( needsInjection );
     descriptor.setArezComponent( isArezComponent );
+  }
+
+  private boolean hasInjectAnnotation( final Element method )
+  {
+    return null != ProcessorUtil.findAnnotationByType( method, Constants.INJECT_ANNOTATION_CLASSNAME );
   }
 
   private void determinePropsAndStateTypes( @Nonnull final ComponentDescriptor descriptor )

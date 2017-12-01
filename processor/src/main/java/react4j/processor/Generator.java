@@ -27,6 +27,7 @@ import javax.lang.model.type.TypeMirror;
 
 final class Generator
 {
+  private static final ClassName INJECT_CLASSNAME = ClassName.get( "javax.inject", "Inject" );
   private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
 
@@ -69,6 +70,10 @@ final class Generator
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).addMember( "type", "$S", descriptor.getName() );
+      if ( descriptor.needsInjection() )
+      {
+        annotation.addMember( "inject", "true" );
+      }
       builder.addAnnotation( annotation.build() );
     }
 
@@ -102,6 +107,11 @@ final class Generator
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
     {
       builder.addMethod( buildStaticEventHandlerMethod( descriptor, eventHandler ).build() );
+    }
+
+    if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
+    {
+      builder.addMethod( MethodSpec.constructorBuilder().addAnnotation( INJECT_CLASSNAME ).build() );
     }
 
     final MethodDescriptor renderMethod = descriptor.getRenderMethod();

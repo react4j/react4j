@@ -26,6 +26,7 @@ final class ComponentDescriptor
   @Nonnull
   private final TypeElement _element;
   private boolean _arezComponent;
+  private boolean _needsInjection;
   @Nullable
   private TypeElement _propsType;
   @Nullable
@@ -164,6 +165,16 @@ final class ComponentDescriptor
   {
     final String cname = ( isArezComponent() ? "Arez_" : "" ) + getElement().getSimpleName() + "_";
     return ClassName.get( getPackageName(), getNestedClassPrefix() + cname );
+  }
+
+  boolean needsInjection()
+  {
+    return _needsInjection;
+  }
+
+  void setNeedsInjection( final boolean needsInjection )
+  {
+    _needsInjection = needsInjection;
   }
 
   boolean isArezComponent()
