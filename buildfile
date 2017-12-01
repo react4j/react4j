@@ -158,7 +158,6 @@ define 'react4j' do
 
     test.using :testng
     test.options[:properties] = { 'react4j.fixture_dir' => _('src/test/resources') }
-    test.compile.with TEST_DEPS
 
     # The generators are configured to generate to here.
     iml.test_source_directories << _('generated/processors/test/java')
