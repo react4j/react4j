@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.20](https://github.com/react4j/react4j/tree/v0.20) (2017-12-01)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.19...v0.20)
 
 ##### Fixed
 * **\[arez\]** Enhance `ReactArezComponent` so that autoruns are not scheduled when the component is created but are
