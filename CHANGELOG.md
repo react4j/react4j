@@ -3,7 +3,7 @@
 ### Unreleased
 
 ##### Changed
-* Upgrade Arez to version 0.31.
+* **\[arez\]** Upgrade Arez to version 0.32.
 * Upgrade Buildr to version 1.5.4.
 * **\[processor\]** Detect the presence of the `@Inject` annotation on fields or methods of classes annotated with
   `@ReactComponent`. If detected then ensure that the enhanced component either; sets the `inject = true` parameter
