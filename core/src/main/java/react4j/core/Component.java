@@ -103,18 +103,6 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
   }
 
   /**
-   * Return true if a native component has been bound to this component.
-   * This should be true when {@link #componentWillMount()} is invoked and will
-   * be false after {@link #componentWillUnmount()} has completed.
-   *
-   * @return true if a native component has been bound to this component.
-   */
-  protected final boolean isComponentBound()
-  {
-    return null != _nativeComponent;
-  }
-
-  /**
    * Return the component state from the native component.
    * This may be null if initial state was never set.
    *

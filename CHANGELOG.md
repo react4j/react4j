@@ -4,6 +4,8 @@
 
 ##### Changed
 * **\[core\]** Upgrade to react 16.2.0.
+* **\[core\]** Remove `Component.isComponentBound()` method as usage is an indication that there is a bug or
+  failure in the API that should be removed.
 
 ### [v0.20](https://github.com/react4j/react4j/tree/v0.20) (2017-12-01)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.19...v0.20)
