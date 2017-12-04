@@ -81,6 +81,9 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     return _renderDepsChanged;
   }
 
+  /**
+   * Hook used by Arez to notify component that it needs to be re-rendered.
+   */
   @OnDepsChanged
   protected final void onRenderDepsChanged()
   {
@@ -114,6 +117,11 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     return _arezComponentId;
   }
 
+  /**
+   * Return the Observer associated with the render tracker method.
+   *
+   * @return the Observer associated with the render tracker method.
+   */
   @ObserverRef
   @Nonnull
   protected Observer getRenderObserver()
@@ -121,6 +129,9 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     throw new IllegalStateException();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Track( name = "render" )
   @Nullable
   @Override

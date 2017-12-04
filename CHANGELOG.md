@@ -14,6 +14,7 @@
 * **\[core\]** Remove `NativeComponent.setState(State)` method as `NativeComponent.setState(SetStateCallback)`
   is a better alternative.
 * **\[arez\]** Upgrade Arez to version 0.33.
+* **\[arez\]** Improve the javadocs on the `ReactArezComponent` class.
 
 ### [v0.20](https://github.com/react4j/react4j/tree/v0.20) (2017-12-01)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.19...v0.20)
