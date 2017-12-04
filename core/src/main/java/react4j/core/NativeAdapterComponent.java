@@ -29,7 +29,7 @@ public abstract class NativeAdapterComponent<
   /**
    * Create a component that designed to delegate to a target component.
    *
-   * @param props the initial props.
+   * @param props   the initial props.
    * @param context the initial context.
    */
   protected NativeAdapterComponent( @Nullable final P props,
