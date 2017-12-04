@@ -15,6 +15,12 @@ import react4j.core.ReactNode;
 class OverrideLifecycleMethodsComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
+  // This lifecycle method should not have adapter synthesized.
+  @Override
+  protected void componentDidConstruct( @Nullable final BaseProps props, @Nullable final BaseContext context )
+  {
+  }
+
   @Override
   protected ReactNode render()
   {
