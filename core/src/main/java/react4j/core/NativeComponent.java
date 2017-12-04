@@ -55,8 +55,6 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState, 
     return context;
   }
 
-  final native void setState( @Nonnull S state );
-
   final native void setState( @Nonnull Component.SetStateCallback<P, S> callback );
 
   @JsOverlay

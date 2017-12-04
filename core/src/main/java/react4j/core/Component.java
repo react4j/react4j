@@ -144,8 +144,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    */
   protected final void scheduleStateUpdate( @Nonnull final S state )
   {
-    invariantsSetState();
-    component().setState( state );
+    scheduleStateUpdate( ( p, s ) -> state );
   }
 
   /**
@@ -210,7 +209,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
     else
     {
       // This schedules a re-render but will not skip shouldComponentUpdate
-      component().setState( Js.<S>uncheckedCast( JsPropertyMap.of() ) );
+      component().setState( ( p, s ) -> Js.uncheckedCast( JsPropertyMap.of() ) );
     }
   }
 

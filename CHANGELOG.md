@@ -11,6 +11,8 @@
 * **\[core\]** Fix the javadocs for the `NativeAdapterComponent` constructor.
 * **\[core\]** Change the `Component.componentDidConstruct()` lifecycle method to accept two parameters
   `props` and `context`.
+* **\[core\]** Remove `NativeComponent.setState(State)` method as `NativeComponent.setState(SetStateCallback)`
+  is a better alternative.
 
 ### [v0.20](https://github.com/react4j/react4j/tree/v0.20) (2017-12-01)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.19...v0.20)
