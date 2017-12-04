@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.21](https://github.com/react4j/react4j/tree/v0.21) (2017-12-04)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.20...v0.21)
 
 ##### Changed
 * **\[core\]** Upgrade to react 16.2.0.
