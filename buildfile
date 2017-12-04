@@ -116,6 +116,8 @@ define 'react4j' do
   define 'processor' do
     pom.provided_dependencies.concat [:javax_jsr305]
 
+    project.enable_annotation_processor = true
+
     compile.with :autoservice,
                  :autocommon,
                  :javapoet,
@@ -159,9 +161,6 @@ define 'react4j' do
     test.using :testng
     test.options[:properties] = { 'react4j.fixture_dir' => _('src/test/resources') }
 
-    # The generators are configured to generate to here.
-    iml.test_source_directories << _('generated/processors/test/java')
-
     iml.test_source_directories << _('src/test/resources/input')
     iml.test_source_directories << _('src/test/resources/expected')
     iml.test_source_directories << _('src/test/resources/bad_input')
@@ -170,6 +169,8 @@ define 'react4j' do
   desc 'Examples that are only used to illustrate ideas in documentation'
   define 'doc-examples' do
     pom.provided_dependencies.concat PROVIDED_DEPS
+
+    project.enable_annotation_processor = true
 
     compile.with project('annotations').package(:jar),
                  project('annotations').compile.dependencies,
@@ -188,9 +189,6 @@ define 'react4j' do
                  :gwt_user
 
     gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
-
-    # The generators are configured to generate to here.
-    iml.main_generated_source_directories << _('generated/processors/main/java')
   end
 
   # These will one day move to a separate repository once the API stabilizes
@@ -210,9 +208,6 @@ define 'react4j' do
     package(:javadoc)
 
     gwt_enhance(project)
-
-    # The generators are configured to generate to here.
-    iml.main_generated_source_directories << _('generated/processors/main/java')
   end
 
   doc.from(projects(%w(annotations core dom arez processor widget))).
@@ -243,24 +238,5 @@ define 'react4j' do
                               :start_javascript_debugger => false,
                               :vm_parameters => "-Xmx2G -Djava.io.tmpdir=#{_('tmp/gwt')}",
                               :shell_parameters => "-port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
-  end
-
-  # Uncomment this to add todomvc project into IDE
-  # ipr.extra_modules << '../react4j-todomvc/react4j-todomvc.iml'
-
-  ipr.add_component('CompilerConfiguration') do |component|
-    component.annotationProcessing do |xml|
-      xml.profile(:default => true, :name => 'Default', :enabled => true) do
-        xml.sourceOutputDir :name => 'generated/processors/main/java'
-        xml.sourceTestOutputDir :name => 'generated/processors/test/java'
-        xml.outputRelativeToContentRoot :value => true
-      end
-    end
-  end
-end
-
-Buildr.projects.each do |project|
-  project.clean do
-    rm_rf project._(:generated)
   end
 end
