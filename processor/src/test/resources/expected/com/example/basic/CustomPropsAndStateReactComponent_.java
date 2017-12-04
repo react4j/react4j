@@ -41,8 +41,8 @@ class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactCompone
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, BaseContext, CustomPropsAndStateReactComponent> {
-    NativeReactComponent(@Nonnull final CustomPropsAndStateReactComponent.Props props,
-        @Nonnull final BaseContext context) {
+    NativeReactComponent(@Nullable final CustomPropsAndStateReactComponent.Props props,
+        @Nullable final BaseContext context) {
       super( props, context );
     }
 

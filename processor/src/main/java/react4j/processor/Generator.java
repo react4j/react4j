@@ -419,10 +419,10 @@ final class Generator
     {
       final ParameterSpec.Builder props =
         ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
-          addAnnotation( NONNULL_CLASSNAME );
+          addAnnotation( NULLABLE_CLASSNAME );
       final ParameterSpec.Builder context =
         ParameterSpec.builder( ClassName.get( descriptor.getContextType() ), "context", Modifier.FINAL ).
-          addAnnotation( NONNULL_CLASSNAME );
+          addAnnotation( NULLABLE_CLASSNAME );
       final MethodSpec.Builder method =
         MethodSpec.constructorBuilder().
           addParameter( props.build() ).

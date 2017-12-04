@@ -61,7 +61,7 @@ class CustomHandlerComponent_ extends CustomHandlerComponent {
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, CustomHandlerComponent> {
-    NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
+    NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }
 

@@ -62,7 +62,7 @@ class ArezReactComponent_ extends ArezReactComponent {
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ArezReactComponent> implements Lifecycle {
-    NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
+    NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }
 

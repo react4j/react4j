@@ -51,7 +51,7 @@ class BasicProviderComponent_ extends BasicProviderComponent {
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, BasicProviderComponent> implements Lifecycle {
-    NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
+    NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }
 

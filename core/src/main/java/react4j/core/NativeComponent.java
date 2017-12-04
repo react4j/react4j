@@ -25,8 +25,8 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState, 
   @JsProperty
   private C context;
 
-  NativeComponent( @SuppressWarnings( "unused" ) @Nonnull final P props,
-                   @SuppressWarnings( "unused" ) @Nonnull final C context )
+  NativeComponent( @SuppressWarnings( "unused" ) @Nullable final P props,
+                   @SuppressWarnings( "unused" ) @Nullable final C context )
   {
   }
 

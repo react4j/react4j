@@ -61,7 +61,7 @@ class CustomHandlerMultipleArgsComponent_ extends CustomHandlerMultipleArgsCompo
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, CustomHandlerMultipleArgsComponent> {
-    NativeReactComponent(@Nonnull final BaseProps props, @Nonnull final BaseContext context) {
+    NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }
 

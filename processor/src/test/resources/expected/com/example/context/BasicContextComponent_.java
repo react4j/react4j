@@ -47,8 +47,8 @@ class BasicContextComponent_ extends BasicContextComponent {
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BasicContextComponent.Context, BasicContextComponent> {
-    NativeReactComponent(@Nonnull final BaseProps props,
-        @Nonnull final BasicContextComponent.Context context) {
+    NativeReactComponent(@Nullable final BaseProps props,
+        @Nullable final BasicContextComponent.Context context) {
       super( props, context );
     }
 

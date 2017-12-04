@@ -31,8 +31,8 @@ public abstract class NativeAdapterComponent<
    *
    * @param props the initial props.
    */
-  protected NativeAdapterComponent( @Nonnull final P props,
-                                    @Nonnull final C context )
+  protected NativeAdapterComponent( @Nullable final P props,
+                                    @Nullable final C context )
   {
     super( props, context );
     _component = createComponent();
