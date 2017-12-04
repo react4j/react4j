@@ -222,6 +222,7 @@ public abstract class NativeAdapterComponent<
    * @param nextProps   the new properties of the component.
    * @param nextState   the new state of the component.
    * @param nextContext the new context of the component.
+   * @return true if the component should be updated.
    * @see Component#shouldComponentUpdate(BaseProps, BaseState, BaseContext)
    */
   protected final boolean performShouldComponentUpdate( @Nonnull final P nextProps,
@@ -334,6 +335,7 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method getChildContext() that
    * delegates to this method to perform the work.
    *
+   * @param <CC> the type of the child context.
    * @return the child context.
    * @see Component#getChildContext()
    */

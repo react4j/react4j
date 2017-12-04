@@ -422,7 +422,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * @param nextProps   the new properties of the component.
    * @param nextState   the new state of the component.
    * @param nextContext the new context of the component.
-   * @return true in case the component should be updated
+   * @return true if the component should be updated.
    */
   protected boolean shouldComponentUpdate( @Nullable final P nextProps,
                                            @Nullable final S nextState,
