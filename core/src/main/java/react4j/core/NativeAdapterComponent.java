@@ -39,7 +39,7 @@ public abstract class NativeAdapterComponent<
     _component = createComponent();
     _component.bindComponent( this );
 
-    performComponentDidConstruct();
+    performComponentDidConstruct( props, context );
   }
 
   /**
@@ -51,8 +51,12 @@ public abstract class NativeAdapterComponent<
 
   /**
    * Initialize the target component.
+   *
+   * @param props   the properties that the component was constructed with.
+   * @param context the context that the component was constructed with.
    */
-  private void performComponentDidConstruct()
+  private void performComponentDidConstruct( @Nullable final P props,
+                                             @Nullable final C context )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -61,7 +65,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      _component.performComponentDidConstruct();
+      _component.performComponentDidConstruct( props, context );
     }
     finally
     {
