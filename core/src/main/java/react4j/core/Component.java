@@ -108,7 +108,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    *
    * @return the component state.
    */
-  protected final S state()
+  protected S state()
   {
     return component().state();
   }
@@ -119,7 +119,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    *
    * @return the component state.
    */
-  protected final P props()
+  protected P props()
   {
     return component().props();
   }
@@ -154,7 +154,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    *
    * @param callback the callback that will will be invoked to update state.
    */
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
+  protected void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
   {
     invariantsSetState();
     component().setState( callback );

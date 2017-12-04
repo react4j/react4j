@@ -9,11 +9,12 @@ import jsinterop.base.JsPropertyMapOfAny;
 import org.realityforge.arez.Arez;
 import org.realityforge.arez.ArezContext;
 import org.realityforge.arez.Disposable;
-import org.realityforge.arez.Observable;
 import org.realityforge.arez.Observer;
 import org.realityforge.arez.annotations.Action;
 import org.realityforge.arez.annotations.ComponentId;
 import org.realityforge.arez.annotations.ContextRef;
+import org.realityforge.arez.annotations.Observable;
+import org.realityforge.arez.annotations.ObservableRef;
 import org.realityforge.arez.annotations.ObserverRef;
 import org.realityforge.arez.annotations.OnDepsChanged;
 import org.realityforge.arez.annotations.Track;
@@ -49,6 +50,83 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected ReactArezComponent()
   {
     _arezComponentId = c_nextComponentId++;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Observable( expectSetter = false )
+  @Override
+  protected S state()
+  {
+    return super.state();
+  }
+
+  /**
+   * Return the Observable used to make `state` observable.
+   *
+   * @return the Observable used to make `state` observable.
+   */
+  @ObservableRef
+  protected org.realityforge.arez.Observable<S> getStateObservable()
+  {
+    throw new IllegalStateException();
+  }
+
+  /**
+   * Action that invoked when state changes.
+   */
+  @Action
+  protected void reportStateChanged()
+  {
+    getStateObservable().reportChanged();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Observable( expectSetter = false )
+  @Override
+  protected P props()
+  {
+    return super.props();
+  }
+
+  /**
+   * Return the Observable used to make `props` observable.
+   *
+   * @return the Observable used to make `props` observable.
+   */
+  @ObservableRef
+  protected org.realityforge.arez.Observable<P> getPropsObservable()
+  {
+    throw new IllegalStateException();
+  }
+
+  /**
+   * Action that invoked when props changes.
+   */
+  @Action
+  protected void reportPropsChanged()
+  {
+    getPropsObservable().reportChanged();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
+  {
+    final SetStateCallback<P, S> wrappedCallback = ( p, s ) -> {
+      final S state = callback.onSetState( p, s );
+      if ( null != state )
+      {
+        reportStateChanged();
+      }
+      return state;
+    };
+    super.scheduleStateUpdate( wrappedCallback );
   }
 
   /**
@@ -154,7 +232,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       return true;
     }
     //noinspection SimplifiableIfStatement
-    if ( !Js.isTripleEqual( state(), nextState ) )
+    if ( !Js.isTripleEqual( super.state(), nextState ) )
     {
       // If state is not identical then we need to re-render ...
       // Previously we chose not to re-render if only AREZ_STATE_KEY that was updated but that
@@ -166,7 +244,12 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       /*
        * We just compare the props shallowly and avoid a re-render if the props have not changed.
        */
-      return JsUtil.isObjectShallowModified( props(), nextProps );
+      final boolean modified = JsUtil.isObjectShallowModified( super.props(), nextProps );
+      if ( modified )
+      {
+        reportPropsChanged();
+      }
+      return modified;
     }
   }
 
@@ -211,14 +294,15 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() )
     {
       final Observer renderTracker = getRenderObserver();
-      final List<Observable<?>> dependencies = getContext().getSpy().getDependencies( renderTracker );
+      final List<org.realityforge.arez.Observable<?>> dependencies =
+        getContext().getSpy().getDependencies( renderTracker );
       final JsPropertyMapOfAny deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), d ) );
       final JsPropertyMapOfAny data = JsPropertyMap.of();
       data.set( "name", renderTracker.getName() );
       data.set( "observer", renderTracker );
       data.set( "deps", deps );
-      final S state = state();
+      final S state = super.state();
       final Object currentArezData = null != state ? JsPropertyMap.of( state ).get( AREZ_STATE_KEY ) : null;
       final Object currentDepsData = null != currentArezData ? JsPropertyMap.of( currentArezData ).get( "deps" ) : null;
       /*

@@ -15,6 +15,9 @@
   is a better alternative.
 * **\[arez\]** Upgrade Arez to version 0.33.
 * **\[arez\]** Improve the javadocs on the `ReactArezComponent` class.
+* 💥 **\[arez\]** Change `props()` and `state()` methods in the `ReactArezComponent` class to be observable
+  properties. This reverts an earlier change made in v0.07 as it was found that a lot of downstream code made
+  the assumption that they are observable.
 
 ### [v0.20](https://github.com/react4j/react4j/tree/v0.20) (2017-12-01)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.19...v0.20)
