@@ -62,7 +62,7 @@ class TodoEntry
 
 ### Low Priorities
 
-* Add support for fragments as described in 
+* Add support for fragments as described in
   https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html
 
 * In base class have configuration that warns on re-renders that produced duplicate values. Note: that the tool to do
