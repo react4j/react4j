@@ -62,6 +62,9 @@ class TodoEntry
 
 ### Low Priorities
 
+* Re-add in observables behind for `props()`, `state()` and `context()` in `ArezReactComponent` as they are useful in
+  autoruns on the component. In particular when the props are changed by the parent container.
+
 * Add support for fragments as described in 
   https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html
 
