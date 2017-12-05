@@ -18,7 +18,7 @@
 
 * Consider ways or reorganizing - Use react+reason-react as inspiration? Also EmberJS as inspiration - https://www.emberjs.com/
 
-* Extract TodoMVC and port a hackernews clone ala https://github.com/reasonml-community/reason-react-hacker-news
+* Port a hackernews clone ala https://github.com/reasonml-community/reason-react-hacker-news
 
 * Document Context
   - how to write a provider
