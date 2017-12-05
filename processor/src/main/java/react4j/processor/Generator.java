@@ -155,12 +155,6 @@ final class Generator
     }
     builder.addType( buildNativeComponent( descriptor ) );
 
-    if ( descriptor.needsDaggerIntegration() )
-    {
-      builder.addType( buildDaggerModule( descriptor ) );
-      builder.addType( buildDaggerComponent( descriptor ) );
-    }
-
     return builder.build();
   }
 
@@ -540,6 +534,30 @@ final class Generator
 
         builder.addMethod( method.build() );
       }
+    }
+
+    return builder.build();
+  }
+
+  @Nonnull
+  static TypeSpec buildDaggerFactory( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeSpec.Builder builder =
+      TypeSpec.interfaceBuilder( ClassName.get( descriptor.getPackageName(),
+                                                descriptor.getElement().getSimpleName() + "DaggerFactory" ) );
+
+    builder.addModifiers( Modifier.PUBLIC );
+
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( "create" + descriptor.getName() + "DaggerComponent" ).
+        addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT ).
+        returns( ClassName.bestGuess( "DaggerComponent" ) );
+    builder.addMethod( method.build() );
+
+    if ( descriptor.needsDaggerIntegration() )
+    {
+      builder.addType( buildDaggerModule( descriptor ) );
+      builder.addType( buildDaggerComponent( descriptor ) );
     }
 
     return builder.build();

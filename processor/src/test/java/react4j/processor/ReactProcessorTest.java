@@ -15,43 +15,43 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "com.example.arez.AutorunArezReactComponent" },
-        new Object[]{ "com.example.arez.BasicArezReactComponent" },
-        new Object[]{ "com.example.arez.ComponentWithAnnotatedParameterEventHandler" },
-        new Object[]{ "com.example.arez.ComponentWithEventHandler" },
-        new Object[]{ "com.example.arez.ComponentWithNoAutoActionEventHandler" },
-        new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent" },
-        new Object[]{ "com.example.basic.BasicReactComponent" },
-        new Object[]{ "com.example.basic.CustomNameReactComponent" },
-        new Object[]{ "com.example.basic.CustomPropsAndStateReactComponent" },
-        new Object[]{ "com.example.basic.PublicReactComponent" },
-        new Object[]{ "com.example.context.BasicContextComponent" },
-        new Object[]{ "com.example.context.BasicProviderComponent" },
-        new Object[]{ "com.example.default_props.PackageAccessDefaultPropsComponent" },
-        new Object[]{ "com.example.default_props.PropsSubclassDefaultPropsComponent" },
-        new Object[]{ "com.example.default_props.ProtectedDefaultPropsComponent" },
-        new Object[]{ "com.example.default_props.PublicDefaultPropsComponent" },
-        new Object[]{ "com.example.event_handler.BasicHandlerComponent" },
-        new Object[]{ "com.example.event_handler.CustomHandlerButParametersIgnoredComponent" },
-        new Object[]{ "com.example.event_handler.CustomHandlerComponent" },
-        new Object[]{ "com.example.event_handler.CustomHandlerMultipleArgsComponent" },
-        new Object[]{ "com.example.event_handler.CustomNameComponent" },
-        new Object[]{ "com.example.inject.ArezReactComponent" },
-        new Object[]{ "com.example.inject.BasicReactComponent" },
-        new Object[]{ "com.example.inject.MethodInjectReactComponent" },
-        new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
-        new Object[]{ "com.example.render.BaseRenderComponent" },
-        new Object[]{ "com.example.render.RenderAsArrayComponent" },
-        new Object[]{ "com.example.render.RenderAsJsArrayComponent" },
-        new Object[]{ "RootPackageReactComponent" }
+        new Object[]{ "com.example.arez.AutorunArezReactComponent", false },
+        new Object[]{ "com.example.arez.BasicArezReactComponent", false },
+        new Object[]{ "com.example.arez.ComponentWithAnnotatedParameterEventHandler", false },
+        new Object[]{ "com.example.arez.ComponentWithEventHandler", false },
+        new Object[]{ "com.example.arez.ComponentWithNoAutoActionEventHandler", false },
+        new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent", false },
+        new Object[]{ "com.example.basic.BasicReactComponent", false },
+        new Object[]{ "com.example.basic.CustomNameReactComponent", false },
+        new Object[]{ "com.example.basic.CustomPropsAndStateReactComponent", false },
+        new Object[]{ "com.example.basic.PublicReactComponent", false },
+        new Object[]{ "com.example.context.BasicContextComponent", false },
+        new Object[]{ "com.example.context.BasicProviderComponent", false },
+        new Object[]{ "com.example.default_props.PackageAccessDefaultPropsComponent", false },
+        new Object[]{ "com.example.default_props.PropsSubclassDefaultPropsComponent", false },
+        new Object[]{ "com.example.default_props.ProtectedDefaultPropsComponent", false },
+        new Object[]{ "com.example.default_props.PublicDefaultPropsComponent", false },
+        new Object[]{ "com.example.event_handler.BasicHandlerComponent", false },
+        new Object[]{ "com.example.event_handler.CustomHandlerButParametersIgnoredComponent", false },
+        new Object[]{ "com.example.event_handler.CustomHandlerComponent", false },
+        new Object[]{ "com.example.event_handler.CustomHandlerMultipleArgsComponent", false },
+        new Object[]{ "com.example.event_handler.CustomNameComponent", false },
+        new Object[]{ "com.example.inject.ArezReactComponent", true },
+        new Object[]{ "com.example.inject.BasicReactComponent", true },
+        new Object[]{ "com.example.inject.MethodInjectReactComponent", true },
+        new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent", false },
+        new Object[]{ "com.example.render.BaseRenderComponent", false },
+        new Object[]{ "com.example.render.RenderAsArrayComponent", false },
+        new Object[]{ "com.example.render.RenderAsJsArrayComponent", false },
+        new Object[]{ "RootPackageReactComponent", false }
       };
   }
 
   @Test( dataProvider = "successfulCompiles" )
-  public void processSuccessfulCompile( @Nonnull final String classname )
+  public void processSuccessfulCompile( @Nonnull final String classname, final boolean dagger )
     throws Exception
   {
-    assertSuccessfulCompile( classname );
+    assertSuccessfulCompile( classname, dagger );
   }
 
   @Test

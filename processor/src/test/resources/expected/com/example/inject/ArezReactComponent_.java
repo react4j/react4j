@@ -1,19 +1,14 @@
 package com.example.inject;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Subcomponent;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.inject.Provider;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.arez.annotations.ArezComponent;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
-import react4j.core.Component;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.React;
@@ -95,25 +90,6 @@ class ArezReactComponent_ extends ArezReactComponent {
     public boolean shouldComponentUpdate(@Nonnull final BaseProps arg0,
         @Nonnull final BaseState arg1, @Nonnull final BaseContext arg2) {
       return performShouldComponentUpdate(arg0,arg1,arg2);
-    }
-  }
-
-  @Module
-  public static final class DaggerModule {
-    @Provides
-    static Component provideComponent(final Arez_ArezReactComponent_ component) {
-      return component;
-    }
-  }
-
-  @Subcomponent(
-      modules = DaggerModule.class
-  )
-  public interface DaggerComponent {
-    Provider<Component> createProvider();
-
-    default ArezReactComponent get() {
-      return (ArezReactComponent) createProvider().get();
     }
   }
 }

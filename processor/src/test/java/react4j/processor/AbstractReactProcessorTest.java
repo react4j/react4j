@@ -9,6 +9,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,30 +23,45 @@ import static org.testng.Assert.*;
 @SuppressWarnings( "Duplicates" )
 abstract class AbstractReactProcessorTest
 {
-  void assertSuccessfulCompile( @Nonnull final String classname )
+  void assertSuccessfulCompile( @Nonnull final String classname, final boolean dagger )
     throws Exception
   {
     // It should be noted that we do not test the output of any Arez artifact
     // emitted. We assume the Arez project adequately tests this scenario
     final String[] elements = classname.contains( "." ) ? classname.split( "\\." ) : new String[]{ classname };
     final StringBuilder input = new StringBuilder();
-    final StringBuilder factory = new StringBuilder();
+    final StringBuilder enhancedComponent = new StringBuilder();
+    final StringBuilder daggerFactory = new StringBuilder();
     input.append( "input" );
-    factory.append( "expected" );
+    enhancedComponent.append( "expected" );
+    daggerFactory.append( "expected" );
     for ( int i = 0; i < elements.length; i++ )
     {
       input.append( '/' );
       input.append( elements[ i ] );
-      factory.append( '/' );
-      factory.append( elements[ i ] );
+      enhancedComponent.append( '/' );
+      enhancedComponent.append( elements[ i ] );
       if ( i == elements.length - 1 )
       {
-        factory.append( "_" );
+        enhancedComponent.append( "_" );
+      }
+      daggerFactory.append( '/' );
+      daggerFactory.append( elements[ i ] );
+      if ( i == elements.length - 1 )
+      {
+        daggerFactory.append( "DaggerFactory" );
       }
     }
     input.append( ".java" );
-    factory.append( ".java" );
-    assertSuccessfulCompile( input.toString(), factory.toString() );
+    enhancedComponent.append( ".java" );
+    daggerFactory.append( ".java" );
+    final ArrayList<String> outputs = new ArrayList<>();
+    outputs.add( enhancedComponent.toString() );
+    if ( dagger )
+    {
+      outputs.add( daggerFactory.toString() );
+    }
+    assertSuccessfulCompile( input.toString(), outputs.toArray( new String[ outputs.size() ] ) );
   }
 
   void assertSuccessfulCompile( @Nonnull final String inputResource, @Nonnull final String... expectedOutputResources )
