@@ -562,7 +562,12 @@ public final class ReactProcessor
       ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).
         stream().anyMatch( this::hasAutorunAnnotation );
 
+    final boolean isDaggerPresent =
+      needsInjection &&
+      null != processingEnv.getElementUtils().getTypeElement( Constants.DAGGER_MODULE_CLASSNAME );
+
     descriptor.setNeedsInjection( needsInjection );
+    descriptor.setNeedsDaggerModule( isDaggerPresent );
     descriptor.setArezComponent( isArezComponent );
     descriptor.setRunArezScheduler( runArezScheduler );
   }

@@ -4,6 +4,8 @@
 
 ##### Changed
 * Incorporate the processorpath buildr addon to simplify build configuration.
+* **\[processor\]** Initial support for integration into Dagger2 by generating `@Subcomponent` and `@Module`
+  annotated classes in the enhanced component subclass.
 
 ### [v0.21](https://github.com/react4j/react4j/tree/v0.21) (2017-12-04)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.20...v0.21)

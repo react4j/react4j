@@ -27,6 +27,7 @@ final class ComponentDescriptor
   private final TypeElement _element;
   private boolean _arezComponent;
   private boolean _needsInjection;
+  private boolean _needsDaggerModule;
   private boolean _runArezScheduler;
   @Nullable
   private TypeElement _propsType;
@@ -176,6 +177,16 @@ final class ComponentDescriptor
   void setNeedsInjection( final boolean needsInjection )
   {
     _needsInjection = needsInjection;
+  }
+
+  boolean needsDaggerModule()
+  {
+    return _needsDaggerModule;
+  }
+
+  void setNeedsDaggerModule( final boolean needsDaggerModule )
+  {
+    _needsDaggerModule = needsDaggerModule;
   }
 
   boolean isArezComponent()

@@ -6,6 +6,9 @@ require 'buildr/jacoco'
 
 PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations, :anodoc]
 
+DAGGER_RUNTIME_DEPS = [:javax_inject, :dagger_core]
+DAGGER_PROCESSOR_DEPS = [:javax_inject, :dagger_core, :dagger_producers, :dagger_compiler, :googlejavaformat, :errorprone, :javapoet, :guava]
+
 EXAMPLES = {
   'hello_world' => 'react4j.examples.hello_world.HelloWorld'
 }
@@ -132,6 +135,7 @@ define 'react4j' do
               project('annotations').package(:jar),
               project('annotations').compile.dependencies,
               :javax_inject,
+              DAGGER_PROCESSOR_DEPS,
               :arez_processor,
               :gwt_user,
               :gwt_dev
@@ -182,6 +186,7 @@ define 'react4j' do
                  project('arez').compile.dependencies,
                  project('processor').package(:jar),
                  project('processor').compile.dependencies,
+                 DAGGER_PROCESSOR_DEPS,
                  :arez_processor,
                  :arez_component,
                  :arez_extras,

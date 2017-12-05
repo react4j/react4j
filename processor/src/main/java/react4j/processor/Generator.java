@@ -28,6 +28,7 @@ import javax.lang.model.type.TypeMirror;
 final class Generator
 {
   private static final ClassName INJECT_CLASSNAME = ClassName.get( "javax.inject", "Inject" );
+  private static final ClassName PROVIDER_CLASSNAME = ClassName.get( "javax.inject", "Provider" );
   private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
 
@@ -51,6 +52,7 @@ final class Generator
   private static final ClassName REACT_PROP_TYPE_CLASSNAME = ClassName.get( "react4j.core", "PropType" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j.core", "React" );
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j.core", "ReactConfig" );
+  private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j.core", "Component" );
 
   private Generator()
   {
@@ -152,6 +154,12 @@ final class Generator
       builder.addType( buildNativeLifecycleInterface( descriptor ) );
     }
     builder.addType( buildNativeComponent( descriptor ) );
+
+    if ( descriptor.needsDaggerModule() )
+    {
+      builder.addType( buildDaggerModule( descriptor ) );
+      builder.addType( buildDaggerComponent( descriptor ) );
+    }
 
     return builder.build();
   }
@@ -533,6 +541,59 @@ final class Generator
         builder.addMethod( method.build() );
       }
     }
+
+    return builder.build();
+  }
+
+  @Nonnull
+  private static TypeSpec buildDaggerComponent( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "DaggerComponent" );
+
+    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
+    final AnnotationSpec.Builder subcomponent =
+      AnnotationSpec.builder( ClassName.bestGuess( Constants.DAGGER_SUBCOMPONENT_CLASSNAME ) );
+    subcomponent.addMember( "modules", "DaggerModule.class" );
+    builder.addAnnotation( subcomponent.build() );
+
+    {
+      final ParameterizedTypeName typeName =
+        ParameterizedTypeName.get( PROVIDER_CLASSNAME, COMPONENT_CLASSNAME );
+      final MethodSpec.Builder method =
+        MethodSpec.methodBuilder( "createProvider" ).
+          addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
+          returns( typeName );
+      builder.addMethod( method.build() );
+    }
+
+    {
+      final MethodSpec.Builder method =
+        MethodSpec.methodBuilder( "get" ).
+          addModifiers( Modifier.DEFAULT, Modifier.PUBLIC ).
+          returns( descriptor.getClassName() ).
+          addStatement( "return ($T) createProvider().get()", descriptor.getClassName() );
+      builder.addMethod( method.build() );
+    }
+
+    return builder.build();
+  }
+
+  @Nonnull
+  private static TypeSpec buildDaggerModule( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "DaggerModule" );
+
+    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL );
+    builder.addAnnotation( ClassName.bestGuess( Constants.DAGGER_MODULE_CLASSNAME ) );
+
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( "provideComponent" ).
+        addAnnotation( ClassName.bestGuess( Constants.DAGGER_PROVIDES_CLASSNAME ) ).
+        addModifiers( Modifier.STATIC ).
+        addParameter( descriptor.getClassNameToConstruct(), "component", Modifier.FINAL ).
+        returns( COMPONENT_CLASSNAME ).
+        addStatement( "return component" );
+    builder.addMethod( method.build() );
 
     return builder.build();
   }
