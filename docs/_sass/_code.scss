@@ -1,13 +1,5 @@
 pre, code, tt {
   font-family: Inconsolata, Consolas, Courier, "Courier New", "Liberation Mono", monospace;
-  font-size: 0.85em;
-  white-space: pre-wrap;
-  border-radius: 2px;
-  line-height: 1.4;
-  font-weight: 400;
-  background-color: #404145;
-  color: #FAFAFA;
-  border-radius: 2px;
 }
 
 pre {
@@ -18,34 +10,15 @@ pre {
   font-size: 0.9em;
   white-space: pre;
   overflow: auto;
-  border-radius: 3px;
-
-  code, tt {
-    font-size: inherit;
-    white-space: pre-wrap;
-    background: transparent;
-    border: none;
-    padding: 0
-  }
+  line-height: 1.4;
 }
 
-blockquote > code,
-li > code,
-p > code {
-  background-color: $content-background-color;
-  color: $content-color;
-  padding: 4px 6px;
+// This is inline code
+code, tt {
   white-space: nowrap;
 }
 
-.example {
-  display: flex;
-
-  pre {
-    margin: 0;
-  }
-  figure {
-    margin: 0;
-    padding: 0;
-  }
+// This is the pattern of html emitted by rouge highlighter and it is already formatted
+pre code {
+  white-space: pre;
 }
