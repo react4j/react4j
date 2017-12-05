@@ -557,23 +557,55 @@ public final class ReactProcessor
       }
     }
 
-    final boolean needsInjection =
-      ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( this::hasInjectAnnotation ) ||
-      ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).
-        stream().anyMatch( this::hasInjectAnnotation );
-
     final boolean runArezScheduler =
       ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).
         stream().anyMatch( this::hasAutorunAnnotation );
 
-    final boolean isDaggerPresent =
-      needsInjection &&
-      null != processingEnv.getElementUtils().getTypeElement( Constants.DAGGER_MODULE_CLASSNAME );
+    final boolean needsInjection = isInjectionRequired( typeElement );
+    final boolean isDaggerPresent = needsInjection && isDaggerRequired( typeElement );
 
     descriptor.setNeedsInjection( needsInjection );
     descriptor.setNeedsDaggerIntegration( isDaggerPresent );
     descriptor.setArezComponent( isArezComponent );
     descriptor.setRunArezScheduler( runArezScheduler );
+  }
+
+  private boolean isInjectionRequired( @Nonnull final TypeElement typeElement )
+  {
+    final VariableElement injectParameter = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        typeElement,
+                                        Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                        "inject" ).getValue();
+    switch ( injectParameter.getSimpleName().toString() )
+    {
+      case "TRUE":
+        return true;
+      case "FALSE":
+        return false;
+      default:
+        return ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( this::hasInjectAnnotation ) ||
+               ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).
+                 stream().anyMatch( this::hasInjectAnnotation );
+    }
+  }
+
+  private boolean isDaggerRequired( @Nonnull final TypeElement typeElement )
+  {
+    final VariableElement injectParameter = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        typeElement,
+                                        Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                        "dagger" ).getValue();
+    switch ( injectParameter.getSimpleName().toString() )
+    {
+      case "TRUE":
+        return true;
+      case "FALSE":
+        return false;
+      default:
+        return null != processingEnv.getElementUtils().getTypeElement( Constants.DAGGER_MODULE_CLASSNAME );
+    }
   }
 
   private boolean hasAutorunAnnotation( final Element method )

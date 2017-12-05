@@ -15,6 +15,14 @@ import javax.annotation.Nonnull;
 public @interface ReactComponent
 {
   /**
+   * Enum to control when injectible elements should be present.
+   */
+  enum Feature
+  {
+    TRUE, FALSE, IF_DETECTED
+  }
+
+  /**
    * Return the name of the component.
    * The value defaults to the simple name name of the class. If the value is specified, the
    * value must conform to the requirements of a java identifier. It should also be unique
@@ -26,4 +34,23 @@ public @interface ReactComponent
    */
   @Nonnull
   String name() default "<default>";
+
+  /**
+   * Indicate whether an @Inject annotation should be added to constructor of generated class.
+   * {@link Feature#TRUE} will force the addition of an @Inject annotation, {@link Feature#FALSE}
+   * will result in no @Inject annotation and {@link Feature#IF_DETECTED} will add an @Inject
+   * if any fields or methods in the react4j component or any parent type has an @Inject annotation.
+   *
+   * @return enum controlling present of Inject annotation on constructor.
+   */
+  Feature inject() default Feature.IF_DETECTED;
+
+  /**
+   * Indicate whether a dagger sub-component and module is created for component.
+   * Dagger is detected by searching for "dagger.Module" class in the same processing environment that
+   * is compiling the react4j component.
+   *
+   * @return enum controlling whether dagger artifacts are generated.
+   */
+  Feature dagger() default Feature.IF_DETECTED;
 }
