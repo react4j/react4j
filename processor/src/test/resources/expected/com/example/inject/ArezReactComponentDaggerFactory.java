@@ -9,6 +9,10 @@ import react4j.core.Component;
 public interface ArezReactComponentDaggerFactory {
   DaggerComponent createArezReactComponentDaggerComponent();
 
+  default void bind() {
+    ArezReactComponent_.setProvider( () -> createArezReactComponentDaggerComponent().get() );
+  }
+
   @Module
   final class DaggerModule {
     @Provides

@@ -9,6 +9,10 @@ import react4j.core.Component;
 public interface MethodInjectReactComponentDaggerFactory {
   DaggerComponent createMethodInjectReactComponentDaggerComponent();
 
+  default void bind() {
+    MethodInjectReactComponent_.setProvider( () -> createMethodInjectReactComponentDaggerComponent().get() );
+  }
+
   @Module
   final class DaggerModule {
     @Provides

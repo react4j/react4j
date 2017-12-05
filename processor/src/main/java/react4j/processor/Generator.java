@@ -586,11 +586,22 @@ final class Generator
 
     builder.addModifiers( Modifier.PUBLIC );
 
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "create" + descriptor.getName() + "DaggerComponent" ).
-        addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT ).
-        returns( ClassName.bestGuess( "DaggerComponent" ) );
-    builder.addMethod( method.build() );
+    {
+      final MethodSpec.Builder method =
+        MethodSpec.methodBuilder( "create" + descriptor.getName() + "DaggerComponent" ).
+          addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT ).
+          returns( ClassName.bestGuess( "DaggerComponent" ) );
+      builder.addMethod( method.build() );
+    }
+    {
+      final MethodSpec.Builder method =
+        MethodSpec.methodBuilder( "bind" ).
+          addModifiers( Modifier.PUBLIC, Modifier.DEFAULT ).
+          addStatement( "$T.setProvider( () -> $N().get() )",
+                        descriptor.getEnhancedClassName(),
+                        "create" + descriptor.getName() + "DaggerComponent" );
+      builder.addMethod( method.build() );
+    }
 
     if ( descriptor.needsDaggerIntegration() )
     {
