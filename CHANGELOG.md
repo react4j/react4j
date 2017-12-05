@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.22](https://github.com/react4j/react4j/tree/v0.22) (2017-12-05)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.21...v0.22)
 
 ##### Changed
 * Incorporate the processorpath buildr addon to simplify build configuration.
