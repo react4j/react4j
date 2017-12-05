@@ -2,6 +2,8 @@
 
 ### High Priority
 
+* Figure out how components can interact with with dagger
+
 * Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
   state and context? Seems like `@Inject` for fields with different qualifiers should be sufficient.
 
@@ -25,7 +27,6 @@
 
 ### Medium Priorities
 
-* Figure out how components can interact with with dagger
 * Figure out a way to define dom factories in java that are optimized away in production such that
    `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
    compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
