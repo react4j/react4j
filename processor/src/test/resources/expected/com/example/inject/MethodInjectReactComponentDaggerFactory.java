@@ -9,7 +9,7 @@ import react4j.core.Component;
 public interface MethodInjectReactComponentDaggerFactory {
   DaggerComponent createMethodInjectReactComponentDaggerComponent();
 
-  default void bind() {
+  default void bindMethodInjectReactComponent() {
     MethodInjectReactComponent_.setProvider( () -> createMethodInjectReactComponentDaggerComponent().get() );
   }
 

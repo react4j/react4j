@@ -595,7 +595,7 @@ final class Generator
     }
     {
       final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "bind" ).
+        MethodSpec.methodBuilder( "bind" + descriptor.getName() ).
           addModifiers( Modifier.PUBLIC, Modifier.DEFAULT ).
           addStatement( "$T.setProvider( () -> $N().get() )",
                         descriptor.getEnhancedClassName(),
