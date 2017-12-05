@@ -2,13 +2,11 @@ package react4j.core.util;
 
 import elemental2.core.Array;
 import elemental2.core.JsObject;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import jsinterop.base.JsPropertyMapOfAny;
 
 /**
  * A collection of utilities for interoperability between Java and Javascript.
