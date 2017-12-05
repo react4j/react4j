@@ -37,6 +37,7 @@ public final class JsUtil
    * @param o1       the first object.
    * @param o2       the second object.
    * @param skipList an array of keys to ignore during comparison.
+   * @return true if the two objects are considered modified.
    */
   public static boolean isObjectShallowModified( @Nullable final Object o1,
                                                  @Nullable final Object o2,

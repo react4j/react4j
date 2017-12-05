@@ -38,6 +38,8 @@ public final class React
   /**
    * Create a ReactElement for the specified React component with no children.
    *
+   * @param <P>   the type of the component props.
+   * @param <C>   the type of the component context.
    * @param type  the constructor function for the native React component.
    * @param props the props to pass to the component.
    * @return a new ReactElement.
