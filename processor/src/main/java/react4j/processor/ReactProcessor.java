@@ -331,14 +331,8 @@ public final class ReactProcessor
                                                       method,
                                                       Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME,
                                                       "value" );
-    if ( null != typeMirror )
-    {
-      return (TypeElement) processingEnv.getTypeUtils().asElement( typeMirror );
-    }
-    else
-    {
-      return processingEnv.getElementUtils().getTypeElement( Constants.PROCEDURE_CLASSNAME );
-    }
+    assert null != typeMirror;
+    return (TypeElement) processingEnv.getTypeUtils().asElement( typeMirror );
   }
 
   @Nonnull
