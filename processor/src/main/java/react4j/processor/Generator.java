@@ -155,7 +155,7 @@ final class Generator
     }
     builder.addType( buildNativeComponent( descriptor ) );
 
-    if ( descriptor.needsDaggerModule() )
+    if ( descriptor.needsDaggerIntegration() )
     {
       builder.addType( buildDaggerModule( descriptor ) );
       builder.addType( buildDaggerComponent( descriptor ) );

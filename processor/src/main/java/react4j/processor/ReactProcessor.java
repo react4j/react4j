@@ -567,7 +567,7 @@ public final class ReactProcessor
       null != processingEnv.getElementUtils().getTypeElement( Constants.DAGGER_MODULE_CLASSNAME );
 
     descriptor.setNeedsInjection( needsInjection );
-    descriptor.setNeedsDaggerModule( isDaggerPresent );
+    descriptor.setNeedsDaggerIntegration( isDaggerPresent );
     descriptor.setArezComponent( isArezComponent );
     descriptor.setRunArezScheduler( runArezScheduler );
   }
