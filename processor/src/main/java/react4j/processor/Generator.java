@@ -95,9 +95,19 @@ final class Generator
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
+    if ( descriptor.needsInjection() )
+    {
+      builder.addField( buildProviderField( descriptor ).build() );
+    }
+
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
     {
       builder.addField( buildEventHandlerField( eventHandler ).build() );
+    }
+
+    if ( descriptor.needsInjection() )
+    {
+      builder.addMethod( buildSetProviderMethod( descriptor ).build() );
     }
 
     builder.addMethod( buildFactoryMethod().build() );
@@ -156,6 +166,15 @@ final class Generator
     builder.addType( buildNativeComponent( descriptor ) );
 
     return builder.build();
+  }
+
+  private static FieldSpec.Builder buildProviderField( final @Nonnull ComponentDescriptor descriptor )
+  {
+    return FieldSpec.builder( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
+                                                         TypeName.get( descriptor.getDeclaredType() ) ),
+                              "c_provider",
+                              Modifier.STATIC,
+                              Modifier.PRIVATE );
   }
 
   @Nonnull
@@ -291,6 +310,18 @@ final class Generator
     method.addStatement( ( isVoid ? "" : "return " ) + "super.$N(" + params + ")",
                          eventHandler.getMethod().getSimpleName() );
     return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildSetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    return MethodSpec.methodBuilder( "setProvider" ).
+      addModifiers( Modifier.STATIC ).
+      addParameter( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
+                                               TypeName.get( descriptor.getDeclaredType() ) ),
+                    "provider",
+                    Modifier.FINAL ).
+      addStatement( "c_provider = provider" );
   }
 
   @Nonnull
@@ -440,7 +471,14 @@ final class Generator
           addAnnotation( Override.class ).
           addModifiers( Modifier.PROTECTED ).
           returns( ClassName.get( descriptor.getElement() ) );
-      method.addStatement( "return new $T()", descriptor.getClassNameToConstruct() );
+      if ( descriptor.needsInjection() )
+      {
+        method.addStatement( "return c_provider.get()" );
+      }
+      else
+      {
+        method.addStatement( "return new $T()", descriptor.getClassNameToConstruct() );
+      }
       builder.addMethod( method.build() );
     }
 

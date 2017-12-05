@@ -4,6 +4,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import jsinterop.base.JsPropertyMap;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
@@ -18,8 +19,14 @@ import react4j.core.ReactNode;
 class MethodInjectReactComponent_ extends MethodInjectReactComponent {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
+  private static Provider<MethodInjectReactComponent> c_provider;
+
   @Inject
   MethodInjectReactComponent_() {
+  }
+
+  static void setProvider(final Provider<MethodInjectReactComponent> provider) {
+    c_provider = provider;
   }
 
   @Nonnull
@@ -53,7 +60,7 @@ class MethodInjectReactComponent_ extends MethodInjectReactComponent {
 
     @Override
     protected MethodInjectReactComponent createComponent() {
-      return new MethodInjectReactComponent_();
+      return c_provider.get();
     }
   }
 }

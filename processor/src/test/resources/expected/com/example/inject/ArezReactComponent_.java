@@ -3,6 +3,7 @@ package com.example.inject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Provider;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.arez.annotations.ArezComponent;
@@ -22,6 +23,12 @@ import react4j.core.ReactNode;
 @Generated("react4j.processor.ReactProcessor")
 class ArezReactComponent_ extends ArezReactComponent {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
+
+  private static Provider<ArezReactComponent> c_provider;
+
+  static void setProvider(final Provider<ArezReactComponent> provider) {
+    c_provider = provider;
+  }
 
   @Nonnull
   static ReactNode _create() {
@@ -68,7 +75,7 @@ class ArezReactComponent_ extends ArezReactComponent {
 
     @Override
     protected ArezReactComponent createComponent() {
-      return new Arez_ArezReactComponent_();
+      return c_provider.get();
     }
 
     @Override
