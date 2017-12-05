@@ -80,7 +80,7 @@ class TodoEntry
   and will need to be marked as runImmediately=false)
 
 * Separate implementation details and user facing code in enhanced class into `MyComponent_` (User facing code)
-  and `React4j_MyComponent` (implementaiton details)
+  and `React4j_MyComponent` (implementation details)
 
 #### Arez DevTools
 
