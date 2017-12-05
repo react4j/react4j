@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 
 /**
- * A javascript function that validates the context entry or propt type.
+ * A javascript function that validates the context entry or prop type.
  * Right now this is effectively unused but still needed otherwise context entries will not be supplied.
  */
 @JsFunction
