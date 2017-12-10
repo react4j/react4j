@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.23](https://github.com/react4j/react4j/tree/v0.23) (2017-12-10)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.22...v0.23)
 
 ##### Changed
 * **\[core\]** Remove unused methods `JsUtil.asList(..)` and `JsUtil.getPrototypeForClass(..)`.
