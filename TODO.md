@@ -4,6 +4,9 @@
 
 * Figure out how components can interact with with dagger
 
+* Add `@Ref` annotation to field in component. This will generate a cached helper function similar to EventHandler
+  annotation that can be passed as prop.
+
 * Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
   state and context? Seems like `@Inject` for fields with different qualifiers should be sufficient.
 
