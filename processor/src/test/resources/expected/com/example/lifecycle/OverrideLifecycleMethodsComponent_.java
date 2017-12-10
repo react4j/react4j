@@ -1,6 +1,6 @@
 package com.example.lifecycle;
 
-import elemental2.core.Error;
+import elemental2.core.JsError;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -61,7 +61,7 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     void componentWillUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState,
         @Nonnull BaseContext nextContext);
 
-    void componentDidCatch(@Nonnull Error error, @Nonnull ReactErrorInfo info);
+    void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
 
     boolean shouldComponentUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState,
         @Nonnull BaseContext nextContext);
@@ -111,7 +111,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public void componentDidCatch(@Nonnull final Error error, @Nonnull final ReactErrorInfo info) {
+    public void componentDidCatch(@Nonnull final JsError error,
+        @Nonnull final ReactErrorInfo info) {
       performComponentDidCatch(error,info);
     }
 

@@ -1,6 +1,6 @@
 package react4j.core;
 
-import elemental2.core.Error;
+import elemental2.core.JsError;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 
@@ -17,5 +17,5 @@ public interface PropType
    * @return null if context entry valid.
    */
   @Nullable
-  Error IsValid();
+  JsError IsValid();
 }

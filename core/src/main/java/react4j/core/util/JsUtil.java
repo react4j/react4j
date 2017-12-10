@@ -1,6 +1,6 @@
 package react4j.core.util;
 
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -25,7 +25,7 @@ public final class JsUtil
    * @param input the java list instance.
    * @return the native array.
    */
-  public static native <T> Array<T> asJsArray( @Nonnull final List<T> input )/*-{
+  public static native <T> JsArray<T> asJsArray( @Nonnull final List<T> input )/*-{
     return input.@java.util.ArrayList::array;
   }-*/;
 

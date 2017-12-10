@@ -1,6 +1,6 @@
 package com.example.render;
 
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import javax.annotation.Nullable;
 import react4j.annotations.ReactComponent;
 import react4j.core.BaseContext;
@@ -15,7 +15,7 @@ class RenderAsJsArrayComponent
 {
   @Nullable
   @Override
-  protected Array<ReactNode> renderAsJsArray()
+  protected JsArray<ReactNode> renderAsJsArray()
   {
     return super.renderAsJsArray();
   }

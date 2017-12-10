@@ -1,6 +1,6 @@
 package react4j.dom.events;
 
-import elemental2.core.Date;
+import elemental2.core.JsDate;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
 import jsinterop.annotations.JsOverlay;
@@ -18,7 +18,7 @@ public class SyntheticEvent<E extends Event>
   private boolean isTrusted;
   private E nativeEvent;
   private Element target;
-  private Date timeStamp;
+  private JsDate timeStamp;
   private String type;
 
   public native void preventDefault();
@@ -74,7 +74,7 @@ public class SyntheticEvent<E extends Event>
   }
 
   @JsOverlay
-  public final Date getTimeStamp()
+  public final JsDate getTimeStamp()
   {
     return timeStamp;
   }

@@ -1,7 +1,7 @@
 package react4j.core;
 
-import elemental2.core.Array;
-import elemental2.core.Error;
+import elemental2.core.JsArray;
+import elemental2.core.JsError;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -247,7 +247,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * @return the result of rendering.
    */
   @Nullable
-  protected Array<ReactNode> renderAsJsArray()
+  protected JsArray<ReactNode> renderAsJsArray()
   {
     return null;
   }
@@ -398,7 +398,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * @param error the error that has been thrown.
    * @param info  information about component stack during thrown error.
    */
-  protected void componentDidCatch( @Nonnull final Error error, @Nonnull final ReactErrorInfo info )
+  protected void componentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
   }
 

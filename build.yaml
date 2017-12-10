@@ -24,9 +24,9 @@ artifacts:
   jsinterop_base: com.google.jsinterop:base:jar:1.0.0-beta-3
   jsinterop_base_sources: com.google.jsinterop:base:jar:sources:1.0.0-beta-3
 
-  elemental2_core: com.google.elemental2:elemental2-core:jar:1.0.0-beta-1
-  elemental2_dom: com.google.elemental2:elemental2-dom:jar:1.0.0-beta-1
-  elemental2_promise: com.google.elemental2:elemental2-promise:jar:1.0.0-beta-1
+  elemental2_core: com.google.elemental2:elemental2-core:jar:1.0.0-beta-3
+  elemental2_dom: com.google.elemental2:elemental2-dom:jar:1.0.0-beta-3
+  elemental2_promise: com.google.elemental2:elemental2-promise:jar:1.0.0-beta-3
 
   arez_annotations: org.realityforge.arez:arez-annotations:jar:gwt:0.34
   arez_core: org.realityforge.arez:arez-core:jar:gwt:0.34

@@ -1,6 +1,6 @@
 package react4j.core;
 
-import elemental2.core.Error;
+import elemental2.core.JsError;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -309,9 +309,9 @@ public abstract class NativeAdapterComponent<
    *
    * @param error the error that has been thrown.
    * @param info  information about component stack during thrown error.
-   * @see Component#componentDidCatch(Error, ReactErrorInfo)
+   * @see Component#componentDidCatch(JsError, ReactErrorInfo)
    */
-  protected final void performComponentDidCatch( @Nonnull final Error error, @Nonnull final ReactErrorInfo info )
+  protected final void performComponentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {

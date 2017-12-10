@@ -1,6 +1,6 @@
 package react4j.core;
 
-import elemental2.core.Array;
+import elemental2.core.JsArray;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -68,7 +68,7 @@ public interface ReactNode
   }
 
   @JsOverlay
-  static ReactNode of( final Array<ReactNode> elements )
+  static ReactNode of( final JsArray<ReactNode> elements )
   {
     return Js.cast( elements );
   }
@@ -100,12 +100,12 @@ public interface ReactNode
   @JsOverlay
   default boolean isReactElement()
   {
-    return this instanceof ReactElement && !Array.isArray( this );
+    return this instanceof ReactElement && !JsArray.isArray( this );
   }
 
   @JsOverlay
   default boolean isRenderResults()
   {
-    return Array.isArray( this );
+    return JsArray.isArray( this );
   }
 }
