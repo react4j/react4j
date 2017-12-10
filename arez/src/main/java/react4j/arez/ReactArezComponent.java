@@ -166,7 +166,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected final void onRenderDepsChanged()
   {
     _renderDepsChanged = true;
-    scheduleRender( false );
+    scheduleRender( true );
   }
 
   /**

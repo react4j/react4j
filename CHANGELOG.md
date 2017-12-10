@@ -17,6 +17,8 @@
 * 💥 **\[core\]** Upgrade `com.google.jsinterop:base` library to version `1.0.0-beta-3`.
 * 💥 **\[core\]** Upgrade `com.google.elemental2:*` libraries to version `1.0.0-beta-3`.
 * 💥 **\[core\]** Upgrade Arez library to version `0.34`.
+* 💥 **\[arez\]** Skip the `shouldComponentUpdate()` lifecycle method when Arez re-schedules a render action
+  for subclasses of `ReactArezComponent`.
 
 ### [v0.22](https://github.com/react4j/react4j/tree/v0.22) (2017-12-05)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.21...v0.22)
