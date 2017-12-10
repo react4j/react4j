@@ -5,12 +5,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import react4j.core.BaseChildContext;
+import jsinterop.base.JsPropertyMap;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
+import react4j.core.PropType;
 import react4j.core.React;
 import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
@@ -40,6 +41,10 @@ class BasicProviderComponent_ extends BasicProviderComponent {
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicProviderComponent" );
     }
+    final PropType valid = () -> null;
+    final JsPropertyMap<Object> childContextTypes = JsPropertyMap.of();
+    childContextTypes.set( "newTodo", valid );
+    Js.asPropertyMap( componentConstructor ).set( "childContextTypes", childContextTypes );
     return componentConstructor;
   }
 
@@ -47,7 +52,7 @@ class BasicProviderComponent_ extends BasicProviderComponent {
       isNative = true
   )
   interface Lifecycle {
-    BaseChildContext getChildContext();
+    BasicProviderComponent.Context getChildContext();
   }
 
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, BasicProviderComponent> implements Lifecycle {
@@ -61,7 +66,7 @@ class BasicProviderComponent_ extends BasicProviderComponent {
     }
 
     @Override
-    public BaseChildContext getChildContext() {
+    public BasicProviderComponent.Context getChildContext() {
       return performGetChildContext();
     }
   }
