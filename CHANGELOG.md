@@ -9,7 +9,7 @@
   value for this parameter is `IF_DETECTED` and will generate a constructor using the existing algorithm.
   i.e. An `@Inject` annotated cosntructor will be generated if a field of method of the component is annotated
   with `@Inject`.
-* **\[annotations\]** Add parameter `generated` to the `@ReactComponent` annotation that explicitly controls
+* **\[annotations\]** Add parameter `dagger` to the `@ReactComponent` annotation that explicitly controls
   whether a dagger component is created for the react component. The default value for this parameter is
   `IF_DETECTED` and will generate a constructor using the existing algorithm. i.e. A module is created if the
   dagger classes are on the compile classpath.
