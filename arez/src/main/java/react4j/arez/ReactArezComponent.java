@@ -18,6 +18,7 @@ import org.realityforge.arez.annotations.ObservableRef;
 import org.realityforge.arez.annotations.ObserverRef;
 import org.realityforge.arez.annotations.OnDepsChanged;
 import org.realityforge.arez.annotations.Track;
+import org.realityforge.arez.spy.ObservableInfo;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -294,8 +295,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() )
     {
       final Observer renderTracker = getRenderObserver();
-      final List<org.realityforge.arez.Observable<?>> dependencies =
-        getContext().getSpy().getDependencies( renderTracker );
+      final List<ObservableInfo> dependencies = getContext().getSpy().getDependencies( renderTracker );
       final JsPropertyMapOfAny deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), d ) );
       final JsPropertyMapOfAny data = JsPropertyMap.of();

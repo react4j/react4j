@@ -13,6 +13,7 @@
   whether a dagger component is created for the react component. The default value for this parameter is
   `IF_DETECTED` and will generate a constructor using the existing algorithm. i.e. A module is created if the
   dagger classes are on the compile classpath.
+* ð¥ **\[core\]** Upgrade Arez library to version `0.34`.
 
 ### [v0.22](https://github.com/react4j/react4j/tree/v0.22) (2017-12-05)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.21...v0.22)
