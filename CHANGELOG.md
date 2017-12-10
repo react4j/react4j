@@ -13,6 +13,7 @@
   whether a dagger component is created for the react component. The default value for this parameter is
   `IF_DETECTED` and will generate a constructor using the existing algorithm. i.e. A module is created if the
   dagger classes are on the compile classpath.
+* ð¥ **\[core\]** Upgrade `com.google.jsinterop:jsinterop-annotations` library to version `1.0.2`.
 * ð¥ **\[core\]** Upgrade Arez library to version `0.34`.
 * ð¥ **\[core\]** Upgrade `com.google.jsinterop:base` library to version `1.0.0-beta-3`.
 
