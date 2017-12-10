@@ -3,7 +3,7 @@ package com.example.basic;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.base.JsPropertyMap;
+import jsinterop.base.Js;
 import react4j.core.BaseContext;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -35,7 +35,7 @@ class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactCompone
   private static ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomPropsAndStateReactComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomPropsAndStateReactComponent" );
     }
     return componentConstructor;
   }

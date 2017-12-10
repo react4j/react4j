@@ -3,7 +3,7 @@ package com.example.default_props;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.base.JsPropertyMap;
+import jsinterop.base.Js;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -36,9 +36,9 @@ class ProtectedDefaultPropsComponent_ extends ProtectedDefaultPropsComponent {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "ProtectedDefaultPropsComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedDefaultPropsComponent" );
     }
-    JsPropertyMap.of( componentConstructor ).set( "defaultProps", ProtectedDefaultPropsComponent.getInitialProps() );
+    Js.asPropertyMap( componentConstructor ).set( "defaultProps", ProtectedDefaultPropsComponent.getInitialProps() );
     return componentConstructor;
   }
 

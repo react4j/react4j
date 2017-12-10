@@ -42,7 +42,7 @@ class CustomNameComponent_ extends CustomNameComponent {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomNameComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomNameComponent" );
     }
     return componentConstructor;
   }

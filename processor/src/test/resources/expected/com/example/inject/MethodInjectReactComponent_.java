@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import jsinterop.base.JsPropertyMap;
+import jsinterop.base.Js;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -48,7 +48,7 @@ class MethodInjectReactComponent_ extends MethodInjectReactComponent {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "MethodInjectReactComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "MethodInjectReactComponent" );
     }
     return componentConstructor;
   }

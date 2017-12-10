@@ -3,8 +3,8 @@ package com.example.context;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import jsinterop.base.JsPropertyMapOfAny;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
@@ -37,12 +37,12 @@ class BasicContextComponent_ extends BasicContextComponent {
   private static ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "BasicContextComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicContextComponent" );
     }
     final PropType valid = () -> null;
-    final JsPropertyMapOfAny contextTypes = JsPropertyMap.of();
+    final JsPropertyMap<Object> contextTypes = JsPropertyMap.of();
     contextTypes.set( "newTodo", valid );
-    JsPropertyMap.of( componentConstructor ).set( "contextTypes", contextTypes );
+    Js.asPropertyMap( componentConstructor ).set( "contextTypes", contextTypes );
     return componentConstructor;
   }
 

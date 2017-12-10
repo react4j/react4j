@@ -42,7 +42,7 @@ class BasicHandlerComponent_ extends BasicHandlerComponent {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "BasicHandlerComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicHandlerComponent" );
     }
     return componentConstructor;
   }

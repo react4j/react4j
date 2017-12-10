@@ -5,7 +5,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsPropertyMap;
+import jsinterop.base.Js;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -39,7 +39,7 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
     }
     return componentConstructor;
   }

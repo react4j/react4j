@@ -4,7 +4,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsPropertyMap;
+import jsinterop.base.Js;
 import react4j.core.BaseChildContext;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
@@ -38,7 +38,7 @@ class BasicProviderComponent_ extends BasicProviderComponent {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "BasicProviderComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicProviderComponent" );
     }
     return componentConstructor;
   }

@@ -50,7 +50,7 @@ class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotate
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "ComponentWithAnnotatedParameterEventHandler" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithAnnotatedParameterEventHandler" );
     }
     return componentConstructor;
   }

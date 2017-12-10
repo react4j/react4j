@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import jsinterop.base.JsPropertyMapOfAny;
 import org.realityforge.arez.Arez;
 import org.realityforge.arez.ArezContext;
 import org.realityforge.arez.Disposable;
@@ -296,15 +295,15 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
     {
       final Observer renderTracker = getRenderObserver();
       final List<ObservableInfo> dependencies = getContext().getSpy().getDependencies( renderTracker );
-      final JsPropertyMapOfAny deps = JsPropertyMap.of();
+      final JsPropertyMap<Object> deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), d ) );
-      final JsPropertyMapOfAny data = JsPropertyMap.of();
+      final JsPropertyMap<Object> data = JsPropertyMap.of();
       data.set( "name", renderTracker.getName() );
       data.set( "observer", renderTracker );
       data.set( "deps", deps );
       final S state = super.state();
-      final Object currentArezData = null != state ? JsPropertyMap.of( state ).get( AREZ_STATE_KEY ) : null;
-      final Object currentDepsData = null != currentArezData ? JsPropertyMap.of( currentArezData ).get( "deps" ) : null;
+      final Object currentArezData = null != state ? Js.asPropertyMap( state ).get( AREZ_STATE_KEY ) : null;
+      final Object currentDepsData = null != currentArezData ? Js.asPropertyMap( currentArezData ).get( "deps" ) : null;
       /*
        * Do a shallow comparison against object and the deps. If either has changed then state needs to be updated.
        * We skip deps on shallow comparison of data as it is always recreated anew.

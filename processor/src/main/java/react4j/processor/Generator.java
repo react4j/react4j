@@ -41,8 +41,6 @@ final class Generator
   private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
-  private static final ClassName JS_PROPERTY_MAP_OF_ANY_CLASSNAME =
-    ClassName.get( "jsinterop.base", "JsPropertyMapOfAny" );
 
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j.core", "ComponentConstructorFunction" );
@@ -376,8 +374,8 @@ final class Generator
                          ClassName.bestGuess( "NativeReactComponent" ) );
     final CodeBlock.Builder codeBlock = CodeBlock.builder();
     codeBlock.beginControlFlow( "if ( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
-    codeBlock.addStatement( "$T.of( componentConstructor ).set( \"displayName\", $S )",
-                            JS_PROPERTY_MAP_CLASSNAME,
+    codeBlock.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"displayName\", $S )",
+                            JS_CLASSNAME,
                             descriptor.getName() );
     codeBlock.endControlFlow();
 
@@ -392,32 +390,34 @@ final class Generator
     }
     if ( !contextTypeFields.isEmpty() )
     {
-      method.addStatement( "final $T contextTypes = $T.of()",
-                           JS_PROPERTY_MAP_OF_ANY_CLASSNAME,
+      method.addStatement( "final $T<$T> contextTypes = $T.of()",
+                           JS_PROPERTY_MAP_CLASSNAME,
+                           Object.class,
                            JS_PROPERTY_MAP_CLASSNAME );
       for ( final String contextKey : contextTypeFields.keySet() )
       {
         method.addStatement( "contextTypes.set( $S, valid )", contextKey );
       }
-      method.addStatement( "$T.of( componentConstructor ).set( \"contextTypes\", contextTypes )",
-                           JS_PROPERTY_MAP_CLASSNAME );
+      method.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"contextTypes\", contextTypes )",
+                           JS_CLASSNAME );
     }
     if ( !childContextTypeFields.isEmpty() )
     {
-      method.addStatement( "final $T childContextTypes = $T.of()",
-                           JS_PROPERTY_MAP_OF_ANY_CLASSNAME,
+      method.addStatement( "final $T<$T> childContextTypes = $T.of()",
+                           JS_PROPERTY_MAP_CLASSNAME,
+                           Object.class,
                            JS_PROPERTY_MAP_CLASSNAME );
       for ( final String childContextKey : childContextTypeFields.keySet() )
       {
         method.addStatement( "childContextTypes.set( $S, valid )", childContextKey );
       }
-      method.addStatement( "$T.of( componentConstructor ).set( \"childContextTypes\", childContextTypes )",
-                           JS_PROPERTY_MAP_CLASSNAME );
+      method.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"childContextTypes\", childContextTypes )",
+                           JS_CLASSNAME );
     }
     if ( descriptor.hasDefaultPropsMethod() )
     {
-      method.addStatement( "$T.of( componentConstructor ).set( \"defaultProps\", $T.$N() )",
-                           JS_PROPERTY_MAP_CLASSNAME,
+      method.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"defaultProps\", $T.$N() )",
+                           JS_CLASSNAME,
                            descriptor.getClassName(),
                            descriptor.getDefaultPropsMethod().getSimpleName().toString() );
     }

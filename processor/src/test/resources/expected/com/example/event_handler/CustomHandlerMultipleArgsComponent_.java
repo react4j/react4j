@@ -41,7 +41,7 @@ class CustomHandlerMultipleArgsComponent_ extends CustomHandlerMultipleArgsCompo
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomHandlerMultipleArgsComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomHandlerMultipleArgsComponent" );
     }
     return componentConstructor;
   }

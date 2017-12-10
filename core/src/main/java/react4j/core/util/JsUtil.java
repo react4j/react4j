@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 
 /**
  * A collection of utilities for interoperability between Java and Javascript.
@@ -55,7 +54,7 @@ public final class JsUtil
     for ( final String key : keys )
     {
       if ( !shouldSkip( key, skipList ) &&
-           !Js.isTripleEqual( JsPropertyMap.of( o1 ).get( key ), JsPropertyMap.of( o2 ).get( key ) ) )
+           !Js.isTripleEqual( Js.asPropertyMap( o1 ).get( key ), Js.asPropertyMap( o2 ).get( key ) ) )
       {
         return true;
       }

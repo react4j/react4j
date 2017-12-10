@@ -41,7 +41,7 @@ class CustomHandlerButParametersIgnoredComponent_ extends CustomHandlerButParame
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomHandlerButParametersIgnoredComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomHandlerButParametersIgnoredComponent" );
     }
     return componentConstructor;
   }

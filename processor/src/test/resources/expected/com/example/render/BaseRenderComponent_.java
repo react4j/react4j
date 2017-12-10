@@ -3,7 +3,7 @@ package com.example.render;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.base.JsPropertyMap;
+import jsinterop.base.Js;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -36,7 +36,7 @@ class BaseRenderComponent_ extends BaseRenderComponent {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "BaseRenderComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "BaseRenderComponent" );
     }
     return componentConstructor;
   }

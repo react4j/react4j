@@ -11,7 +11,6 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import jsinterop.base.JsPropertyMapOfAny;
 import react4j.core.BaseProps;
 import react4j.core.RefConsumer;
 import react4j.dom.events.ClipboardEventHandler;
@@ -61,12 +60,12 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   @JsOverlay
   public final T prop( @Nonnull final String key, @DoNotAutobox final Object value )
   {
-    JsPropertyMap.of( this ).set( key, value );
+    Js.asPropertyMap( this ).set( key, value );
     return self();
   }
 
   @JsProperty
-  protected native void setDangerouslySetInnerHTML( @Nonnull JsPropertyMapOfAny __html );
+  protected native void setDangerouslySetInnerHTML( @Nonnull JsPropertyMap<Object> __html );
 
   //React Specific
   @JsProperty

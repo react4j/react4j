@@ -51,7 +51,7 @@ class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "ComponentWithEventHandler" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithEventHandler" );
     }
     return componentConstructor;
   }

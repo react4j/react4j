@@ -47,7 +47,7 @@ class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEv
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "ComponentWithNoAutoActionEventHandler" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithNoAutoActionEventHandler" );
     }
     return componentConstructor;
   }

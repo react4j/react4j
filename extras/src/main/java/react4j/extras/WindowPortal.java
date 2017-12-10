@@ -117,7 +117,7 @@ public class WindowPortal
      * This needs to be an unchecked cast as the prototype for HTMLDocument is the one derived
      * from external window.
      */
-    return Js.uncheckedCast( JsPropertyMap.of( _externalWindow ).get( "document" ) );
+    return Js.uncheckedCast( Js.asPropertyMap( _externalWindow ).get( "document" ) );
   }
 
   @Override

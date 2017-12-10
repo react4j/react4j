@@ -3,7 +3,7 @@ package com.example.inject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.base.JsPropertyMap;
+import jsinterop.base.Js;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -36,7 +36,7 @@ class InjectFalseDaggerTrueComponent_ extends InjectFalseDaggerTrueComponent {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "InjectFalseDaggerTrueComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "InjectFalseDaggerTrueComponent" );
     }
     return componentConstructor;
   }

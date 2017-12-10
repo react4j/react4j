@@ -41,7 +41,7 @@ class CustomHandlerComponent_ extends CustomHandlerComponent {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "CustomHandlerComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomHandlerComponent" );
     }
     return componentConstructor;
   }

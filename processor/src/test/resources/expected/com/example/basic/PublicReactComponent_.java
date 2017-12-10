@@ -3,7 +3,7 @@ package com.example.basic;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.base.JsPropertyMap;
+import jsinterop.base.Js;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -36,7 +36,7 @@ public class PublicReactComponent_ extends PublicReactComponent {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      JsPropertyMap.of( componentConstructor ).set( "displayName", "PublicReactComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "PublicReactComponent" );
     }
     return componentConstructor;
   }
