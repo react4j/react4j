@@ -134,6 +134,8 @@ public class WindowPortal
   protected ReactNode render()
   {
     assert null != _element;
-    return ReactDOM.createPortal( props().children, _element );
+    final ReactNode children = props().children;
+    assert null != children;
+    return ReactDOM.createPortal( children, _element );
   }
 }
