@@ -1,5 +1,6 @@
 package react4j.arez;
 
+import elemental2.core.JsObject;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -308,11 +309,46 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
        * Do a shallow comparison against object and the deps. If either has changed then state needs to be updated.
        * We skip deps on shallow comparison of data as it is always recreated anew.
        */
-      if ( JsUtil.isObjectShallowModified( currentArezData, data, "deps" ) ||
-           JsUtil.isObjectShallowModified( currentDepsData, deps ) )
+      if ( JsUtil.isObjectShallowModified( currentArezData, data, "deps" ) )
       {
-        scheduleStateUpdate( Js.<S>cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ) );
+        scheduleArezKeyUpdate( data );
+      }
+      else if ( null == currentDepsData )
+      {
+        scheduleArezKeyUpdate( data );
+      }
+      else
+      {
+        /*
+         * Deps are mappings to Info objects that can be garbage collected over time.
+         * So we just make sure the keys (which are the info objects names) match.
+         */
+        final String[] currentDeps = JsObject.keys( Js.uncheckedCast( currentDepsData ) );
+        final String[] newDeps = JsObject.keys( Js.uncheckedCast( deps ) );
+        if ( currentDeps.length != newDeps.length )
+        {
+          scheduleArezKeyUpdate( data );
+        }
+        else
+        {
+          for ( int i = 0; i < currentDeps.length; i++ )
+          {
+            if ( !currentDeps[ i ].equals( newDeps[ i ] ) )
+            {
+              scheduleArezKeyUpdate( data );
+            }
+          }
+        }
       }
     }
+  }
+
+  /**
+   * Schedule state update the updates arez state.
+   * Makes sure the super class is invoked so reportStateChanged() is not invoked on State observable.
+   */
+  private void scheduleArezKeyUpdate( @Nonnull final JsPropertyMap<Object> data )
+  {
+    super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ) );
   }
 }
