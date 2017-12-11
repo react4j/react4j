@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.24](https://github.com/react4j/react4j/tree/v0.24) (2017-12-11)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.23...v0.24)
 
 ##### Fixed
 * **\[core\]** Fixed bug where `ReactArezComponent.scheduleStateUpdate()` could result in a call to
