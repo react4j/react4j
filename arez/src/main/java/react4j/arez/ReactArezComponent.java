@@ -117,7 +117,8 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
+  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback,
+                                            @Nullable final Procedure onStateUpdateComplete )
   {
     final SetStateCallback<P, S> wrappedCallback = ( p, s ) -> {
       final S state = callback.onSetState( p, s );
@@ -349,6 +350,6 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    */
   private void scheduleArezKeyUpdate( @Nonnull final JsPropertyMap<Object> data )
   {
-    super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ) );
+    super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ), null );
   }
 }

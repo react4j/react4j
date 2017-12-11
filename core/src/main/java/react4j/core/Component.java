@@ -152,9 +152,37 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * This will trigger an update cycle and is the primary method you
    * use to trigger UI updates from event handlers and server request callbacks.
    *
+   * @param state                 the object literal representing state.
+   * @param onStateUpdateComplete a callback that will be invoked after state has been updated.
+   */
+  protected final void scheduleStateUpdate( @Nonnull final S state,
+                                            @Nullable final Procedure onStateUpdateComplete )
+  {
+    scheduleStateUpdate( ( p, s ) -> state, onStateUpdateComplete );
+  }
+
+  /**
+   * Schedule a shallow merge of supplied state into current state.
+   * This will trigger an update cycle and is the primary method you
+   * use to trigger UI updates from event handlers and server request callbacks.
+   *
    * @param callback the callback that will be invoked to update state.
    */
-  protected void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
+  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
+  {
+    scheduleStateUpdate( callback, null );
+  }
+
+  /**
+   * Schedule a shallow merge of supplied state into current state.
+   * This will trigger an update cycle and is the primary method you
+   * use to trigger UI updates from event handlers and server request callbacks.
+   *
+   * @param callback              the callback that will be invoked to update state.
+   * @param onStateUpdateComplete a callback that will be invoked after state has been updated.
+   */
+  protected void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback,
+                                      @Nullable final Procedure onStateUpdateComplete )
   {
     invariantsSetState();
     component().setState( callback );

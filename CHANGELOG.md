@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Changed
+* 💥 **\[core\]** Add a parameter `onStateUpdateComplete` to `Component.scheduleStateUpdate(...)` that is
+  invoked by the react runtime after the state update has completed.
+
 ### [v0.23](https://github.com/react4j/react4j/tree/v0.23) (2017-12-10)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.22...v0.23)
 
