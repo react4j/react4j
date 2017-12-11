@@ -41,12 +41,6 @@ class RenderFromParentComponent_ extends RenderFromParentComponent {
     return componentConstructor;
   }
 
-  @Override
-  @Nullable
-  protected ReactNode render() {
-    return ReactNode.of( renderAsArray() );
-  }
-
   static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, RenderFromParentComponent> {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );

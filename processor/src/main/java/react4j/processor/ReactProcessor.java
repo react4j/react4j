@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -58,19 +57,15 @@ public final class ReactProcessor
                    "componentDidCatch",
                    "getChildContext",
                    "shouldComponentUpdate" );
-  private static final List<String> RENDER_METHODS =
-    Arrays.asList( "render",
-                   "renderAsArray",
-                   "renderAsJsArray" );
 
   /**
    * Cache of lifecycle names to methods as defined by Component.
    */
   private final HashMap<String, ExecutableElement> _componentLifecycleMethods = new HashMap<>();
   /**
-   * Cache of render method names to methods as defined by Component.
+   * Cache of render method method as defined by Component.
    */
-  private HashMap<String, ExecutableElement> _componentRenderMethods = new HashMap<>();
+  private ExecutableElement _componentRenderMethod;
 
   /**
    * {@inheritDoc}
@@ -80,7 +75,7 @@ public final class ReactProcessor
   {
     // Clear method caches to avoid potential inter-run problems
     _componentLifecycleMethods.clear();
-    _componentRenderMethods.clear();
+    _componentRenderMethod = null;
 
     final TypeElement annotation =
       processingEnv.getElementUtils().getTypeElement( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME );
@@ -389,54 +384,31 @@ public final class ReactProcessor
                                       @Nonnull final ComponentDescriptor descriptor )
   {
     /*
-     * Get the list of render methods that have been overridden by typeElement
-     * a parent class, or by a default method method implemented by typeElement or
-     * a parent class.
+     * Get the render method that has been overridden by the typeElement, a parent class, or by a default
+     * method method implemented by the typeElement or a parent class.
      */
-    final Collection<ExecutableElement> renderMethods = getComponentRenderMethods().values();
+    final ExecutableElement renderMethod = getComponentRenderMethod();
     final Elements elementUtils = processingEnv.getElementUtils();
     final Types typeUtils = processingEnv.getTypeUtils();
     final TypeElement componentType = elementUtils.getTypeElement( Constants.COMPONENT_CLASSNAME );
-    final List<MethodDescriptor> overriddenRenderMethods =
+    final MethodDescriptor overriddenRenderMethod =
       // Get all methods on type parent classes, and default methods from interfaces
       ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).stream()
-        // Only keep methods that override the render methods
-        .filter( m -> renderMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
+        // Only keep method if they override the render method
+        .filter( m -> elementUtils.overrides( m, renderMethod, typeElement ) )
         //Remove those that come from the base classes
         .filter( m -> m.getEnclosingElement() != componentType )
         .map( m -> new MethodDescriptor( m, (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), m ) ) )
-        .collect( Collectors.toList() );
+        .findAny().
+        orElse( null );
 
-    // The assumption is that overriddenRenderMethods is the list of candidate methods.
-    // The developer should only override one so we assume that if the list contains multiple
-    // we select the last one and verify no other render methods are defined on the declared type that
-    // defines this method. This means that the search will walk interfaces and superclasses appropriately
-    // and select the "correct" render method. If it can not select the correct method then we assume the user
-    // has done something wrong and warn them
-
-    if ( overriddenRenderMethods.isEmpty() )
+    if ( null == overriddenRenderMethod )
     {
       throw new ReactProcessorException( "The react component does not override any render methods.", typeElement );
     }
     else
     {
-      final int size = overriddenRenderMethods.size();
-      final MethodDescriptor candidate = overriddenRenderMethods.get( size - 1 );
-      if ( size > 1 )
-      {
-        final TypeElement enclosingElement = (TypeElement) candidate.getMethod().getEnclosingElement();
-        final TypeMirror candidateType = candidate.getMethodType().getReceiverType();
-        final MethodDescriptor other = overriddenRenderMethods.get( size - 2 );
-        final TypeMirror otherType = other.getMethodType().getReceiverType();
-        if ( Objects.equals( otherType, candidateType ) )
-        {
-          throw new ReactProcessorException( "The react component has two candidate render methods " +
-                                             candidate.getMethod().getSimpleName() + " and " +
-                                             other.getMethod().getSimpleName() + " defined on the same type " +
-                                             enclosingElement.getQualifiedName() + ".", typeElement );
-        }
-      }
-      descriptor.setRenderMethod( candidate );
+      descriptor.setRenderMethod( overriddenRenderMethod );
     }
   }
 
@@ -492,22 +464,22 @@ public final class ReactProcessor
    * Used to compare against those on type class to see if they override.
    */
   @Nonnull
-  private HashMap<String, ExecutableElement> getComponentRenderMethods()
+  private ExecutableElement getComponentRenderMethod()
   {
-    if ( _componentRenderMethods.isEmpty() )
+    if ( null == _componentRenderMethod )
     {
       final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
       for ( final ExecutableElement method : ProcessorUtil.getMethods( componentType, processingEnv.getTypeUtils() ) )
       {
         final String methodName = method.getSimpleName().toString();
-        if ( RENDER_METHODS.contains( methodName ) )
+        if ( "render".equals( methodName ) )
         {
-          _componentRenderMethods.put( methodName, method );
+          _componentRenderMethod = method;
+          break;
         }
       }
-
     }
-    return _componentRenderMethods;
+    return _componentRenderMethod;
   }
 
   private void determineComponentType( @Nonnull final ComponentDescriptor descriptor,

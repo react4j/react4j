@@ -12,6 +12,8 @@
   invoked by the react runtime after the state update has completed. Add additional overloaded variants of
   `Component.scheduleStateUpdate(...)` where the call back is not present. This had the impact of changing
   the variant without the `onStateUpdateComplete` parameter to be a final method invocation.
+* 💥 **\[core\]** Remove the remaining `Component.renderAs*` methods as they do not provide significant benefit
+  relative to cost now that the `ReactNode` class has been introduced.
 
 ### [v0.23](https://github.com/react4j/react4j/tree/v0.23) (2017-12-10)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.22...v0.23)

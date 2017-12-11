@@ -16,6 +16,6 @@ class BaseRenderComponent
   @Override
   protected ReactNode render()
   {
-    return super.render();
+    return null;
   }
 }

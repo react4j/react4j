@@ -1,6 +1,5 @@
 package react4j.core;
 
-import elemental2.core.JsArray;
 import elemental2.core.JsError;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -244,39 +243,13 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
   /**
    * Render the component.
    * See the <a href="https://reactjs.org/docs/react-component.html#render">React Component documentation</a> for more details.
-   * The developer can either override this method or override one of the renderAs* methods. If the developer overrides
-   * one of the renderAs* then the annotation processor will override this method. It is an error to override multiple
-   * render methods.
    *
    * @return the result of rendering.
    */
   @Nullable
   protected ReactNode render()
   {
-    return null;
-  }
-
-  /**
-   * Render the component as an array.
-   * See {@link #render()} for further details.
-   *
-   * @return the result of rendering.
-   */
-  @Nullable
-  protected ReactNode[] renderAsArray()
-  {
-    return null;
-  }
-
-  /**
-   * Render the component as a javascript array.
-   * See {@link #render()} for further details.
-   *
-   * @return the result of rendering.
-   */
-  @Nullable
-  protected JsArray<ReactNode> renderAsJsArray()
-  {
+    //TODO: In the future when we can define abstract component subclasses we should make this method abstract.
     return null;
   }
 

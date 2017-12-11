@@ -46,8 +46,6 @@ public class ReactProcessorTest
         new Object[]{ "com.example.inject.MethodInjectReactComponent", true },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent", false },
         new Object[]{ "com.example.render.BaseRenderComponent", false },
-        new Object[]{ "com.example.render.RenderAsArrayComponent", false },
-        new Object[]{ "com.example.render.RenderAsJsArrayComponent", false },
         new Object[]{ "RootPackageReactComponent", false }
       };
   }
@@ -142,11 +140,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.event_handler.TooManyParamsComponent",
                       "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react4j.annotations.EventHandler.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." },
         new Object[]{ "com.example.render.MissingRenderComponent",
-                      "The react component does not override any render methods." },
-        new Object[]{ "com.example.render.MultipleRenderComponent",
-                      "The react component has two candidate render methods renderAsArray and render defined on the same type com.example.render.MultipleRenderComponent." },
-        new Object[]{ "com.example.render.MultipleRenderInNestedComponent",
-                      "The react component has two candidate render methods renderAsArray and render defined on the same type com.example.render.MultipleRenderInNestedComponent.MyComponent." }
+                      "The react component does not override any render methods." }
       };
   }
 
