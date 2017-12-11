@@ -152,7 +152,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * This will trigger an update cycle and is the primary method you
    * use to trigger UI updates from event handlers and server request callbacks.
    *
-   * @param callback the callback that will will be invoked to update state.
+   * @param callback the callback that will be invoked to update state.
    */
   protected void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback )
   {
