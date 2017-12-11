@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[core\]** Fixed bug where `ReactArezComponent.scheduleStateUpdate()` could result in a call to
+  `Component.forceUpdate()` within the context of state updater. This would trigger an invariant failure
+  within ReactJs code.
+
 ##### Changed
 * 💥 **\[core\]** Add a parameter `onStateUpdateComplete` to `Component.scheduleStateUpdate(...)` that is
   invoked by the react runtime after the state update has completed. Add additional overloaded variants of

@@ -23,6 +23,7 @@ import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
+import react4j.core.Procedure;
 import react4j.core.ReactNode;
 import react4j.core.util.JsUtil;
 
@@ -47,6 +48,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
   private boolean _renderDepsChanged;
+  private boolean _stateUpdateInProgress;
 
   protected ReactArezComponent()
   {
@@ -120,15 +122,16 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback,
                                             @Nullable final Procedure onStateUpdateComplete )
   {
-    final SetStateCallback<P, S> wrappedCallback = ( p, s ) -> {
-      final S state = callback.onSetState( p, s );
-      if ( null != state )
+    final Procedure wrappedOnStateUpdateComplete = () -> {
+      _stateUpdateInProgress = true;
+      reportStateChanged();
+      _stateUpdateInProgress = false;
+      if ( null != onStateUpdateComplete )
       {
-        reportStateChanged();
+        onStateUpdateComplete.call();
       }
-      return state;
     };
-    super.scheduleStateUpdate( wrappedCallback );
+    super.scheduleStateUpdate( callback, wrappedOnStateUpdateComplete );
   }
 
   /**
@@ -168,7 +171,10 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected final void onRenderDepsChanged()
   {
     _renderDepsChanged = true;
-    scheduleRender( true );
+    if ( !_stateUpdateInProgress )
+    {
+      scheduleRender( true );
+    }
   }
 
   /**
