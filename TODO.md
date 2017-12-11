@@ -2,7 +2,7 @@
 
 ### High Priority
 
-* Figure out how components can interact with with dagger
+* Figure out how components can interact with with dagger. Probably just need to document current setup.
 
 * Add `@Ref` annotation to field in component. This will generate a cached helper function similar to EventHandler
   annotation that can be passed as prop.
