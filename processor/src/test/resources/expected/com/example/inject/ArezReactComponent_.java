@@ -7,6 +7,7 @@ import javax.inject.Provider;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.ArezComponent;
+import org.realityforge.arez.annotations.Injectible;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -18,7 +19,7 @@ import react4j.core.ReactNode;
 
 @ArezComponent(
     type = "ArezReactComponent",
-    inject = true
+    inject = Injectible.TRUE
 )
 @Generated("react4j.processor.ReactProcessor")
 class ArezReactComponent_ extends ArezReactComponent {

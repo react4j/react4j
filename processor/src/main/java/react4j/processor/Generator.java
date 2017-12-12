@@ -32,6 +32,7 @@ final class Generator
   private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
 
+  private static final ClassName INJECTIBLE_CLASSNAME = ClassName.get( "org.realityforge.arez.annotations", "Injectible" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "org.realityforge.arez.annotations", "Action" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "org.realityforge.arez.annotations", "ArezComponent" );
@@ -72,7 +73,7 @@ final class Generator
         AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).addMember( "type", "$S", descriptor.getName() );
       if ( descriptor.needsInjection() )
       {
-        annotation.addMember( "inject", "true" );
+        annotation.addMember( "inject", "$T.TRUE", INJECTIBLE_CLASSNAME );
       }
       builder.addAnnotation( annotation.build() );
     }
