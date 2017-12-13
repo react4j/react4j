@@ -4,6 +4,11 @@
 
 * Figure out how components can interact with with dagger. Probably just need to document current setup.
 
+* Components should declare whether they support 0,1 or many children and the associated builder will
+be generated accordingly. Also validated?
+
+* No refs to function components- block in builder? Should we enforce no refs for stateless components
+
 * Add `@Ref` annotation to field in component. This will generate a cached helper function similar to EventHandler
   annotation that can be passed as prop.
 
