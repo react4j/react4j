@@ -13,7 +13,8 @@ be generated accordingly. Also validated?
   annotation that can be passed as prop.
 
 * Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
-  state and context? Seems like `@Inject` for fields with different qualifiers should be sufficient.
+  state and context? Seems like `@Inject` for fields with different qualifiers should be sufficient. May also
+  need to support `@OnPropChanged` methods and/or `@PropValidate` which are ommitted during production builds.
 
 * Port transition code ala
   - https://github.com/reactjs/react-transition-group
