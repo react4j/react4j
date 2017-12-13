@@ -4,6 +4,8 @@
 
 ##### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.36`.
+* 💥 **\[dom\]** Change type of the `value` parameter passed to `HtmlGlobalFields.props()` to
+  `jsinterop.base.Any` to avoid binding to an GWT2 implementation dependent annotation.
 
 ### [v0.25](https://github.com/react4j/react4j/tree/v0.25) (2017-12-12)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.24...v0.25)

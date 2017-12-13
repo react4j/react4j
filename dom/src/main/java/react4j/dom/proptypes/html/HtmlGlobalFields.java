@@ -2,13 +2,13 @@ package react4j.dom.proptypes.html;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import javaemul.internal.annotations.DoNotAutobox;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.core.BaseProps;
@@ -58,7 +58,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsOverlay
-  public final T prop( @Nonnull final String key, @DoNotAutobox final Object value )
+  public final T prop( @Nonnull final String key, @Nullable final Any value )
   {
     Js.asPropertyMap( this ).set( key, value );
     return self();
