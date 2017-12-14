@@ -91,6 +91,8 @@ class TodoEntry
 * Separate implementation details and user facing code in enhanced class into `MyComponent_` (User facing code)
   and `React4j_MyComponent` (implementation details)
 
+* React `classSet` addon equiv. Also see scalajs variant - https://github.com/japgolly/scalajs-react/blob/master/doc/USAGE.md#react-extensions
+
 #### Arez DevTools
 
 Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need
