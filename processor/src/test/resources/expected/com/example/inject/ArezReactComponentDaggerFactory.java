@@ -7,10 +7,10 @@ import javax.inject.Provider;
 import react4j.core.Component;
 
 public interface ArezReactComponentDaggerFactory {
-  DaggerComponent createArezReactComponentDaggerComponent();
+  DaggerSubcomponent getArezReactComponentDaggerSubcomponent();
 
   default void bindArezReactComponent() {
-    ArezReactComponent_.setProvider( () -> createArezReactComponentDaggerComponent().get() );
+    ArezReactComponent_.setProvider( () -> getArezReactComponentDaggerSubcomponent().get() );
   }
 
   @Module
@@ -24,7 +24,7 @@ public interface ArezReactComponentDaggerFactory {
   @Subcomponent(
       modules = DaggerModule.class
   )
-  interface DaggerComponent {
+  interface DaggerSubcomponent {
     Provider<Component> createProvider();
 
     default ArezReactComponent get() {

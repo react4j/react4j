@@ -7,10 +7,10 @@ import javax.inject.Provider;
 import react4j.core.Component;
 
 public interface MethodInjectReactComponentDaggerFactory {
-  DaggerComponent createMethodInjectReactComponentDaggerComponent();
+  DaggerSubcomponent getMethodInjectReactComponentDaggerSubcomponent();
 
   default void bindMethodInjectReactComponent() {
-    MethodInjectReactComponent_.setProvider( () -> createMethodInjectReactComponentDaggerComponent().get() );
+    MethodInjectReactComponent_.setProvider( () -> getMethodInjectReactComponentDaggerSubcomponent().get() );
   }
 
   @Module
@@ -24,7 +24,7 @@ public interface MethodInjectReactComponentDaggerFactory {
   @Subcomponent(
       modules = DaggerModule.class
   )
-  interface DaggerComponent {
+  interface DaggerSubcomponent {
     Provider<Component> createProvider();
 
     default MethodInjectReactComponent get() {
