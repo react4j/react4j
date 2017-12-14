@@ -12,6 +12,11 @@ be generated accordingly. Also validated?
 * Add `@Ref` annotation to field in component. This will generate a cached helper function similar to EventHandler
   annotation that can be passed as prop.
 
+* Rename EventHandler annotation with callback and allow it's use as an arbitrary callback mechanism. This
+  includes for ref callbacks as well event handlers as well as the so-called render props. This will require
+  customization of how we wrap callbacks in `@Action`s. Ref callbacks and render props can obviously not be
+  wrapped where EventHandlers should be by default.
+
 * Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
   state and context? Seems like `@Inject` for fields with different qualifiers should be sufficient. May also
   need to support `@OnPropChanged` methods and/or `@PropValidate` which are ommitted during production builds.
