@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Added
+* **\[docs\]** Add initial documentation about integrating React4j components into dependency injection
+  frameworks such as [Dagger2](https://google.github.io/dagger).
+
 ##### Changed
 * 💥 **\[core\]** Changed the name of the nested type within dagger specific injection factory from
   `MyComponentDaggerFactory.DaggerComponent` to `MyComponentDaggerFactory.DaggerSubcomponent`. This

@@ -2,8 +2,6 @@
 
 ### High Priority
 
-* Figure out how components can interact with with dagger. Probably just need to document current setup.
-
 * Components should declare whether they support 0,1 or many children and the associated builder will
 be generated accordingly. Also validated?
 
