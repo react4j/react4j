@@ -2,6 +2,8 @@
 
 ### High Priority
 
+* Consider "Pass props to render"
+
 * Components should declare whether they support 0,1 or many children and the associated builder will
 be generated accordingly. Also validated?
 
