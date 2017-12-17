@@ -10,6 +10,7 @@
 * 💥 **\[core\]** Changed the name of the nested type within dagger specific injection factory from
   `MyComponentDaggerFactory.DaggerComponent` to `MyComponentDaggerFactory.DaggerSubcomponent`. This
   is so that the name of class reflects the behaviour of the class.
+* Change the publish task so that it only publishes tag as an artifact if the tag is on the master branch.
 
 ### [v0.26](https://github.com/react4j/react4j/tree/v0.26) (2017-12-13)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.25...v0.26)
