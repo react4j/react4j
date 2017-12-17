@@ -4,6 +4,9 @@
 
 * Consider "Pass props to render"
 
+* If `componentDidConstruct` attempts to call `props()` or `context()` rather than use supplied parameters then
+  throw an exception.
+
 * Components should declare whether they support 0,1 or many children and the associated builder will
 be generated accordingly. Also validated?
 
