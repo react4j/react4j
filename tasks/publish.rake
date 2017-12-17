@@ -10,7 +10,7 @@ end
 def get_head_tag_if_any
   version = `git describe --exact-match --tags 2>&1`
   if 0 == $?.exitstatus && version =~ /^v[0-9]/ && (ENV['TRAVIS_BUILD_ID'].nil? || ENV['TRAVIS_TAG'].to_s != '')
-    version
+    version.strip
   else
     nil
   end
