@@ -17,13 +17,14 @@ def get_head_tag_if_any
 end
 
 def is_tag_on_branch?(tag, branch)
-  output = `git tag --merged #{branch} 2>&1`
+  output = `git tag --merged origin/#{branch} 2>&1`
   tags = output.split
   tags.include?(tag)
 end
 
 def is_tag_on_candidate_branches?(tag, branches)
   branches.each do |branch|
+    `git pull origin #{branch}`
     return true if is_tag_on_branch?(tag, branch)
   end
   false
