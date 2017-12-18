@@ -5,6 +5,7 @@
 ##### Changed
 * 💥 **\[core\]** Upgrade `com.google.jsinterop:base` library to version `1.0.0-RC1`.
 * 💥 **\[core\]** Upgrade `com.google.elemental2:*` libraries to version `1.0.0-RC1`.
+* 💥 **\[arez\]** Upgrade Arez to version `0.37`.
 
 ### [v0.27](https://github.com/react4j/react4j/tree/v0.27) (2017-12-18)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.26...v0.27)
