@@ -18,7 +18,8 @@ be generated accordingly. Also validated?
 * Rename EventHandler annotation with callback and allow it's use as an arbitrary callback mechanism. This
   includes for ref callbacks as well event handlers as well as the so-called render props. This will require
   customization of how we wrap callbacks in `@Action`s. Ref callbacks and render props can obviously not be
-  wrapped where EventHandlers should be by default.
+  wrapped where EventHandlers should be by default. Alternatively add a separate `@Callback` annotation that
+  assumes the callers context rather than the components context (i.e. does not wrap them in `@Action` annotations)
 
 * Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
   state and context? Seems like `@Inject` for fields with different qualifiers should be sufficient. May also
