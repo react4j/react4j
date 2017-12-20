@@ -19,6 +19,16 @@ has a bad time then then we need to fix the problem.
 For more information about React4j, please see the [Website](https://react4j.github.io/). For the source code
 and project support please visit the [GitHub project](https://github.com/react4j/react4j).
 
+# Contributing
+
+React4j was released as open source so others could benefit from the project. We are thankful for any
+contributions from the community. A [Code of Conduct](CODE_OF_CONDUCT.md) has been put in place and
+a [Contributing](CONTRIBUTING.md) document is under development.
+
+# License
+
+React4j is licensed under [Apache License, Version 2.0](LICENSE).
+
 # Credit
 
 * [Stock Software](http://www.stocksoftware.com.au/) for providing significant support in building and maintaining
