@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.29](https://github.com/react4j/react4j/tree/v0.29) (2017-12-28)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.28...v0.29)
 
 ##### Fixed
 * 💥 **\[arez\]** Ensure that the generated subclasses of `ReactArezComponent` set the
