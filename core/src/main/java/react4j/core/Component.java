@@ -107,7 +107,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    *
    * @return the component state.
    */
-  protected S state()
+  protected final S state()
   {
     return component().state();
   }

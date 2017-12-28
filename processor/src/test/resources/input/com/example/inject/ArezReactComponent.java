@@ -11,7 +11,7 @@ import react4j.core.ReactNode;
 
 @ReactComponent
 class ArezReactComponent
-  extends ReactArezComponent<BaseProps, BaseState, BaseContext>
+  extends ReactArezComponent<BaseProps, BaseContext>
 {
   @Inject
   String someParam;

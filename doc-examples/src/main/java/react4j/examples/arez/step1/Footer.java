@@ -19,7 +19,7 @@ import static react4j.examples.arez.step1.Footer_.*;
 
 @ReactComponent
 class Footer
-  extends ReactArezComponent<BaseProps, BaseState, BaseContext>
+  extends ReactArezComponent<BaseProps, BaseContext>
 {
   @EventHandler( MouseEventHandler.class )
   void handleClearCompleted()

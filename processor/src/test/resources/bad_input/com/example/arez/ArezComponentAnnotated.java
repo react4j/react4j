@@ -12,7 +12,7 @@ import react4j.core.ReactNode;
 @ReactComponent
 @ArezComponent( allowEmpty = true )
 class ArezComponentAnnotated
-  extends ReactArezComponent<BaseProps, BaseState, BaseContext>
+  extends ReactArezComponent<BaseProps, BaseContext>
 {
   @Nullable
   @Override

@@ -19,6 +19,7 @@ import org.realityforge.arez.annotations.ObserverRef;
 import org.realityforge.arez.annotations.OnDepsChanged;
 import org.realityforge.arez.annotations.Track;
 import org.realityforge.arez.spy.ObservableInfo;
+import org.realityforge.braincheck.Guards;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -37,8 +38,8 @@ import react4j.core.util.JsUtil;
  * of an Arez transaction. (Typically this means it needs to be accessed within the
  * scope of a {@link Action} annotated method or within the scope of the render method.</p>
  */
-public abstract class ReactArezComponent<P extends BaseProps, S extends BaseState, C extends BaseContext>
-  extends Component<P, S, C>
+public abstract class ReactArezComponent<P extends BaseProps, C extends BaseContext>
+  extends Component<P, BaseState, C>
 {
   /**
    * Key used to store the arez data in state.
@@ -48,41 +49,10 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
   private boolean _renderDepsChanged;
-  private boolean _stateUpdateInProgress;
 
   protected ReactArezComponent()
   {
     _arezComponentId = c_nextComponentId++;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Observable( expectSetter = false )
-  @Override
-  protected S state()
-  {
-    return super.state();
-  }
-
-  /**
-   * Return the Observable used to make `state` observable.
-   *
-   * @return the Observable used to make `state` observable.
-   */
-  @ObservableRef
-  protected org.realityforge.arez.Observable<S> getStateObservable()
-  {
-    throw new IllegalStateException();
-  }
-
-  /**
-   * Action that invoked when state changes.
-   */
-  @Action
-  protected void reportStateChanged()
-  {
-    getStateObservable().reportChanged();
   }
 
   /**
@@ -119,19 +89,10 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, S> callback,
+  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, BaseState> callback,
                                             @Nullable final Procedure onStateUpdateComplete )
   {
-    final Procedure wrappedOnStateUpdateComplete = () -> {
-      _stateUpdateInProgress = true;
-      reportStateChanged();
-      _stateUpdateInProgress = false;
-      if ( null != onStateUpdateComplete )
-      {
-        onStateUpdateComplete.call();
-      }
-    };
-    super.scheduleStateUpdate( callback, wrappedOnStateUpdateComplete );
+    Guards.fail( () -> "Attempted to schedule state update on ReactArezComponent subclass. Use Arez @Observable or @Computed properties instead." );
   }
 
   /**
@@ -171,10 +132,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
   protected final void onRenderDepsChanged()
   {
     _renderDepsChanged = true;
-    if ( !_stateUpdateInProgress )
-    {
-      scheduleRender( true );
-    }
+    scheduleRender( true );
   }
 
   /**
@@ -232,7 +190,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    */
   @Override
   protected boolean shouldComponentUpdate( @Nullable final P nextProps,
-                                           @Nullable final S nextState,
+                                           @Nullable final BaseState nextState,
                                            @Nullable final C nextContext )
   {
     if ( hasRenderDepsChanged() )
@@ -274,7 +232,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
    * {@inheritDoc}
    */
   @Override
-  protected void componentDidUpdate( @Nullable final P prevProps, @Nullable final S prevState )
+  protected void componentDidUpdate( @Nullable final P prevProps, @Nullable final BaseState prevState )
   {
     storeArezDataAsState();
   }
@@ -309,7 +267,7 @@ public abstract class ReactArezComponent<P extends BaseProps, S extends BaseStat
       data.set( "name", renderTracker.getName() );
       data.set( "observer", renderTracker );
       data.set( "deps", deps );
-      final S state = super.state();
+      final BaseState state = super.state();
       final Object currentArezData = null != state ? Js.asPropertyMap( state ).get( AREZ_STATE_KEY ) : null;
       final Object currentDepsData = null != currentArezData ? Js.asPropertyMap( currentArezData ).get( "deps" ) : null;
       /*

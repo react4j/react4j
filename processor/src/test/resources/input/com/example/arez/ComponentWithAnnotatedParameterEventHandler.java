@@ -13,7 +13,7 @@ import react4j.core.ReactNode;
 
 @ReactComponent
 class ComponentWithAnnotatedParameterEventHandler
-  extends ReactArezComponent<BaseProps, BaseState, BaseContext>
+  extends ReactArezComponent<BaseProps, BaseContext>
 {
   @JsFunction
   public interface CustomHandler

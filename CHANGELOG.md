@@ -9,6 +9,8 @@
 
 ##### Changed
 * **\[docs\]** Use relative paths where possible for release posts on website.
+* 💥 **\[arez\]** Stop subclasses of `ReactArezComponent` from using component state and instead fail
+  with an invariant that suggests using observable Arez state.
 
 ### [v0.28](https://github.com/react4j/react4j/tree/v0.28) (2017-12-19)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.27...v0.28)
