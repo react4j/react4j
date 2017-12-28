@@ -7,6 +7,9 @@
   `deferSchedule` parameter on the `@ArezComponent`. This fixes bug where `@Autorun` annotated
   methods are running prior to injection completing.
 
+##### Changed
+* **\[docs\]** Use relative paths where possible for release posts on website.
+
 ### [v0.28](https://github.com/react4j/react4j/tree/v0.28) (2017-12-19)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.27...v0.28)
 

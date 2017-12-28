@@ -80,7 +80,7 @@ type: minor
 
 Changes in this release:
 
-#{changelog[start_index, end_index - start_index]}
+#{changelog[start_index, end_index - start_index].gsub('https://react4j.github.io','')}
 CONTENT
       sh 'git reset 2>&1 1> /dev/null'
       sh "git add #{filename}"
