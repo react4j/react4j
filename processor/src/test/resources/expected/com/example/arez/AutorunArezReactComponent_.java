@@ -16,7 +16,8 @@ import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    type = "AutorunArezReactComponent"
+    type = "AutorunArezReactComponent",
+    deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
 class AutorunArezReactComponent_ extends AutorunArezReactComponent {

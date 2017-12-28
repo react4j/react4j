@@ -19,7 +19,8 @@ import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    type = "ComponentWithAnnotatedParameterEventHandler"
+    type = "ComponentWithAnnotatedParameterEventHandler",
+    deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotatedParameterEventHandler {

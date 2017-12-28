@@ -19,7 +19,8 @@ import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    type = "ComponentWithNoAutoActionEventHandler"
+    type = "ComponentWithNoAutoActionEventHandler",
+    deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
 class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEventHandler {

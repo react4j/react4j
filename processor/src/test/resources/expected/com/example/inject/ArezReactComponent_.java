@@ -19,6 +19,7 @@ import react4j.core.ReactNode;
 
 @ArezComponent(
     type = "ArezReactComponent",
+    deferSchedule = true,
     inject = Injectible.TRUE
 )
 @Generated("react4j.processor.ReactProcessor")

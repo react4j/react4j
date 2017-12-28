@@ -71,7 +71,9 @@ final class Generator
     if ( descriptor.isArezComponent() )
     {
       final AnnotationSpec.Builder annotation =
-        AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).addMember( "type", "$S", descriptor.getName() );
+        AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
+          addMember( "type", "$S", descriptor.getName() ).
+          addMember( "deferSchedule", "true" );
       if ( descriptor.needsInjection() )
       {
         annotation.addMember( "inject", "$T.TRUE", INJECTIBLE_CLASSNAME );

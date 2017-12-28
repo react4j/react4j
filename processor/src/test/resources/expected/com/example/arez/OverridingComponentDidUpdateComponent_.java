@@ -16,7 +16,8 @@ import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    type = "OverridingComponentDidUpdateComponent"
+    type = "OverridingComponentDidUpdateComponent",
+    deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
 class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdateComponent {

@@ -16,7 +16,8 @@ import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    type = "BasicArezReactComponent"
+    type = "BasicArezReactComponent",
+    deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
 class BasicArezReactComponent_ extends BasicArezReactComponent {
