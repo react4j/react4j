@@ -32,6 +32,8 @@ final class Generator
   private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
 
+  private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
+
   private static final ClassName INJECTIBLE_CLASSNAME =
     ClassName.get( "org.realityforge.arez.annotations", "Injectible" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "org.realityforge.arez.annotations", "Action" );
@@ -110,6 +112,7 @@ final class Generator
     if ( descriptor.needsInjection() )
     {
       builder.addMethod( buildSetProviderMethod( descriptor ).build() );
+      builder.addMethod( buildGetProviderMethod( descriptor ).build() );
     }
 
     builder.addMethod( buildFactoryMethod().build() );
@@ -327,6 +330,21 @@ final class Generator
   }
 
   @Nonnull
+  private static MethodSpec.Builder buildGetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    return MethodSpec.methodBuilder( "getProvider" ).
+      addModifiers( Modifier.PRIVATE, Modifier.STATIC ).
+      returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, TypeName.get( descriptor.getDeclaredType() ) ) ).
+      addStatement( "$T.invariant( () -> null != c_provider, () -> \"Attempted to create an instance of the React4j " +
+                    "component named '$N' before the dependency injection provider has been initialized. Please see " +
+                    "the documentation at https://react4j.github.io/dependency_injection for directions how to " +
+                    "configure dependency injection.\" )",
+                    GUARDS_CLASSNAME,
+                    descriptor.getName() ).
+      addStatement( "return c_provider" );
+  }
+
+  @Nonnull
   private static MethodSpec.Builder buildFactoryMethod()
   {
     return MethodSpec.methodBuilder( "_create" ).
@@ -477,7 +495,7 @@ final class Generator
           returns( ClassName.get( descriptor.getElement() ) );
       if ( descriptor.needsInjection() )
       {
-        method.addStatement( "return c_provider.get()" );
+        method.addStatement( "return getProvider().get()" );
       }
       else
       {

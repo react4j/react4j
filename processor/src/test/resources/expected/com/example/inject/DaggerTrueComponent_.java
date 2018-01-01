@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import jsinterop.base.Js;
+import org.realityforge.braincheck.Guards;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -27,6 +28,11 @@ class DaggerTrueComponent_ extends DaggerTrueComponent {
 
   static void setProvider(final Provider<DaggerTrueComponent> provider) {
     c_provider = provider;
+  }
+
+  private static Provider<DaggerTrueComponent> getProvider() {
+    Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'DaggerTrueComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+    return c_provider;
   }
 
   @Nonnull
@@ -60,7 +66,7 @@ class DaggerTrueComponent_ extends DaggerTrueComponent {
 
     @Override
     protected DaggerTrueComponent createComponent() {
-      return c_provider.get();
+      return getProvider().get();
     }
   }
 }

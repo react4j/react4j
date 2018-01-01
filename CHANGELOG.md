@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+##### Fixed
+* 💥 **\[processor\]** Fix the generated class so that they generate an invariant failure if you attempt
+  to instantiate a React4j component that requires dependency injection without correctly configuring the
+  dependency injection provider. This means that during development mode a meaningful error message will
+  be generated but the invariant check will be compiled out during production compiles.
+
 ##### Changed
 * 💥 **\[dom\]** Changed `DOM.*()` factory methods that accepted a `java.util.List` to accept a
   `java.util.stream.Stream` instead. The aim was to discourage the creation of intermediate `java.util.List`

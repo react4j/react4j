@@ -8,6 +8,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.arez.annotations.ArezComponent;
 import org.realityforge.arez.annotations.Injectible;
+import org.realityforge.braincheck.Guards;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -30,6 +31,11 @@ class ArezReactComponent_ extends ArezReactComponent {
 
   static void setProvider(final Provider<ArezReactComponent> provider) {
     c_provider = provider;
+  }
+
+  private static Provider<ArezReactComponent> getProvider() {
+    Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'ArezReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+    return c_provider;
   }
 
   @Nonnull
@@ -77,7 +83,7 @@ class ArezReactComponent_ extends ArezReactComponent {
 
     @Override
     protected ArezReactComponent createComponent() {
-      return c_provider.get();
+      return getProvider().get();
     }
 
     @Override
