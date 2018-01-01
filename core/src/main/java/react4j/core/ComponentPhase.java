@@ -14,7 +14,7 @@ enum ComponentPhase
    * <ul>
    * <li>Constructed.</li>
    * <li>Bound to a native react component via {@link Component#bindComponent(NativeComponent)}.</li>
-   * <li>{@link Component#componentDidConstruct(BaseProps, BaseContext)} is invoked.</li>
+   * <li>{@link Component#componentDidConstruct()} is invoked.</li>
    * </ul>
    */
   INITIALIZING,

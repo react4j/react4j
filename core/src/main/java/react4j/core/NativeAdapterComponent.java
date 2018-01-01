@@ -65,7 +65,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      _component.performComponentDidConstruct( props, context );
+      _component.performComponentDidConstruct();
     }
     finally
     {

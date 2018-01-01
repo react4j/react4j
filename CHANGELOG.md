@@ -14,6 +14,8 @@
   instances when not needed. The change also removes the last direct JSNI dependency that was blocking
   a move to J2CL/GWT3.
 * 💥 **\[core\]** Remove `JsUtil.asJsArray()` as it is no longer used from within the React4j library.
+* 💥 **\[core\]** Revert the change in `v0.21`  that modified the `Component.componentDidConstruct()` lifecycle
+  method to accept two parameters `props` and `context` and instead just use the helper methods.
 
 ### [v0.29](https://github.com/react4j/react4j/tree/v0.29) (2017-12-28)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.28...v0.29)

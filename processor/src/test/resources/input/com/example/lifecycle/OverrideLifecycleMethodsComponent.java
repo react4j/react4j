@@ -17,7 +17,7 @@ class OverrideLifecycleMethodsComponent
 {
   // This lifecycle method should not have adapter synthesized.
   @Override
-  protected void componentDidConstruct( @Nullable final BaseProps props, @Nullable final BaseContext context )
+  protected void componentDidConstruct()
   {
   }
 
