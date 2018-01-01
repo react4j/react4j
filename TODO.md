@@ -102,6 +102,8 @@ class TodoEntry
 
 * React `classSet` addon equiv. Also see scalajs variant - https://github.com/japgolly/scalajs-react/blob/master/doc/USAGE.md#react-extensions
 
+* Introduce performance tools as in https://github.com/nitin42/react-perf-devtool into tool chain
+
 #### Arez DevTools
 
 Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need
