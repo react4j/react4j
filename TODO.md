@@ -27,18 +27,7 @@
   - https://reactcommunity.org/react-transition-group/
   or maybe https://react-move.js.org/
 
-* Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
-
-* Integrate Logo into website. Maybe decide on color palette and update icon to match color palette.
-
-* Consider ways or reorganizing - Use react+reason-react as inspiration? Also EmberJS as inspiration - https://www.emberjs.com/
-
 * Port a hackernews clone ala https://github.com/reasonml-community/reason-react-hacker-news
-
-* Document Context
-  - how to write a provider
-  - how to write a consumer
-  - pitfalls of a consumer (link to React docs? - https://reactjs.org/docs/context.html)
 
 ### Medium Priorities
 
@@ -138,3 +127,23 @@ warning messages more cryptic and skip important checks that happen in developme
 Copying styles from source document -
 
 * https://hackernoon.com/using-a-react-16-portal-to-do-something-cool-2a2d627b0202
+
+#### Documentation
+
+* Port documentation across to using Docusaurus - base it off Arez.
+
+* Integrate Logo into website. Update color palette of icon and website to match.
+
+* Reorganize documentation using the following sites as inspiration.
+  - Reason React - https://reasonml.github.io/reason-react/
+  - EmberJS - https://www.emberjs.com/
+  - VueGWT - https://axellience.github.io/vue-gwt/introduction/ 
+  - https://mobx.js.org
+  - https://redux.js.org/
+
+* Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
+
+* Document Context
+  - how to write a provider
+  - how to write a consumer
+  - pitfalls of a consumer (link to React docs? - https://reactjs.org/docs/context.html)
