@@ -129,7 +129,6 @@ warning messages more cryptic and skip important checks that happen in developme
   allocations. More importantly, it tells React that the subtree hasn’t changed so React can completely skip it
   when reconciling.
 
-
 #### Window Portal Notes
 
 * https://github.com/beardedtim/react-child-window/blob/master/index.jsx
