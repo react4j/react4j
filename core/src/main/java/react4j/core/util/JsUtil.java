@@ -1,8 +1,6 @@
 package react4j.core.util;
 
-import elemental2.core.JsArray;
 import elemental2.core.JsObject;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
@@ -15,19 +13,6 @@ public final class JsUtil
   private JsUtil()
   {
   }
-
-  /**
-   * UnBox the native JS array into a Java List. It does not have any significant performance
-   * penalty because we directly take the native array of the super ArrayList
-   * implementation.
-   *
-   * @param <T>   the type of array elements.
-   * @param input the java list instance.
-   * @return the native array.
-   */
-  public static native <T> JsArray<T> asJsArray( @Nonnull final List<T> input )/*-{
-    return input.@java.util.ArrayList::array;
-  }-*/;
 
   /**
    * We assume the two objects passed are js objects and we compare the objects have the same key-value
