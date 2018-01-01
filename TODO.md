@@ -8,7 +8,7 @@
   throw an exception.
 
 * Components should declare whether they support 0,1 or many children and the associated builder will
-be generated accordingly. Also validated?
+  be generated accordingly. Also validated?
 
 * No refs to function components- block in builder? Should we enforce no refs for stateless components
 
