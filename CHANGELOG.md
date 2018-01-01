@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+##### Changed
+* 💥 **\[dom\]** Changed `DOM.*()` factory methods that accepted a `java.util.List` to accept a
+  `java.util.stream.Stream` instead. The aim was to discourage the creation of intermediate `java.util.List`
+  instances when not needed. The change also removes the last direct JSNI dependency that was blocking
+  a move to J2CL/GWT3.
+
 ### [v0.29](https://github.com/react4j/react4j/tree/v0.29) (2017-12-28)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.28...v0.29)
 

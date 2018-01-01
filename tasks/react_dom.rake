@@ -48,13 +48,12 @@ def generate_factory
   content = <<HEADER
 package react4j.dom;
 
-import java.util.List;
+import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import react4j.core.ReactNode;
-import react4j.core.util.JsUtil;
 HEADER
   factories.values.sort.uniq.each do |prop_type|
     content += "import react4j.dom.proptypes.html.#{prop_type};\n"
@@ -119,9 +118,9 @@ HEADER
   }
 
   @Nonnull
-  public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final List<ReactNode> children )
+  public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final Stream<? extends ReactNode> children )
   {
-    return #{key}( props, Js.<ReactNode[]>uncheckedCast( JsUtil.asJsArray( children ) ) );
+    return #{key}( props, Js.<ReactNode[]>uncheckedCast( children.toArray( ReactNode[]::new ) ) );
   }
 HEADER
   end
