@@ -137,7 +137,7 @@ Copying styles from source document -
 * Reorganize documentation using the following sites as inspiration.
   - Reason React - https://reasonml.github.io/reason-react/
   - EmberJS - https://www.emberjs.com/
-  - VueGWT - https://axellience.github.io/vue-gwt/introduction/ 
+  - VueGWT - https://axellience.github.io/vue-gwt/introduction/
   - https://mobx.js.org
   - https://redux.js.org/
 
