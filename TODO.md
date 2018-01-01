@@ -75,8 +75,6 @@ class TodoEntry
 * build in https://github.com/maicki/why-did-you-update
 * Implement the "children" utilities in java or bind to native implementation.
 
-* Add TodoMVC to web site in both production and development mode so it is easy to describe it in the documentation.
-
 * Upgrade and build TodoMVC as part of the release process.
 
 * EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
@@ -131,6 +129,13 @@ Copying styles from source document -
 #### Documentation
 
 * Port documentation across to using Docusaurus - base it off Arez.
+
+* Update documentation publish process so it incrementally updates site on changes.
+
+* Add TodoMVC to web site in both production and development mode so it is easy to describe
+  it in the documentation. Can update that project to publish to the same site. Will need to
+  add new deploy key to react4j.github.io project and remove from old project. Can also link
+  to it from within site.
 
 * Integrate Logo into website. Update color palette of icon and website to match.
 
