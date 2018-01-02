@@ -48,6 +48,7 @@ def generate_factory
   content = <<HEADER
 package react4j.dom;
 
+import java.util.List;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -115,6 +116,12 @@ HEADER
   public static ReactNode #{key}()
   {
     return ReactDOM.createElement( "#{key}", null );
+  }
+
+  @Nonnull
+  public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final List<? extends ReactNode> children )
+  {
+    return #{key}( props, children.stream() );
   }
 
   @Nonnull

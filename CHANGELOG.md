@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Changed
+* 💥 **\[dom\]** Re-add `DOM.*()` factory methods that accepted a `java.util.List` parameter using a mechanism
+  that is compatible with J2CL/GWT3.
+
 ### [v0.30](https://github.com/react4j/react4j/tree/v0.30) (2018-01-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.29...v0.30)
 
