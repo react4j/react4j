@@ -97,17 +97,24 @@ task 'site:deploy' => ['site:build'] do
       origin_url = origin_url.gsub('https://github.com/', 'git@github.com:')
     end
 
-    in_dir(SITE_DIR) do
-      sh 'git init'
-      sh 'git add .'
-      message =
-        travis_build_number.nil? ?
-          'Publish website' :
-          "Publish website - Travis build: #{travis_build_number}"
+    local_dir = "#{WORKSPACE_DIR}/targOnDeactivateet/remote_site"
+    rm_rf local_dir
 
-      sh "git commit -m \"#{message}\""
-      sh "git remote add origin #{origin_url}"
-      sh 'git push -f origin master:master'
+    sh "git clone -b master #{origin_url} #{local_dir}"
+
+    # This is the list of directories controlled by other processes that should be left alone
+    excludes = %w(todomvc)
+
+    in_dir(local_dir) do
+      message = "Publish website#{travis_build_number.nil? ? '' : " - Travis build: #{travis_build_number}"}"
+
+      rm_rf Dir["#{local_dir}/*"].select {|f| !excludes.include?(File.basename(f))}
+      cp_r Dir["#{SITE_DIR}/*"], local_dir
+      sh 'git add . -f'
+      unless `git status -s`.strip.empty?
+        sh "git commit -m \"#{message}\""
+        sh 'git push -f origin master'
+      end
     end
   end
 end
