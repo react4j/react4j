@@ -29,6 +29,9 @@
 
 * Port a hackernews clone ala https://github.com/reasonml-community/reason-react-hacker-news
 
+* React/Arez components should use introspectors to get the values for observable properties when storing
+  state on the component. Simplifies understanding for the developer. 
+
 ### Medium Priorities
 
 * Figure out a way to define dom factories in java that are optimized away in production such that
