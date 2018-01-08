@@ -27,8 +27,9 @@
   - https://reactcommunity.org/react-transition-group/
   or maybe https://react-move.js.org/
 
-* Port a hackernews clone ala https://github.com/reasonml-community/reason-react-hacker-news
-
+* Port a hackernews clone
+  - https://github.com/clintonwoo/hackernews-react-graphql
+  - https://github.com/reasonml-community/reason-react-hacker-news
 * React/Arez components should use introspectors to get the values for observable properties when storing
   state on the component. Simplifies understanding for the developer. 
 
