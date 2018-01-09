@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[arez\]** Add an inherit for the `org.realityforge.arez.annotations.Annotations` GWT module to the
+  `react4j.arez.ReactArez` GWT module to ensure that the `org.realityforge.arez.annotations.Injectible`
+  enum has source available during the GWT compile.
+
 ### [v0.31](https://github.com/react4j/react4j/tree/v0.31) (2018-01-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.30...v0.31)
 
