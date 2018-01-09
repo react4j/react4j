@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.32](https://github.com/react4j/react4j/tree/v0.32) (2018-01-09)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.31...v0.32)
 
 ##### Fixed
 * **\[arez\]** Add an inherit for the `org.realityforge.arez.annotations.Annotations` GWT module to the
