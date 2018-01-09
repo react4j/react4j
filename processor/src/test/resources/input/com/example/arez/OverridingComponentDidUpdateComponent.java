@@ -1,7 +1,7 @@
 package com.example.arez;
 
+import arez.annotations.Action;
 import javax.annotation.Nullable;
-import org.realityforge.arez.annotations.Action;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseContext;

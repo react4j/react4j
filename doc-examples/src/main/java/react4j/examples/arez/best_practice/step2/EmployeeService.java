@@ -1,8 +1,8 @@
 package react4j.examples.arez.best_practice.step2;
 
-import org.realityforge.arez.annotations.Action;
-import org.realityforge.arez.annotations.ArezComponent;
-import org.realityforge.arez.annotations.Observable;
+import arez.annotations.Action;
+import arez.annotations.ArezComponent;
+import arez.annotations.Observable;
 
 @ArezComponent
 public class EmployeeService

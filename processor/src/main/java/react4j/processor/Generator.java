@@ -35,10 +35,10 @@ final class Generator
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
 
   private static final ClassName INJECTIBLE_CLASSNAME =
-    ClassName.get( "org.realityforge.arez.annotations", "Injectible" );
-  private static final ClassName ACTION_CLASSNAME = ClassName.get( "org.realityforge.arez.annotations", "Action" );
+    ClassName.get( "arez.annotations", "Injectible" );
+  private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
-    ClassName.get( "org.realityforge.arez.annotations", "ArezComponent" );
+    ClassName.get( "arez.annotations", "ArezComponent" );
 
   private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
 

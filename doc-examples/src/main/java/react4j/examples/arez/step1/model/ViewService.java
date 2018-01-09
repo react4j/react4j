@@ -1,9 +1,9 @@
 package react4j.examples.arez.step1.model;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Observable;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import org.realityforge.arez.annotations.ArezComponent;
-import org.realityforge.arez.annotations.Observable;
 
 @ArezComponent( nameIncludesId = false )
 public class ViewService

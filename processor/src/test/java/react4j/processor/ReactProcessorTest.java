@@ -89,9 +89,9 @@ public class ReactProcessorTest
     return new Object[][]
       {
         new Object[]{ "com.example.arez.AnnotatedEventHandler",
-                      "Method annotated with @EventHandler is also annotated with @org.realityforge.arez.annotations.Action but is not annotated with @react4j.arez.NoAutoAction which would stop react4j from also annotating the method with @Action. Please remove @Action or add @NoAutoAction annotation." },
+                      "Method annotated with @EventHandler is also annotated with @arez.annotations.Action but is not annotated with @react4j.arez.NoAutoAction which would stop react4j from also annotating the method with @Action. Please remove @Action or add @NoAutoAction annotation." },
         new Object[]{ "com.example.arez.ArezComponentAnnotated",
-                      "@ReactComponent target extends react4j.arez.ReactArezComponent and should not be annotated with org.realityforge.arez.annotations.ArezComponent as React4j will add annotation" },
+                      "@ReactComponent target extends react4j.arez.ReactArezComponent and should not be annotated with arez.annotations.ArezComponent as React4j will add annotation" },
         new Object[]{ "com.example.component.AbstractComponent", "@ReactComponent target must not be abstract" },
         new Object[]{ "com.example.component.BadNameComponent",
                       "The @ReactComponent specified an invalid name. Name should be follow the rules of a java identifier." },

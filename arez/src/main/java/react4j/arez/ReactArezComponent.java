@@ -1,24 +1,24 @@
 package react4j.arez;
 
+import arez.Arez;
+import arez.ArezContext;
+import arez.Disposable;
+import arez.Observer;
+import arez.annotations.Action;
+import arez.annotations.ComponentId;
+import arez.annotations.ContextRef;
+import arez.annotations.Observable;
+import arez.annotations.ObservableRef;
+import arez.annotations.ObserverRef;
+import arez.annotations.OnDepsChanged;
+import arez.annotations.Track;
+import arez.spy.ObservableInfo;
 import elemental2.core.JsObject;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.arez.Arez;
-import org.realityforge.arez.ArezContext;
-import org.realityforge.arez.Disposable;
-import org.realityforge.arez.Observer;
-import org.realityforge.arez.annotations.Action;
-import org.realityforge.arez.annotations.ComponentId;
-import org.realityforge.arez.annotations.ContextRef;
-import org.realityforge.arez.annotations.Observable;
-import org.realityforge.arez.annotations.ObservableRef;
-import org.realityforge.arez.annotations.ObserverRef;
-import org.realityforge.arez.annotations.OnDepsChanged;
-import org.realityforge.arez.annotations.Track;
-import org.realityforge.arez.spy.ObservableInfo;
 import org.realityforge.braincheck.Guards;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
@@ -71,7 +71,7 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
    * @return the Observable used to make `props` observable.
    */
   @ObservableRef
-  protected org.realityforge.arez.Observable<P> getPropsObservable()
+  protected arez.Observable<P> getPropsObservable()
   {
     throw new IllegalStateException();
   }

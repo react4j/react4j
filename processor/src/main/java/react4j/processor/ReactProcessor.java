@@ -302,12 +302,12 @@ public final class ReactProcessor
       if ( null == nonActionAnnotation )
       {
         final AnnotationMirror actionAnnotation = method.getAnnotationMirrors().stream().
-          filter( m -> m.getAnnotationType().toString().equals( "org.realityforge.arez.annotations.Action" ) ).
+          filter( m -> m.getAnnotationType().toString().equals( "arez.annotations.Action" ) ).
           findAny().orElse( null );
         if ( null != actionAnnotation )
         {
           throw new ReactProcessorException( "Method annotated with @EventHandler is also annotated with " +
-                                             "@org.realityforge.arez.annotations.Action but is not annotated with " +
+                                             "@arez.annotations.Action but is not annotated with " +
                                              "@react4j.arez.NoAutoAction which would stop react4j from also " +
                                              "annotating the method with @Action. Please remove @Action or add " +
                                              "@NoAutoAction annotation.", method );
@@ -513,12 +513,12 @@ public final class ReactProcessor
     else if ( isArezComponent )
     {
       final AnnotationMirror arezAnnotation = typeElement.getAnnotationMirrors().stream().
-        filter( m -> m.getAnnotationType().toString().equals( "org.realityforge.arez.annotations.ArezComponent" ) ).
+        filter( m -> m.getAnnotationType().toString().equals( "arez.annotations.ArezComponent" ) ).
         findAny().orElse( null );
       if ( null != arezAnnotation )
       {
         throw new ReactProcessorException( "@ReactComponent target extends react4j.arez.ReactArezComponent and should " +
-                                           "not be annotated with org.realityforge.arez.annotations.ArezComponent as " +
+                                           "not be annotated with arez.annotations.ArezComponent as " +
                                            "React4j will add annotation", typeElement );
       }
     }

@@ -1,10 +1,10 @@
 package react4j.arez.spy;
 
+import arez.browser.extras.spy.ConsoleSpyEventProcessor;
+import arez.browser.extras.spy.StringifyReplacer;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import org.realityforge.arez.browser.extras.spy.ConsoleSpyEventProcessor;
-import org.realityforge.arez.browser.extras.spy.StringifyReplacer;
 
 /**
  * A customized console event processor that avoids accessing "key" and "ref" attributes.

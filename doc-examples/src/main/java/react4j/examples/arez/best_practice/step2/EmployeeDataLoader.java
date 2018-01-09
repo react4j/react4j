@@ -1,7 +1,7 @@
 package react4j.examples.arez.best_practice.step2;
 
-import org.realityforge.arez.annotations.ArezComponent;
-import org.realityforge.arez.annotations.Autorun;
+import arez.annotations.ArezComponent;
+import arez.annotations.Autorun;
 
 @ArezComponent
 public class EmployeeDataLoader

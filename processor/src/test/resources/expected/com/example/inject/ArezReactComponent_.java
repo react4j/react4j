@@ -1,13 +1,13 @@
 package com.example.inject;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Injectible;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Provider;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import org.realityforge.arez.annotations.ArezComponent;
-import org.realityforge.arez.annotations.Injectible;
 import org.realityforge.braincheck.Guards;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;

@@ -1,11 +1,11 @@
 package com.example.arez;
 
+import arez.annotations.ArezComponent;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import org.realityforge.arez.annotations.ArezComponent;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;

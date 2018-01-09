@@ -1,5 +1,6 @@
 package com.example.arez;
 
+import arez.annotations.ArezComponent;
 import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -7,7 +8,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.arez.annotations.ArezComponent;
 import react4j.annotations.EventHandler;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;

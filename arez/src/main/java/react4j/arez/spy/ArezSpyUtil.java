@@ -1,7 +1,7 @@
 package react4j.arez.spy;
 
-import org.realityforge.arez.Arez;
-import org.realityforge.arez.ArezContext;
+import arez.Arez;
+import arez.ArezContext;
 
 /**
  * Utility class for interacting with spy capabilities.

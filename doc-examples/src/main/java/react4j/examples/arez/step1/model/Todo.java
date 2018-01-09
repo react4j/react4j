@@ -1,11 +1,11 @@
 package react4j.examples.arez.step1.model;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.ComponentId;
+import arez.annotations.Observable;
+import arez.annotations.Repository;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import org.realityforge.arez.annotations.ArezComponent;
-import org.realityforge.arez.annotations.ComponentId;
-import org.realityforge.arez.annotations.Observable;
-import org.realityforge.arez.annotations.Repository;
 
 @Repository( extensions = { TodoRepositoryExtension.class } )
 @ArezComponent

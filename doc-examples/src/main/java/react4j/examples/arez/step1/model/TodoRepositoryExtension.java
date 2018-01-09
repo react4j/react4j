@@ -1,6 +1,6 @@
 package react4j.examples.arez.step1.model;
 
-import org.realityforge.arez.annotations.Computed;
+import arez.annotations.Computed;
 
 public interface TodoRepositoryExtension
   extends TodoBaseRepositoryExtension

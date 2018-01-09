@@ -1,5 +1,6 @@
 package react4j.processor;
 
+import arez.processor.ArezProcessor;
 import com.google.common.collect.ImmutableList;
 import com.google.testing.compile.Compiler;
 import com.google.testing.compile.JavaFileObjects;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.tools.JavaFileObject;
-import org.realityforge.arez.processor.ArezProcessor;
 import static com.google.common.truth.Truth.*;
 import static org.testng.Assert.*;
 
