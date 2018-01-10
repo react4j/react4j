@@ -3,9 +3,7 @@ package react4j.examples.arez.step2.model;
 import arez.annotations.Computed;
 
 public interface TodoRepositoryExtension
-  extends TodoBaseRepositoryExtension
 {
-
   @Computed
   default int totalCount()
   {
@@ -23,4 +21,6 @@ public interface TodoRepositoryExtension
   {
     return totalCount() - activeCount();
   }
+
+  TodoRepository self();
 }

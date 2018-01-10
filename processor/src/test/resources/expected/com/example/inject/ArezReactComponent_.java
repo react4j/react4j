@@ -21,7 +21,7 @@ import react4j.core.ReactNode;
 @ArezComponent(
     type = "ArezReactComponent",
     deferSchedule = true,
-    inject = Injectible.TRUE
+    inject = Injectible.ENABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 class ArezReactComponent_ extends ArezReactComponent {
