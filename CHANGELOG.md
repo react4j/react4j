@@ -8,6 +8,10 @@
   - `TRUE` renamed to `ENABLE`
   - `FALSE` renamed to `DISABLE`
   - `IF_DETECTED` renamed to `AUTODETECT`
+* 💥 **\[arez\]** The contents of the `arez` state value in `ReactArezComponent` components has
+  changed to a frozen map between the Arez node name and the value returned by the Arez spy
+  property introspector. This improves the ability to introspect Arez components until an
+  appropriate DevTool is put in place.
 
 ### [v0.33](https://github.com/react4j/react4j/tree/v0.33) (2018-01-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.32...v0.33)

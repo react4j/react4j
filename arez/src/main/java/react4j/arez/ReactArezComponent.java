@@ -97,7 +97,6 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
 
   /**
    * After construction of the object. Schedule any autoruns attached to component.
-   *
    */
   @Override
   protected final void performComponentDidConstruct()
@@ -260,25 +259,16 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
       final Observer renderTracker = getRenderObserver();
       final List<ObservableInfo> dependencies = getContext().getSpy().getDependencies( renderTracker );
       final JsPropertyMap<Object> deps = JsPropertyMap.of();
-      dependencies.forEach( d -> deps.set( d.getName(), d ) );
-      final JsPropertyMap<Object> data = JsPropertyMap.of();
-      data.set( "name", renderTracker.getName() );
-      data.set( "observer", renderTracker );
-      data.set( "deps", deps );
+      dependencies.forEach( d -> deps.set( d.getName(), getValue( d ) ) );
       final BaseState state = super.state();
-      final Object currentArezData = null != state ? Js.asPropertyMap( state ).get( AREZ_STATE_KEY ) : null;
-      final Object currentDepsData = null != currentArezData ? Js.asPropertyMap( currentArezData ).get( "deps" ) : null;
+      final Object currentDepsData = null != state ? Js.asPropertyMap( state ).get( AREZ_STATE_KEY ) : null;
       /*
        * Do a shallow comparison against object and the deps. If either has changed then state needs to be updated.
        * We skip deps on shallow comparison of data as it is always recreated anew.
        */
-      if ( JsUtil.isObjectShallowModified( currentArezData, data, "deps" ) )
+      if ( null == currentDepsData )
       {
-        scheduleArezKeyUpdate( data );
-      }
-      else if ( null == currentDepsData )
-      {
-        scheduleArezKeyUpdate( data );
+        scheduleArezKeyUpdate( deps );
       }
       else
       {
@@ -290,7 +280,7 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
         final String[] newDeps = JsObject.keys( Js.uncheckedCast( deps ) );
         if ( currentDeps.length != newDeps.length )
         {
-          scheduleArezKeyUpdate( data );
+          scheduleArezKeyUpdate( deps );
         }
         else
         {
@@ -298,11 +288,32 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
           {
             if ( !currentDeps[ i ].equals( newDeps[ i ] ) )
             {
-              scheduleArezKeyUpdate( data );
+              scheduleArezKeyUpdate( deps );
             }
           }
         }
       }
+    }
+  }
+
+  /**
+   * Return the value for specified observable.
+   * Exceptions are caught and types are converted to strings using {@link Object#toString()}
+   *
+   * @param observableInfo the observable.
+   * @return the value as a string.
+   */
+  @Nullable
+  private Object getValue( @Nonnull final ObservableInfo observableInfo )
+  {
+    try
+    {
+      //Consider unwrapping the boxed values and collections so they are presented correctly in DevTools
+      return Arez.arePropertyIntrospectorsEnabled() ? observableInfo.getValue() : "?";
+    }
+    catch ( final Throwable throwable )
+    {
+      return throwable;
     }
   }
 
@@ -312,6 +323,7 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
    */
   private void scheduleArezKeyUpdate( @Nonnull final JsPropertyMap<Object> data )
   {
-    super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsPropertyMap.of( AREZ_STATE_KEY, data ) ), null );
+    super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsPropertyMap.of( AREZ_STATE_KEY, JsObject.freeze( data ) ) ),
+                               null );
   }
 }
