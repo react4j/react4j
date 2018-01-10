@@ -4,6 +4,10 @@
 
 ##### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.40`.
+* 💥 **\[annotations\]** Rename the `ReactComponent.Feature` constants to improve clarity;
+  - `TRUE` renamed to `ENABLED`
+  - `FALSE` renamed to `DISABLED`
+  - `IF_DETECTED` renamed to `AUTODETECT`
 
 ### [v0.33](https://github.com/react4j/react4j/tree/v0.33) (2018-01-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.32...v0.33)

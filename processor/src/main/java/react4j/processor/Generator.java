@@ -78,7 +78,7 @@ final class Generator
           addMember( "deferSchedule", "true" );
       if ( descriptor.needsInjection() )
       {
-        annotation.addMember( "inject", "$T.ENABLED", INJECTIBLE_CLASSNAME );
+        annotation.addMember( "inject", "$T.ENABLE", INJECTIBLE_CLASSNAME );
       }
       builder.addAnnotation( annotation.build() );
     }

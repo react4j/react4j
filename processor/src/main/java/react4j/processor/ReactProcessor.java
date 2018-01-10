@@ -545,9 +545,9 @@ public final class ReactProcessor
                                         "inject" ).getValue();
     switch ( injectParameter.getSimpleName().toString() )
     {
-      case "TRUE":
+      case "ENABLE":
         return true;
-      case "FALSE":
+      case "DISABLE":
         return false;
       default:
         return ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( this::hasInjectAnnotation ) ||
@@ -565,9 +565,9 @@ public final class ReactProcessor
                                         "dagger" ).getValue();
     switch ( injectParameter.getSimpleName().toString() )
     {
-      case "TRUE":
+      case "ENABLE":
         return true;
-      case "FALSE":
+      case "DISABLE":
         return false;
       default:
         return null != processingEnv.getElementUtils().getTypeElement( Constants.DAGGER_MODULE_CLASSNAME );

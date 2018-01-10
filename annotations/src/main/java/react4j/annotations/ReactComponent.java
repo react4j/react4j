@@ -19,7 +19,7 @@ public @interface ReactComponent
    */
   enum Feature
   {
-    TRUE, FALSE, IF_DETECTED
+    ENABLE, DISABLE, AUTODETECT
   }
 
   /**
@@ -37,13 +37,13 @@ public @interface ReactComponent
 
   /**
    * Indicate whether an @Inject annotation should be added to constructor of generated class.
-   * {@link Feature#TRUE} will force the addition of an @Inject annotation, {@link Feature#FALSE}
-   * will result in no @Inject annotation and {@link Feature#IF_DETECTED} will add an @Inject
+   * {@link Feature#ENABLE} will force the addition of an @Inject annotation, {@link Feature#DISABLE}
+   * will result in no @Inject annotation and {@link Feature#AUTODETECT} will add an @Inject
    * if any fields or methods in the react4j component or any parent type has an @Inject annotation.
    *
    * @return enum controlling present of Inject annotation on constructor.
    */
-  Feature inject() default Feature.IF_DETECTED;
+  Feature inject() default Feature.AUTODETECT;
 
   /**
    * Indicate whether a dagger sub-component and module is created for component.
@@ -52,5 +52,5 @@ public @interface ReactComponent
    *
    * @return enum controlling whether dagger artifacts are generated.
    */
-  Feature dagger() default Feature.IF_DETECTED;
+  Feature dagger() default Feature.AUTODETECT;
 }
