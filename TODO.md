@@ -132,8 +132,6 @@ Copying styles from source document -
 
 * Port documentation across to using Docusaurus - base it off Arez.
 
-* Update documentation publish process so it incrementally updates site on changes.
-
 * Add TodoMVC to web site in both production and development mode so it is easy to describe
   it in the documentation. Can update that project to publish to the same site. Will need to
   add new deploy key to react4j.github.io project and remove from old project. Can also link
