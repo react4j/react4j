@@ -1,7 +1,7 @@
 package com.example.inject;
 
 import arez.annotations.ArezComponent;
-import arez.annotations.Injectible;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ import react4j.core.ReactNode;
 @ArezComponent(
     type = "ArezReactComponent",
     deferSchedule = true,
-    inject = Injectible.ENABLE
+    inject = Feature.ENABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 class ArezReactComponent_ extends ArezReactComponent {

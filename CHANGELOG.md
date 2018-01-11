@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Changed
+* 💥 **\[arez\]** Upgrade Arez to version `0.42`.
+
 ### [v0.34](https://github.com/react4j/react4j/tree/v0.34) (2018-01-10)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.33...v0.34)
 

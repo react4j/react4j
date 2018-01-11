@@ -34,8 +34,8 @@ final class Generator
 
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
 
-  private static final ClassName INJECTIBLE_CLASSNAME =
-    ClassName.get( "arez.annotations", "Injectible" );
+  private static final ClassName AREZ_FEATURE_CLASSNAME =
+    ClassName.get( "arez.annotations", "Feature" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
@@ -78,7 +78,7 @@ final class Generator
           addMember( "deferSchedule", "true" );
       if ( descriptor.needsInjection() )
       {
-        annotation.addMember( "inject", "$T.ENABLE", INJECTIBLE_CLASSNAME );
+        annotation.addMember( "inject", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
       }
       builder.addAnnotation( annotation.build() );
     }
