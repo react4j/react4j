@@ -23,7 +23,7 @@ instantiating the component. Enabling injection will also result in the addition
 annotation being added to the constructor of the enhanced component subclass.
 
 Components that extend `ReactArezComponent` have slightly different mechanisms for implementing this
-functionality and tie into the [dependency injection](https://arez.github.io/components/dependency_injection)
+functionality and tie into the [dependency injection](https://arez.github.io/docs/dependency_injection.html)
 infrastructure provided by Arez. However there should be no practical differences from the perspective of a
 React4j user.
 
