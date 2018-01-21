@@ -42,7 +42,3 @@ React4j is licensed under [Apache License, Version 2.0](LICENSE).
 
 * It should go without saying that this toolkit owes it existence to the wonderful [ReactJS](https://reactjs.org/)
   project.
-
-* The website is derived from the [Edition Template](https://github.com/CloudCannon/edition-jekyll-template)
-  by [Cloud Cannon](https://cloudcannon.com/) that is licensed under the [MIT License](https://github.com/CloudCannon/edition-jekyll-template/blob/master/LICENSE).
-  They also have amazing [tutorial website](https://learn.cloudcannon.com/) for developing jekyll based websites.
