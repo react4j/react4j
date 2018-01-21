@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css?family=Inconsolata');
+
+.docsSliderActive nav.toc .navBreadcrumb {
+  background: rgb(249, 249, 249);
+}
+
+.docsNavContainer {
+  background: rgb(249, 249, 249);
+}
+
+nav.toc .toggleNav {
+  background: rgb(249, 249, 249);
+}
+
+footer.nav-footer {
+  background: $secondaryColor;
+}
+
+.mainContainer .wrapper p,
+.blockElement p,
+.mainContainer .wrapper ul li,
+.mainContainer .wrapper ol li {
+  line-height: 1.5;
+}
+
+code, pre code {
+  font-family: 'Inconsolata', monospace;
+  line-height: normal;
+}
+
+code {
+  background-color: inherit;
+  box-shadow: none;
+}
+
+pre code {
+  font-size: 15px;
+}
+
+.page-toc.page-toc > ul li {
+  background: $primaryColor;
+  color: #fff;
+  padding-top: 5px;
+}
+
+.page-toc a {
+  color: inherit;
+  margin: 10px;
+  line-height: 1.65em;
+}
+
+.page-toc.page-toc ul {
+  padding: 0;
+  margin: 0;
+}
+
+.page-toc.page-toc ul {
+  background: #e0e0e0;
+}
+
+.page-toc.page-toc ul li > ul li {
+  padding-top: 10px;
+  background: #e0e0e0;
+  color: #393939;
+  font-size: 14px;
+  list-style: square;
+  margin-left: 30px;
+}
+.page-toc.page-toc ul li > ul li:last-child {
+  padding-bottom: 5px;
+}
+
+.page-toc ul li {
+  list-style: none;
+  padding-left: 0;
+}

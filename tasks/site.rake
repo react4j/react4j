@@ -36,19 +36,20 @@ end
 
 desc 'Copy the favicons to docs dir'
 task 'site:favicons' do
-  # The favicons were generated via https://www.favicon-generator.org/ but there
-  # is a lot of icons that are generated from tool so we put it in a subdirectory
-  # and copy to the site as part of the build
-  favicons_dir = "#{WORKSPACE_DIR}/docs/_favicons"
+  favicons_dir = "#{WORKSPACE_DIR}/assets/favicons"
   mkdir_p SITE_DIR
-  cp_r Dir["#{favicons_dir}/*"], SITE_DIR
+  cp_r Dir["#{favicons_dir}/*.png"], SITE_DIR
+  cp_r Dir["#{favicons_dir}/*.json"], SITE_DIR
+  cp_r Dir["#{favicons_dir}/*.xml"], SITE_DIR
+  cp_r Dir["#{favicons_dir}/*.ico"], SITE_DIR
 end
 
 desc 'Build the website'
 task 'site:build' do
   rm_rf SITE_DIR
+  sh "yarn build #{SITE_DIR}"
   mkdir_p File.dirname(SITE_DIR)
-  sh "jekyll build --source #{WORKSPACE_DIR}/docs --destination #{SITE_DIR}"
+  mv "#{WORKSPACE_DIR}/website/build/react4j", SITE_DIR
   task('site:javadocs').invoke
   task('site:favicons').invoke
   task('site:examples').invoke
@@ -59,6 +60,18 @@ task 'site:link_check' do
   require 'webrick'
   require 'socket'
 
+  # Copy the root and replace any absolute paths to target url with relative paths
+  # This is required as docusaurus forces qualified paths for some elements (i.e. atom/rss feeds)
+  root = "#{WORKSPACE_DIR}/target/site-link-check"
+  mkdir_p File.dirname(root)
+  cp_r SITE_DIR, root
+
+  Dir["#{root}/**/*.html"].each do |filename|
+    content = IO.read(filename)
+    content = content.gsub('https://react4j.github.io', '')
+    IO.write(filename, content)
+  end
+
   # Get a free port and web address
   socket = Socket.new(:INET, :STREAM, 0)
   socket.bind(Addrinfo.tcp('127.0.0.1', 0))
@@ -66,12 +79,12 @@ task 'site:link_check' do
   port = socket.local_address.ip_port
   socket.close
 
-  webserver = WEBrick::HTTPServer.new(:Port => port, :DocumentRoot => SITE_DIR)
+  webserver = WEBrick::HTTPServer.new(:Port => port, :DocumentRoot => root)
   Thread.new {webserver.start}
 
   trap('INT') {webserver.shutdown}
   begin
-    sh "yarn blc --ordered --recursive  --filter-level 3 http://#{address}:#{port} --exclude https://github.com/react4j/react4j/compare/ --exclude https://medium.freecodecamp.org/ --exclude https://docs.oracle.com/javase/8/docs/api"
+    sh "yarn blc --ordered --recursive --filter-level 3 http://#{address}:#{port} --exclude https://github.com/react4j/react4j/compare/ --exclude https://medium.freecodecamp.org/ --exclude https://docs.oracle.com/javase/8/docs/api"
   ensure
     webserver.shutdown
   end
@@ -79,8 +92,7 @@ end
 
 desc 'Serve the website for developing documentation'
 task 'site:serve' do
-  mkdir_p File.dirname(SITE_DIR)
-  sh "jekyll serve --source #{WORKSPACE_DIR}/docs --destination #{SITE_DIR}"
+  sh 'yarn start'
 end
 
 desc 'Build the website'
@@ -97,7 +109,7 @@ task 'site:deploy' => ['site:build'] do
       origin_url = origin_url.gsub('https://github.com/', 'git@github.com:')
     end
 
-    local_dir = "#{WORKSPACE_DIR}/targOnDeactivateet/remote_site"
+    local_dir = "#{WORKSPACE_DIR}/target/remote_site"
     rm_rf local_dir
 
     sh "git clone -b master #{origin_url} #{local_dir}"

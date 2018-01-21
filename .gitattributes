@@ -1,5 +1,6 @@
 # DO NOT EDIT: File is auto-generated
 * -text
+*.css text
 *.html text
 *.ico binary
 *.java text
@@ -9,8 +10,6 @@
 *.png binary
 *.rake text
 *.rb text
-*.scss text
-*.txt text
 *.xml text
 *.yaml text
 *.yml text

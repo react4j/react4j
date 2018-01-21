@@ -69,11 +69,12 @@ HEADER
 
       end_index = changelog.index("### [v#{ENV['PREVIOUS_PRODUCT_VERSION']}]", start_index)
 
-      filename = "docs/_posts/#{ENV['RELEASE_DATE']}-version-#{ENV['PRODUCT_VERSION']}-release.md"
+      filename = "website/blog/#{ENV['RELEASE_DATE']}-version-#{ENV['PRODUCT_VERSION']}-release.md"
       IO.write(filename, <<CONTENT)
 ---
 title: React4j #{ENV['PRODUCT_VERSION']} released
-type: minor
+author: React4j Project
+authorURL: https://github.com/react4j
 ---
 
 [Full Changelog](https://github.com/react4j/react4j/compare/v#{ENV['PREVIOUS_PRODUCT_VERSION']}...v#{ENV['PRODUCT_VERSION']})

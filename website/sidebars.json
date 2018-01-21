@@ -1,0 +1,13 @@
+{
+  "docs": {
+    "About": [
+      "overview",
+      "arez",
+      "compared_to_react",
+      "dependency_injection"
+    ],
+    "Project Documentation": [
+      "faq"
+    ]
+  }
+}

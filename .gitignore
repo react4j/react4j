@@ -8,5 +8,8 @@
 /tmp
 /generated
 /*/generated
-/.sass-cache
 /node_modules
+/website/translated_docs
+/website/build/
+/website/node_modules
+/website/i18n
