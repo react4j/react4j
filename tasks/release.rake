@@ -22,7 +22,7 @@ task 'perform_release' do
   in_dir(WORKSPACE_DIR) do
     stage('ExtractVersion', 'Extract the last version from CHANGELOG.md and derive next version unless specified', :always_run => true) do
       changelog = IO.read('CHANGELOG.md')
-      ENV['PREVIOUS_PRODUCT_VERSION'] ||= changelog[/^### \[v(\d+\.\d+)\]/,1]
+      ENV['PREVIOUS_PRODUCT_VERSION'] ||= changelog[/^### \[v(\d+\.\d+)\]/, 1]
 
       next_version = ENV['PRODUCT_VERSION']
       unless next_version
@@ -32,7 +32,7 @@ task 'perform_release' do
       end
 
       # Also initialize release date if required
-      ENV['RELEASE_DATE'] ||=  Time.now.strftime('%Y-%m-%d')
+      ENV['RELEASE_DATE'] ||= Time.now.strftime('%Y-%m-%d')
     end
 
     stage('ZapWhite', 'Ensure that zapwhite produces no changes') do
@@ -50,7 +50,7 @@ task 'perform_release' do
 
     stage('PatchChangelog', 'Patch the changelog to update from previous release') do
       changelog = IO.read('CHANGELOG.md')
-      changelog = changelog.gsub("### Unreleased\n",<<HEADER)
+      changelog = changelog.gsub("### Unreleased\n", <<HEADER)
 ### [v#{ENV['PRODUCT_VERSION']}](https://github.com/react4j/react4j/tree/v#{ENV['PRODUCT_VERSION']}) (#{ENV['RELEASE_DATE']})
 [Full Changelog](https://github.com/react4j/react4j/compare/v#{ENV['PREVIOUS_PRODUCT_VERSION']}...v#{ENV['PRODUCT_VERSION']})
 HEADER
@@ -101,7 +101,7 @@ CONTENT
 
     stage('PatchChangelogPostRelease', 'Patch the changelog post release to prepare for next development iteration') do
       changelog = IO.read('CHANGELOG.md')
-      changelog = changelog.gsub("# Change Log\n",<<HEADER)
+      changelog = changelog.gsub("# Change Log\n", <<HEADER)
 # Change Log
 
 ### Unreleased
