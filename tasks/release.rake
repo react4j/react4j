@@ -117,6 +117,36 @@ HEADER
       sh 'git push'
       sh 'git push --tags'
     end
+
+    stage('GithubRelease', 'Create a Release on GitHub') do
+      changelog = IO.read('CHANGELOG.md')
+      start = changelog.index("### [v#{ENV['PRODUCT_VERSION']}]")
+      raise "Unable to locate version #{ENV['PRODUCT_VERSION']} in change log" if -1 == start
+      start = changelog.index("\n", start)
+      start = changelog.index("\n", start + 1)
+
+      end_index = changelog.index('### [v', start)
+
+      changes = changelog[start, end_index - start]
+
+      changes = changes.strip
+
+      tag = "v#{ENV['PRODUCT_VERSION']}"
+
+      require 'octokit'
+
+      client = Octokit::Client.new(:netrc => true, :auto_paginate => true)
+      client.login
+      client.create_release('react4j/react4j', tag, :name => tag, :body => changes, :draft => false, :prerelease => true)
+
+      candidates = client.list_milestones('react4j/react4j').select {|m| m[:title].to_s == tag}
+      unless candidates.empty?
+        milestone = candidates[0]
+        unless milestone[:state] == 'closed'
+          client.update_milestone('react4j/react4j', milestone[:number], :state => 'closed')
+        end
+      end
+    end
   end
 
   if ENV['STAGE']
