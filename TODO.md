@@ -31,6 +31,9 @@
   - https://github.com/clintonwoo/hackernews-react-graphql
   - https://github.com/reasonml-community/reason-react-hacker-news
 
+* Port a medium clone. a.k.a. The "realworld example app".
+  - https://github.com/gothinkster/react-mobx-realworld-example-app
+
 ### Medium Priorities
 
 * Figure out a way to define dom factories in java that are optimized away in production such that
