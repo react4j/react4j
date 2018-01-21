@@ -105,7 +105,7 @@ than the cost of determining which parts of the application to optimize).
 Arez and React4j is such a powerful combination that many of the best practices that you use when building a
 React4j application no longer make sense after you integrate Arez. However this section will try to give some
 helpful suggestions that simplify your development experience. You should also checkout the Arez
-[FAQ Section](/docs/faq.html#arez-integration).
+[FAQ Section](faq.html#arez-integration).
 
 ### UI state should be modelled with Arez Observable State
 

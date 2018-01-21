@@ -110,4 +110,4 @@ that follows. In some cases this is more verbose than the equivalent JSX and som
 ### Stateless Function Components
 
 Stateless function components or SFCs are often used in React but not so much in React4j. The reasoning for this is
-in the answer to the FAQ question ["Where is the equivalent of React's stateless function components?"](/faq.html#where-is-the-equivalent-of-reacts-stateless-function-components)
+in the answer to the FAQ question ["Where is the equivalent of React's stateless function components?"](faq.html#where-is-the-equivalent-of-reacts-stateless-function-components)
