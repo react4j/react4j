@@ -2,6 +2,8 @@
 
 ### High Priority
 
+* Remove `componentWillMount` as is is equivalent to `componentDidConstruct` and is called after CDC
+
 * Components should declare whether they support 0,1 or many children and the associated builder will
   be generated accordingly. Also validated?
 
