@@ -153,3 +153,7 @@ Copying styles from source document -
   - how to write a provider
   - how to write a consumer
   - pitfalls of a consumer (link to React docs? - https://reactjs.org/docs/context.html)
+
+* Create a jsbin-alike to display GWT code
+  - https://github.com/jsbin/jsbin
+  - http://jsbin.com/?html,css,js,console,output
