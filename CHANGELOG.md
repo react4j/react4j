@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.36](https://github.com/react4j/react4j/tree/v0.36) (2018-01-25)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.35...v0.36)
 
 #### Changed
 * Move from [Jekyll](https://jekyllrb.com/) to [Docusaurus](https://docusaurus.io/) to generate website.
