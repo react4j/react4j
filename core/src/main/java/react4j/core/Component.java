@@ -279,19 +279,23 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
 
   /**
    * Wrapper method for constructing the component.
-   * By default it just delegates to the {@link #componentDidConstruct()} method.
+   * By default it just delegates to the {@link #postConstruct()} method.
    * This method exists to give middleware a mechanism to hook into component construction lifecycle.
    */
-  protected void performComponentDidConstruct()
+  protected void performPostConstruct()
   {
-    componentDidConstruct();
+    postConstruct();
   }
 
   /**
-   * This method is invoked after the component is bound to a native react component.
-   * This is a good place to perform initialization.
+   * This method is invoked after the component is constructed and bound to a native react component.
+   * This is a good place to perform initialization. It is called before {@link #render()}, therefore
+   * setting state in this method will not trigger a re-rendering. This replaces the
+   * <a href="https://reactjs.org/docs/react-component.html#componentwillmount">componentWillMount</a>
+   * lifecycle method from react as well as the code that appears in constructors in native React ES6
+   * components.
    */
-  protected void componentDidConstruct()
+  protected void postConstruct()
   {
   }
 
@@ -314,15 +318,6 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * @param prevState the state before the component was updated.
    */
   protected void componentDidUpdate( @Nullable final P prevProps, @Nullable final S prevState )
-  {
-  }
-
-  /**
-   * This method is invoked immediately before mounting occurs.
-   * It is called before {@link #render()}, therefore setting state in this method will not trigger a re-rendering.
-   * See the <a href="https://reactjs.org/docs/react-component.html#componentwillmount">React Component documentation</a> for more details.
-   */
-  protected void componentWillMount()
   {
   }
 

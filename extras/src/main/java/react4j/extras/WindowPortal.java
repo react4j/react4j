@@ -84,7 +84,7 @@ public abstract class WindowPortal
   private Element _element;
 
   @Override
-  protected void componentWillMount()
+  protected void postConstruct()
   {
     final Props props = props();
     _externalWindow = DomGlobal.window.open( "",

@@ -14,7 +14,7 @@ enum ComponentPhase
    * <ul>
    * <li>Constructed.</li>
    * <li>Bound to a native react component via {@link Component#bindComponent(NativeComponent)}.</li>
-   * <li>{@link Component#componentDidConstruct()} is invoked.</li>
+   * <li>{@link Component#postConstruct()} is invoked.</li>
    * </ul>
    */
   INITIALIZING,
@@ -22,7 +22,6 @@ enum ComponentPhase
    * The component is rendered initially and mounted on the dom.
    * The component goes through the steps:
    * <ul>
-   * <li>{@link Component#componentWillMount()} is invoked.</li>
    * <li>{@link Component#render()} is invoked.</li>
    * <li>{@link Component#componentDidMount()} is invoked.</li>
    * </ul>

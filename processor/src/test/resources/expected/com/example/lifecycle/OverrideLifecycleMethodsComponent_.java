@@ -52,8 +52,6 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
 
     void componentDidUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState);
 
-    void componentWillMount();
-
     void componentWillReceiveProps(@Nonnull BaseProps nextProps, @Nonnull BaseContext nextContext);
 
     void componentWillUnmount();
@@ -86,11 +84,6 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     public void componentDidUpdate(@Nonnull final BaseProps nextProps,
         @Nonnull final BaseState nextState) {
       performComponentDidUpdate(nextProps,nextState);
-    }
-
-    @Override
-    public void componentWillMount() {
-      performComponentWillMount();
     }
 
     @Override

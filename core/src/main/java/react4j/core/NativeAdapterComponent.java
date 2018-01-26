@@ -39,7 +39,7 @@ public abstract class NativeAdapterComponent<
     _component = createComponent();
     _component.bindComponent( this );
 
-    performComponentDidConstruct( props, context );
+    performPostConstruct();
   }
 
   /**
@@ -51,21 +51,17 @@ public abstract class NativeAdapterComponent<
 
   /**
    * Initialize the target component.
-   *
-   * @param props   the properties that the component was constructed with.
-   * @param context the context that the component was constructed with.
    */
-  private void performComponentDidConstruct( @Nullable final P props,
-                                             @Nullable final C context )
+  private void performPostConstruct()
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_DID_CONSTRUCT );
+      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_POST_CONSTRUCT );
       _component.setPhase( ComponentPhase.INITIALIZING );
     }
     try
     {
-      _component.performComponentDidConstruct();
+      _component.performPostConstruct();
     }
     finally
     {
@@ -126,32 +122,6 @@ public abstract class NativeAdapterComponent<
       {
         _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
         _component.setPhase( ComponentPhase.UPDATING );
-      }
-    }
-  }
-
-  /**
-   * Call componentWillMount on the target component.
-   * It is expected that the subclass will implement a public method componentWillMount() that
-   * delegates to this method to perform the work.
-   *
-   * @see Component#componentWillMount()
-   */
-  protected final void performComponentWillMount()
-  {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_WILL_MOUNT );
-    }
-    try
-    {
-      _component.componentWillMount();
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
   }

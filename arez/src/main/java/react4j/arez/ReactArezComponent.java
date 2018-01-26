@@ -96,9 +96,9 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
    * After construction of the object. Schedule any autoruns attached to component.
    */
   @Override
-  protected final void performComponentDidConstruct()
+  protected final void performPostConstruct()
   {
-    super.performComponentDidConstruct();
+    super.performPostConstruct();
     triggerScheduler();
   }
 

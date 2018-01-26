@@ -8,7 +8,7 @@ javascript so there are some features thar just don't make sense to implement in
 environment. There are also some features of React that exist for legacy reasons so are not
 implemented in React4j.
 
-### The constructor versus componentDidConstruct
+### The constructor versus postConstruct
 
 In React, components perform initialization in their constructor except for "Stateless Function Components" (SFCs)
 which do not need initialization as they are stateless. However, we found that in many react applications there are
@@ -17,7 +17,15 @@ is not used in React4j). As such we found it to be unnecessary boilerplate and c
 
 In React4j, we decided that components need not define a constructor and could instead make use of the default
 constructor automatically provided by the runtime. If you wanted to perform per-component initialization you can
-override the lifecycle method `componentDidConstruct`. In practice we found it was rarely used.
+override the lifecycle method `postConstruct`. In practice we found it was rarely used.
+
+### Removal of componentWillMount lifecycle method
+
+In React, the `componentWillMount` method is invoked after a component has been constructed. It is invoked
+immediately after the ES6 constructor completes. It is however considered a legacy artifact that was initially
+introduced before the ES6 component model was available and is no longer useful for ES6 based components.
+The equivalent functionality is provided by `postConstruct` lifecycle method in React4j and `componentWillMount`
+has been removed from the React4j API.
 
 ### setState versus scheduleStateUpdate
 

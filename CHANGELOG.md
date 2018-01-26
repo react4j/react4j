@@ -14,6 +14,9 @@
   that Arez components were at least able to be abstract.
 * 💥 **\[core\]** Move `react4j.annotations.ReactComponent.Feature` from being a static inner class to top-level
   class `react4j.annotations.Feature`.
+* 💥 **\[core\]** The `componentDidConstruct()` and `componentWillMount()` lifecycle methods on
+  `react4j.core.Component` have been merged into a `postConstruct()` lifecycle method that exists purely within
+  the java component model without ever being invoked from the native react framework.
 
 ### [v0.36](https://github.com/react4j/react4j/tree/v0.36) (2018-01-25)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.35...v0.36)

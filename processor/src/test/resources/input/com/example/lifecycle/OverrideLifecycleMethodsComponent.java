@@ -17,7 +17,7 @@ abstract class OverrideLifecycleMethodsComponent
 {
   // This lifecycle method should not have adapter synthesized.
   @Override
-  protected void componentDidConstruct()
+  protected void postConstruct()
   {
   }
 
@@ -29,11 +29,6 @@ abstract class OverrideLifecycleMethodsComponent
 
   @Override
   protected final void componentDidUpdate( @Nullable final BaseProps nextProps, @Nullable final BaseState nextState )
-  {
-  }
-
-  @Override
-  protected void componentWillMount()
   {
   }
 
