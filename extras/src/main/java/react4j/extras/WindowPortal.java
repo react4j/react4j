@@ -30,7 +30,7 @@ import static react4j.extras.WindowPortal_.*;
  */
 @ReactComponent
 @Unsupported
-public class WindowPortal
+public abstract class WindowPortal
   extends Component<WindowPortal.Props, BaseState, BaseContext>
 {
   @FunctionalInterface
