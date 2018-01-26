@@ -10,7 +10,6 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 import org.realityforge.anodoc.Unsupported;
 import react4j.annotations.ReactComponent;
 import react4j.core.BaseContext;
