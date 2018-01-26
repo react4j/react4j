@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[docs\]** Fixed documentation describing the dependency injection `Feature` enum values.
+
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.44`.
 * 💥 **\[processor\]** React4j components must be abstract and must not be concrete. This is the inverse of the
