@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.37](https://github.com/react4j/react4j/tree/v0.37) (2018-01-26)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.36...v0.37)
 
 ##### Fixed
 * **\[docs\]** Fixed documentation describing the dependency injection `Feature` enum values.
