@@ -12,6 +12,8 @@
   components directly as it is expected that only the enhanced subclass is instantiated. This change was also
   mandated by the move to a later version of Arez that requires certain methods to be abstract and thus required
   that Arez components were at least able to be abstract.
+* 💥 **\[core\]** Move `react4j.annotations.ReactComponent.Feature` from being a static inner class to top-level
+  class `react4j.annotations.Feature`.
 
 ### [v0.36](https://github.com/react4j/react4j/tree/v0.36) (2018-01-25)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.35...v0.36)

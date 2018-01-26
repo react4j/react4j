@@ -15,14 +15,6 @@ import javax.annotation.Nonnull;
 public @interface ReactComponent
 {
   /**
-   * Enum to control when injectible elements should be present.
-   */
-  enum Feature
-  {
-    ENABLE, DISABLE, AUTODETECT
-  }
-
-  /**
    * Return the name of the component.
    * The value defaults to the simple name name of the class. If the value is specified, the
    * value must conform to the requirements of a java identifier. It should also be unique
