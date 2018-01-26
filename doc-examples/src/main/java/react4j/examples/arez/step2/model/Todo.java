@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 
 @Repository( extensions = { TodoRepositoryExtension.class } )
 @ArezComponent
-public class Todo
+public abstract class Todo
 {
   @Nonnull
   private String _id;

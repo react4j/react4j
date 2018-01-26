@@ -20,7 +20,7 @@ import react4j.core.ReactNode;
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdateComponent {
+abstract class OverridingComponentDidUpdateComponent_ extends OverridingComponentDidUpdateComponent {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull

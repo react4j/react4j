@@ -12,7 +12,7 @@ import react4j.core.ReactErrorInfo;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class OverrideLifecycleMethodsComponent
+abstract class OverrideLifecycleMethodsComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   // This lifecycle method should not have adapter synthesized.

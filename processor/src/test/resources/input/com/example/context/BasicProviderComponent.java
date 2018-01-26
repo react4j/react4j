@@ -12,7 +12,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class BasicProviderComponent
+abstract class BasicProviderComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )

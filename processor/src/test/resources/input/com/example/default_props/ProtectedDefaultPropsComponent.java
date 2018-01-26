@@ -9,7 +9,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class ProtectedDefaultPropsComponent
+abstract class ProtectedDefaultPropsComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Nonnull

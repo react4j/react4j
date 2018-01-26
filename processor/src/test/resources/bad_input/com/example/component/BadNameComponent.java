@@ -8,7 +8,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent( name = "-abc" )
-class BadNameComponent
+abstract class BadNameComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Override

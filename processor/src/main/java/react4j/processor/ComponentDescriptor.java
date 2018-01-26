@@ -79,13 +79,13 @@ final class ComponentDescriptor
     {
       throw new ReactProcessorException( "@ReactComponent target must be a class", element );
     }
-    else if ( element.getModifiers().contains( Modifier.ABSTRACT ) )
-    {
-      throw new ReactProcessorException( "@ReactComponent target must not be abstract", element );
-    }
     else if ( element.getModifiers().contains( Modifier.FINAL ) )
     {
       throw new ReactProcessorException( "@ReactComponent target must not be final", element );
+    }
+    else if ( !element.getModifiers().contains( Modifier.ABSTRACT ) )
+    {
+      throw new ReactProcessorException( "@ReactComponent target must be abstract", element );
     }
     else if ( NestingKind.TOP_LEVEL != element.getNestingKind() &&
               !element.getModifiers().contains( Modifier.STATIC ) )

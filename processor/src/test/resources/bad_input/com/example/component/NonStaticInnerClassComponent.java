@@ -10,7 +10,7 @@ import react4j.core.ReactNode;
 final class NonStaticInnerClassComponent
 {
   @ReactComponent
-  class MyReactClassComponent
+  abstract class MyReactClassComponent
     extends Component<BaseProps, BaseState, BaseContext>
   {
     @Override

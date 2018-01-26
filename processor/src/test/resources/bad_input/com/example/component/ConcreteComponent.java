@@ -1,6 +1,5 @@
-package com.example.inject;
+package com.example.component;
 
-import javax.inject.Inject;
 import react4j.annotations.ReactComponent;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
@@ -8,13 +7,10 @@ import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
 
-@ReactComponent( dagger = ReactComponent.Feature.DISABLE )
-abstract class DaggerFalseComponent
+@ReactComponent
+class ConcreteComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
-  @Inject
-  String someParam;
-
   @Override
   protected ReactNode render()
   {

@@ -11,7 +11,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class PropsSubclassDefaultPropsComponent
+abstract class PropsSubclassDefaultPropsComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )

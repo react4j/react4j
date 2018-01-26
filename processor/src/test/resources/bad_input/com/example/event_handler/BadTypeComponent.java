@@ -10,7 +10,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class BadTypeComponent
+abstract class BadTypeComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @JsFunction

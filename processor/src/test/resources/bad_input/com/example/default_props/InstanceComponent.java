@@ -9,7 +9,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class InstanceComponent
+abstract class InstanceComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Nonnull

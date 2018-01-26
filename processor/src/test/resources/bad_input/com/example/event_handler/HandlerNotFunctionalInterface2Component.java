@@ -10,7 +10,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class HandlerNotFunctionalInterface2Component
+abstract class HandlerNotFunctionalInterface2Component
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @JsFunction

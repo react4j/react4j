@@ -5,7 +5,7 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
 
 @ArezComponent
-public class EmployeeService
+public abstract class EmployeeService
 {
   private boolean _loading;
   private String _employeeData;

@@ -9,7 +9,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class TooManyParamsComponent
+abstract class TooManyParamsComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Override

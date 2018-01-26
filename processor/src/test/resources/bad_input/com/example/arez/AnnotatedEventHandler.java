@@ -11,7 +11,7 @@ import react4j.core.BaseState;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class AnnotatedEventHandler
+abstract class AnnotatedEventHandler
   extends ReactArezComponent<BaseProps, BaseContext>
 {
   @Nullable

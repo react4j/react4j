@@ -9,7 +9,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class CustomNameComponent
+abstract class CustomNameComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Override

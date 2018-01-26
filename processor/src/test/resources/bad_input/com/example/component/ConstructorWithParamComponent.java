@@ -8,7 +8,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class ConstructorWithParamComponent
+abstract class ConstructorWithParamComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   public ConstructorWithParamComponent( final String ignored )

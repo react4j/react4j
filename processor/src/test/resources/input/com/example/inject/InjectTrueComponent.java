@@ -9,7 +9,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent( inject = ReactComponent.Feature.ENABLE )
-class InjectTrueComponent
+abstract class InjectTrueComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Inject

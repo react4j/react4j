@@ -10,7 +10,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class BasicContextComponent
+abstract class BasicContextComponent
   extends Component<BaseProps, BaseState, BasicContextComponent.Context>
 {
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )

@@ -4,7 +4,7 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Autorun;
 
 @ArezComponent
-public class EmployeeDataLoader
+public abstract class EmployeeDataLoader
 {
   private final RemoteServiceAPI _remote;
   private final EmployeeService _service;

@@ -10,7 +10,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class CustomHandlerMultipleArgsComponent
+abstract class CustomHandlerMultipleArgsComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @JsFunction

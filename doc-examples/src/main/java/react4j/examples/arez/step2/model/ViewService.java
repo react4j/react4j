@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 
 @ArezComponent
 @Singleton
-public class ViewService
+public abstract class ViewService
 {
   @Nonnull
   private FilterMode _filterMode = FilterMode.ALL;

@@ -9,7 +9,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent( inject = ReactComponent.Feature.DISABLE )
-class InjectFalseComponent
+abstract class InjectFalseComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Inject

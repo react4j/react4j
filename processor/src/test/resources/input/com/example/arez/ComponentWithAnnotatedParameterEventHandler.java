@@ -11,7 +11,7 @@ import react4j.core.BaseProps;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class ComponentWithAnnotatedParameterEventHandler
+abstract class ComponentWithAnnotatedParameterEventHandler
   extends ReactArezComponent<BaseProps, BaseContext>
 {
   @JsFunction

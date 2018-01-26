@@ -9,7 +9,7 @@ import react4j.core.BaseProps;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class AutorunArezReactComponent
+abstract class AutorunArezReactComponent
   extends ReactArezComponent<BaseProps, BaseContext>
 {
   @Autorun

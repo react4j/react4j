@@ -9,7 +9,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class MethodInjectReactComponent
+abstract class MethodInjectReactComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Inject

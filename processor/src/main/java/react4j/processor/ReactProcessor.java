@@ -153,7 +153,24 @@ public final class ReactProcessor
     determineEventHandlers( descriptor );
     determineDefaultPropsMethod( descriptor );
 
+    verifyNoUnexpectedAbstractMethod( descriptor );
+
     return descriptor;
+  }
+
+  private void verifyNoUnexpectedAbstractMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    if ( !descriptor.isArezComponent() )
+    {
+      final ExecutableElement abstractMethod =
+        ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
+          .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) ).findAny().orElse( null );
+      if ( null != abstractMethod )
+      {
+        throw new ReactProcessorException( "@ReactComponent target has an unexpected abstract method",
+                                           abstractMethod );
+      }
+    }
   }
 
   private void determineDefaultPropsMethod( @Nonnull final ComponentDescriptor descriptor )

@@ -71,10 +71,7 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
    * @return the Observable used to make `props` observable.
    */
   @ObservableRef
-  protected arez.Observable<P> getPropsObservable()
-  {
-    throw new IllegalStateException();
-  }
+  protected abstract arez.Observable<P> getPropsObservable();
 
   /**
    * Action that invoked when props changes.
@@ -141,10 +138,7 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
    */
   @ContextRef
   @Nonnull
-  protected ArezContext getContext()
-  {
-    throw new IllegalStateException();
-  }
+  protected abstract ArezContext getContext();
 
   /**
    * Return the unique identifier of component according to Arez.
@@ -165,10 +159,7 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
    */
   @ObserverRef
   @Nonnull
-  protected Observer getRenderObserver()
-  {
-    throw new IllegalStateException();
-  }
+  protected abstract Observer getRenderObserver();
 
   /**
    * {@inheritDoc}

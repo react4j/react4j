@@ -2,6 +2,14 @@
 
 ### Unreleased
 
+#### Changed
+* 💥 **\[arez\]** Upgrade Arez to version `0.44`.
+* 💥 **\[processor\]** React4j components must be abstract and must not be concrete. This is the inverse of the
+  requirements in version `v0.36` and earlier. The reason is that it never makes sense to instantiate the React4j
+  components directly as it is expected that only the enhanced subclass is instantiated. This change was also
+  mandated by the move to a later version of Arez that requires certain methods to be abstract and thus required
+  that Arez components were at least able to be abstract.
+
 ### [v0.36](https://github.com/react4j/react4j/tree/v0.36) (2018-01-25)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.35...v0.36)
 

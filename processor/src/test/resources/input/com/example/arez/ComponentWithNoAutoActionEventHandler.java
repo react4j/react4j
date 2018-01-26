@@ -10,7 +10,7 @@ import react4j.core.BaseProps;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class ComponentWithNoAutoActionEventHandler
+abstract class ComponentWithNoAutoActionEventHandler
   extends ReactArezComponent<BaseProps, BaseContext>
 {
   @Nullable

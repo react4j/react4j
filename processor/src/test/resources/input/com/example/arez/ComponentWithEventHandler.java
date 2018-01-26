@@ -10,7 +10,7 @@ import react4j.core.BaseProps;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class ComponentWithEventHandler
+abstract class ComponentWithEventHandler
   extends ReactArezComponent<BaseProps, BaseContext>
 {
   @JsFunction

@@ -18,7 +18,7 @@ import static react4j.dom.DOM.*;
 import static react4j.examples.arez.step2.Footer_.*;
 
 @ReactComponent
-class Footer
+abstract class Footer
   extends ReactArezComponent<BaseProps, BaseContext>
 {
   @EventHandler( MouseEventHandler.class )

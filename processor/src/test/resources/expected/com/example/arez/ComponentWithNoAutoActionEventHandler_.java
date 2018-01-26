@@ -23,7 +23,7 @@ import react4j.core.ReactNode;
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEventHandler {
+abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEventHandler {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull

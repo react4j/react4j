@@ -81,6 +81,7 @@ final class Generator
         annotation.addMember( "inject", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
       }
       builder.addAnnotation( annotation.build() );
+      builder.addModifiers( Modifier.ABSTRACT );
     }
 
     ProcessorUtil.copyAccessModifiers( element, builder );

@@ -24,7 +24,7 @@ import react4j.core.ReactNode;
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-class ComponentWithEventHandler_ extends ComponentWithEventHandler {
+abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull

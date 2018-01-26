@@ -9,7 +9,7 @@ import react4j.core.BaseProps;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class ArezReactComponent
+abstract class ArezReactComponent
   extends ReactArezComponent<BaseProps, BaseContext>
 {
   @Inject

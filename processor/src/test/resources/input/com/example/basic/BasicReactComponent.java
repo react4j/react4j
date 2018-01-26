@@ -8,7 +8,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class BasicReactComponent
+abstract class BasicReactComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Override

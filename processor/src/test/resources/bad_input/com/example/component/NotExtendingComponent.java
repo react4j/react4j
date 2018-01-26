@@ -3,6 +3,6 @@ package com.example.component;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-class NotExtendingComponent
+abstract class NotExtendingComponent
 {
 }

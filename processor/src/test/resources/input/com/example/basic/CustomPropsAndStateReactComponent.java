@@ -10,10 +10,9 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class CustomPropsAndStateReactComponent
+abstract class CustomPropsAndStateReactComponent
   extends Component<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, BaseContext>
 {
-
   @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
   public static class Props
     extends BaseProps

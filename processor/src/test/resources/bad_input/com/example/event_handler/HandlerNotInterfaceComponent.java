@@ -9,7 +9,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class HandlerNotInterfaceComponent
+abstract class HandlerNotInterfaceComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   static abstract class Foo

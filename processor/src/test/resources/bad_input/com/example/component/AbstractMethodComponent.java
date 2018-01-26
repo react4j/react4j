@@ -8,7 +8,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class AbstractComponent
+abstract class AbstractMethodComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Override
@@ -16,4 +16,6 @@ abstract class AbstractComponent
   {
     return null;
   }
+
+  protected abstract void foo();
 }

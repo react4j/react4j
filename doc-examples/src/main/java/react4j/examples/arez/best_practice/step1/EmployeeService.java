@@ -5,14 +5,14 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
 
 @ArezComponent
-public class EmployeeService
+public abstract class EmployeeService
 {
   private final RemoteServiceAPI _remote;
   private boolean _loading;
   private String _employeeData;
   private String _errorMessage;
 
-  public EmployeeService( final RemoteServiceAPI remote )
+  EmployeeService( final RemoteServiceAPI remote )
   {
     _remote = remote;
   }

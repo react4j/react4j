@@ -12,7 +12,7 @@ public class NestedNestedReactComponent
   public static class DeepNesting
   {
     @ReactComponent
-    static class BasicReactComponent
+    static abstract class BasicReactComponent
       extends Component<BaseProps, BaseState, BaseContext>
     {
       @Override

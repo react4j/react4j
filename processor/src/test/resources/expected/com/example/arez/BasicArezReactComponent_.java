@@ -20,7 +20,7 @@ import react4j.core.ReactNode;
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-class BasicArezReactComponent_ extends BasicArezReactComponent {
+abstract class BasicArezReactComponent_ extends BasicArezReactComponent {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull

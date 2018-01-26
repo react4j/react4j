@@ -10,7 +10,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class DuplicateNameComponent2
+abstract class DuplicateNameComponent2
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @JsFunction

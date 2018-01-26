@@ -10,7 +10,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class OverrideComponent
+abstract class OverrideComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @JsFunction

@@ -10,7 +10,7 @@ import react4j.core.ReactNode;
 public class NestedReactComponent
 {
   @ReactComponent
-  static class BasicReactComponent
+  static abstract class BasicReactComponent
     extends Component<BaseProps, BaseState, BaseContext>
   {
     @Override

@@ -9,7 +9,7 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent( inject = ReactComponent.Feature.DISABLE, dagger = ReactComponent.Feature.ENABLE )
-class InjectFalseDaggerTrueComponent
+abstract class InjectFalseDaggerTrueComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
   @Inject

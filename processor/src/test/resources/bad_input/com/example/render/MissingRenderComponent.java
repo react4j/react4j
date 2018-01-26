@@ -7,7 +7,7 @@ import react4j.core.BaseState;
 import react4j.core.Component;
 
 @ReactComponent
-class MissingRenderComponent
+abstract class MissingRenderComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
 }

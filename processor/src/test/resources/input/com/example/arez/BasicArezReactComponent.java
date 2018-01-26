@@ -8,7 +8,7 @@ import react4j.core.BaseProps;
 import react4j.core.ReactNode;
 
 @ReactComponent
-class BasicArezReactComponent
+abstract class BasicArezReactComponent
   extends ReactArezComponent<BaseProps, BaseContext>
 {
   @Nullable

@@ -23,7 +23,7 @@ import react4j.core.ReactNode;
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotatedParameterEventHandler {
+abstract class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotatedParameterEventHandler {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull

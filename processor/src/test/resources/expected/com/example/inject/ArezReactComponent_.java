@@ -24,7 +24,7 @@ import react4j.core.ReactNode;
     inject = Feature.ENABLE
 )
 @Generated("react4j.processor.ReactProcessor")
-class ArezReactComponent_ extends ArezReactComponent {
+abstract class ArezReactComponent_ extends ArezReactComponent {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   private static Provider<ArezReactComponent> c_provider;
