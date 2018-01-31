@@ -90,6 +90,7 @@ define 'react4j' do
                  :elemental2_promise,
                  :arez_core,
                  :arez_annotations,
+                 :arez_component,
                  :arez_extras,
                  :arez_browser_extras
 
