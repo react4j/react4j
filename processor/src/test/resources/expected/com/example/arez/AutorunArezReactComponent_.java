@@ -66,7 +66,7 @@ abstract class AutorunArezReactComponent_ extends AutorunArezReactComponent {
         @Nonnull BaseContext arg2);
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, AutorunArezReactComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, AutorunArezReactComponent> implements Lifecycle {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

@@ -60,7 +60,7 @@ class CustomHandlerButParametersIgnoredComponent_ extends CustomHandlerButParame
     return handler;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, CustomHandlerButParametersIgnoredComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, CustomHandlerButParametersIgnoredComponent> {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

@@ -40,7 +40,7 @@ class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactCompone
     return componentConstructor;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, BaseContext, CustomPropsAndStateReactComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsAndStateReactComponent.Props, CustomPropsAndStateReactComponent.State, BaseContext, CustomPropsAndStateReactComponent> {
     NativeReactComponent(@Nullable final CustomPropsAndStateReactComponent.Props props,
         @Nullable final BaseContext context) {
       super( props, context );

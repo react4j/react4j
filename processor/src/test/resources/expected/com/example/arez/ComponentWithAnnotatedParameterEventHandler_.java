@@ -113,7 +113,7 @@ abstract class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWit
         @Nonnull BaseContext arg2);
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ComponentWithAnnotatedParameterEventHandler> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ComponentWithAnnotatedParameterEventHandler> implements Lifecycle {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

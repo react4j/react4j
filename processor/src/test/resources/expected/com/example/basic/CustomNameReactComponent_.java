@@ -41,7 +41,7 @@ class CustomNameReactComponent_ extends CustomNameReactComponent {
     return componentConstructor;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, CustomNameReactComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, CustomNameReactComponent> {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

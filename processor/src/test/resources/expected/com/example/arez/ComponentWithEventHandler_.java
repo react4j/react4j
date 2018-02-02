@@ -113,7 +113,7 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
         @Nonnull BaseContext arg2);
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ComponentWithEventHandler> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ComponentWithEventHandler> implements Lifecycle {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

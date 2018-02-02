@@ -41,7 +41,7 @@ class RenderFromParentComponent_ extends RenderFromParentComponent {
     return componentConstructor;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, RenderFromParentComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, RenderFromParentComponent> {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

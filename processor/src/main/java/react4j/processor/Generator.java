@@ -456,6 +456,7 @@ final class Generator
     //Ensure it can not be subclassed
     builder.addModifiers( Modifier.FINAL );
     builder.addModifiers( Modifier.STATIC );
+    builder.addModifiers( Modifier.PRIVATE );
 
     final TypeName superType =
       ParameterizedTypeName.get( REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME,

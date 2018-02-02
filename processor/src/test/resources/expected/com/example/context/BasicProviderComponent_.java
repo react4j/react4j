@@ -55,7 +55,7 @@ class BasicProviderComponent_ extends BasicProviderComponent {
     BasicProviderComponent.Context getChildContext();
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, BasicProviderComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, BasicProviderComponent> implements Lifecycle {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

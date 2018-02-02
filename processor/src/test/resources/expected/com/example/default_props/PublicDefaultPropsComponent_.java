@@ -42,7 +42,7 @@ class PublicDefaultPropsComponent_ extends PublicDefaultPropsComponent {
     return componentConstructor;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, PublicDefaultPropsComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, PublicDefaultPropsComponent> {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

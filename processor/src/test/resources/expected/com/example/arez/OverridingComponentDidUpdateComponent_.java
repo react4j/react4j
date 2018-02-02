@@ -61,7 +61,7 @@ abstract class OverridingComponentDidUpdateComponent_ extends OverridingComponen
         @Nonnull BaseContext arg2);
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, OverridingComponentDidUpdateComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, OverridingComponentDidUpdateComponent> implements Lifecycle {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

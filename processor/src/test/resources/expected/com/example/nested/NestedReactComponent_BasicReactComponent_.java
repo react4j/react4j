@@ -41,7 +41,7 @@ class NestedReactComponent_BasicReactComponent_ extends NestedReactComponent.Bas
     return componentConstructor;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, NestedReactComponent.BasicReactComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, NestedReactComponent.BasicReactComponent> {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

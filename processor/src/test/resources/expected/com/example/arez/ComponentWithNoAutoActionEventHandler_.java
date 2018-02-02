@@ -81,7 +81,7 @@ abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAut
         @Nonnull BaseContext arg2);
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ComponentWithNoAutoActionEventHandler> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ComponentWithNoAutoActionEventHandler> implements Lifecycle {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

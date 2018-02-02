@@ -41,7 +41,7 @@ class InjectFalseDaggerTrueComponent_ extends InjectFalseDaggerTrueComponent {
     return componentConstructor;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, InjectFalseDaggerTrueComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, InjectFalseDaggerTrueComponent> {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

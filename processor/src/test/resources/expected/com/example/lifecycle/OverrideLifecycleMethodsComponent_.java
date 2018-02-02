@@ -65,7 +65,7 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
         @Nonnull BaseContext nextContext);
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, OverrideLifecycleMethodsComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, OverrideLifecycleMethodsComponent> implements Lifecycle {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

@@ -42,7 +42,7 @@ class PackageAccessDefaultPropsComponent_ extends PackageAccessDefaultPropsCompo
     return componentConstructor;
   }
 
-  static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, PackageAccessDefaultPropsComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, PackageAccessDefaultPropsComponent> {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }

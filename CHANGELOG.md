@@ -4,6 +4,8 @@
 
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.48`.
+* **\[processor\]** Changed the `NativeReactComponent` class nested in the enhanced component class to private
+  access. This eliminates the possibility that it will be accidentally referenced outside of the enhanced component.
 
 ### [v0.38](https://github.com/react4j/react4j/tree/v0.38) (2018-01-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.37...v0.38)
