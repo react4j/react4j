@@ -158,6 +158,7 @@ public class ReactProcessorTest
                       "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type com.example.event_handler.TooFewParamsComponent.CustomHandler that has handler method with 2 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method onMouseEvent." },
         new Object[]{ "com.example.event_handler.TooManyParamsComponent",
                       "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react4j.annotations.EventHandler.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." },
+        new Object[]{ "com.example.prop.PropAndEventHandlerComponent", "Method can not be annotated with both @EventHandler and @Prop" },
         new Object[]{ "com.example.prop.PropHasParameterComponent", "@Prop target must not have any parameters" },
         new Object[]{ "com.example.prop.PropNamedKeyComponent",
                       "@Prop named 'key' should be of type java.lang.String" },
