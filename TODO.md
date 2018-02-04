@@ -2,12 +2,26 @@
 
 ### High Priority
 
+* `@Prop` annotated methods in Arez components should be observable and the application should no longer rely on
+  `props()` method being observable.
+
+* Generate builders for components. These builders first allow specification of a key, possibly ref and then all
+  required props and finally the optional props. The props are determined by the `@Prop` annotated methods. Builders
+  support zero, one or many children based on configuration parameter in `@ReactComponent`.
+  - https://github.com/ltearno/builder-generator
+  - https://blog.jayway.com/2012/02/07/builder-pattern-with-a-twist/
+
+* Components that have not `@State` methods, no lifecycle methods, no `@Ref` methods and no state on the instance
+  could be made into stateless components when translating to React. Potentially we can also enforce stateless-ness
+  by parameter to `@ReactComponent` annotation.
+
+* Add support for methods annotated with `@OnPropChanged`
+
+* Add support for methods annotated with `@PropValidate` method. These would be optimized out in production mode.
+  In development mode the types, and requiredness should already be checked but this would allow additional custom
+  validation.
+
 * Complete `react4j-cryptotracker` example.
-
-* Components should declare whether they support 0,1 or many children and the associated builder will
-  be generated accordingly. Also validated?
-
-* No refs to function components- block in builder? Should we enforce no refs for stateless components
 
 * Add `@Ref` annotation to field in component. This will generate a cached helper function similar to EventHandler
   annotation that can be passed as prop.
@@ -17,10 +31,6 @@
   customization of how we wrap callbacks in `@Action`s. Ref callbacks and render props can obviously not be
   wrapped where EventHandlers should be by default. Alternatively add a separate `@Callback` annotation that
   assumes the callers context rather than the components context (i.e. does not wrap them in `@Action` annotations)
-
-* Props could just be fields or abstract accessors on the component and React4j can generate props. Same with
-  state and context? Seems like `@Inject` for fields with different qualifiers should be sufficient. May also
-  need to support `@OnPropChanged` methods and/or `@PropValidate` which are ommitted during production builds.
 
 * Port transition code ala
   - https://github.com/reactjs/react-transition-group
@@ -37,40 +47,19 @@
 ### Medium Priorities
 
 * Figure out a way to define dom factories in java that are optimized away in production such that
-   `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
-   compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
-   Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
-   element factories can be built by looking at html spec and auto-generating? Probably get away from writing build
-   at end by overloading methods
-   Looks like a good way to create factories is described at https://blog.jayway.com/2012/02/07/builder-pattern-with-a-twist/
-   with an existing annotation processor approach at https://github.com/ltearno/builder-generator where we could make some
-   parameters and potentially children required. Would need to synthesize from annotations. Maybe something like
-
-```java
-@ReactComponent
-class TodoEntry
-  extends ReactArezComponent<BaseProps, TodoEntry.State>
-{
-  @Prop(
-    attributes = {
-      @Attribute(name = "foo", type = Integer.class, mandatory = true),
-      @Attribute(name = "className", type = String.class, type = ClassNameAttribute.class )
-    }
-  )
-  static class State
-    extends AbstractState // AbstractState is generated
-  {
-  }
-```
-
-* Generate all the html props based on typings at https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
-* Props and state fields should be read-only abstractions. Mutations create new objects?
-* Somehow declare props as interfaces in components and have implementation generated?
-
-* For html props we could just generated via ruby and existing patterns after looking at pages like:
+  `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
+  compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
+  Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
+  element factories can be built by looking at html spec and auto-generating?
+  - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
 
+* State fields should be read-only abstractions. Mutations create new objects?
+
 ### Low Priorities
+
+* Add `@State` annotated methods that are required to come as a pair of abstract getters and setters? These would
+  potentially work on top of the underlying react state system.
 
 * Add support for fragments as described in
   https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html
@@ -139,6 +128,8 @@ Copying styles from source document -
   to it from within site.
 
 * Integrate Logo into website. Update color palette of icon and website to match.
+
+* Add search capability to website
 
 * Reorganize documentation using the following sites as inspiration.
   - Reason React - https://reasonml.github.io/reason-react/
