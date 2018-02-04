@@ -57,7 +57,7 @@ final class ComponentDescriptor
   private List<MethodDescriptor> _lifecycleMethods;
   /**
    * Methods that are designated as event handlers. A wrapper method will be generated to simplify
-   * the use of the method in React DevTools by naming handler..
+   * the use of the method in React DevTools by naming handler.
    */
   @Nullable
   private List<EventHandlerDescriptor> _eventHandlers;
