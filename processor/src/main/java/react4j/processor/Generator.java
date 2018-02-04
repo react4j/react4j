@@ -564,7 +564,13 @@ final class Generator
         MethodSpec.methodBuilder( "createComponent" ).
           addAnnotation( Override.class ).
           addModifiers( Modifier.PROTECTED ).
-          returns( ClassName.get( descriptor.getElement() ) );
+          returns( descriptor.getComponentType() );
+      if ( !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
+      {
+        method.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class ).
+          addMember( "value", "$S", "unchecked" ).
+          build() );
+      }
       if ( descriptor.needsInjection() )
       {
         method.addStatement( "return getProvider().get()" );
