@@ -8,6 +8,8 @@
   - https://github.com/ltearno/builder-generator
   - https://blog.jayway.com/2012/02/07/builder-pattern-with-a-twist/
 
+* Make `Component.render()` abstract as it can now be implemented as such.
+
 * Components that have not `@State` methods, no lifecycle methods, no `@Ref` methods and no state on the instance
   could be made into stateless components when translating to React. Potentially we can also enforce stateless-ness
   by parameter to `@ReactComponent` annotation.
