@@ -58,7 +58,7 @@
 * Add `@State` annotated methods that are required to come as a pair of abstract getters and setters? These would
   potentially work on top of the underlying react state system.
 
-* Consider changing object returned from `state()`, `props()` and `context()` into `JsPropertyMap` 
+* Consider changing object returned from `state()`, `props()` and `context()` into `JsPropertyMap`
 
 * Add support for fragments as described in
   https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html
