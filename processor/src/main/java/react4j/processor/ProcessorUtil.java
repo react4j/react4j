@@ -260,4 +260,10 @@ final class ProcessorUtil
     return typeElement.getAnnotationMirrors().stream().
       filter( a -> a.getAnnotationType().toString().equals( annotationClassName ) ).findFirst().orElse( null );
   }
+
+  @Nonnull
+  static String toSimpleName( @Nonnull final String annotationName )
+  {
+    return annotationName.replaceAll( ".*\\.", "" );
+  }
 }
