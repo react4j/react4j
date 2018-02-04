@@ -128,6 +128,11 @@ final class Generator
       builder.addMethod( buildStaticEventHandlerMethod( descriptor, eventHandler ).build() );
     }
 
+    for ( final PropDescriptor prop : descriptor.getProps() )
+    {
+      builder.addMethod( buildPropMethod( descriptor, prop ).build() );
+    }
+
     if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
     {
       builder.addMethod( MethodSpec.constructorBuilder().addAnnotation( INJECT_CLASSNAME ).build() );
@@ -175,6 +180,69 @@ final class Generator
     return builder.build();
   }
 
+  private static MethodSpec.Builder buildPropMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                     @Nonnull final PropDescriptor prop )
+  {
+    final TypeMirror returnType = prop.getMethodType().getReturnType();
+    final ExecutableElement methodElement = prop.getMethod();
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( methodElement.getSimpleName().toString() ).
+        returns( TypeName.get( returnType ) );
+    ProcessorUtil.copyTypeParameters( prop.getMethodType(), method );
+    ProcessorUtil.copyAccessModifiers( methodElement, method );
+    ProcessorUtil.copyDocumentedAnnotations( methodElement, method );
+
+    method.addAnnotation( Override.class );
+
+    final String convertMethodName;
+    switch ( returnType.getKind() )
+    {
+      case BOOLEAN:
+        convertMethodName = "asBoolean";
+        break;
+      case BYTE:
+        convertMethodName = "asByte";
+        break;
+      case CHAR:
+        convertMethodName = "asChar";
+        break;
+      case DOUBLE:
+        convertMethodName = "asDouble";
+        break;
+      case FLOAT:
+        convertMethodName = "asFloat";
+        break;
+      case INT:
+        convertMethodName = "asInt";
+        break;
+      case LONG:
+        convertMethodName = "asLong";
+        break;
+      case SHORT:
+        convertMethodName = "asShort";
+        break;
+      case TYPEVAR:
+        convertMethodName = "cast";
+        break;
+      case DECLARED:
+        if ( returnType.toString().equals( "java.lang.String" ) )
+        {
+          convertMethodName = "asString";
+        }
+        else
+        {
+          convertMethodName = "cast";
+        }
+        break;
+      default:
+        throw new ReactProcessorException( "Unhandled return type: " + returnType, methodElement );
+    }
+    method.addStatement( "return $T.asPropertyMap( props() ).getAny( $S ).$N()",
+                         JS_CLASSNAME,
+                         prop.getName(),
+                         convertMethodName );
+    return method;
+  }
   private static FieldSpec.Builder buildProviderField( @Nonnull final ComponentDescriptor descriptor )
   {
     return FieldSpec.builder( ParameterizedTypeName.get( PROVIDER_CLASSNAME,

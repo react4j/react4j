@@ -5,6 +5,11 @@
 ##### Fixed
 * **\[processor\]** Update the annotation processor to support generic react components.
 
+##### Added
+* **\[annotations\]** Introduced the `@Prop` annotation that can be used on abstract getter methods on
+  instances of `ReactComponent`. The annotation processor will implement the getter as an access from
+  reacts props value.
+
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.48`.
 * **\[processor\]** Changed the `NativeReactComponent` class nested in the enhanced component class to private

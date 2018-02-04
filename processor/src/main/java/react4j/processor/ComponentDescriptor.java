@@ -1,6 +1,8 @@
 package react4j.processor;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +63,12 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<EventHandlerDescriptor> _eventHandlers;
+  /**
+   * Methods that are props accessors.
+   * These should be implemented as accesses to the underlying props value.
+   */
+  @Nullable
+  private List<PropDescriptor> _props;
   /**
    * This is a static method that retrieves the default properties for a component.
    */
@@ -341,6 +349,18 @@ final class ComponentDescriptor
   void setEventHandlers( @Nonnull final List<EventHandlerDescriptor> eventHandlers )
   {
     _eventHandlers = Objects.requireNonNull( eventHandlers );
+  }
+
+  @Nonnull
+  List<PropDescriptor> getProps()
+  {
+    assert null != _props;
+    return _props;
+  }
+
+  void setProps( @Nonnull final List<PropDescriptor> events )
+  {
+    _props = Objects.requireNonNull( events );
   }
 
   boolean hasDefaultPropsMethod()

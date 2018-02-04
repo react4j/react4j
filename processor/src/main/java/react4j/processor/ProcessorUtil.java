@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,6 +34,9 @@ import javax.lang.model.util.Types;
 
 final class ProcessorUtil
 {
+  private static final Pattern GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)$" );
+  private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
+
   private static final String SENTINEL_NAME = "<default>";
 
   private ProcessorUtil()
@@ -187,6 +192,52 @@ final class ProcessorUtil
     for ( final TypeVariable typeParameter : action.getTypeVariables() )
     {
       builder.addTypeVariable( TypeVariableName.get( typeParameter ) );
+    }
+  }
+
+  @Nonnull
+  static String getPropertyAccessorName( @Nonnull final ExecutableElement method, @Nonnull final String specifiedName )
+    throws ReactProcessorException
+  {
+    String name = ProcessorUtil.deriveName( method, GETTER_PATTERN, specifiedName );
+    if ( null != name )
+    {
+      return name;
+    }
+    else if ( method.getReturnType().getKind() == TypeKind.BOOLEAN )
+    {
+      name = ProcessorUtil.deriveName( method, ISSER_PATTERN, specifiedName );
+      if ( null != name )
+      {
+        return name;
+      }
+    }
+    return method.getSimpleName().toString();
+  }
+
+  @Nullable
+  private static String deriveName( @Nonnull final ExecutableElement method,
+                                    @Nonnull final Pattern pattern,
+                                    @Nonnull final String name )
+    throws ReactProcessorException
+  {
+    if ( isSentinelName( name ) )
+    {
+      final String methodName = method.getSimpleName().toString();
+      final Matcher matcher = pattern.matcher( methodName );
+      if ( matcher.find() )
+      {
+        final String candidate = matcher.group( 1 );
+        return Character.toLowerCase( candidate.charAt( 0 ) ) + candidate.substring( 1 );
+      }
+      else
+      {
+        return null;
+      }
+    }
+    else
+    {
+      return name;
     }
   }
 

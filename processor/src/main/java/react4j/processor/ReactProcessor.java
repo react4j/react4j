@@ -32,6 +32,7 @@ import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -150,6 +151,7 @@ public final class ReactProcessor
     determineChildContextTypes( descriptor );
     determineRenderMethod( typeElement, descriptor );
     determineEventHandlers( descriptor );
+    determineProps( descriptor );
     determineDefaultPropsMethod( descriptor );
 
     verifyNoUnexpectedAbstractMethod( descriptor );
@@ -165,6 +167,8 @@ public final class ReactProcessor
         ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() )
           .stream()
           .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) )
+          // Props are expected to be null methods
+          .filter( m -> descriptor.getProps().stream().noneMatch( p -> p.getMethod() == m ) )
           .findAny()
           .orElse( null );
       if ( null != abstractMethod )
@@ -370,6 +374,66 @@ public final class ReactProcessor
         throw new ReactProcessorException( "Method annotated with @EventHandler specified invalid name " + name,
                                            method );
       }
+      return name;
+    }
+  }
+
+  private void determineProps( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final List<PropDescriptor> props =
+      ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
+        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
+        .map( m -> createPropDescriptor( descriptor, m ) )
+        .collect( Collectors.toList() );
+
+    descriptor.setProps( props );
+  }
+
+  @Nonnull
+  private PropDescriptor createPropDescriptor( @Nonnull final ComponentDescriptor descriptor,
+                                               @Nonnull final ExecutableElement method )
+  {
+    final String name = derivePropName( method );
+    final ExecutableType methodType =
+      (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
+
+    verifyNoDuplicateAnnotations( method );
+    MethodChecks.mustBeAbstract( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotHaveAnyParameters( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
+
+    if ( "key".equals( name ) &&
+         (
+           methodType.getReturnType().getKind() != TypeKind.DECLARED &&
+           !"java.lang.String".equals( methodType.getReturnType().toString() )
+         ) )
+    {
+      throw new ReactProcessorException( "@Prop named 'key' should be of type java.lang.String", method );
+
+    }
+
+    return new PropDescriptor( name, method, methodType );
+  }
+
+  @Nonnull
+  private String derivePropName( @Nonnull final ExecutableElement method )
+    throws ReactProcessorException
+  {
+    final String specifiedName =
+      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                 method,
+                                                 Constants.PROP_ANNOTATION_CLASSNAME,
+                                                 "name" ).getValue();
+
+    final String name = ProcessorUtil.getPropertyAccessorName( method, specifiedName );
+    if ( !ProcessorUtil.isJavaIdentifier( name ) )
+    {
+      throw new ReactProcessorException( "Method annotated with @Prop specified invalid name " + specifiedName,
+                                         method );
+    }
+    else
+    {
       return name;
     }
   }
@@ -655,7 +719,8 @@ public final class ReactProcessor
     throws ReactProcessorException
   {
     final String[] annotationTypes =
-      new String[]{ Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME };
+      new String[]{ Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME,
+                    Constants.PROP_ANNOTATION_CLASSNAME };
     for ( int i = 0; i < annotationTypes.length; i++ )
     {
       final String type1 = annotationTypes[ i ];
