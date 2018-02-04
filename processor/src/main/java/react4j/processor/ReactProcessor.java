@@ -362,7 +362,7 @@ public final class ReactProcessor
     }
     else
     {
-      if ( name.isEmpty() || !ProcessorUtil.isJavaIdentifier( name ) )
+      if ( !ProcessorUtil.isJavaIdentifier( name ) )
       {
         throw new ReactProcessorException( "Method annotated with @EventHandler specified invalid name " + name,
                                            method );
@@ -443,7 +443,7 @@ public final class ReactProcessor
     }
     else
     {
-      if ( name.isEmpty() || !ProcessorUtil.isJavaIdentifier( name ) )
+      if ( !ProcessorUtil.isJavaIdentifier( name ) )
       {
         throw new ReactProcessorException( "The @ReactComponent specified an invalid name. Name should be follow " +
                                            "the rules of a java identifier.", typeElement );
