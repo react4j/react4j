@@ -162,8 +162,11 @@ public final class ReactProcessor
     if ( !descriptor.isArezComponent() )
     {
       final ExecutableElement abstractMethod =
-        ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
-          .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) ).findAny().orElse( null );
+        ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() )
+          .stream()
+          .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) )
+          .findAny()
+          .orElse( null );
       if ( null != abstractMethod )
       {
         throw new ReactProcessorException( "@ReactComponent target has an unexpected abstract method",
