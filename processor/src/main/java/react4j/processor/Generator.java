@@ -175,7 +175,7 @@ final class Generator
     return builder.build();
   }
 
-  private static FieldSpec.Builder buildProviderField( final @Nonnull ComponentDescriptor descriptor )
+  private static FieldSpec.Builder buildProviderField( @Nonnull final ComponentDescriptor descriptor )
   {
     return FieldSpec.builder( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
                                                          TypeName.get( descriptor.getDeclaredType() ) ),
