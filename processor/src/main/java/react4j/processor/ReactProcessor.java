@@ -647,4 +647,32 @@ public final class ReactProcessor
       processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), typeParameter );
     return (TypeElement) processingEnv.getTypeUtils().asElement( propsType );
   }
+
+  private void verifyNoDuplicateAnnotations( @Nonnull final ExecutableElement method )
+    throws ReactProcessorException
+  {
+    final String[] annotationTypes =
+      new String[]{ Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME,
+                    Constants.NO_AUTO_ACTION_ANNOTATION_CLASSNAME };
+    for ( int i = 0; i < annotationTypes.length; i++ )
+    {
+      final String type1 = annotationTypes[ i ];
+      final Object annotation1 = ProcessorUtil.findAnnotationByType( method, type1 );
+      if ( null != annotation1 )
+      {
+        for ( int j = i + 1; j < annotationTypes.length; j++ )
+        {
+          final String type2 = annotationTypes[ j ];
+          final Object annotation2 = ProcessorUtil.findAnnotationByType( method, type2 );
+          if ( null != annotation2 )
+          {
+            final String message =
+              "Method can not be annotated with both @" + ProcessorUtil.toSimpleName( type1 ) +
+              " and @" + ProcessorUtil.toSimpleName( type2 );
+            throw new ReactProcessorException( message, method );
+          }
+        }
+      }
+    }
+  }
 }
