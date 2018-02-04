@@ -8,12 +8,17 @@
 ##### Added
 * **\[annotations\]** Introduced the `@Prop` annotation that can be used on abstract getter methods on
   instances of `ReactComponent`. The annotation processor will implement the getter as an access from
-  reacts props value.
+  reacts props value. In subclasses of `ReactArezComponent`, the `@Prop` annotated method is made observable.
 
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.48`.
 * **\[processor\]** Changed the `NativeReactComponent` class nested in the enhanced component class to private
   access. This eliminates the possibility that it will be accidentally referenced outside of the enhanced component.
+* 💥 **\[core\]** The `Component.props()` method has been made final as there is no need for overriding in subclasses.
+
+#### Removed
+* 💥 **\[arez\]** The `ReactArezComponent.props()` method is no longer observable. Instead it is expected that
+  individual `@Prop` annotated methods are defined and these methods are observable.
 
 ### [v0.38](https://github.com/react4j/react4j/tree/v0.38) (2018-01-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.37...v0.38)

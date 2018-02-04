@@ -1,15 +1,13 @@
 package com.example.arez;
 
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
-import elemental2.core.JsObject;
+import arez.annotations.Observable;
+import arez.annotations.ObservableRef;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
-import react4j.annotations.EventHandler;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
 import react4j.core.BaseState;
@@ -20,18 +18,12 @@ import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 
 @ArezComponent(
-    type = "ComponentWithEventHandler",
+    type = "ComponentWithProp",
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
+abstract class ComponentWithProp_ extends ComponentWithProp {
   private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
-
-  @Nonnull
-  private final EventHandler.Procedure _handleFoo = create_handleFoo();
-
-  @Nonnull
-  private final ComponentWithEventHandler.CustomHandler _handleFoo2 = create_handleFoo2();
 
   @Nonnull
   static ReactNode _create() {
@@ -52,55 +44,29 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithEventHandler" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithProp" );
     }
     return componentConstructor;
   }
 
-  @Nonnull
-  static EventHandler.Procedure _handleFoo(@Nonnull final ComponentWithEventHandler component) {
-    return ((ComponentWithEventHandler_) component)._handleFoo;
+  @Override
+  @Observable(
+      name = "value",
+      expectSetter = false
+  )
+  protected String getValue() {
+    return Js.asPropertyMap( props() ).getAny( "value" ).asString();
   }
 
   @Nonnull
-  static ComponentWithEventHandler.CustomHandler _handleFoo2(@Nonnull final ComponentWithEventHandler component) {
-    return ((ComponentWithEventHandler_) component)._handleFoo2;
-  }
+  @ObservableRef
+  protected abstract arez.Observable getValueObservable();
 
   @Override
   protected final void reportPropsChanged(@Nullable final BaseProps nextProps) {
-  }
-
-  @Nonnull
-  private EventHandler.Procedure create_handleFoo() {
-    final EventHandler.Procedure handler = () -> this.handleFoo();
-    if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithEventHandler.handleFoo" ) ) );
+    if ( !Js.isTripleEqual( Js.asPropertyMap( props() ).get( "value" ), Js.asPropertyMap( nextProps ).get( "value" ) ) ) {
+      getValueObservable().reportChanged();
     }
-    return handler;
-  }
-
-  @Nonnull
-  private ComponentWithEventHandler.CustomHandler create_handleFoo2() {
-    final ComponentWithEventHandler.CustomHandler handler = arg0 -> this.handleFoo2(arg0);
-    if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithEventHandler.handleFoo2" ) ) );
-    }
-    return handler;
-  }
-
-  @Action(
-      reportParameters = false
-  )
-  void handleFoo() {
-    super.handleFoo();
-  }
-
-  @Action(
-      reportParameters = false
-  )
-  int handleFoo2(final int arg0) {
-    return super.handleFoo2(arg0);
   }
 
   @JsType(
@@ -117,14 +83,14 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
         @Nonnull BaseContext arg2);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ComponentWithEventHandler> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, ComponentWithProp> implements Lifecycle {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }
 
     @Override
-    protected ComponentWithEventHandler createComponent() {
-      return new Arez_ComponentWithEventHandler_();
+    protected ComponentWithProp createComponent() {
+      return new Arez_ComponentWithProp_();
     }
 
     @Override

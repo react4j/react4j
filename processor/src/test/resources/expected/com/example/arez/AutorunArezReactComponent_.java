@@ -48,6 +48,10 @@ abstract class AutorunArezReactComponent_ extends AutorunArezReactComponent {
   }
 
   @Override
+  protected final void reportPropsChanged(@Nullable final BaseProps nextProps) {
+  }
+
+  @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
   }

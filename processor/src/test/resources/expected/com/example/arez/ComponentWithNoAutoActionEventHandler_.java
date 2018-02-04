@@ -58,6 +58,10 @@ abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAut
     return ((ComponentWithNoAutoActionEventHandler_) component)._handleFoo;
   }
 
+  @Override
+  protected final void reportPropsChanged(@Nullable final BaseProps nextProps) {
+  }
+
   @Nonnull
   private EventHandler.Procedure create_handleFoo() {
     final EventHandler.Procedure handler = () -> this.handleFoo();

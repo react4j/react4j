@@ -34,9 +34,13 @@ final class Generator
 
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
 
+  private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "Observable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
+  private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
+  private static final ClassName OBSERVABLE_REF_ANNOTATION_CLASSNAME =
+    ClassName.get( "arez.annotations", "ObservableRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
 
@@ -131,6 +135,15 @@ final class Generator
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
       builder.addMethod( buildPropMethod( descriptor, prop ).build() );
+      if ( descriptor.isArezComponent() )
+      {
+        builder.addMethod( buildPropObservableRefMethod( prop ).build() );
+      }
+    }
+
+    if ( descriptor.isArezComponent() )
+    {
+      builder.addMethod( buildReportPropsChangedMethod( descriptor ).build() );
     }
 
     if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
@@ -194,6 +207,14 @@ final class Generator
 
     method.addAnnotation( Override.class );
 
+    if ( descriptor.isArezComponent() )
+    {
+      final AnnotationSpec.Builder annotation =
+        AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
+          addMember( "name", "$S", prop.getName() ).
+          addMember( "expectSetter", "false" );
+      method.addAnnotation( annotation.build() );
+    }
     final String convertMethodName;
     switch ( returnType.getKind() )
     {
@@ -243,6 +264,45 @@ final class Generator
                          convertMethodName );
     return method;
   }
+
+  @Nonnull
+  private static MethodSpec.Builder buildPropObservableRefMethod( @Nonnull final PropDescriptor prop )
+  {
+    return MethodSpec.methodBuilder( toObservableRefMethodName( prop ) ).
+      addModifiers( Modifier.PROTECTED, Modifier.ABSTRACT ).
+      addAnnotation( NONNULL_CLASSNAME ).
+      addAnnotation( OBSERVABLE_REF_ANNOTATION_CLASSNAME ).
+      returns( OBSERVABLE_CLASSNAME );
+  }
+
+  @Nonnull
+  private static String toObservableRefMethodName( @Nonnull final PropDescriptor prop )
+  {
+    final String name = prop.getName();
+    return "get" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 ) + "Observable";
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildReportPropsChangedMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropsChanged" ).
+      addModifiers( Modifier.PROTECTED, Modifier.FINAL ).
+      addAnnotation( Override.class ).
+      addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "nextProps", Modifier.FINAL ).
+        addAnnotation( NULLABLE_CLASSNAME ).build() );
+    for ( final PropDescriptor prop : descriptor.getProps() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      final String code =
+        "if ( !$T.isTripleEqual( $T.asPropertyMap( props() ).get( $S ), $T.asPropertyMap( nextProps ).get( $S ) ) )";
+      block.beginControlFlow( code, JS_CLASSNAME, JS_CLASSNAME, prop.getName(), JS_CLASSNAME, prop.getName() );
+      block.addStatement( "$N().reportChanged()", toObservableRefMethodName( prop ) );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    return method;
+  }
+
   private static FieldSpec.Builder buildProviderField( @Nonnull final ComponentDescriptor descriptor )
   {
     return FieldSpec.builder( ParameterizedTypeName.get( PROVIDER_CLASSNAME,

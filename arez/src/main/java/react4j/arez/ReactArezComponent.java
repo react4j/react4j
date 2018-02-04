@@ -7,8 +7,6 @@ import arez.Observer;
 import arez.annotations.Action;
 import arez.annotations.ComponentId;
 import arez.annotations.ContextRef;
-import arez.annotations.Observable;
-import arez.annotations.ObservableRef;
 import arez.annotations.ObserverRef;
 import arez.annotations.OnDepsChanged;
 import arez.annotations.Track;
@@ -56,31 +54,9 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
   }
 
   /**
-   * {@inheritDoc}
+   * Method invoked when props changes.
    */
-  @Observable( expectSetter = false )
-  @Override
-  protected P props()
-  {
-    return super.props();
-  }
-
-  /**
-   * Return the Observable used to make `props` observable.
-   *
-   * @return the Observable used to make `props` observable.
-   */
-  @ObservableRef
-  protected abstract arez.Observable<P> getPropsObservable();
-
-  /**
-   * Action that invoked when props changes.
-   */
-  @Action
-  protected void reportPropsChanged()
-  {
-    getPropsObservable().reportChanged();
-  }
+  protected abstract void reportPropsChanged( @Nullable final P nextProps );
 
   /**
    * {@inheritDoc}
@@ -201,7 +177,7 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
       final boolean modified = JsUtil.isObjectShallowModified( super.props(), nextProps );
       if ( modified )
       {
-        reportPropsChanged();
+        reportPropsChanged( nextProps );
       }
       return modified;
     }

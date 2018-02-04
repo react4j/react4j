@@ -2,9 +2,6 @@
 
 ### High Priority
 
-* `@Prop` annotated methods in Arez components should be observable and the application should no longer rely on
-  `props()` method being observable.
-
 * Generate builders for components. These builders first allow specification of a key, possibly ref and then all
   required props and finally the optional props. The props are determined by the `@Prop` annotated methods. Builders
   support zero, one or many children based on configuration parameter in `@ReactComponent`.

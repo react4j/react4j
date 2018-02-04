@@ -20,6 +20,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.ComponentWithAnnotatedParameterEventHandler", false },
         new Object[]{ "com.example.arez.ComponentWithEventHandler", false },
         new Object[]{ "com.example.arez.ComponentWithNoAutoActionEventHandler", false },
+        new Object[]{ "com.example.arez.ComponentWithProp", false },
         new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent", false },
         new Object[]{ "com.example.basic.BasicReactComponent", false },
         new Object[]{ "com.example.basic.CustomNameReactComponent", false },

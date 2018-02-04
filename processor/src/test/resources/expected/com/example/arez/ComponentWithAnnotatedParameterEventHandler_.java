@@ -66,6 +66,10 @@ abstract class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWit
     return ((ComponentWithAnnotatedParameterEventHandler_) component)._handleFoo2;
   }
 
+  @Override
+  protected final void reportPropsChanged(@Nullable final BaseProps nextProps) {
+  }
+
   @Nonnull
   private ComponentWithAnnotatedParameterEventHandler.CustomHandler2 create_handleFoo() {
     final ComponentWithAnnotatedParameterEventHandler.CustomHandler2 handler = () -> this.handleFoo();

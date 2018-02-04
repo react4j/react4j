@@ -62,6 +62,10 @@ abstract class ArezReactComponent_ extends ArezReactComponent {
     return componentConstructor;
   }
 
+  @Override
+  protected final void reportPropsChanged(@Nullable final BaseProps nextProps) {
+  }
+
   @JsType(
       isNative = true
   )

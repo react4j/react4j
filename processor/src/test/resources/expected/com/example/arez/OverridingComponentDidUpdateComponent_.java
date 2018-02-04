@@ -47,6 +47,10 @@ abstract class OverridingComponentDidUpdateComponent_ extends OverridingComponen
     return componentConstructor;
   }
 
+  @Override
+  protected final void reportPropsChanged(@Nullable final BaseProps nextProps) {
+  }
+
   @JsType(
       isNative = true
   )
