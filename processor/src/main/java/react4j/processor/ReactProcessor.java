@@ -652,8 +652,7 @@ public final class ReactProcessor
     throws ReactProcessorException
   {
     final String[] annotationTypes =
-      new String[]{ Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME,
-                    Constants.NO_AUTO_ACTION_ANNOTATION_CLASSNAME };
+      new String[]{ Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME };
     for ( int i = 0; i < annotationTypes.length; i++ )
     {
       final String type1 = annotationTypes[ i ];
