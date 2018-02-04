@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.AnnotatedConstruct;
@@ -35,6 +36,15 @@ final class ProcessorUtil
 
   private ProcessorUtil()
   {
+  }
+
+  @Nonnull
+  static List<TypeVariableName> getTypeArgumentsAsNames( @Nonnull final DeclaredType declaredType )
+  {
+    return declaredType.getTypeArguments()
+      .stream()
+      .map( argument -> TypeVariableName.get( (TypeVariable) argument ) )
+      .collect( Collectors.toList() );
   }
 
   @Nonnull

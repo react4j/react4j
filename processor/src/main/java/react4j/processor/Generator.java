@@ -67,8 +67,9 @@ final class Generator
 
     final String name = descriptor.getNestedClassPrefix() + descriptor.getEnhancedName();
     final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
+    builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
-    builder.superclass( descriptor.getClassName() );
+    builder.superclass( descriptor.getComponentType() );
 
     if ( descriptor.isArezComponent() )
     {
@@ -463,9 +464,10 @@ final class Generator
                                  ClassName.get( descriptor.getPropsType().asType() ),
                                  ClassName.get( descriptor.getStateType().asType() ),
                                  ClassName.get( descriptor.getContextType().asType() ),
-                                 ClassName.get( descriptor.getElement() ) );
+                                 descriptor.getComponentType() );
 
     builder.superclass( superType );
+    builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
     if ( !descriptor.getLifecycleMethods().isEmpty() )
     {

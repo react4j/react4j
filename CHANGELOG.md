@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[processor\]** Update the annotation processor to support generic react components.
+
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.48`.
 * **\[processor\]** Changed the `NativeReactComponent` class nested in the enhanced component class to private

@@ -169,6 +169,21 @@ final class ComponentDescriptor
     return ClassName.get( getPackageName(), getNestedClassPrefix() + cname );
   }
 
+  @Nonnull
+  TypeName getComponentType()
+  {
+    final List<TypeName> typeNames =
+      getDeclaredType().getTypeArguments().stream().map( TypeName::get ).collect( Collectors.toList() );
+    if ( !typeNames.isEmpty() )
+    {
+      return ParameterizedTypeName.get( ClassName.get( getElement() ), typeNames.toArray( new TypeName[ 0 ] ) );
+    }
+    else
+    {
+      return ClassName.get( getElement() );
+    }
+  }
+
   boolean needsInjection()
   {
     return _needsInjection;

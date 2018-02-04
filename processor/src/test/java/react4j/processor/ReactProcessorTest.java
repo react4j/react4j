@@ -24,6 +24,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.basic.BasicReactComponent", false },
         new Object[]{ "com.example.basic.CustomNameReactComponent", false },
         new Object[]{ "com.example.basic.CustomPropsAndStateReactComponent", false },
+        new Object[]{ "com.example.basic.GenericTypeComponent", false },
         new Object[]{ "com.example.basic.PublicReactComponent", false },
         new Object[]{ "com.example.context.BasicContextComponent", false },
         new Object[]{ "com.example.context.BasicProviderComponent", false },
