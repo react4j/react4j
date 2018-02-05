@@ -24,7 +24,7 @@ import react4j.core.ReactNode;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEventHandler {
-  private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
   private final EventHandler.Procedure _handleFoo = create_handleFoo();

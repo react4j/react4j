@@ -16,7 +16,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class BasicContextComponent_ extends BasicContextComponent {
-  private static final ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> TYPE = getConstructorFunction();
 
   @Nonnull
   static ReactNode _create() {

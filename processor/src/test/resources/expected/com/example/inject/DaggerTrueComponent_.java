@@ -18,7 +18,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class DaggerTrueComponent_ extends DaggerTrueComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   private static Provider<DaggerTrueComponent> c_provider;
 

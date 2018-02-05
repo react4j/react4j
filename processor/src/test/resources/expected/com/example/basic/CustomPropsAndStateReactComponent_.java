@@ -13,7 +13,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactComponent {
-  private static final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<CustomPropsAndStateReactComponent.Props, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
   static ReactNode _create() {

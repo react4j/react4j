@@ -18,7 +18,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class InjectTrueComponent_ extends InjectTrueComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   private static Provider<InjectTrueComponent> c_provider;
 

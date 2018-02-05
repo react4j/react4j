@@ -31,9 +31,11 @@ abstract class AbstractReactProcessorTest
     final String[] elements = classname.contains( "." ) ? classname.split( "\\." ) : new String[]{ classname };
     final StringBuilder input = new StringBuilder();
     final StringBuilder enhancedComponent = new StringBuilder();
+    final StringBuilder builder = new StringBuilder();
     final StringBuilder daggerFactory = new StringBuilder();
     input.append( "input" );
     enhancedComponent.append( "expected" );
+    builder.append( "expected" );
     daggerFactory.append( "expected" );
     for ( int i = 0; i < elements.length; i++ )
     {
@@ -41,9 +43,12 @@ abstract class AbstractReactProcessorTest
       input.append( elements[ i ] );
       enhancedComponent.append( '/' );
       enhancedComponent.append( elements[ i ] );
+      builder.append( '/' );
+      builder.append( elements[ i ] );
       if ( i == elements.length - 1 )
       {
         enhancedComponent.append( "_" );
+        builder.append( "Builder" );
       }
       daggerFactory.append( '/' );
       daggerFactory.append( elements[ i ] );
@@ -54,9 +59,11 @@ abstract class AbstractReactProcessorTest
     }
     input.append( ".java" );
     enhancedComponent.append( ".java" );
+    builder.append( ".java" );
     daggerFactory.append( ".java" );
     final ArrayList<String> outputs = new ArrayList<>();
     outputs.add( enhancedComponent.toString() );
+    outputs.add( builder.toString() );
     if ( dagger )
     {
       outputs.add( daggerFactory.toString() );

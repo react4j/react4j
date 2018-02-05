@@ -151,6 +151,12 @@ final class ComponentDescriptor
   }
 
   @Nonnull
+  String getBuilderName()
+  {
+    return _element.getSimpleName() + "Builder";
+  }
+
+  @Nonnull
   ClassName getEnhancedClassName()
   {
     final ClassName className = ClassName.get( getElement() );

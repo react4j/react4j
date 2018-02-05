@@ -15,7 +15,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class PropTypeFloat_ extends PropTypeFloat {
-  private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
   static ReactNode _create() {

@@ -17,7 +17,7 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class CustomHandlerComponent_ extends CustomHandlerComponent {
-  private static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
   private final CustomHandlerComponent.CustomHandler _handleFoo = create_handleFoo();

@@ -12,7 +12,9 @@ import com.squareup.javapoet.TypeSpec;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Generated;
@@ -65,6 +67,177 @@ final class Generator
   }
 
   @Nonnull
+  static TypeSpec buildComponentBuilder( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final String name = descriptor.getNestedClassPrefix() + descriptor.getBuilderName();
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
+
+    ProcessorUtil.copyAccessModifiers( descriptor.getElement(), builder );
+
+    // Private constructor so can not instantiate
+    builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
+
+    int stepCount = 1;
+
+    final List<PropDescriptor> props = descriptor.getProps();
+    final int propCount = props.size();
+
+    builder.addType( buildKeyBuilderStepInterface( 0 == propCount ) );
+
+    for ( int i = 0; i < propCount; i++ )
+    {
+      final PropDescriptor prop = props.get( i );
+      // Step 1 is the key
+      final int step = ++stepCount;
+      final boolean isLastStep = propCount == i + 1;
+      builder.addType( buildPropBuilderStepInterface( prop, step, isLastStep ) );
+    }
+
+    builder.addType( buildBuilder( descriptor, stepCount ) );
+
+    return builder.build();
+  }
+
+  private static TypeSpec buildKeyBuilderStepInterface( final boolean isLastStep )
+  {
+    return buildBuilderStepInterface( 1, isLastStep, "key", method -> {
+      final ParameterSpec.Builder parameter =
+        ParameterSpec.builder( TypeName.get( String.class ), "key" ).addAnnotation( NONNULL_CLASSNAME );
+      method.addParameter( parameter.build() );
+    } );
+  }
+
+  private static MethodSpec buildKeyBuilderStepImpl( @Nonnull final ComponentDescriptor descriptor,
+                                                     final boolean isLastStep )
+  {
+    return buildBuilderStepImpl( descriptor, 1, isLastStep, "key", method -> {
+      final ParameterSpec.Builder parameter =
+        ParameterSpec.builder( TypeName.get( String.class ), "key", Modifier.FINAL ).addAnnotation( NONNULL_CLASSNAME );
+      method.addParameter( parameter.build() );
+      method.addStatement( "_props.set( $S, $T.requireNonNull( key ) )", "key", Objects.class );
+    } );
+  }
+
+  @Nonnull
+  private static TypeSpec buildPropBuilderStepInterface( @Nonnull final PropDescriptor prop,
+                                                         final int step,
+                                                         final boolean isLastStep )
+  {
+    return buildBuilderStepInterface( step, isLastStep, prop.getName(), method -> {
+      final ParameterSpec.Builder parameter =
+        ParameterSpec.builder( TypeName.get( String.class ), prop.getName() ).addAnnotation( NONNULL_CLASSNAME );
+      method.addParameter( parameter.build() );
+    } );
+  }
+
+  private static MethodSpec buildPropBuilderStepImpl( @Nonnull final ComponentDescriptor descriptor,
+                                                      @Nonnull final PropDescriptor prop,
+                                                      final int step,
+                                                      final boolean isLastStep )
+  {
+    return buildBuilderStepImpl( descriptor, step, isLastStep, prop.getName(), method -> {
+      final ParameterSpec.Builder parameter =
+        ParameterSpec.builder( TypeName.get( String.class ), prop.getName(), Modifier.FINAL )
+          .addAnnotation( NONNULL_CLASSNAME );
+      method.addParameter( parameter.build() );
+      method.addStatement( "_props.set( $S, $T.requireNonNull( $N ) )", prop.getName(), Objects.class, prop.getName() );
+    } );
+  }
+
+  @Nonnull
+  private static TypeSpec buildBuilderStepInterface( final int step,
+                                                     final boolean isLastStep,
+                                                     @Nonnull final String name,
+                                                     @Nonnull final Consumer<MethodSpec.Builder> action )
+  {
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Builder" + step );
+    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
+
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
+    method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
+    action.accept( method );
+    if ( isLastStep )
+    {
+      method.returns( REACT_NODE_CLASSNAME );
+    }
+    else
+    {
+      method.returns( ClassName.bestGuess( "Builder" + ( step + 1 ) ) );
+    }
+
+    builder.addMethod( method.build() );
+
+    return builder.build();
+  }
+
+  @Nonnull
+  private static MethodSpec buildBuilderStepImpl( @Nonnull final ComponentDescriptor descriptor,
+                                                  final int step,
+                                                  final boolean isLastStep,
+                                                  @Nonnull final String name,
+                                                  @Nonnull final Consumer<MethodSpec.Builder> action )
+  {
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
+    method.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
+    method.addAnnotation( Override.class );
+    method.addAnnotation( NONNULL_CLASSNAME );
+    action.accept( method );
+    if ( isLastStep )
+    {
+      method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ) )",
+                           REACT_CLASSNAME,
+                           ClassName.get( descriptor.getPackageName(),
+                                          descriptor.getNestedClassPrefix() + descriptor.getEnhancedName() ),
+                           JS_CLASSNAME );
+      method.returns( REACT_NODE_CLASSNAME );
+    }
+    else
+    {
+      method.addStatement( "return this" );
+      method.returns( ClassName.bestGuess( "Builder" + ( step + 1 ) ) );
+    }
+
+    return method.build();
+  }
+
+  @Nonnull
+  private static TypeSpec buildBuilder( @Nonnull final ComponentDescriptor descriptor, final int stepCount )
+  {
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "Builder" );
+    builder.addModifiers( Modifier.PRIVATE, Modifier.STATIC );
+    for ( int i = 0; i < stepCount; i++ )
+    {
+      builder.addSuperinterface( ClassName.bestGuess( "Builder" + ( i + 1 ) ) );
+    }
+
+    {
+      final ParameterizedTypeName type =
+        ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.get( Object.class ) );
+      final FieldSpec.Builder field = FieldSpec.builder( type, "_props", Modifier.PRIVATE, Modifier.FINAL );
+      field.initializer( "$T.of()", JS_PROPERTY_MAP_CLASSNAME );
+      builder.addField( field.build() );
+    }
+
+    builder.addMethod( buildKeyBuilderStepImpl( descriptor, 1 == stepCount ) );
+
+    final List<PropDescriptor> props = descriptor.getProps();
+    final int propCount = props.size();
+
+    for ( int i = 0; i < propCount; i++ )
+    {
+      final PropDescriptor prop = props.get( i );
+      // 1 - based
+      final int initialIndex = 1;
+      final int keyOffset = 1;
+      final int step = i + keyOffset + initialIndex;
+      final boolean isLastStep = propCount == i + 1;
+      builder.addMethod( buildPropBuilderStepImpl( descriptor, prop, step, isLastStep ) );
+    }
+
+    return builder.build();
+  }
+
+  @Nonnull
   static TypeSpec buildEnhancedComponent( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeElement element = descriptor.getElement();
@@ -100,8 +273,7 @@ final class Generator
       FieldSpec.builder( getJsConstructorFnType( descriptor ),
                          "TYPE",
                          Modifier.STATIC,
-                         Modifier.FINAL,
-                         Modifier.PRIVATE ).
+                         Modifier.FINAL ).
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
