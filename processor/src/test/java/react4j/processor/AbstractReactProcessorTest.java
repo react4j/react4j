@@ -151,9 +151,14 @@ abstract class AbstractReactProcessorTest
   @Nonnull
   final JavaFileObject fixture( @Nonnull final String path )
   {
+    final Path outputFile = fixtureDir().resolve( path );
+    if ( !Files.exists( outputFile ) )
+    {
+      fail( "Output file fixture " + outputFile + " does not exist. Thus can not compare against it." );
+    }
     try
     {
-      return JavaFileObjects.forResource( fixtureDir().resolve( path ).toUri().toURL() );
+      return JavaFileObjects.forResource( outputFile.toUri().toURL() );
     }
     catch ( final MalformedURLException e )
     {
