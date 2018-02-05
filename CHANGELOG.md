@@ -15,6 +15,8 @@
 * **\[processor\]** Changed the `NativeReactComponent` class nested in the enhanced component class to private
   access. This eliminates the possibility that it will be accidentally referenced outside of the enhanced component.
 * 💥 **\[core\]** The `Component.props()` method has been made final as there is no need for overriding in subclasses.
+* **\[core\]** The `Component.render()` method has been made abstract. This makes it clearer to user that this method
+  needs to be overridden.
 
 #### Removed
 * 💥 **\[arez\]** The `ReactArezComponent.props()` method is no longer observable. Instead it is expected that

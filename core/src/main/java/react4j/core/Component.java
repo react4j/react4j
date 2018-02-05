@@ -247,11 +247,7 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
    * @return the result of rendering.
    */
   @Nullable
-  protected ReactNode render()
-  {
-    //TODO: In the future when we can define abstract component subclasses we should make this method abstract.
-    return null;
-  }
+  protected abstract ReactNode render();
 
   /**
    * Wrapper method for rendering the component.
