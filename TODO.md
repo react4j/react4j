@@ -56,6 +56,8 @@
 
 ### Low Priorities
 
+* See if we can remove ReactElement.
+
 * Add `@State` annotated methods that are required to come as a pair of abstract getters and setters? These would
   potentially work on top of the underlying react state system.
 
