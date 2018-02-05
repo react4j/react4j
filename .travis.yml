@@ -23,6 +23,8 @@ install:
 - gem install bundler
 - bundle install
 script: buildr package site:deploy publish_if_tagged
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 git:
   depth: false
 env:
