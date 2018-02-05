@@ -11,7 +11,7 @@
   reacts props value. In subclasses of `ReactArezComponent`, the `@Prop` annotated method is made observable.
 
 #### Changed
-* 💥 **\[arez\]** Upgrade Arez to version `0.48`.
+* 💥 **\[arez\]** Upgrade Arez to version `0.49`.
 * **\[processor\]** Changed the `NativeReactComponent` class nested in the enhanced component class to private
   access. This eliminates the possibility that it will be accidentally referenced outside of the enhanced component.
 * 💥 **\[core\]** The `Component.props()` method has been made final as there is no need for overriding in subclasses.
