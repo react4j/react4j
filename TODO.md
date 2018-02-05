@@ -122,10 +122,7 @@ Copying styles from source document -
 
 #### Documentation
 
-* Add TodoMVC to web site in both production and development mode so it is easy to describe
-  it in the documentation. Can update that project to publish to the same site. Will need to
-  add new deploy key to react4j.github.io project and remove from old project. Can also link
-  to it from within site.
+* Link TodoMVC from web site in both production and development mode.
 
 * Integrate Logo into website. Update color palette of icon and website to match.
 
