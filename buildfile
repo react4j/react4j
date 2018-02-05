@@ -246,3 +246,7 @@ define 'react4j' do
                               :shell_parameters => "-port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
   end
 end
+
+Buildr.projects.each do |project|
+  project.jacoco.enabled = false unless project.name == 'react4j:processor'
+end
