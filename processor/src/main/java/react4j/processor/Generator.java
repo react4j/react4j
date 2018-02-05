@@ -161,10 +161,6 @@ final class Generator
     }
 
     final MethodDescriptor renderMethod = descriptor.getRenderMethod();
-    if ( !renderMethod.getMethod().getSimpleName().toString().equals( "render" ) )
-    {
-      builder.addMethod( buildRenderAdapterMethod( renderMethod ).build() );
-    }
 
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
     {
@@ -350,17 +346,6 @@ final class Generator
 
     method.addStatement( "return (($T) component).$N", descriptor.getEnhancedClassName(), handlerName );
     return method;
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildRenderAdapterMethod( @Nonnull final MethodDescriptor renderMethod )
-  {
-    return MethodSpec.methodBuilder( "render" ).
-      addModifiers( Modifier.PROTECTED ).
-      addAnnotation( Override.class ).
-      addAnnotation( NULLABLE_CLASSNAME ).
-      returns( REACT_NODE_CLASSNAME ).
-      addStatement( "return $T.of( $N() )", REACT_NODE_CLASSNAME, renderMethod.getMethod().getSimpleName().toString() );
   }
 
   @Nonnull
