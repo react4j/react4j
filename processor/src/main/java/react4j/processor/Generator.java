@@ -186,8 +186,7 @@ final class Generator
     {
       method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ) )",
                            REACT_CLASSNAME,
-                           ClassName.get( descriptor.getPackageName(),
-                                          descriptor.getNestedClassPrefix() + descriptor.getEnhancedName() ),
+                           descriptor.getEnhancedClassName(),
                            JS_CLASSNAME );
       method.returns( REACT_NODE_CLASSNAME );
     }
@@ -897,9 +896,7 @@ final class Generator
   @Nonnull
   static TypeSpec buildDaggerFactory( @Nonnull final ComponentDescriptor descriptor )
   {
-    final TypeSpec.Builder builder =
-      TypeSpec.interfaceBuilder( ClassName.get( descriptor.getPackageName(),
-                                                descriptor.getElement().getSimpleName() + "DaggerFactory" ) );
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerFactoryClassName() );
 
     builder.addModifiers( Modifier.PUBLIC );
 

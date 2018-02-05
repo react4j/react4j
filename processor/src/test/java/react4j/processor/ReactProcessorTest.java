@@ -92,6 +92,16 @@ public class ReactProcessorTest
   }
 
   @Test
+  public void nestedCompleteComponent()
+    throws Exception
+  {
+    assertSuccessfulCompile( "input/com/example/nested/NestedCompleteComponent.java",
+                             "expected/com/example/nested/NestedCompleteComponent_BasicReactComponentBuilder.java",
+                             "expected/com/example/nested/NestedCompleteComponent_BasicReactComponentDaggerFactory.java",
+                             "expected/com/example/nested/NestedCompleteComponent_BasicReactComponent_.java" );
+  }
+
+  @Test
   public void renderFromParent()
     throws Exception
   {

@@ -4,6 +4,8 @@
 
 ##### Fixed
 * **\[processor\]** Update the annotation processor to support generic react components.
+* **\[processor\]** Fixed react components that are defined as nested classes when the react component uses
+  the `@EventHandler` or is expected to generate a `*DaggerFactory` class.
 
 ##### Added
 * **\[annotations\]** Introduced the `@Prop` annotation that can be used on abstract getter methods on

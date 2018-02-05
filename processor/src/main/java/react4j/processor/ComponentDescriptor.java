@@ -3,7 +3,6 @@ package react4j.processor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -159,21 +158,19 @@ final class ComponentDescriptor
   @Nonnull
   ClassName getEnhancedClassName()
   {
-    final ClassName className = ClassName.get( getElement() );
-    final ArrayList<String> names = new ArrayList<>( className.simpleNames() );
-    final String cname = getElement().getSimpleName() + "_";
-    if ( names.size() > 1 )
-    {
-      names.remove( names.size() - 1 );
-      names.add( cname );
-      return ClassName.get( getPackageName(),
-                            names.get( 0 ),
-                            names.subList( 1, names.size() ).toArray( new String[ 0 ] ) );
-    }
-    else
-    {
-      return ClassName.get( getPackageName(), cname );
-    }
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + getEnhancedName() );
+  }
+
+  @Nonnull
+  String getDaggerFactory()
+  {
+    return _element.getSimpleName() + "DaggerFactory";
+  }
+
+  @Nonnull
+  ClassName getDaggerFactoryClassName()
+  {
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + getDaggerFactory() );
   }
 
   @Nonnull
