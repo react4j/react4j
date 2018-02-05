@@ -149,7 +149,7 @@ abstract class AbstractReactProcessorTest
   }
 
   @Nonnull
-  protected final JavaFileObject fixture( @Nonnull final String path )
+  final JavaFileObject fixture( @Nonnull final String path )
   {
     try
     {
