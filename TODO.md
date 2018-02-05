@@ -19,8 +19,6 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
-* Complete `react4j-cryptotracker` example.
-
 * Add `@Ref` annotation to field in component. This will generate a cached helper function similar to EventHandler
   annotation that can be passed as prop.
 
@@ -30,17 +28,8 @@
   wrapped where EventHandlers should be by default. Alternatively add a separate `@Callback` annotation that
   assumes the callers context rather than the components context (i.e. does not wrap them in `@Action` annotations)
 
-* Port transition code ala
-  - https://github.com/reactjs/react-transition-group
-  - https://reactcommunity.org/react-transition-group/
-  or maybe https://react-move.js.org/
-
-* Port a hackernews clone
-  - https://github.com/clintonwoo/hackernews-react-graphql
-  - https://github.com/reasonml-community/reason-react-hacker-news
-
-* Port a medium clone. a.k.a. The "realworld example app".
-  - https://github.com/gothinkster/react-mobx-realworld-example-app
+* Separate implementation details and user facing code in enhanced class into `MyComponent_` (User facing code)
+  and `React4j_MyComponent` (implementation details)
 
 ### Medium Priorities
 
@@ -55,6 +44,20 @@
 * State fields should be read-only abstractions. Mutations create new objects?
 
 ### Low Priorities
+
+* Complete `react4j-cryptotracker` example.
+
+* Port transition code ala
+  - https://github.com/reactjs/react-transition-group
+  - https://reactcommunity.org/react-transition-group/
+  or maybe https://react-move.js.org/
+
+* Port a hackernews clone
+  - https://github.com/clintonwoo/hackernews-react-graphql
+  - https://github.com/reasonml-community/reason-react-hacker-news
+
+* Port a medium clone. a.k.a. The "realworld example app".
+  - https://github.com/gothinkster/react-mobx-realworld-example-app
 
 * See if we can remove ReactElement.
 
@@ -76,9 +79,6 @@
 * EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
   schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
   and will need to be marked as runImmediately=false)
-
-* Separate implementation details and user facing code in enhanced class into `MyComponent_` (User facing code)
-  and `React4j_MyComponent` (implementation details)
 
 * React `classSet` addon equiv. Also see scalajs variant - https://github.com/japgolly/scalajs-react/blob/master/doc/USAGE.md#react-extensions
 
