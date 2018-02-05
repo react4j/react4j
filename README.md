@@ -1,4 +1,4 @@
-<p align="center"><img src="/docs/_icons/React4j.png" alt="React4j" width="120"></p>
+<p align="center"><img src="/assets/React4j.png" alt="React4j" width="120"></p>
 
 # React4j
 
