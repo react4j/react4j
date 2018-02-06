@@ -439,13 +439,9 @@ public final class ReactProcessor
     MethodChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
 
-    if ( "key".equals( name ) &&
-         (
-           methodType.getReturnType().getKind() != TypeKind.DECLARED &&
-           !"java.lang.String".equals( methodType.getReturnType().toString() )
-         ) )
+    if ( "key".equals( name ) )
     {
-      throw new ReactProcessorException( "@Prop named 'key' should be of type java.lang.String", method );
+      throw new ReactProcessorException( "@Prop named 'key' is invalid as references value used this key in reconciliation process. This value can be accessed via Component.getKey()", method );
     }
     else if ( "child".equals( name ) &&
               (

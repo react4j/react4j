@@ -135,6 +135,21 @@ public abstract class Component<P extends BaseProps, S extends BaseState, C exte
   }
 
   /**
+   * Return the key associated with the component if any.
+   * The key is used by the react reconcilliation process as a means to identify components so that they
+   * can be moved rather than recreated or reconfigured. Typically, it should not be used by the component
+   * itself except for generating keys of sub-components. This value may not be specified in which case null
+   * will be returned.
+   *
+   * @return the key if specified.
+   */
+  @Nullable
+  protected final String getKey()
+  {
+    return Js.asPropertyMap( props() ).getAny( "key" ).asString();
+  }
+
+  /**
    * Schedule a shallow merge of supplied state into current state.
    * This will trigger an update cycle and is the primary method you
    * use to trigger UI updates from event handlers and server request callbacks.

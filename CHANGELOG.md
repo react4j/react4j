@@ -11,6 +11,7 @@
 * **\[annotations\]** Introduced the `@Prop` annotation that can be used on abstract getter methods on
   instances of `ReactComponent`. The annotation processor will implement the getter as an access from
   reacts props value. In subclasses of `ReactArezComponent`, the `@Prop` annotated method is made observable.
+* **\[core\]** Expose the special `key` prop on the component class via `Component.getKey()`.
 
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.49`.

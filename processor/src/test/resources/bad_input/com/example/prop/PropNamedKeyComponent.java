@@ -13,8 +13,8 @@ import react4j.core.ReactNode;
 abstract class PropNamedKeyComponent
   extends Component<BaseProps, BaseState, BaseContext>
 {
-  @Prop
-  protected abstract int getKey();
+  @Prop( name = "key" )
+  protected abstract String getMyKey();
 
   @Nullable
   @Override
