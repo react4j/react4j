@@ -51,6 +51,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.BoolJavaBeanPropComponent", false },
         new Object[]{ "com.example.prop.GenericPropComponent", false },
         new Object[]{ "com.example.prop.GenericTypePropComponent", false },
+        new Object[]{ "com.example.prop.MultipleChildrenPropComponent", false },
         new Object[]{ "com.example.prop.MultiPropComponent", false },
         new Object[]{ "com.example.prop.NonJavaBeanPropComponent", false },
         new Object[]{ "com.example.prop.PropTypeBoolean", false },
@@ -63,6 +64,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.PropTypeObject", false },
         new Object[]{ "com.example.prop.PropTypeShort", false },
         new Object[]{ "com.example.prop.PropTypeString", false },
+        new Object[]{ "com.example.prop.SingleChildPropComponent", false },
         new Object[]{ "com.example.render.BaseRenderComponent", false },
         new Object[]{ "RootPackageReactComponent", false }
       };
@@ -173,6 +175,10 @@ public class ReactProcessorTest
                       "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type com.example.event_handler.TooFewParamsComponent.CustomHandler that has handler method with 2 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method onMouseEvent." },
         new Object[]{ "com.example.event_handler.TooManyParamsComponent",
                       "The @EventHandler target has 1 parameters but the type parameter specified a handler with method type react4j.annotations.EventHandler.Procedure that has handler method with 0 parameters. The @EventHandler target should have zero parameters or match the number of parameter in the target method call." },
+        new Object[]{ "com.example.prop.ChildrenPropBadTypeComponent",
+                      "@Prop named 'children' should be of type react4j.core.ReactNode[]" },
+        new Object[]{ "com.example.prop.ChildPropBadTypeComponent",
+                      "@Prop named 'child' should be of type react4j.core.ReactNode" },
         new Object[]{ "com.example.prop.PropAndEventHandlerComponent",
                       "Method can not be annotated with both @EventHandler and @Prop" },
         new Object[]{ "com.example.prop.PropHasParameterComponent", "@Prop target must not have any parameters" },

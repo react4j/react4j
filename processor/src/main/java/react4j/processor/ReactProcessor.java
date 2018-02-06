@@ -414,6 +414,22 @@ public final class ReactProcessor
       throw new ReactProcessorException( "@Prop named 'key' should be of type java.lang.String", method );
 
     }
+    else if ( "child".equals( name ) &&
+              (
+                methodType.getReturnType().getKind() != TypeKind.DECLARED &&
+                !"react4j.core.ReactNode".equals( methodType.getReturnType().toString() )
+              ) )
+    {
+      throw new ReactProcessorException( "@Prop named 'child' should be of type react4j.core.ReactNode", method );
+    }
+    else if ( "children".equals( name ) &&
+              (
+                methodType.getReturnType().getKind() != TypeKind.DECLARED &&
+                !"react4j.core.ReactNode[]".equals( methodType.getReturnType().toString() )
+              ) )
+    {
+      throw new ReactProcessorException( "@Prop named 'children' should be of type react4j.core.ReactNode[]", method );
+    }
 
     return new PropDescriptor( name, method, methodType );
   }
