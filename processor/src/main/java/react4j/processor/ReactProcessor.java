@@ -388,6 +388,18 @@ public final class ReactProcessor
         .map( m -> createPropDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
 
+    final PropDescriptor childrenProp =
+      props.stream().filter( p -> p.getName().equals( "children" ) ).findAny().orElse( null );
+    final PropDescriptor childProp =
+      props.stream().filter( p -> p.getName().equals( "child" ) ).findAny().orElse( null );
+    if ( null != childrenProp && null != childProp )
+    {
+      throw new ReactProcessorException( "Multiple candidate children @Prop annotated methods: " +
+                                         childrenProp.getMethod().getSimpleName() + " and " +
+                                         childProp.getMethod().getSimpleName(),
+                                         childrenProp.getMethod() );
+    }
+
     descriptor.setProps( props );
   }
 

@@ -179,6 +179,8 @@ public class ReactProcessorTest
                       "@Prop named 'children' should be of type react4j.core.ReactNode[]" },
         new Object[]{ "com.example.prop.ChildPropBadTypeComponent",
                       "@Prop named 'child' should be of type react4j.core.ReactNode" },
+        new Object[]{ "com.example.prop.MultipleChildrenPropsComponent",
+                      "Multiple candidate children @Prop annotated methods: getChildren and getChild" },
         new Object[]{ "com.example.prop.PropAndEventHandlerComponent",
                       "Method can not be annotated with both @EventHandler and @Prop" },
         new Object[]{ "com.example.prop.PropHasParameterComponent", "@Prop target must not have any parameters" },
