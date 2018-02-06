@@ -297,6 +297,7 @@ public final class ReactProcessor
   private EventHandlerDescriptor createEventHandlerDescriptor( @Nonnull final ComponentDescriptor descriptor,
                                                                @Nonnull final ExecutableElement method )
   {
+    verifyNoDuplicateAnnotations( method );
     final String name = deriveEventHandlerName( method );
     final TypeElement eventHandlerType = getEventHandlerType( method );
     final ExecutableType methodType =

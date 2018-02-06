@@ -157,6 +157,8 @@ public class ReactProcessorTest
                       "The @EventHandler has the same name as the event handler defined by a()" },
         new Object[]{ "com.example.event_handler.DuplicateNameComponent2",
                       "The @EventHandler has the same name as the event handler defined by handleFoo(int)." },
+        new Object[]{ "com.example.event_handler.EventHandlerAndPropComponent",
+                      "Method can not be annotated with both @EventHandler and @Prop" },
         new Object[]{ "com.example.event_handler.HandlerNotFunctionalInterfaceComponent",
                       "Method annotated with @EventHandler specified type com.example.event_handler.HandlerNotFunctionalInterfaceComponent.Foo that has more than 1 abstract method and thus is not a functional interface" },
         new Object[]{ "com.example.event_handler.HandlerNotFunctionalInterface2Component",
