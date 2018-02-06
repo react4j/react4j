@@ -409,11 +409,13 @@ public final class ReactProcessor
     final String name1 = o1.getName();
     final String name2 = o2.getName();
 
-    if ( name1.equals( "children" ) || name1.equals( "child" ) )
+    //children moves to the end, key moves to the start
+
+    if ( name1.equals( "children" ) || name1.equals( "child" ) || name2.equals( "key" ) )
     {
       return 1;
     }
-    else if ( name2.equals( "children" ) || name2.equals( "child" ) )
+    else if ( name2.equals( "children" ) || name2.equals( "child" ) || name1.equals( "key" ) )
     {
       return -1;
     }
