@@ -422,6 +422,9 @@ final class Generator
           convertMethodName = "cast";
         }
         break;
+      case ARRAY:
+        convertMethodName = "cast";
+        break;
       default:
         throw new ReactProcessorException( "Return type of @Prop method named '" + prop.getName() +
                                            "' is not yet handled. Return type: " + returnType, methodElement );
