@@ -423,7 +423,8 @@ final class Generator
         }
         break;
       default:
-        throw new ReactProcessorException( "Unhandled return type: " + returnType, methodElement );
+        throw new ReactProcessorException( "Return type of @Prop method named '" + prop.getName() +
+                                           "' is not yet handled. Return type: " + returnType, methodElement );
     }
     method.addStatement( "return $T.asPropertyMap( props() ).getAny( $S ).$N()",
                          JS_CLASSNAME,
