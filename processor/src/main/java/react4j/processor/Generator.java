@@ -454,10 +454,6 @@ final class Generator
       builder.addMethod( buildGetProviderMethod( descriptor ).build() );
     }
 
-    builder.addMethod( buildFactoryMethod().build() );
-    builder.addMethod( buildFactory2Method( descriptor ).build() );
-    builder.addMethod( buildFactory3Method( descriptor ).build() );
-
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
@@ -794,42 +790,6 @@ final class Generator
                     GUARDS_CLASSNAME,
                     descriptor.getName() ).
       addStatement( "return c_provider" );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildFactoryMethod()
-  {
-    return MethodSpec.methodBuilder( "_create" ).
-      addAnnotation( NONNULL_CLASSNAME ).
-      addModifiers( Modifier.STATIC ).
-      returns( REACT_NODE_CLASSNAME ).
-      addStatement( "return $T.createElement( TYPE )", REACT_CLASSNAME );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildFactory2Method( @Nonnull final ComponentDescriptor descriptor )
-  {
-    return MethodSpec.methodBuilder( "_create" ).
-      addAnnotation( NONNULL_CLASSNAME ).
-      addModifiers( Modifier.STATIC ).
-      returns( REACT_NODE_CLASSNAME ).
-      addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
-        addAnnotation( NULLABLE_CLASSNAME ).build() ).
-      addStatement( "return $T.createElement( TYPE, props )", REACT_CLASSNAME );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildFactory3Method( @Nonnull final ComponentDescriptor descriptor )
-  {
-    return MethodSpec.methodBuilder( "_create" ).
-      addAnnotation( NONNULL_CLASSNAME ).
-      addModifiers( Modifier.STATIC ).
-      returns( REACT_NODE_CLASSNAME ).
-      addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
-        addAnnotation( NULLABLE_CLASSNAME ).build() ).
-      addParameter( ParameterSpec.builder( REACT_NODE_CLASSNAME, "child", Modifier.FINAL ).
-        addAnnotation( NULLABLE_CLASSNAME ).build() ).
-      addStatement( "return $T.createElement( TYPE, props, child )", REACT_CLASSNAME );
   }
 
   @Nonnull

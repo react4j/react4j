@@ -24,6 +24,8 @@
 #### Removed
 * 💥 **\[arez\]** The `ReactArezComponent.props()` method is no longer observable. Instead it is expected that
   individual `@Prop` annotated methods are defined and these methods are observable.
+* 💥 **\[processor\]** Removed the `_create(*)` methods on the generated enhanced component class as no longer
+  required now that builders are synthesized.
 
 ### [v0.38](https://github.com/react4j/react4j/tree/v0.38) (2018-01-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.37...v0.38)

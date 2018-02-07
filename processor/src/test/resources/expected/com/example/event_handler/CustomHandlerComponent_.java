@@ -11,9 +11,7 @@ import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
-import react4j.core.React;
 import react4j.core.ReactConfig;
-import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class CustomHandlerComponent_ extends CustomHandlerComponent {
@@ -21,21 +19,6 @@ class CustomHandlerComponent_ extends CustomHandlerComponent {
 
   @Nonnull
   private final CustomHandlerComponent.CustomHandler _handleFoo = create_handleFoo();
-
-  @Nonnull
-  static ReactNode _create() {
-    return React.createElement( TYPE );
-  }
-
-  @Nonnull
-  static ReactNode _create(@Nullable final BaseProps props) {
-    return React.createElement( TYPE, props );
-  }
-
-  @Nonnull
-  static ReactNode _create(@Nullable final BaseProps props, @Nullable final ReactNode child) {
-    return React.createElement( TYPE, props, child );
-  }
 
   @Nonnull
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
