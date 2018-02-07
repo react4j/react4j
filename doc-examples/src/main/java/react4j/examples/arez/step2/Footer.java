@@ -34,7 +34,7 @@ abstract class Footer
     final FilterMode filterMode = AppData.viewService.getFilterMode();
     return
       footer( new HtmlProps().className( "footer" ),
-              FooterTodoCount.create(),
+              FooterTodoCountBuilder.build(),
               ul( new HtmlProps().className( "filters" ),
                   li( a( new AnchorProps()
                            .className( FilterMode.ALL == filterMode ? "selected" : "" )

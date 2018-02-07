@@ -1,6 +1,5 @@
 package react4j.examples.arez.step2;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
@@ -16,12 +15,6 @@ import static react4j.examples.arez.step2.FooterTodoCount_.*;
 abstract class FooterTodoCount
   extends ReactArezComponent<BaseProps, BaseContext>
 {
-  @Nonnull
-  static ReactNode create()
-  {
-    return _create();
-  }
-
   @Nullable
   @Override
   protected ReactNode render()

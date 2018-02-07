@@ -18,7 +18,6 @@ import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
 import react4j.dom.ReactDOM;
-import static react4j.extras.WindowPortal_.*;
 
 /**
  * A portal that opens another window.
@@ -70,12 +69,6 @@ public abstract class WindowPortal
       props.onClose = onClose;
       return props;
     }
-  }
-
-  @Nonnull
-  public static ReactNode create( @Nonnull final Props props, @Nonnull final ReactNode child )
-  {
-    return _create( props, child );
   }
 
   @Nullable
