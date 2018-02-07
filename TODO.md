@@ -8,10 +8,13 @@
 
 * Ensure children can be optional.
 
+* Copy nullability annotations onto overriden `@Prop` methods.
+
 * Possibly support refs in generated builders.
 
 * Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
-  Could decide to skip event handlers to reduce overhead and changes due to parent re-render.
+  Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
+  default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
 
 * Components that have not `@State` methods, no lifecycle methods, no `@Ref` methods and no state on the instance
   could be made into stateless components when translating to React. Potentially we can also enforce stateless-ness
