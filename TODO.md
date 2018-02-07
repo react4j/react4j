@@ -2,12 +2,11 @@
 
 ### High Priority
 
-* Generate builders for components. These builders first allow specification of a key, possibly ref and then all
-  required props and finally the optional props. The props are determined by the `@Prop` annotated methods. Builders
-  support zero, one or many children based on introspecting the `@Props` annotated method for children. Children
-  `@Props` methods are sorted to end of props list. Children props also must be of expected types.
-  - https://github.com/ltearno/builder-generator
-  - https://blog.jayway.com/2012/02/07/builder-pattern-with-a-twist/
+* Enhance generated builders to support optional `@Props` ... in stage prior to children?
+
+* Ensure children can be optional.
+
+* Possibly support refs in generated builders.
 
 * Components that have not `@State` methods, no lifecycle methods, no `@Ref` methods and no state on the instance
   could be made into stateless components when translating to React. Potentially we can also enforce stateless-ness
