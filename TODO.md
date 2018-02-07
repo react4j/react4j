@@ -4,6 +4,8 @@
 
 * Enhance generated builders to support optional `@Props` ... in stage prior to children?
 
+* Remove BaseProps and remove associated type parameters.
+
 * Ensure children can be optional.
 
 * Possibly support refs in generated builders.
