@@ -10,6 +10,8 @@
 
 * Possibly support refs in generated builders.
 
+* Nullability annotations should not be added in `BuilderN` interface methods if the type is a primitive.
+
 * Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
   Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
   default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
