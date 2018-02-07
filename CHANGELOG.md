@@ -4,6 +4,10 @@
 
 #### Changed
 * **\[extras\]** Prefer the `@Props` annotation strategy for getting props for `WindowPortal` component.
+* 💥 **\[core\]** Remove the `BaseProps` class and all the associated infrastructure. This involved removing
+  the type `P` type variable from the `Component` class and associated infrastructure. Where the framework
+  needs to refer to props as a generic object, replace the type variable `P extends BaseProps` with the type
+  `JsPropertyMap<Object>`.
 
 ### [v0.39](https://github.com/react4j/react4j/tree/v0.39) (2018-02-07)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.38...v0.39)

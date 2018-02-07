@@ -19,7 +19,6 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react4j.core.BaseContext;
-import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.Procedure;
@@ -36,8 +35,8 @@ import react4j.core.util.JsUtil;
  * of an Arez transaction. (Typically this means it needs to be accessed within the
  * scope of a {@link Action} annotated method or within the scope of the render method.</p>
  */
-public abstract class ReactArezComponent<P extends BaseProps, C extends BaseContext>
-  extends Component<P, BaseState, C>
+public abstract class ReactArezComponent<C extends BaseContext>
+  extends Component<BaseState, C>
 {
   /**
    * Key used to store the arez data in state.
@@ -56,13 +55,13 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
   /**
    * Method invoked when props changes.
    */
-  protected abstract void reportPropsChanged( @Nullable final P nextProps );
+  protected abstract void reportPropsChanged( @Nullable final JsPropertyMap<Object> nextProps );
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<P, BaseState> callback,
+  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<BaseState> callback,
                                             @Nullable final Procedure onStateUpdateComplete )
   {
     Guards.fail( () -> "Attempted to schedule state update on ReactArezComponent subclass. Use Arez @Observable or @Computed properties instead." );
@@ -153,7 +152,7 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
    * {@inheritDoc}
    */
   @Override
-  protected boolean shouldComponentUpdate( @Nullable final P nextProps,
+  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
                                            @Nullable final BaseState nextState,
                                            @Nullable final C nextContext )
   {
@@ -196,7 +195,8 @@ public abstract class ReactArezComponent<P extends BaseProps, C extends BaseCont
    * {@inheritDoc}
    */
   @Override
-  protected void componentDidUpdate( @Nullable final P prevProps, @Nullable final BaseState prevState )
+  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
+                                     @Nullable final BaseState prevState )
   {
     storeArezDataAsState();
   }

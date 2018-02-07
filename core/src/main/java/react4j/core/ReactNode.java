@@ -56,13 +56,13 @@ public interface ReactNode
   }
 
   @JsOverlay
-  static ReactNode of( final ReactElement<?, ?> element )
+  static ReactNode of( final ReactElement<?> element )
   {
     return Js.cast( element );
   }
 
   @JsOverlay
-  static ReactNode of( final ReactElement<?, ?>... elements )
+  static ReactNode of( final ReactElement<?>... elements )
   {
     return Js.cast( elements );
   }
@@ -86,7 +86,7 @@ public interface ReactNode
   }
 
   @JsOverlay
-  default ReactElement<?, ?> asReactElement()
+  default ReactElement<?> asReactElement()
   {
     return Js.cast( this );
   }

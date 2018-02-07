@@ -5,12 +5,11 @@ import javax.annotation.Nullable;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseContext;
-import react4j.core.BaseProps;
 import react4j.core.ReactNode;
 
 @ReactComponent
 abstract class AutorunArezReactComponent
-  extends ReactArezComponent<BaseProps, BaseContext>
+  extends ReactArezComponent<BaseContext>
 {
   @Autorun
   public void myAutorun()

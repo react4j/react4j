@@ -22,14 +22,14 @@ public class ReactWidget
   /**
    * The react widget to render.
    */
-  private final ReactElement<?, ?> _reactElement;
+  private final ReactElement<?> _reactElement;
 
   /**
    * Create the widget.
    *
    * @param reactElement the react element to render.
    */
-  public ReactWidget( @Nonnull final ReactElement<?, ?> reactElement )
+  public ReactWidget( @Nonnull final ReactElement<?> reactElement )
   {
     _element = Document.get().createDivElement();
     _reactElement = Objects.requireNonNull( reactElement );

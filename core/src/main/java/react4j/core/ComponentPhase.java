@@ -1,5 +1,7 @@
 package react4j.core;
 
+import jsinterop.base.JsPropertyMap;
+
 /**
  * This indicates the major lifecycle phase that the component is going through.
  * These match those in the <a href="https://reactjs.org/docs/react-component.html">React Component</a>
@@ -31,11 +33,11 @@ enum ComponentPhase
    * The component is potentially re-rendered due to updates.
    * The component goes through the steps:
    * <ul>
-   * <li>{@link Component#componentWillReceiveProps(BaseProps, BaseContext)} if props were provided. i.e. the parent component was re-rendered.</li>
-   * <li>{@link Component#shouldComponentUpdate(BaseProps, BaseState, BaseContext)} and if the component returns false the update will be aborted.</li>
-   * <li>{@link Component#componentWillUpdate(BaseProps, BaseState, BaseContext)}.</li>
+   * <li>{@link Component#componentWillReceiveProps(JsPropertyMap, BaseContext)} if props were provided. i.e. the parent component was re-rendered.</li>
+   * <li>{@link Component#shouldComponentUpdate(JsPropertyMap, BaseState, BaseContext)} and if the component returns false the update will be aborted.</li>
+   * <li>{@link Component#componentWillUpdate(JsPropertyMap, BaseState, BaseContext)}.</li>
    * <li>{@link Component#render()}.</li>
-   * <li>{@link Component#componentDidUpdate(BaseProps, BaseState)}.</li>
+   * <li>{@link Component#componentDidUpdate(JsPropertyMap, BaseState)}.</li>
    * </ul>
    */
   UPDATING,

@@ -3,6 +3,7 @@ package react4j.core;
 import elemental2.core.JsError;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * This class provides a base class that designed to forward all lifecycle methods to a target component.
@@ -14,12 +15,11 @@ import javax.annotation.Nullable;
  * be optimized away, having no significant performance impact.
  */
 public abstract class NativeAdapterComponent<
-  P extends BaseProps,
   S extends BaseState,
   C extends BaseContext,
-  I extends Component<P, S, C>
+  I extends Component<S, C>
   >
-  extends NativeComponent<P, S, C>
+  extends NativeComponent<S, C>
 {
   /**
    * The target component that all lifecycle methods are forwarded to.
@@ -32,7 +32,7 @@ public abstract class NativeAdapterComponent<
    * @param props   the initial props.
    * @param context the initial context.
    */
-  protected NativeAdapterComponent( @Nullable final P props,
+  protected NativeAdapterComponent( @Nullable final JsPropertyMap<Object> props,
                                     @Nullable final C context )
   {
     super( props, context );
@@ -161,9 +161,9 @@ public abstract class NativeAdapterComponent<
    * @param nextProps   the new properties of the component.
    * @param nextState   the state.
    * @param nextContext the new context of the component.
-   * @see Component#componentWillUpdate(BaseProps, BaseState, BaseContext)
+   * @see Component#componentWillUpdate(JsPropertyMap, BaseState, BaseContext)
    */
-  protected final void performComponentWillUpdate( @Nonnull final P nextProps,
+  protected final void performComponentWillUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
                                                    @Nonnull final S nextState,
                                                    @Nonnull final C nextContext )
   {
@@ -193,9 +193,9 @@ public abstract class NativeAdapterComponent<
    * @param nextState   the new state of the component.
    * @param nextContext the new context of the component.
    * @return true if the component should be updated.
-   * @see Component#shouldComponentUpdate(BaseProps, BaseState, BaseContext)
+   * @see Component#shouldComponentUpdate(JsPropertyMap, BaseState, BaseContext)
    */
-  protected final boolean performShouldComponentUpdate( @Nonnull final P nextProps,
+  protected final boolean performShouldComponentUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
                                                         @Nonnull final S nextState,
                                                         @Nullable final C nextContext )
   {
@@ -223,9 +223,10 @@ public abstract class NativeAdapterComponent<
    *
    * @param nextProps   the new properties of the component.
    * @param nextContext the new context of the component.
-   * @see Component#componentWillReceiveProps(BaseProps, BaseContext)
+   * @see Component#componentWillReceiveProps(JsPropertyMap, BaseContext)
    */
-  protected final void performComponentWillReceiveProps( @Nonnull final P nextProps, @Nonnull final C nextContext )
+  protected final void performComponentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps,
+                                                         @Nonnull final C nextContext )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -251,9 +252,10 @@ public abstract class NativeAdapterComponent<
    *
    * @param nextProps the new properties of the component.
    * @param nextState the new state of the component.
-   * @see Component#componentDidUpdate(BaseProps, BaseState)
+   * @see Component#componentDidUpdate(JsPropertyMap, BaseState)
    */
-  protected final void performComponentDidUpdate( @Nonnull final P nextProps, @Nonnull final S nextState )
+  protected final void performComponentDidUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
+                                                  @Nonnull final S nextState )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {

@@ -7,25 +7,25 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * The react native component.
  *
- * @param <P> the type of props this component expects
  * @param <S> the type of state this component maintains
  */
 @JsType( isNative = true, namespace = "React", name = "Component" )
-public abstract class NativeComponent<P extends BaseProps, S extends BaseState, C extends BaseContext>
+public abstract class NativeComponent<S extends BaseState, C extends BaseContext>
 {
   @SuppressWarnings( "unused" )
   @JsProperty
-  private P props;
+  private JsPropertyMap<Object> props;
   @JsProperty
   private S state;
   @JsProperty
   private C context;
 
-  NativeComponent( @SuppressWarnings( "unused" ) @Nullable final P props,
+  NativeComponent( @SuppressWarnings( "unused" ) @Nullable final JsPropertyMap<Object> props,
                    @SuppressWarnings( "unused" ) @Nullable final C context )
   {
   }
@@ -36,7 +36,7 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState, 
 
   @JsOverlay
   @Nullable
-  final P props()
+  final JsPropertyMap<Object> props()
   {
     return props;
   }
@@ -55,7 +55,7 @@ public abstract class NativeComponent<P extends BaseProps, S extends BaseState, 
     return context;
   }
 
-  final native void setState( @Nonnull Component.SetStateCallback<P, S> callback );
+  final native void setState( @Nonnull Component.SetStateCallback<S> callback );
 
   @JsOverlay
   final void setInitialState( @Nonnull final S state )

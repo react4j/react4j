@@ -11,7 +11,6 @@ import org.realityforge.anodoc.Unsupported;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 import react4j.core.BaseContext;
-import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
@@ -28,7 +27,7 @@ import react4j.dom.ReactDOM;
 @ReactComponent
 @Unsupported
 public abstract class WindowPortal
-  extends Component<BaseProps, BaseState, BaseContext>
+  extends Component<BaseState, BaseContext>
 {
   @FunctionalInterface
   public interface OnCloseCallback
@@ -61,6 +60,9 @@ public abstract class WindowPortal
 
   @Prop
   protected abstract OnCloseCallback onClose();
+
+  @Prop
+  protected abstract ReactNode[] children();
 
   @Override
   protected void postConstruct()
@@ -111,8 +113,7 @@ public abstract class WindowPortal
   protected ReactNode render()
   {
     assert null != _element;
-    final ReactNode children = props().children;
-    assert null != children;
+    final ReactNode children = ReactNode.of( children() );
     return ReactDOM.createPortal( children, _element );
   }
 }

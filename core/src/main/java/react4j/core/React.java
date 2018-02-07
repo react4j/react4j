@@ -6,6 +6,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Native interface to native runtime for creating component.
@@ -20,17 +21,13 @@ public final class React
   /**
    * Create a ReactElement for the specified React component with no props or children.
    *
-   * @param <P>  the type of the component props.
    * @param <C>  the type of the component context.
    * @param type the constructor function for the native React component.
    * @return a new ReactElement.
    */
   @JsOverlay
-  public static <
-    P extends BaseProps,
-    C extends BaseContext
-    >
-  ReactElement<P, ComponentConstructorFunction<P, C>> createElement( @Nonnull final ComponentConstructorFunction<P, C> type )
+  public static <C extends BaseContext>
+  ReactElement<ComponentConstructorFunction<C>> createElement( @Nonnull final ComponentConstructorFunction<C> type )
   {
     return createElement( type, null );
   }
@@ -38,19 +35,15 @@ public final class React
   /**
    * Create a ReactElement for the specified React component with no children.
    *
-   * @param <P>   the type of the component props.
    * @param <C>   the type of the component context.
    * @param type  the constructor function for the native React component.
    * @param props the props to pass to the component.
    * @return a new ReactElement.
    */
   @JsOverlay
-  public static <
-    P extends BaseProps,
-    C extends BaseContext
-    >
-  ReactElement<P, ComponentConstructorFunction<P, C>> createElement( @Nonnull final ComponentConstructorFunction<P, C> type,
-                                                                     @Nullable final P props )
+  public static <C extends BaseContext>
+  ReactElement<ComponentConstructorFunction<C>> createElement( @Nonnull final ComponentConstructorFunction<C> type,
+                                                               @Nullable final JsPropertyMap<Object> props )
   {
     // Need to pass through undefined to react otherwise the debugger tool displays
     // children as null rather than omitting children
@@ -60,20 +53,16 @@ public final class React
   /**
    * Create a ReactElement for the specified React component.
    *
-   * @param <P>   the type of the component props.
    * @param <C>   the type of the component context.
    * @param type  the constructor function for the native React component.
    * @param props the props to pass to the component.
    * @param child the child/children of the react component.
    * @return a new ReactElement.
    */
-  public static native <
-    P extends BaseProps,
-    C extends BaseContext
-    >
-  ReactElement<P, ComponentConstructorFunction<P, C>> createElement( @Nonnull ComponentConstructorFunction<P, C> type,
-                                                                     @Nullable P props,
-                                                                     @Nullable ReactNode child );
+  public static native <C extends BaseContext>
+  ReactElement<ComponentConstructorFunction<C>> createElement( @Nonnull ComponentConstructorFunction<C> type,
+                                                               @Nullable JsPropertyMap<Object> props,
+                                                               @Nullable ReactNode child );
 
   /**
    * Clone and return a new ReactElement using element as the starting point. The resulting
@@ -82,12 +71,11 @@ public final class React
    * ref from the original element will be preserved. There is no special behavior for merging
    * any props (unlike cloneWithProps).
    *
-   * @param <P>     the type of the component props.
    * @param <T>     the type of the component.
    * @param element the element to clone
    * @param props   the props to merge
    * @return the cloned element
    */
-  public static native <P extends BaseProps, T>
-  ReactElement<P, T> cloneElement( @Nonnull ReactElement<P, T> element, @Nullable P props );
+  public static native <T>
+  ReactElement<T> cloneElement( @Nonnull ReactElement<T> element, @Nullable JsPropertyMap<Object> props );
 }

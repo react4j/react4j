@@ -52,6 +52,8 @@ final class Generator
   private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
+  private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
+    ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
 
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j.core", "ComponentConstructorFunction" );
@@ -617,14 +619,14 @@ final class Generator
     final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropsChanged" ).
       addModifiers( Modifier.PROTECTED, Modifier.FINAL ).
       addAnnotation( Override.class ).
-      addParameter( ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "nextProps", Modifier.FINAL ).
+      addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
         addAnnotation( NULLABLE_CLASSNAME ).build() );
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       final String code =
-        "if ( !$T.isTripleEqual( $T.asPropertyMap( props() ).get( $S ), $T.asPropertyMap( nextProps ).get( $S ) ) )";
-      block.beginControlFlow( code, JS_CLASSNAME, JS_CLASSNAME, prop.getName(), JS_CLASSNAME, prop.getName() );
+        "if ( !$T.isTripleEqual( props().get( $S ), nextProps.get( $S ) ) )";
+      block.beginControlFlow( code, JS_CLASSNAME, prop.getName(), prop.getName() );
       block.addStatement( "$N().reportChanged()", toObservableRefMethodName( prop ) );
       block.endControlFlow();
       method.addCode( block.build() );
@@ -645,7 +647,6 @@ final class Generator
   private static ParameterizedTypeName getJsConstructorFnType( @Nonnull final ComponentDescriptor descriptor )
   {
     return ParameterizedTypeName.get( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
-                                      TypeName.get( descriptor.getPropsType().asType() ),
                                       TypeName.get( descriptor.getContextType().asType() ) );
   }
 
@@ -871,7 +872,6 @@ final class Generator
 
     final TypeName superType =
       ParameterizedTypeName.get( REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME,
-                                 ClassName.get( descriptor.getPropsType().asType() ),
                                  ClassName.get( descriptor.getStateType().asType() ),
                                  ClassName.get( descriptor.getContextType().asType() ),
                                  descriptor.getComponentType() );
@@ -887,7 +887,7 @@ final class Generator
     // build the constructor
     {
       final ParameterSpec.Builder props =
-        ParameterSpec.builder( ClassName.get( descriptor.getPropsType() ), "props", Modifier.FINAL ).
+        ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
           addAnnotation( NULLABLE_CLASSNAME );
       final ParameterSpec.Builder context =
         ParameterSpec.builder( ClassName.get( descriptor.getContextType() ), "context", Modifier.FINAL ).

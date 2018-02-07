@@ -1,21 +1,21 @@
 package com.example.default_props;
 
 import javax.annotation.Nonnull;
+import jsinterop.base.JsPropertyMap;
 import react4j.annotations.ReactComponent;
 import react4j.core.BaseContext;
-import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
 abstract class ParameterComponent
-  extends Component<BaseProps, BaseState, BaseContext>
+  extends Component<BaseState, BaseContext>
 {
   @Nonnull
-  static BaseProps getInitialProps( int i )
+  static JsPropertyMap<Object> getInitialProps( int i )
   {
-    return new BaseProps();
+    return JsPropertyMap.of();
   }
 
   @Override

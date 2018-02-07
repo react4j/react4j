@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -14,11 +13,11 @@ import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class BasicContextComponent_ extends BasicContextComponent {
-  static final ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<BasicContextComponent.Context> TYPE = getConstructorFunction();
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BasicContextComponent.Context> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BasicContextComponent.Context> getConstructorFunction() {
+    final ComponentConstructorFunction<BasicContextComponent.Context> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicContextComponent" );
     }
@@ -29,8 +28,8 @@ class BasicContextComponent_ extends BasicContextComponent {
     return componentConstructor;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BasicContextComponent.Context, BasicContextComponent> {
-    NativeReactComponent(@Nullable final BaseProps props,
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BasicContextComponent.Context, BasicContextComponent> {
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props,
         @Nullable final BasicContextComponent.Context context) {
       super( props, context );
     }

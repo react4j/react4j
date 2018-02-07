@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import react4j.core.BaseContext;
-import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -16,11 +16,11 @@ import react4j.core.ReactErrorInfo;
 
 @Generated("react4j.processor.ReactProcessor")
 class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsComponent {
-  static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseContext> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
     }
@@ -33,23 +33,25 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps, @Nonnull BaseState nextState);
 
-    void componentWillReceiveProps(@Nonnull BaseProps nextProps, @Nonnull BaseContext nextContext);
+    void componentWillReceiveProps(@Nonnull JsPropertyMap<Object> nextProps,
+        @Nonnull BaseContext nextContext);
 
     void componentWillUnmount();
 
-    void componentWillUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState,
+    void componentWillUpdate(@Nonnull JsPropertyMap<Object> nextProps, @Nonnull BaseState nextState,
         @Nonnull BaseContext nextContext);
 
     void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
 
-    boolean shouldComponentUpdate(@Nonnull BaseProps nextProps, @Nonnull BaseState nextState,
-        @Nonnull BaseContext nextContext);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps,
+        @Nonnull BaseState nextState, @Nonnull BaseContext nextContext);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, OverrideLifecycleMethodsComponent> implements Lifecycle {
-    NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, OverrideLifecycleMethodsComponent> implements Lifecycle {
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props,
+        @Nullable final BaseContext context) {
       super( props, context );
     }
 
@@ -64,13 +66,13 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final BaseProps nextProps,
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
         @Nonnull final BaseState nextState) {
       performComponentDidUpdate(nextProps,nextState);
     }
 
     @Override
-    public void componentWillReceiveProps(@Nonnull final BaseProps nextProps,
+    public void componentWillReceiveProps(@Nonnull final JsPropertyMap<Object> nextProps,
         @Nonnull final BaseContext nextContext) {
       performComponentWillReceiveProps(nextProps,nextContext);
     }
@@ -81,7 +83,7 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public void componentWillUpdate(@Nonnull final BaseProps nextProps,
+    public void componentWillUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
         @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
       performComponentWillUpdate(nextProps,nextState,nextContext);
     }
@@ -93,7 +95,7 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final BaseProps nextProps,
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
         @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
       return performShouldComponentUpdate(nextProps,nextState,nextContext);
     }

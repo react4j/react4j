@@ -182,8 +182,9 @@ public final class ReactProcessor
 
   private void determineDefaultPropsMethod( @Nonnull final ComponentDescriptor descriptor )
   {
+    final Types typeUtils = processingEnv.getTypeUtils();
     final List<ExecutableElement> defaultPropsMethods =
-      ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
+      ProcessorUtil.getMethods( descriptor.getElement(), typeUtils ).stream()
         .filter( m -> m.getSimpleName().toString().equals( "getInitialProps" ) )
         .collect( Collectors.toList() );
 
@@ -192,14 +193,18 @@ public final class ReactProcessor
       for ( final ExecutableElement method : defaultPropsMethods )
       {
         final ExecutableType methodType =
-          (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
+          (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), method );
+
+        final TypeElement typeElement =
+          processingEnv.getElementUtils().getTypeElement( Constants.JS_PROPERTY_MAP_CLASSNAME );
+        final TypeElement objectType = processingEnv.getElementUtils().getTypeElement( Object.class.getName() );
+        final DeclaredType expectedType = typeUtils.getDeclaredType( typeElement, objectType.asType() );
 
         if ( methodType.getThrownTypes().isEmpty() &&
              methodType.getParameterTypes().isEmpty() &&
              method.getModifiers().contains( Modifier.STATIC ) &&
              !method.getModifiers().contains( Modifier.PRIVATE ) &&
-             processingEnv.getTypeUtils()
-               .isAssignable( methodType.getReturnType(), descriptor.getPropsType().asType() ) )
+             typeUtils.isAssignable( methodType.getReturnType(), expectedType ) )
         {
           descriptor.setDefaultPropsMethod( method );
           return;
@@ -441,7 +446,9 @@ public final class ReactProcessor
 
     if ( "key".equals( name ) )
     {
-      throw new ReactProcessorException( "@Prop named 'key' is invalid as references value used this key in reconciliation process. This value can be accessed via Component.getKey()", method );
+      throw new ReactProcessorException(
+        "@Prop named 'key' is invalid as references value used this key in reconciliation process. This value can be accessed via Component.getKey()",
+        method );
     }
     else if ( "child".equals( name ) &&
               (
@@ -718,19 +725,14 @@ public final class ReactProcessor
   {
     final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
     final List<? extends TypeParameterElement> typeParameters = componentType.getTypeParameters();
-    assert 3 == typeParameters.size();
+    assert 2 == typeParameters.size();
 
-    final TypeParameterElement propsTypeParameter = typeParameters.get( 0 );
-    assert propsTypeParameter.getSimpleName().toString().equals( "P" );
-    final TypeElement propsType = resolveToElement( descriptor, propsTypeParameter );
-    descriptor.setPropsType( propsType );
-
-    final TypeParameterElement stateTypeParameter = typeParameters.get( 1 );
+    final TypeParameterElement stateTypeParameter = typeParameters.get( 0 );
     assert stateTypeParameter.getSimpleName().toString().equals( "S" );
     final TypeElement stateType = resolveToElement( descriptor, stateTypeParameter );
     descriptor.setStateType( stateType );
 
-    final TypeParameterElement contextTypeParameter = typeParameters.get( 2 );
+    final TypeParameterElement contextTypeParameter = typeParameters.get( 1 );
     assert contextTypeParameter.getSimpleName().toString().equals( "C" );
     final TypeElement contextType = resolveToElement( descriptor, contextTypeParameter );
 

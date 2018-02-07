@@ -5,12 +5,11 @@ import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.BaseContext;
-import react4j.core.BaseProps;
 import react4j.core.ReactNode;
 
 @ReactComponent
 abstract class ComponentWithProp
-  extends ReactArezComponent<BaseProps, BaseContext>
+  extends ReactArezComponent<BaseContext>
 {
   @Prop
   protected abstract String getValue();

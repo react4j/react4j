@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react4j.annotations.EventHandler;
 import react4j.core.BaseContext;
-import react4j.core.BaseProps;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -19,7 +18,7 @@ import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteComponent.BasicReactComponent {
-  static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction<BaseContext> TYPE = getConstructorFunction();
 
   private static Provider<NestedCompleteComponent.BasicReactComponent> c_provider;
 
@@ -40,8 +39,8 @@ class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteCompone
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction<BaseContext> getConstructorFunction() {
+    final ComponentConstructorFunction<BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicReactComponent" );
     }
@@ -67,8 +66,9 @@ class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteCompone
     return handler;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, NestedCompleteComponent.BasicReactComponent> {
-    NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, NestedCompleteComponent.BasicReactComponent> {
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props,
+        @Nullable final BaseContext context) {
       super( props, context );
     }
 

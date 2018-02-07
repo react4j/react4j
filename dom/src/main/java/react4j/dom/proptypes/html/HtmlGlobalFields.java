@@ -11,7 +11,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseProps;
+import react4j.core.ReactNode;
 import react4j.core.RefConsumer;
 import react4j.dom.events.ClipboardEventHandler;
 import react4j.dom.events.CompositionEventHandler;
@@ -28,8 +28,14 @@ import react4j.dom.proptypes.html.attributeTypes.YesNo;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class HtmlGlobalFields<T extends HtmlGlobalFields>
-  extends BaseProps
 {
+  @Nullable
+  public ReactNode children;
+  @Nullable
+  public String key;
+  @Nullable
+  public RefConsumer ref;
+
   @JsOverlay
   public final T ref( @Nonnull final RefConsumer callback )
   {

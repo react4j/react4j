@@ -31,8 +31,6 @@ final class ComponentDescriptor
   private boolean _needsDaggerIntegration;
   private boolean _runArezScheduler;
   @Nullable
-  private TypeElement _propsType;
-  @Nullable
   private TypeElement _stateType;
   @Nullable
   private TypeElement _contextType;
@@ -233,18 +231,6 @@ final class ComponentDescriptor
   void setRunArezScheduler( final boolean runArezScheduler )
   {
     _runArezScheduler = runArezScheduler;
-  }
-
-  @Nonnull
-  TypeElement getPropsType()
-  {
-    assert null != _propsType;
-    return _propsType;
-  }
-
-  void setPropsType( @Nonnull final TypeElement propsType )
-  {
-    _propsType = Objects.requireNonNull( propsType );
   }
 
   @Nonnull

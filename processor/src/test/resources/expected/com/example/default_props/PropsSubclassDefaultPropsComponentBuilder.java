@@ -12,30 +12,41 @@ class PropsSubclassDefaultPropsComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode key(@Nonnull final String key) {
+  static Builder2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static ReactNode build() {
-    return new Builder().build();
+  static ReactNode isMyField(@Nonnull final int isMyField) {
+    return new Builder().isMyField( isMyField );
   }
 
   public interface Builder1 {
-    ReactNode key(@Nonnull String key);
+    Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
+    ReactNode isMyField(@Nonnull int isMyField);
+  }
+
+  public interface Builder3 {
     ReactNode build();
   }
 
-  private static class Builder implements Builder1, Builder2 {
+  private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
     @Nonnull
-    public final ReactNode key(@Nonnull final String key) {
+    public final Builder2 key(@Nonnull final String key) {
       _props.set( "key", Objects.requireNonNull( key ) );
+      return this;
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode isMyField(@Nonnull final int isMyField) {
+      _props.set( "isMyField", Objects.requireNonNull( isMyField ) );
       return build();
     }
 
