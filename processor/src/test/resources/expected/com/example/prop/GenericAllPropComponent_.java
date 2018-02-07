@@ -14,7 +14,7 @@ import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class GenericTypePropComponent_<T> extends GenericTypePropComponent<T> {
+class GenericAllPropComponent_<T> extends GenericAllPropComponent<T> {
   static final ComponentConstructorFunction<BaseProps, BaseContext> TYPE = getConstructorFunction();
 
   @Nonnull
@@ -36,24 +36,24 @@ class GenericTypePropComponent_<T> extends GenericTypePropComponent<T> {
   private static ComponentConstructorFunction<BaseProps, BaseContext> getConstructorFunction() {
     final ComponentConstructorFunction<BaseProps, BaseContext> componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "GenericTypePropComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "GenericAllPropComponent" );
     }
     return componentConstructor;
   }
 
   @Override
-  protected T getValue() {
+  protected <K> K getValue() {
     return Js.asPropertyMap( props() ).getAny( "value" ).cast();
   }
 
-  private static final class NativeReactComponent<T> extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, GenericTypePropComponent<T>> {
+  private static final class NativeReactComponent<T> extends NativeAdapterComponent<BaseProps, BaseState, BaseContext, GenericAllPropComponent<T>> {
     NativeReactComponent(@Nullable final BaseProps props, @Nullable final BaseContext context) {
       super( props, context );
     }
 
     @Override
-    protected GenericTypePropComponent<T> createComponent() {
-      return new GenericTypePropComponent_<T>();
+    protected GenericAllPropComponent<T> createComponent() {
+      return new GenericAllPropComponent_<T>();
     }
   }
 }

@@ -11,6 +11,16 @@ class NonJavaBeanPropComponentBuilder {
   private NonJavaBeanPropComponentBuilder() {
   }
 
+  @Nonnull
+  static Builder2 key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static ReactNode window(@Nonnull final String window) {
+    return new Builder().window( window );
+  }
+
   public interface Builder1 {
     Builder2 key(@Nonnull String key);
   }

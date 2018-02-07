@@ -11,6 +11,26 @@ class MultiPropComponent3Builder {
   private MultiPropComponent3Builder() {
   }
 
+  @Nonnull
+  static Builder2 key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static Builder3 myProp(@Nonnull final String myProp) {
+    return new Builder().myProp( myProp );
+  }
+
+  @Nonnull
+  static Builder4 myProp2(@Nonnull final String myProp2) {
+    return new Builder().myProp2( myProp2 );
+  }
+
+  @Nonnull
+  static ReactNode child(@Nonnull final ReactNode child) {
+    return new Builder().child( child );
+  }
+
   public interface Builder1 {
     Builder2 key(@Nonnull String key);
   }
@@ -24,7 +44,7 @@ class MultiPropComponent3Builder {
   }
 
   public interface Builder4 {
-    ReactNode child(@Nonnull String child);
+    ReactNode child(@Nonnull ReactNode child);
   }
 
   private static class Builder implements Builder1, Builder2, Builder3, Builder4 {
@@ -53,7 +73,7 @@ class MultiPropComponent3Builder {
 
     @Override
     @Nonnull
-    public final ReactNode child(@Nonnull final String child) {
+    public final ReactNode child(@Nonnull final ReactNode child) {
       _props.set( "child", Objects.requireNonNull( child ) );
       return React.createElement( MultiPropComponent3_.TYPE, Js.uncheckedCast( _props ) );
     }

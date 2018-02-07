@@ -7,8 +7,8 @@ import jsinterop.base.JsPropertyMap;
 import react4j.core.React;
 import react4j.core.ReactNode;
 
-class GenericTypePropComponentBuilder {
-  private GenericTypePropComponentBuilder() {
+class GenericAllPropComponentBuilder {
+  private GenericAllPropComponentBuilder() {
   }
 
   @Nonnull
@@ -17,7 +17,7 @@ class GenericTypePropComponentBuilder {
   }
 
   @Nonnull
-  static <T> ReactNode value(@Nonnull final T value) {
+  static <K, T> ReactNode value(@Nonnull final K value) {
     return new Builder<T>().value( value );
   }
 
@@ -28,7 +28,7 @@ class GenericTypePropComponentBuilder {
 
   @SuppressWarnings("unused")
   public interface Builder2<T> {
-    ReactNode value(@Nonnull T value);
+    <K> ReactNode value(@Nonnull K value);
   }
 
   private static class Builder<T> implements Builder1<T>, Builder2<T> {
@@ -43,9 +43,9 @@ class GenericTypePropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode value(@Nonnull final T value) {
+    public final <K> ReactNode value(@Nonnull final K value) {
       _props.set( "value", Objects.requireNonNull( value ) );
-      return React.createElement( GenericTypePropComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( GenericAllPropComponent_.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

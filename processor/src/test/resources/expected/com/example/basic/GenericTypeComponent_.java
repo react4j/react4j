@@ -47,9 +47,8 @@ class GenericTypeComponent_<T> extends GenericTypeComponent<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected GenericTypeComponent<T> createComponent() {
-      return new GenericTypeComponent_();
+      return new GenericTypeComponent_<T>();
     }
   }
 }

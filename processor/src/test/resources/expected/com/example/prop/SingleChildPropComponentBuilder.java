@@ -11,12 +11,22 @@ class SingleChildPropComponentBuilder {
   private SingleChildPropComponentBuilder() {
   }
 
+  @Nonnull
+  static Builder2 key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static ReactNode child(@Nonnull final ReactNode child) {
+    return new Builder().child( child );
+  }
+
   public interface Builder1 {
     Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
-    ReactNode child(@Nonnull String child);
+    ReactNode child(@Nonnull ReactNode child);
   }
 
   private static class Builder implements Builder1, Builder2 {
@@ -31,7 +41,7 @@ class SingleChildPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode child(@Nonnull final String child) {
+    public final ReactNode child(@Nonnull final ReactNode child) {
       _props.set( "child", Objects.requireNonNull( child ) );
       return React.createElement( SingleChildPropComponent_.TYPE, Js.uncheckedCast( _props ) );
     }

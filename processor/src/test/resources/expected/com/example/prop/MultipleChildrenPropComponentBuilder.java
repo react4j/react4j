@@ -11,12 +11,22 @@ class MultipleChildrenPropComponentBuilder {
   private MultipleChildrenPropComponentBuilder() {
   }
 
+  @Nonnull
+  static Builder2 key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static ReactNode children(@Nonnull final ReactNode[] children) {
+    return new Builder().children( children );
+  }
+
   public interface Builder1 {
     Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
-    ReactNode children(@Nonnull String children);
+    ReactNode children(@Nonnull ReactNode[] children);
   }
 
   private static class Builder implements Builder1, Builder2 {
@@ -31,7 +41,7 @@ class MultipleChildrenPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode children(@Nonnull final String children) {
+    public final ReactNode children(@Nonnull final ReactNode[] children) {
       _props.set( "children", Objects.requireNonNull( children ) );
       return React.createElement( MultipleChildrenPropComponent_.TYPE, Js.uncheckedCast( _props ) );
     }

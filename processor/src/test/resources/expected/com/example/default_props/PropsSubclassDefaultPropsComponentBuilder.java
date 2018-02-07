@@ -11,6 +11,11 @@ class PropsSubclassDefaultPropsComponentBuilder {
   private PropsSubclassDefaultPropsComponentBuilder() {
   }
 
+  @Nonnull
+  static ReactNode key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
   public interface Builder1 {
     ReactNode key(@Nonnull String key);
   }

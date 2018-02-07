@@ -24,6 +24,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -82,15 +83,18 @@ final class Generator
     final List<PropDescriptor> props = descriptor.getProps();
     final int propCount = props.size();
 
-    builder.addType( buildKeyBuilderStepInterface( 0 == propCount ) );
+    final boolean isKeyLastStep = 0 == propCount;
+    builder.addType( buildKeyBuilderStepInterface( descriptor, isKeyLastStep ) );
+    builder.addMethod( buildStaticKeyMethod( descriptor, isKeyLastStep ) );
 
     for ( int i = 0; i < propCount; i++ )
     {
       final PropDescriptor prop = props.get( i );
       // Step 1 is the key
       final int step = ++stepCount;
-      final boolean isLastStep = propCount == i + 1;
-      builder.addType( buildPropBuilderStepInterface( prop, step, isLastStep ) );
+      final boolean isPropLastStep = propCount == i + 1;
+      builder.addType( buildPropBuilderStepInterface( descriptor, prop, step, isPropLastStep ) );
+      builder.addMethod( buildStaticPropMethod( descriptor, prop, step, isPropLastStep ) );
     }
 
     builder.addType( buildBuilder( descriptor, stepCount ) );
@@ -98,9 +102,43 @@ final class Generator
     return builder.build();
   }
 
-  private static TypeSpec buildKeyBuilderStepInterface( final boolean isLastStep )
+  @Nonnull
+  private static MethodSpec buildStaticKeyMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                  final boolean isLastStep )
   {
-    return buildBuilderStepInterface( 1, isLastStep, "key", method -> {
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( "key" ).
+        addAnnotation( NONNULL_CLASSNAME );
+
+    method.addModifiers( Modifier.STATIC );
+    if ( descriptor.getDeclaredType().asElement().getModifiers().contains( Modifier.PUBLIC ) )
+    {
+      method.addModifiers( Modifier.PUBLIC );
+    }
+    final ParameterSpec.Builder parameter =
+      ParameterSpec.builder( TypeName.get( String.class ), "key", Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME );
+    method.addParameter( parameter.build() );
+
+    ProcessorUtil.copyTypeParameters( descriptor.getElement(), method );
+
+    final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
+    method.addStatement( "return new $T" + infix + "().key( key )", ClassName.bestGuess( "Builder" ) );
+    if ( isLastStep )
+    {
+      method.returns( REACT_NODE_CLASSNAME );
+    }
+    else
+    {
+      method.returns( ClassName.bestGuess( "Builder2" ) );
+    }
+    return method.build();
+  }
+
+  private static TypeSpec buildKeyBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
+                                                        final boolean isLastStep )
+  {
+    return buildBuilderStepInterface( descriptor, 1, isLastStep, "key", method -> {
       final ParameterSpec.Builder parameter =
         ParameterSpec.builder( TypeName.get( String.class ), "key" ).addAnnotation( NONNULL_CLASSNAME );
       method.addParameter( parameter.build() );
@@ -119,13 +157,55 @@ final class Generator
   }
 
   @Nonnull
-  private static TypeSpec buildPropBuilderStepInterface( @Nonnull final PropDescriptor prop,
+  private static MethodSpec buildStaticPropMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                   @Nonnull final PropDescriptor prop,
+                                                   final int step,
+                                                   final boolean isLastStep )
+  {
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( prop.getName() ).
+        addAnnotation( NONNULL_CLASSNAME );
+
+    method.addModifiers( Modifier.STATIC );
+    if ( descriptor.getDeclaredType().asElement().getModifiers().contains( Modifier.PUBLIC ) )
+    {
+      method.addModifiers( Modifier.PUBLIC );
+    }
+    ProcessorUtil.copyTypeParameters( prop.getMethodType(), method );
+    ProcessorUtil.copyTypeParameters( descriptor.getElement(), method );
+
+    final ParameterSpec.Builder parameter =
+      ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName(), Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME );
+    method.addParameter( parameter.build() );
+
+    final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
+    method.addStatement( "return new $T" + infix + "().$N( $N )",
+                         ClassName.bestGuess( "Builder" ),
+                         prop.getName(),
+                         prop.getName() );
+    if ( isLastStep )
+    {
+      method.returns( REACT_NODE_CLASSNAME );
+    }
+    else
+    {
+      method.returns( ClassName.bestGuess( "Builder" + ( step + 1 ) ) );
+    }
+    return method.build();
+  }
+
+  @Nonnull
+  private static TypeSpec buildPropBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
+                                                         @Nonnull final PropDescriptor prop,
                                                          final int step,
                                                          final boolean isLastStep )
   {
-    return buildBuilderStepInterface( step, isLastStep, prop.getName(), method -> {
+    return buildBuilderStepInterface( descriptor, step, isLastStep, prop.getName(), method -> {
+      ProcessorUtil.copyTypeParameters( prop.getMethodType(), method );
       final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( TypeName.get( String.class ), prop.getName() ).addAnnotation( NONNULL_CLASSNAME );
+        ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName() )
+          .addAnnotation( NONNULL_CLASSNAME );
       method.addParameter( parameter.build() );
     } );
   }
@@ -136,8 +216,9 @@ final class Generator
                                                       final boolean isLastStep )
   {
     return buildBuilderStepImpl( descriptor, step, isLastStep, prop.getName(), method -> {
+      ProcessorUtil.copyTypeParameters( prop.getMethodType(), method );
       final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( TypeName.get( String.class ), prop.getName(), Modifier.FINAL )
+        ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName(), Modifier.FINAL )
           .addAnnotation( NONNULL_CLASSNAME );
       method.addParameter( parameter.build() );
       method.addStatement( "_props.set( $S, $T.requireNonNull( $N ) )", prop.getName(), Objects.class, prop.getName() );
@@ -145,13 +226,22 @@ final class Generator
   }
 
   @Nonnull
-  private static TypeSpec buildBuilderStepInterface( final int step,
+  private static TypeSpec buildBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
+                                                     final int step,
                                                      final boolean isLastStep,
                                                      @Nonnull final String name,
                                                      @Nonnull final Consumer<MethodSpec.Builder> action )
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Builder" + step );
     builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
+    builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
+
+    if ( !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
+    {
+      builder.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
+                               .addMember( "value", "$S", "unused" )
+                               .build() );
+    }
 
     final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
     method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
@@ -203,10 +293,11 @@ final class Generator
   private static TypeSpec buildBuilder( @Nonnull final ComponentDescriptor descriptor, final int stepCount )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "Builder" );
+    ProcessorUtil.copyTypeParameters( descriptor.getElement(), builder );
     builder.addModifiers( Modifier.PRIVATE, Modifier.STATIC );
     for ( int i = 0; i < stepCount; i++ )
     {
-      builder.addSuperinterface( ClassName.bestGuess( "Builder" + ( i + 1 ) ) );
+      builder.addSuperinterface( getParameterizedTypeName( descriptor, ClassName.bestGuess( "Builder" + ( i + 1 ) ) ) );
     }
 
     {
@@ -234,6 +325,21 @@ final class Generator
     }
 
     return builder.build();
+  }
+
+  @Nonnull
+  private static TypeName getParameterizedTypeName( @Nonnull final ComponentDescriptor descriptor,
+                                                    @Nonnull final ClassName baseName )
+  {
+    final List<? extends TypeMirror> arguments = descriptor.getDeclaredType().getTypeArguments();
+    if ( arguments.isEmpty() )
+    {
+      return baseName;
+    }
+    else
+    {
+      return ParameterizedTypeName.get( baseName, arguments.stream().map( TypeName::get ).toArray( TypeName[]::new ) );
+    }
   }
 
   @Nonnull
@@ -785,19 +891,14 @@ final class Generator
           addAnnotation( Override.class ).
           addModifiers( Modifier.PROTECTED ).
           returns( descriptor.getComponentType() );
-      if ( !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
-      {
-        method.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class ).
-          addMember( "value", "$S", "unchecked" ).
-          build() );
-      }
       if ( descriptor.needsInjection() )
       {
         method.addStatement( "return getProvider().get()" );
       }
       else
       {
-        method.addStatement( "return new $T()", descriptor.getClassNameToConstruct() );
+        final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
+        method.addStatement( "return new $T" + infix + "()", descriptor.getClassNameToConstruct() );
       }
       builder.addMethod( method.build() );
     }
@@ -851,6 +952,14 @@ final class Generator
     }
 
     return builder.build();
+  }
+
+  private static String asTypeArgumentsInfix( final DeclaredType declaredType )
+  {
+    final List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+    return typeArguments.isEmpty() ?
+           "" :
+           "<" + typeArguments.stream().map( TypeMirror::toString ).collect( Collectors.joining( ", " ) ) + ">";
   }
 
   @Nonnull

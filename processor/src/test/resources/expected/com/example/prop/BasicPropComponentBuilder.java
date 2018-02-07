@@ -11,6 +11,16 @@ class BasicPropComponentBuilder {
   private BasicPropComponentBuilder() {
   }
 
+  @Nonnull
+  static Builder2 key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static ReactNode myProp(@Nonnull final String myProp) {
+    return new Builder().myProp( myProp );
+  }
+
   public interface Builder1 {
     Builder2 key(@Nonnull String key);
   }

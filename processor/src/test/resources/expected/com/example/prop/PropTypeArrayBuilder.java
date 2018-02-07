@@ -11,12 +11,22 @@ class PropTypeArrayBuilder {
   private PropTypeArrayBuilder() {
   }
 
+  @Nonnull
+  static Builder2 key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static ReactNode myProp(@Nonnull final String[] myProp) {
+    return new Builder().myProp( myProp );
+  }
+
   public interface Builder1 {
     Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
-    ReactNode myProp(@Nonnull String myProp);
+    ReactNode myProp(@Nonnull String[] myProp);
   }
 
   private static class Builder implements Builder1, Builder2 {
@@ -31,7 +41,7 @@ class PropTypeArrayBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(@Nonnull final String myProp) {
+    public final ReactNode myProp(@Nonnull final String[] myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return React.createElement( PropTypeArray_.TYPE, Js.uncheckedCast( _props ) );
     }

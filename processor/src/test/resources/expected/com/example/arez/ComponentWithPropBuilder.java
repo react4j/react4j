@@ -11,6 +11,16 @@ class ComponentWithPropBuilder {
   private ComponentWithPropBuilder() {
   }
 
+  @Nonnull
+  static Builder2 key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static ReactNode value(@Nonnull final String value) {
+    return new Builder().value( value );
+  }
+
   public interface Builder1 {
     Builder2 key(@Nonnull String key);
   }

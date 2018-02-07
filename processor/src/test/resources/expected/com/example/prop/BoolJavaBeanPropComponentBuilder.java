@@ -11,12 +11,22 @@ class BoolJavaBeanPropComponentBuilder {
   private BoolJavaBeanPropComponentBuilder() {
   }
 
+  @Nonnull
+  static Builder2 key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static ReactNode foo(@Nonnull final boolean foo) {
+    return new Builder().foo( foo );
+  }
+
   public interface Builder1 {
     Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
-    ReactNode foo(@Nonnull String foo);
+    ReactNode foo(@Nonnull boolean foo);
   }
 
   private static class Builder implements Builder1, Builder2 {
@@ -31,7 +41,7 @@ class BoolJavaBeanPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode foo(@Nonnull final String foo) {
+    public final ReactNode foo(@Nonnull final boolean foo) {
       _props.set( "foo", Objects.requireNonNull( foo ) );
       return React.createElement( BoolJavaBeanPropComponent_.TYPE, Js.uncheckedCast( _props ) );
     }

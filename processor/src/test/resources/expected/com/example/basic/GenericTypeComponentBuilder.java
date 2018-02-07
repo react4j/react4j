@@ -11,11 +11,17 @@ class GenericTypeComponentBuilder {
   private GenericTypeComponentBuilder() {
   }
 
-  public interface Builder1 {
+  @Nonnull
+  static <T> ReactNode key(@Nonnull final String key) {
+    return new Builder<T>().key( key );
+  }
+
+  @SuppressWarnings("unused")
+  public interface Builder1<T> {
     ReactNode key(@Nonnull String key);
   }
 
-  private static class Builder implements Builder1 {
+  private static class Builder<T> implements Builder1<T> {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override

@@ -11,12 +11,22 @@ class GenericPropComponentBuilder {
   private GenericPropComponentBuilder() {
   }
 
+  @Nonnull
+  static Builder2 key(@Nonnull final String key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static <T> ReactNode value(@Nonnull final T value) {
+    return new Builder().value( value );
+  }
+
   public interface Builder1 {
     Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
-    ReactNode value(@Nonnull String value);
+    <T> ReactNode value(@Nonnull T value);
   }
 
   private static class Builder implements Builder1, Builder2 {
@@ -31,7 +41,7 @@ class GenericPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode value(@Nonnull final String value) {
+    public final <T> ReactNode value(@Nonnull final T value) {
       _props.set( "value", Objects.requireNonNull( value ) );
       return React.createElement( GenericPropComponent_.TYPE, Js.uncheckedCast( _props ) );
     }

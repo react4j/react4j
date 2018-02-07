@@ -49,6 +49,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent", false },
         new Object[]{ "com.example.prop.BasicPropComponent", false },
         new Object[]{ "com.example.prop.BoolJavaBeanPropComponent", false },
+        new Object[]{ "com.example.prop.GenericAllPropComponent", false },
         new Object[]{ "com.example.prop.GenericPropComponent", false },
         new Object[]{ "com.example.prop.GenericTypePropComponent", false },
         new Object[]{ "com.example.prop.MultipleChildrenPropComponent", false },
