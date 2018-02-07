@@ -29,7 +29,11 @@ class NonJavaBeanPropComponentBuilder {
     ReactNode window(@Nonnull String window);
   }
 
-  private static class Builder implements Builder1, Builder2 {
+  public interface Builder3 {
+    ReactNode build();
+  }
+
+  private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -43,6 +47,12 @@ class NonJavaBeanPropComponentBuilder {
     @Nonnull
     public final ReactNode window(@Nonnull final String window) {
       _props.set( "window", Objects.requireNonNull( window ) );
+      return build();
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode build() {
       return React.createElement( NonJavaBeanPropComponent_.TYPE, Js.uncheckedCast( _props ) );
     }
   }

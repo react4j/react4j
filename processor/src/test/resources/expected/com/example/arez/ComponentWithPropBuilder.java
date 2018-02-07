@@ -29,7 +29,11 @@ class ComponentWithPropBuilder {
     ReactNode value(@Nonnull String value);
   }
 
-  private static class Builder implements Builder1, Builder2 {
+  public interface Builder3 {
+    ReactNode build();
+  }
+
+  private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -43,6 +47,12 @@ class ComponentWithPropBuilder {
     @Nonnull
     public final ReactNode value(@Nonnull final String value) {
       _props.set( "value", Objects.requireNonNull( value ) );
+      return build();
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode build() {
       return React.createElement( ComponentWithProp_.TYPE, Js.uncheckedCast( _props ) );
     }
   }

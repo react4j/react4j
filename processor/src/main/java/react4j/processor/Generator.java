@@ -97,9 +97,54 @@ final class Generator
       builder.addMethod( buildStaticPropMethod( descriptor, prop, step, isPropLastStep ) );
     }
 
-    builder.addType( buildBuilder( descriptor, stepCount ) );
+    final int step = ++stepCount;
+    builder.addType( buildTerminalBuilderStepInterface( descriptor, step ) );
+
+    if ( 0 == propCount )
+    {
+      builder.addMethod( buildStaticTerminalMethod( descriptor ) );
+    }
+
+    builder.addType( buildBuilder( descriptor, stepCount, isKeyLastStep ) );
 
     return builder.build();
+  }
+
+  @Nonnull
+  private static MethodSpec buildStaticTerminalMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( "build" ).
+        addAnnotation( NONNULL_CLASSNAME ).
+        returns( REACT_NODE_CLASSNAME );
+
+    method.addModifiers( Modifier.STATIC );
+    if ( descriptor.getDeclaredType().asElement().getModifiers().contains( Modifier.PUBLIC ) )
+    {
+      method.addModifiers( Modifier.PUBLIC );
+    }
+    ProcessorUtil.copyTypeParameters( descriptor.getElement(), method );
+
+    final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
+    method.addStatement( "return new $T" + infix + "().build()", ClassName.bestGuess( "Builder" ) );
+
+    return method.build();
+  }
+
+  @Nonnull
+  private static TypeSpec buildTerminalBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
+                                                             final int step )
+  {
+    return buildBuilderStepInterface( descriptor, step, true, "build", method -> {
+    } );
+  }
+
+  @Nonnull
+  private static MethodSpec buildTerminalBuilderStepImpl( @Nonnull final ComponentDescriptor descriptor,
+                                                          final int step )
+  {
+    return buildBuilderStepImpl( descriptor, step, true, "build", method -> {
+    } );
   }
 
   @Nonnull
@@ -274,10 +319,17 @@ final class Generator
     action.accept( method );
     if ( isLastStep )
     {
-      method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ) )",
-                           REACT_CLASSNAME,
-                           descriptor.getEnhancedClassName(),
-                           JS_CLASSNAME );
+      if ( "build".equals( name ) )
+      {
+        method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ) )",
+                             REACT_CLASSNAME,
+                             descriptor.getEnhancedClassName(),
+                             JS_CLASSNAME );
+      }
+      else
+      {
+        method.addStatement( "return build()" );
+      }
       method.returns( REACT_NODE_CLASSNAME );
     }
     else
@@ -290,7 +342,9 @@ final class Generator
   }
 
   @Nonnull
-  private static TypeSpec buildBuilder( @Nonnull final ComponentDescriptor descriptor, final int stepCount )
+  private static TypeSpec buildBuilder( @Nonnull final ComponentDescriptor descriptor,
+                                        final int stepCount,
+                                        final boolean isKeyLastStep )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "Builder" );
     ProcessorUtil.copyTypeParameters( descriptor.getElement(), builder );
@@ -308,7 +362,7 @@ final class Generator
       builder.addField( field.build() );
     }
 
-    builder.addMethod( buildKeyBuilderStepImpl( descriptor, 1 == stepCount ) );
+    builder.addMethod( buildKeyBuilderStepImpl( descriptor, isKeyLastStep ) );
 
     final List<PropDescriptor> props = descriptor.getProps();
     final int propCount = props.size();
@@ -323,6 +377,8 @@ final class Generator
       final boolean isLastStep = propCount == i + 1;
       builder.addMethod( buildPropBuilderStepImpl( descriptor, prop, step, isLastStep ) );
     }
+
+    builder.addMethod( buildTerminalBuilderStepImpl( descriptor, stepCount ) );
 
     return builder.build();
   }

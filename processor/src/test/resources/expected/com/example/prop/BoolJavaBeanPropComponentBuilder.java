@@ -29,7 +29,11 @@ class BoolJavaBeanPropComponentBuilder {
     ReactNode foo(@Nonnull boolean foo);
   }
 
-  private static class Builder implements Builder1, Builder2 {
+  public interface Builder3 {
+    ReactNode build();
+  }
+
+  private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -43,6 +47,12 @@ class BoolJavaBeanPropComponentBuilder {
     @Nonnull
     public final ReactNode foo(@Nonnull final boolean foo) {
       _props.set( "foo", Objects.requireNonNull( foo ) );
+      return build();
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode build() {
       return React.createElement( BoolJavaBeanPropComponent_.TYPE, Js.uncheckedCast( _props ) );
     }
   }

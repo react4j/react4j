@@ -16,18 +16,34 @@ class GenericTypeComponentBuilder {
     return new Builder<T>().key( key );
   }
 
+  @Nonnull
+  static <T> ReactNode build() {
+    return new Builder<T>().build();
+  }
+
   @SuppressWarnings("unused")
   public interface Builder1<T> {
     ReactNode key(@Nonnull String key);
   }
 
-  private static class Builder<T> implements Builder1<T> {
+  @SuppressWarnings("unused")
+  public interface Builder2<T> {
+    ReactNode build();
+  }
+
+  private static class Builder<T> implements Builder1<T>, Builder2<T> {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
     @Nonnull
     public final ReactNode key(@Nonnull final String key) {
       _props.set( "key", Objects.requireNonNull( key ) );
+      return build();
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode build() {
       return React.createElement( GenericTypeComponent_.TYPE, Js.uncheckedCast( _props ) );
     }
   }

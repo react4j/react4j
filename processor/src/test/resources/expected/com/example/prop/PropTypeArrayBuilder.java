@@ -29,7 +29,11 @@ class PropTypeArrayBuilder {
     ReactNode myProp(@Nonnull String[] myProp);
   }
 
-  private static class Builder implements Builder1, Builder2 {
+  public interface Builder3 {
+    ReactNode build();
+  }
+
+  private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -43,6 +47,12 @@ class PropTypeArrayBuilder {
     @Nonnull
     public final ReactNode myProp(@Nonnull final String[] myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
+      return build();
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode build() {
       return React.createElement( PropTypeArray_.TYPE, Js.uncheckedCast( _props ) );
     }
   }

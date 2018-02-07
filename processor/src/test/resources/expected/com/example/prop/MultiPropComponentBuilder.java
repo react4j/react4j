@@ -38,7 +38,11 @@ class MultiPropComponentBuilder {
     ReactNode myProp2(@Nonnull String myProp2);
   }
 
-  private static class Builder implements Builder1, Builder2, Builder3 {
+  public interface Builder4 {
+    ReactNode build();
+  }
+
+  private static class Builder implements Builder1, Builder2, Builder3, Builder4 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -59,6 +63,12 @@ class MultiPropComponentBuilder {
     @Nonnull
     public final ReactNode myProp2(@Nonnull final String myProp2) {
       _props.set( "myProp2", Objects.requireNonNull( myProp2 ) );
+      return build();
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode build() {
       return React.createElement( MultiPropComponent_.TYPE, Js.uncheckedCast( _props ) );
     }
   }

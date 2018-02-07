@@ -31,7 +31,12 @@ class GenericAllPropComponentBuilder {
     <K> ReactNode value(@Nonnull K value);
   }
 
-  private static class Builder<T> implements Builder1<T>, Builder2<T> {
+  @SuppressWarnings("unused")
+  public interface Builder3<T> {
+    ReactNode build();
+  }
+
+  private static class Builder<T> implements Builder1<T>, Builder2<T>, Builder3<T> {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -45,6 +50,12 @@ class GenericAllPropComponentBuilder {
     @Nonnull
     public final <K> ReactNode value(@Nonnull final K value) {
       _props.set( "value", Objects.requireNonNull( value ) );
+      return build();
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode build() {
       return React.createElement( GenericAllPropComponent_.TYPE, Js.uncheckedCast( _props ) );
     }
   }
