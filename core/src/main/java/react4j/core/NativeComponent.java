@@ -22,6 +22,7 @@ public abstract class NativeComponent<S extends BaseState, C extends BaseContext
   private JsPropertyMap<Object> props;
   @JsProperty
   private S state;
+  @SuppressWarnings( "unused" )
   @JsProperty
   private C context;
 
