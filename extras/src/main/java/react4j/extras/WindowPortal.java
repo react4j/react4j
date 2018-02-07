@@ -6,11 +6,9 @@ import elemental2.dom.HTMLDocument;
 import elemental2.dom.Window;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.realityforge.anodoc.Unsupported;
+import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 import react4j.core.BaseContext;
 import react4j.core.BaseProps;
@@ -30,7 +28,7 @@ import react4j.dom.ReactDOM;
 @ReactComponent
 @Unsupported
 public abstract class WindowPortal
-  extends Component<WindowPortal.Props, BaseState, BaseContext>
+  extends Component<BaseProps, BaseState, BaseContext>
 {
   @FunctionalInterface
   public interface OnCloseCallback
@@ -41,51 +39,38 @@ public abstract class WindowPortal
     void onClose();
   }
 
-  @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-  public static class Props
-    extends BaseProps
-  {
-    public String windowName;
-    public int left;
-    public int top;
-    public int width;
-    public int height;
-    public OnCloseCallback onClose;
-
-    @JsOverlay
-    public static Props create( @Nonnull final String windowName,
-                                final int top,
-                                final int left,
-                                final int width,
-                                final int height,
-                                @Nullable final OnCloseCallback onClose )
-    {
-      final Props props = new Props();
-      props.windowName = windowName;
-      props.top = top;
-      props.left = left;
-      props.width = width;
-      props.height = height;
-      props.onClose = onClose;
-      return props;
-    }
-  }
-
   @Nullable
   private Window _externalWindow;
   @Nullable
   private Element _element;
 
+  @Prop
+  protected abstract String windowName();
+
+  @Prop
+  protected abstract int left();
+
+  @Prop
+  protected abstract int top();
+
+  @Prop
+  protected abstract int width();
+
+  @Prop
+  protected abstract int height();
+
+  @Prop
+  protected abstract OnCloseCallback onClose();
+
   @Override
   protected void postConstruct()
   {
-    final Props props = props();
     _externalWindow = DomGlobal.window.open( "",
-                                             props.windowName,
-                                             "width=" + props.width + ",height=" + props.height +
-                                             ",left=" + props.left + ",top=" + props.top );
+                                             windowName(),
+                                             "width=" + width() + ",height=" + height() +
+                                             ",left=" + left() + ",top=" + top() );
     _externalWindow.addEventListener( "beforeunload", e -> {
-      final OnCloseCallback onClose = props.onClose;
+      final OnCloseCallback onClose = onClose();
       if ( null != onClose )
       {
         onClose.onClose();
