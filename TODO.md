@@ -8,6 +8,9 @@
 
 * Possibly support refs in generated builders.
 
+* Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
+  Could decide to skip event handlers to reduce overhead and changes due to parent re-render.
+
 * Components that have not `@State` methods, no lifecycle methods, no `@Ref` methods and no state on the instance
   could be made into stateless components when translating to React. Potentially we can also enforce stateless-ness
   by parameter to `@ReactComponent` annotation.
