@@ -237,9 +237,9 @@ final class ProcessorUtil
   }
 
   @Nullable
-  private static String deriveName( @Nonnull final ExecutableElement method,
-                                    @Nonnull final Pattern pattern,
-                                    @Nonnull final String name )
+  static String deriveName( @Nonnull final ExecutableElement method,
+                            @Nonnull final Pattern pattern,
+                            @Nonnull final String name )
     throws ReactProcessorException
   {
     if ( isSentinelName( name ) )
