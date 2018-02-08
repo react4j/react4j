@@ -17,7 +17,7 @@ class CustomPropsAndStateReactComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode someField(@Nonnull final boolean someField) {
+  static ReactNode someField(final boolean someField) {
     return new Builder().someField( someField );
   }
 
@@ -26,7 +26,7 @@ class CustomPropsAndStateReactComponentBuilder {
   }
 
   public interface Builder2 {
-    ReactNode someField(@Nonnull boolean someField);
+    ReactNode someField(boolean someField);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class CustomPropsAndStateReactComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode someField(@Nonnull final boolean someField) {
+    public final ReactNode someField(final boolean someField) {
       _props.set( "someField", Objects.requireNonNull( someField ) );
       return build();
     }

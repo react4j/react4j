@@ -17,7 +17,7 @@ class MultipleChildrenPropComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode children(@Nonnull final ReactNode[] children) {
+  static ReactNode children(final ReactNode[] children) {
     return new Builder().children( children );
   }
 
@@ -26,7 +26,7 @@ class MultipleChildrenPropComponentBuilder {
   }
 
   public interface Builder2 {
-    ReactNode children(@Nonnull ReactNode[] children);
+    ReactNode children(ReactNode[] children);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class MultipleChildrenPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode children(@Nonnull final ReactNode[] children) {
+    public final ReactNode children(final ReactNode[] children) {
       _props.set( "children", Objects.requireNonNull( children ) );
       return build();
     }

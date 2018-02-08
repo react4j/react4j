@@ -17,7 +17,7 @@ class PropsSubclassDefaultPropsComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode isMyField(@Nonnull final int isMyField) {
+  static ReactNode isMyField(final int isMyField) {
     return new Builder().isMyField( isMyField );
   }
 
@@ -26,7 +26,7 @@ class PropsSubclassDefaultPropsComponentBuilder {
   }
 
   public interface Builder2 {
-    ReactNode isMyField(@Nonnull int isMyField);
+    ReactNode isMyField(int isMyField);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class PropsSubclassDefaultPropsComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode isMyField(@Nonnull final int isMyField) {
+    public final ReactNode isMyField(final int isMyField) {
       _props.set( "isMyField", Objects.requireNonNull( isMyField ) );
       return build();
     }

@@ -167,9 +167,7 @@ final class ProcessorUtil
   {
     for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )
     {
-      final DeclaredType annotationType = annotation.getAnnotationType();
-      if ( !annotationType.toString().startsWith( "react4j.annotations." ) &&
-           null != annotationType.asElement().getAnnotation( Documented.class ) )
+      if ( shouldCopyAnnotation( annotation ) )
       {
         builder.addAnnotation( AnnotationSpec.get( annotation ) );
       }
@@ -181,11 +179,17 @@ final class ProcessorUtil
   {
     for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )
     {
-      if ( null != annotation.getAnnotationType().asElement().getAnnotation( Documented.class ) )
+      if ( shouldCopyAnnotation( annotation ) )
       {
         builder.addAnnotation( AnnotationSpec.get( annotation ) );
       }
     }
+  }
+
+  private static boolean shouldCopyAnnotation( @Nonnull final AnnotationMirror annotation )
+  {
+    return !annotation.getAnnotationType().toString().startsWith( "react4j.annotations." ) &&
+           null != annotation.getAnnotationType().asElement().getAnnotation( Documented.class );
   }
 
   static void copyTypeParameters( @Nonnull final ExecutableType action, @Nonnull final MethodSpec.Builder builder )

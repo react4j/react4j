@@ -17,7 +17,7 @@ class PropTypeShortBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(@Nonnull final short myProp) {
+  static ReactNode myProp(final short myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -26,7 +26,7 @@ class PropTypeShortBuilder {
   }
 
   public interface Builder2 {
-    ReactNode myProp(@Nonnull short myProp);
+    ReactNode myProp(short myProp);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class PropTypeShortBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(@Nonnull final short myProp) {
+    public final ReactNode myProp(final short myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return build();
     }

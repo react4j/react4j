@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[processor\]** Fixed handling of documented annotations, in particular nullability annotations such as
+  `javax.annotations.Nonnull` and `javax.annotations.Nullable` for `@Prop` annotated methods. The annotations
+  are copied to the appropriate methods in the generated builder and onto the implemented prop methods in the
+  enhanced component subclass.
+
 #### Changed
 * **\[extras\]** Prefer the `@Props` annotation strategy for getting props for `WindowPortal` component.
 * 💥 **\[core\]** Remove the `BaseProps` class and all the associated infrastructure. This involved removing

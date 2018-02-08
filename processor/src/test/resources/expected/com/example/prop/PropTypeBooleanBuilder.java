@@ -17,7 +17,7 @@ class PropTypeBooleanBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(@Nonnull final boolean myProp) {
+  static ReactNode myProp(final boolean myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -26,7 +26,7 @@ class PropTypeBooleanBuilder {
   }
 
   public interface Builder2 {
-    ReactNode myProp(@Nonnull boolean myProp);
+    ReactNode myProp(boolean myProp);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class PropTypeBooleanBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(@Nonnull final boolean myProp) {
+    public final ReactNode myProp(final boolean myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return build();
     }

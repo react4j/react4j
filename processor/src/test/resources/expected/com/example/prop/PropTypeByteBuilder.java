@@ -17,7 +17,7 @@ class PropTypeByteBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(@Nonnull final byte myProp) {
+  static ReactNode myProp(final byte myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -26,7 +26,7 @@ class PropTypeByteBuilder {
   }
 
   public interface Builder2 {
-    ReactNode myProp(@Nonnull byte myProp);
+    ReactNode myProp(byte myProp);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class PropTypeByteBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(@Nonnull final byte myProp) {
+    public final ReactNode myProp(final byte myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return build();
     }

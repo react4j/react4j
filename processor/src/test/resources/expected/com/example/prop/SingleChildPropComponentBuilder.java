@@ -17,7 +17,7 @@ class SingleChildPropComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode child(@Nonnull final ReactNode child) {
+  static ReactNode child(final ReactNode child) {
     return new Builder().child( child );
   }
 
@@ -26,7 +26,7 @@ class SingleChildPropComponentBuilder {
   }
 
   public interface Builder2 {
-    ReactNode child(@Nonnull ReactNode child);
+    ReactNode child(ReactNode child);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class SingleChildPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode child(@Nonnull final ReactNode child) {
+    public final ReactNode child(final ReactNode child) {
       _props.set( "child", Objects.requireNonNull( child ) );
       return build();
     }

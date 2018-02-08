@@ -17,7 +17,7 @@ class GenericPropComponentBuilder {
   }
 
   @Nonnull
-  static <T> ReactNode value(@Nonnull final T value) {
+  static <T> ReactNode value(final T value) {
     return new Builder().value( value );
   }
 
@@ -26,7 +26,7 @@ class GenericPropComponentBuilder {
   }
 
   public interface Builder2 {
-    <T> ReactNode value(@Nonnull T value);
+    <T> ReactNode value(T value);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class GenericPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final <T> ReactNode value(@Nonnull final T value) {
+    public final <T> ReactNode value(final T value) {
       _props.set( "value", Objects.requireNonNull( value ) );
       return build();
     }

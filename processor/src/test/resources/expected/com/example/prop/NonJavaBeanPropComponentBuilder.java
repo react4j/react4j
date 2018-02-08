@@ -17,7 +17,7 @@ class NonJavaBeanPropComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode window(@Nonnull final String window) {
+  static ReactNode window(final String window) {
     return new Builder().window( window );
   }
 
@@ -26,7 +26,7 @@ class NonJavaBeanPropComponentBuilder {
   }
 
   public interface Builder2 {
-    ReactNode window(@Nonnull String window);
+    ReactNode window(String window);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class NonJavaBeanPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode window(@Nonnull final String window) {
+    public final ReactNode window(final String window) {
       _props.set( "window", Objects.requireNonNull( window ) );
       return build();
     }

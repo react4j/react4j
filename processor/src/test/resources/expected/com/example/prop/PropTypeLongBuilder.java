@@ -17,7 +17,7 @@ class PropTypeLongBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(@Nonnull final long myProp) {
+  static ReactNode myProp(final long myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -26,7 +26,7 @@ class PropTypeLongBuilder {
   }
 
   public interface Builder2 {
-    ReactNode myProp(@Nonnull long myProp);
+    ReactNode myProp(long myProp);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class PropTypeLongBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(@Nonnull final long myProp) {
+    public final ReactNode myProp(final long myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return build();
     }

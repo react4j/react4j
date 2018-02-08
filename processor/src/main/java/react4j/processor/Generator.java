@@ -222,8 +222,8 @@ final class Generator
     ProcessorUtil.copyTypeParameters( descriptor.getElement(), method );
 
     final ParameterSpec.Builder parameter =
-      ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName(), Modifier.FINAL ).
-        addAnnotation( NONNULL_CLASSNAME );
+      ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName(), Modifier.FINAL );
+    ProcessorUtil.copyDocumentedAnnotations( prop.getMethod(), parameter );
     method.addParameter( parameter.build() );
 
     final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
@@ -251,8 +251,8 @@ final class Generator
     return buildBuilderStepInterface( descriptor, step, isLastStep, prop.getName(), method -> {
       ProcessorUtil.copyTypeParameters( prop.getMethodType(), method );
       final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName() )
-          .addAnnotation( NONNULL_CLASSNAME );
+        ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName() );
+      ProcessorUtil.copyDocumentedAnnotations( prop.getMethod(), parameter );
       method.addParameter( parameter.build() );
     } );
   }
@@ -265,8 +265,8 @@ final class Generator
     return buildBuilderStepImpl( descriptor, step, isLastStep, prop.getName(), method -> {
       ProcessorUtil.copyTypeParameters( prop.getMethodType(), method );
       final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName(), Modifier.FINAL )
-          .addAnnotation( NONNULL_CLASSNAME );
+        ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName(), Modifier.FINAL );
+      ProcessorUtil.copyDocumentedAnnotations( prop.getMethod(), parameter );
       method.addParameter( parameter.build() );
       method.addStatement( "_props.set( $S, $T.requireNonNull( $N ) )", prop.getName(), Objects.class, prop.getName() );
     } );

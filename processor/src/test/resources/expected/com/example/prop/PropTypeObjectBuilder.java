@@ -17,7 +17,7 @@ class PropTypeObjectBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(@Nonnull final PropTypeObject.MyObject myProp) {
+  static ReactNode myProp(final PropTypeObject.MyObject myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -26,7 +26,7 @@ class PropTypeObjectBuilder {
   }
 
   public interface Builder2 {
-    ReactNode myProp(@Nonnull PropTypeObject.MyObject myProp);
+    ReactNode myProp(PropTypeObject.MyObject myProp);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class PropTypeObjectBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(@Nonnull final PropTypeObject.MyObject myProp) {
+    public final ReactNode myProp(final PropTypeObject.MyObject myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return build();
     }

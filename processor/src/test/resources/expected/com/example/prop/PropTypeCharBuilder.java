@@ -17,7 +17,7 @@ class PropTypeCharBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(@Nonnull final char myProp) {
+  static ReactNode myProp(final char myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -26,7 +26,7 @@ class PropTypeCharBuilder {
   }
 
   public interface Builder2 {
-    ReactNode myProp(@Nonnull char myProp);
+    ReactNode myProp(char myProp);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class PropTypeCharBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(@Nonnull final char myProp) {
+    public final ReactNode myProp(final char myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return build();
     }

@@ -17,12 +17,12 @@ class MultiPropComponentBuilder {
   }
 
   @Nonnull
-  static Builder3 myProp(@Nonnull final String myProp) {
+  static Builder3 myProp(final String myProp) {
     return new Builder().myProp( myProp );
   }
 
   @Nonnull
-  static ReactNode myProp2(@Nonnull final String myProp2) {
+  static ReactNode myProp2(final String myProp2) {
     return new Builder().myProp2( myProp2 );
   }
 
@@ -31,11 +31,11 @@ class MultiPropComponentBuilder {
   }
 
   public interface Builder2 {
-    Builder3 myProp(@Nonnull String myProp);
+    Builder3 myProp(String myProp);
   }
 
   public interface Builder3 {
-    ReactNode myProp2(@Nonnull String myProp2);
+    ReactNode myProp2(String myProp2);
   }
 
   public interface Builder4 {
@@ -54,14 +54,14 @@ class MultiPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final Builder3 myProp(@Nonnull final String myProp) {
+    public final Builder3 myProp(final String myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return this;
     }
 
     @Override
     @Nonnull
-    public final ReactNode myProp2(@Nonnull final String myProp2) {
+    public final ReactNode myProp2(final String myProp2) {
       _props.set( "myProp2", Objects.requireNonNull( myProp2 ) );
       return build();
     }

@@ -17,7 +17,7 @@ class ComponentWithPropBuilder {
   }
 
   @Nonnull
-  static ReactNode value(@Nonnull final String value) {
+  static ReactNode value(final String value) {
     return new Builder().value( value );
   }
 
@@ -26,7 +26,7 @@ class ComponentWithPropBuilder {
   }
 
   public interface Builder2 {
-    ReactNode value(@Nonnull String value);
+    ReactNode value(String value);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class ComponentWithPropBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode value(@Nonnull final String value) {
+    public final ReactNode value(final String value) {
       _props.set( "value", Objects.requireNonNull( value ) );
       return build();
     }

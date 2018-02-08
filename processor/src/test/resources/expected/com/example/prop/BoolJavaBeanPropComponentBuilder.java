@@ -17,7 +17,7 @@ class BoolJavaBeanPropComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode foo(@Nonnull final boolean foo) {
+  static ReactNode foo(final boolean foo) {
     return new Builder().foo( foo );
   }
 
@@ -26,7 +26,7 @@ class BoolJavaBeanPropComponentBuilder {
   }
 
   public interface Builder2 {
-    ReactNode foo(@Nonnull boolean foo);
+    ReactNode foo(boolean foo);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class BoolJavaBeanPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode foo(@Nonnull final boolean foo) {
+    public final ReactNode foo(final boolean foo) {
       _props.set( "foo", Objects.requireNonNull( foo ) );
       return build();
     }

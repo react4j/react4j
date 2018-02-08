@@ -17,17 +17,17 @@ class MultiPropComponent2Builder {
   }
 
   @Nonnull
-  static Builder3 myProp(@Nonnull final String myProp) {
+  static Builder3 myProp(final String myProp) {
     return new Builder().myProp( myProp );
   }
 
   @Nonnull
-  static Builder4 myProp2(@Nonnull final String myProp2) {
+  static Builder4 myProp2(final String myProp2) {
     return new Builder().myProp2( myProp2 );
   }
 
   @Nonnull
-  static ReactNode children(@Nonnull final ReactNode[] children) {
+  static ReactNode children(final ReactNode[] children) {
     return new Builder().children( children );
   }
 
@@ -36,15 +36,15 @@ class MultiPropComponent2Builder {
   }
 
   public interface Builder2 {
-    Builder3 myProp(@Nonnull String myProp);
+    Builder3 myProp(String myProp);
   }
 
   public interface Builder3 {
-    Builder4 myProp2(@Nonnull String myProp2);
+    Builder4 myProp2(String myProp2);
   }
 
   public interface Builder4 {
-    ReactNode children(@Nonnull ReactNode[] children);
+    ReactNode children(ReactNode[] children);
   }
 
   public interface Builder5 {
@@ -63,21 +63,21 @@ class MultiPropComponent2Builder {
 
     @Override
     @Nonnull
-    public final Builder3 myProp(@Nonnull final String myProp) {
+    public final Builder3 myProp(final String myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder4 myProp2(@Nonnull final String myProp2) {
+    public final Builder4 myProp2(final String myProp2) {
       _props.set( "myProp2", Objects.requireNonNull( myProp2 ) );
       return this;
     }
 
     @Override
     @Nonnull
-    public final ReactNode children(@Nonnull final ReactNode[] children) {
+    public final ReactNode children(final ReactNode[] children) {
       _props.set( "children", Objects.requireNonNull( children ) );
       return build();
     }

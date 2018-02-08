@@ -17,7 +17,7 @@ class BasicPropComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(@Nonnull final String myProp) {
+  static ReactNode myProp(final String myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -26,7 +26,7 @@ class BasicPropComponentBuilder {
   }
 
   public interface Builder2 {
-    ReactNode myProp(@Nonnull String myProp);
+    ReactNode myProp(String myProp);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class BasicPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(@Nonnull final String myProp) {
+    public final ReactNode myProp(final String myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return build();
     }

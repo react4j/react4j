@@ -17,7 +17,7 @@ class PropTypeDoubleBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(@Nonnull final double myProp) {
+  static ReactNode myProp(final double myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -26,7 +26,7 @@ class PropTypeDoubleBuilder {
   }
 
   public interface Builder2 {
-    ReactNode myProp(@Nonnull double myProp);
+    ReactNode myProp(double myProp);
   }
 
   public interface Builder3 {
@@ -45,7 +45,7 @@ class PropTypeDoubleBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(@Nonnull final double myProp) {
+    public final ReactNode myProp(final double myProp) {
       _props.set( "myProp", Objects.requireNonNull( myProp ) );
       return build();
     }
