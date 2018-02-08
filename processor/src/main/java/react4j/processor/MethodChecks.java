@@ -22,6 +22,36 @@ final class MethodChecks
     }
   }
 
+  static void mustBeStatic( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
+    throws ReactProcessorException
+  {
+    if ( !method.getModifiers().contains( Modifier.STATIC ) )
+    {
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                         " target must be static", method );
+    }
+  }
+
+  static void mustBeFinal( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
+    throws ReactProcessorException
+  {
+    if ( !method.getModifiers().contains( Modifier.FINAL ) )
+    {
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                         " target must be static", method );
+    }
+  }
+
+  static void mustNotBePrivate( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
+    throws ReactProcessorException
+  {
+    if ( method.getModifiers().contains( Modifier.PRIVATE ) )
+    {
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                         " target must not be private", method );
+    }
+  }
+
   static void mustNotHaveAnyParameters( @Nonnull final String annotationName,
                                         @Nonnull final ExecutableElement method )
     throws ReactProcessorException
