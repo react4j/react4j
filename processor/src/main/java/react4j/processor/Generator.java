@@ -491,8 +491,6 @@ final class Generator
         build() );
     }
 
-    final MethodDescriptor renderMethod = descriptor.getRenderMethod();
-
     for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
     {
       builder.addMethod( buildEventHandlerBuilderMethod( descriptor, eventHandler ).build() );

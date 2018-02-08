@@ -543,10 +543,6 @@ public final class ReactProcessor
     {
       throw new ReactProcessorException( "The react component does not override any render methods.", typeElement );
     }
-    else
-    {
-      descriptor.setRenderMethod( overriddenRenderMethod );
-    }
   }
 
   @Nonnull
