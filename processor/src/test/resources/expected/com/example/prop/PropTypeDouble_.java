@@ -26,7 +26,7 @@ class PropTypeDouble_ extends PropTypeDouble {
 
   @Override
   protected double getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asDouble();
+    return props().getAny( "myProp" ).asDouble();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeDouble> {

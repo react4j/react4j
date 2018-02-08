@@ -26,7 +26,7 @@ class PropTypeBoolean_ extends PropTypeBoolean {
 
   @Override
   protected boolean getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asBoolean();
+    return props().getAny( "myProp" ).asBoolean();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeBoolean> {

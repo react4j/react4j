@@ -26,7 +26,7 @@ class PropTypeShort_ extends PropTypeShort {
 
   @Override
   protected short getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asShort();
+    return props().getAny( "myProp" ).asShort();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeShort> {

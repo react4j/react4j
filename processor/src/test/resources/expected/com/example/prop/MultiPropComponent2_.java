@@ -27,17 +27,17 @@ class MultiPropComponent2_ extends MultiPropComponent2 {
 
   @Override
   protected String getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asString();
+    return props().getAny( "myProp" ).asString();
   }
 
   @Override
   protected String getMyProp2() {
-    return Js.asPropertyMap( props() ).getAny( "myProp2" ).asString();
+    return props().getAny( "myProp2" ).asString();
   }
 
   @Override
   protected ReactNode[] getChildren() {
-    return Js.asPropertyMap( props() ).getAny( "children" ).cast();
+    return props().getAny( "children" ).cast();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, MultiPropComponent2> {

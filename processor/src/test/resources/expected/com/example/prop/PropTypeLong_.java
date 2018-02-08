@@ -26,7 +26,7 @@ class PropTypeLong_ extends PropTypeLong {
 
   @Override
   protected long getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asLong();
+    return props().getAny( "myProp" ).asLong();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeLong> {

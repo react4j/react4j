@@ -26,7 +26,7 @@ class BoolJavaBeanPropComponent_ extends BoolJavaBeanPropComponent {
 
   @Override
   protected boolean isFoo() {
-    return Js.asPropertyMap( props() ).getAny( "foo" ).asBoolean();
+    return props().getAny( "foo" ).asBoolean();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, BoolJavaBeanPropComponent> {

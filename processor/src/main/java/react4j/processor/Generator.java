@@ -587,10 +587,7 @@ final class Generator
         throw new ReactProcessorException( "Return type of @Prop method named '" + prop.getName() +
                                            "' is not yet handled. Return type: " + returnType, methodElement );
     }
-    method.addStatement( "return $T.asPropertyMap( props() ).getAny( $S ).$N()",
-                         JS_CLASSNAME,
-                         prop.getName(),
-                         convertMethodName );
+    method.addStatement( "return props().getAny( $S ).$N()", prop.getName(), convertMethodName );
     return method;
   }
 

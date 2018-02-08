@@ -26,7 +26,7 @@ class NonJavaBeanPropComponent_ extends NonJavaBeanPropComponent {
 
   @Override
   protected String window() {
-    return Js.asPropertyMap( props() ).getAny( "window" ).asString();
+    return props().getAny( "window" ).asString();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, NonJavaBeanPropComponent> {

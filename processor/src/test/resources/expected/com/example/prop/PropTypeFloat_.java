@@ -26,7 +26,7 @@ class PropTypeFloat_ extends PropTypeFloat {
 
   @Override
   protected float getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asFloat();
+    return props().getAny( "myProp" ).asFloat();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeFloat> {

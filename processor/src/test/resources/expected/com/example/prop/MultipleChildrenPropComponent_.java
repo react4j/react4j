@@ -27,7 +27,7 @@ class MultipleChildrenPropComponent_ extends MultipleChildrenPropComponent {
 
   @Override
   protected ReactNode[] getChildren() {
-    return Js.asPropertyMap( props() ).getAny( "children" ).cast();
+    return props().getAny( "children" ).cast();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, MultipleChildrenPropComponent> {

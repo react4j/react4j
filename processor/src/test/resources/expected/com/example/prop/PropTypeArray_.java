@@ -26,7 +26,7 @@ class PropTypeArray_ extends PropTypeArray {
 
   @Override
   protected String[] getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).cast();
+    return props().getAny( "myProp" ).cast();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeArray> {

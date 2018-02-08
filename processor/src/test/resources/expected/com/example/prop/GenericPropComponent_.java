@@ -26,7 +26,7 @@ class GenericPropComponent_ extends GenericPropComponent {
 
   @Override
   protected <T> T getValue() {
-    return Js.asPropertyMap( props() ).getAny( "value" ).cast();
+    return props().getAny( "value" ).cast();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, GenericPropComponent> {

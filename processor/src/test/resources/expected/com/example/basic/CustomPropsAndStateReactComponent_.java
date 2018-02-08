@@ -25,7 +25,7 @@ class CustomPropsAndStateReactComponent_ extends CustomPropsAndStateReactCompone
 
   @Override
   boolean isSomeField() {
-    return Js.asPropertyMap( props() ).getAny( "someField" ).asBoolean();
+    return props().getAny( "someField" ).asBoolean();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsAndStateReactComponent.State, BaseContext, CustomPropsAndStateReactComponent> {

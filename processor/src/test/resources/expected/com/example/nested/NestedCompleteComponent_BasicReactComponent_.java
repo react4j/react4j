@@ -54,7 +54,7 @@ class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteCompone
 
   @Override
   String getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asString();
+    return props().getAny( "myProp" ).asString();
   }
 
   @Nonnull

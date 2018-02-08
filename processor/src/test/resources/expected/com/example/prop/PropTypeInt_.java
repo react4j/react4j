@@ -26,7 +26,7 @@ class PropTypeInt_ extends PropTypeInt {
 
   @Override
   protected int getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asInt();
+    return props().getAny( "myProp" ).asInt();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeInt> {

@@ -26,7 +26,7 @@ class BasicPropComponent_ extends BasicPropComponent {
 
   @Override
   protected String getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asString();
+    return props().getAny( "myProp" ).asString();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, BasicPropComponent> {

@@ -38,7 +38,7 @@ abstract class ComponentWithProp_ extends ComponentWithProp {
       expectSetter = false
   )
   protected String getValue() {
-    return Js.asPropertyMap( props() ).getAny( "value" ).asString();
+    return props().getAny( "value" ).asString();
   }
 
   @Nonnull

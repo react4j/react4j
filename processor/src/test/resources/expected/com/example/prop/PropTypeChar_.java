@@ -26,7 +26,7 @@ class PropTypeChar_ extends PropTypeChar {
 
   @Override
   protected char getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asChar();
+    return props().getAny( "myProp" ).asChar();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeChar> {

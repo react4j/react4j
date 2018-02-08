@@ -26,7 +26,7 @@ class PropTypeObject_ extends PropTypeObject {
 
   @Override
   protected PropTypeObject.MyObject getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).cast();
+    return props().getAny( "myProp" ).cast();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeObject> {

@@ -27,7 +27,7 @@ class PropsSubclassDefaultPropsComponent_ extends PropsSubclassDefaultPropsCompo
 
   @Override
   int isMyField() {
-    return Js.asPropertyMap( props() ).getAny( "isMyField" ).asInt();
+    return props().getAny( "isMyField" ).asInt();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropsSubclassDefaultPropsComponent> {

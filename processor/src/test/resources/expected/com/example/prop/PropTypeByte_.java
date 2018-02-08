@@ -26,7 +26,7 @@ class PropTypeByte_ extends PropTypeByte {
 
   @Override
   protected byte getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asByte();
+    return props().getAny( "myProp" ).asByte();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, PropTypeByte> {

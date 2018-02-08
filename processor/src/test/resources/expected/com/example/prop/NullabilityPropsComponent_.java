@@ -27,13 +27,13 @@ class NullabilityPropsComponent_ extends NullabilityPropsComponent {
   @Nonnull
   @Override
   protected String getMyProp() {
-    return Js.asPropertyMap( props() ).getAny( "myProp" ).asString();
+    return props().getAny( "myProp" ).asString();
   }
 
   @Nullable
   @Override
   protected String getMyProp2() {
-    return Js.asPropertyMap( props() ).getAny( "myProp2" ).asString();
+    return props().getAny( "myProp2" ).asString();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, NullabilityPropsComponent> {
