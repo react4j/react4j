@@ -330,6 +330,12 @@ final class ComponentDescriptor
     return _props;
   }
 
+  @Nullable
+  PropDescriptor findPropNamed( @Nonnull final String name )
+  {
+    return getProps().stream().filter( p -> p.getName().equals( name ) ).findAny().orElse( null );
+  }
+
   void setProps( @Nonnull final List<PropDescriptor> events )
   {
     _props = Objects.requireNonNull( events );
