@@ -147,7 +147,7 @@ public final class ReactProcessor
     final ComponentDescriptor descriptor = new ComponentDescriptor( name, packageElement, typeElement );
 
     determineComponentType( descriptor, typeElement );
-    determinePropsAndStateTypes( descriptor );
+    determineStateTypes( descriptor );
     determineLifecycleMethods( typeElement, descriptor );
     determineRenderMethod( typeElement, descriptor );
     determineEventHandlers( descriptor );
@@ -786,7 +786,7 @@ public final class ReactProcessor
     return null != ProcessorUtil.findAnnotationByType( method, Constants.INJECT_ANNOTATION_CLASSNAME );
   }
 
-  private void determinePropsAndStateTypes( @Nonnull final ComponentDescriptor descriptor )
+  private void determineStateTypes( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
     final List<? extends TypeParameterElement> typeParameters = componentType.getTypeParameters();
