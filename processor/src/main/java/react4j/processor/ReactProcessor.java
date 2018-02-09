@@ -481,7 +481,7 @@ public final class ReactProcessor
       ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
         .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
         .map( m -> createPropDescriptor( descriptor, m ) )
-        .sorted( this::sortProps )
+        .sorted( PropComparator.COMPARATOR )
         .collect( Collectors.toList() );
 
     final PropDescriptor childrenProp =
@@ -497,38 +497,6 @@ public final class ReactProcessor
     }
 
     descriptor.setProps( props );
-  }
-
-  /**
-   * Sort props.
-   * Non-optional props in their declared order come first, then optional props in their
-   * declared order and finally the child or children prop.
-   */
-  private int sortProps( @Nonnull final PropDescriptor o1, @Nonnull final PropDescriptor o2 )
-  {
-    final String name1 = o1.getName();
-    final String name2 = o2.getName();
-
-    if ( name1.equals( "children" ) || name1.equals( "child" ) )
-    {
-      return 1;
-    }
-    else if ( name2.equals( "children" ) || name2.equals( "child" ) )
-    {
-      return -1;
-    }
-    else if ( o2.isOptional() && !o1.isOptional() )
-    {
-      return 1;
-    }
-    else if ( o1.isOptional() && !o2.isOptional() )
-    {
-      return -1;
-    }
-    else
-    {
-      return 0;
-    }
   }
 
   @Nonnull
