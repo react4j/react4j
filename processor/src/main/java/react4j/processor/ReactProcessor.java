@@ -481,7 +481,7 @@ public final class ReactProcessor
       ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
         .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
         .map( m -> createPropDescriptor( descriptor, m ) )
-        .sorted( this::sortChildrenToEnd )
+        .sorted( this::sortProps )
         .collect( Collectors.toList() );
 
     final PropDescriptor childrenProp =
@@ -499,7 +499,7 @@ public final class ReactProcessor
     descriptor.setProps( props );
   }
 
-  private int sortChildrenToEnd( @Nonnull final PropDescriptor o1, @Nonnull final PropDescriptor o2 )
+  private int sortProps( @Nonnull final PropDescriptor o1, @Nonnull final PropDescriptor o2 )
   {
     final String name1 = o1.getName();
     final String name2 = o2.getName();
