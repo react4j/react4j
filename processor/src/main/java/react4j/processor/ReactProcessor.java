@@ -483,7 +483,7 @@ public final class ReactProcessor
     final String name = ProcessorUtil.getPropertyAccessorName( method, specifiedName );
     if ( !ProcessorUtil.isJavaIdentifier( name ) )
     {
-      throw new ReactProcessorException( "Method annotated with @Prop specified invalid name " + specifiedName,
+      throw new ReactProcessorException( "@Prop target specified an invalid name " + specifiedName,
                                          method );
     }
     else
