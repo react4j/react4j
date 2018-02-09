@@ -22,14 +22,17 @@ class PropTypeFloatBuilder {
   }
 
   public interface Builder1 {
+    @Nonnull
     Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
+    @Nonnull
     ReactNode myProp(float myProp);
   }
 
   public interface Builder3 {
+    @Nonnull
     ReactNode build();
   }
 

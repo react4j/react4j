@@ -283,6 +283,7 @@ final class Generator
   {
     final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
     method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
+    method.addAnnotation( NONNULL_CLASSNAME );
     action.accept( method );
     if ( isLastStep )
     {

@@ -23,11 +23,13 @@ class GenericTypeComponentBuilder {
 
   @SuppressWarnings("unused")
   public interface Builder1<T> {
+    @Nonnull
     ReactNode key(@Nonnull String key);
   }
 
   @SuppressWarnings("unused")
   public interface Builder2<T> {
+    @Nonnull
     ReactNode build();
   }
 

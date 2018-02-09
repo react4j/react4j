@@ -22,14 +22,17 @@ class NonJavaBeanPropComponentBuilder {
   }
 
   public interface Builder1 {
+    @Nonnull
     Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
+    @Nonnull
     ReactNode window(String window);
   }
 
   public interface Builder3 {
+    @Nonnull
     ReactNode build();
   }
 

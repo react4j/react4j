@@ -22,14 +22,17 @@ class GenericPropComponentBuilder {
   }
 
   public interface Builder1 {
+    @Nonnull
     Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
+    @Nonnull
     <T> ReactNode value(T value);
   }
 
   public interface Builder3 {
+    @Nonnull
     ReactNode build();
   }
 

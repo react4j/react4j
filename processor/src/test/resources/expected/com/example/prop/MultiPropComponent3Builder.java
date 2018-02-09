@@ -32,22 +32,27 @@ class MultiPropComponent3Builder {
   }
 
   public interface Builder1 {
+    @Nonnull
     Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
+    @Nonnull
     Builder3 myProp(String myProp);
   }
 
   public interface Builder3 {
+    @Nonnull
     Builder4 myProp2(String myProp2);
   }
 
   public interface Builder4 {
+    @Nonnull
     ReactNode child(ReactNode child);
   }
 
   public interface Builder5 {
+    @Nonnull
     ReactNode build();
   }
 

@@ -22,10 +22,12 @@ class MethodInjectReactComponentBuilder {
   }
 
   public interface Builder1 {
+    @Nonnull
     ReactNode key(@Nonnull String key);
   }
 
   public interface Builder2 {
+    @Nonnull
     ReactNode build();
   }
 

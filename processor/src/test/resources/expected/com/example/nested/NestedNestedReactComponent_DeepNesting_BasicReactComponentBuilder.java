@@ -22,10 +22,12 @@ class NestedNestedReactComponent_DeepNesting_BasicReactComponentBuilder {
   }
 
   public interface Builder1 {
+    @Nonnull
     ReactNode key(@Nonnull String key);
   }
 
   public interface Builder2 {
+    @Nonnull
     ReactNode build();
   }
 
