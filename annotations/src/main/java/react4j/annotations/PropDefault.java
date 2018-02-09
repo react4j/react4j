@@ -47,4 +47,3 @@ public @interface PropDefault
   @Nonnull
   String name() default "<default>";
 }
-
