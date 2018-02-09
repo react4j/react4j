@@ -5,13 +5,12 @@ import javax.annotation.Nullable;
 import jsinterop.base.JsPropertyMap;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
-import react4j.core.BaseContext;
 import react4j.core.ReactNode;
 
 @ReactComponent
 @ArezComponent( allowEmpty = true, allowConcrete = true )
 abstract class ArezComponentAnnotated
-  extends ReactArezComponent<BaseContext>
+  extends ReactArezComponent
 {
   // This method is added to avoid failures on rebuild all within IDE.
   // In normal production code, the react annotation processor will have aborted

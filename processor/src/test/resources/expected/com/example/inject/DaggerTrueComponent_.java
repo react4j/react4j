@@ -8,7 +8,6 @@ import javax.inject.Provider;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.core.BaseContext;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -16,7 +15,7 @@ import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class DaggerTrueComponent_ extends DaggerTrueComponent {
-  static final ComponentConstructorFunction<BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   private static Provider<DaggerTrueComponent> c_provider;
 
@@ -34,18 +33,17 @@ class DaggerTrueComponent_ extends DaggerTrueComponent {
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseContext> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseContext> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction getConstructorFunction() {
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "DaggerTrueComponent" );
     }
     return componentConstructor;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, DaggerTrueComponent> {
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props,
-        @Nullable final BaseContext context) {
-      super( props, context );
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, DaggerTrueComponent> {
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
     }
 
     @Override

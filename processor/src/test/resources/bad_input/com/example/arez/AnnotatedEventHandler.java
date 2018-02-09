@@ -5,12 +5,11 @@ import javax.annotation.Nullable;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
-import react4j.core.BaseContext;
 import react4j.core.ReactNode;
 
 @ReactComponent
 abstract class AnnotatedEventHandler
-  extends ReactArezComponent<BaseContext>
+  extends ReactArezComponent
 {
   @Nullable
   @Override

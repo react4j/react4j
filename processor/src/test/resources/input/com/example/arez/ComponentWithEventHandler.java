@@ -5,12 +5,11 @@ import jsinterop.annotations.JsFunction;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
-import react4j.core.BaseContext;
 import react4j.core.ReactNode;
 
 @ReactComponent
 abstract class ComponentWithEventHandler
-  extends ReactArezComponent<BaseContext>
+  extends ReactArezComponent
 {
   @JsFunction
   public interface CustomHandler

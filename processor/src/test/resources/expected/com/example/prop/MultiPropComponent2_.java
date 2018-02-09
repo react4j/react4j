@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseContext;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -14,11 +13,11 @@ import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class MultiPropComponent2_ extends MultiPropComponent2 {
-  static final ComponentConstructorFunction<BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseContext> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseContext> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction getConstructorFunction() {
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "MultiPropComponent2" );
     }
@@ -40,10 +39,9 @@ class MultiPropComponent2_ extends MultiPropComponent2 {
     return props().getAny( "children" ).cast();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, MultiPropComponent2> {
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props,
-        @Nullable final BaseContext context) {
-      super( props, context );
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, MultiPropComponent2> {
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
     }
 
     @Override

@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.annotations.EventHandler;
-import react4j.core.BaseContext;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -15,14 +14,14 @@ import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class CustomNameComponent_ extends CustomNameComponent {
-  static final ComponentConstructorFunction<BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private final EventHandler.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseContext> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseContext> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction getConstructorFunction() {
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomNameComponent" );
     }
@@ -43,10 +42,9 @@ class CustomNameComponent_ extends CustomNameComponent {
     return handler;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, CustomNameComponent> {
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props,
-        @Nullable final BaseContext context) {
-      super( props, context );
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, CustomNameComponent> {
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
     }
 
     @Override

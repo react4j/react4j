@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 import react4j.annotations.EventHandler;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
-import react4j.core.BaseContext;
 import react4j.core.ReactNode;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.proptypes.html.AnchorProps;
@@ -17,7 +16,7 @@ import static react4j.examples.arez.step1.Footer_.*;
 
 @ReactComponent
 abstract class Footer
-  extends ReactArezComponent<BaseContext>
+  extends ReactArezComponent
 {
   @EventHandler( MouseEventHandler.class )
   void handleClearCompleted()

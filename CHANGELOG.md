@@ -19,6 +19,12 @@
   static magically named method `getInitialProps()` that returned the initial props for the entire component.
   This approach is more explicit and allows better type analysis when constructing builders etc.
 
+#### Removed
+* 💥 **\[core\]** Removed the `BaseContext` and `BaseChildContext` types and all associated infrastructure.
+  ReactJS is moving to deprecate context in the next point `16.3` release and replace it with new, improved
+  context API. Rather than supporting the older API that introduces a significant amount of complexity to the
+  codebase, React4j has decided to move directly to the new API.
+
 ### [v0.39](https://github.com/react4j/react4j/tree/v0.39) (2018-02-07)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.38...v0.39)
 

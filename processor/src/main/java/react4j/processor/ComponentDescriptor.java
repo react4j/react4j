@@ -4,7 +4,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -16,7 +15,6 @@ import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 
 final class ComponentDescriptor
 {
@@ -32,18 +30,6 @@ final class ComponentDescriptor
   private boolean _runArezScheduler;
   @Nullable
   private TypeElement _stateType;
-  @Nullable
-  private TypeElement _contextType;
-  /**
-   * A map of field name => TypeMirror for each context variable
-   */
-  @Nullable
-  private Map<String, TypeMirror> _contextTypeFields;
-  /**
-   * A map of field name => TypeMirror for each context variable provided.
-   */
-  @Nullable
-  private Map<String, TypeMirror> _childContextTypeFields;
   /**
    * Lifecycle methods that are overridden by the user and need to be proxied from the native object.
    */
@@ -233,44 +219,6 @@ final class ComponentDescriptor
   void setStateType( @Nonnull final TypeElement stateType )
   {
     _stateType = Objects.requireNonNull( stateType );
-  }
-
-  @Nonnull
-  TypeElement getContextType()
-  {
-    assert null != _contextType;
-    return _contextType;
-  }
-
-  @Nonnull
-  Map<String, TypeMirror> getContextTypeFields()
-  {
-    assert null != _contextTypeFields;
-    return _contextTypeFields;
-  }
-
-  void setContextType( @Nonnull final TypeElement contextType,
-                       @Nonnull final Map<String, TypeMirror> contextTypeFields )
-  {
-    _contextType = Objects.requireNonNull( contextType );
-    _contextTypeFields = Objects.requireNonNull( contextTypeFields );
-  }
-
-  boolean hasChildContextFields()
-  {
-    return null != _childContextTypeFields;
-  }
-
-  @Nonnull
-  Map<String, TypeMirror> getChildContextTypeFields()
-  {
-    assert null != _childContextTypeFields;
-    return _childContextTypeFields;
-  }
-
-  void setChildContextTypeFields( @Nonnull final Map<String, TypeMirror> childContextTypeFields )
-  {
-    _childContextTypeFields = Objects.requireNonNull( childContextTypeFields );
   }
 
   @Nonnull

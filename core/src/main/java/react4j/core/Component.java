@@ -14,7 +14,7 @@ import static org.realityforge.braincheck.Guards.*;
  *
  * @param <S> the type of state that this component maintains.
  */
-public abstract class Component<S extends BaseState, C extends BaseContext>
+public abstract class Component<S extends BaseState>
 {
   /**
    * Callback function for updating state.
@@ -41,7 +41,7 @@ public abstract class Component<S extends BaseState, C extends BaseContext>
   @Nonnull
   private LifecycleMethod _lifecycleMethod = LifecycleMethod.UNKNOWN;
   @Nullable
-  private NativeComponent<S, C> _nativeComponent;
+  private NativeComponent<S> _nativeComponent;
 
   /**
    * Set the phase of the component. Only used for invariant checking.
@@ -65,7 +65,7 @@ public abstract class Component<S extends BaseState, C extends BaseContext>
     _lifecycleMethod = Objects.requireNonNull( lifecycleMethod );
   }
 
-  final void bindComponent( @Nonnull final NativeComponent<S, C> nativeComponent )
+  final void bindComponent( @Nonnull final NativeComponent<S> nativeComponent )
   {
     _nativeComponent = Objects.requireNonNull( nativeComponent );
   }
@@ -92,7 +92,7 @@ public abstract class Component<S extends BaseState, C extends BaseContext>
    * Return the native react component.
    */
   @Nonnull
-  private NativeComponent<S, C> component()
+  private NativeComponent<S> component()
   {
     invariant( () -> null != _nativeComponent,
                () -> "Invoked component() on " + this + " before a component has been bound." );
@@ -120,17 +120,6 @@ public abstract class Component<S extends BaseState, C extends BaseContext>
   protected final JsPropertyMap<Object> props()
   {
     return component().props();
-  }
-
-  /**
-   * Return the component context from the native component.
-   * This may be null if no context is present.
-   *
-   * @return the component context if any.
-   */
-  protected final C context()
-  {
-    return component().context();
   }
 
   /**
@@ -225,12 +214,12 @@ public abstract class Component<S extends BaseState, C extends BaseContext>
    * The component re-renders when state or props change but calling this method is another way to
    * schedule the component to be re-rendered.
    *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, BaseState, BaseContext)} will be skipped
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, BaseState)} will be skipped
    * and it is equivalent to calling forceUpdate() on the native react component. See the
    * <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component documentation</a> for more
    * details.</p>
    *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, BaseState, BaseContext)} will be
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, BaseState)} will be
    * invoked. This is equivalent to calling setState({}) on the native react component.</p>
    *
    * @param force true to skip shouldComponentUpdate during re-render, false otherwise.
@@ -274,17 +263,6 @@ public abstract class Component<S extends BaseState, C extends BaseContext>
   protected ReactNode performRender()
   {
     return render();
-  }
-
-  /**
-   * Return the context published by this component to child components.
-   *
-   * @return the child context if any.
-   */
-  @Nullable
-  protected BaseChildContext getChildContext()
-  {
-    return null;
   }
 
   /**
@@ -346,11 +324,9 @@ public abstract class Component<S extends BaseState, C extends BaseContext>
    * if some of component's props may update. Calling {@link #scheduleStateUpdate(BaseState)} generally doesn't trigger
    * this method.</p>
    *
-   * @param nextProps   the new properties of the component.
-   * @param nextContext the new context of the component.
+   * @param nextProps the new properties of the component.
    */
-  protected void componentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps,
-                                            @Nonnull final C nextContext )
+  protected void componentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps )
   {
   }
 
@@ -371,18 +347,16 @@ public abstract class Component<S extends BaseState, C extends BaseContext>
    * See the <a href="https://reactjs.org/docs/react-component.html#componentwillupdate">React Component documentation</a> for more details.
    *
    * <p>Note that you cannot call {@link #scheduleStateUpdate(BaseState)} here. If you need to update state in
-   * response to a prop change, use {@link #componentWillReceiveProps(JsPropertyMap, BaseContext)} instead.</p>
+   * response to a prop change, use {@link #componentWillReceiveProps(JsPropertyMap)} instead.</p>
    *
-   * <p>Note: This method will not be invoked if {@link #shouldComponentUpdate(JsPropertyMap, BaseState, BaseContext)}
+   * <p>Note: This method will not be invoked if {@link #shouldComponentUpdate(JsPropertyMap, BaseState)}
    * returns false.</p>
    *
-   * @param nextProps   the new properties of the component.
-   * @param nextState   the new state of the component.
-   * @param nextContext the new context of the component.
+   * @param nextProps the new properties of the component.
+   * @param nextState the new state of the component.
    */
   protected void componentWillUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                      @Nullable final S nextState,
-                                      @Nonnull final C nextContext )
+                                      @Nullable final S nextState )
   {
   }
 
@@ -415,19 +389,17 @@ public abstract class Component<S extends BaseState, C extends BaseContext>
    *
    * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
    *
-   * <p>If this method returns false, then {@link #componentWillUpdate(JsPropertyMap, BaseState, BaseContext)},
+   * <p>If this method returns false, then {@link #componentWillUpdate(JsPropertyMap, BaseState)},
    * {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap, BaseState)} will not be invoked. In the future
    * React may treat this method  as a hint rather than a strict directive, and returning false may still result
    * in a re-rendering of the component.</p>
    *
-   * @param nextProps   the new properties of the component.
-   * @param nextState   the new state of the component.
-   * @param nextContext the new context of the component.
+   * @param nextProps the new properties of the component.
+   * @param nextState the new state of the component.
    * @return true if the component should be updated.
    */
   protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final S nextState,
-                                           @Nullable final C nextContext )
+                                           @Nullable final S nextState )
   {
     return true;
   }

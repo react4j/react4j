@@ -15,19 +15,15 @@ import jsinterop.base.JsPropertyMap;
  * @param <S> the type of state this component maintains
  */
 @JsType( isNative = true, namespace = "React", name = "Component" )
-public abstract class NativeComponent<S extends BaseState, C extends BaseContext>
+public abstract class NativeComponent<S extends BaseState>
 {
   @SuppressWarnings( "unused" )
   @JsProperty
   private JsPropertyMap<Object> props;
   @JsProperty
   private S state;
-  @SuppressWarnings( "unused" )
-  @JsProperty
-  private C context;
 
-  NativeComponent( @SuppressWarnings( "unused" ) @Nullable final JsPropertyMap<Object> props,
-                   @SuppressWarnings( "unused" ) @Nullable final C context )
+  NativeComponent( @SuppressWarnings( "unused" ) @Nullable final JsPropertyMap<Object> props )
   {
   }
 
@@ -47,13 +43,6 @@ public abstract class NativeComponent<S extends BaseState, C extends BaseContext
   final S state()
   {
     return state;
-  }
-
-  @JsOverlay
-  @Nullable
-  final C context()
-  {
-    return context;
   }
 
   final native void setState( @Nonnull Component.SetStateCallback<S> callback );

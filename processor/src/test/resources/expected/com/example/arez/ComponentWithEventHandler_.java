@@ -10,7 +10,6 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.annotations.EventHandler;
-import react4j.core.BaseContext;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -22,7 +21,7 @@ import react4j.core.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
-  static final ComponentConstructorFunction<BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private final EventHandler.Procedure _handleFoo = create_handleFoo();
@@ -31,8 +30,8 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   private final ComponentWithEventHandler.CustomHandler _handleFoo2 = create_handleFoo2();
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseContext> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseContext> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction getConstructorFunction() {
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithEventHandler" );
     }
@@ -95,14 +94,12 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1,
-        @Nonnull BaseContext arg2);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, ComponentWithEventHandler> implements Lifecycle {
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props,
-        @Nullable final BaseContext context) {
-      super( props, context );
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ComponentWithEventHandler> implements Lifecycle {
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
     }
 
     @Override
@@ -128,8 +125,8 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final BaseState arg1, @Nonnull final BaseContext arg2) {
-      return performShouldComponentUpdate(arg0,arg1,arg2);
+        @Nonnull final BaseState arg1) {
+      return performShouldComponentUpdate(arg0,arg1);
     }
   }
 }

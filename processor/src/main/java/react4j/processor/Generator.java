@@ -9,9 +9,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
@@ -60,7 +58,6 @@ final class Generator
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j.core", "ReactNode" );
   private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.core", "NativeAdapterComponent" );
-  private static final ClassName REACT_PROP_TYPE_CLASSNAME = ClassName.get( "react4j.core", "PropType" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j.core", "React" );
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j.core", "ReactConfig" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j.core", "Component" );
@@ -433,7 +430,7 @@ final class Generator
       build() );
 
     final FieldSpec.Builder field =
-      FieldSpec.builder( getJsConstructorFnType( descriptor ),
+      FieldSpec.builder( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
                          "TYPE",
                          Modifier.STATIC,
                          Modifier.FINAL ).
@@ -639,13 +636,6 @@ final class Generator
   }
 
   @Nonnull
-  private static ParameterizedTypeName getJsConstructorFnType( @Nonnull final ComponentDescriptor descriptor )
-  {
-    return ParameterizedTypeName.get( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
-                                      TypeName.get( descriptor.getContextType().asType() ) );
-  }
-
-  @Nonnull
   private static FieldSpec.Builder buildEventHandlerField( @Nonnull final EventHandlerDescriptor eventHandler )
   {
     final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
@@ -791,16 +781,15 @@ final class Generator
   @Nonnull
   private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ComponentDescriptor descriptor )
   {
-    final ParameterizedTypeName constructorType = getJsConstructorFnType( descriptor );
 
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "getConstructorFunction" ).
         addAnnotation( NONNULL_CLASSNAME ).
         addModifiers( Modifier.STATIC, Modifier.PRIVATE ).
-        returns( constructorType );
+        returns( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME );
 
     method.addStatement( "final $T componentConstructor = $T::new",
-                         constructorType,
+                         COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
                          ClassName.bestGuess( "NativeReactComponent" ) );
     final CodeBlock.Builder codeBlock = CodeBlock.builder();
     codeBlock.beginControlFlow( "if ( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
@@ -811,39 +800,6 @@ final class Generator
 
     method.addCode( codeBlock.build() );
 
-    final Map<String, TypeMirror> childContextTypeFields =
-      descriptor.hasChildContextFields() ? descriptor.getChildContextTypeFields() : Collections.emptyMap();
-    final Map<String, TypeMirror> contextTypeFields = descriptor.getContextTypeFields();
-    if ( !childContextTypeFields.isEmpty() || !contextTypeFields.isEmpty() )
-    {
-      method.addStatement( "final $T valid = () -> null", REACT_PROP_TYPE_CLASSNAME );
-    }
-    if ( !contextTypeFields.isEmpty() )
-    {
-      method.addStatement( "final $T<$T> contextTypes = $T.of()",
-                           JS_PROPERTY_MAP_CLASSNAME,
-                           Object.class,
-                           JS_PROPERTY_MAP_CLASSNAME );
-      for ( final String contextKey : contextTypeFields.keySet() )
-      {
-        method.addStatement( "contextTypes.set( $S, valid )", contextKey );
-      }
-      method.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"contextTypes\", contextTypes )",
-                           JS_CLASSNAME );
-    }
-    if ( !childContextTypeFields.isEmpty() )
-    {
-      method.addStatement( "final $T<$T> childContextTypes = $T.of()",
-                           JS_PROPERTY_MAP_CLASSNAME,
-                           Object.class,
-                           JS_PROPERTY_MAP_CLASSNAME );
-      for ( final String childContextKey : childContextTypeFields.keySet() )
-      {
-        method.addStatement( "childContextTypes.set( $S, valid )", childContextKey );
-      }
-      method.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"childContextTypes\", childContextTypes )",
-                           JS_CLASSNAME );
-    }
     final List<PropDescriptor> propsWithDefaults = descriptor.getProps()
       .stream()
       .filter( p -> p.hasDefaultField() || p.hasDefaultMethod() )
@@ -886,7 +842,6 @@ final class Generator
     final TypeName superType =
       ParameterizedTypeName.get( REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME,
                                  ClassName.get( descriptor.getStateType().asType() ),
-                                 ClassName.get( descriptor.getContextType().asType() ),
                                  descriptor.getComponentType() );
 
     builder.superclass( superType );
@@ -902,14 +857,10 @@ final class Generator
       final ParameterSpec.Builder props =
         ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
           addAnnotation( NULLABLE_CLASSNAME );
-      final ParameterSpec.Builder context =
-        ParameterSpec.builder( ClassName.get( descriptor.getContextType() ), "context", Modifier.FINAL ).
-          addAnnotation( NULLABLE_CLASSNAME );
       final MethodSpec.Builder method =
         MethodSpec.constructorBuilder().
-          addParameter( props.build() ).
-          addParameter( context.build() );
-      method.addStatement( "super( props, context )" );
+          addParameter( props.build() );
+      method.addStatement( "super( props )" );
       builder.addMethod( method.build() );
     }
 

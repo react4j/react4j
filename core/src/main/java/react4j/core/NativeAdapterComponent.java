@@ -16,10 +16,9 @@ import jsinterop.base.JsPropertyMap;
  */
 public abstract class NativeAdapterComponent<
   S extends BaseState,
-  C extends BaseContext,
-  I extends Component<S, C>
+  I extends Component<S>
   >
-  extends NativeComponent<S, C>
+  extends NativeComponent<S>
 {
   /**
    * The target component that all lifecycle methods are forwarded to.
@@ -29,13 +28,11 @@ public abstract class NativeAdapterComponent<
   /**
    * Create a component that designed to delegate to a target component.
    *
-   * @param props   the initial props.
-   * @param context the initial context.
+   * @param props the initial props.
    */
-  protected NativeAdapterComponent( @Nullable final JsPropertyMap<Object> props,
-                                    @Nullable final C context )
+  protected NativeAdapterComponent( @Nullable final JsPropertyMap<Object> props )
   {
-    super( props, context );
+    super( props );
     _component = createComponent();
     _component.bindComponent( this );
 
@@ -158,14 +155,12 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method componentWillUpdate() that
    * delegates to this method to perform the work.
    *
-   * @param nextProps   the new properties of the component.
-   * @param nextState   the state.
-   * @param nextContext the new context of the component.
-   * @see Component#componentWillUpdate(JsPropertyMap, BaseState, BaseContext)
+   * @param nextProps the new properties of the component.
+   * @param nextState the state.
+   * @see Component#componentWillUpdate(JsPropertyMap, BaseState)
    */
   protected final void performComponentWillUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
-                                                   @Nonnull final S nextState,
-                                                   @Nonnull final C nextContext )
+                                                   @Nonnull final S nextState )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -173,7 +168,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      _component.componentWillUpdate( nextProps, nextState, nextContext );
+      _component.componentWillUpdate( nextProps, nextState );
     }
     finally
     {
@@ -189,15 +184,13 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method shouldComponentUpdate() that
    * delegates to this method to perform the work.
    *
-   * @param nextProps   the new properties of the component.
-   * @param nextState   the new state of the component.
-   * @param nextContext the new context of the component.
+   * @param nextProps the new properties of the component.
+   * @param nextState the new state of the component.
    * @return true if the component should be updated.
-   * @see Component#shouldComponentUpdate(JsPropertyMap, BaseState, BaseContext)
+   * @see Component#shouldComponentUpdate(JsPropertyMap, BaseState)
    */
   protected final boolean performShouldComponentUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
-                                                        @Nonnull final S nextState,
-                                                        @Nullable final C nextContext )
+                                                        @Nonnull final S nextState )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -205,7 +198,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      return _component.shouldComponentUpdate( nextProps, nextState, nextContext );
+      return _component.shouldComponentUpdate( nextProps, nextState );
     }
     finally
     {
@@ -221,12 +214,10 @@ public abstract class NativeAdapterComponent<
    * It is expected that the subclass will implement a public method componentWillReceiveProps() that
    * delegates to this method to perform the work.
    *
-   * @param nextProps   the new properties of the component.
-   * @param nextContext the new context of the component.
-   * @see Component#componentWillReceiveProps(JsPropertyMap, BaseContext)
+   * @param nextProps the new properties of the component.
+   * @see Component#componentWillReceiveProps(JsPropertyMap)
    */
-  protected final void performComponentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps,
-                                                         @Nonnull final C nextContext )
+  protected final void performComponentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -234,7 +225,7 @@ public abstract class NativeAdapterComponent<
     }
     try
     {
-      _component.componentWillReceiveProps( nextProps, nextContext );
+      _component.componentWillReceiveProps( nextProps );
     }
     finally
     {
@@ -300,20 +291,5 @@ public abstract class NativeAdapterComponent<
         _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
       }
     }
-  }
-
-  /**
-   * Call getChildContext on the target component.
-   * It is expected that the subclass will implement a public method getChildContext() that
-   * delegates to this method to perform the work.
-   *
-   * @param <CC> the type of the child context.
-   * @return the child context.
-   * @see Component#getChildContext()
-   */
-  @SuppressWarnings( "unchecked" )
-  protected final <CC extends BaseChildContext> CC performGetChildContext()
-  {
-    return (CC) _component.getChildContext();
   }
 }

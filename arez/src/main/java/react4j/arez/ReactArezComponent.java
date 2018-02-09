@@ -18,7 +18,6 @@ import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.core.BaseContext;
 import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.Procedure;
@@ -35,8 +34,8 @@ import react4j.core.util.JsUtil;
  * of an Arez transaction. (Typically this means it needs to be accessed within the
  * scope of a {@link Action} annotated method or within the scope of the render method.</p>
  */
-public abstract class ReactArezComponent<C extends BaseContext>
-  extends Component<BaseState, C>
+public abstract class ReactArezComponent
+  extends Component<BaseState>
 {
   /**
    * Key used to store the arez data in state.
@@ -153,8 +152,7 @@ public abstract class ReactArezComponent<C extends BaseContext>
    */
   @Override
   protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final BaseState nextState,
-                                           @Nullable final C nextContext )
+                                           @Nullable final BaseState nextState )
   {
     if ( hasRenderDepsChanged() )
     {

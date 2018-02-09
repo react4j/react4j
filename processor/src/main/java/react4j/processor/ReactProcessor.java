@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -150,7 +149,6 @@ public final class ReactProcessor
     determineComponentType( descriptor, typeElement );
     determinePropsAndStateTypes( descriptor );
     determineLifecycleMethods( typeElement, descriptor );
-    determineChildContextTypes( descriptor );
     determineRenderMethod( typeElement, descriptor );
     determineEventHandlers( descriptor );
     determineProps( descriptor );
@@ -813,34 +811,12 @@ public final class ReactProcessor
   {
     final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
     final List<? extends TypeParameterElement> typeParameters = componentType.getTypeParameters();
-    assert 2 == typeParameters.size();
+    assert 1 == typeParameters.size();
 
     final TypeParameterElement stateTypeParameter = typeParameters.get( 0 );
     assert stateTypeParameter.getSimpleName().toString().equals( "S" );
     final TypeElement stateType = resolveToElement( descriptor, stateTypeParameter );
     descriptor.setStateType( stateType );
-
-    final TypeParameterElement contextTypeParameter = typeParameters.get( 1 );
-    assert contextTypeParameter.getSimpleName().toString().equals( "C" );
-    final TypeElement contextType = resolveToElement( descriptor, contextTypeParameter );
-
-    final Map<String, TypeMirror> contextTypeFields =
-      ProcessorUtil.getFields( contextType, processingEnv.getTypeUtils() );
-
-    descriptor.setContextType( contextType, contextTypeFields );
-  }
-
-  private void determineChildContextTypes( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final MethodDescriptor getChildContext = descriptor.getLifecycleMethods().stream().
-      filter( m -> m.getMethod().getSimpleName().toString().equals( "getChildContext" ) ).findFirst().orElse( null );
-    if ( null != getChildContext )
-    {
-      final DeclaredType returnType = (DeclaredType) getChildContext.getMethodType().getReturnType();
-      final Map<String, TypeMirror> childContextTypeFields =
-        ProcessorUtil.getFields( (TypeElement) returnType.asElement(), processingEnv.getTypeUtils() );
-      descriptor.setChildContextTypeFields( childContextTypeFields );
-    }
   }
 
   @Nonnull

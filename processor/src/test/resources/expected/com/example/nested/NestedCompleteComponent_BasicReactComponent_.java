@@ -10,7 +10,6 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react4j.annotations.EventHandler;
-import react4j.core.BaseContext;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -18,7 +17,7 @@ import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteComponent.BasicReactComponent {
-  static final ComponentConstructorFunction<BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   private static Provider<NestedCompleteComponent.BasicReactComponent> c_provider;
 
@@ -39,8 +38,8 @@ class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteCompone
   }
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseContext> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseContext> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction getConstructorFunction() {
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicReactComponent" );
     }
@@ -66,10 +65,9 @@ class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteCompone
     return handler;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, NestedCompleteComponent.BasicReactComponent> {
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props,
-        @Nullable final BaseContext context) {
-      super( props, context );
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, NestedCompleteComponent.BasicReactComponent> {
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
     }
 
     @Override

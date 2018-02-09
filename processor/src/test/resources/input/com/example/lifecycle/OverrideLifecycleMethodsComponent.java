@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.JsPropertyMap;
 import react4j.annotations.ReactComponent;
-import react4j.core.BaseContext;
 import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactErrorInfo;
@@ -13,7 +12,7 @@ import react4j.core.ReactNode;
 
 @ReactComponent
 abstract class OverrideLifecycleMethodsComponent
-  extends Component<BaseState, BaseContext>
+  extends Component<BaseState>
 {
   // This lifecycle method should not have adapter synthesized.
   @Override
@@ -34,8 +33,7 @@ abstract class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected void componentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps,
-                                            @Nonnull final BaseContext nextContext )
+  protected void componentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps )
   {
   }
 
@@ -46,8 +44,7 @@ abstract class OverrideLifecycleMethodsComponent
 
   @Override
   protected void componentWillUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                      @Nullable final BaseState nextState,
-                                      @Nonnull final BaseContext nextContext )
+                                      @Nullable final BaseState nextState )
   {
   }
 
@@ -63,9 +60,8 @@ abstract class OverrideLifecycleMethodsComponent
 
   @Override
   protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final BaseState nextState,
-                                           @Nullable final BaseContext nextContext )
+                                           @Nullable final BaseState nextState )
   {
-    return super.shouldComponentUpdate( nextProps, nextState, nextContext );
+    return super.shouldComponentUpdate( nextProps, nextState );
   }
 }

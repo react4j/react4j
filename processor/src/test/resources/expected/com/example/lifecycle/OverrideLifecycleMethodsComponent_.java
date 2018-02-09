@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseContext;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -16,11 +15,11 @@ import react4j.core.ReactErrorInfo;
 
 @Generated("react4j.processor.ReactProcessor")
 class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsComponent {
-  static final ComponentConstructorFunction<BaseContext> TYPE = getConstructorFunction();
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private static ComponentConstructorFunction<BaseContext> getConstructorFunction() {
-    final ComponentConstructorFunction<BaseContext> componentConstructor = NativeReactComponent::new;
+  private static ComponentConstructorFunction getConstructorFunction() {
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
     }
@@ -35,24 +34,22 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps, @Nonnull BaseState nextState);
 
-    void componentWillReceiveProps(@Nonnull JsPropertyMap<Object> nextProps,
-        @Nonnull BaseContext nextContext);
+    void componentWillReceiveProps(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentWillUnmount();
 
-    void componentWillUpdate(@Nonnull JsPropertyMap<Object> nextProps, @Nonnull BaseState nextState,
-        @Nonnull BaseContext nextContext);
+    void componentWillUpdate(@Nonnull JsPropertyMap<Object> nextProps,
+        @Nonnull BaseState nextState);
 
     void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
 
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps,
-        @Nonnull BaseState nextState, @Nonnull BaseContext nextContext);
+        @Nonnull BaseState nextState);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseContext, OverrideLifecycleMethodsComponent> implements Lifecycle {
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props,
-        @Nullable final BaseContext context) {
-      super( props, context );
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, OverrideLifecycleMethodsComponent> implements Lifecycle {
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
     }
 
     @Override
@@ -72,9 +69,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     }
 
     @Override
-    public void componentWillReceiveProps(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final BaseContext nextContext) {
-      performComponentWillReceiveProps(nextProps,nextContext);
+    public void componentWillReceiveProps(@Nonnull final JsPropertyMap<Object> nextProps) {
+      performComponentWillReceiveProps(nextProps);
     }
 
     @Override
@@ -84,8 +80,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
 
     @Override
     public void componentWillUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
-      performComponentWillUpdate(nextProps,nextState,nextContext);
+        @Nonnull final BaseState nextState) {
+      performComponentWillUpdate(nextProps,nextState);
     }
 
     @Override
@@ -96,8 +92,8 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final BaseState nextState, @Nonnull final BaseContext nextContext) {
-      return performShouldComponentUpdate(nextProps,nextState,nextContext);
+        @Nonnull final BaseState nextState) {
+      return performShouldComponentUpdate(nextProps,nextState);
     }
   }
 }
