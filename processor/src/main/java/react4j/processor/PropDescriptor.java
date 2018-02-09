@@ -54,6 +54,11 @@ final class PropDescriptor
     return _methodType;
   }
 
+  boolean isOptional()
+  {
+    return hasDefaultField() || hasDefaultMethod();
+  }
+
   void setDefaultMethod( @Nonnull final ExecutableElement method,
                          @Nonnull final ExecutableType methodType )
   {
