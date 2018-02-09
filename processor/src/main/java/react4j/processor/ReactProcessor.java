@@ -160,6 +160,14 @@ public final class ReactProcessor
      * correctly sorts optional props after required props.
      */
     descriptor.sortProps();
+    final List<PropDescriptor> props = descriptor.getProps();
+    if ( !props.isEmpty() )
+    {
+      /*
+       * Flag the last prop as terminal one so builder is correctly generated.
+       */
+      props.get( props.size() - 1 ).setLastProp( true );
+    }
 
     verifyNoUnexpectedAbstractMethod( descriptor );
 

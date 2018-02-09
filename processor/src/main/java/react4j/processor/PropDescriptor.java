@@ -24,6 +24,10 @@ final class PropDescriptor
   private ExecutableElement _defaultMethod;
   @Nullable
   private ExecutableType _defaultMethodType;
+  /**
+   * Flag set to true if prop is the last prop and thus by necessity completes configuration in generated builder.
+   */
+  private boolean _isLastProp;
 
   PropDescriptor( @Nonnull final ComponentDescriptor component,
                   @Nonnull final String name,
@@ -136,5 +140,15 @@ final class PropDescriptor
   {
     assert null != _defaultMethodType;
     return _defaultMethodType;
+  }
+
+  boolean isLastProp()
+  {
+    return _isLastProp;
+  }
+
+  void setLastProp( final boolean lastProp )
+  {
+    _isLastProp = lastProp;
   }
 }

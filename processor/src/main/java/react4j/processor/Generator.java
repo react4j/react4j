@@ -85,14 +85,12 @@ final class Generator
     builder.addType( buildKeyBuilderStepInterface( descriptor, isKeyLastStep ) );
     builder.addMethod( buildStaticKeyMethod( descriptor, isKeyLastStep ) );
 
-    for ( int i = 0; i < propCount; i++ )
+    for ( final PropDescriptor prop : props )
     {
-      final PropDescriptor prop = props.get( i );
       // Step 1 is the key
       final int step = ++stepCount;
-      final boolean isPropLastStep = propCount == i + 1;
-      builder.addType( buildPropBuilderStepInterface( descriptor, prop, step, isPropLastStep ) );
-      builder.addMethod( buildStaticPropMethod( descriptor, prop, step, isPropLastStep ) );
+      builder.addType( buildPropBuilderStepInterface( descriptor, prop, step ) );
+      builder.addMethod( buildStaticPropMethod( descriptor, prop, step ) );
     }
 
     final int step = ++stepCount;
@@ -133,7 +131,9 @@ final class Generator
   private static TypeSpec buildTerminalBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
                                                              final int step )
   {
-    return buildBuilderStepInterface( descriptor, step, true, "build", method -> {
+    return buildBuilderStepInterface( descriptor, step, builder -> {
+      builder.addMethod( buildStepInterfaceMethod( "build", step, true, method -> {
+      } ).build() );
     } );
   }
 
@@ -181,10 +181,12 @@ final class Generator
   private static TypeSpec buildKeyBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
                                                         final boolean isLastStep )
   {
-    return buildBuilderStepInterface( descriptor, 1, isLastStep, "key", method -> {
-      final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( TypeName.get( String.class ), "key" ).addAnnotation( NONNULL_CLASSNAME );
-      method.addParameter( parameter.build() );
+    return buildBuilderStepInterface( descriptor, 1, builder -> {
+      builder.addMethod( buildStepInterfaceMethod( "key", 1, isLastStep, method -> {
+        final ParameterSpec.Builder parameter =
+          ParameterSpec.builder( TypeName.get( String.class ), "key" ).addAnnotation( NONNULL_CLASSNAME );
+        method.addParameter( parameter.build() );
+      } ).build() );
     } );
   }
 
@@ -202,8 +204,7 @@ final class Generator
   @Nonnull
   private static MethodSpec buildStaticPropMethod( @Nonnull final ComponentDescriptor descriptor,
                                                    @Nonnull final PropDescriptor prop,
-                                                   final int step,
-                                                   final boolean isLastStep )
+                                                   final int step )
   {
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( prop.getName() ).
@@ -227,7 +228,7 @@ final class Generator
                          ClassName.bestGuess( "Builder" ),
                          prop.getName(),
                          prop.getName() );
-    if ( isLastStep )
+    if ( prop.isLastProp() )
     {
       method.returns( REACT_NODE_CLASSNAME );
     }
@@ -241,16 +242,23 @@ final class Generator
   @Nonnull
   private static TypeSpec buildPropBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
                                                          @Nonnull final PropDescriptor prop,
-                                                         final int step,
-                                                         final boolean isLastStep )
+                                                         final int step )
   {
-    return buildBuilderStepInterface( descriptor, step, isLastStep, prop.getName(), method -> {
+    return buildBuilderStepInterface( descriptor,
+                                      step,
+                                      b -> b.addMethod( buildPropStepInterfaceMethod( prop, step ) ) );
+  }
+
+  private static MethodSpec buildPropStepInterfaceMethod( @Nonnull final PropDescriptor prop,
+                                                          final int step )
+  {
+    return buildStepInterfaceMethod( prop.getName(), step, prop.isLastProp(), method -> {
       ProcessorUtil.copyTypeParameters( prop.getMethodType(), method );
       final ParameterSpec.Builder parameter =
         ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName() );
       ProcessorUtil.copyDocumentedAnnotations( prop.getMethod(), parameter );
       method.addParameter( parameter.build() );
-    } );
+    } ).build();
   }
 
   private static MethodSpec buildPropBuilderStepImpl( @Nonnull final ComponentDescriptor descriptor,
@@ -269,11 +277,29 @@ final class Generator
   }
 
   @Nonnull
+  private static MethodSpec.Builder buildStepInterfaceMethod( @Nonnull final String name,
+                                                              final int step,
+                                                              final boolean isLastStep,
+                                                              @Nonnull final Consumer<MethodSpec.Builder> action )
+  {
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
+    method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
+    action.accept( method );
+    if ( isLastStep )
+    {
+      method.returns( REACT_NODE_CLASSNAME );
+    }
+    else
+    {
+      method.returns( ClassName.bestGuess( "Builder" + ( step + 1 ) ) );
+    }
+    return method;
+  }
+
+  @Nonnull
   private static TypeSpec buildBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
                                                      final int step,
-                                                     final boolean isLastStep,
-                                                     @Nonnull final String name,
-                                                     @Nonnull final Consumer<MethodSpec.Builder> action )
+                                                     @Nonnull final Consumer<TypeSpec.Builder> action )
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Builder" + step );
     builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
@@ -286,19 +312,7 @@ final class Generator
                                .build() );
     }
 
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
-    method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
-    action.accept( method );
-    if ( isLastStep )
-    {
-      method.returns( REACT_NODE_CLASSNAME );
-    }
-    else
-    {
-      method.returns( ClassName.bestGuess( "Builder" + ( step + 1 ) ) );
-    }
-
-    builder.addMethod( method.build() );
+    action.accept( builder );
 
     return builder.build();
   }
