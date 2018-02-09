@@ -155,6 +155,8 @@ public final class ReactProcessor
     determineDefaultPropsMethods( descriptor );
     determineDefaultPropsFields( descriptor );
 
+    descriptor.sortProps();
+
     verifyNoUnexpectedAbstractMethod( descriptor );
 
     return descriptor;
@@ -481,7 +483,6 @@ public final class ReactProcessor
       ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
         .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
         .map( m -> createPropDescriptor( descriptor, m ) )
-        .sorted( PropComparator.COMPARATOR )
         .collect( Collectors.toList() );
 
     final PropDescriptor childrenProp =

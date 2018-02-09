@@ -271,4 +271,13 @@ final class ComponentDescriptor
   {
     _props = Objects.requireNonNull( events );
   }
+
+  /**
+   * Needs to be invoked after all the props have been completely constructed.
+   */
+  void sortProps()
+  {
+    assert null != _props;
+    _props.sort( PropComparator.COMPARATOR );
+  }
 }
