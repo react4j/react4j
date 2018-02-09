@@ -215,7 +215,7 @@ public class ReactProcessorTest
                       "Method can not be annotated with both @EventHandler and @Prop" },
         new Object[]{ "com.example.prop.PropHasParameterComponent", "@Prop target must not have any parameters" },
         new Object[]{ "com.example.prop.PropNamedKeyComponent",
-                      "@Prop named 'key' is invalid as references value used this key in reconciliation process. This value can be accessed via Component.getKey()" },
+                      "@Prop named 'key' is invalid as the name references value used in the reconciliation process. This value can be accessed via Component.getKey()" },
         new Object[]{ "com.example.prop.PropNoReturnComponent", "@Prop target must return a value" },
         new Object[]{ "com.example.prop.PropNotAbstractComponent", "@Prop target must be abstract" },
         new Object[]{ "com.example.prop.PropThrowsExceptionComponent", "@Prop target must not throw any exceptions" },
