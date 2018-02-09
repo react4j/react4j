@@ -844,12 +844,30 @@ final class Generator
       method.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"childContextTypes\", childContextTypes )",
                            JS_CLASSNAME );
     }
-    if ( descriptor.hasDefaultPropsMethod() )
+    final List<PropDescriptor> propsWithDefaults = descriptor.getProps()
+      .stream()
+      .filter( p -> p.hasDefaultField() || p.hasDefaultMethod() )
+      .collect( Collectors.toList() );
+    if ( !propsWithDefaults.isEmpty() )
     {
-      method.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"defaultProps\", $T.$N() )",
-                           JS_CLASSNAME,
-                           descriptor.getClassName(),
-                           descriptor.getDefaultPropsMethod().getSimpleName().toString() );
+      method.addStatement( "final $T<$T> defaultProps = $T.of()",
+                           JS_PROPERTY_MAP_CLASSNAME,
+                           Object.class,
+                           JS_PROPERTY_MAP_CLASSNAME );
+      for ( final PropDescriptor prop : propsWithDefaults )
+      {
+
+        method.addStatement( "defaultProps.set( $S, $T.$N" + ( prop.hasDefaultField() ? "" : "()" ) + " )",
+                             prop.getName(),
+                             descriptor.getClassName(),
+                             prop.hasDefaultField() ?
+                             prop.getDefaultField().getSimpleName() :
+                             prop.getDefaultMethod().getSimpleName()
+        );
+      }
+
+      method.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"defaultProps\", defaultProps )",
+                           JS_CLASSNAME );
     }
     method.addStatement( "return componentConstructor" );
     return method;
