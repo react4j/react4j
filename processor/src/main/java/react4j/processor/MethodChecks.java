@@ -1,6 +1,7 @@
 package react4j.processor;
 
 import javax.annotation.Nonnull;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
@@ -22,7 +23,7 @@ final class MethodChecks
     }
   }
 
-  static void mustBeStatic( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
+  static void mustBeStatic( @Nonnull final String annotationName, @Nonnull final Element method )
     throws ReactProcessorException
   {
     if ( !method.getModifiers().contains( Modifier.STATIC ) )
@@ -32,17 +33,17 @@ final class MethodChecks
     }
   }
 
-  static void mustBeFinal( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
+  static void mustBeFinal( @Nonnull final String annotationName, @Nonnull final Element method )
     throws ReactProcessorException
   {
     if ( !method.getModifiers().contains( Modifier.FINAL ) )
     {
       throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must be static", method );
+                                         " target must be final", method );
     }
   }
 
-  static void mustNotBePrivate( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
+  static void mustNotBePrivate( @Nonnull final String annotationName, @Nonnull final Element method )
     throws ReactProcessorException
   {
     if ( method.getModifiers().contains( Modifier.PRIVATE ) )
