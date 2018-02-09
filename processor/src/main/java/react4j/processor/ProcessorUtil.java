@@ -36,6 +36,8 @@ import javax.lang.model.util.Types;
 final class ProcessorUtil
 {
   private static final Pattern GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)$" );
+  static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
+  static final Pattern DEFAULT_FIELD_NAME_PATTERN = Pattern.compile( "^DEFAULT_([A-Z]([A-Z_]*[A-Z])?)" );
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
 
   private static final String SENTINEL_NAME = "<default>";

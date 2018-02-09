@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -153,7 +154,8 @@ public final class ReactProcessor
     determineRenderMethod( typeElement, descriptor );
     determineEventHandlers( descriptor );
     determineProps( descriptor );
-    determineDefaultPropsMethod( descriptor );
+    determineDefaultPropsMethods( descriptor );
+    determineDefaultPropsFields( descriptor );
 
     verifyNoUnexpectedAbstractMethod( descriptor );
 
@@ -180,41 +182,120 @@ public final class ReactProcessor
     }
   }
 
-  private void determineDefaultPropsMethod( @Nonnull final ComponentDescriptor descriptor )
+  private void determineDefaultPropsMethods( @Nonnull final ComponentDescriptor descriptor )
   {
     final Types typeUtils = processingEnv.getTypeUtils();
     final List<ExecutableElement> defaultPropsMethods =
       ProcessorUtil.getMethods( descriptor.getElement(), typeUtils ).stream()
-        .filter( m -> m.getSimpleName().toString().equals( "getInitialProps" ) )
+        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
-    if ( !defaultPropsMethods.isEmpty() )
+    for ( final ExecutableElement method : defaultPropsMethods )
     {
-      for ( final ExecutableElement method : defaultPropsMethods )
+      final String name = derivePropDefaultName( method );
+      final PropDescriptor prop = descriptor.findPropNamed( name );
+      if ( null == prop )
       {
-        final ExecutableType methodType =
-          (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), method );
+        throw new ReactProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
+                                           "@Prop annotated method.", method );
+      }
+      final ExecutableType methodType = (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), method );
+      prop.setDefaultMethod( method, methodType );
+    }
+  }
 
-        final TypeElement typeElement =
-          processingEnv.getElementUtils().getTypeElement( Constants.JS_PROPERTY_MAP_CLASSNAME );
-        final TypeElement objectType = processingEnv.getElementUtils().getTypeElement( Object.class.getName() );
-        final DeclaredType expectedType = typeUtils.getDeclaredType( typeElement, objectType.asType() );
+  private void determineDefaultPropsFields( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final List<VariableElement> defaultPropsFields =
+      ProcessorUtil.getFieldElements( descriptor.getElement() ).stream()
+        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
+        .collect( Collectors.toList() );
 
-        if ( methodType.getThrownTypes().isEmpty() &&
-             methodType.getParameterTypes().isEmpty() &&
-             method.getModifiers().contains( Modifier.STATIC ) &&
-             !method.getModifiers().contains( Modifier.PRIVATE ) &&
-             typeUtils.isAssignable( methodType.getReturnType(), expectedType ) )
+    for ( final VariableElement field : defaultPropsFields )
+    {
+      final String name = derivePropDefaultName( field );
+      final PropDescriptor prop = descriptor.findPropNamed( name );
+      if ( null == prop )
+      {
+        throw new ReactProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
+                                           "@Prop annotated method.", field );
+      }
+      prop.setDefaultField( field );
+    }
+  }
+
+  @Nonnull
+  private String derivePropDefaultName( @Nonnull final Element element )
+    throws ReactProcessorException
+  {
+    final String name =
+      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                 element,
+                                                 Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
+                                                 "name" ).getValue();
+
+    if ( ProcessorUtil.isSentinelName( name ) )
+    {
+      if ( element instanceof ExecutableElement )
+      {
+        final String deriveName = ProcessorUtil.deriveName( element, ProcessorUtil.DEFAULT_GETTER_PATTERN, name );
+        if ( null == deriveName )
         {
-          descriptor.setDefaultPropsMethod( method );
-          return;
+          throw new ReactProcessorException( "@PropDefault target has not specified name nor is it named according " +
+                                             "to the convention 'get[Name]Default'.", element );
+        }
+        return deriveName;
+      }
+      else
+      {
+        final String methodName = element.getSimpleName().toString();
+        final Matcher matcher = ProcessorUtil.DEFAULT_FIELD_NAME_PATTERN.matcher( methodName );
+        if ( matcher.find() )
+        {
+          final String candidate = matcher.group( 1 );
+          return uppercaseConstantToPascalCase( candidate );
+        }
+        else
+        {
+          throw new ReactProcessorException( "@PropDefault target has not specified name nor is it named according " +
+                                             "to the convention 'DEFAULT_[NAME]'.", element );
         }
       }
-      throw new ReactProcessorException( "The getInitialProps method does not satisfy constraints. The method must " +
-                                         "be static, non-private, have no parameters, throw no exceptions and must " +
-                                         "return a value that is compatible with the prop type for the component.",
-                                         descriptor.getElement() );
     }
+    else
+    {
+      if ( !ProcessorUtil.isJavaIdentifier( name ) )
+      {
+        throw new ReactProcessorException( "@PropDefault target specified an invalid name " + name, element );
+      }
+      return name;
+    }
+  }
+
+  @Nonnull
+  private String uppercaseConstantToPascalCase( @Nonnull final String candidate )
+  {
+    final String s = candidate.toLowerCase();
+    final StringBuilder sb = new StringBuilder();
+    boolean uppercase = false;
+    for ( int i = 0; i < s.length(); i++ )
+    {
+      final char ch = s.charAt( i );
+      if ( '_' == ch )
+      {
+        uppercase = true;
+      }
+      else if ( uppercase )
+      {
+        sb.append( Character.toUpperCase( ch ) );
+        uppercase = false;
+      }
+      else
+      {
+        sb.append( ch );
+      }
+    }
+    return sb.toString();
   }
 
   private void determineEventHandlers( @Nonnull final ComponentDescriptor descriptor )
