@@ -200,6 +200,12 @@ public final class ReactProcessor
                                            "@Prop annotated method.", method );
       }
       final ExecutableType methodType = (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), method );
+      if ( !processingEnv.getTypeUtils().isAssignable( methodType.getReturnType(),
+                                                       prop.getMethodType().getReturnType() ) )
+      {
+        throw new ReactProcessorException( "@PropDefault target has a return type that is not assignable to the " +
+                                           "return type of the associated @Prop annotated method.", method );
+      }
       prop.setDefaultMethod( method, methodType );
     }
   }
@@ -219,6 +225,11 @@ public final class ReactProcessor
       {
         throw new ReactProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
                                            "@Prop annotated method.", field );
+      }
+      if ( !processingEnv.getTypeUtils().isAssignable( field.asType(), prop.getMethodType().getReturnType() ) )
+      {
+        throw new ReactProcessorException( "@PropDefault target has a type that is not assignable to the " +
+                                           "return type of the associated @Prop annotated method.", field );
       }
       prop.setDefaultField( field );
     }
