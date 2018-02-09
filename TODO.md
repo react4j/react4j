@@ -13,6 +13,13 @@
 * The child prop should access "children" key. At the same time all props should be able to override their
   key.
 
+* Add mechanism by which plugins can be used to enhance the component generation process. Something that
+  could hook into the component lifecycle methods? The goal is to add `@ReplicantData` or `@GraphQL` annotations
+  to component and have code generator enhance the component in some fashion to load data as appropriate.
+  Could this be like in UI-binder where constructors have to invoke factory? (That would make it easier to
+  integrate into code generator) Or do we generate a chain of classes `MyComponent` -> `Graphql_MyComponent` ->
+  `React_Graphql_MyComponent` -> `Arez_React_Graphql_MyComponent` ?
+
 * Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
   Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
   default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
