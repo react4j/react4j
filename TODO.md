@@ -12,7 +12,7 @@
 
 * The child prop should access "children" key. At the same time all props should be able to override their
   key.
- 
+
 * Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
   Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
   default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
