@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
 
+@SuppressWarnings( "Duplicates" )
 final class PropDescriptor
 {
   @Nonnull
