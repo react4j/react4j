@@ -2,6 +2,8 @@
 
 ### High Priority
 
+* Add `@DoNotAutobox` annotation onto generated builder for all primitive types?
+
 * Enhance generated builders to support optional `@Props` ... in stage prior to children?
 
 * Ensure children can be optional.
