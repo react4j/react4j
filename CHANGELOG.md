@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.40](https://github.com/react4j/react4j/tree/v0.40) (2018-02-09)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.39...v0.40)
 
 ##### Fixed
 * **\[processor\]** Fixed handling of documented annotations, in particular nullability annotations such as
