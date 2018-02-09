@@ -14,6 +14,10 @@
   the type `P` type variable from the `Component` class and associated infrastructure. Where the framework
   needs to refer to props as a generic object, replace the type variable `P extends BaseProps` with the type
   `JsPropertyMap<Object>`.
+* 💥 **\[annotations\]** Introduced the `@PropDefault` annotation that can be placed on static final fields
+  or static getters that will specify or return the default value for a specific prop. This replaces that
+  static magically named method `getInitialProps()` that returned the initial props for the entire component.
+  This approach is more explicit and allows better type analysis when constructing builders etc.
 
 ### [v0.39](https://github.com/react4j/react4j/tree/v0.39) (2018-02-07)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.38...v0.39)
