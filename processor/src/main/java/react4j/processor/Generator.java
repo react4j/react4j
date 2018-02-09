@@ -69,8 +69,7 @@ final class Generator
   @Nonnull
   static TypeSpec buildComponentBuilder( @Nonnull final ComponentDescriptor descriptor )
   {
-    final String name = descriptor.getNestedClassPrefix() + descriptor.getBuilderName();
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
 
     ProcessorUtil.copyAccessModifiers( descriptor.getElement(), builder );
 
@@ -402,8 +401,7 @@ final class Generator
   {
     final TypeElement element = descriptor.getElement();
 
-    final String name = descriptor.getNestedClassPrefix() + descriptor.getEnhancedName();
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( name );
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getEnhancedClassName() );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
     builder.superclass( descriptor.getComponentType() );

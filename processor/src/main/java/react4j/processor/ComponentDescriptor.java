@@ -118,33 +118,21 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  String getEnhancedName()
-  {
-    return _element.getSimpleName() + "_";
-  }
-
-  @Nonnull
-  String getBuilderName()
-  {
-    return _element.getSimpleName() + "Builder";
-  }
-
-  @Nonnull
   ClassName getEnhancedClassName()
   {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + getEnhancedName() );
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "_" );
   }
 
   @Nonnull
-  String getDaggerFactory()
+  ClassName getBuilderClassName()
   {
-    return _element.getSimpleName() + "DaggerFactory";
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "Builder" );
   }
 
   @Nonnull
   ClassName getDaggerFactoryClassName()
   {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + getDaggerFactory() );
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "DaggerFactory" );
   }
 
   @Nonnull
