@@ -79,9 +79,8 @@ final class Generator
     int stepCount = 1;
 
     final List<PropDescriptor> props = descriptor.getProps();
-    final int propCount = props.size();
 
-    final boolean isKeyLastStep = 0 == propCount;
+    final boolean isKeyLastStep = props.isEmpty();
     builder.addType( buildKeyBuilderStepInterface( descriptor, isKeyLastStep ) );
     builder.addMethod( buildStaticKeyMethod( descriptor, isKeyLastStep ) );
 
@@ -96,7 +95,7 @@ final class Generator
     final int step = ++stepCount;
     builder.addType( buildTerminalBuilderStepInterface( descriptor, step ) );
 
-    if ( 0 == propCount )
+    if ( isKeyLastStep )
     {
       builder.addMethod( buildStaticTerminalMethod( descriptor ) );
     }
