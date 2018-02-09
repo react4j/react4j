@@ -155,6 +155,10 @@ public final class ReactProcessor
     determineDefaultPropsMethods( descriptor );
     determineDefaultPropsFields( descriptor );
 
+    /*
+     * Sorting must occur after @PropDefault has been processed to ensure the sorting
+     * correctly sorts optional props after required props.
+     */
     descriptor.sortProps();
 
     verifyNoUnexpectedAbstractMethod( descriptor );
