@@ -237,7 +237,7 @@ final class ProcessorUtil
   }
 
   @Nullable
-  static String deriveName( @Nonnull final ExecutableElement method,
+  static String deriveName( @Nonnull final Element method,
                             @Nonnull final Pattern pattern,
                             @Nonnull final String name )
     throws ReactProcessorException
