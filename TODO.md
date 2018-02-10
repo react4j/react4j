@@ -6,10 +6,6 @@
 
 * Ensure prop names can have numbers in it - particular field based `@PropDefault`s should derive the name.
 
-* Enhance generated builders to support optional `@Props` ... in stage prior to children?
-
-* Ensure children can be optional.
-
 * Possibly support refs in generated builders.
 
 * The child prop should access "children" key. At the same time all props should be able to override their
