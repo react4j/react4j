@@ -27,7 +27,7 @@ final class PropDescriptor
   /**
    * Flag set to true if prop is the last prop and thus by necessity completes configuration in generated builder.
    */
-  private boolean _isLastProp;
+  private boolean _isTerminalProp;
 
   PropDescriptor( @Nonnull final ComponentDescriptor component,
                   @Nonnull final String name,
@@ -142,13 +142,13 @@ final class PropDescriptor
     return _defaultMethodType;
   }
 
-  boolean isLastProp()
+  boolean isTerminalProp()
   {
-    return _isLastProp;
+    return _isTerminalProp;
   }
 
-  void setLastProp( final boolean lastProp )
+  void markAsTerminalProp()
   {
-    _isLastProp = lastProp;
+    _isTerminalProp = true;
   }
 }

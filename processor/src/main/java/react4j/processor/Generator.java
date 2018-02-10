@@ -227,7 +227,7 @@ final class Generator
                          ClassName.bestGuess( "Builder" ),
                          prop.getName(),
                          prop.getName() );
-    if ( prop.isLastProp() )
+    if ( prop.isTerminalProp() )
     {
       method.returns( REACT_NODE_CLASSNAME );
     }
@@ -251,7 +251,7 @@ final class Generator
   private static MethodSpec buildPropStepInterfaceMethod( @Nonnull final PropDescriptor prop,
                                                           final int step )
   {
-    return buildStepInterfaceMethod( prop.getName(), step, prop.isLastProp(), method -> {
+    return buildStepInterfaceMethod( prop.getName(), step, prop.isTerminalProp(), method -> {
       ProcessorUtil.copyTypeParameters( prop.getMethodType(), method );
       final ParameterSpec.Builder parameter =
         ParameterSpec.builder( TypeName.get( prop.getMethodType().getReturnType() ), prop.getName() );

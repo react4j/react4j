@@ -166,7 +166,7 @@ public final class ReactProcessor
       /*
        * Flag the last prop as terminal one so builder is correctly generated.
        */
-      props.get( props.size() - 1 ).setLastProp( true );
+      props.get( props.size() - 1 ).markAsTerminalProp();
     }
 
     verifyNoUnexpectedAbstractMethod( descriptor );
