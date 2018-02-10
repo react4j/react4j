@@ -39,7 +39,6 @@ class RootPackageReactComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( RootPackageReactComponent_.TYPE, Js.uncheckedCast( _props ) );

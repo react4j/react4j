@@ -99,7 +99,6 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( OptionalChildrenWithOptionalAndRequired_.TYPE, Js.uncheckedCast( _props ) );

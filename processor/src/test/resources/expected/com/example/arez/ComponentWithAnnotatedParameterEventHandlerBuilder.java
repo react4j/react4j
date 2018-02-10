@@ -41,7 +41,6 @@ class ComponentWithAnnotatedParameterEventHandlerBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( ComponentWithAnnotatedParameterEventHandler_.TYPE, Js.uncheckedCast( _props ) );

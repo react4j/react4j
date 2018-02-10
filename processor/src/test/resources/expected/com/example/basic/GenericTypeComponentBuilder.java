@@ -43,7 +43,6 @@ class GenericTypeComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( GenericTypeComponent_.TYPE, Js.uncheckedCast( _props ) );

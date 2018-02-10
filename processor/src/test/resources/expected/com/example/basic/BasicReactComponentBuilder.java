@@ -41,7 +41,6 @@ class BasicReactComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( BasicReactComponent_.TYPE, Js.uncheckedCast( _props ) );

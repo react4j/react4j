@@ -41,7 +41,6 @@ class RenderFromParentComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( RenderFromParentComponent_.TYPE, Js.uncheckedCast( _props ) );

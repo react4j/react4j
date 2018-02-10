@@ -41,7 +41,6 @@ class CustomNameReactComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( CustomNameReactComponent_.TYPE, Js.uncheckedCast( _props ) );

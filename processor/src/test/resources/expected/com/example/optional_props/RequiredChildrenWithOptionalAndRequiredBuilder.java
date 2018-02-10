@@ -43,7 +43,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
 
   public interface Builder3 {
     @Nonnull
-    Builder4 myProp(String myProp);
+    Builder3 myProp(String myProp);
 
     @Nonnull
     ReactNode children(ReactNode[] children);
@@ -54,12 +54,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
     ReactNode children(ReactNode[] children);
   }
 
-  public interface Builder5 {
-    @Nonnull
-    ReactNode build();
-  }
-
-  private static class Builder implements Builder1, Builder2, Builder3, Builder4, Builder5 {
+  private static class Builder implements Builder1, Builder2, Builder3, Builder4 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -90,7 +85,6 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( RequiredChildrenWithOptionalAndRequired_.TYPE, Js.uncheckedCast( _props ) );

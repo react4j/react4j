@@ -41,7 +41,6 @@ class MethodInjectReactComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( MethodInjectReactComponent_.TYPE, Js.uncheckedCast( _props ) );

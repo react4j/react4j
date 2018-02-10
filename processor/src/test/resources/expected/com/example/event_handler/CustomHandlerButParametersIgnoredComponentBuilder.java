@@ -41,7 +41,6 @@ class CustomHandlerButParametersIgnoredComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( CustomHandlerButParametersIgnoredComponent_.TYPE, Js.uncheckedCast( _props ) );

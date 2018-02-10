@@ -41,7 +41,6 @@ class CustomHandlerComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( CustomHandlerComponent_.TYPE, Js.uncheckedCast( _props ) );

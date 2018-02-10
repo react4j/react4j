@@ -61,12 +61,7 @@ class RequiredChildrenWithManyRequiredBuilder {
     ReactNode children(ReactNode[] children);
   }
 
-  public interface Builder6 {
-    @Nonnull
-    ReactNode build();
-  }
-
-  private static class Builder implements Builder1, Builder2, Builder3, Builder4, Builder5, Builder6 {
+  private static class Builder implements Builder1, Builder2, Builder3, Builder4, Builder5 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -104,7 +99,6 @@ class RequiredChildrenWithManyRequiredBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( RequiredChildrenWithManyRequired_.TYPE, Js.uncheckedCast( _props ) );

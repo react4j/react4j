@@ -41,7 +41,6 @@ class CustomHandlerMultipleArgsComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( CustomHandlerMultipleArgsComponent_.TYPE, Js.uncheckedCast( _props ) );

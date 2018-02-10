@@ -41,7 +41,6 @@ class InjectFalseComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( InjectFalseComponent_.TYPE, Js.uncheckedCast( _props ) );

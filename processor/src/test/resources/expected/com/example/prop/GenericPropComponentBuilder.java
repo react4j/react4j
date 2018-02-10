@@ -31,12 +31,7 @@ class GenericPropComponentBuilder {
     <T> ReactNode value(T value);
   }
 
-  public interface Builder3 {
-    @Nonnull
-    ReactNode build();
-  }
-
-  private static class Builder implements Builder1, Builder2, Builder3 {
+  private static class Builder implements Builder1, Builder2 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -53,7 +48,6 @@ class GenericPropComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( GenericPropComponent_.TYPE, Js.uncheckedCast( _props ) );

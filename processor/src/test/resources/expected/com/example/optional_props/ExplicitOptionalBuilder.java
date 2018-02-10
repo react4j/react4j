@@ -99,7 +99,6 @@ class ExplicitOptionalBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( ExplicitOptional_.TYPE, Js.uncheckedCast( _props ) );

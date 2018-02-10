@@ -33,13 +33,7 @@ class GenericTypePropComponentBuilder {
     ReactNode value(T value);
   }
 
-  @SuppressWarnings("unused")
-  public interface Builder3<T> {
-    @Nonnull
-    ReactNode build();
-  }
-
-  private static class Builder<T> implements Builder1<T>, Builder2<T>, Builder3<T> {
+  private static class Builder<T> implements Builder1<T>, Builder2<T> {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -56,7 +50,6 @@ class GenericTypePropComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( GenericTypePropComponent_.TYPE, Js.uncheckedCast( _props ) );

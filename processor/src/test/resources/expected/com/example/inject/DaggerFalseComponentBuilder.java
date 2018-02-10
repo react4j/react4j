@@ -41,7 +41,6 @@ class DaggerFalseComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( DaggerFalseComponent_.TYPE, Js.uncheckedCast( _props ) );

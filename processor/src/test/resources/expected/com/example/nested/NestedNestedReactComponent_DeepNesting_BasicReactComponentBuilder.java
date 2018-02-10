@@ -41,7 +41,6 @@ class NestedNestedReactComponent_DeepNesting_BasicReactComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( NestedNestedReactComponent_DeepNesting_BasicReactComponent_.TYPE, Js.uncheckedCast( _props ) );

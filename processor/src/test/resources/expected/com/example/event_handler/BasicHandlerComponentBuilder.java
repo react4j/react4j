@@ -41,7 +41,6 @@ class BasicHandlerComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( BasicHandlerComponent_.TYPE, Js.uncheckedCast( _props ) );

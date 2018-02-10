@@ -42,12 +42,7 @@ class NullabilityPropsComponentBuilder {
     ReactNode myProp2(@Nullable String myProp2);
   }
 
-  public interface Builder4 {
-    @Nonnull
-    ReactNode build();
-  }
-
-  private static class Builder implements Builder1, Builder2, Builder3, Builder4 {
+  private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override
@@ -71,7 +66,6 @@ class NullabilityPropsComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( NullabilityPropsComponent_.TYPE, Js.uncheckedCast( _props ) );

@@ -41,7 +41,6 @@ class BaseRenderComponentBuilder {
       return build();
     }
 
-    @Override
     @Nonnull
     public final ReactNode build() {
       return React.createElement( BaseRenderComponent_.TYPE, Js.uncheckedCast( _props ) );
