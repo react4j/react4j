@@ -21,11 +21,6 @@ class MultiPropComponentBuilder {
     return new Builder().myProp( myProp );
   }
 
-  @Nonnull
-  static ReactNode myProp2(final String myProp2) {
-    return new Builder().myProp2( myProp2 );
-  }
-
   public interface Builder1 {
     @Nonnull
     Builder2 key(@Nonnull String key);

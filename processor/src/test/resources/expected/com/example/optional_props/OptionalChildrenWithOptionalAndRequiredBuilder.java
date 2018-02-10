@@ -17,18 +17,8 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
   }
 
   @Nonnull
-  static Builder3 myProp(final String myProp) {
-    return new Builder().myProp( myProp );
-  }
-
-  @Nonnull
-  static Builder4 myRequiredProp(final String myRequiredProp) {
+  static Builder3 myRequiredProp(final String myRequiredProp) {
     return new Builder().myRequiredProp( myRequiredProp );
-  }
-
-  @Nonnull
-  static ReactNode children(final ReactNode[] children) {
-    return new Builder().children( children );
   }
 
   public interface Builder1 {
@@ -38,37 +28,21 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
 
   public interface Builder2 {
     @Nonnull
-    Builder3 myProp(String myProp);
-
-    @Nonnull
-    Builder4 myRequiredProp(String myRequiredProp);
-
-    @Nonnull
-    ReactNode children(ReactNode[] children);
-
-    @Nonnull
-    ReactNode build();
+    Builder3 myRequiredProp(String myRequiredProp);
   }
 
   public interface Builder3 {
     @Nonnull
-    Builder4 myRequiredProp(String myRequiredProp);
-  }
+    Builder3 myProp(String myProp);
 
-  public interface Builder4 {
     @Nonnull
-    ReactNode children(ReactNode[] children);
+    Builder3 children(ReactNode[] children);
 
     @Nonnull
     ReactNode build();
   }
 
-  public interface Builder5 {
-    @Nonnull
-    ReactNode build();
-  }
-
-  private static class Builder implements Builder1, Builder2, Builder3, Builder4, Builder5 {
+  private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override

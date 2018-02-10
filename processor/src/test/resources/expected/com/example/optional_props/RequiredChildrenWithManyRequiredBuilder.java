@@ -21,21 +21,6 @@ class RequiredChildrenWithManyRequiredBuilder {
     return new Builder().myRequiredProp1( myRequiredProp1 );
   }
 
-  @Nonnull
-  static Builder4 myRequiredProp2(final String myRequiredProp2) {
-    return new Builder().myRequiredProp2( myRequiredProp2 );
-  }
-
-  @Nonnull
-  static Builder5 myRequiredProp3(final String myRequiredProp3) {
-    return new Builder().myRequiredProp3( myRequiredProp3 );
-  }
-
-  @Nonnull
-  static ReactNode children(final ReactNode[] children) {
-    return new Builder().children( children );
-  }
-
   public interface Builder1 {
     @Nonnull
     Builder2 key(@Nonnull String key);

@@ -21,16 +21,6 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
     return new Builder().myRequiredProp( myRequiredProp );
   }
 
-  @Nonnull
-  static Builder4 myProp(final String myProp) {
-    return new Builder().myProp( myProp );
-  }
-
-  @Nonnull
-  static ReactNode children(final ReactNode[] children) {
-    return new Builder().children( children );
-  }
-
   public interface Builder1 {
     @Nonnull
     Builder2 key(@Nonnull String key);

@@ -17,18 +17,8 @@ class ExplicitOptionalBuilder {
   }
 
   @Nonnull
-  static Builder3 myOptionalProp(final String myOptionalProp) {
-    return new Builder().myOptionalProp( myOptionalProp );
-  }
-
-  @Nonnull
-  static Builder4 myRequiredProp(final String myRequiredProp) {
+  static Builder3 myRequiredProp(final String myRequiredProp) {
     return new Builder().myRequiredProp( myRequiredProp );
-  }
-
-  @Nonnull
-  static ReactNode myOtherOptionalProp(final String myOtherOptionalProp) {
-    return new Builder().myOtherOptionalProp( myOtherOptionalProp );
   }
 
   public interface Builder1 {
@@ -38,37 +28,21 @@ class ExplicitOptionalBuilder {
 
   public interface Builder2 {
     @Nonnull
-    Builder3 myOptionalProp(String myOptionalProp);
-
-    @Nonnull
-    Builder4 myRequiredProp(String myRequiredProp);
-
-    @Nonnull
-    ReactNode myOtherOptionalProp(String myOtherOptionalProp);
-
-    @Nonnull
-    ReactNode build();
+    Builder3 myRequiredProp(String myRequiredProp);
   }
 
   public interface Builder3 {
     @Nonnull
-    Builder4 myRequiredProp(String myRequiredProp);
-  }
+    Builder3 myOptionalProp(String myOptionalProp);
 
-  public interface Builder4 {
     @Nonnull
-    ReactNode myOtherOptionalProp(String myOtherOptionalProp);
+    Builder3 myOtherOptionalProp(String myOtherOptionalProp);
 
     @Nonnull
     ReactNode build();
   }
 
-  public interface Builder5 {
-    @Nonnull
-    ReactNode build();
-  }
-
-  private static class Builder implements Builder1, Builder2, Builder3, Builder4, Builder5 {
+  private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override

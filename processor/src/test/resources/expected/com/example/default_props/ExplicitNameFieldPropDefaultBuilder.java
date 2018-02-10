@@ -17,8 +17,13 @@ class ExplicitNameFieldPropDefaultBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(final String myProp) {
+  static Builder2 myProp(final String myProp) {
     return new Builder().myProp( myProp );
+  }
+
+  @Nonnull
+  static ReactNode build() {
+    return new Builder().build();
   }
 
   public interface Builder1 {
@@ -28,18 +33,13 @@ class ExplicitNameFieldPropDefaultBuilder {
 
   public interface Builder2 {
     @Nonnull
-    ReactNode myProp(String myProp);
+    Builder2 myProp(String myProp);
 
     @Nonnull
     ReactNode build();
   }
 
-  public interface Builder3 {
-    @Nonnull
-    ReactNode build();
-  }
-
-  private static class Builder implements Builder1, Builder2, Builder3 {
+  private static class Builder implements Builder1, Builder2 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     @Override

@@ -28,13 +28,13 @@ class OptionalChildrenWithOptionalAndRequired_ extends OptionalChildrenWithOptio
   }
 
   @Override
-  protected String getMyProp() {
-    return props().getAny( "myProp" ).asString();
+  protected String getMyRequiredProp() {
+    return props().getAny( "myRequiredProp" ).asString();
   }
 
   @Override
-  protected String getMyRequiredProp() {
-    return props().getAny( "myRequiredProp" ).asString();
+  protected String getMyProp() {
+    return props().getAny( "myProp" ).asString();
   }
 
   @Override

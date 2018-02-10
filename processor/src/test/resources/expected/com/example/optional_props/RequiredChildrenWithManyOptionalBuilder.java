@@ -17,22 +17,22 @@ class RequiredChildrenWithManyOptionalBuilder {
   }
 
   @Nonnull
-  static Builder3 myPropA(final String myPropA) {
+  static Builder2 myPropA(final String myPropA) {
     return new Builder().myPropA( myPropA );
   }
 
   @Nonnull
-  static Builder4 myPropB(final String myPropB) {
+  static Builder2 myPropB(final String myPropB) {
     return new Builder().myPropB( myPropB );
   }
 
   @Nonnull
-  static Builder5 myPropC(final String myPropC) {
+  static Builder2 myPropC(final String myPropC) {
     return new Builder().myPropC( myPropC );
   }
 
   @Nonnull
-  static Builder6 myPropD(final String myPropD) {
+  static Builder2 myPropD(final String myPropD) {
     return new Builder().myPropD( myPropD );
   }
 
@@ -48,55 +48,22 @@ class RequiredChildrenWithManyOptionalBuilder {
 
   public interface Builder2 {
     @Nonnull
-    Builder3 myPropA(String myPropA);
+    Builder2 myPropA(String myPropA);
 
     @Nonnull
-    Builder4 myPropB(String myPropB);
+    Builder2 myPropB(String myPropB);
 
     @Nonnull
-    Builder5 myPropC(String myPropC);
+    Builder2 myPropC(String myPropC);
 
     @Nonnull
-    Builder6 myPropD(String myPropD);
+    Builder2 myPropD(String myPropD);
 
     @Nonnull
     ReactNode children(ReactNode[] children);
   }
 
   public interface Builder3 {
-    @Nonnull
-    Builder4 myPropB(String myPropB);
-
-    @Nonnull
-    Builder5 myPropC(String myPropC);
-
-    @Nonnull
-    Builder6 myPropD(String myPropD);
-
-    @Nonnull
-    ReactNode children(ReactNode[] children);
-  }
-
-  public interface Builder4 {
-    @Nonnull
-    Builder5 myPropC(String myPropC);
-
-    @Nonnull
-    Builder6 myPropD(String myPropD);
-
-    @Nonnull
-    ReactNode children(ReactNode[] children);
-  }
-
-  public interface Builder5 {
-    @Nonnull
-    Builder6 myPropD(String myPropD);
-
-    @Nonnull
-    ReactNode children(ReactNode[] children);
-  }
-
-  public interface Builder6 {
     @Nonnull
     ReactNode children(ReactNode[] children);
   }
