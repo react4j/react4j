@@ -533,7 +533,7 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        return !( prop.hasDefaultMethod() || prop.hasDefaultField() );
+        return !prop.hasDefaultMethod() && !prop.hasDefaultField();
     }
   }
 
