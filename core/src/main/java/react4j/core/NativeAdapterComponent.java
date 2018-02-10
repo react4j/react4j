@@ -14,10 +14,7 @@ import jsinterop.base.JsPropertyMap;
  * framework. In production builds it is expected that the method calls will be inlined and the checks will
  * be optimized away, having no significant performance impact.
  */
-public abstract class NativeAdapterComponent<
-  S extends BaseState,
-  I extends Component<S>
-  >
+public abstract class NativeAdapterComponent<S extends BaseState, I extends Component<S>>
   extends NativeComponent<S>
 {
   /**
