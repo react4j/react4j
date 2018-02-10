@@ -4,6 +4,8 @@
 
 * Add `@DoNotAutobox` annotation onto generated builder for all primitive types?
 
+* Ensure prop names can have numbers in it - particular field based `@PropDefault`s should derive the name.
+
 * Enhance generated builders to support optional `@Props` ... in stage prior to children?
 
 * Ensure children can be optional.
