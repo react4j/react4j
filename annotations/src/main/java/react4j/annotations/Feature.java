@@ -1,7 +1,7 @@
 package react4j.annotations;
 
 /**
- * Enum to control when injectible elements should be present.
+ * Enum to declare whether a specific feature should be present.
  */
 public enum Feature
 {
