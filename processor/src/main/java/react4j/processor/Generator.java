@@ -9,6 +9,8 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -23,6 +25,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
@@ -1102,5 +1105,75 @@ final class Generator
     builder.addMethod( method.build() );
 
     return builder.build();
+  }
+
+  @Nonnull
+  private static BuilderDescriptor buildBuilderDescriptor( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final BuilderDescriptor builder = new BuilderDescriptor();
+
+    Step optionalPropStep = null;
+    final List<PropDescriptor> props = descriptor.getProps();
+
+    final int propsSize = props.size();
+
+    // Key step
+    builder.addStep().
+      addStep( "key",
+               "key",
+               TypeName.get( String.class ),
+               null,
+               null,
+               0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+
+    boolean hasRequiredAfterOptional = false;
+    for ( int i = 0; i < propsSize; i++ )
+    {
+      final PropDescriptor prop = props.get( i );
+      final boolean isLast = i == propsSize - 1;
+      if ( prop.isOptional() )
+      {
+        if ( null == optionalPropStep )
+        {
+          optionalPropStep = builder.addStep();
+        }
+        addPropStepMethod( optionalPropStep, prop, StepMethodType.STAY );
+      }
+      else
+      {
+        if ( null != optionalPropStep )
+        {
+          // Need this when we have children magic prop that is required that follows the optional props.
+          addPropStepMethod( optionalPropStep, prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+          hasRequiredAfterOptional = true;
+        }
+        // Single method step
+        final Step step = builder.addStep();
+        addPropStepMethod( step, prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+      }
+    }
+    if ( null != optionalPropStep && !hasRequiredAfterOptional )
+    {
+      optionalPropStep.addStep( "build", "build", REACT_NODE_CLASSNAME, null, null, StepMethodType.TERMINATE );
+    }
+    if ( props.isEmpty() )
+    {
+      // build is a magically named step that the generator knows how to deal with
+      builder.addStep().addStep( "build", "build", REACT_NODE_CLASSNAME, null, null, StepMethodType.TERMINATE );
+    }
+
+    return builder;
+  }
+
+  private static void addPropStepMethod( @Nonnull final Step step,
+                                         @Nonnull final PropDescriptor prop,
+                                         @Nonnull final StepMethodType stepMethodType )
+  {
+    step.addStep( prop.getName(),
+                  prop.getName(),
+                  TypeName.get( prop.getMethodType().getReturnType() ),
+                  prop.getMethod(),
+                  prop.getMethodType(),
+                  stepMethodType );
   }
 }
