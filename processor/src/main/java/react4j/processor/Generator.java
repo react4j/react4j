@@ -130,10 +130,10 @@ final class Generator
   private static TypeSpec buildTerminalBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
                                                              final int step )
   {
-    return buildBuilderStepInterface( descriptor, step, builder -> {
-      builder.addMethod( buildStepInterfaceMethod( "build", step, true, method -> {
-      } ).build() );
-    } );
+    return buildBuilderStepInterface( descriptor,
+                                      step,
+                                      b -> b.addMethod( buildStepInterfaceMethod( "build", step, true, method -> {
+                                      } ).build() ) );
   }
 
   @Nonnull
@@ -243,9 +243,29 @@ final class Generator
                                                          @Nonnull final PropDescriptor prop,
                                                          final int step )
   {
-    return buildBuilderStepInterface( descriptor,
-                                      step,
-                                      b -> b.addMethod( buildPropStepInterfaceMethod( prop, step ) ) );
+    return buildBuilderStepInterface( descriptor, step, builder -> {
+      builder.addMethod( buildPropStepInterfaceMethod( prop, step ) );
+      if ( prop.isOptional() )
+      {
+        boolean needsBuild = true;
+        final List<PropDescriptor> props = descriptor.getProps();
+        final int size = props.size();
+        for ( int i = step; i <= size; i++ )
+        {
+          final PropDescriptor other = props.get( i - 1 );
+          builder.addMethod( buildPropStepInterfaceMethod( other, i + 1 ) );
+          if ( i == size && other.isSpecialChildrenProp() && !other.isOptional() )
+          {
+            needsBuild = false;
+          }
+        }
+        if ( needsBuild )
+        {
+          builder.addMethod( buildStepInterfaceMethod( "build", step, true, method -> {
+          } ).build() );
+        }
+      }
+    } );
   }
 
   private static MethodSpec buildPropStepInterfaceMethod( @Nonnull final PropDescriptor prop,

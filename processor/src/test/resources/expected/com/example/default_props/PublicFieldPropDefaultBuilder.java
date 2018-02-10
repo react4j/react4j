@@ -29,6 +29,9 @@ class PublicFieldPropDefaultBuilder {
   public interface Builder2 {
     @Nonnull
     ReactNode myProp(String myProp);
+
+    @Nonnull
+    ReactNode build();
   }
 
   public interface Builder3 {
