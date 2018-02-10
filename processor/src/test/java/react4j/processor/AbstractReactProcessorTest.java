@@ -90,14 +90,18 @@ abstract class AbstractReactProcessorTest
       final Compilation compilation =
         Compiler.javac().withProcessors( new ReactProcessor(), new ArezProcessor() ).compile( inputs );
 
-      /*
-       * Ugly hackery that marks the compile as successful so we can emit output onto filesystem. This could
-       * result in java code that is not compilable emitted to filesystem. This re-running determining problems
-       * a little easier even if it does make re-running tests from IDE a little harder
-       */
-      final Field field = compilation.getClass().getDeclaredField( "status" );
-      field.setAccessible( true );
-      field.set( compilation, Compilation.Status.SUCCESS );
+      final Compilation.Status status = compilation.status();
+      if ( Compilation.Status.SUCCESS != status )
+      {
+        /*
+         * Ugly hackery that marks the compile as successful so we can emit output onto filesystem. This could
+         * result in java code that is not compilable emitted to filesystem. This re-running determining problems
+         * a little easier even if it does make re-running tests from IDE a little harder
+         */
+        final Field field = compilation.getClass().getDeclaredField( "status" );
+        field.setAccessible( true );
+        field.set( compilation, Compilation.Status.SUCCESS );
+      }
 
       final ImmutableList<JavaFileObject> fileObjects = compilation.generatedSourceFiles();
       for ( final JavaFileObject fileObject : fileObjects )
@@ -119,6 +123,19 @@ abstract class AbstractReactProcessorTest
         }
         Files.copy( fileObject.openInputStream(), target );
       }
+
+      if ( Compilation.Status.SUCCESS != status )
+      {
+        // Restore old status
+        final Field field = compilation.getClass().getDeclaredField( "status" );
+        field.setAccessible( true );
+        field.set( compilation, status );
+
+        // This next line will generate an error
+        //noinspection ResultOfMethodCallIgnored
+        compilation.generatedSourceFiles();
+      }
+
     }
     final JavaFileObject firstExpected = fixture( outputs.get( 0 ) );
     final JavaFileObject[] restExpected =
