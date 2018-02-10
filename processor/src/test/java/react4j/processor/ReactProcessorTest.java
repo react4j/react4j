@@ -49,6 +49,8 @@ public class ReactProcessorTest
         new Object[]{ "com.example.inject.InjectTrueComponent", true },
         new Object[]{ "com.example.inject.MethodInjectReactComponent", true },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent", false },
+        new Object[]{ "com.example.optional_props.ExplicitOptional", false },
+        new Object[]{ "com.example.optional_props.OptionalChildrenWithOptionalAndRequired", false },
         new Object[]{ "com.example.optional_props.RequiredChildrenWithManyOptional", false },
         new Object[]{ "com.example.optional_props.RequiredChildrenWithManyRequired", false },
         new Object[]{ "com.example.optional_props.RequiredChildrenWithOptionalAndRequired", false },

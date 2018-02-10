@@ -25,6 +25,10 @@ final class PropDescriptor
   @Nullable
   private ExecutableType _defaultMethodType;
   /**
+   * Flag set to true if prop is optional.
+   */
+  private boolean _optional;
+  /**
    * Flag set to true if prop is the last prop and thus by necessity completes configuration in generated builder.
    */
   private boolean _isTerminalProp;
@@ -56,11 +60,6 @@ final class PropDescriptor
   ExecutableType getMethodType()
   {
     return _methodType;
-  }
-
-  boolean isOptional()
-  {
-    return hasDefaultField() || hasDefaultMethod();
   }
 
   void setDefaultMethod( @Nonnull final ExecutableElement method,
@@ -140,6 +139,16 @@ final class PropDescriptor
   {
     assert null != _defaultMethodType;
     return _defaultMethodType;
+  }
+
+  boolean isOptional()
+  {
+    return _optional;
+  }
+
+  void markAsOptional()
+  {
+    _optional = true;
   }
 
   boolean isTerminalProp()

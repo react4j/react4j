@@ -160,6 +160,13 @@ public final class ReactProcessor
      * correctly sorts optional props after required props.
      */
     descriptor.sortProps();
+    for ( final PropDescriptor prop : descriptor.getProps() )
+    {
+      if ( !isPropRequired( prop ) )
+      {
+        prop.markAsOptional();
+      }
+    }
     final List<PropDescriptor> props = descriptor.getProps();
     if ( !props.isEmpty() )
     {
@@ -510,6 +517,24 @@ public final class ReactProcessor
     }
 
     descriptor.setProps( props );
+  }
+
+  private boolean isPropRequired( @Nonnull final PropDescriptor prop )
+  {
+    final VariableElement injectParameter = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        prop.getMethod(),
+                                        Constants.PROP_ANNOTATION_CLASSNAME,
+                                        "require" ).getValue();
+    switch ( injectParameter.getSimpleName().toString() )
+    {
+      case "ENABLE":
+        return true;
+      case "DISABLE":
+        return false;
+      default:
+        return !( prop.hasDefaultMethod() || prop.hasDefaultField() );
+    }
   }
 
   @Nonnull

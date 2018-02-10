@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[annotations\]** Add the `require` parameter to the `@Prop` annotation to specify whether the developer
+  is expected to supply the prop when constructing the component.
+
 ### [v0.40](https://github.com/react4j/react4j/tree/v0.40) (2018-02-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.39...v0.40)
 
