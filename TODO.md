@@ -154,11 +154,6 @@ Copying styles from source document -
 
 * Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
 
-* Document Context
-  - how to write a provider
-  - how to write a consumer
-  - pitfalls of a consumer (link to React docs? - https://reactjs.org/docs/context.html)
-
 * Create a jsbin-alike to display GWT code
   - https://github.com/jsbin/jsbin
   - http://jsbin.com/?html,css,js,console,output
