@@ -44,7 +44,7 @@ class NonJavaBeanPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode window(final String window) {
-      _props.set( "window", Objects.requireNonNull( window ) );
+      _props.set( "window", window );
       return build();
     }
 

@@ -44,7 +44,7 @@ class SingleChildPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode child(final ReactNode child) {
-      _props.set( "child", Objects.requireNonNull( child ) );
+      _props.set( "child", child );
       return build();
     }
 

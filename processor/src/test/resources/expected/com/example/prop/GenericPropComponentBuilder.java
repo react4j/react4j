@@ -44,7 +44,7 @@ class GenericPropComponentBuilder {
     @Override
     @Nonnull
     public final <T> ReactNode value(final T value) {
-      _props.set( "value", Objects.requireNonNull( value ) );
+      _props.set( "value", value );
       return build();
     }
 

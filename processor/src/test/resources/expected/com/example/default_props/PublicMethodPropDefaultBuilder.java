@@ -51,9 +51,9 @@ class PublicMethodPropDefaultBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(final String myProp) {
-      _props.set( "myProp", Objects.requireNonNull( myProp ) );
-      return build();
+    public final Builder2 myProp(final String myProp) {
+      _props.set( "myProp", myProp );
+      return this;
     }
 
     @Override

@@ -44,7 +44,7 @@ class PropTypeFloatBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final float myProp) {
-      _props.set( "myProp", Objects.requireNonNull( myProp ) );
+      _props.set( "myProp", myProp );
       return build();
     }
 

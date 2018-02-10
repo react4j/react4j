@@ -64,21 +64,21 @@ class MultiPropComponent2Builder {
     @Override
     @Nonnull
     public final Builder3 myProp(final String myProp) {
-      _props.set( "myProp", Objects.requireNonNull( myProp ) );
+      _props.set( "myProp", myProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder4 myProp2(final String myProp2) {
-      _props.set( "myProp2", Objects.requireNonNull( myProp2 ) );
+      _props.set( "myProp2", myProp2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode[] children) {
-      _props.set( "children", Objects.requireNonNull( children ) );
+      _props.set( "children", children );
       return build();
     }
 

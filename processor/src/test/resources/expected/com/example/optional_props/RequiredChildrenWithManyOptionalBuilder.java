@@ -113,36 +113,36 @@ class RequiredChildrenWithManyOptionalBuilder {
 
     @Override
     @Nonnull
-    public final Builder3 myPropA(final String myPropA) {
-      _props.set( "myPropA", Objects.requireNonNull( myPropA ) );
+    public final Builder2 myPropA(final String myPropA) {
+      _props.set( "myPropA", myPropA );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder4 myPropB(final String myPropB) {
-      _props.set( "myPropB", Objects.requireNonNull( myPropB ) );
+    public final Builder2 myPropB(final String myPropB) {
+      _props.set( "myPropB", myPropB );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder5 myPropC(final String myPropC) {
-      _props.set( "myPropC", Objects.requireNonNull( myPropC ) );
+    public final Builder2 myPropC(final String myPropC) {
+      _props.set( "myPropC", myPropC );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder6 myPropD(final String myPropD) {
-      _props.set( "myPropD", Objects.requireNonNull( myPropD ) );
+    public final Builder2 myPropD(final String myPropD) {
+      _props.set( "myPropD", myPropD );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode[] children) {
-      _props.set( "children", Objects.requireNonNull( children ) );
+      _props.set( "children", children );
       return build();
     }
 

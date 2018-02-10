@@ -74,28 +74,28 @@ class RequiredChildrenWithManyRequiredBuilder {
     @Override
     @Nonnull
     public final Builder3 myRequiredProp1(final String myRequiredProp1) {
-      _props.set( "myRequiredProp1", Objects.requireNonNull( myRequiredProp1 ) );
+      _props.set( "myRequiredProp1", myRequiredProp1 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder4 myRequiredProp2(final String myRequiredProp2) {
-      _props.set( "myRequiredProp2", Objects.requireNonNull( myRequiredProp2 ) );
+      _props.set( "myRequiredProp2", myRequiredProp2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder5 myRequiredProp3(final String myRequiredProp3) {
-      _props.set( "myRequiredProp3", Objects.requireNonNull( myRequiredProp3 ) );
+      _props.set( "myRequiredProp3", myRequiredProp3 );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode[] children) {
-      _props.set( "children", Objects.requireNonNull( children ) );
+      _props.set( "children", children );
       return build();
     }
 

@@ -44,7 +44,7 @@ class CustomPropsAndStateReactComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode someField(final boolean someField) {
-      _props.set( "someField", Objects.requireNonNull( someField ) );
+      _props.set( "someField", someField );
       return build();
     }
 

@@ -44,7 +44,7 @@ class ComponentWithPropBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final String value) {
-      _props.set( "value", Objects.requireNonNull( value ) );
+      _props.set( "value", value );
       return build();
     }
 

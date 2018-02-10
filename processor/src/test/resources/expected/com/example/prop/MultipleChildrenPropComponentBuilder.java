@@ -44,7 +44,7 @@ class MultipleChildrenPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode[] children) {
-      _props.set( "children", Objects.requireNonNull( children ) );
+      _props.set( "children", children );
       return build();
     }
 

@@ -80,23 +80,23 @@ class ExplicitOptionalBuilder {
 
     @Override
     @Nonnull
+    public final Builder3 myRequiredProp(final String myRequiredProp) {
+      _props.set( "myRequiredProp", myRequiredProp );
+      return this;
+    }
+
+    @Override
+    @Nonnull
     public final Builder3 myOptionalProp(final String myOptionalProp) {
-      _props.set( "myOptionalProp", Objects.requireNonNull( myOptionalProp ) );
+      _props.set( "myOptionalProp", myOptionalProp );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder4 myRequiredProp(final String myRequiredProp) {
-      _props.set( "myRequiredProp", Objects.requireNonNull( myRequiredProp ) );
+    public final Builder3 myOtherOptionalProp(final String myOtherOptionalProp) {
+      _props.set( "myOtherOptionalProp", myOtherOptionalProp );
       return this;
-    }
-
-    @Override
-    @Nonnull
-    public final ReactNode myOtherOptionalProp(final String myOtherOptionalProp) {
-      _props.set( "myOtherOptionalProp", Objects.requireNonNull( myOtherOptionalProp ) );
-      return build();
     }
 
     @Nonnull

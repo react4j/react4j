@@ -24,13 +24,13 @@ class ExplicitOptional_ extends ExplicitOptional {
   }
 
   @Override
-  protected String getMyOptionalProp() {
-    return props().getAny( "myOptionalProp" ).asString();
+  protected String getMyRequiredProp() {
+    return props().getAny( "myRequiredProp" ).asString();
   }
 
   @Override
-  protected String getMyRequiredProp() {
-    return props().getAny( "myRequiredProp" ).asString();
+  protected String getMyOptionalProp() {
+    return props().getAny( "myOptionalProp" ).asString();
   }
 
   @Override

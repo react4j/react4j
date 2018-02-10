@@ -67,21 +67,21 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
     @Override
     @Nonnull
     public final Builder3 myRequiredProp(final String myRequiredProp) {
-      _props.set( "myRequiredProp", Objects.requireNonNull( myRequiredProp ) );
+      _props.set( "myRequiredProp", myRequiredProp );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder4 myProp(final String myProp) {
-      _props.set( "myProp", Objects.requireNonNull( myProp ) );
+    public final Builder3 myProp(final String myProp) {
+      _props.set( "myProp", myProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode[] children) {
-      _props.set( "children", Objects.requireNonNull( children ) );
+      _props.set( "children", children );
       return build();
     }
 
