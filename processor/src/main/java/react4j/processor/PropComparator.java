@@ -32,11 +32,11 @@ final class PropComparator
     }
     else if ( o2.isOptional() && !o1.isOptional() )
     {
-      return 1;
+      return -1;
     }
     else if ( o1.isOptional() && !o2.isOptional() )
     {
-      return -1;
+      return 1;
     }
     else
     {
