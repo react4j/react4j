@@ -13,6 +13,9 @@ import jsinterop.base.JsPropertyMap;
  * target component to check that the application code is correctly interacting with the React component
  * framework. In production builds it is expected that the method calls will be inlined and the checks will
  * be optimized away, having no significant performance impact.
+ *
+ * @param <S> the type of state that this component maintains.
+ * @param <I> the type of the native component.
  */
 public abstract class NativeAdapterComponent<S extends BaseState, I extends Component<S>>
   extends NativeComponent<S>
