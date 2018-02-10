@@ -11,8 +11,6 @@ import javax.lang.model.type.ExecutableType;
 final class PropDescriptor
 {
   @Nonnull
-  private final ComponentDescriptor _component;
-  @Nonnull
   private final String _name;
   @Nonnull
   private final ExecutableElement _method;
@@ -33,12 +31,10 @@ final class PropDescriptor
    */
   private boolean _isTerminalProp;
 
-  PropDescriptor( @Nonnull final ComponentDescriptor component,
-                  @Nonnull final String name,
+  PropDescriptor( @Nonnull final String name,
                   @Nonnull final ExecutableElement method,
                   @Nonnull final ExecutableType methodType )
   {
-    _component = Objects.requireNonNull( component );
     _name = Objects.requireNonNull( name );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
