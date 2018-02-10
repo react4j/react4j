@@ -26,10 +26,6 @@ final class PropDescriptor
    * Flag set to true if prop is optional.
    */
   private boolean _optional;
-  /**
-   * Flag set to true if prop is the last prop and thus by necessity completes configuration in generated builder.
-   */
-  private boolean _isTerminalProp;
 
   PropDescriptor( @Nonnull final String name,
                   @Nonnull final ExecutableElement method,
@@ -145,16 +141,6 @@ final class PropDescriptor
   void markAsOptional()
   {
     _optional = true;
-  }
-
-  boolean isTerminalProp()
-  {
-    return _isTerminalProp;
-  }
-
-  void markAsTerminalProp()
-  {
-    _isTerminalProp = true;
   }
 
   boolean isSpecialChildrenProp()
