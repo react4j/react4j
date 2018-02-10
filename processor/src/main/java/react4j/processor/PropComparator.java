@@ -19,14 +19,11 @@ final class PropComparator
   @Override
   public int compare( final PropDescriptor o1, final PropDescriptor o2 )
   {
-    final String name1 = o1.getName();
-    final String name2 = o2.getName();
-
-    if ( name1.equals( "children" ) || name1.equals( "child" ) )
+    if ( o1.isSpecialChildrenProp() )
     {
       return 1;
     }
-    else if ( name2.equals( "children" ) || name2.equals( "child" ) )
+    else if ( o2.isSpecialChildrenProp() )
     {
       return -1;
     }

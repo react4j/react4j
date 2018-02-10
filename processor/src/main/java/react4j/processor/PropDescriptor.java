@@ -151,4 +151,9 @@ final class PropDescriptor
   {
     _isTerminalProp = true;
   }
+
+  boolean isSpecialChildrenProp()
+  {
+    return getName().equals( "children" ) || getName().equals( "child" );
+  }
 }
