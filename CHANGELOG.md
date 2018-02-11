@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.41](https://github.com/react4j/react4j/tree/v0.41) (2018-02-11)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.40...v0.41)
 
 ##### Fixed
 * **\[annotations\]** Add the `require` parameter to the `@Prop` annotation to specify whether the developer
