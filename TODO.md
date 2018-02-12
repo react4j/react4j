@@ -2,8 +2,6 @@
 
 ### High Priority
 
-* Add some documentation - even if just in CHANGELOG about new Builder facility.
-
 * Add `@DoNotAutobox` annotation onto generated builder for all primitive types?
 
 * Ensure prop names can have numbers in it - particular field based `@PropDefault`s should derive the name.
