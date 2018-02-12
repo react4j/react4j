@@ -135,7 +135,6 @@ abstract class AbstractReactProcessorTest
         //noinspection ResultOfMethodCallIgnored
         compilation.generatedSourceFiles();
       }
-
     }
     final JavaFileObject firstExpected = fixture( outputs.get( 0 ) );
     final JavaFileObject[] restExpected =
