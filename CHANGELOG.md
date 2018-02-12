@@ -10,7 +10,7 @@
 
 #### Changed
 * Upgrade the `org.realityforge.braincheck:braincheck` dependency to `1.4.0`.
-* 💥 **\[arez\]** Upgrade Arez to version `0.50`.
+* 💥 **\[arez\]** Upgrade Arez to version `0.51`.
 
 ### [v0.41](https://github.com/react4j/react4j/tree/v0.41) (2018-02-11)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.40...v0.41)
