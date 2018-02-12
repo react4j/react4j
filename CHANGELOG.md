@@ -6,7 +6,7 @@
 * **\[processor\]** The annotation processor now generates `[MyComponent]Builder` class that can be used to
   build the `ReactNode` instance for a component. The builder is constructed such that it mandates that the
   developer supply all required props, may supply optional props and must complete the build of the component
-  with the `children` prop if present. 
+  with the `children` prop if present.
 
 #### Changed
 * Upgrade the `org.realityforge.braincheck:braincheck` dependency to `1.4.0`.
