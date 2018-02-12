@@ -2,6 +2,7 @@ require 'buildr/git_auto_version'
 require 'buildr/gpg'
 require 'buildr/single_intermediate_layout'
 require 'buildr/gwt'
+require 'buildr/jacoco'
 
 PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations, :anodoc]
 
