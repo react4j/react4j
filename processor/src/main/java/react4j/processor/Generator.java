@@ -1139,7 +1139,6 @@ final class Generator
                null,
                0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
 
-    boolean needBuild = false;
     boolean hasRequiredAfterOptional = false;
     for ( int i = 0; i < propsSize; i++ )
     {
