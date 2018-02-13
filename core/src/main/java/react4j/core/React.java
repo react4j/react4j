@@ -1,5 +1,6 @@
 package react4j.core;
 
+import elemental2.core.JsArray;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
@@ -43,7 +44,7 @@ public final class React
   {
     // Need to pass through undefined to react otherwise the debugger tool displays
     // children as null rather than omitting children
-    return createElement( type, props, Js.uncheckedCast( Js.undefined() ) );
+    return createElement( type, props, Js.<ReactNode>uncheckedCast( Js.undefined() ) );
   }
 
   /**
@@ -51,12 +52,36 @@ public final class React
    *
    * @param type  the constructor function for the native React component.
    * @param props the props to pass to the component.
-   * @param child the child/children of the react component.
+   * @param child the child of the react component.
    * @return a new ReactElement.
    */
   public static native ReactElement<ComponentConstructorFunction> createElement( @Nonnull ComponentConstructorFunction type,
                                                                                  @Nullable JsPropertyMap<Object> props,
                                                                                  @Nullable ReactNode child );
+
+  /**
+   * Create a ReactElement for the specified React component.
+   *
+   * @param type  the constructor function for the native React component.
+   * @param props the props to pass to the component.
+   * @param children the children of the react component.
+   * @return a new ReactElement.
+   */
+  public static native ReactElement<ComponentConstructorFunction> createElement( @Nonnull ComponentConstructorFunction type,
+                                                                                 @Nullable JsPropertyMap<Object> props,
+                                                                                 @Nonnull JsArray<ReactNode> children );
+
+  /**
+   * Create a ReactElement for the specified React component.
+   *
+   * @param type  the constructor function for the native React component.
+   * @param props the props to pass to the component.
+   * @param children the children of the react component.
+   * @return a new ReactElement.
+   */
+  public static native ReactElement<ComponentConstructorFunction> createElement( @Nonnull ComponentConstructorFunction type,
+                                                                                 @Nullable JsPropertyMap<Object> props,
+                                                                                 @Nonnull ReactNode[] children );
 
   /**
    * Clone and return a new ReactElement using element as the starting point. The resulting
