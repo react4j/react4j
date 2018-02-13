@@ -26,6 +26,8 @@
 #### Changed
 * 💥 **\[processor\]** Explicitly checked that no `@Prop` is named `build` as that would result in a compilation
   error when the annotation processor generated the builder.
+* **\[processor\]** The `@Prop` named `children` is generated as a varargs method rather than as a method
+  that accepts an array to simplify developer experience of generated builders.
 
 ### [v0.42](https://github.com/react4j/react4j/tree/v0.42) (2018-02-12)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.41...v0.42)

@@ -38,7 +38,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
     Builder3 myProp(String myProp);
 
     @Nonnull
-    ReactNode children(ReactNode[] children);
+    ReactNode children(ReactNode... children);
 
     @Nonnull
     @Nullable
@@ -47,7 +47,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
 
   public interface Builder4 {
     @Nonnull
-    ReactNode children(ReactNode[] children);
+    ReactNode children(ReactNode... children);
 
     @Nonnull
     @Nullable
@@ -85,7 +85,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode children(final ReactNode[] children) {
+    public final ReactNode children(final ReactNode... children) {
       for ( final ReactNode child : children ) {
         child( child );
       }

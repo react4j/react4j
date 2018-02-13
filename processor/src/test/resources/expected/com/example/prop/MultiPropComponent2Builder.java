@@ -40,7 +40,7 @@ class MultiPropComponent2Builder {
 
   public interface Builder4 {
     @Nonnull
-    ReactNode children(ReactNode[] children);
+    ReactNode children(ReactNode... children);
 
     @Nonnull
     @Nullable
@@ -78,7 +78,7 @@ class MultiPropComponent2Builder {
 
     @Override
     @Nonnull
-    public final ReactNode children(final ReactNode[] children) {
+    public final ReactNode children(final ReactNode... children) {
       for ( final ReactNode child : children ) {
         child( child );
       }

@@ -67,7 +67,7 @@ class RequiredChildrenWithManyOptionalBuilder {
     Builder2 myPropD(String myPropD);
 
     @Nonnull
-    ReactNode children(ReactNode[] children);
+    ReactNode children(ReactNode... children);
 
     @Nonnull
     @Nullable
@@ -76,7 +76,7 @@ class RequiredChildrenWithManyOptionalBuilder {
 
   public interface Builder3 {
     @Nonnull
-    ReactNode children(ReactNode[] children);
+    ReactNode children(ReactNode... children);
 
     @Nonnull
     @Nullable
@@ -128,7 +128,7 @@ class RequiredChildrenWithManyOptionalBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode children(final ReactNode[] children) {
+    public final ReactNode children(final ReactNode... children) {
       for ( final ReactNode child : children ) {
         child( child );
       }

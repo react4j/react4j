@@ -45,7 +45,7 @@ class RequiredChildrenWithManyRequiredBuilder {
 
   public interface Builder5 {
     @Nonnull
-    ReactNode children(ReactNode[] children);
+    ReactNode children(ReactNode... children);
 
     @Nonnull
     @Nullable
@@ -90,7 +90,7 @@ class RequiredChildrenWithManyRequiredBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode children(final ReactNode[] children) {
+    public final ReactNode children(final ReactNode... children) {
       for ( final ReactNode child : children ) {
         child( child );
       }

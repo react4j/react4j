@@ -42,7 +42,7 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
     Builder3 child(ReactNode child);
 
     @Nonnull
-    Builder3 children(ReactNode[] children);
+    Builder3 children(ReactNode... children);
 
     @Nonnull
     ReactNode build();
@@ -85,7 +85,7 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
-    public final Builder3 children(final ReactNode[] children) {
+    public final Builder3 children(final ReactNode... children) {
       for ( final ReactNode child : children ) {
         child( child );
       }

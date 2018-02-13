@@ -227,6 +227,10 @@ final class Generator
           {
             ProcessorUtil.copyTypeParameters( propMethodType, m );
           }
+          if( stepMethod.isChildrenIntrinsic() )
+          {
+            m.varargs();
+          }
           final ParameterSpec.Builder parameter = ParameterSpec.builder( stepMethod.getType(), stepMethod.getName() );
           final ExecutableElement propMethod = stepMethod.getPropMethod();
           if ( null != propMethod )
@@ -283,6 +287,7 @@ final class Generator
 
     if ( stepMethod.isChildrenIntrinsic() )
     {
+      method.varargs();
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "for ( final $T child : $N )", REACT_NODE_CLASSNAME, stepMethod.getName() );
       block.addStatement( "child( child )" );
