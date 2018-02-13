@@ -5,6 +5,8 @@
 ##### Fixed
 * **\[processor\]** Fix a bug where a `@Prop` named child would incorrectly use the key `child` rather
   than `children` to access the underlying prop value.
+* **\[processor\]** Add the `@Generated` annotation onto the generated dagger factory and component builder
+  so that tooling and developers can easily identify which code is generated.
 
 #### Changed
 * 💥 **\[core\]** Remove the methods on `ReactNode` that are responsible for querying the node type and

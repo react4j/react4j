@@ -77,6 +77,7 @@ final class Generator
   static TypeSpec buildComponentBuilder( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
+    markTypeAsGenerated( builder );
 
     ProcessorUtil.copyAccessModifiers( descriptor.getElement(), builder );
 
@@ -474,10 +475,7 @@ final class Generator
 
     ProcessorUtil.copyAccessModifiers( element, builder );
 
-    // Mark it as generated
-    builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
-      addMember( "value", "$S", ReactProcessor.class.getName() ).
-      build() );
+    markTypeAsGenerated( builder );
 
     final FieldSpec.Builder field =
       FieldSpec.builder( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
@@ -563,6 +561,13 @@ final class Generator
     builder.addType( buildNativeComponent( descriptor ) );
 
     return builder.build();
+  }
+
+  private static void markTypeAsGenerated( final TypeSpec.Builder builder )
+  {
+    builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
+      addMember( "value", "$S", ReactProcessor.class.getName() ).
+      build() );
   }
 
   private static MethodSpec.Builder buildPropMethod( @Nonnull final ComponentDescriptor descriptor,
@@ -1043,6 +1048,7 @@ final class Generator
   static TypeSpec buildDaggerFactory( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerFactoryClassName() );
+    markTypeAsGenerated( builder );
 
     builder.addModifiers( Modifier.PUBLIC );
 

@@ -3,9 +3,11 @@ package com.example.inject;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Subcomponent;
+import javax.annotation.Generated;
 import javax.inject.Provider;
 import react4j.core.Component;
 
+@Generated("react4j.processor.ReactProcessor")
 public interface BasicReactComponentDaggerFactory {
   DaggerSubcomponent getBasicReactComponentDaggerSubcomponent();
 

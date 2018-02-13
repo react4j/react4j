@@ -1,12 +1,14 @@
 package com.example.inject;
 
 import java.util.Objects;
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.core.React;
 import react4j.core.ReactNode;
 
+@Generated("react4j.processor.ReactProcessor")
 class DaggerTrueComponentBuilder {
   private DaggerTrueComponentBuilder() {
   }

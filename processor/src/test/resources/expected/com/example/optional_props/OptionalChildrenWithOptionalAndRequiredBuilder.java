@@ -3,6 +3,7 @@ package com.example.optional_props;
 import elemental2.core.JsArray;
 import java.util.Objects;
 import java.util.stream.Stream;
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
@@ -10,6 +11,7 @@ import jsinterop.base.JsPropertyMap;
 import react4j.core.React;
 import react4j.core.ReactNode;
 
+@Generated("react4j.processor.ReactProcessor")
 class OptionalChildrenWithOptionalAndRequiredBuilder {
   private OptionalChildrenWithOptionalAndRequiredBuilder() {
   }
