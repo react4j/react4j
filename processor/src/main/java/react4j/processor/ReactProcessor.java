@@ -550,6 +550,12 @@ public final class ReactProcessor
                                          "reconciliation process. This value can be accessed via Component.getKey()",
                                          method );
     }
+    else if ( "build".equals( name ) )
+    {
+      throw new ReactProcessorException( "@Prop named 'build' is invalid as it conflicts with the method named " +
+                                         "build() that is used in the generated Builder classes",
+                                         method );
+    }
     else if ( "child".equals( name ) &&
               (
                 methodType.getReturnType().getKind() != TypeKind.DECLARED &&
