@@ -579,11 +579,12 @@ final class Generator
 
     method.addAnnotation( Override.class );
 
+    final String name = prop.getName();
     if ( descriptor.isArezComponent() )
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
-          addMember( "name", "$S", prop.getName() ).
+          addMember( "name", "$S", name ).
           addMember( "expectSetter", "false" );
       method.addAnnotation( annotation.build() );
     }
@@ -631,7 +632,7 @@ final class Generator
         convertMethodName = "cast";
         break;
       default:
-        throw new ReactProcessorException( "Return type of @Prop method named '" + prop.getName() +
+        throw new ReactProcessorException( "Return type of @Prop method named '" + name +
                                            "' is not yet handled. Return type: " + returnType, methodElement );
     }
     method.addStatement( "return props().getAny( $S ).$N()", prop.getName(), convertMethodName );
