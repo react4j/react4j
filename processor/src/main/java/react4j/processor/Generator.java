@@ -576,8 +576,9 @@ final class Generator
   private static MethodSpec.Builder buildReportPropsChangedMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropsChanged" ).
-      addModifiers( Modifier.PROTECTED, Modifier.FINAL ).
+      addModifiers( Modifier.PROTECTED ).
       addAnnotation( Override.class ).
+      addAnnotation( ACTION_CLASSNAME ).
       addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
         addAnnotation( NULLABLE_CLASSNAME ).build() );
     for ( final PropDescriptor prop : descriptor.getProps() )

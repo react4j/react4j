@@ -1,5 +1,6 @@
 package com.example.arez;
 
+import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import elemental2.core.JsObject;
 import javax.annotation.Generated;
@@ -40,7 +41,8 @@ abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAut
   }
 
   @Override
-  protected final void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  @Action
+  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 
   @Nonnull

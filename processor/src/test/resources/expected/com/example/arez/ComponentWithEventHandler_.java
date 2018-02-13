@@ -49,7 +49,8 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   }
 
   @Override
-  protected final void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  @Action
+  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 
   @Nonnull

@@ -1,5 +1,6 @@
 package com.example.arez;
 
+import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
 import arez.annotations.ObservableRef;
@@ -45,7 +46,8 @@ abstract class ComponentWithProp_ extends ComponentWithProp {
   protected abstract arez.Observable getValueObservable();
 
   @Override
-  protected final void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  @Action
+  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
     if ( !Js.isTripleEqual( props().get( "value" ), nextProps.get( "value" ) ) ) {
       getValueObservable().reportChanged();
     }

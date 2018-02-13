@@ -48,7 +48,8 @@ abstract class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWit
   }
 
   @Override
-  protected final void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  @Action
+  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 
   @Nonnull
