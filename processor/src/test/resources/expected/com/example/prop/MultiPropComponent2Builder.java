@@ -43,8 +43,7 @@ class MultiPropComponent2Builder {
     ReactNode children(ReactNode... children);
 
     @Nonnull
-    @Nullable
-    Builder4 child(ReactNode child);
+    Builder4 child(@Nullable ReactNode child);
 
     @Nonnull
     ReactNode build();

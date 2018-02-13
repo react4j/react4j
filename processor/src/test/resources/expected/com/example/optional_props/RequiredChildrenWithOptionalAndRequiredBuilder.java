@@ -41,8 +41,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
     ReactNode children(ReactNode... children);
 
     @Nonnull
-    @Nullable
-    Builder4 child(ReactNode child);
+    Builder4 child(@Nullable ReactNode child);
   }
 
   public interface Builder4 {
@@ -50,8 +49,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
     ReactNode children(ReactNode... children);
 
     @Nonnull
-    @Nullable
-    Builder4 child(ReactNode child);
+    Builder4 child(@Nullable ReactNode child);
 
     @Nonnull
     ReactNode build();

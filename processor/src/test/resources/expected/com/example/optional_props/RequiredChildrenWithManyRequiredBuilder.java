@@ -48,8 +48,7 @@ class RequiredChildrenWithManyRequiredBuilder {
     ReactNode children(ReactNode... children);
 
     @Nonnull
-    @Nullable
-    Builder5 child(ReactNode child);
+    Builder5 child(@Nullable ReactNode child);
 
     @Nonnull
     ReactNode build();

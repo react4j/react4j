@@ -24,7 +24,7 @@ class MultipleChildrenPropComponentBuilder {
   }
 
   @Nonnull
-  static Builder2 child(final ReactNode child) {
+  static Builder2 child(@Nullable final ReactNode child) {
     return new Builder().child( child );
   }
 
@@ -43,8 +43,7 @@ class MultipleChildrenPropComponentBuilder {
     ReactNode children(ReactNode... children);
 
     @Nonnull
-    @Nullable
-    Builder2 child(ReactNode child);
+    Builder2 child(@Nullable ReactNode child);
 
     @Nonnull
     ReactNode build();

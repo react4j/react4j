@@ -38,8 +38,7 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
     Builder3 myProp(String myProp);
 
     @Nonnull
-    @Nullable
-    Builder3 child(ReactNode child);
+    Builder3 child(@Nullable ReactNode child);
 
     @Nonnull
     Builder3 children(ReactNode... children);

@@ -44,7 +44,7 @@ class RequiredChildrenWithManyOptionalBuilder {
   }
 
   @Nonnull
-  static Builder3 child(final ReactNode child) {
+  static Builder3 child(@Nullable final ReactNode child) {
     return new Builder().child( child );
   }
 
@@ -70,8 +70,7 @@ class RequiredChildrenWithManyOptionalBuilder {
     ReactNode children(ReactNode... children);
 
     @Nonnull
-    @Nullable
-    Builder3 child(ReactNode child);
+    Builder3 child(@Nullable ReactNode child);
   }
 
   public interface Builder3 {
@@ -79,8 +78,7 @@ class RequiredChildrenWithManyOptionalBuilder {
     ReactNode children(ReactNode... children);
 
     @Nonnull
-    @Nullable
-    Builder3 child(ReactNode child);
+    Builder3 child(@Nullable ReactNode child);
 
     @Nonnull
     ReactNode build();
