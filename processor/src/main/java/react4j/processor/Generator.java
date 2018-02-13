@@ -140,7 +140,7 @@ final class Generator
       {
         ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
       }
-      else
+      else if ( stepMethod.isKeyIntrinsic() )
       {
         // This is for key
         parameter.addAnnotation( NONNULL_CLASSNAME );
