@@ -1211,7 +1211,7 @@ final class Generator
   private static void addChildPropStepMethod( @Nonnull final Step step, @Nonnull final StepMethodType stepMethodType )
   {
     step.addStep( "child",
-                  "children",
+                  "*children_child*",
                   REACT_NODE_CLASSNAME,
                   null,
                   null,
@@ -1226,7 +1226,7 @@ final class Generator
     final ParameterizedTypeName typeName =
       ParameterizedTypeName.get( ClassName.get( Stream.class ), WildcardTypeName.subtypeOf( REACT_NODE_CLASSNAME ) );
     step.addStep( "children",
-                  "children_stream",
+                  "*children_stream*",
                   typeName,
                   null,
                   null,

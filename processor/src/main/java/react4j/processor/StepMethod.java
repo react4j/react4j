@@ -115,7 +115,7 @@ final class StepMethod
 
   boolean isChildOfChildrenIntrinsic()
   {
-    return getName().equals( "child" ) && getKey().equals( "children" );
+    return getName().equals( "child" ) && getKey().equals( "*children_child*" );
   }
 
   boolean isChildIntrinsic()
@@ -130,6 +130,6 @@ final class StepMethod
 
   boolean isChildrenStreamIntrinsic()
   {
-    return getName().equals( "children" ) && getKey().equals( "children_stream" );
+    return getName().equals( "children" ) && getKey().equals( "*children_stream*" );
   }
 }
