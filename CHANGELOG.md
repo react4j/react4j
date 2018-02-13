@@ -9,6 +9,7 @@
   likely to be used within application code.
 * 💥 **\[core\]** Remove the `ReactNode.of(...)` methods that accept `ReactElement` parameters as they
   are no longer useful now that `ReactElement` implements `ReactNode`.
+* 💥 **\[core\]** Changed the casts in the `ReactNode.of(...)` methods to use `Js.uncheckedCast(...)`.
 
 ### [v0.43](https://github.com/react4j/react4j/tree/v0.43) (2018-02-14)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.42...v0.43)

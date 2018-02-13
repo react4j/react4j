@@ -52,18 +52,18 @@ public interface ReactNode
   @JsOverlay
   static ReactNode of( final String string )
   {
-    return Js.cast( string );
+    return Js.uncheckedCast( string );
   }
 
   @JsOverlay
   static ReactNode of( final JsArray<ReactNode> elements )
   {
-    return Js.cast( elements );
+    return Js.uncheckedCast( elements );
   }
 
   @JsOverlay
   static ReactNode of( final ReactNode... elements )
   {
-    return Js.cast( elements );
+    return Js.uncheckedCast( elements );
   }
 }
