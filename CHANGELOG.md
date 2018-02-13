@@ -8,10 +8,10 @@
   by annotating the method with `@Action`.
 
 ##### Added
-* **\[processor\]** Define an additional `React.createElement(...,JsArray<ReactNode>)` native method that
+* **\[core\]** Define an additional `React.createElement(...,JsArray<ReactNode>)` native method that
   accepts a `JsArray<ReactNode>` parameter for children. This method eliminates the need for unchecked casts
   when passing javascript arrays.
-* **\[processor\]** Define an additional `React.createElement(...,ReactNode[])` native method that
+* **\[core\]** Define an additional `React.createElement(...,ReactNode[])` native method that
   accepts an array parameter for children. This method eliminates the need for unchecked casts when
   passing java arrays.
 
