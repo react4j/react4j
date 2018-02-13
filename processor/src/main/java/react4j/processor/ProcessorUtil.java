@@ -115,35 +115,6 @@ final class ProcessorUtil
     }
   }
 
-  @Nonnull
-  static Map<String, TypeMirror> getFields( @Nonnull final TypeElement element,
-                                            @Nonnull final Types typeUtils )
-  {
-    final Map<String, TypeMirror> methodMap = new LinkedHashMap<>();
-    enumerateFields( element, typeUtils, element, methodMap );
-    return methodMap;
-  }
-
-  private static void enumerateFields( @Nonnull final TypeElement scope,
-                                       @Nonnull final Types typeUtils,
-                                       @Nonnull final TypeElement element,
-                                       @Nonnull final Map<String, TypeMirror> fields )
-  {
-    final TypeMirror superclass = element.getSuperclass();
-    if ( TypeKind.NONE != superclass.getKind() )
-    {
-      enumerateFields( scope, typeUtils, (TypeElement) ( (DeclaredType) superclass ).asElement(), fields );
-    }
-    for ( final Element member : element.getEnclosedElements() )
-    {
-      if ( member.getKind() == ElementKind.FIELD )
-      {
-        final TypeMirror fieldType = typeUtils.asMemberOf( (DeclaredType) scope.asType(), member );
-        fields.put( member.getSimpleName().toString(), fieldType );
-      }
-    }
-  }
-
   static void copyAccessModifiers( @Nonnull final TypeElement element, @Nonnull final TypeSpec.Builder builder )
   {
     if ( element.getModifiers().contains( Modifier.PUBLIC ) )
