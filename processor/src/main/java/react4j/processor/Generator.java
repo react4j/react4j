@@ -9,6 +9,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.StringJoiner;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.AnnotationMirror;
@@ -141,9 +143,8 @@ final class Generator
       {
         ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
       }
-      else if ( stepMethod.isKeyIntrinsic() )
+      else if ( stepMethod.isKeyIntrinsic() || stepMethod.isChildrenStreamIntrinsic() )
       {
-        // This is for key
         parameter.addAnnotation( NONNULL_CLASSNAME );
       }
       else if ( stepMethod.isChildOfChildrenIntrinsic() )
@@ -241,9 +242,8 @@ final class Generator
           {
             ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
           }
-          else if ( stepMethod.isKeyIntrinsic() )
+          else if ( stepMethod.isKeyIntrinsic() || stepMethod.isChildrenStreamIntrinsic() )
           {
-            // This is for key
             parameter.addAnnotation( NONNULL_CLASSNAME );
           }
           else if ( stepMethod.isChildOfChildrenIntrinsic() )
@@ -278,9 +278,8 @@ final class Generator
     {
       ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
     }
-    else if ( stepMethod.isKeyIntrinsic() )
+    else if ( stepMethod.isKeyIntrinsic() || stepMethod.isChildrenStreamIntrinsic() )
     {
-      // This is for key
       parameter.addAnnotation( NONNULL_CLASSNAME );
     }
     else if ( stepMethod.isChildOfChildrenIntrinsic() )
@@ -305,6 +304,10 @@ final class Generator
       block.addStatement( "_children.push( $N )", stepMethod.getName() );
       block.endControlFlow();
       method.addCode( block.build() );
+    }
+    else if ( stepMethod.isChildrenStreamIntrinsic() )
+    {
+      method.addStatement( "children( $N.toArray( $T[]::new ) )", stepMethod.getName(), REACT_NODE_CLASSNAME );
     }
     else if ( stepMethod.isChildIntrinsic() )
     {
@@ -402,7 +405,7 @@ final class Generator
     {
       for ( final StepMethod stepMethod : step.getMethods() )
       {
-        if ( stepMethodsAdded.add( stepMethod.getName() ) )
+        if ( stepMethodsAdded.add( stepMethod.getName() + stepMethod.getType().toString() ) )
         {
           if ( !stepMethod.isBuildIntrinsic() )
           {
@@ -1153,6 +1156,7 @@ final class Generator
         if ( prop.getName().equals( "children" ) )
         {
           addChildPropStepMethod( optionalPropStep, StepMethodType.STAY );
+          addChildrenStreamPropStepMethod( optionalPropStep );
         }
         addPropStepMethod( optionalPropStep, prop, StepMethodType.STAY );
       }
@@ -1166,6 +1170,7 @@ final class Generator
           if ( prop.getName().equals( "children" ) )
           {
             addChildPropStepMethod( optionalPropStep, StepMethodType.ADVANCE );
+            addChildrenStreamPropStepMethod( optionalPropStep );
           }
           hasRequiredAfterOptional = true;
         }
@@ -1175,6 +1180,7 @@ final class Generator
         if ( prop.getName().equals( "children" ) )
         {
           addChildPropStepMethod( step, StepMethodType.STAY );
+          addChildrenStreamPropStepMethod( step );
           addBuildStep( step );
         }
       }
@@ -1210,6 +1216,21 @@ final class Generator
                   null,
                   null,
                   stepMethodType );
+  }
+
+  /**
+   * A helper intrinsic that converts children streams.
+   */
+  private static void addChildrenStreamPropStepMethod( @Nonnull final Step step )
+  {
+    final ParameterizedTypeName typeName =
+      ParameterizedTypeName.get( ClassName.get( Stream.class ), WildcardTypeName.subtypeOf( REACT_NODE_CLASSNAME ) );
+    step.addStep( "children",
+                  "children_stream",
+                  typeName,
+                  null,
+                  null,
+                  StepMethodType.TERMINATE );
   }
 
   private static void addPropStepMethod( @Nonnull final Step step,

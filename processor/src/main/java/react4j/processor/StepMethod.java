@@ -127,4 +127,9 @@ final class StepMethod
   {
     return getName().equals( "children" ) && getKey().equals( "children" );
   }
+
+  boolean isChildrenStreamIntrinsic()
+  {
+    return getName().equals( "children" ) && getKey().equals( "children_stream" );
+  }
 }

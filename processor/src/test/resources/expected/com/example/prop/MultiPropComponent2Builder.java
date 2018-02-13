@@ -2,6 +2,7 @@ package com.example.prop;
 
 import elemental2.core.JsArray;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
@@ -44,6 +45,9 @@ class MultiPropComponent2Builder {
 
     @Nonnull
     Builder4 child(@Nullable ReactNode child);
+
+    @Nonnull
+    ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
     ReactNode build();
@@ -91,6 +95,13 @@ class MultiPropComponent2Builder {
         _children.push( child );
       }
       return this;
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+      children( children.toArray( ReactNode[]::new ) );
+      return build();
     }
 
     @Nonnull

@@ -2,6 +2,7 @@ package com.example.optional_props;
 
 import elemental2.core.JsArray;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
@@ -48,6 +49,11 @@ class RequiredChildrenWithManyOptionalBuilder {
     return new Builder().child( child );
   }
 
+  @Nonnull
+  static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+    return new Builder().children( children );
+  }
+
   public interface Builder1 {
     @Nonnull
     Builder2 key(@Nonnull String key);
@@ -71,6 +77,9 @@ class RequiredChildrenWithManyOptionalBuilder {
 
     @Nonnull
     Builder3 child(@Nullable ReactNode child);
+
+    @Nonnull
+    ReactNode children(@Nonnull Stream<? extends ReactNode> children);
   }
 
   public interface Builder3 {
@@ -79,6 +88,9 @@ class RequiredChildrenWithManyOptionalBuilder {
 
     @Nonnull
     Builder3 child(@Nullable ReactNode child);
+
+    @Nonnull
+    ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
     ReactNode build();
@@ -140,6 +152,13 @@ class RequiredChildrenWithManyOptionalBuilder {
         _children.push( child );
       }
       return this;
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+      children( children.toArray( ReactNode[]::new ) );
+      return build();
     }
 
     @Nonnull
