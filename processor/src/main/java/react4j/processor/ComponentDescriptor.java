@@ -210,7 +210,7 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  String getNestedClassPrefix()
+  private String getNestedClassPrefix()
   {
     final StringBuilder name = new StringBuilder();
     TypeElement t = getElement();
