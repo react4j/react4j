@@ -62,8 +62,8 @@ public final class React
   /**
    * Create a ReactElement for the specified React component.
    *
-   * @param type  the constructor function for the native React component.
-   * @param props the props to pass to the component.
+   * @param type     the constructor function for the native React component.
+   * @param props    the props to pass to the component.
    * @param children the children of the react component.
    * @return a new ReactElement.
    */
@@ -74,8 +74,8 @@ public final class React
   /**
    * Create a ReactElement for the specified React component.
    *
-   * @param type  the constructor function for the native React component.
-   * @param props the props to pass to the component.
+   * @param type     the constructor function for the native React component.
+   * @param props    the props to pass to the component.
    * @param children the children of the react component.
    * @return a new ReactElement.
    */
