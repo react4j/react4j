@@ -28,6 +28,11 @@ class MultipleChildrenPropComponentBuilder {
     return new Builder().child( child );
   }
 
+  @Nonnull
+  static ReactNode build() {
+    return new Builder().build();
+  }
+
   public interface Builder1 {
     @Nonnull
     Builder2 key(@Nonnull String key);
@@ -40,6 +45,9 @@ class MultipleChildrenPropComponentBuilder {
     @Nonnull
     @Nullable
     Builder2 child(ReactNode child);
+
+    @Nonnull
+    ReactNode build();
   }
 
   private static class Builder implements Builder1, Builder2 {

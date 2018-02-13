@@ -1130,6 +1130,7 @@ final class Generator
                null,
                0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
 
+    boolean needBuild = false;
     boolean hasRequiredAfterOptional = false;
     for ( int i = 0; i < propsSize; i++ )
     {
@@ -1158,7 +1159,6 @@ final class Generator
           {
             addChildPropStepMethod( optionalPropStep, StepMethodType.ADVANCE );
           }
-
           hasRequiredAfterOptional = true;
         }
         // Single method step
@@ -1167,20 +1167,28 @@ final class Generator
         if ( prop.getName().equals( "children" ) )
         {
           addChildPropStepMethod( step, StepMethodType.STAY );
+          addBuildStep( step );
         }
       }
     }
     if ( null != optionalPropStep && !hasRequiredAfterOptional )
     {
-      optionalPropStep.addStep( "build", "build", REACT_NODE_CLASSNAME, null, null, StepMethodType.TERMINATE );
+      addBuildStep( optionalPropStep );
     }
-    if ( props.isEmpty() )
+    if ( props.isEmpty()  )
     {
-      // build is a magically named step that the generator knows how to deal with
-      builder.addStep().addStep( "build", "build", REACT_NODE_CLASSNAME, null, null, StepMethodType.TERMINATE );
+      addBuildStep( builder.addStep() );
     }
 
     return builder;
+  }
+
+  /**
+   * Setup the "build" intrinsic step.
+   */
+  private static void addBuildStep( @Nonnull final Step step )
+  {
+    step.addStep( "build", "build", REACT_NODE_CLASSNAME, null, null, StepMethodType.TERMINATE );
   }
 
   /**

@@ -50,6 +50,9 @@ class RequiredChildrenWithManyRequiredBuilder {
     @Nonnull
     @Nullable
     Builder5 child(ReactNode child);
+
+    @Nonnull
+    ReactNode build();
   }
 
   private static class Builder implements Builder1, Builder2, Builder3, Builder4, Builder5 {
