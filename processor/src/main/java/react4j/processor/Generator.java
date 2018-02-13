@@ -248,7 +248,7 @@ final class Generator
           }
           else if ( stepMethod.isChildOfChildrenIntrinsic() )
           {
-            m.addAnnotation( NULLABLE_CLASSNAME );
+            parameter.addAnnotation( NULLABLE_CLASSNAME );
           }
           m.addParameter( parameter.build() );
         } ).build() );
