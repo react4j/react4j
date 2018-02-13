@@ -11,7 +11,7 @@
   processor for subclasses of `ReactArezComponent` to ensure that the method is wrapped in an Arez transaction
   by annotating the method with `@Action`.
 * **\[processor\]** Fix the generation of the `@Prop` annotated method with the name `children` so that children
-  are correctly passed as third parameter passed to `React.createElement()` rather than treating them as a prop
+  are correctly passed as the third parameter to `React.createElement()` rather than treating them as a prop
   with the name `"children"`.
 * **\[processor\]** Fix the generation of the `@Prop` annotated method with the name `child` so that the child
   is correctly passed as the third parameter to `React.createElement()` rather than treating them as a prop
