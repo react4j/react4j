@@ -64,6 +64,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.MultiPropComponent2", false },
         new Object[]{ "com.example.prop.MultiPropComponent3", false },
         new Object[]{ "com.example.prop.NonJavaBeanPropComponent", false },
+        new Object[]{ "com.example.prop.NonnullChildPropComponent", false },
         new Object[]{ "com.example.prop.NullabilityPropsComponent", false },
         new Object[]{ "com.example.prop.PropTypeArray", false },
         new Object[]{ "com.example.prop.PropTypeBoolean", false },

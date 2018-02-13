@@ -7,8 +7,8 @@ import jsinterop.base.JsPropertyMap;
 import react4j.core.React;
 import react4j.core.ReactNode;
 
-class SingleChildPropComponentBuilder {
-  private SingleChildPropComponentBuilder() {
+class NonnullChildPropComponentBuilder {
+  private NonnullChildPropComponentBuilder() {
   }
 
   @Nonnull
@@ -17,7 +17,7 @@ class SingleChildPropComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode child(final ReactNode child) {
+  static ReactNode child(@Nonnull final ReactNode child) {
     return new Builder().child( child );
   }
 
@@ -28,7 +28,7 @@ class SingleChildPropComponentBuilder {
 
   public interface Builder2 {
     @Nonnull
-    ReactNode child(ReactNode child);
+    ReactNode child(@Nonnull ReactNode child);
   }
 
   private static class Builder implements Builder1, Builder2 {
@@ -45,14 +45,14 @@ class SingleChildPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode child(final ReactNode child) {
-      _child = child;
+    public final ReactNode child(@Nonnull final ReactNode child) {
+      _child = Objects.requireNonNull( child );
       return build();
     }
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( SingleChildPropComponent_.TYPE, Js.uncheckedCast( _props ), _child );
+      return React.createElement( NonnullChildPropComponent_.TYPE, Js.uncheckedCast( _props ), _child );
     }
   }
 }

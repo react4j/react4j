@@ -297,6 +297,18 @@ final class Generator
       block.endControlFlow();
       method.addCode( block.build() );
     }
+    else if ( stepMethod.isChildIntrinsic() )
+    {
+      assert null != propMethod;
+      if ( null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+      {
+        method.addStatement( "_child = $T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
+      }
+      else
+      {
+        method.addStatement( "_child = $N", stepMethod.getName() );
+      }
+    }
     else if ( stepMethod.isKeyIntrinsic() ||
               ( null != propMethod &&
                 null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) ) )
@@ -333,6 +345,13 @@ final class Generator
     if ( null != descriptor.findPropNamed( "children" ) )
     {
       method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ), _children )",
+                           REACT_CLASSNAME,
+                           descriptor.getEnhancedClassName(),
+                           JS_CLASSNAME );
+    }
+    else if ( null != descriptor.findPropNamed( "child" ) )
+    {
+      method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ), _child )",
                            REACT_CLASSNAME,
                            descriptor.getEnhancedClassName(),
                            JS_CLASSNAME );
@@ -385,6 +404,12 @@ final class Generator
                 ParameterizedTypeName.get( JS_ARRAY_CLASSNAME, REACT_NODE_CLASSNAME );
               final FieldSpec.Builder field = FieldSpec.builder( type, "_children", Modifier.PRIVATE, Modifier.FINAL );
               field.initializer( "new $T<>()", JS_ARRAY_CLASSNAME );
+              builder.addField( field.build() );
+            }
+            else if ( stepMethod.isChildIntrinsic() )
+            {
+              final FieldSpec.Builder field =
+                FieldSpec.builder( REACT_NODE_CLASSNAME, "_child", Modifier.PRIVATE );
               builder.addField( field.build() );
             }
           }

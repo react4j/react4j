@@ -10,9 +10,6 @@
 
 * Possibly support refs in generated builders.
 
-* The child prop should access "children" key. At the same time all props should be able to override their
-  key.
-
 * Add mechanism by which plugins can be used to enhance the component generation process. Something that
   could hook into the component lifecycle methods? The goal is to add `@ReplicantData` or `@GraphQL` annotations
   to component and have code generator enhance the component in some fashion to load data as appropriate.

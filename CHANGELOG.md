@@ -13,6 +13,9 @@
 * **\[processor\]** Fix the generation of the `@Prop` annotated method with the name `children` so that children
   are correctly passed as third parameter passed to `React.createElement()` rather than treating them as a prop
   with the name `"children"`.
+* **\[processor\]** Fix the generation of the `@Prop` annotated method with the name `child` so that the child
+  is correctly passed as the third parameter to `React.createElement()` rather than treating them as a prop
+  with the name `"child"`.
 
 ##### Added
 * **\[core\]** Define an additional `React.createElement(...,JsArray<ReactNode>)` native method that
