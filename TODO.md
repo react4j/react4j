@@ -2,8 +2,6 @@
 
 ### High Priority
 
-* Add `@DoNotAutobox` annotation onto generated builder for all primitive types?
-
 * Add ability to `@Prop` to add enhancers to builder.
 
 * Verify prop names are not reserved words
