@@ -6,6 +6,8 @@
 
 * Add ability to `@Prop` to add enhancers to builder.
 
+* Verify prop names are not reserved words
+
 * Ensure prop names can have numbers in it - particular field based `@PropDefault`s should derive the name.
 
 * Possibly support refs in generated builders.
