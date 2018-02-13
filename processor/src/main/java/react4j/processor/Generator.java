@@ -227,7 +227,7 @@ final class Generator
           {
             ProcessorUtil.copyTypeParameters( propMethodType, m );
           }
-          if( stepMethod.isChildrenIntrinsic() )
+          if ( stepMethod.isChildrenIntrinsic() )
           {
             m.varargs();
           }
@@ -1180,7 +1180,7 @@ final class Generator
     {
       addBuildStep( optionalPropStep );
     }
-    if ( props.isEmpty()  )
+    if ( props.isEmpty() )
     {
       addBuildStep( builder.addStep() );
     }
