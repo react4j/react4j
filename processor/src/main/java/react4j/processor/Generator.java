@@ -146,6 +146,10 @@ final class Generator
         // This is for key
         parameter.addAnnotation( NONNULL_CLASSNAME );
       }
+      else if ( stepMethod.isChildOfChildrenIntrinsic() )
+      {
+        parameter.addAnnotation( NULLABLE_CLASSNAME );
+      }
       method.addParameter( parameter.build() );
     }
 
