@@ -1,7 +1,9 @@
 package com.example.prop;
 
+import elemental2.core.JsArray;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.core.React;
@@ -39,10 +41,16 @@ class MultiPropComponent2Builder {
   public interface Builder4 {
     @Nonnull
     ReactNode children(ReactNode[] children);
+
+    @Nonnull
+    @Nullable
+    Builder4 child(ReactNode child);
   }
 
   private static class Builder implements Builder1, Builder2, Builder3, Builder4 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
+
+    private final JsArray<ReactNode> _children = new JsArray<>();
 
     @Override
     @Nonnull
@@ -68,13 +76,24 @@ class MultiPropComponent2Builder {
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode[] children) {
-      _props.set( "children", children );
+      for ( final ReactNode child : children ) {
+        child( child );
+      }
       return build();
+    }
+
+    @Override
+    @Nonnull
+    public final Builder4 child(@Nullable final ReactNode child) {
+      if ( null != child ) {
+        _children.push( child );
+      }
+      return this;
     }
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( MultiPropComponent2_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( MultiPropComponent2_.TYPE, Js.uncheckedCast( _props ), _children );
     }
   }
 }

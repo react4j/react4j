@@ -1,7 +1,9 @@
 package com.example.optional_props;
 
+import elemental2.core.JsArray;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.core.React;
@@ -36,6 +38,10 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
     Builder3 myProp(String myProp);
 
     @Nonnull
+    @Nullable
+    Builder3 child(ReactNode child);
+
+    @Nonnull
     Builder3 children(ReactNode[] children);
 
     @Nonnull
@@ -44,6 +50,8 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
 
   private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
+
+    private final JsArray<ReactNode> _children = new JsArray<>();
 
     @Override
     @Nonnull
@@ -68,14 +76,25 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
+    public final Builder3 child(@Nullable final ReactNode child) {
+      if ( null != child ) {
+        _children.push( child );
+      }
+      return this;
+    }
+
+    @Override
+    @Nonnull
     public final Builder3 children(final ReactNode[] children) {
-      _props.set( "children", children );
+      for ( final ReactNode child : children ) {
+        child( child );
+      }
       return this;
     }
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( OptionalChildrenWithOptionalAndRequired_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( OptionalChildrenWithOptionalAndRequired_.TYPE, Js.uncheckedCast( _props ), _children );
     }
   }
 }

@@ -14,6 +14,8 @@ import javax.lang.model.type.ExecutableType;
  * <ul>
  * <li>name = key: key intrinsic. Standard implementation but does not come from a @Prop annotated method..</li>
  * <li>name = build: no parameters returns ReactNode and terminates build. This has custom code in implementation.</li>
+ * <li>name = children: This is for multi child components and the implementation creates JsArray if null and adds all supplied non-null children to array before invoking build().</li>
+ * <li>name = child, key = children: This is for multi child components built one child at a time. The implementation returns if null passed to it, initializes JsArray if null, adds child to array.</li>
  * </ul>
  */
 final class StepMethod
@@ -108,5 +110,14 @@ final class StepMethod
   boolean isKeyIntrinsic()
   {
     return getName().equals( "key" );
+  }
+
+  boolean isChildOfChildrenIntrinsic()
+  {
+    return getName().equals( "child" ) && getKey().equals( "children" );
+  }
+  boolean isChildrenIntrinsic()
+  {
+    return getName().equals( "children" ) && getKey().equals( "children" );
   }
 }

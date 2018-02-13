@@ -1,7 +1,9 @@
 package com.example.prop;
 
+import elemental2.core.JsArray;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.core.React;
@@ -21,6 +23,11 @@ class MultipleChildrenPropComponentBuilder {
     return new Builder().children( children );
   }
 
+  @Nonnull
+  static Builder2 child(final ReactNode child) {
+    return new Builder().child( child );
+  }
+
   public interface Builder1 {
     @Nonnull
     Builder2 key(@Nonnull String key);
@@ -29,10 +36,16 @@ class MultipleChildrenPropComponentBuilder {
   public interface Builder2 {
     @Nonnull
     ReactNode children(ReactNode[] children);
+
+    @Nonnull
+    @Nullable
+    Builder2 child(ReactNode child);
   }
 
   private static class Builder implements Builder1, Builder2 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
+
+    private final JsArray<ReactNode> _children = new JsArray<>();
 
     @Override
     @Nonnull
@@ -44,13 +57,24 @@ class MultipleChildrenPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode[] children) {
-      _props.set( "children", children );
+      for ( final ReactNode child : children ) {
+        child( child );
+      }
       return build();
+    }
+
+    @Override
+    @Nonnull
+    public final Builder2 child(@Nullable final ReactNode child) {
+      if ( null != child ) {
+        _children.push( child );
+      }
+      return this;
     }
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( MultipleChildrenPropComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( MultipleChildrenPropComponent_.TYPE, Js.uncheckedCast( _props ), _children );
     }
   }
 }

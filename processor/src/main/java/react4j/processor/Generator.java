@@ -50,6 +50,7 @@ final class Generator
     ClassName.get( "arez.annotations", "ArezComponent" );
 
   private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
+  private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
 
   private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
@@ -237,6 +238,10 @@ final class Generator
             // This is for key
             parameter.addAnnotation( NONNULL_CLASSNAME );
           }
+          else if ( stepMethod.isChildOfChildrenIntrinsic() )
+          {
+            m.addAnnotation( NULLABLE_CLASSNAME );
+          }
           m.addParameter( parameter.build() );
         } ).build() );
       }
@@ -270,10 +275,31 @@ final class Generator
       // This is for key
       parameter.addAnnotation( NONNULL_CLASSNAME );
     }
+    else if ( stepMethod.isChildOfChildrenIntrinsic() )
+    {
+      parameter.addAnnotation( NULLABLE_CLASSNAME );
+    }
     method.addParameter( parameter.build() );
-    if ( stepMethod.isKeyIntrinsic() ||
-         ( null != propMethod &&
-           null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) ) )
+
+    if ( stepMethod.isChildrenIntrinsic() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "for ( final $T child : $N )", REACT_NODE_CLASSNAME, stepMethod.getName() );
+      block.addStatement( "child( child )" );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    else if ( stepMethod.isChildOfChildrenIntrinsic() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( null != $N )", stepMethod.getName() );
+      block.addStatement( "_children.push( $N )", stepMethod.getName() );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    else if ( stepMethod.isKeyIntrinsic() ||
+              ( null != propMethod &&
+                null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) ) )
     {
       method.addStatement( "_props.set( $S, $T.requireNonNull( $N ) )",
                            stepMethod.getName(),
@@ -304,10 +330,20 @@ final class Generator
     final MethodSpec.Builder method = MethodSpec.methodBuilder( "build" );
     method.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
     method.addAnnotation( NONNULL_CLASSNAME );
-    method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ) )",
-                         REACT_CLASSNAME,
-                         descriptor.getEnhancedClassName(),
-                         JS_CLASSNAME );
+    if ( null != descriptor.findPropNamed( "children" ) )
+    {
+      method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ), _children )",
+                           REACT_CLASSNAME,
+                           descriptor.getEnhancedClassName(),
+                           JS_CLASSNAME );
+    }
+    else
+    {
+      method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ) )",
+                           REACT_CLASSNAME,
+                           descriptor.getEnhancedClassName(),
+                           JS_CLASSNAME );
+    }
     method.returns( REACT_NODE_CLASSNAME );
     return method.build();
   }
@@ -343,6 +379,14 @@ final class Generator
           if ( !stepMethod.isBuildIntrinsic() )
           {
             builder.addMethod( buildBuilderStepImpl( step, stepMethod ) );
+            if ( stepMethod.isChildrenIntrinsic() )
+            {
+              final ParameterizedTypeName type =
+                ParameterizedTypeName.get( JS_ARRAY_CLASSNAME, REACT_NODE_CLASSNAME );
+              final FieldSpec.Builder field = FieldSpec.builder( type, "_children", Modifier.PRIVATE, Modifier.FINAL );
+              field.initializer( "new $T<>()", JS_ARRAY_CLASSNAME );
+              builder.addField( field.build() );
+            }
           }
         }
       }
@@ -1072,6 +1116,10 @@ final class Generator
         {
           optionalPropStep = builder.addStep();
         }
+        if ( prop.getName().equals( "children" ) )
+        {
+          addChildPropStepMethod( optionalPropStep, StepMethodType.STAY );
+        }
         addPropStepMethod( optionalPropStep, prop, StepMethodType.STAY );
       }
       else
@@ -1080,11 +1128,21 @@ final class Generator
         {
           // Need this when we have children magic prop that is required that follows the optional props.
           addPropStepMethod( optionalPropStep, prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+          // This is when children are built up using child steps
+          if ( prop.getName().equals( "children" ) )
+          {
+            addChildPropStepMethod( optionalPropStep, StepMethodType.ADVANCE );
+          }
+
           hasRequiredAfterOptional = true;
         }
         // Single method step
         final Step step = builder.addStep();
         addPropStepMethod( step, prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+        if ( prop.getName().equals( "children" ) )
+        {
+          addChildPropStepMethod( step, StepMethodType.STAY );
+        }
       }
     }
     if ( null != optionalPropStep && !hasRequiredAfterOptional )
@@ -1098,6 +1156,19 @@ final class Generator
     }
 
     return builder;
+  }
+
+  /**
+   * The assumption is that a chain of "child(...)" methods will write to the array that will eventually generate children array.
+   */
+  private static void addChildPropStepMethod( @Nonnull final Step step, @Nonnull final StepMethodType stepMethodType )
+  {
+    step.addStep( "child",
+                  "children",
+                  REACT_NODE_CLASSNAME,
+                  null,
+                  null,
+                  stepMethodType );
   }
 
   private static void addPropStepMethod( @Nonnull final Step step,
