@@ -56,18 +56,6 @@ public interface ReactNode
   }
 
   @JsOverlay
-  static ReactNode of( final ReactElement<?> element )
-  {
-    return Js.cast( element );
-  }
-
-  @JsOverlay
-  static ReactNode of( final ReactElement<?>... elements )
-  {
-    return Js.cast( elements );
-  }
-
-  @JsOverlay
   static ReactNode of( final JsArray<ReactNode> elements )
   {
     return Js.cast( elements );
