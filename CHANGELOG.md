@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+#### Changed
+* 💥 **\[core\]** Remove the methods on `ReactNode` that are responsible for querying the node type and
+  converting the `ReactNode` to other types. The method removed include: `asString()`, `asReactElement()`
+  `isString()`, `isReactElement()` and `isRenderResults()`. These methods were removed as they are not
+  likely to be used within application code.
+
 ### [v0.43](https://github.com/react4j/react4j/tree/v0.43) (2018-02-14)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.42...v0.43)
 

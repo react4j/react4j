@@ -78,34 +78,4 @@ public interface ReactNode
   {
     return Js.cast( elements );
   }
-
-  @JsOverlay
-  default String asString()
-  {
-    return Js.cast( this );
-  }
-
-  @JsOverlay
-  default ReactElement<?> asReactElement()
-  {
-    return Js.cast( this );
-  }
-
-  @JsOverlay
-  default boolean isString()
-  {
-    return (Object) this instanceof String;
-  }
-
-  @JsOverlay
-  default boolean isReactElement()
-  {
-    return this instanceof ReactElement && !JsArray.isArray( this );
-  }
-
-  @JsOverlay
-  default boolean isRenderResults()
-  {
-    return JsArray.isArray( this );
-  }
 }
