@@ -12,6 +12,7 @@ import javax.lang.model.type.ExecutableType;
  * but the rest are driven by Prop annotation details. The intrinsics are as follows:
  *
  * <ul>
+ * <li>name = key: key intrinsic. Standard implementation but does not come from a @Prop annotated method..</li>
  * <li>name = build: no parameters returns ReactNode and terminates build. This has custom code in implementation.</li>
  * </ul>
  */
@@ -102,5 +103,10 @@ final class StepMethod
   boolean isBuildIntrinsic()
   {
     return getName().equals( "build" );
+  }
+
+  boolean isKeyIntrinsic()
+  {
+    return getName().equals( "key" );
   }
 }

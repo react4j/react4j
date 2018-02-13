@@ -231,7 +231,7 @@ final class Generator
           {
             ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
           }
-          else
+          else if ( stepMethod.isKeyIntrinsic() )
           {
             // This is for key
             parameter.addAnnotation( NONNULL_CLASSNAME );
@@ -264,14 +264,15 @@ final class Generator
     {
       ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
     }
-    else
+    else if ( stepMethod.isKeyIntrinsic() )
     {
       // This is for key
       parameter.addAnnotation( NONNULL_CLASSNAME );
     }
     method.addParameter( parameter.build() );
-    if ( null == propMethod ||
-         null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+    if ( stepMethod.isKeyIntrinsic() ||
+         ( null != propMethod &&
+           null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) ) )
     {
       method.addStatement( "_props.set( $S, $T.requireNonNull( $N ) )",
                            stepMethod.getName(),
