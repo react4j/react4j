@@ -26,7 +26,7 @@ class SingleChildPropComponent_ extends SingleChildPropComponent {
 
   @Override
   protected ReactNode getChild() {
-    return props().getAny( "child" ).cast();
+    return props().getAny( "children" ).cast();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, SingleChildPropComponent> {

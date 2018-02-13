@@ -635,7 +635,8 @@ final class Generator
         throw new ReactProcessorException( "Return type of @Prop method named '" + name +
                                            "' is not yet handled. Return type: " + returnType, methodElement );
     }
-    method.addStatement( "return props().getAny( $S ).$N()", prop.getName(), convertMethodName );
+    final String key = "child".equals( name ) ? "children" : name;
+    method.addStatement( "return props().getAny( $S ).$N()", key, convertMethodName );
     return method;
   }
 

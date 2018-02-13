@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[processor\]** Fix a bug where a `@Prop` named child would incorrectly use the key `child` rather
+  than `children` to access the underlying prop value.
+
 #### Changed
 * 💥 **\[core\]** Remove the methods on `ReactNode` that are responsible for querying the node type and
   converting the `ReactNode` to other types. The method removed include: `asString()`, `asReactElement()`

@@ -36,7 +36,7 @@ class MultiPropComponent3_ extends MultiPropComponent3 {
 
   @Override
   protected ReactNode getChild() {
-    return props().getAny( "child" ).cast();
+    return props().getAny( "children" ).cast();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, MultiPropComponent3> {
