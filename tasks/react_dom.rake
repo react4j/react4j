@@ -127,7 +127,7 @@ HEADER
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final Stream<? extends ReactNode> children )
   {
-    return #{key}( props, Js.<ReactNode[]>uncheckedCast( children.toArray( ReactNode[]::new ) ) );
+    return #{key}( props, children.toArray( ReactNode[]::new ) );
   }
 HEADER
   end
