@@ -98,4 +98,9 @@ final class StepMethod
   {
     return _stepMethodType;
   }
+
+  boolean isBuildIntrinsic()
+  {
+    return getName().equals( "build" );
+  }
 }

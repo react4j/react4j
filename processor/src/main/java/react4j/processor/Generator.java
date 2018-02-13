@@ -130,7 +130,7 @@ final class Generator
     }
     ProcessorUtil.copyTypeParameters( descriptor.getElement(), method );
 
-    if ( !stepMethod.getName().equals( "build" ) )
+    if ( !stepMethod.isBuildIntrinsic() )
     {
       final ParameterSpec.Builder parameter =
         ParameterSpec.builder( stepMethod.getType(), stepMethod.getName(), Modifier.FINAL );
@@ -148,7 +148,7 @@ final class Generator
     }
 
     final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
-    if ( stepMethod.getName().equals( "build" ) )
+    if ( stepMethod.isBuildIntrinsic() )
     {
       method.addStatement( "return new $T" + infix + "().build()", ClassName.bestGuess( "Builder" ) );
     }
@@ -212,7 +212,7 @@ final class Generator
     {
       final StepMethodType stepMethodType = stepMethod.getStepMethodType();
       // Magically handle the step method named build
-      if ( stepMethod.getName().equals( "build" ) )
+      if ( stepMethod.isBuildIntrinsic() )
       {
         builder.addMethod( buildStepInterfaceMethod( "build", step, stepMethodType, m -> {
         } ).build() );
@@ -338,7 +338,7 @@ final class Generator
       {
         if ( stepMethodsAdded.add( stepMethod.getName() ) )
         {
-          if ( !stepMethod.getName().equals( "build" ) )
+          if ( !stepMethod.isBuildIntrinsic() )
           {
             builder.addMethod( buildBuilderStepImpl( step, stepMethod ) );
           }
