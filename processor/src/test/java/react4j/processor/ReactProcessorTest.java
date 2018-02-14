@@ -32,6 +32,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.default_props.PackageAccessFieldPropDefault", false },
         new Object[]{ "com.example.default_props.PackageAccessMethodPropDefault", false },
         new Object[]{ "com.example.default_props.ProtectedFieldPropDefault", false },
+        new Object[]{ "com.example.default_props.PropDefaultWithColorfulName", false },
         new Object[]{ "com.example.default_props.ProtectedMethodPropDefault", false },
         new Object[]{ "com.example.default_props.PublicFieldPropDefault", false },
         new Object[]{ "com.example.default_props.PublicMethodPropDefault", false },

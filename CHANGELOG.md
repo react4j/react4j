@@ -9,6 +9,8 @@
   so that tooling and developers can easily identify which code is generated.
 * **\[processor\]** Detected usage of names in `@Prop`, `@EventHandler` and `@ReactComponent` to ensure
   that no java keyword is used as this would cause a compilation error when generating the builder.
+* **\[processor\]** Fixed processing of the `@PropDefault` annotation on fields so it is able to derive
+  default the name if the prop name has characters other than letters.
 
 #### Changed
 * 💥 **\[core\]** Remove the methods on `ReactNode` that are responsible for querying the node type and

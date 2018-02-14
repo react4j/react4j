@@ -4,8 +4,6 @@
 
 * Add ability to `@Prop` to add enhancers to builder.
 
-* Ensure prop names can have numbers in it - particular field based `@PropDefault`s should derive the name.
-
 * Possibly support refs in generated builders.
 
 * Add mechanism by which plugins can be used to enhance the component generation process. Something that

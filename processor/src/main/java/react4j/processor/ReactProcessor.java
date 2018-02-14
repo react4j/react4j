@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -272,11 +271,32 @@ public final class ReactProcessor
       else
       {
         final String fieldName = element.getSimpleName().toString();
-        final Matcher matcher = ProcessorUtil.DEFAULT_FIELD_NAME_PATTERN.matcher( fieldName );
-        if ( matcher.find() )
+        boolean matched = true;
+        final int lengthPrefix = "DEFAULT_".length();
+        final int length = fieldName.length();
+        if ( fieldName.startsWith( "DEFAULT_" ) && length > lengthPrefix )
         {
-          final String candidate = matcher.group( 1 );
-          return uppercaseConstantToPascalCase( candidate );
+          for ( int i = lengthPrefix; i < length; i++ )
+          {
+            final char ch = fieldName.charAt( i );
+            if ( Character.isLowerCase( ch ) ||
+                 (
+                   ( i != lengthPrefix || !Character.isJavaIdentifierStart( ch ) ) &&
+                   ( i == lengthPrefix || !Character.isJavaIdentifierPart( ch ) )
+                 ) )
+            {
+              matched = false;
+              break;
+            }
+          }
+        }
+        else
+        {
+          matched = false;
+        }
+        if ( matched )
+        {
+          return uppercaseConstantToPascalCase( fieldName.substring( lengthPrefix ) );
         }
         else
         {
