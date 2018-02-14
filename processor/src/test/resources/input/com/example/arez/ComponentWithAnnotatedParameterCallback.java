@@ -9,7 +9,7 @@ import react4j.arez.ReactArezComponent;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class ComponentWithAnnotatedParameterEventHandler
+abstract class ComponentWithAnnotatedParameterCallback
   extends ReactArezComponent
 {
   @JsFunction

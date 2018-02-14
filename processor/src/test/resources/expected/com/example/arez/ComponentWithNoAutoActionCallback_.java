@@ -16,11 +16,11 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    type = "ComponentWithNoAutoActionEventHandler",
+    type = "ComponentWithNoAutoActionCallback",
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAutoActionEventHandler {
+abstract class ComponentWithNoAutoActionCallback_ extends ComponentWithNoAutoActionCallback {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
@@ -30,14 +30,14 @@ abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAut
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithNoAutoActionEventHandler" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithNoAutoActionCallback" );
     }
     return componentConstructor;
   }
 
   @Nonnull
-  static Callback.Procedure _handleFoo(@Nonnull final ComponentWithNoAutoActionEventHandler component) {
-    return ((ComponentWithNoAutoActionEventHandler_) component)._handleFoo;
+  static Callback.Procedure _handleFoo(@Nonnull final ComponentWithNoAutoActionCallback component) {
+    return ((ComponentWithNoAutoActionCallback_) component)._handleFoo;
   }
 
   @Override
@@ -49,7 +49,7 @@ abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAut
   private Callback.Procedure create_handleFoo() {
     final Callback.Procedure handler = () -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithNoAutoActionEventHandler.handleFoo" ) ) );
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithNoAutoActionCallback.handleFoo" ) ) );
     }
     return handler;
   }
@@ -67,14 +67,14 @@ abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAut
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ComponentWithNoAutoActionEventHandler> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ComponentWithNoAutoActionCallback> implements Lifecycle {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected ComponentWithNoAutoActionEventHandler createComponent() {
-      return new Arez_ComponentWithNoAutoActionEventHandler_();
+    protected ComponentWithNoAutoActionCallback createComponent() {
+      return new Arez_ComponentWithNoAutoActionCallback_();
     }
 
     @Override

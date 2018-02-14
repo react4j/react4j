@@ -9,8 +9,8 @@ import react4j.core.React;
 import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class ComponentWithEventHandlerBuilder {
-  private ComponentWithEventHandlerBuilder() {
+class ComponentWithCallbackBuilder {
+  private ComponentWithCallbackBuilder() {
   }
 
   @Nonnull
@@ -45,7 +45,7 @@ class ComponentWithEventHandlerBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( ComponentWithEventHandler_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( ComponentWithCallback_.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -9,8 +9,8 @@ import react4j.core.React;
 import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class ComponentWithNoAutoActionEventHandlerBuilder {
-  private ComponentWithNoAutoActionEventHandlerBuilder() {
+class ComponentWithAnnotatedParameterCallbackBuilder {
+  private ComponentWithAnnotatedParameterCallbackBuilder() {
   }
 
   @Nonnull
@@ -45,7 +45,7 @@ class ComponentWithNoAutoActionEventHandlerBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( ComponentWithNoAutoActionEventHandler_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( ComponentWithAnnotatedParameterCallback_.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

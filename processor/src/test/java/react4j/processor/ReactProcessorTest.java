@@ -17,9 +17,9 @@ public class ReactProcessorTest
       {
         new Object[]{ "com.example.arez.AutorunArezReactComponent", false },
         new Object[]{ "com.example.arez.BasicArezReactComponent", false },
-        new Object[]{ "com.example.arez.ComponentWithAnnotatedParameterEventHandler", false },
-        new Object[]{ "com.example.arez.ComponentWithEventHandler", false },
-        new Object[]{ "com.example.arez.ComponentWithNoAutoActionEventHandler", false },
+        new Object[]{ "com.example.arez.ComponentWithAnnotatedParameterCallback", false },
+        new Object[]{ "com.example.arez.ComponentWithCallback", false },
+        new Object[]{ "com.example.arez.ComponentWithNoAutoActionCallback", false },
         new Object[]{ "com.example.arez.ComponentWithProp", false },
         new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent", false },
         new Object[]{ "com.example.basic.BasicReactComponent", false },
@@ -134,7 +134,7 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "com.example.arez.AnnotatedEventHandler",
+        new Object[]{ "com.example.arez.AnnotatedCallback",
                       "Method annotated with @Callback is also annotated with @arez.annotations.Action but is not annotated with @react4j.arez.NoAutoAction which would stop react4j from also annotating the method with @Action. Please remove @Action or add @NoAutoAction annotation." },
         new Object[]{ "com.example.arez.ArezComponentAnnotated",
                       "@ReactComponent target extends react4j.arez.ReactArezComponent and should not be annotated with arez.annotations.ArezComponent as React4j will add annotation" },
@@ -224,8 +224,7 @@ public class ReactProcessorTest
                       "@Prop named 'child' should be of type react4j.core.ReactNode" },
         new Object[]{ "com.example.prop.MultipleChildrenPropsComponent",
                       "Multiple candidate children @Prop annotated methods: getChildren and getChild" },
-        new Object[]{ "com.example.prop.PropAndEventHandlerComponent",
-                      "Method can not be annotated with both @Callback and @Prop" },
+        new Object[]{ "com.example.prop.PropAndCallback", "Method can not be annotated with both @Callback and @Prop" },
         new Object[]{ "com.example.prop.PropHasParameterComponent", "@Prop target must not have any parameters" },
         new Object[]{ "com.example.prop.PropNamedBuild",
                       "@Prop named 'build' is invalid as it conflicts with the method named build() that is used in the generated Builder classes" },

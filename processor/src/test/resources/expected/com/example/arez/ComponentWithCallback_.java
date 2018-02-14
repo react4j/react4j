@@ -16,36 +16,36 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    type = "ComponentWithEventHandler",
+    type = "ComponentWithCallback",
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
+abstract class ComponentWithCallback_ extends ComponentWithCallback {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private final Callback.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
-  private final ComponentWithEventHandler.CustomHandler _handleFoo2 = create_handleFoo2();
+  private final ComponentWithCallback.CustomHandler _handleFoo2 = create_handleFoo2();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithEventHandler" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithCallback" );
     }
     return componentConstructor;
   }
 
   @Nonnull
-  static Callback.Procedure _handleFoo(@Nonnull final ComponentWithEventHandler component) {
-    return ((ComponentWithEventHandler_) component)._handleFoo;
+  static Callback.Procedure _handleFoo(@Nonnull final ComponentWithCallback component) {
+    return ((ComponentWithCallback_) component)._handleFoo;
   }
 
   @Nonnull
-  static ComponentWithEventHandler.CustomHandler _handleFoo2(@Nonnull final ComponentWithEventHandler component) {
-    return ((ComponentWithEventHandler_) component)._handleFoo2;
+  static ComponentWithCallback.CustomHandler _handleFoo2(@Nonnull final ComponentWithCallback component) {
+    return ((ComponentWithCallback_) component)._handleFoo2;
   }
 
   @Override
@@ -57,16 +57,16 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   private Callback.Procedure create_handleFoo() {
     final Callback.Procedure handler = () -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithEventHandler.handleFoo" ) ) );
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithCallback.handleFoo" ) ) );
     }
     return handler;
   }
 
   @Nonnull
-  private ComponentWithEventHandler.CustomHandler create_handleFoo2() {
-    final ComponentWithEventHandler.CustomHandler handler = arg0 -> this.handleFoo2(arg0);
+  private ComponentWithCallback.CustomHandler create_handleFoo2() {
+    final ComponentWithCallback.CustomHandler handler = arg0 -> this.handleFoo2(arg0);
     if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithEventHandler.handleFoo2" ) ) );
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithCallback.handleFoo2" ) ) );
     }
     return handler;
   }
@@ -98,14 +98,14 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ComponentWithEventHandler> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ComponentWithCallback> implements Lifecycle {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected ComponentWithEventHandler createComponent() {
-      return new Arez_ComponentWithEventHandler_();
+    protected ComponentWithCallback createComponent() {
+      return new Arez_ComponentWithCallback_();
     }
 
     @Override

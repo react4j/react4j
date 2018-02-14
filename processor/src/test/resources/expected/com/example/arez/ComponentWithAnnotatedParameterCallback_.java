@@ -15,36 +15,36 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    type = "ComponentWithAnnotatedParameterEventHandler",
+    type = "ComponentWithAnnotatedParameterCallback",
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWithAnnotatedParameterEventHandler {
+abstract class ComponentWithAnnotatedParameterCallback_ extends ComponentWithAnnotatedParameterCallback {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final ComponentWithAnnotatedParameterEventHandler.CustomHandler2 _handleFoo = create_handleFoo();
+  private final ComponentWithAnnotatedParameterCallback.CustomHandler2 _handleFoo = create_handleFoo();
 
   @Nonnull
-  private final ComponentWithAnnotatedParameterEventHandler.CustomHandler _handleFoo2 = create_handleFoo2();
+  private final ComponentWithAnnotatedParameterCallback.CustomHandler _handleFoo2 = create_handleFoo2();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithAnnotatedParameterEventHandler" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithAnnotatedParameterCallback" );
     }
     return componentConstructor;
   }
 
   @Nonnull
-  static ComponentWithAnnotatedParameterEventHandler.CustomHandler2 _handleFoo(@Nonnull final ComponentWithAnnotatedParameterEventHandler component) {
-    return ((ComponentWithAnnotatedParameterEventHandler_) component)._handleFoo;
+  static ComponentWithAnnotatedParameterCallback.CustomHandler2 _handleFoo(@Nonnull final ComponentWithAnnotatedParameterCallback component) {
+    return ((ComponentWithAnnotatedParameterCallback_) component)._handleFoo;
   }
 
   @Nonnull
-  static ComponentWithAnnotatedParameterEventHandler.CustomHandler _handleFoo2(@Nonnull final ComponentWithAnnotatedParameterEventHandler component) {
-    return ((ComponentWithAnnotatedParameterEventHandler_) component)._handleFoo2;
+  static ComponentWithAnnotatedParameterCallback.CustomHandler _handleFoo2(@Nonnull final ComponentWithAnnotatedParameterCallback component) {
+    return ((ComponentWithAnnotatedParameterCallback_) component)._handleFoo2;
   }
 
   @Override
@@ -53,19 +53,19 @@ abstract class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWit
   }
 
   @Nonnull
-  private ComponentWithAnnotatedParameterEventHandler.CustomHandler2 create_handleFoo() {
-    final ComponentWithAnnotatedParameterEventHandler.CustomHandler2 handler = () -> this.handleFoo();
+  private ComponentWithAnnotatedParameterCallback.CustomHandler2 create_handleFoo() {
+    final ComponentWithAnnotatedParameterCallback.CustomHandler2 handler = () -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithAnnotatedParameterEventHandler.handleFoo" ) ) );
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithAnnotatedParameterCallback.handleFoo" ) ) );
     }
     return handler;
   }
 
   @Nonnull
-  private ComponentWithAnnotatedParameterEventHandler.CustomHandler create_handleFoo2() {
-    final ComponentWithAnnotatedParameterEventHandler.CustomHandler handler = arg0 -> this.handleFoo2(arg0);
+  private ComponentWithAnnotatedParameterCallback.CustomHandler create_handleFoo2() {
+    final ComponentWithAnnotatedParameterCallback.CustomHandler handler = arg0 -> this.handleFoo2(arg0);
     if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithAnnotatedParameterEventHandler.handleFoo2" ) ) );
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithAnnotatedParameterCallback.handleFoo2" ) ) );
     }
     return handler;
   }
@@ -98,14 +98,14 @@ abstract class ComponentWithAnnotatedParameterEventHandler_ extends ComponentWit
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ComponentWithAnnotatedParameterEventHandler> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ComponentWithAnnotatedParameterCallback> implements Lifecycle {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected ComponentWithAnnotatedParameterEventHandler createComponent() {
-      return new Arez_ComponentWithAnnotatedParameterEventHandler_();
+    protected ComponentWithAnnotatedParameterCallback createComponent() {
+      return new Arez_ComponentWithAnnotatedParameterCallback_();
     }
 
     @Override

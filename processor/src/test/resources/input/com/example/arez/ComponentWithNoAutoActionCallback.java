@@ -8,7 +8,7 @@ import react4j.arez.ReactArezComponent;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class ComponentWithNoAutoActionEventHandler
+abstract class ComponentWithNoAutoActionCallback
   extends ReactArezComponent
 {
   @Nullable
