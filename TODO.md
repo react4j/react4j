@@ -21,7 +21,8 @@
   and `React4j_MyComponent` (implementation details)
 
 * Consider implementing `getDerivedStateFromProps` static method and removing `componentWillReceiveProps` lifecycle
-  method. This is contingent on `16.3` release of react as described at https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#dd16
+  method. This will probably involve an annotation on a static method. This is contingent on `16.3` release of react
+  as described at https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#dd16
 
 * Add support for the new context API that will be released with `16.3`. See https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#0db6
 
