@@ -4,8 +4,6 @@
 
 * Add ability to `@Prop` to add enhancers to builder.
 
-* Possibly support refs in generated builders.
-
 * Add mechanism by which plugins can be used to enhance the component generation process. Something that
   could hook into the component lifecycle methods? The goal is to add `@ReplicantData` or `@GraphQL` annotations
   to component and have code generator enhance the component in some fashion to load data as appropriate.
@@ -95,6 +93,8 @@
 * React `classSet` addon equiv. Also see scalajs variant - https://github.com/japgolly/scalajs-react/blob/master/doc/USAGE.md#react-extensions
 
 * Introduce performance tools as in https://github.com/nitin42/react-perf-devtool into tool chain
+
+* Possibly support refs in generated builders.
 
 #### Arez DevTools
 
