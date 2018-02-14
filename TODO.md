@@ -11,14 +11,6 @@
   integrate into code generator) Or do we generate a chain of classes `MyComponent` -> `Graphql_MyComponent` ->
   `React_Graphql_MyComponent` -> `Arez_React_Graphql_MyComponent` ?
 
-* Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
-  Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
-  default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
-
-* Components that have no `@State` methods, no fields, no lifecycle methods and are not subclasses of
-  `ReactArezComponent` could be made into stateless components when translating to React. This could also
-  be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`.
-
 * Add support for methods annotated with `@OnPropChanged`
 
 * Add support for methods annotated with `@PropValidate` method. These would be optimized out in production mode.
@@ -39,8 +31,6 @@
 
 * Add support for the new context API that will be released with `16.3`. See https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#0db6
 
-* Consider adding support for the new ref proposal if it gets adopted. See https://github.com/reactjs/rfcs/blob/master/text/0017-new-create-ref.md
-
 ### Medium Priorities
 
 * Figure out a way to define dom factories in java that are optimized away in production such that
@@ -50,6 +40,18 @@
   element factories can be built by looking at html spec and auto-generating?
   - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
+
+* Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
+  Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
+  default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
+
+* Add `@State` annotated methods that are required to come as a pair of abstract getters and setters? These would
+  potentially work on top of the underlying react state system. And then change object returned from `state()` into
+  `JsPropertyMap<Object>`
+
+* Components that have no `@State` methods, no fields, no lifecycle methods and are not subclasses of
+  `ReactArezComponent` could be made into stateless components when translating to React. This could also
+  be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`.
 
 ### Low Priorities
 
@@ -67,18 +69,12 @@
 * Port a medium clone. a.k.a. The "realworld example app".
   - https://github.com/gothinkster/react-mobx-realworld-example-app
 
+* Consider adding support for the new ref proposal if it gets adopted. See https://github.com/reactjs/rfcs/blob/master/text/0017-new-create-ref.md
+
 * See if we can remove ReactElement.
 
-* Add `@State` annotated methods that are required to come as a pair of abstract getters and setters? These would
-  potentially work on top of the underlying react state system. And then change object returned from `state()` into
-  `JsPropertyMap<Object>`
+* Add support for fragments as described in https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html
 
-* Add support for fragments as described in
-  https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html
-
-* In base class have configuration that warns on re-renders that produced duplicate values. Note: that the tool to do
-  this no longer works in React 16 but the ReactJS team expect something will replace it in the future.
-* build in https://github.com/maicki/why-did-you-update
 * Implement the "children" utilities in java or bind to native implementation.
 
 * Upgrade and build TodoMVC as part of the release process.
@@ -90,6 +86,11 @@
 * React `classSet` addon equiv. Also see scalajs variant - https://github.com/japgolly/scalajs-react/blob/master/doc/USAGE.md#react-extensions
 
 * Introduce performance tools as in https://github.com/nitin42/react-perf-devtool into tool chain
+
+* In base class have configuration that warns on re-renders that produced duplicate values. Note: that the tool to do
+  this no longer works in React 16 but the ReactJS team expect something will replace it in the future.
+
+* build in https://github.com/maicki/why-did-you-update
 
 * Possibly support refs in generated builders.
 
