@@ -287,9 +287,15 @@ public final class ReactProcessor
     }
     else
     {
-      if ( !ProcessorUtil.isJavaIdentifier( name ) )
+      if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ReactProcessorException( "@PropDefault target specified an invalid name " + name, element );
+        throw new ReactProcessorException( "@PropDefault target specified an invalid name '" + name + "'. The " +
+                                           "name must be a valid java identifier.", element );
+      }
+      else if ( SourceVersion.isKeyword( name ) )
+      {
+        throw new ReactProcessorException( "@PropDefault target specified an invalid name '" + name + "'. The " +
+                                           "name must not be a java keyword.", element );
       }
       return name;
     }
@@ -480,10 +486,15 @@ public final class ReactProcessor
     }
     else
     {
-      if ( !ProcessorUtil.isJavaIdentifier( name ) )
+      if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ReactProcessorException( "Method annotated with @EventHandler specified invalid name " + name,
-                                           method );
+        throw new ReactProcessorException( "@EventHandler target specified an invalid name '" + name + "'. The " +
+                                           "name must be a valid java identifier.", method );
+      }
+      else if ( SourceVersion.isKeyword( name ) )
+      {
+        throw new ReactProcessorException( "@EventHandler target specified an invalid name '" + name + "'. The " +
+                                           "name must not be a java keyword.", method );
       }
       return name;
     }
@@ -587,10 +598,15 @@ public final class ReactProcessor
                                                  "name" ).getValue();
 
     final String name = ProcessorUtil.getPropertyAccessorName( method, specifiedName );
-    if ( !ProcessorUtil.isJavaIdentifier( name ) )
+    if ( !SourceVersion.isIdentifier( name ) )
     {
-      throw new ReactProcessorException( "@Prop target specified an invalid name " + specifiedName,
-                                         method );
+      throw new ReactProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
+                                         "name must be a valid java identifier.", method );
+    }
+    else if ( SourceVersion.isKeyword( name ) )
+    {
+      throw new ReactProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
+                                         "name must not be a java keyword.", method );
     }
     else
     {
@@ -666,10 +682,15 @@ public final class ReactProcessor
     }
     else
     {
-      if ( !ProcessorUtil.isJavaIdentifier( name ) )
+      if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ReactProcessorException( "The @ReactComponent specified an invalid name. Name should be follow " +
-                                           "the rules of a java identifier.", typeElement );
+        throw new ReactProcessorException( "@ReactComponent target specified an invalid name '" + name + "'. The " +
+                                           "name must be a valid java identifier.", typeElement );
+      }
+      else if ( SourceVersion.isKeyword( name ) )
+      {
+        throw new ReactProcessorException( "@ReactComponent target specified an invalid name '" + name + "'. The " +
+                                           "name must not be a java keyword.", typeElement );
       }
       return name;
     }

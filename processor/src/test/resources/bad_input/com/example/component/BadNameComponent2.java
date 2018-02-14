@@ -1,20 +1,14 @@
-package com.example.prop;
+package com.example.component;
 
-import javax.annotation.Nullable;
-import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
 
-@ReactComponent
-abstract class BadNameProp2
+@ReactComponent( name = "for" )
+abstract class BadNameComponent2
   extends Component<BaseState>
 {
-  @Prop( name = "true" )
-  protected abstract String getMyKey();
-
-  @Nullable
   @Override
   protected ReactNode render()
   {

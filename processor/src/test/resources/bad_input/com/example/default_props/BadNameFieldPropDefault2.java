@@ -11,7 +11,7 @@ import react4j.core.ReactNode;
 abstract class BadNameFieldPropDefault2
   extends Component<BaseState>
 {
-  @PropDefault( name = "myProp-" )
+  @PropDefault( name = "true" )
   static final String MY_PROP = "Foo";
 
   @Prop

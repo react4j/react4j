@@ -240,27 +240,6 @@ final class ProcessorUtil
     return SENTINEL_NAME.equals( name );
   }
 
-  static boolean isJavaIdentifier( @Nonnull final String value )
-  {
-    if ( value.isEmpty() || !Character.isJavaIdentifierStart( value.charAt( 0 ) ) )
-    {
-      return false;
-    }
-    else
-    {
-      final int length = value.length();
-      for ( int i = 1; i < length; i++ )
-      {
-        if ( !Character.isJavaIdentifierPart( value.charAt( i ) ) )
-        {
-          return false;
-        }
-      }
-
-      return true;
-    }
-  }
-
   @SuppressWarnings( "SameParameterValue" )
   @Nullable
   static DeclaredType getTypeMirrorAnnotationParameter( @Nonnull final Elements elements,

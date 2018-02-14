@@ -11,7 +11,7 @@ import react4j.core.ReactNode;
 abstract class BadNameMethodPropDefault2
   extends Component<BaseState>
 {
-  @PropDefault( name = "myProp-" )
+  @PropDefault( name = "assert" )
   public static String zoooooooooooooom()
   {
     return "Foo";

@@ -7,6 +7,8 @@
   than `children` to access the underlying prop value.
 * **\[processor\]** Add the `@Generated` annotation onto the generated dagger factory and component builder
   so that tooling and developers can easily identify which code is generated.
+* **\[processor\]** Detected usage of names in `@Prop`, `@EventHandler` and `@ReactComponent` to ensure
+  that no java keyword is used as this would cause a compilation error when generating the builder.
 
 #### Changed
 * 💥 **\[core\]** Remove the methods on `ReactNode` that are responsible for querying the node type and
@@ -16,6 +18,9 @@
 * 💥 **\[core\]** Remove the `ReactNode.of(...)` methods that accept `ReactElement` parameters as they
   are no longer useful now that `ReactElement` implements `ReactNode`.
 * 💥 **\[core\]** Changed the casts in the `ReactNode.of(...)` methods to use `Js.uncheckedCast(...)`.
+* **\[processor\]** Used code supplied by the JVM to detect whether a name is a valid java identifier and
+  removed custom code to detect whether name is a java identifier. Enhanced the exceptions to give greater
+  context to why a name is invalid.
 
 ### [v0.43](https://github.com/react4j/react4j/tree/v0.43) (2018-02-14)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.42...v0.43)
