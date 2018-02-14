@@ -54,7 +54,6 @@ public final class ReactProcessor
                    "componentWillUnmount",
                    "componentWillUpdate",
                    "componentDidCatch",
-                   "getChildContext",
                    "shouldComponentUpdate" );
 
   /**
