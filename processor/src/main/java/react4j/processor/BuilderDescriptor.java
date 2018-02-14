@@ -14,7 +14,7 @@ final class BuilderDescriptor
   @Nonnull
   Step addStep()
   {
-    final Step step = new Step( this, _steps.size() + 1 );
+    final Step step = new Step( _steps.size() + 1 );
     getSteps().add( step );
     return step;
   }
