@@ -27,7 +27,8 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
-* Add `@Ref` annotation to field in component. This will generate a cached helper function similar to EventHandler
+* Add `@Ref` annotation to field in component. (Is this no different to the `@Callback` proposed in the next point?).
+  This will generate a cached helper function similar to EventHandler
   annotation that can be passed as prop. Let's defer this as the new proposal for the Ref API would eliminate
   the need for this. The new ref proposal is at https://github.com/reactjs/rfcs/blob/master/text/0017-new-create-ref.md
 
