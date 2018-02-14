@@ -80,6 +80,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.PropTypeObject", false },
         new Object[]{ "com.example.prop.PropTypeShort", false },
         new Object[]{ "com.example.prop.PropTypeString", false },
+        new Object[]{ "com.example.prop.PublicProp", false },
         new Object[]{ "com.example.prop.SingleChildPropComponent", false },
         new Object[]{ "com.example.render.BaseRenderComponent", false },
         new Object[]{ "RootPackageReactComponent", false }
