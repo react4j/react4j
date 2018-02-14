@@ -50,8 +50,6 @@
   - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
 
-* State fields should be read-only abstractions. Mutations create new objects?
-
 ### Low Priorities
 
 * Complete `react4j-cryptotracker` example.
