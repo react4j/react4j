@@ -6,6 +6,12 @@
 * 💥 **\[core\]** Remove support for the `componentWillUpdate` lifecycle method as ReactJS is deprecating
   the method in `16.3` and plans to remove it in `17.x`.
 * 💥 **\[annotations\]** Rename `@EventHandler` to `@Callback`.
+* 💥 **\[annotations\]** Added the `initCallbackContext` parameter to the `@Callback` annotation. This determines
+  whether the annotation processor attempts to generate code that initializes the calling context of the callback
+  or leaves that responsibility to the invoker. In practical terms, subclasses of the `ReactArezComponent` class
+  will have callbacks annotated with an `@arez.annotations.Action` if the parameter is set to `ENABLED` or
+  `AUTODETECT`. This resulted in the removal of the `@react4j.arez.NoAutoAction` annotation as it no longer
+  provides any additional functionality.
 
 ### [v0.45](https://github.com/react4j/react4j/tree/v0.45) (2018-02-14)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.44...v0.45)

@@ -452,28 +452,45 @@ public final class ReactProcessor
                                          "method and thus is not a functional interface", method );
     }
 
-    if ( descriptor.isArezComponent() )
+    final boolean initCallbackContext = shouldInitCallbackContext( descriptor, method );
+
+    if ( initCallbackContext &&
+         descriptor.isArezComponent() &&
+         null != ProcessorUtil.findAnnotationByType( method, Constants.ACTION_ANNOTATION_CLASSNAME ) )
     {
-      final AnnotationMirror nonActionAnnotation = method.getAnnotationMirrors().stream().
-        filter( m -> m.getAnnotationType().toString().equals( "react4j.arez.NoAutoAction" ) ).
-        findAny().orElse( null );
-      if ( null == nonActionAnnotation )
-      {
-        final AnnotationMirror actionAnnotation = method.getAnnotationMirrors().stream().
-          filter( m -> m.getAnnotationType().toString().equals( "arez.annotations.Action" ) ).
-          findAny().orElse( null );
-        if ( null != actionAnnotation )
-        {
-          throw new ReactProcessorException( "Method annotated with @Callback is also annotated with " +
-                                             "@arez.annotations.Action but is not annotated with " +
-                                             "@react4j.arez.NoAutoAction which would stop react4j from also " +
-                                             "annotating the method with @Action. Please remove @Action or add " +
-                                             "@NoAutoAction annotation.", method );
-        }
-      }
+      final String message =
+        "@Callback target is also annotated with @arez.annotations.Action but the @Callback parameter " +
+        "'initCallbackContext' is not set to Feature.DISABLE which would stop react4j from also " +
+        "annotating the method with @Action. Please remove @Action or change the 'initCallbackContext' to " +
+        "Feature.DISABLE.";
+      throw new ReactProcessorException( message, method );
     }
 
-    return new CallbackDescriptor( name, method, methodType, callbackType, callbackMethods.get( 0 ) );
+    return new CallbackDescriptor( name,
+                                   method,
+                                   methodType,
+                                   callbackType,
+                                   callbackMethods.get( 0 ),
+                                   initCallbackContext );
+  }
+
+  private boolean shouldInitCallbackContext( @Nonnull final ComponentDescriptor descriptor,
+                                             @Nonnull final ExecutableElement method )
+  {
+    final VariableElement injectParameter = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        method,
+                                        Constants.CALLBACK_ANNOTATION_CLASSNAME,
+                                        "initCallbackContext" ).getValue();
+    switch ( injectParameter.getSimpleName().toString() )
+    {
+      case "ENABLE":
+        return true;
+      case "DISABLE":
+        return false;
+      default:
+        return descriptor.isArezComponent();
+    }
   }
 
   @Nonnull

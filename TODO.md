@@ -17,12 +17,6 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
-* The `@Callback` annotation will have an additional parameter `context` which
-  can have value of `component` or `invoker`. The `component` indicates that the context is setup as if it was
-  called from component while `invoker` relies on the invoker to setup context. The practical impact of this
-  the subclasses of `ReactArezComponent` will wrap `component` context `@Callback` methods in an action. This would
-  also allow the removal of `@NoAutoAction`.
-
 * Separate implementation details and user facing code in enhanced class into `MyComponent_` (User facing code)
   and `React4j_MyComponent` (implementation details)
 

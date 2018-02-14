@@ -21,12 +21,14 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.ComponentWithCallback", false },
         new Object[]{ "com.example.arez.ComponentWithNoAutoActionCallback", false },
         new Object[]{ "com.example.arez.ComponentWithProp", false },
+        new Object[]{ "com.example.arez.ExplicitlyEnabledCallback", false },
         new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent", false },
         new Object[]{ "com.example.basic.BasicReactComponent", false },
         new Object[]{ "com.example.basic.CustomNameReactComponent", false },
         new Object[]{ "com.example.basic.CustomPropsAndStateReactComponent", false },
         new Object[]{ "com.example.basic.GenericTypeComponent", false },
         new Object[]{ "com.example.basic.PublicReactComponent", false },
+        new Object[]{ "com.example.callback.EnabledCallback", false },
         new Object[]{ "com.example.default_props.ExplicitNameFieldPropDefault", false },
         new Object[]{ "com.example.default_props.ExplicitNameMethodPropDefault", false },
         new Object[]{ "com.example.default_props.PackageAccessFieldPropDefault", false },
@@ -135,7 +137,7 @@ public class ReactProcessorTest
     return new Object[][]
       {
         new Object[]{ "com.example.arez.AnnotatedCallback",
-                      "Method annotated with @Callback is also annotated with @arez.annotations.Action but is not annotated with @react4j.arez.NoAutoAction which would stop react4j from also annotating the method with @Action. Please remove @Action or add @NoAutoAction annotation." },
+                      "@Callback target is also annotated with @arez.annotations.Action but the @Callback parameter 'initCallbackContext' is not set to Feature.DISABLE which would stop react4j from also annotating the method with @Action. Please remove @Action or change the 'initCallbackContext' to Feature.DISABLE." },
         new Object[]{ "com.example.arez.ArezComponentAnnotated",
                       "@ReactComponent target extends react4j.arez.ReactArezComponent and should not be annotated with arez.annotations.ArezComponent as React4j will add annotation" },
         new Object[]{ "com.example.component.AbstractMethodComponent",

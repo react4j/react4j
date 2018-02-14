@@ -18,18 +18,21 @@ final class CallbackDescriptor
   private final TypeElement _callbackType;
   @Nonnull
   private final ExecutableElement _callbackMethod;
+  private final boolean _initCallbackContext;
 
   CallbackDescriptor( @Nonnull final String name,
                       @Nonnull final ExecutableElement method,
                       @Nonnull final ExecutableType methodType,
                       @Nonnull final TypeElement callbackType,
-                      @Nonnull final ExecutableElement callbackMethod )
+                      @Nonnull final ExecutableElement callbackMethod,
+                      final boolean initCallbackContext )
   {
     _name = Objects.requireNonNull( name );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
     _callbackType = Objects.requireNonNull( callbackType );
     _callbackMethod = Objects.requireNonNull( callbackMethod );
+    _initCallbackContext = initCallbackContext;
   }
 
   @Nonnull
@@ -60,5 +63,10 @@ final class CallbackDescriptor
   ExecutableElement getCallbackMethod()
   {
     return _callbackMethod;
+  }
+
+  boolean shouldInitCallbackContext()
+  {
+    return _initCallbackContext;
   }
 }

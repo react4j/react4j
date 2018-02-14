@@ -1,24 +1,23 @@
-package com.example.arez;
+package com.example.callback;
 
-import javax.annotation.Nullable;
 import react4j.annotations.Callback;
 import react4j.annotations.Feature;
 import react4j.annotations.ReactComponent;
-import react4j.arez.ReactArezComponent;
+import react4j.core.BaseState;
+import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class ComponentWithNoAutoActionCallback
-  extends ReactArezComponent
+abstract class EnabledCallback
+  extends Component<BaseState>
 {
-  @Nullable
   @Override
   protected ReactNode render()
   {
     return null;
   }
 
-  @Callback( initCallbackContext = Feature.DISABLE )
+  @Callback( initCallbackContext = Feature.ENABLE )
   void handleFoo()
   {
   }

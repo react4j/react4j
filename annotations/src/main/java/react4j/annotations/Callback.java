@@ -41,6 +41,21 @@ public @interface Callback
   Class value() default Procedure.class;
 
   /**
+   * The flag indicates whether the annotation processor should manage the calling context.
+   * if set to {@link Feature#ENABLE} then caller context will be setup. In practical terms
+   * this means that subclasses of <code>ReactArezComponent</code> will have the callback
+   * annotated with an <code>arez.annotations.Action</code> annotation. if set to {@link Feature#DISABLE}
+   * then the code that invokes the callback is responsible for setting up the calling context. This is
+   * typically used when you are passing a "render" prop into a component that invokes the callback to
+   * render react4j.ReactNode. The {@link Feature#AUTODETECT} value will detect whether the component needs
+   * calling context setup and do so if necessary. At the moment this means that subclasses of
+   * <code>ReactArezComponent</code> are enabled.
+   *
+   * @return the flag to control calling context.
+   */
+  Feature initCallbackContext() default Feature.AUTODETECT;
+
+  /**
    * Interface for performing an action that does not return a value.
    */
   @FunctionalInterface

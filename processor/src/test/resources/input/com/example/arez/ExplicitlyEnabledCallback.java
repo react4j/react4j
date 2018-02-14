@@ -8,7 +8,7 @@ import react4j.arez.ReactArezComponent;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class ComponentWithNoAutoActionCallback
+abstract class ExplicitlyEnabledCallback
   extends ReactArezComponent
 {
   @Nullable
@@ -18,8 +18,8 @@ abstract class ComponentWithNoAutoActionCallback
     return null;
   }
 
-  @Callback( initCallbackContext = Feature.DISABLE )
-  void handleFoo()
+  @Callback( initCallbackContext = Feature.ENABLE )
+  void handleAction()
   {
   }
 }

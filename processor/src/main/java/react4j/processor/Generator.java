@@ -21,7 +21,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -544,10 +543,7 @@ final class Generator
     {
       for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
       {
-        final AnnotationMirror nonActionAnnotation = callback.getMethod().getAnnotationMirrors().stream().
-          filter( m -> m.getAnnotationType().toString().equals( "react4j.arez.NoAutoAction" ) ).
-          findAny().orElse( null );
-        if ( null == nonActionAnnotation )
+        if ( callback.shouldInitCallbackContext() )
         {
           builder.addMethod( buildCallbackActionMethod( callback ).build() );
         }
