@@ -36,11 +36,11 @@ final class ComponentDescriptor
   @Nullable
   private List<MethodDescriptor> _lifecycleMethods;
   /**
-   * Methods that are designated as event handlers. A wrapper method will be generated to simplify
-   * the use of the method in React DevTools by naming handler.
+   * Methods that are designated as callbacks. A wrapper method will be generated to simplify
+   * the use of the method in the React DevTools by naming callback.
    */
   @Nullable
-  private List<EventHandlerDescriptor> _eventHandlers;
+  private List<CallbackDescriptor> _callbacks;
   /**
    * Methods that are props accessors.
    * These should be implemented as accesses to the underlying props value.
@@ -235,23 +235,23 @@ final class ComponentDescriptor
     for ( final MethodDescriptor method : _lifecycleMethods )
     {
       final ExecutableElement m = method.getMethod();
-      if ( null != ProcessorUtil.findAnnotationByType( m, Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME ) )
+      if ( null != ProcessorUtil.findAnnotationByType( m, Constants.CALLBACK_ANNOTATION_CLASSNAME ) )
       {
-        throw new ReactProcessorException( "@EventHandler target must not be a lifecycle method", m );
+        throw new ReactProcessorException( "@Callback target must not be a lifecycle method", m );
       }
     }
   }
 
   @Nonnull
-  List<EventHandlerDescriptor> getEventHandlers()
+  List<CallbackDescriptor> getCallbacks()
   {
-    assert null != _eventHandlers;
-    return _eventHandlers;
+    assert null != _callbacks;
+    return _callbacks;
   }
 
-  void setEventHandlers( @Nonnull final List<EventHandlerDescriptor> eventHandlers )
+  void setCallbacks( @Nonnull final List<CallbackDescriptor> callbacks )
   {
-    _eventHandlers = Objects.requireNonNull( eventHandlers );
+    _callbacks = Objects.requireNonNull( callbacks );
   }
 
   @Nonnull

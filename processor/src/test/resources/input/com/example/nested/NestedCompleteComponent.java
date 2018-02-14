@@ -1,6 +1,6 @@
 package com.example.nested;
 
-import react4j.annotations.EventHandler;
+import react4j.annotations.Callback;
 import react4j.annotations.Feature;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
@@ -17,7 +17,7 @@ public class NestedCompleteComponent
     @Prop
     abstract String getMyProp();
 
-    @EventHandler
+    @Callback
     void myEventHandler()
     {
     }

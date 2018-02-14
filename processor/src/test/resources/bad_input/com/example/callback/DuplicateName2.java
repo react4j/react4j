@@ -1,23 +1,22 @@
-package com.example.arez;
+package com.example.callback;
 
-import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import react4j.annotations.Callback;
 import react4j.annotations.ReactComponent;
-import react4j.arez.ReactArezComponent;
+import react4j.core.BaseState;
+import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class ComponentWithEventHandler
-  extends ReactArezComponent
+abstract class DuplicateName2
+  extends Component<BaseState>
 {
   @JsFunction
   public interface CustomHandler
   {
-    int onMouseEvent( int i );
+    void onMouseEvent( int i );
   }
 
-  @Nullable
   @Override
   protected ReactNode render()
   {
@@ -29,10 +28,8 @@ abstract class ComponentWithEventHandler
   {
   }
 
-  // This is a custom handler that takes a parameter
   @Callback( CustomHandler.class )
-  int handleFoo2( int i )
+  void handleFoo( int i )
   {
-    return 0;
   }
 }

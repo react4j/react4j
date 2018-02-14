@@ -2,7 +2,7 @@ package react4j.examples.arez.step2;
 
 import arez.annotations.Computed;
 import javax.annotation.Nullable;
-import react4j.annotations.EventHandler;
+import react4j.annotations.Callback;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.ReactNode;
@@ -19,7 +19,7 @@ import static react4j.examples.arez.step2.Footer_.*;
 abstract class Footer
   extends ReactArezComponent
 {
-  @EventHandler( MouseEventHandler.class )
+  @Callback( MouseEventHandler.class )
   void handleClearCompleted()
   {
     AppData.service.clearCompleted();

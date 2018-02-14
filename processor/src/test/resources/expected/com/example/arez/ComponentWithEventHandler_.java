@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.annotations.EventHandler;
+import react4j.annotations.Callback;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -24,7 +24,7 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final EventHandler.Procedure _handleFoo = create_handleFoo();
+  private final Callback.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private final ComponentWithEventHandler.CustomHandler _handleFoo2 = create_handleFoo2();
@@ -39,7 +39,7 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   }
 
   @Nonnull
-  static EventHandler.Procedure _handleFoo(@Nonnull final ComponentWithEventHandler component) {
+  static Callback.Procedure _handleFoo(@Nonnull final ComponentWithEventHandler component) {
     return ((ComponentWithEventHandler_) component)._handleFoo;
   }
 
@@ -54,8 +54,8 @@ abstract class ComponentWithEventHandler_ extends ComponentWithEventHandler {
   }
 
   @Nonnull
-  private EventHandler.Procedure create_handleFoo() {
-    final EventHandler.Procedure handler = () -> this.handleFoo();
+  private Callback.Procedure create_handleFoo() {
+    final Callback.Procedure handler = () -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithEventHandler.handleFoo" ) ) );
     }

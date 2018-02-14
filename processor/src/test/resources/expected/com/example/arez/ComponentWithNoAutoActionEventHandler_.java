@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.annotations.EventHandler;
+import react4j.annotations.Callback;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -24,7 +24,7 @@ abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAut
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final EventHandler.Procedure _handleFoo = create_handleFoo();
+  private final Callback.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -36,7 +36,7 @@ abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAut
   }
 
   @Nonnull
-  static EventHandler.Procedure _handleFoo(@Nonnull final ComponentWithNoAutoActionEventHandler component) {
+  static Callback.Procedure _handleFoo(@Nonnull final ComponentWithNoAutoActionEventHandler component) {
     return ((ComponentWithNoAutoActionEventHandler_) component)._handleFoo;
   }
 
@@ -46,8 +46,8 @@ abstract class ComponentWithNoAutoActionEventHandler_ extends ComponentWithNoAut
   }
 
   @Nonnull
-  private EventHandler.Procedure create_handleFoo() {
-    final EventHandler.Procedure handler = () -> this.handleFoo();
+  private Callback.Procedure create_handleFoo() {
+    final Callback.Procedure handler = () -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithNoAutoActionEventHandler.handleFoo" ) ) );
     }

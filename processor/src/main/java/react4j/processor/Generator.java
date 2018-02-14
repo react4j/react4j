@@ -490,9 +490,9 @@ final class Generator
       builder.addField( buildProviderField( descriptor ).build() );
     }
 
-    for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
+    for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
     {
-      builder.addField( buildEventHandlerField( eventHandler ).build() );
+      builder.addField( buildCallbackField( callback ).build() );
     }
 
     if ( descriptor.needsInjection() )
@@ -503,9 +503,9 @@ final class Generator
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
-    for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
+    for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
     {
-      builder.addMethod( buildStaticEventHandlerMethod( descriptor, eventHandler ).build() );
+      builder.addMethod( buildStaticCallbackMethod( descriptor, callback ).build() );
     }
 
     for ( final PropDescriptor prop : descriptor.getProps() )
@@ -536,20 +536,20 @@ final class Generator
         build() );
     }
 
-    for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
+    for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
     {
-      builder.addMethod( buildEventHandlerBuilderMethod( descriptor, eventHandler ).build() );
+      builder.addMethod( buildCallbackBuilderMethod( descriptor, callback ).build() );
     }
     if ( descriptor.isArezComponent() )
     {
-      for ( final EventHandlerDescriptor eventHandler : descriptor.getEventHandlers() )
+      for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
       {
-        final AnnotationMirror nonActionAnnotation = eventHandler.getMethod().getAnnotationMirrors().stream().
+        final AnnotationMirror nonActionAnnotation = callback.getMethod().getAnnotationMirrors().stream().
           filter( m -> m.getAnnotationType().toString().equals( "react4j.arez.NoAutoAction" ) ).
           findAny().orElse( null );
         if ( null == nonActionAnnotation )
         {
-          builder.addMethod( buildEventHandlerActionMethod( eventHandler ).build() );
+          builder.addMethod( buildCallbackActionMethod( callback ).build() );
         }
       }
     }
@@ -694,21 +694,21 @@ final class Generator
   }
 
   @Nonnull
-  private static FieldSpec.Builder buildEventHandlerField( @Nonnull final EventHandlerDescriptor eventHandler )
+  private static FieldSpec.Builder buildCallbackField( @Nonnull final CallbackDescriptor callback )
   {
-    final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
-    final String handlerName = "_" + eventHandler.getMethod().getSimpleName().toString();
+    final TypeName handlerType = TypeName.get( callback.getCallbackType().asType() );
+    final String handlerName = "_" + callback.getMethod().getSimpleName().toString();
     return FieldSpec.builder( handlerType, handlerName, Modifier.FINAL, Modifier.PRIVATE ).
       addAnnotation( NONNULL_CLASSNAME ).
       initializer( "create$N()", handlerName );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildStaticEventHandlerMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                                   @Nonnull final EventHandlerDescriptor eventHandler )
+  private static MethodSpec.Builder buildStaticCallbackMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                                   @Nonnull final CallbackDescriptor callback )
   {
-    final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
-    final String handlerName = "_" + eventHandler.getMethod().getSimpleName();
+    final TypeName handlerType = TypeName.get( callback.getCallbackType().asType() );
+    final String handlerName = "_" + callback.getMethod().getSimpleName();
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( handlerName ).
         addAnnotation( NONNULL_CLASSNAME ).
@@ -726,17 +726,17 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildEventHandlerBuilderMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                                    @Nonnull final EventHandlerDescriptor eventHandler )
+  private static MethodSpec.Builder buildCallbackBuilderMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                                    @Nonnull final CallbackDescriptor callback )
   {
-    final TypeName handlerType = TypeName.get( eventHandler.getEventHandlerType().asType() );
+    final TypeName handlerType = TypeName.get( callback.getCallbackType().asType() );
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "create_" + eventHandler.getMethod().getSimpleName() ).
+      MethodSpec.methodBuilder( "create_" + callback.getMethod().getSimpleName() ).
         addModifiers( Modifier.PRIVATE ).
         addAnnotation( NONNULL_CLASSNAME ).
         returns( handlerType );
 
-    final ExecutableElement target = eventHandler.getEventHandlerMethod();
+    final ExecutableElement target = callback.getCallbackMethod();
     final int targetParameterCount = target.getParameters().size();
     String args =
       0 == targetParameterCount ?
@@ -747,7 +747,7 @@ final class Generator
       args = "(" + args + ")";
     }
 
-    final int paramCount = eventHandler.getMethod().getParameters().size();
+    final int paramCount = callback.getMethod().getParameters().size();
     final String params =
       0 == paramCount ?
       "" :
@@ -755,7 +755,7 @@ final class Generator
 
     method.addStatement( "final $T handler = " + args + " -> this.$N(" + params + ")",
                          handlerType,
-                         eventHandler.getMethod().getSimpleName() );
+                         callback.getMethod().getSimpleName() );
 
     final CodeBlock.Builder block = CodeBlock.builder();
     block.beginControlFlow( "if( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
@@ -766,7 +766,7 @@ final class Generator
                         JS_CLASSNAME,
                         JS_CLASSNAME,
                         JS_PROPERTY_MAP_CLASSNAME,
-                        descriptor.getName() + "." + eventHandler.getName() );
+                        descriptor.getName() + "." + callback.getName() );
     block.endControlFlow();
     method.addCode( block.build() );
     method.addStatement( "return handler" );
@@ -774,27 +774,27 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildEventHandlerActionMethod( @Nonnull final EventHandlerDescriptor eventHandler )
+  private static MethodSpec.Builder buildCallbackActionMethod( @Nonnull final CallbackDescriptor callback )
   {
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( eventHandler.getMethod().getSimpleName().toString() ).
-        returns( TypeName.get( eventHandler.getMethodType().getReturnType() ) );
-    ProcessorUtil.copyTypeParameters( eventHandler.getMethodType(), method );
-    ProcessorUtil.copyAccessModifiers( eventHandler.getMethod(), method );
-    ProcessorUtil.copyDocumentedAnnotations( eventHandler.getMethod(), method );
+      MethodSpec.methodBuilder( callback.getMethod().getSimpleName().toString() ).
+        returns( TypeName.get( callback.getMethodType().getReturnType() ) );
+    ProcessorUtil.copyTypeParameters( callback.getMethodType(), method );
+    ProcessorUtil.copyAccessModifiers( callback.getMethod(), method );
+    ProcessorUtil.copyDocumentedAnnotations( callback.getMethod(), method );
 
     final AnnotationSpec.Builder annotation =
       AnnotationSpec.builder( ACTION_CLASSNAME ).
         addMember( "reportParameters", "false" );
     method.addAnnotation( annotation.build() );
 
-    final int paramCount = eventHandler.getMethod().getParameters().size();
+    final int paramCount = callback.getMethod().getParameters().size();
     for ( int i = 0; i < paramCount; i++ )
     {
-      final TypeMirror paramType = eventHandler.getMethodType().getParameterTypes().get( i );
+      final TypeMirror paramType = callback.getMethodType().getParameterTypes().get( i );
       final ParameterSpec.Builder parameter =
         ParameterSpec.builder( TypeName.get( paramType ), "arg" + i, Modifier.FINAL );
-      ProcessorUtil.copyDocumentedAnnotations( eventHandler.getMethod().getParameters().get( i ), parameter );
+      ProcessorUtil.copyDocumentedAnnotations( callback.getMethod().getParameters().get( i ), parameter );
       method.addParameter( parameter.build() );
     }
     final String params =
@@ -802,10 +802,10 @@ final class Generator
       "" :
       IntStream.range( 0, paramCount ).mapToObj( i -> "arg" + i ).collect( Collectors.joining( "," ) );
 
-    final boolean isVoid = eventHandler.getMethodType().getReturnType().getKind() == TypeKind.VOID;
+    final boolean isVoid = callback.getMethodType().getReturnType().getKind() == TypeKind.VOID;
 
     method.addStatement( ( isVoid ? "" : "return " ) + "super.$N(" + params + ")",
-                         eventHandler.getMethod().getSimpleName() );
+                         callback.getMethod().getSimpleName() );
     return method;
   }
 

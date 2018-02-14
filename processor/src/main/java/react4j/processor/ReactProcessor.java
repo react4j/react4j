@@ -147,7 +147,7 @@ public final class ReactProcessor
     determineStateTypes( descriptor );
     determineLifecycleMethods( typeElement, descriptor );
     determineRenderMethod( typeElement, descriptor );
-    determineEventHandlers( descriptor );
+    determineCallbacks( descriptor );
     determineProps( descriptor );
     determineDefaultPropsMethods( descriptor );
     determineDefaultPropsFields( descriptor );
@@ -345,62 +345,62 @@ public final class ReactProcessor
     return sb.toString();
   }
 
-  private void determineEventHandlers( @Nonnull final ComponentDescriptor descriptor )
+  private void determineCallbacks( @Nonnull final ComponentDescriptor descriptor )
   {
-    final List<EventHandlerDescriptor> eventHandlers =
+    final List<CallbackDescriptor> callbacks =
       ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME ) )
-        .map( m -> createEventHandlerDescriptor( descriptor, m ) )
+        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.CALLBACK_ANNOTATION_CLASSNAME ) )
+        .map( m -> createCallbackDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
-    for ( final EventHandlerDescriptor eventHandler : eventHandlers )
+    for ( final CallbackDescriptor callback : callbacks )
     {
-      final ExecutableElement method = eventHandler.getMethod();
-      final TypeElement handlerType = getEventHandlerType( method );
-      if ( ElementKind.INTERFACE != handlerType.getKind() )
+      final ExecutableElement method = callback.getMethod();
+      final TypeElement callbackType = getCallbackType( method );
+      if ( ElementKind.INTERFACE != callbackType.getKind() )
       {
-        throw new ReactProcessorException( "The @EventHandler specified an invalid type that is not an interface.",
-                                           eventHandler.getMethod() );
+        throw new ReactProcessorException( "The @Callback specified an invalid type that is not an interface.",
+                                           callback.getMethod() );
       }
-      if ( null == ProcessorUtil.findAnnotationByType( handlerType, Constants.JS_FUNCTION_CLASSNAME ) )
+      if ( null == ProcessorUtil.findAnnotationByType( callbackType, Constants.JS_FUNCTION_CLASSNAME ) )
       {
-        throw new ReactProcessorException( "The @EventHandler specified an invalid type that is not annotated " +
+        throw new ReactProcessorException( "The @Callback specified an invalid type that is not annotated " +
                                            "with the annotation jsinterop.annotations.JsFunction.",
-                                           eventHandler.getMethod() );
+                                           callback.getMethod() );
       }
-      final EventHandlerDescriptor matched = eventHandlers.stream()
-        .filter( h -> h != eventHandler && h.getName().equals( eventHandler.getName() ) )
+      final CallbackDescriptor matched = callbacks.stream()
+        .filter( h -> h != callback && h.getName().equals( callback.getName() ) )
         .findAny().orElse( null );
       if ( null != matched )
       {
-        throw new ReactProcessorException( "The @EventHandler has the same name as the event handler defined by " +
-                                           matched.getMethod() + ".", eventHandler.getMethod() );
+        throw new ReactProcessorException( "The @Callback has the same name as the callback defined by " +
+                                           matched.getMethod() + ".", callback.getMethod() );
       }
-      final EventHandlerDescriptor matched2 = eventHandlers.stream()
-        .filter( h -> h != eventHandler &&
-                      h.getMethod().getSimpleName().equals( eventHandler.getMethod().getSimpleName() ) )
+      final CallbackDescriptor matched2 = callbacks.stream()
+        .filter( h -> h != callback &&
+                      h.getMethod().getSimpleName().equals( callback.getMethod().getSimpleName() ) )
         .findAny().orElse( null );
       if ( null != matched2 )
       {
-        throw new ReactProcessorException( "The @EventHandler has the same method name as the event handler defined " +
-                                           "by " + matched2.getMethod() + ".", eventHandler.getMethod() );
+        throw new ReactProcessorException( "The @Callback has the same method name as the callback defined " +
+                                           "by " + matched2.getMethod() + ".", callback.getMethod() );
       }
-      final ExecutableType methodType = eventHandler.getMethodType();
+      final ExecutableType methodType = callback.getMethodType();
       final List<? extends TypeMirror> parameters = methodType.getParameterTypes();
       if ( !parameters.isEmpty() )
       {
-        // Our annotated handler method has parameters so they should exactly align
-        // in count and type with the parameters in the event handler method
-        final ExecutableElement target = eventHandler.getEventHandlerMethod();
+        // Our annotated callback method has parameters so they should exactly align
+        // in count and type with the parameters in the callback method
+        final ExecutableElement target = callback.getCallbackMethod();
         final List<? extends VariableElement> targetParameters = target.getParameters();
         if ( targetParameters.size() != parameters.size() )
         {
-          throw new ReactProcessorException( "The @EventHandler target has " + parameters.size() + " parameters " +
-                                             "but the type parameter specified a handler with method type " +
-                                             eventHandler.getEventHandlerType().getQualifiedName() + " that has " +
-                                             "handler method with " + targetParameters.size() + " parameters. The " +
-                                             "@EventHandler target should have zero parameters or match the number " +
+          throw new ReactProcessorException( "The @Callback target has " + parameters.size() + " parameters " +
+                                             "but the type parameter specified a callback with method type " +
+                                             callback.getCallbackType().getQualifiedName() + " that has a " +
+                                             "callback method with " + targetParameters.size() + " parameters. The " +
+                                             "@Callback target should have zero parameters or match the number " +
                                              "of parameter in the target method " + target.getSimpleName() + ".",
-                                             eventHandler.getMethod() );
+                                             callback.getMethod() );
         }
         for ( int i = 0; i < parameters.size(); i++ )
         {
@@ -411,44 +411,44 @@ public final class ReactProcessor
           final TypeMirror parameterErased = processingEnv.getTypeUtils().erasure( parameterType );
           if ( !processingEnv.getTypeUtils().isAssignable( targetErased, parameterErased ) )
           {
-            throw new ReactProcessorException( "The @EventHandler target parameter named " +
-                                               eventHandler.getMethod().getParameters().get( i ).getSimpleName() +
+            throw new ReactProcessorException( "The @Callback target parameter named " +
+                                               callback.getMethod().getParameters().get( i ).getSimpleName() +
                                                " of type " + parameterType + " is not assignable from target type " +
                                                targetParameterType + " of parameter " + element.getSimpleName() +
-                                               " in method " + eventHandler.getEventHandlerType().getQualifiedName() +
+                                               " in method " + callback.getCallbackType().getQualifiedName() +
                                                "." + target.getSimpleName() + ".",
-                                               eventHandler.getMethod() );
+                                               callback.getMethod() );
           }
         }
       }
     }
 
-    descriptor.setEventHandlers( eventHandlers );
+    descriptor.setCallbacks( callbacks );
   }
 
   @Nonnull
-  private EventHandlerDescriptor createEventHandlerDescriptor( @Nonnull final ComponentDescriptor descriptor,
-                                                               @Nonnull final ExecutableElement method )
+  private CallbackDescriptor createCallbackDescriptor( @Nonnull final ComponentDescriptor descriptor,
+                                                       @Nonnull final ExecutableElement method )
   {
     verifyNoDuplicateAnnotations( method );
-    final String name = deriveEventHandlerName( method );
-    final TypeElement eventHandlerType = getEventHandlerType( method );
+    final String name = deriveCallbackName( method );
+    final TypeElement callbackType = getCallbackType( method );
     final ExecutableType methodType =
       (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
-    final List<ExecutableElement> eventHandlerMethods =
-      ProcessorUtil.getMethods( eventHandlerType, processingEnv.getTypeUtils() ).stream().
+    final List<ExecutableElement> callbackMethods =
+      ProcessorUtil.getMethods( callbackType, processingEnv.getTypeUtils() ).stream().
         filter( m11 -> m11.getModifiers().contains( Modifier.ABSTRACT ) ).
         collect( Collectors.toList() );
-    if ( eventHandlerMethods.isEmpty() )
+    if ( callbackMethods.isEmpty() )
     {
-      throw new ReactProcessorException( "Method annotated with @EventHandler specified type " +
-                                         eventHandlerType.getQualifiedName() + " that has no abstract method and " +
+      throw new ReactProcessorException( "Method annotated with @Callback specified type " +
+                                         callbackType.getQualifiedName() + " that has no abstract method and " +
                                          "thus is not a functional interface", method );
     }
-    else if ( eventHandlerMethods.size() > 1 )
+    else if ( callbackMethods.size() > 1 )
     {
-      throw new ReactProcessorException( "Method annotated with @EventHandler specified type " +
-                                         eventHandlerType.getQualifiedName() + " that has more than 1 abstract " +
+      throw new ReactProcessorException( "Method annotated with @Callback specified type " +
+                                         callbackType.getQualifiedName() + " that has more than 1 abstract " +
                                          "method and thus is not a functional interface", method );
     }
 
@@ -464,7 +464,7 @@ public final class ReactProcessor
           findAny().orElse( null );
         if ( null != actionAnnotation )
         {
-          throw new ReactProcessorException( "Method annotated with @EventHandler is also annotated with " +
+          throw new ReactProcessorException( "Method annotated with @Callback is also annotated with " +
                                              "@arez.annotations.Action but is not annotated with " +
                                              "@react4j.arez.NoAutoAction which would stop react4j from also " +
                                              "annotating the method with @Action. Please remove @Action or add " +
@@ -473,29 +473,29 @@ public final class ReactProcessor
       }
     }
 
-    return new EventHandlerDescriptor( name, method, methodType, eventHandlerType, eventHandlerMethods.get( 0 ) );
+    return new CallbackDescriptor( name, method, methodType, callbackType, callbackMethods.get( 0 ) );
   }
 
   @Nonnull
-  private TypeElement getEventHandlerType( @Nonnull final ExecutableElement method )
+  private TypeElement getCallbackType( @Nonnull final ExecutableElement method )
   {
     final DeclaredType typeMirror =
       ProcessorUtil.getTypeMirrorAnnotationParameter( processingEnv.getElementUtils(),
                                                       method,
-                                                      Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME,
+                                                      Constants.CALLBACK_ANNOTATION_CLASSNAME,
                                                       "value" );
     assert null != typeMirror;
     return (TypeElement) processingEnv.getTypeUtils().asElement( typeMirror );
   }
 
   @Nonnull
-  private String deriveEventHandlerName( @Nonnull final ExecutableElement method )
+  private String deriveCallbackName( @Nonnull final ExecutableElement method )
     throws ReactProcessorException
   {
     final String name =
       (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                                  method,
-                                                 Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME,
+                                                 Constants.CALLBACK_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
     if ( ProcessorUtil.isSentinelName( name ) )
@@ -506,12 +506,12 @@ public final class ReactProcessor
     {
       if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ReactProcessorException( "@EventHandler target specified an invalid name '" + name + "'. The " +
+        throw new ReactProcessorException( "@Callback target specified an invalid name '" + name + "'. The " +
                                            "name must be a valid java identifier.", method );
       }
       else if ( SourceVersion.isKeyword( name ) )
       {
-        throw new ReactProcessorException( "@EventHandler target specified an invalid name '" + name + "'. The " +
+        throw new ReactProcessorException( "@Callback target specified an invalid name '" + name + "'. The " +
                                            "name must not be a java keyword.", method );
       }
       return name;
@@ -887,7 +887,7 @@ public final class ReactProcessor
     throws ReactProcessorException
   {
     final String[] annotationTypes =
-      new String[]{ Constants.EVENT_HANDLER_ANNOTATION_CLASSNAME,
+      new String[]{ Constants.CALLBACK_ANNOTATION_CLASSNAME,
                     Constants.PROP_ANNOTATION_CLASSNAME };
     for ( int i = 0; i < annotationTypes.length; i++ )
     {

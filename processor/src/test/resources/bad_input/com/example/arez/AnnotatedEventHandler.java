@@ -2,7 +2,7 @@ package com.example.arez;
 
 import arez.annotations.Action;
 import javax.annotation.Nullable;
-import react4j.annotations.EventHandler;
+import react4j.annotations.Callback;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.ReactNode;
@@ -18,7 +18,7 @@ abstract class AnnotatedEventHandler
     return null;
   }
 
-  @EventHandler
+  @Callback
   @Action
   void handleFoo()
   {

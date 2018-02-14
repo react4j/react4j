@@ -3,7 +3,7 @@ package com.example.arez;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
-import react4j.annotations.EventHandler;
+import react4j.annotations.Callback;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 import react4j.core.ReactNode;
@@ -32,14 +32,14 @@ abstract class ComponentWithAnnotatedParameterEventHandler
     return null;
   }
 
-  @EventHandler( CustomHandler2.class )
+  @Callback( CustomHandler2.class )
   @Nonnull
   String handleFoo()
   {
     return "";
   }
 
-  @EventHandler( CustomHandler.class )
+  @Callback( CustomHandler.class )
   void handleFoo2( @Nonnull String i )
   {
   }

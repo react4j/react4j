@@ -1,4 +1,4 @@
-package com.example.prop;
+package com.example.callback;
 
 import javax.annotation.Nullable;
 import react4j.annotations.Callback;
@@ -9,11 +9,11 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class PropAndEventHandlerComponent
+abstract class CallbackAndProp
   extends Component<BaseState>
 {
-  @Prop
   @Callback
+  @Prop
   protected abstract int getMyProp();
 
   @Nullable

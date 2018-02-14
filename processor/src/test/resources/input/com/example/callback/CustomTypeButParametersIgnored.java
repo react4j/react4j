@@ -1,25 +1,30 @@
-package com.example.prop;
+package com.example.callback;
 
-import javax.annotation.Nullable;
+import jsinterop.annotations.JsFunction;
 import react4j.annotations.Callback;
-import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class PropAndEventHandlerComponent
+abstract class CustomTypeButParametersIgnored
   extends Component<BaseState>
 {
-  @Prop
-  @Callback
-  protected abstract int getMyProp();
+  @JsFunction
+  public interface CustomHandler
+  {
+    void onMouseEvent( int i );
+  }
 
-  @Nullable
   @Override
   protected ReactNode render()
   {
     return null;
+  }
+
+  @Callback( CustomHandler.class )
+  void handleFoo()
+  {
   }
 }

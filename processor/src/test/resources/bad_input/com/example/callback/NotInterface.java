@@ -1,25 +1,28 @@
-package com.example.prop;
+package com.example.callback;
 
-import javax.annotation.Nullable;
 import react4j.annotations.Callback;
-import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class PropAndEventHandlerComponent
+abstract class NotInterface
   extends Component<BaseState>
 {
-  @Prop
-  @Callback
-  protected abstract int getMyProp();
+  static abstract class Foo
+  {
+    abstract void foo();
+  }
 
-  @Nullable
   @Override
   protected ReactNode render()
   {
     return null;
+  }
+
+  @Callback( Foo.class )
+  void handleFoo()
+  {
   }
 }

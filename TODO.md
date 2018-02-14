@@ -17,7 +17,7 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
-* Replace `@EventHandler` with `@Callback`. The new parameter will have an additional parameter `context` which
+* The `@Callback` annotation will have an additional parameter `context` which
   can have value of `component` or `invoker`. The `component` indicates that the context is setup as if it was
   called from component while `invoker` relies on the invoker to setup context. The practical impact of this
   the subclasses of `ReactArezComponent` will wrap `component` context `@Callback` methods in an action. This would

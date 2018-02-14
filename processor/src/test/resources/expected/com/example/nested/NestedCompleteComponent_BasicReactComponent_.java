@@ -9,7 +9,7 @@ import javax.inject.Provider;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.annotations.EventHandler;
+import react4j.annotations.Callback;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
@@ -22,7 +22,7 @@ class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteCompone
   private static Provider<NestedCompleteComponent.BasicReactComponent> c_provider;
 
   @Nonnull
-  private final EventHandler.Procedure _myEventHandler = create_myEventHandler();
+  private final Callback.Procedure _myEventHandler = create_myEventHandler();
 
   @Inject
   NestedCompleteComponent_BasicReactComponent_() {
@@ -47,7 +47,7 @@ class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteCompone
   }
 
   @Nonnull
-  static EventHandler.Procedure _myEventHandler(@Nonnull final NestedCompleteComponent.BasicReactComponent component) {
+  static Callback.Procedure _myEventHandler(@Nonnull final NestedCompleteComponent.BasicReactComponent component) {
     return ((NestedCompleteComponent_BasicReactComponent_) component)._myEventHandler;
   }
 
@@ -57,8 +57,8 @@ class NestedCompleteComponent_BasicReactComponent_ extends NestedCompleteCompone
   }
 
   @Nonnull
-  private EventHandler.Procedure create_myEventHandler() {
-    final EventHandler.Procedure handler = () -> this.myEventHandler();
+  private Callback.Procedure create_myEventHandler() {
+    final Callback.Procedure handler = () -> this.myEventHandler();
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "BasicReactComponent.myEventHandler" ) ) );
     }

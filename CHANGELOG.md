@@ -5,6 +5,7 @@
 #### Changed
 * 💥 **\[core\]** Remove support for the `componentWillUpdate` lifecycle method as ReactJS is deprecating
   the method in `16.3` and plans to remove it in `17.x`.
+* 💥 **\[annotations\]** Rename `@EventHandler` to `@Callback`.
 
 ### [v0.45](https://github.com/react4j/react4j/tree/v0.45) (2018-02-14)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.44...v0.45)
