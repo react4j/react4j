@@ -15,9 +15,9 @@
   Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
   default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
 
-* Components that have not `@State` methods, no lifecycle methods, no `@Ref` methods and no state on the instance
-  could be made into stateless components when translating to React. Potentially we can also enforce stateless-ness
-  by parameter to `@ReactComponent` annotation.
+* Components that have no `@State` methods, no fields, no lifecycle methods and are not subclasses of
+  `ReactArezComponent` could be made into stateless components when translating to React. This could also
+  be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`.
 
 * Add support for methods annotated with `@OnPropChanged`
 
