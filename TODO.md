@@ -28,7 +28,8 @@
   validation.
 
 * Add `@Ref` annotation to field in component. This will generate a cached helper function similar to EventHandler
-  annotation that can be passed as prop.
+  annotation that can be passed as prop. Let's defer this as the new proposal for the Ref API would eliminate
+  the need for this.
 
 * Rename EventHandler annotation with callback and allow it's use as an arbitrary callback mechanism. This
   includes for ref callbacks as well event handlers as well as the so-called render props. This will require
