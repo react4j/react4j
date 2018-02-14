@@ -65,13 +65,13 @@ final class PropDescriptor
       throw new ReactProcessorException( "@PropDefault target duplicates existing method named " +
                                          _defaultMethod.getSimpleName(), method );
     }
-    else if ( null != _defaultField )
-    {
-      throw new ReactProcessorException( "@PropDefault target duplicates existing field named " +
-                                         _defaultField.getSimpleName(), method );
-    }
     else
     {
+      /*
+       * As all methods are processed first, there is no chance that a duplicate field will be detected
+       * prior to the field being set. If there is a duplicate field it will be detected in setDefaultField()
+       */
+      assert null == _defaultField;
       _defaultMethod = Objects.requireNonNull( method );
     }
   }
