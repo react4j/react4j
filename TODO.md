@@ -25,16 +25,11 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
-* Add `@Ref` annotation to field in component. (Is this no different to the `@Callback` proposed in the next point?).
-  This will generate a cached helper function similar to EventHandler
-  annotation that can be passed as prop. Let's defer this as the new proposal for the Ref API would eliminate
-  the need for this. The new ref proposal is at https://github.com/reactjs/rfcs/blob/master/text/0017-new-create-ref.md
-
-* Rename EventHandler annotation with callback and allow it's use as an arbitrary callback mechanism. This
-  includes for ref callbacks as well event handlers as well as the so-called render props. This will require
-  customization of how we wrap callbacks in `@Action`s. Ref callbacks and render props can obviously not be
-  wrapped where EventHandlers should be by default. Alternatively add a separate `@Callback` annotation that
-  assumes the callers context rather than the components context (i.e. does not wrap them in `@Action` annotations)
+* Replace `@EventHandler` with `@Callback`. The new parameter will have an additional parameter `context` which
+  can have value of `component` or `invoker`. The `component` indicates that the context is setup as if it was
+  called from component while `invoker` relies on the invoker to setup context. The practical impact of this
+  the subclasses of `ReactArezComponent` will wrap `component` context `@Callback` methods in an action. This would
+  also allow the removal of `@NoAutoAction`.
 
 * Separate implementation details and user facing code in enhanced class into `MyComponent_` (User facing code)
   and `React4j_MyComponent` (implementation details)
