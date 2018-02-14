@@ -202,6 +202,7 @@ public class ReactProcessorTest
                       "The @Callback has the same name as the callback defined by a()." },
         new Object[]{ "com.example.callback.DuplicateName2",
                       "The @Callback has the same name as the callback defined by handleFoo(int)." },
+        new Object[]{ "com.example.callback.LifecycleMethod", "@Callback target must not be a lifecycle method" },
         new Object[]{ "com.example.callback.NotFunctionalInterface",
                       "Method annotated with @Callback specified type com.example.callback.NotFunctionalInterface.Foo that has more than 1 abstract method and thus is not a functional interface" },
         new Object[]{ "com.example.callback.NotFunctionalInterface2",
