@@ -29,7 +29,7 @@
 
 * Add `@Ref` annotation to field in component. This will generate a cached helper function similar to EventHandler
   annotation that can be passed as prop. Let's defer this as the new proposal for the Ref API would eliminate
-  the need for this.
+  the need for this. The new ref proposal is at https://github.com/reactjs/rfcs/blob/master/text/0017-new-create-ref.md
 
 * Rename EventHandler annotation with callback and allow it's use as an arbitrary callback mechanism. This
   includes for ref callbacks as well event handlers as well as the so-called render props. This will require
@@ -39,6 +39,11 @@
 
 * Separate implementation details and user facing code in enhanced class into `MyComponent_` (User facing code)
   and `React4j_MyComponent` (implementation details)
+
+* Consider implementing `getDerivedStateFromProps` static method and removing `componentWillReceiveProps` lifecycle
+  method. This is contingent on `16.3` release of react as described at https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#dd16
+
+* Add support for the new context API that will be released with `16.3`. See https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#0db6
 
 ### Medium Priorities
 
