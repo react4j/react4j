@@ -271,8 +271,8 @@ public final class ReactProcessor
       }
       else
       {
-        final String methodName = element.getSimpleName().toString();
-        final Matcher matcher = ProcessorUtil.DEFAULT_FIELD_NAME_PATTERN.matcher( methodName );
+        final String fieldName = element.getSimpleName().toString();
+        final Matcher matcher = ProcessorUtil.DEFAULT_FIELD_NAME_PATTERN.matcher( fieldName );
         if ( matcher.find() )
         {
           final String candidate = matcher.group( 1 );
