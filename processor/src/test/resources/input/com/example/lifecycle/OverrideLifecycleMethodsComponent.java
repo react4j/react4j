@@ -43,12 +43,6 @@ abstract class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected void componentWillUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                      @Nullable final BaseState nextState )
-  {
-  }
-
-  @Override
   protected void componentDidMount()
   {
   }

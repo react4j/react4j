@@ -197,10 +197,6 @@ public abstract class Component<S extends BaseState>
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
-      apiInvariant( () -> LifecycleMethod.COMPONENT_WILL_UPDATE != _lifecycleMethod,
-                    () -> "Incorrectly invoked scheduleStateUpdate() on " + this + " in scope of " +
-                          "componentWillUpdate(). If you need to update state in response to " +
-                          "a prop change, use componentWillReceiveProps() instead." );
       apiInvariant( () -> LifecycleMethod.RENDER != _lifecycleMethod,
                     () -> "Incorrectly invoked scheduleStateUpdate() on " + this + " in scope of render()." );
       apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
@@ -341,26 +337,6 @@ public abstract class Component<S extends BaseState>
   }
 
   /**
-   * This method is invoked immediately before rendering when new props or state are being received.
-   * Use this as an opportunity to perform preparation before an update occurs. This method is not
-   * called for the initial render.
-   * See the <a href="https://reactjs.org/docs/react-component.html#componentwillupdate">React Component documentation</a> for more details.
-   *
-   * <p>Note that you cannot call {@link #scheduleStateUpdate(BaseState)} here. If you need to update state in
-   * response to a prop change, use {@link #componentWillReceiveProps(JsPropertyMap)} instead.</p>
-   *
-   * <p>Note: This method will not be invoked if {@link #shouldComponentUpdate(JsPropertyMap, BaseState)}
-   * returns false.</p>
-   *
-   * @param nextProps the new properties of the component.
-   * @param nextState the new state of the component.
-   */
-  protected void componentWillUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                      @Nullable final S nextState )
-  {
-  }
-
-  /**
    * The componentDidCatch() method works like a JavaScript catch {} block, but for components.
    * Only class components can be error boundaries. In practice, most of the time you’ll want to
    * declare an error boundary component once and use it throughout your application.
@@ -389,10 +365,9 @@ public abstract class Component<S extends BaseState>
    *
    * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
    *
-   * <p>If this method returns false, then {@link #componentWillUpdate(JsPropertyMap, BaseState)},
-   * {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap, BaseState)} will not be invoked. In the future
-   * React may treat this method  as a hint rather than a strict directive, and returning false may still result
-   * in a re-rendering of the component.</p>
+   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap, BaseState)}
+   * will not be invoked. In the future React may treat this method  as a hint rather than a strict directive, and
+   * returning false may still result in a re-rendering of the component.</p>
    *
    * @param nextProps the new properties of the component.
    * @param nextState the new state of the component.

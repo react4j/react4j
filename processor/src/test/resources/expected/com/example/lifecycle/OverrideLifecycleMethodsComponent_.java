@@ -38,9 +38,6 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
 
     void componentWillUnmount();
 
-    void componentWillUpdate(@Nonnull JsPropertyMap<Object> nextProps,
-        @Nonnull BaseState nextState);
-
     void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
 
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps,
@@ -76,12 +73,6 @@ class OverrideLifecycleMethodsComponent_ extends OverrideLifecycleMethodsCompone
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public void componentWillUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final BaseState nextState) {
-      performComponentWillUpdate(nextProps,nextState);
     }
 
     @Override

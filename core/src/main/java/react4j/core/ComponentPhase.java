@@ -35,7 +35,6 @@ enum ComponentPhase
    * <ul>
    * <li>{@link Component#componentWillReceiveProps(JsPropertyMap)} if props were provided. i.e. the parent component was re-rendered.</li>
    * <li>{@link Component#shouldComponentUpdate(JsPropertyMap, BaseState)} and if the component returns false the update will be aborted.</li>
-   * <li>{@link Component#componentWillUpdate(JsPropertyMap, BaseState)}.</li>
    * <li>{@link Component#render()}.</li>
    * <li>{@link Component#componentDidUpdate(JsPropertyMap, BaseState)}.</li>
    * </ul>

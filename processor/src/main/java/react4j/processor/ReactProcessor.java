@@ -52,7 +52,6 @@ public final class ReactProcessor
                    "componentDidUpdate",
                    "componentWillReceiveProps",
                    "componentWillUnmount",
-                   "componentWillUpdate",
                    "componentDidCatch",
                    "shouldComponentUpdate" );
 

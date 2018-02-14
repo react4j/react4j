@@ -151,35 +151,6 @@ public abstract class NativeAdapterComponent<S extends BaseState, I extends Comp
   }
 
   /**
-   * Call componentWillUpdate on the target component.
-   * It is expected that the subclass will implement a public method componentWillUpdate() that
-   * delegates to this method to perform the work.
-   *
-   * @param nextProps the new properties of the component.
-   * @param nextState the state.
-   * @see Component#componentWillUpdate(JsPropertyMap, BaseState)
-   */
-  protected final void performComponentWillUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
-                                                   @Nonnull final S nextState )
-  {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_WILL_UPDATE );
-    }
-    try
-    {
-      _component.componentWillUpdate( nextProps, nextState );
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-      }
-    }
-  }
-
-  /**
    * Call shouldComponentUpdate on the target component.
    * It is expected that the subclass will implement a public method shouldComponentUpdate() that
    * delegates to this method to perform the work.
