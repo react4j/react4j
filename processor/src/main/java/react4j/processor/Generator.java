@@ -701,7 +701,7 @@ final class Generator
 
   @Nonnull
   private static MethodSpec.Builder buildStaticCallbackMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                                   @Nonnull final CallbackDescriptor callback )
+                                                               @Nonnull final CallbackDescriptor callback )
   {
     final TypeName handlerType = TypeName.get( callback.getCallbackType().asType() );
     final String handlerName = "_" + callback.getMethod().getSimpleName();
@@ -723,7 +723,7 @@ final class Generator
 
   @Nonnull
   private static MethodSpec.Builder buildCallbackBuilderMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                                    @Nonnull final CallbackDescriptor callback )
+                                                                @Nonnull final CallbackDescriptor callback )
   {
     final TypeName handlerType = TypeName.get( callback.getCallbackType().asType() );
     final MethodSpec.Builder method =
