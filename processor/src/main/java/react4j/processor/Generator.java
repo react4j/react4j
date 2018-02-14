@@ -675,7 +675,7 @@ final class Generator
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       final String code =
-        "if ( !$T.isTripleEqual( props().get( $S ), nextProps.get( $S ) ) )";
+        "if ( !$T.isTripleEqual( props().get( $S ), null == nextProps ? null : nextProps.get( $S ) ) )";
       block.beginControlFlow( code, JS_CLASSNAME, prop.getName(), prop.getName() );
       block.addStatement( "$N().reportChanged()", toObservableRefMethodName( prop ) );
       block.endControlFlow();

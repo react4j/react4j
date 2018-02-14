@@ -48,7 +48,7 @@ abstract class ComponentWithProp_ extends ComponentWithProp {
   @Override
   @Action
   protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( "value" ), nextProps.get( "value" ) ) ) {
+    if ( !Js.isTripleEqual( props().get( "value" ), null == nextProps ? null : nextProps.get( "value" ) ) ) {
       getValueObservable().reportChanged();
     }
   }

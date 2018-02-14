@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+#### Fixed
+* **\[processor\]** Fixed potential null pointer exception in the `reportPropsChanged` method generated
+  by the annotation processor for subclasses of `ReactArezComponent` when `nextProps` parameter is `null`
+  or `undefined`.
+
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.52`.
 
