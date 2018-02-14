@@ -20,8 +20,6 @@ final class PropDescriptor
   private VariableElement _defaultField;
   @Nullable
   private ExecutableElement _defaultMethod;
-  @Nullable
-  private ExecutableType _defaultMethodType;
   /**
    * Flag set to true if prop is optional.
    */
@@ -54,8 +52,7 @@ final class PropDescriptor
     return _methodType;
   }
 
-  void setDefaultMethod( @Nonnull final ExecutableElement method,
-                         @Nonnull final ExecutableType methodType )
+  void setDefaultMethod( @Nonnull final ExecutableElement method )
   {
     MethodChecks.mustBeStatic( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotBePrivate( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
@@ -76,7 +73,6 @@ final class PropDescriptor
     else
     {
       _defaultMethod = Objects.requireNonNull( method );
-      _defaultMethodType = Objects.requireNonNull( methodType );
     }
   }
 
@@ -124,13 +120,6 @@ final class PropDescriptor
   {
     assert null != _defaultMethod;
     return _defaultMethod;
-  }
-
-  @Nonnull
-  ExecutableType getDefaultMethodType()
-  {
-    assert null != _defaultMethodType;
-    return _defaultMethodType;
   }
 
   boolean isOptional()

@@ -215,7 +215,7 @@ public final class ReactProcessor
         throw new ReactProcessorException( "@PropDefault target has a return type that is not assignable to the " +
                                            "return type of the associated @Prop annotated method.", method );
       }
-      prop.setDefaultMethod( method, methodType );
+      prop.setDefaultMethod( method );
     }
   }
 
