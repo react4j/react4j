@@ -44,6 +44,8 @@
 
 * Add support for the new context API that will be released with `16.3`. See https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#0db6
 
+* Consider adding support for the new ref proposal if it gets adopted. See https://github.com/reactjs/rfcs/blob/master/text/0017-new-create-ref.md
+
 ### Medium Priorities
 
 * Figure out a way to define dom factories in java that are optimized away in production such that
