@@ -63,6 +63,7 @@ task 'site:link_check' do
   # Copy the root and replace any absolute paths to target url with relative paths
   # This is required as docusaurus forces qualified paths for some elements (i.e. atom/rss feeds)
   root = "#{WORKSPACE_DIR}/target/site-link-check"
+  rm_rf root
   mkdir_p File.dirname(root)
   cp_r SITE_DIR, root
 
