@@ -25,12 +25,11 @@ within the scope of a read-only, tracking (Arez) transaction. Changes to the obs
 scope of the `render()` will schedule the component for re-rendering.
 
 As most event handlers within a `ReactArezComponent` component will either access or mutate observable state, the
-helper methods generated as a result of annotating a method with `@EventHandler` will default to being annotated with
-arez's `@Action` annotation. If you do not wish an event handler to be run as an action you can annotate the event
-handler with the {@api_url: @NoAutoAction::arez.NoAutoAction::} annotation. This can be useful if you want to
-explicitly control the actions parameters (i.e. to make the action run in a read-only transaction) or you want to
-optimize a frequently called event handler by removing the overhead associated with annotating a method with
-`@Action`.
+helper methods generated as a result of annotating a method with `@Callback` will default to being annotated with
+arez's `@Action` annotation. If you do not wish an callback to be run as an action you can set the
+`initCallbackContext` parameter to `DISABLE`. This may be useful if you want to explicitly control the actions
+parameters (i.e. to make the action run in a read-only transaction) or you want to optimize a frequently invoked
+calback by removing the overhead associated with annotating a method with `@Action`.
 
 Below is a `Footer` component extracted from a [TodoMVC](http://todomvc.com/) implementation. It accesses the
 observable state `AppData.model.totalCount()`, `AppData.viewService.getFilterMode()` and
@@ -169,5 +168,5 @@ level of abstraction.
 
 Following the above best practices, you will find you rarely if ever need to annotate any methods in a
 `ReactArezComponent` subclass with any Arez annotations other than `@Computed` and `@Action` and as most
-uses of `@Action` are in `@EventHandler` annotated methods that default to being annotated with an `@Action`
+uses of `@Action` are in `@Callback` annotated methods that default to being annotated with an `@Action`
 you may find that is rarely a good use case for using `@Action` in your react components.
