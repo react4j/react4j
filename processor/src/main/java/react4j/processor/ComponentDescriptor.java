@@ -120,7 +120,7 @@ final class ComponentDescriptor
   @Nonnull
   ClassName getEnhancedClassName()
   {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "_" );
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + "React4j_" + _element.getSimpleName() );
   }
 
   @Nonnull
@@ -138,8 +138,10 @@ final class ComponentDescriptor
   @Nonnull
   ClassName getClassNameToConstruct()
   {
-    final String cname = ( isArezComponent() ? "Arez_" : "" ) + getElement().getSimpleName() + "_";
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + cname );
+    final String simpleName =
+      ( isArezComponent() ? "Arez_" : "" ) + getNestedClassPrefix() + "React4j_" + _element.getSimpleName();
+    return ClassName.get( getPackageName(),
+                          simpleName );
   }
 
   @Nonnull

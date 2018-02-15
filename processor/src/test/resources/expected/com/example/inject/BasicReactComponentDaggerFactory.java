@@ -12,13 +12,13 @@ public interface BasicReactComponentDaggerFactory {
   DaggerSubcomponent getBasicReactComponentDaggerSubcomponent();
 
   default void bindBasicReactComponent() {
-    BasicReactComponent_.setProvider( () -> getBasicReactComponentDaggerSubcomponent().get() );
+    React4j_BasicReactComponent.setProvider( () -> getBasicReactComponentDaggerSubcomponent().get() );
   }
 
   @Module
   final class DaggerModule {
     @Provides
-    static Component provideComponent(final BasicReactComponent_ component) {
+    static Component provideComponent(final React4j_BasicReactComponent component) {
       return component;
     }
   }

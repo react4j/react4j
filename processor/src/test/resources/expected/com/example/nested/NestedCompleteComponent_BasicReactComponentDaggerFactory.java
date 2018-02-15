@@ -12,13 +12,13 @@ public interface NestedCompleteComponent_BasicReactComponentDaggerFactory {
   DaggerSubcomponent getBasicReactComponentDaggerSubcomponent();
 
   default void bindBasicReactComponent() {
-    NestedCompleteComponent_BasicReactComponent_.setProvider( () -> getBasicReactComponentDaggerSubcomponent().get() );
+    NestedCompleteComponent_React4j_BasicReactComponent.setProvider( () -> getBasicReactComponentDaggerSubcomponent().get() );
   }
 
   @Module
   final class DaggerModule {
     @Provides
-    static Component provideComponent(final NestedCompleteComponent_BasicReactComponent_ component) {
+    static Component provideComponent(final NestedCompleteComponent_React4j_BasicReactComponent component) {
       return component;
     }
   }

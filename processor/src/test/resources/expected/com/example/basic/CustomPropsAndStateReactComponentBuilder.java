@@ -52,7 +52,7 @@ class CustomPropsAndStateReactComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( CustomPropsAndStateReactComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CustomPropsAndStateReactComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

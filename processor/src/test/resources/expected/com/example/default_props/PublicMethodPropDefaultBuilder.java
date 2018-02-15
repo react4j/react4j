@@ -60,7 +60,7 @@ class PublicMethodPropDefaultBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( PublicMethodPropDefault_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PublicMethodPropDefault.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

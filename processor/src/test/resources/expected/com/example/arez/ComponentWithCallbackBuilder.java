@@ -45,7 +45,7 @@ class ComponentWithCallbackBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( ComponentWithCallback_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ComponentWithCallback.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -45,7 +45,7 @@ class AutorunArezReactComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( AutorunArezReactComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_AutorunArezReactComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

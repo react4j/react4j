@@ -45,7 +45,7 @@ class CustomTypeButParametersIgnoredBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( CustomTypeButParametersIgnored_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CustomTypeButParametersIgnored.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

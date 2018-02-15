@@ -117,7 +117,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( RequiredChildrenWithOptionalAndRequired_.TYPE, Js.uncheckedCast( _props ), _children );
+      return React.createElement( React4j_RequiredChildrenWithOptionalAndRequired.TYPE, Js.uncheckedCast( _props ), _children );
     }
   }
 }

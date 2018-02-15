@@ -65,7 +65,7 @@ class NullabilityPropsComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( NullabilityPropsComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_NullabilityPropsComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

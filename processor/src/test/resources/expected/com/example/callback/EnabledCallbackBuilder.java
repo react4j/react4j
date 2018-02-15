@@ -45,7 +45,7 @@ class EnabledCallbackBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( EnabledCallback_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_EnabledCallback.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

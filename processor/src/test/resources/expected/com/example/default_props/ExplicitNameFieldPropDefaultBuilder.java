@@ -60,7 +60,7 @@ class ExplicitNameFieldPropDefaultBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( ExplicitNameFieldPropDefault_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ExplicitNameFieldPropDefault.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

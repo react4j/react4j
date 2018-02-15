@@ -45,7 +45,7 @@ public class PublicReactComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( PublicReactComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PublicReactComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

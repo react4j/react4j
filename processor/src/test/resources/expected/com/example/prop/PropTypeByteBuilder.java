@@ -52,7 +52,7 @@ class PropTypeByteBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( PropTypeByte_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PropTypeByte.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

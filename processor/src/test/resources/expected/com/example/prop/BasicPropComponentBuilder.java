@@ -52,7 +52,7 @@ class BasicPropComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( BasicPropComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_BasicPropComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

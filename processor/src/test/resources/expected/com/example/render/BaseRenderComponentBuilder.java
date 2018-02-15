@@ -45,7 +45,7 @@ class BaseRenderComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( BaseRenderComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_BaseRenderComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

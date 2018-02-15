@@ -54,7 +54,7 @@ class GenericAllPropComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( GenericAllPropComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_GenericAllPropComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

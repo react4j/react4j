@@ -45,7 +45,7 @@ class InjectFalseDaggerTrueComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( InjectFalseDaggerTrueComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_InjectFalseDaggerTrueComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

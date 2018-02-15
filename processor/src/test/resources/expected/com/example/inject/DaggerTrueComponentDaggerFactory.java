@@ -12,13 +12,13 @@ public interface DaggerTrueComponentDaggerFactory {
   DaggerSubcomponent getDaggerTrueComponentDaggerSubcomponent();
 
   default void bindDaggerTrueComponent() {
-    DaggerTrueComponent_.setProvider( () -> getDaggerTrueComponentDaggerSubcomponent().get() );
+    React4j_DaggerTrueComponent.setProvider( () -> getDaggerTrueComponentDaggerSubcomponent().get() );
   }
 
   @Module
   final class DaggerModule {
     @Provides
-    static Component provideComponent(final DaggerTrueComponent_ component) {
+    static Component provideComponent(final React4j_DaggerTrueComponent component) {
       return component;
     }
   }

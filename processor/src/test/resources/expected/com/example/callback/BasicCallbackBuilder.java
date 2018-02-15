@@ -45,7 +45,7 @@ class BasicCallbackBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( BasicCallback_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_BasicCallback.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

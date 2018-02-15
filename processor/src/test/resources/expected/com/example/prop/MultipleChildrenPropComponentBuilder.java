@@ -99,7 +99,7 @@ class MultipleChildrenPropComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( MultipleChildrenPropComponent_.TYPE, Js.uncheckedCast( _props ), _children );
+      return React.createElement( React4j_MultipleChildrenPropComponent.TYPE, Js.uncheckedCast( _props ), _children );
     }
   }
 }

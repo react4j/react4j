@@ -12,13 +12,13 @@ public interface MethodInjectReactComponentDaggerFactory {
   DaggerSubcomponent getMethodInjectReactComponentDaggerSubcomponent();
 
   default void bindMethodInjectReactComponent() {
-    MethodInjectReactComponent_.setProvider( () -> getMethodInjectReactComponentDaggerSubcomponent().get() );
+    React4j_MethodInjectReactComponent.setProvider( () -> getMethodInjectReactComponentDaggerSubcomponent().get() );
   }
 
   @Module
   final class DaggerModule {
     @Provides
-    static Component provideComponent(final MethodInjectReactComponent_ component) {
+    static Component provideComponent(final React4j_MethodInjectReactComponent component) {
       return component;
     }
   }

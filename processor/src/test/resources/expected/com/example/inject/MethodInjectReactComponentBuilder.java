@@ -45,7 +45,7 @@ class MethodInjectReactComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( MethodInjectReactComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_MethodInjectReactComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

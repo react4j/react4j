@@ -60,7 +60,7 @@ class PackageAccessMethodPropDefaultBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( PackageAccessMethodPropDefault_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PackageAccessMethodPropDefault.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

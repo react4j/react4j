@@ -45,7 +45,7 @@ class CustomNameReactComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( CustomNameReactComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CustomNameReactComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

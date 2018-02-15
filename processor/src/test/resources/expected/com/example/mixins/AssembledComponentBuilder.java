@@ -45,7 +45,7 @@ class AssembledComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( AssembledComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_AssembledComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -12,13 +12,13 @@ public interface ArezReactComponentDaggerFactory {
   DaggerSubcomponent getArezReactComponentDaggerSubcomponent();
 
   default void bindArezReactComponent() {
-    ArezReactComponent_.setProvider( () -> getArezReactComponentDaggerSubcomponent().get() );
+    React4j_ArezReactComponent.setProvider( () -> getArezReactComponentDaggerSubcomponent().get() );
   }
 
   @Module
   final class DaggerModule {
     @Provides
-    static Component provideComponent(final Arez_ArezReactComponent_ component) {
+    static Component provideComponent(final Arez_React4j_ArezReactComponent component) {
       return component;
     }
   }

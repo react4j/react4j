@@ -52,7 +52,7 @@ class PropTypeArrayBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( PropTypeArray_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PropTypeArray.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

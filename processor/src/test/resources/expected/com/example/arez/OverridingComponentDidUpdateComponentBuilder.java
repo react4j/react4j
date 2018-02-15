@@ -45,7 +45,7 @@ class OverridingComponentDidUpdateComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( OverridingComponentDidUpdateComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_OverridingComponentDidUpdateComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

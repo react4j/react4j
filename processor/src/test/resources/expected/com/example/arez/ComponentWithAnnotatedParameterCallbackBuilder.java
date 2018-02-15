@@ -45,7 +45,7 @@ class ComponentWithAnnotatedParameterCallbackBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( ComponentWithAnnotatedParameterCallback_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ComponentWithAnnotatedParameterCallback.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

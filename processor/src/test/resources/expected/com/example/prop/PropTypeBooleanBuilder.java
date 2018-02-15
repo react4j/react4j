@@ -52,7 +52,7 @@ class PropTypeBooleanBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( PropTypeBoolean_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PropTypeBoolean.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

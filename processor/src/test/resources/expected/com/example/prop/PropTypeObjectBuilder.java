@@ -52,7 +52,7 @@ class PropTypeObjectBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( PropTypeObject_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PropTypeObject.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

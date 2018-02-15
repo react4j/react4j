@@ -52,7 +52,7 @@ class PublicPropBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( PublicProp_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PublicProp.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

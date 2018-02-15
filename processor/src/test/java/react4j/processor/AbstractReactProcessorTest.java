@@ -44,12 +44,15 @@ abstract class AbstractReactProcessorTest
       input.append( '/' );
       input.append( elements[ i ] );
       enhancedComponent.append( '/' );
+      if ( i == elements.length - 1 )
+      {
+        enhancedComponent.append( "React4j_" );
+      }
       enhancedComponent.append( elements[ i ] );
       builder.append( '/' );
       builder.append( elements[ i ] );
       if ( i == elements.length - 1 )
       {
-        enhancedComponent.append( "_" );
         builder.append( "Builder" );
       }
       daggerFactory.append( '/' );

@@ -45,7 +45,7 @@ class NestedReactComponent_BasicReactComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( NestedReactComponent_BasicReactComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( NestedReactComponent_React4j_BasicReactComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

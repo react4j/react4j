@@ -45,7 +45,7 @@ class CustomTypeBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( CustomType_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CustomType.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

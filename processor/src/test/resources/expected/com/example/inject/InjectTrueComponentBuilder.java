@@ -45,7 +45,7 @@ class InjectTrueComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( InjectTrueComponent_.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_InjectTrueComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

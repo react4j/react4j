@@ -100,7 +100,7 @@ public class ReactProcessorTest
   {
     assertSuccessfulCompile( "input/com/example/nested/NestedReactComponent.java",
                              "expected/com/example/nested/NestedReactComponent_BasicReactComponentBuilder.java",
-                             "expected/com/example/nested/NestedReactComponent_BasicReactComponent_.java" );
+                             "expected/com/example/nested/NestedReactComponent_React4j_BasicReactComponent.java" );
   }
 
   @Test
@@ -109,7 +109,7 @@ public class ReactProcessorTest
   {
     assertSuccessfulCompile( "input/com/example/nested/NestedNestedReactComponent.java",
                              "expected/com/example/nested/NestedNestedReactComponent_DeepNesting_BasicReactComponentBuilder.java",
-                             "expected/com/example/nested/NestedNestedReactComponent_DeepNesting_BasicReactComponent_.java" );
+                             "expected/com/example/nested/NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent.java" );
   }
 
   @Test
@@ -119,7 +119,7 @@ public class ReactProcessorTest
     assertSuccessfulCompile( Arrays.asList( fixture( "input/com/example/mixins/AssembledComponent.java" ),
                                             fixture( "input/com/example/mixins/MyMixin.java" ) ),
                              Arrays.asList( "expected/com/example/mixins/AssembledComponentBuilder.java",
-                                            "expected/com/example/mixins/AssembledComponent_.java" ) );
+                                            "expected/com/example/mixins/React4j_AssembledComponent.java" ) );
   }
 
   @Test
@@ -129,7 +129,7 @@ public class ReactProcessorTest
     assertSuccessfulCompile( "input/com/example/nested/NestedCompleteComponent.java",
                              "expected/com/example/nested/NestedCompleteComponent_BasicReactComponentBuilder.java",
                              "expected/com/example/nested/NestedCompleteComponent_BasicReactComponentDaggerFactory.java",
-                             "expected/com/example/nested/NestedCompleteComponent_BasicReactComponent_.java" );
+                             "expected/com/example/nested/NestedCompleteComponent_React4j_BasicReactComponent.java" );
   }
 
   @Test
@@ -139,7 +139,7 @@ public class ReactProcessorTest
     final JavaFileObject source1 = fixture( "input/com/example/render/MyParent.java" );
     final JavaFileObject source2 = fixture( "input/com/example/render/RenderFromParentComponent.java" );
     assertSuccessfulCompile( Arrays.asList( source1, source2 ),
-                             Collections.singletonList( "expected/com/example/render/RenderFromParentComponent_.java" ) );
+                             Collections.singletonList( "expected/com/example/render/React4j_RenderFromParentComponent.java" ) );
   }
 
   @DataProvider( name = "failedCompiles" )
