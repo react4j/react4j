@@ -140,8 +140,7 @@ final class ComponentDescriptor
   {
     final String simpleName =
       ( isArezComponent() ? "Arez_" : "" ) + getNestedClassPrefix() + "React4j_" + _element.getSimpleName();
-    return ClassName.get( getPackageName(),
-                          simpleName );
+    return ClassName.get( getPackageName(), simpleName );
   }
 
   @Nonnull
