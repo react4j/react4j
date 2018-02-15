@@ -16,7 +16,7 @@ class React4j_CustomTypeButParametersIgnored extends CustomTypeButParametersIgno
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final CustomTypeButParametersIgnored.CustomHandler _handleFoo = create_handleFoo();
+  final CustomTypeButParametersIgnored.CustomHandler _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -25,11 +25,6 @@ class React4j_CustomTypeButParametersIgnored extends CustomTypeButParametersIgno
       Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomTypeButParametersIgnored" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static CustomTypeButParametersIgnored.CustomHandler _handleFoo(@Nonnull final CustomTypeButParametersIgnored component) {
-    return ((React4j_CustomTypeButParametersIgnored) component)._handleFoo;
   }
 
   @Nonnull

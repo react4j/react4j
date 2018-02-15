@@ -124,6 +124,12 @@ final class ComponentDescriptor
   }
 
   @Nonnull
+  ClassName getHelperClassName()
+  {
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "_" );
+  }
+
+  @Nonnull
   ClassName getBuilderClassName()
   {
     return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "Builder" );
@@ -156,6 +162,11 @@ final class ComponentDescriptor
     {
       return ClassName.get( getElement() );
     }
+  }
+
+  boolean needsHelper()
+  {
+    return !getCallbacks().isEmpty();
   }
 
   boolean needsInjection()

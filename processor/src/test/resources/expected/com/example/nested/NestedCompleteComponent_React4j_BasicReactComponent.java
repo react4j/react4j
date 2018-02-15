@@ -22,7 +22,7 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
   private static Provider<NestedCompleteComponent.BasicReactComponent> c_provider;
 
   @Nonnull
-  private final Callback.Procedure _myEventHandler = create_myEventHandler();
+  final Callback.Procedure _myEventHandler = create_myEventHandler();
 
   @Inject
   NestedCompleteComponent_React4j_BasicReactComponent() {
@@ -44,11 +44,6 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicReactComponent" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static Callback.Procedure _myEventHandler(@Nonnull final NestedCompleteComponent.BasicReactComponent component) {
-    return ((NestedCompleteComponent_React4j_BasicReactComponent) component)._myEventHandler;
   }
 
   @Override

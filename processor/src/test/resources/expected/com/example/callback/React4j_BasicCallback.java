@@ -17,7 +17,7 @@ class React4j_BasicCallback extends BasicCallback {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final Callback.Procedure _handleFoo = create_handleFoo();
+  final Callback.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -26,11 +26,6 @@ class React4j_BasicCallback extends BasicCallback {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicCallback" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static Callback.Procedure _handleFoo(@Nonnull final BasicCallback component) {
-    return ((React4j_BasicCallback) component)._handleFoo;
   }
 
   @Nonnull

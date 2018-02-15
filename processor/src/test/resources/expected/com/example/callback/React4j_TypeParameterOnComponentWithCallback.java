@@ -6,44 +6,45 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.annotations.Callback;
 import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-class React4j_CustomTypeMultipleArgs extends CustomTypeMultipleArgs {
+class React4j_TypeParameterOnComponentWithCallback<T> extends TypeParameterOnComponentWithCallback<T> {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  final CustomTypeMultipleArgs.CustomHandler _handleFoo = create_handleFoo();
+  final Callback.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomTypeMultipleArgs" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "TypeParameterOnComponentWithCallback" );
     }
     return componentConstructor;
   }
 
   @Nonnull
-  private CustomTypeMultipleArgs.CustomHandler create_handleFoo() {
-    final CustomTypeMultipleArgs.CustomHandler handler = (arg0,arg1) -> this.handleFoo(arg0,arg1);
+  private Callback.Procedure create_handleFoo() {
+    final Callback.Procedure handler = () -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomTypeMultipleArgs.handleFoo" ) ) );
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "TypeParameterOnComponentWithCallback.handleFoo" ) ) );
     }
     return handler;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, CustomTypeMultipleArgs> {
+  private static final class NativeReactComponent<T> extends NativeAdapterComponent<BaseState, TypeParameterOnComponentWithCallback<T>> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected CustomTypeMultipleArgs createComponent() {
-      return new React4j_CustomTypeMultipleArgs();
+    protected TypeParameterOnComponentWithCallback<T> createComponent() {
+      return new React4j_TypeParameterOnComponentWithCallback<T>();
     }
   }
 }

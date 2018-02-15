@@ -24,10 +24,10 @@ abstract class React4j_ComponentWithCallback extends ComponentWithCallback {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final Callback.Procedure _handleFoo = create_handleFoo();
+  final Callback.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
-  private final ComponentWithCallback.CustomHandler _handleFoo2 = create_handleFoo2();
+  final ComponentWithCallback.CustomHandler _handleFoo2 = create_handleFoo2();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -36,16 +36,6 @@ abstract class React4j_ComponentWithCallback extends ComponentWithCallback {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithCallback" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static Callback.Procedure _handleFoo(@Nonnull final ComponentWithCallback component) {
-    return ((React4j_ComponentWithCallback) component)._handleFoo;
-  }
-
-  @Nonnull
-  static ComponentWithCallback.CustomHandler _handleFoo2(@Nonnull final ComponentWithCallback component) {
-    return ((React4j_ComponentWithCallback) component)._handleFoo2;
   }
 
   @Override

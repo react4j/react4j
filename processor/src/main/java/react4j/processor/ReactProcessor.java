@@ -119,6 +119,10 @@ public final class ReactProcessor
     throws IOException, ReactProcessorException
   {
     final ComponentDescriptor descriptor = parse( element );
+    if ( descriptor.needsHelper() )
+    {
+      emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentHelper( descriptor ) );
+    }
     emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( descriptor ) );
     if ( descriptor.needsDaggerIntegration() )

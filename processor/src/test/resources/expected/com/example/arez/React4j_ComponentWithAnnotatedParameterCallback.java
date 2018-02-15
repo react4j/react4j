@@ -23,10 +23,10 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final ComponentWithAnnotatedParameterCallback.CustomHandler2 _handleFoo = create_handleFoo();
+  final ComponentWithAnnotatedParameterCallback.CustomHandler2 _handleFoo = create_handleFoo();
 
   @Nonnull
-  private final ComponentWithAnnotatedParameterCallback.CustomHandler _handleFoo2 = create_handleFoo2();
+  final ComponentWithAnnotatedParameterCallback.CustomHandler _handleFoo2 = create_handleFoo2();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -35,16 +35,6 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithAnnotatedParameterCallback" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static ComponentWithAnnotatedParameterCallback.CustomHandler2 _handleFoo(@Nonnull final ComponentWithAnnotatedParameterCallback component) {
-    return ((React4j_ComponentWithAnnotatedParameterCallback) component)._handleFoo;
-  }
-
-  @Nonnull
-  static ComponentWithAnnotatedParameterCallback.CustomHandler _handleFoo2(@Nonnull final ComponentWithAnnotatedParameterCallback component) {
-    return ((React4j_ComponentWithAnnotatedParameterCallback) component)._handleFoo2;
   }
 
   @Override

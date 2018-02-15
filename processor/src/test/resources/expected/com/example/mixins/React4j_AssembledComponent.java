@@ -17,7 +17,7 @@ class React4j_AssembledComponent extends AssembledComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final Callback.Procedure _handleFoo = create_handleFoo();
+  final Callback.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -26,11 +26,6 @@ class React4j_AssembledComponent extends AssembledComponent {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "AssembledComponent" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static Callback.Procedure _handleFoo(@Nonnull final AssembledComponent component) {
-    return ((React4j_AssembledComponent) component)._handleFoo;
   }
 
   @Nonnull

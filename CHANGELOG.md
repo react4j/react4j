@@ -12,9 +12,12 @@
   will have callbacks annotated with an `@arez.annotations.Action` if the parameter is set to `ENABLED` or
   `AUTODETECT`. This resulted in the removal of the `@react4j.arez.NoAutoAction` annotation as it no longer
   provides any additional functionality.
-* 💥 **\[processor\]** Rename the enhanced component subclass from `MyComponent_` to `React4j_MyComponent`. This
-  is the first step in making this class purely an implementation detail and not a class downstream users should
-  have access to.
+* 💥 **\[processor\]** Separate the enhanced component class `[MyComponent]_` into two classes. Move the
+  implementation artifacts to a class named `React4j_[MyComponent]` but leave the code that is accessed by
+  a developer in the `[MyComponent]_` helper class. The helper class only contains the callback helper static
+  methods and if there is no `@Callback` methods defined on the component the helper class will not be generated.
+  The developer should not access `React4j_[MyComponent]` as internal implementation details are not guaranteed
+  to remain consistent over time.
 
 ### [v0.45](https://github.com/react4j/react4j/tree/v0.45) (2018-02-14)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.44...v0.45)

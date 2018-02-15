@@ -16,7 +16,7 @@ class React4j_CustomType extends CustomType {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final CustomType.CustomHandler _handleFoo = create_handleFoo();
+  final CustomType.CustomHandler _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -25,11 +25,6 @@ class React4j_CustomType extends CustomType {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomType" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static CustomType.CustomHandler _handleFoo(@Nonnull final CustomType component) {
-    return ((React4j_CustomType) component)._handleFoo;
   }
 
   @Nonnull

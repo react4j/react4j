@@ -17,7 +17,7 @@ class React4j_EnabledCallback extends EnabledCallback {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final Callback.Procedure _handleFoo = create_handleFoo();
+  final Callback.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -26,11 +26,6 @@ class React4j_EnabledCallback extends EnabledCallback {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "EnabledCallback" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static Callback.Procedure _handleFoo(@Nonnull final EnabledCallback component) {
-    return ((React4j_EnabledCallback) component)._handleFoo;
   }
 
   @Nonnull

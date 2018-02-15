@@ -9,6 +9,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 import com.squareup.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,7 +24,6 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -449,10 +449,28 @@ final class Generator
   }
 
   @Nonnull
+  static TypeSpec buildComponentHelper( @Nonnull final ComponentDescriptor descriptor )
+  {
+    assert descriptor.needsHelper();
+
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getHelperClassName() );
+
+    markTypeAsGenerated( builder );
+
+    // Private constructor to block instantiation
+    builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
+
+    for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
+    {
+      builder.addMethod( buildStaticCallbackMethod( descriptor, callback ).build() );
+    }
+
+    return builder.build();
+  }
+
+  @Nonnull
   static TypeSpec buildEnhancedComponent( @Nonnull final ComponentDescriptor descriptor )
   {
-    final TypeElement element = descriptor.getElement();
-
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getEnhancedClassName() );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
@@ -471,8 +489,6 @@ final class Generator
       builder.addAnnotation( annotation.build() );
       builder.addModifiers( Modifier.ABSTRACT );
     }
-
-    ProcessorUtil.copyAccessModifiers( element, builder );
 
     markTypeAsGenerated( builder );
 
@@ -501,11 +517,6 @@ final class Generator
     }
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
-
-    for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
-    {
-      builder.addMethod( buildStaticCallbackMethod( descriptor, callback ).build() );
-    }
 
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
@@ -694,7 +705,7 @@ final class Generator
   {
     final TypeName handlerType = TypeName.get( callback.getCallbackType().asType() );
     final String handlerName = "_" + callback.getMethod().getSimpleName().toString();
-    return FieldSpec.builder( handlerType, handlerName, Modifier.FINAL, Modifier.PRIVATE ).
+    return FieldSpec.builder( handlerType, handlerName, Modifier.FINAL ).
       addAnnotation( NONNULL_CLASSNAME ).
       initializer( "create$N()", handlerName );
   }
@@ -716,6 +727,14 @@ final class Generator
       ParameterSpec.builder( TypeName.get( descriptor.getElement().asType() ), "component", Modifier.FINAL ).
         addAnnotation( NONNULL_CLASSNAME );
     method.addParameter( parameter.build() );
+
+    if ( !descriptor.getElement().getTypeParameters().isEmpty() )
+    {
+      method.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
+                              .addMember( "value", "$S", "unused" )
+                              .build() );
+      ProcessorUtil.copyTypeParameters( descriptor.getElement(), method );
+    }
 
     method.addStatement( "return (($T) component).$N", descriptor.getEnhancedClassName(), handlerName );
     return method;

@@ -11,7 +11,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-public class React4j_PublicReactComponent extends PublicReactComponent {
+class React4j_PublicReactComponent extends PublicReactComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull

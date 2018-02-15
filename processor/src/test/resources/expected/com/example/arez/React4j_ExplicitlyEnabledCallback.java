@@ -24,7 +24,7 @@ abstract class React4j_ExplicitlyEnabledCallback extends ExplicitlyEnabledCallba
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final Callback.Procedure _handleAction = create_handleAction();
+  final Callback.Procedure _handleAction = create_handleAction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -33,11 +33,6 @@ abstract class React4j_ExplicitlyEnabledCallback extends ExplicitlyEnabledCallba
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ExplicitlyEnabledCallback" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static Callback.Procedure _handleAction(@Nonnull final ExplicitlyEnabledCallback component) {
-    return ((React4j_ExplicitlyEnabledCallback) component)._handleAction;
   }
 
   @Override

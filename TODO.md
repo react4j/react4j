@@ -17,9 +17,6 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
-* Separate implementation details and user facing code in enhanced class into `MyComponent_` (User facing code)
-  and `React4j_MyComponent` (implementation details)
-
 * Consider implementing `getDerivedStateFromProps` static method and removing `componentWillReceiveProps` lifecycle
   method. This will probably involve an annotation on a static method. This is contingent on `16.3` release of react
   as described at https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#dd16

@@ -25,7 +25,7 @@ import static org.testng.Assert.*;
 @SuppressWarnings( "Duplicates" )
 abstract class AbstractReactProcessorTest
 {
-  void assertSuccessfulCompile( @Nonnull final String classname, final boolean dagger )
+  void assertSuccessfulCompile( @Nonnull final String classname, final boolean needsHelper, final boolean dagger )
     throws Exception
   {
     // It should be noted that we do not test the output of any Arez artifact
@@ -34,9 +34,11 @@ abstract class AbstractReactProcessorTest
     final StringBuilder input = new StringBuilder();
     final StringBuilder enhancedComponent = new StringBuilder();
     final StringBuilder builder = new StringBuilder();
+    final StringBuilder helper = new StringBuilder();
     final StringBuilder daggerFactory = new StringBuilder();
     input.append( "input" );
     enhancedComponent.append( "expected" );
+    helper.append( "expected" );
     builder.append( "expected" );
     daggerFactory.append( "expected" );
     for ( int i = 0; i < elements.length; i++ )
@@ -49,10 +51,13 @@ abstract class AbstractReactProcessorTest
         enhancedComponent.append( "React4j_" );
       }
       enhancedComponent.append( elements[ i ] );
+      helper.append( '/' );
+      helper.append( elements[ i ] );
       builder.append( '/' );
       builder.append( elements[ i ] );
       if ( i == elements.length - 1 )
       {
+        helper.append( "_" );
         builder.append( "Builder" );
       }
       daggerFactory.append( '/' );
@@ -64,11 +69,16 @@ abstract class AbstractReactProcessorTest
     }
     input.append( ".java" );
     enhancedComponent.append( ".java" );
+    helper.append( ".java" );
     builder.append( ".java" );
     daggerFactory.append( ".java" );
     final ArrayList<String> outputs = new ArrayList<>();
     outputs.add( enhancedComponent.toString() );
     outputs.add( builder.toString() );
+    if ( needsHelper )
+    {
+      outputs.add( helper.toString() );
+    }
     if ( dagger )
     {
       outputs.add( daggerFactory.toString() );

@@ -24,7 +24,7 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  private final Callback.Procedure _handleFoo = create_handleFoo();
+  final Callback.Procedure _handleFoo = create_handleFoo();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
@@ -33,11 +33,6 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithNoAutoActionCallback" );
     }
     return componentConstructor;
-  }
-
-  @Nonnull
-  static Callback.Procedure _handleFoo(@Nonnull final ComponentWithNoAutoActionCallback component) {
-    return ((React4j_ComponentWithNoAutoActionCallback) component)._handleFoo;
   }
 
   @Override
