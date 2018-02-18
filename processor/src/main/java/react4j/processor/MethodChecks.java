@@ -52,8 +52,7 @@ final class MethodChecks
     }
   }
 
-  static void mustNotHaveAnyParameters( @Nonnull final String annotationName,
-                                        @Nonnull final ExecutableElement method )
+  static void mustNotHaveAnyParameters( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
     throws ReactProcessorException
   {
     if ( !method.getParameters().isEmpty() )
@@ -63,8 +62,7 @@ final class MethodChecks
     }
   }
 
-  static void mustReturnAValue( @Nonnull final String annotationName,
-                                @Nonnull final ExecutableElement method )
+  static void mustReturnAValue( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
     throws ReactProcessorException
   {
     if ( TypeKind.VOID == method.getReturnType().getKind() )
@@ -84,8 +82,7 @@ final class MethodChecks
     }
   }
 
-  static void mustNotThrowAnyExceptions( @Nonnull final String annotationName,
-                                         @Nonnull final ExecutableElement method )
+  static void mustNotThrowAnyExceptions( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
     throws ReactProcessorException
   {
     if ( !method.getThrownTypes().isEmpty() )
