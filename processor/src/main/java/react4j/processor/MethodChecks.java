@@ -17,8 +17,7 @@ final class MethodChecks
   {
     if ( !method.getModifiers().contains( Modifier.ABSTRACT ) )
     {
-      throw new ReactProcessorException( "@" +
-                                         ProcessorUtil.toSimpleName( annotationName ) +
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
                                          " target must be abstract", method );
     }
   }
@@ -59,8 +58,7 @@ final class MethodChecks
   {
     if ( !method.getParameters().isEmpty() )
     {
-      throw new ReactProcessorException( "@" +
-                                         ProcessorUtil.toSimpleName( annotationName ) +
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
                                          " target must not have any parameters", method );
     }
   }
@@ -71,8 +69,7 @@ final class MethodChecks
   {
     if ( TypeKind.VOID == method.getReturnType().getKind() )
     {
-      throw new ReactProcessorException( "@" +
-                                         ProcessorUtil.toSimpleName( annotationName ) +
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
                                          " target must return a value", method );
     }
   }
@@ -83,8 +80,7 @@ final class MethodChecks
   {
     if ( !method.getThrownTypes().isEmpty() )
     {
-      throw new ReactProcessorException( "@" +
-                                         ProcessorUtil.toSimpleName( annotationName ) +
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
                                          " target must not throw any exceptions", method );
     }
   }
