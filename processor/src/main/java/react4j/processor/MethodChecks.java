@@ -74,6 +74,16 @@ final class MethodChecks
     }
   }
 
+  static void mustNotReturnAValue( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
+    throws ReactProcessorException
+  {
+    if ( TypeKind.VOID != method.getReturnType().getKind() )
+    {
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                         " target must not return a value", method );
+    }
+  }
+
   static void mustNotThrowAnyExceptions( @Nonnull final String annotationName,
                                          @Nonnull final ExecutableElement method )
     throws ReactProcessorException
