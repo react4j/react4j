@@ -600,56 +600,52 @@ final class Generator
           addMember( "expectSetter", "false" );
       method.addAnnotation( annotation.build() );
     }
-    final String convertMethodName;
-    switch ( returnType.getKind() )
-    {
-      case BOOLEAN:
-        convertMethodName = "asBoolean";
-        break;
-      case BYTE:
-        convertMethodName = "asByte";
-        break;
-      case CHAR:
-        convertMethodName = "asChar";
-        break;
-      case DOUBLE:
-        convertMethodName = "asDouble";
-        break;
-      case FLOAT:
-        convertMethodName = "asFloat";
-        break;
-      case INT:
-        convertMethodName = "asInt";
-        break;
-      case LONG:
-        convertMethodName = "asLong";
-        break;
-      case SHORT:
-        convertMethodName = "asShort";
-        break;
-      case TYPEVAR:
-        convertMethodName = "cast";
-        break;
-      case DECLARED:
-        if ( returnType.toString().equals( "java.lang.String" ) )
-        {
-          convertMethodName = "asString";
-        }
-        else
-        {
-          convertMethodName = "cast";
-        }
-        break;
-      case ARRAY:
-        convertMethodName = "cast";
-        break;
-      default:
-        throw new ReactProcessorException( "Return type of @Prop method named '" + name +
-                                           "' is not yet handled. Return type: " + returnType, methodElement );
-    }
+    final String convertMethodName = getConverter( returnType, methodElement, "Prop" );
     final String key = "child".equals( name ) ? "children" : name;
     method.addStatement( "return props().getAny( $S ).$N()", key, convertMethodName );
     return method;
+  }
+
+  @Nonnull
+  private static String getConverter( @Nonnull final TypeMirror type,
+                                      @Nonnull final Element element,
+                                      @Nonnull final String key )
+  {
+    switch ( type.getKind() )
+    {
+      case BOOLEAN:
+        return "asBoolean";
+      case BYTE:
+        return "asByte";
+      case CHAR:
+        return "asChar";
+      case DOUBLE:
+        return "asDouble";
+      case FLOAT:
+        return "asFloat";
+      case INT:
+        return "asInt";
+      case LONG:
+        return "asLong";
+      case SHORT:
+        return "asShort";
+      case TYPEVAR:
+        return "cast";
+      case DECLARED:
+        if ( type.toString().equals( "java.lang.String" ) )
+        {
+          return "asString";
+        }
+        else
+        {
+          return "cast";
+        }
+      case ARRAY:
+        return "cast";
+      default:
+        throw new ReactProcessorException( "Return type of @" + key + " method is not yet " +
+                                           "handled. Type: " + type.getKind(), element );
+    }
   }
 
   @Nonnull
