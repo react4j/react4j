@@ -25,6 +25,9 @@
 
 ### Medium Priorities
 
+* Move the Props and State objects back to being JsType backed under the cover rather than values looked up by
+  strings. This will significantly optimize the output size.
+
 * Figure out a way to define dom factories in java that are optimized away in production such that
   `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
   compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
