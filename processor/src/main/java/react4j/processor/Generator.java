@@ -854,7 +854,6 @@ final class Generator
   @Nonnull
   private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ComponentDescriptor descriptor )
   {
-
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "getConstructorFunction" ).
         addAnnotation( NONNULL_CLASSNAME ).
