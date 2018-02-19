@@ -35,6 +35,7 @@ import javax.lang.model.util.Types;
 
 final class ProcessorUtil
 {
+  private static final Pattern SETTER_PATTERN = Pattern.compile( "^set([A-Z].*)$" );
   private static final Pattern GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)$" );
   static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
@@ -204,6 +205,18 @@ final class ProcessorUtil
       {
         return name;
       }
+    }
+    return method.getSimpleName().toString();
+  }
+
+  @Nonnull
+  static String getPropertyMutatorName( @Nonnull final ExecutableElement method, @Nonnull final String specifiedName )
+    throws ReactProcessorException
+  {
+    final String name = ProcessorUtil.deriveName( method, SETTER_PATTERN, specifiedName );
+    if ( null != name )
+    {
+      return name;
     }
     return method.getSimpleName().toString();
   }
