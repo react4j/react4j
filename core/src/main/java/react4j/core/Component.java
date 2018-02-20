@@ -235,7 +235,7 @@ public abstract class Component
     else
     {
       // This schedules a re-render but will not skip shouldComponentUpdate
-      component().setState( ( p, s ) -> Js.uncheckedCast( JsPropertyMap.of() ) );
+      scheduleStateUpdate( JsPropertyMap.of() );
     }
   }
 
