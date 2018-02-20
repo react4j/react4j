@@ -11,6 +11,8 @@
 
 #### Changed
 * 💥 **\[core\]** Default the `react4j.check_component_state_invariants` configuration to `true` in development build.
+* 💥 **\[core\]** Annotate the `react4j.core.Component.SetStateCallback` interface with the `@FunctionalInterface`
+  annotation.
 
 ### [v0.46](https://github.com/react4j/react4j/tree/v0.46) (2018-02-15)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.45...v0.46)

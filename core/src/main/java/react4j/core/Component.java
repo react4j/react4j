@@ -19,6 +19,7 @@ public abstract class Component
    * Useful if the state update is based on current state.
    */
   @JsFunction
+  @FunctionalInterface
   public interface SetStateCallback
   {
     /**
