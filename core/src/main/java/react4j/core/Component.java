@@ -318,8 +318,7 @@ public abstract class Component
    *
    * <p>React doesn't call this method with initial props during mounting. It only calls this method
    * if some of component's props may update. Calling {@link #scheduleStateUpdate(JsPropertyMap)}
-   * generally doesn't trigger
-   * this method.</p>
+   * generally doesn't trigger this method.</p>
    *
    * @param nextProps the new properties of the component.
    */
