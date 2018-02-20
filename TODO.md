@@ -40,10 +40,6 @@
   Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
   default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
 
-* Add `@State` annotated methods that are required to come as a pair of abstract getters and setters? These would
-  potentially work on top of the underlying react state system. And then change object returned from `state()` into
-  `JsPropertyMap<Object>`
-
 * Components that have no `@State` methods, no fields, no lifecycle methods and are not subclasses of
   `ReactArezComponent` could be made into stateless components when translating to React. This could also
   be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`.
