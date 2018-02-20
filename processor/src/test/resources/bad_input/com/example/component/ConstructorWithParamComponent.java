@@ -1,13 +1,12 @@
 package com.example.component;
 
 import react4j.annotations.ReactComponent;
-import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
 abstract class ConstructorWithParamComponent
-  extends Component<BaseState>
+  extends Component
 {
   public ConstructorWithParamComponent( final String ignored )
   {
