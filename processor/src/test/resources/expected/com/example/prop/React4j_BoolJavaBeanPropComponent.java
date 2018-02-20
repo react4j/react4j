@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -28,7 +27,7 @@ class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
     return props().getAny( "foo" ).asBoolean();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BoolJavaBeanPropComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BoolJavaBeanPropComponent> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

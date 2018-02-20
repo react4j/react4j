@@ -8,7 +8,6 @@ import javax.inject.Provider;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -41,7 +40,7 @@ class React4j_DaggerTrueComponent extends DaggerTrueComponent {
     return componentConstructor;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, DaggerTrueComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<DaggerTrueComponent> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

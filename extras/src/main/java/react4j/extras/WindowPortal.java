@@ -10,7 +10,6 @@ import jsinterop.base.Js;
 import org.realityforge.anodoc.Unsupported;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
-import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
 import react4j.dom.ReactDOM;
@@ -26,7 +25,7 @@ import react4j.dom.ReactDOM;
 @ReactComponent
 @Unsupported
 public abstract class WindowPortal
-  extends Component<BaseState>
+  extends Component
 {
   @FunctionalInterface
   public interface OnCloseCallback

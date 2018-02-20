@@ -1,5 +1,6 @@
 package com.example.basic;
 
+import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,7 +28,17 @@ class React4j_CustomPropsAndStateReactComponent extends CustomPropsAndStateReact
     return props().getAny( "someField" ).asBoolean();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsAndStateReactComponent.State, CustomPropsAndStateReactComponent> {
+  @Override
+  String someText() {
+    return state().getAny( "someText" ).asString();
+  }
+
+  @Override
+  void setSomeText(final String value) {
+    scheduleStateUpdate( ( ( previousState, currentProps ) -> Js.uncheckedCast( JsObject.assign( previousState, "someText", value ) ) ) );
+  }
+
+  private static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsAndStateReactComponent> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

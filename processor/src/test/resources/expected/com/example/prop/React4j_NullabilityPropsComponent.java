@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -35,7 +34,7 @@ class React4j_NullabilityPropsComponent extends NullabilityPropsComponent {
     return props().getAny( "myProp2" ).asString();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, NullabilityPropsComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<NullabilityPropsComponent> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

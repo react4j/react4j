@@ -86,6 +86,12 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.PublicProp", false, false },
         new Object[]{ "com.example.prop.SingleChildPropComponent", false, false },
         new Object[]{ "com.example.render.BaseRenderComponent", false, false },
+        new Object[]{ "com.example.state.BasicState", false, false },
+        new Object[]{ "com.example.state.CustomName", false, false },
+        new Object[]{ "com.example.state.GetterMissingAnnotation", false, false },
+        new Object[]{ "com.example.state.NonStandardName", false, false },
+        new Object[]{ "com.example.state.NullabilityAnnotations", false, false },
+        new Object[]{ "com.example.state.SetterMissingAnnotation", false, false },
         new Object[]{ "RootPackageReactComponent", false, false }
       };
   }

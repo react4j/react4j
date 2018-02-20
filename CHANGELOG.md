@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+##### Added
+* **\[annotations\]** Introduced the `@State` annotation that can be used on abstract getter/setter method
+  pairs on instances of `ReactComponent`. The annotation processor will implement the getter as an access from
+  reacts state value and a scheduled update of reacts state value via `scheduleStateUpdate()`. In subclasses of
+  `ReactArezComponent`, the `@State` annotated method is made observable.
+
 ### [v0.46](https://github.com/react4j/react4j/tree/v0.46) (2018-02-15)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.45...v0.46)
 

@@ -3,7 +3,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -21,7 +20,7 @@ class React4j_RootPackageReactComponent extends RootPackageReactComponent {
     return componentConstructor;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, RootPackageReactComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<RootPackageReactComponent> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

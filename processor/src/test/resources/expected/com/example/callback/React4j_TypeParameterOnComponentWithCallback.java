@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.annotations.Callback;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -37,7 +36,7 @@ class React4j_TypeParameterOnComponentWithCallback<T> extends TypeParameterOnCom
     return handler;
   }
 
-  private static final class NativeReactComponent<T> extends NativeAdapterComponent<BaseState, TypeParameterOnComponentWithCallback<T>> {
+  private static final class NativeReactComponent<T> extends NativeAdapterComponent<TypeParameterOnComponentWithCallback<T>> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

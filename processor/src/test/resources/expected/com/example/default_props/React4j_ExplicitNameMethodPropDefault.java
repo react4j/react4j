@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -31,7 +30,7 @@ class React4j_ExplicitNameMethodPropDefault extends ExplicitNameMethodPropDefaul
     return props().getAny( "myProp" ).asString();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ExplicitNameMethodPropDefault> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<ExplicitNameMethodPropDefault> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

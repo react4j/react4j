@@ -10,7 +10,6 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.annotations.Callback;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -81,14 +80,16 @@ abstract class React4j_ComponentWithCallback extends ComponentWithCallback {
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
+        @Nonnull JsPropertyMap<Object> arg1);
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
+        @Nonnull JsPropertyMap<Object> arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ComponentWithCallback> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithCallback> implements Lifecycle {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
@@ -105,7 +106,7 @@ abstract class React4j_ComponentWithCallback extends ComponentWithCallback {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final BaseState arg1) {
+        @Nonnull final JsPropertyMap<Object> arg1) {
       performComponentDidUpdate(arg0,arg1);
     }
 
@@ -116,7 +117,7 @@ abstract class React4j_ComponentWithCallback extends ComponentWithCallback {
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final BaseState arg1) {
+        @Nonnull final JsPropertyMap<Object> arg1) {
       return performShouldComponentUpdate(arg0,arg1);
     }
   }

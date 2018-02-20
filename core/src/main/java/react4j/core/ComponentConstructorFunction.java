@@ -18,5 +18,5 @@ public interface ComponentConstructorFunction
    * @param props the component props.
    * @return the component.
    */
-  NativeComponent<?> construct( JsPropertyMap<Object> props );
+  NativeComponent construct( JsPropertyMap<Object> props );
 }

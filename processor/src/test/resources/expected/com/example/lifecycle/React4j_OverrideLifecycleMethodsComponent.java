@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -32,7 +31,8 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps, @Nonnull BaseState nextState);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps,
+        @Nonnull JsPropertyMap<Object> nextState);
 
     void componentWillReceiveProps(@Nonnull JsPropertyMap<Object> nextProps);
 
@@ -41,10 +41,10 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
 
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps,
-        @Nonnull BaseState nextState);
+        @Nonnull JsPropertyMap<Object> nextState);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, OverrideLifecycleMethodsComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<OverrideLifecycleMethodsComponent> implements Lifecycle {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
@@ -61,7 +61,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final BaseState nextState) {
+        @Nonnull final JsPropertyMap<Object> nextState) {
       performComponentDidUpdate(nextProps,nextState);
     }
 
@@ -83,7 +83,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final BaseState nextState) {
+        @Nonnull final JsPropertyMap<Object> nextState) {
       return performShouldComponentUpdate(nextProps,nextState);
     }
   }

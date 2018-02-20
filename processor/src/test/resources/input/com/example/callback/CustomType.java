@@ -3,13 +3,12 @@ package com.example.callback;
 import jsinterop.annotations.JsFunction;
 import react4j.annotations.Callback;
 import react4j.annotations.ReactComponent;
-import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
 abstract class CustomType
-  extends Component<BaseState>
+  extends Component
 {
   @JsFunction
   public interface CustomHandler
