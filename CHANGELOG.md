@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[core\]** Passed the `onStateUpdateComplete` callback parameter of the `Component.setState(...)` methods
+  to the native javascript `setState(...)` method to ensure that the react runtime invoked the callback at the
+  correct time.
+
 ##### Added
 * **\[annotations\]** Introduced the `@State` annotation that can be used on abstract getter/setter method
   pairs on instances of `ReactComponent`. The annotation processor will implement the getter as an access from

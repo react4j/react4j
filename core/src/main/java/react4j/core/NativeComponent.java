@@ -43,7 +43,7 @@ public abstract class NativeComponent
     return state;
   }
 
-  final native void setState( @Nonnull Component.SetStateCallback callback );
+  final native void setState( @Nonnull Component.SetStateCallback callback, @Nullable Procedure onStateUpdateComplete );
 
   @JsOverlay
   final void setInitialState( @Nonnull final JsPropertyMap<Object> state )

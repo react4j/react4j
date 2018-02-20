@@ -187,7 +187,7 @@ public abstract class Component
                                       @Nullable final Procedure onStateUpdateComplete )
   {
     invariantsSetState();
-    component().setState( callback );
+    component().setState( callback, onStateUpdateComplete );
   }
 
   /**
