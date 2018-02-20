@@ -9,6 +9,9 @@
   `ReactArezComponent`, the `@State` annotated method is made observable. This resulted in the simplification
   of `react.core.Component` to remove the remaining generics and the removal of the `BaseState` class.
 
+#### Changed
+* 💥 **\[core\]** Default the `react4j.check_component_state_invariants` configuration to `true` in development build.
+
 ### [v0.46](https://github.com/react4j/react4j/tree/v0.46) (2018-02-15)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.45...v0.46)
 
