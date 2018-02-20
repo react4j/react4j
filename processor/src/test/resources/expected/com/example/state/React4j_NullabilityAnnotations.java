@@ -1,6 +1,5 @@
 package com.example.state;
 
-import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,7 +30,7 @@ class React4j_NullabilityAnnotations extends NullabilityAnnotations {
 
   @Override
   protected void setMyValue(@Nonnull final String value) {
-    scheduleStateUpdate( ( ( previousState, currentProps ) -> Js.uncheckedCast( JsObject.assign( previousState, "myValue", value ) ) ) );
+    scheduleStateUpdate( ( ( previousState, currentProps ) -> JsPropertyMap.of( "myValue", value ) ) );
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NullabilityAnnotations> {

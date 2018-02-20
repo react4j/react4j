@@ -1,6 +1,5 @@
 package com.example.basic;
 
-import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +34,7 @@ class React4j_CustomPropsAndStateReactComponent extends CustomPropsAndStateReact
 
   @Override
   void setSomeText(final String value) {
-    scheduleStateUpdate( ( ( previousState, currentProps ) -> Js.uncheckedCast( JsObject.assign( previousState, "someText", value ) ) ) );
+    scheduleStateUpdate( ( ( previousState, currentProps ) -> JsPropertyMap.of( "someText", value ) ) );
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsAndStateReactComponent> {

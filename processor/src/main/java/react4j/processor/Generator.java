@@ -684,9 +684,8 @@ final class Generator
     method.addParameter( param.build() );
 
     method.addStatement(
-      "scheduleStateUpdate( ( ( previousState, currentProps ) -> $T.uncheckedCast( $T.assign( previousState, $S, $N ) ) ) )",
-      JS_CLASSNAME,
-      JS_OBJECT_CLASSNAME,
+      "scheduleStateUpdate( ( ( previousState, currentProps ) -> $T.of( $S, $N ) ) )",
+      JS_PROPERTY_MAP_CLASSNAME,
       name,
       paramName );
     return method;
