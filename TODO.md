@@ -2,6 +2,10 @@
 
 ### High Priority
 
+* Add default values for state. Can be instance methods, static methods or static final fields?
+
+* Change state setters so that if during construct then sets initial state otherwise schedules state update.
+
 * Add ability to `@Prop` to add enhancers to builder.
 
 * Add mechanism by which plugins can be used to enhance the component generation process. Something that
