@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -23,7 +22,7 @@ class React4j_BaseRenderComponent extends BaseRenderComponent {
     return componentConstructor;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, BaseRenderComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<BaseRenderComponent> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import jsinterop.base.JsPropertyMap;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
-import react4j.core.BaseState;
 import react4j.core.ReactNode;
 
 @ReactComponent
@@ -22,7 +21,7 @@ abstract class OverridingComponentDidUpdateComponent
   @Action
   @Override
   protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                     @Nullable final BaseState nextState )
+                                     @Nullable final JsPropertyMap<Object> nextState )
   {
     super.componentDidUpdate( nextProps, nextState );
   }

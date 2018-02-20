@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -23,7 +22,7 @@ class React4j_GenericTypeComponent<T> extends GenericTypeComponent<T> {
     return componentConstructor;
   }
 
-  private static final class NativeReactComponent<T> extends NativeAdapterComponent<BaseState, GenericTypeComponent<T>> {
+  private static final class NativeReactComponent<T> extends NativeAdapterComponent<GenericTypeComponent<T>> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

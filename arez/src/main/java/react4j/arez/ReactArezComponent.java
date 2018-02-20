@@ -18,7 +18,6 @@ import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.core.BaseState;
 import react4j.core.Component;
 import react4j.core.Procedure;
 import react4j.core.ReactNode;
@@ -35,7 +34,7 @@ import react4j.core.util.JsUtil;
  * scope of a {@link Action} annotated method or within the scope of the render method.</p>
  */
 public abstract class ReactArezComponent
-  extends Component<BaseState>
+  extends Component
 {
   /**
    * Key used to store the arez data in state.
@@ -60,7 +59,7 @@ public abstract class ReactArezComponent
    * {@inheritDoc}
    */
   @Override
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<BaseState> callback,
+  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback callback,
                                             @Nullable final Procedure onStateUpdateComplete )
   {
     Guards.fail( () -> "Attempted to schedule state update on ReactArezComponent subclass. Use Arez @Observable or @Computed properties instead." );
@@ -152,7 +151,7 @@ public abstract class ReactArezComponent
    */
   @Override
   protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final BaseState nextState )
+                                           @Nullable final JsPropertyMap<Object> nextState )
   {
     if ( hasRenderDepsChanged() )
     {
@@ -194,7 +193,7 @@ public abstract class ReactArezComponent
    */
   @Override
   protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
-                                     @Nullable final BaseState prevState )
+                                     @Nullable final JsPropertyMap<Object> prevState )
   {
     storeArezDataAsState();
   }
@@ -225,7 +224,7 @@ public abstract class ReactArezComponent
       final List<ObservableInfo> dependencies = getContext().getSpy().getDependencies( renderTracker );
       final JsPropertyMap<Object> deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), getValue( d ) ) );
-      final BaseState state = super.state();
+      final JsPropertyMap<Object> state = super.state();
       final Object currentDepsData = null != state ? Js.asPropertyMap( state ).get( AREZ_STATE_KEY ) : null;
       /*
        * Do a shallow comparison against object and the deps. If either has changed then state needs to be updated.

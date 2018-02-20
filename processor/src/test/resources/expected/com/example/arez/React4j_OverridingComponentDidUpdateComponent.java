@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -41,14 +40,16 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps, @Nonnull BaseState nextState);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps,
+        @Nonnull JsPropertyMap<Object> nextState);
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
+        @Nonnull JsPropertyMap<Object> arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, OverridingComponentDidUpdateComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<OverridingComponentDidUpdateComponent> implements Lifecycle {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
@@ -65,7 +66,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final BaseState nextState) {
+        @Nonnull final JsPropertyMap<Object> nextState) {
       performComponentDidUpdate(nextProps,nextState);
     }
 
@@ -76,7 +77,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final BaseState arg1) {
+        @Nonnull final JsPropertyMap<Object> arg1) {
       return performShouldComponentUpdate(arg0,arg1);
     }
   }

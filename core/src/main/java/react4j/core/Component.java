@@ -11,17 +11,15 @@ import static org.realityforge.braincheck.Guards.*;
 
 /**
  * The base java class that mirrors the react component.
- *
- * @param <S> the type of state that this component maintains.
  */
-public abstract class Component<S extends BaseState>
+public abstract class Component
 {
   /**
    * Callback function for updating state.
    * Useful if the state update is based on current state.
    */
   @JsFunction
-  public interface SetStateCallback<S>
+  public interface SetStateCallback
   {
     /**
      * Callback used to update state.
@@ -33,7 +31,8 @@ public abstract class Component<S extends BaseState>
      * @return the state to shallow merge or null to abort state update.
      */
     @Nullable
-    S onSetState( @Nullable S previousState, @Nullable JsPropertyMap<Object> currentProps );
+    JsPropertyMap<Object> onSetState( @Nullable JsPropertyMap<Object> previousState,
+                                      @Nullable JsPropertyMap<Object> currentProps );
   }
 
   @Nonnull
@@ -41,7 +40,7 @@ public abstract class Component<S extends BaseState>
   @Nonnull
   private LifecycleMethod _lifecycleMethod = LifecycleMethod.UNKNOWN;
   @Nullable
-  private NativeComponent<S> _nativeComponent;
+  private NativeComponent _nativeComponent;
 
   /**
    * Set the phase of the component. Only used for invariant checking.
@@ -65,7 +64,7 @@ public abstract class Component<S extends BaseState>
     _lifecycleMethod = Objects.requireNonNull( lifecycleMethod );
   }
 
-  final void bindComponent( @Nonnull final NativeComponent<S> nativeComponent )
+  final void bindComponent( @Nonnull final NativeComponent nativeComponent )
   {
     _nativeComponent = Objects.requireNonNull( nativeComponent );
   }
@@ -77,7 +76,7 @@ public abstract class Component<S extends BaseState>
    *
    * @param state the state.
    */
-  protected final void setInitialState( @Nonnull final S state )
+  protected final void setInitialState( @Nonnull final JsPropertyMap<Object> state )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -92,7 +91,7 @@ public abstract class Component<S extends BaseState>
    * Return the native react component.
    */
   @Nonnull
-  private NativeComponent<S> component()
+  private NativeComponent component()
   {
     invariant( () -> null != _nativeComponent,
                () -> "Invoked component() on " + this + " before a component has been bound." );
@@ -106,7 +105,7 @@ public abstract class Component<S extends BaseState>
    *
    * @return the component state.
    */
-  protected final S state()
+  protected final JsPropertyMap<Object> state()
   {
     return component().state();
   }
@@ -144,7 +143,7 @@ public abstract class Component<S extends BaseState>
    *
    * @param state the object literal representing state.
    */
-  protected final void scheduleStateUpdate( @Nonnull final S state )
+  protected final void scheduleStateUpdate( @Nonnull final JsPropertyMap<Object> state )
   {
     scheduleStateUpdate( ( p, s ) -> state );
   }
@@ -157,7 +156,7 @@ public abstract class Component<S extends BaseState>
    * @param state                 the object literal representing state.
    * @param onStateUpdateComplete a callback that will be invoked after state has been updated.
    */
-  protected final void scheduleStateUpdate( @Nonnull final S state,
+  protected final void scheduleStateUpdate( @Nonnull final JsPropertyMap<Object> state,
                                             @Nullable final Procedure onStateUpdateComplete )
   {
     scheduleStateUpdate( ( p, s ) -> state, onStateUpdateComplete );
@@ -170,7 +169,7 @@ public abstract class Component<S extends BaseState>
    *
    * @param callback the callback that will be invoked to update state.
    */
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback<S> callback )
+  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback callback )
   {
     scheduleStateUpdate( callback, null );
   }
@@ -183,7 +182,7 @@ public abstract class Component<S extends BaseState>
    * @param callback              the callback that will be invoked to update state.
    * @param onStateUpdateComplete a callback that will be invoked after state has been updated.
    */
-  protected void scheduleStateUpdate( @Nonnull final SetStateCallback<S> callback,
+  protected void scheduleStateUpdate( @Nonnull final SetStateCallback callback,
                                       @Nullable final Procedure onStateUpdateComplete )
   {
     invariantsSetState();
@@ -210,12 +209,12 @@ public abstract class Component<S extends BaseState>
    * The component re-renders when state or props change but calling this method is another way to
    * schedule the component to be re-rendered.
    *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, BaseState)} will be skipped
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} will be skipped
    * and it is equivalent to calling forceUpdate() on the native react component. See the
    * <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component documentation</a> for more
    * details.</p>
    *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, BaseState)} will be
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} will be
    * invoked. This is equivalent to calling setState({}) on the native react component.</p>
    *
    * @param force true to skip shouldComponentUpdate during re-render, false otherwise.
@@ -301,7 +300,8 @@ public abstract class Component<S extends BaseState>
    * @param prevProps the props before the component was updated.
    * @param prevState the state before the component was updated.
    */
-  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps, @Nullable final S prevState )
+  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
+                                     @Nullable final JsPropertyMap<Object> prevState )
   {
   }
 
@@ -309,7 +309,7 @@ public abstract class Component<S extends BaseState>
    * This method is invoked before a mounted component receives new props.
    * If you need to update the state in response to prop changes (for example, to reset it), you
    * may compare the {@link #props()} and supplied nextProps and perform state transitions using
-   * {@link #scheduleStateUpdate(BaseState)} in this method.
+   * {@link #scheduleStateUpdate(JsPropertyMap)} in this method.
    * See the <a href="https://reactjs.org/docs/react-component.html#componentwillreceiveprops">React Component documentation</a> for more details.
    *
    * <p>Note that React may call this method even if the props have not changed, so make sure to
@@ -317,7 +317,8 @@ public abstract class Component<S extends BaseState>
    * parent component causes your component to re-render.</p>
    *
    * <p>React doesn't call this method with initial props during mounting. It only calls this method
-   * if some of component's props may update. Calling {@link #scheduleStateUpdate(BaseState)} generally doesn't trigger
+   * if some of component's props may update. Calling {@link #scheduleStateUpdate(JsPropertyMap)}
+   * generally doesn't trigger
    * this method.</p>
    *
    * @param nextProps the new properties of the component.
@@ -365,7 +366,7 @@ public abstract class Component<S extends BaseState>
    *
    * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
    *
-   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap, BaseState)}
+   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap, JsPropertyMap)}
    * will not be invoked. In the future React may treat this method  as a hint rather than a strict directive, and
    * returning false may still result in a re-rendering of the component.</p>
    *
@@ -374,7 +375,7 @@ public abstract class Component<S extends BaseState>
    * @return true if the component should be updated.
    */
   protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final S nextState )
+                                           @Nullable final JsPropertyMap<Object> nextState )
   {
     return true;
   }

@@ -40,7 +40,7 @@ final class ProcessorUtil
   static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
 
-  private static final String SENTINEL_NAME = "<default>";
+  static final String SENTINEL_NAME = "<default>";
 
   private ProcessorUtil()
   {

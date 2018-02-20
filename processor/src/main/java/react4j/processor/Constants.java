@@ -10,6 +10,7 @@ final class Constants
   static final String CALLBACK_ANNOTATION_CLASSNAME = "react4j.annotations.Callback";
   static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";
   static final String PROP_DEFAULT_ANNOTATION_CLASSNAME = "react4j.annotations.PropDefault";
+  static final String STATE_ANNOTATION_CLASSNAME = "react4j.annotations.State";
   static final String REACT_COMPONENT_ANNOTATION_CLASSNAME = "react4j.annotations.ReactComponent";
   static final String INJECT_ANNOTATION_CLASSNAME = "javax.inject.Inject";
   static final String AUTORUN_ANNOTATION_CLASSNAME = "arez.annotations.Autorun";

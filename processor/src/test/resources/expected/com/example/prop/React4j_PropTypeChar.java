@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -28,7 +27,7 @@ class React4j_PropTypeChar extends PropTypeChar {
     return props().getAny( "myProp" ).asChar();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, PropTypeChar> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeChar> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

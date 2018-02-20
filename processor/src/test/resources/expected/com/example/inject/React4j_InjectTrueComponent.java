@@ -8,7 +8,6 @@ import javax.inject.Provider;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -41,7 +40,7 @@ class React4j_InjectTrueComponent extends InjectTrueComponent {
     return componentConstructor;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, InjectTrueComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<InjectTrueComponent> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

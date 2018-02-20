@@ -14,11 +14,10 @@ import jsinterop.base.JsPropertyMap;
  * framework. In production builds it is expected that the method calls will be inlined and the checks will
  * be optimized away, having no significant performance impact.
  *
- * @param <S> the type of state that this component maintains.
  * @param <I> the type of the native component.
  */
-public abstract class NativeAdapterComponent<S extends BaseState, I extends Component<S>>
-  extends NativeComponent<S>
+public abstract class NativeAdapterComponent<I extends Component>
+  extends NativeComponent
 {
   /**
    * The target component that all lifecycle methods are forwarded to.
@@ -158,10 +157,10 @@ public abstract class NativeAdapterComponent<S extends BaseState, I extends Comp
    * @param nextProps the new properties of the component.
    * @param nextState the new state of the component.
    * @return true if the component should be updated.
-   * @see Component#shouldComponentUpdate(JsPropertyMap, BaseState)
+   * @see Component#shouldComponentUpdate(JsPropertyMap, JsPropertyMap)
    */
   protected final boolean performShouldComponentUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
-                                                        @Nonnull final S nextState )
+                                                        @Nonnull final JsPropertyMap<Object> nextState )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -214,10 +213,10 @@ public abstract class NativeAdapterComponent<S extends BaseState, I extends Comp
    *
    * @param nextProps the new properties of the component.
    * @param nextState the new state of the component.
-   * @see Component#componentDidUpdate(JsPropertyMap, BaseState)
+   * @see Component#componentDidUpdate(JsPropertyMap, JsPropertyMap)
    */
   protected final void performComponentDidUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
-                                                  @Nonnull final S nextState )
+                                                  @Nonnull final JsPropertyMap<Object> nextState )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {

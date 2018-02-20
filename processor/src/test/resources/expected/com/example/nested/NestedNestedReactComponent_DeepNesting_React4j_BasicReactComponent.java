@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -23,7 +22,7 @@ class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends
     return componentConstructor;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, NestedNestedReactComponent.DeepNesting.BasicReactComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<NestedNestedReactComponent.DeepNesting.BasicReactComponent> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

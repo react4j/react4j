@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -81,14 +80,16 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
+        @Nonnull JsPropertyMap<Object> arg1);
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0, @Nonnull BaseState arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
+        @Nonnull JsPropertyMap<Object> arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, ComponentWithAnnotatedParameterCallback> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithAnnotatedParameterCallback> implements Lifecycle {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
@@ -105,7 +106,7 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final BaseState arg1) {
+        @Nonnull final JsPropertyMap<Object> arg1) {
       performComponentDidUpdate(arg0,arg1);
     }
 
@@ -116,7 +117,7 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final BaseState arg1) {
+        @Nonnull final JsPropertyMap<Object> arg1) {
       return performShouldComponentUpdate(arg0,arg1);
     }
   }

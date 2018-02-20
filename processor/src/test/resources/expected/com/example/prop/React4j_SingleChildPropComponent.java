@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.BaseState;
 import react4j.core.ComponentConstructorFunction;
 import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
@@ -29,7 +28,7 @@ class React4j_SingleChildPropComponent extends SingleChildPropComponent {
     return props().getAny( "children" ).cast();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BaseState, SingleChildPropComponent> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<SingleChildPropComponent> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

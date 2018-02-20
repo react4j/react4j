@@ -28,8 +28,6 @@ final class ComponentDescriptor
   private boolean _needsInjection;
   private boolean _needsDaggerIntegration;
   private boolean _runArezScheduler;
-  @Nullable
-  private TypeElement _stateType;
   /**
    * Lifecycle methods that are overridden by the user and need to be proxied from the native object.
    */
@@ -47,6 +45,12 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<PropDescriptor> _props;
+  /**
+   * Descriptors for state accessor/mutator pairs.
+   * These should be implemented as accesses to the underlying state value.
+   */
+  @Nullable
+  private List<StateValueDescriptor> _stateValues;
 
   ComponentDescriptor( @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
@@ -210,18 +214,6 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  TypeElement getStateType()
-  {
-    assert null != _stateType;
-    return _stateType;
-  }
-
-  void setStateType( @Nonnull final TypeElement stateType )
-  {
-    _stateType = Objects.requireNonNull( stateType );
-  }
-
-  @Nonnull
   private String getNestedClassPrefix()
   {
     final StringBuilder name = new StringBuilder();
@@ -291,5 +283,23 @@ final class ComponentDescriptor
   {
     assert null != _props;
     _props.sort( PropComparator.COMPARATOR );
+  }
+
+  @Nonnull
+  List<StateValueDescriptor> getStateValues()
+  {
+    assert null != _stateValues;
+    return _stateValues;
+  }
+
+  void setStateValues( @Nonnull final List<StateValueDescriptor> stateValues )
+  {
+    _stateValues = Objects.requireNonNull( stateValues );
+  }
+
+  @Nullable
+  StateValueDescriptor findStateValueNamed( @Nonnull final String name )
+  {
+    return getStateValues().stream().filter( p -> p.getName().equals( name ) ).findAny().orElse( null );
   }
 }
