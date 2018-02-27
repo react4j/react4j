@@ -1,12 +1,6 @@
 ## TODO
 
-### High Priority
-
-* Add default values for state. Can be instance methods, static methods or static final fields?
-
-* Change state setters so that if during construct then sets initial state otherwise schedules state update.
-
-* Add ability to `@Prop` to add enhancers to builder.
+### Very High Priority
 
 * Add mechanism by which plugins can be used to enhance the component generation process. Something that
   could hook into the component lifecycle methods? The goal is to add `@ReplicantData` or `@GraphQL` annotations
@@ -14,6 +8,14 @@
   Could this be like in UI-binder where constructors have to invoke factory? (That would make it easier to
   integrate into code generator) Or do we generate a chain of classes `MyComponent` -> `Graphql_MyComponent` ->
   `React_Graphql_MyComponent` -> `Arez_React_Graphql_MyComponent` ?
+
+### High Priorities
+
+* Add default values for state. Can be instance methods, static methods or static final fields?
+
+* Change state setters so that if during construct then sets initial state otherwise schedules state update.
+
+* Add ability to `@Prop` to add enhancers to builder.
 
 * Add support for methods annotated with `@OnPropChanged`
 
