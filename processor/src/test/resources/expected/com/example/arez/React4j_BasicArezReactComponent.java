@@ -13,7 +13,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    type = "BasicArezReactComponent",
+    name = "BasicArezReactComponent",
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")

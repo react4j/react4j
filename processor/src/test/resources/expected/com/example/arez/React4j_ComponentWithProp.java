@@ -15,7 +15,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    type = "ComponentWithProp",
+    name = "ComponentWithProp",
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")

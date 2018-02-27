@@ -13,7 +13,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    type = "OverridingComponentDidUpdateComponent",
+    name = "OverridingComponentDidUpdateComponent",
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")

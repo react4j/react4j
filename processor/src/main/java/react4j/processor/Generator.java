@@ -480,7 +480,7 @@ final class Generator
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
-          addMember( "type", "$S", descriptor.getName() ).
+          addMember( "name", "$S", descriptor.getName() ).
           addMember( "deferSchedule", "true" );
       if ( descriptor.needsInjection() )
       {

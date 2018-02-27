@@ -15,7 +15,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    type = "ComponentWithCallback",
+    name = "ComponentWithCallback",
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")

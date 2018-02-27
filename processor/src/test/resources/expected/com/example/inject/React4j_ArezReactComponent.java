@@ -16,7 +16,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    type = "ArezReactComponent",
+    name = "ArezReactComponent",
     deferSchedule = true,
     inject = Feature.ENABLE
 )
