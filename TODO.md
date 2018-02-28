@@ -31,6 +31,10 @@
 
 * Add support for the new context API that will be released with `16.3`. See https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#0db6
 
+* Rather than using `@Dependency` to force the disposal of a component when a prop is disposed, we should instead
+  set boolean flag that just indicates that we should skip the render? We probably need to add in the equivalent
+  of XonDispose observers that just set this flag if props go bad. We can then unset this flag in shouldComponentUpdate
+
 ### Medium Priorities
 
 * Move the Props and State objects back to being JsType backed under the cover rather than values looked up by
