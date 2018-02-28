@@ -189,9 +189,6 @@ define 'react4j' do
                  project('processor').compile.dependencies,
                  DAGGER_PROCESSOR_DEPS,
                  :arez_processor,
-                 :arez_component,
-                 :arez_extras,
-                 :arez_browser_extras,
                  :gwt_user
 
     gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
