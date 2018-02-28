@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
@@ -49,6 +50,8 @@ final class Generator
     ClassName.get( "arez.annotations", "ObservableRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
+  private static final ClassName AREZ_DEPENDENCY_CLASSNAME =
+    ClassName.get( "arez.annotations", "Dependency" );
 
   private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
@@ -586,12 +589,13 @@ final class Generator
   private static MethodSpec.Builder buildPropMethod( @Nonnull final ComponentDescriptor descriptor,
                                                      @Nonnull final PropDescriptor prop )
   {
-    final TypeMirror returnType = prop.getMethodType().getReturnType();
     final ExecutableElement methodElement = prop.getMethod();
+    final ExecutableType methodType = prop.getMethodType();
+    final TypeMirror returnType = methodType.getReturnType();
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( methodElement.getSimpleName().toString() ).
         returns( TypeName.get( returnType ) );
-    ProcessorUtil.copyTypeParameters( prop.getMethodType(), method );
+    ProcessorUtil.copyTypeParameters( methodType, method );
     ProcessorUtil.copyAccessModifiers( methodElement, method );
     ProcessorUtil.copyDocumentedAnnotations( methodElement, method );
 
@@ -605,6 +609,14 @@ final class Generator
           addMember( "name", "$S", name ).
           addMember( "expectSetter", "false" );
       method.addAnnotation( annotation.build() );
+    }
+    final Element propType = prop.getPropType();
+    if ( descriptor.isArezComponent() && ElementKind.CLASS == propType.getKind() )
+    {
+      if ( null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
+      {
+        method.addAnnotation( AnnotationSpec.builder( AREZ_DEPENDENCY_CLASSNAME ).build() );
+      }
     }
     final String convertMethodName = getConverter( returnType, methodElement, "Prop" );
     final String key = "child".equals( name ) ? "children" : name;

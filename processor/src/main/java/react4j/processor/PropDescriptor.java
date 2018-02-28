@@ -3,6 +3,7 @@ package react4j.processor;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
@@ -17,6 +18,8 @@ final class PropDescriptor
   @Nonnull
   private final ExecutableType _methodType;
   @Nullable
+  private final Element _propType;
+  @Nullable
   private VariableElement _defaultField;
   @Nullable
   private ExecutableElement _defaultMethod;
@@ -27,11 +30,13 @@ final class PropDescriptor
 
   PropDescriptor( @Nonnull final String name,
                   @Nonnull final ExecutableElement method,
-                  @Nonnull final ExecutableType methodType )
+                  @Nonnull final ExecutableType methodType,
+                  @Nullable final Element propType )
   {
     _name = Objects.requireNonNull( name );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
+    _propType = propType;
   }
 
   @Nonnull
@@ -50,6 +55,12 @@ final class PropDescriptor
   ExecutableType getMethodType()
   {
     return _methodType;
+  }
+
+  @Nullable
+  Element getPropType()
+  {
+    return _propType;
   }
 
   void setDefaultMethod( @Nonnull final ExecutableElement method )

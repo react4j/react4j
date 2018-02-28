@@ -665,7 +665,8 @@ public final class ReactProcessor
       throw new ReactProcessorException( "@Prop named 'children' should be of type react4j.core.ReactNode[]", method );
     }
 
-    return new PropDescriptor( name, method, methodType );
+    final Element propType = processingEnv.getTypeUtils().asElement( method.getReturnType() );
+    return new PropDescriptor( name, method, methodType, propType );
   }
 
   @Nonnull

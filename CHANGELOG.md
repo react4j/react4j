@@ -10,6 +10,10 @@
 ##### Added
 * **\[dom\]** Expose the unstable `batchedUpdates` API as `ReactDOM.batchedUpdates(Procedure)` as it is useful
   to batch changes that are coming in from a network endpoint.
+* **\[processor\]** In components extending `ReactArezComponent`, detect whether the return type of a `@Prop`
+  annotated method is a Arez component and if it is then annotate it with `arez.annotations.Dependency`. This
+  has the side-effect that if a component has a prop that is a disposed Arez component, then the component will
+  be disposed.
 
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.61`.
