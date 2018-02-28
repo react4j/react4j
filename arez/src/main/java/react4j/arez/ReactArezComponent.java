@@ -218,7 +218,7 @@ public abstract class ReactArezComponent
    */
   private void storeArezDataAsState()
   {
-    if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() )
+    if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() && !Disposable.isDisposed( this ) )
     {
       final Observer renderTracker = getRenderObserver();
       final List<ObservableInfo> dependencies = getContext().getSpy().getDependencies( renderTracker );

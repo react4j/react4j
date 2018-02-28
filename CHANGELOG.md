@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[arez\]** Avoid invoking logic within `ReactArezComponent.storeArezDataAsState()` if the component has been
+  disposed. This is possible when the component triggers it's own disposal from one of the relevant lifecycle
+  callback methods.
+
 ##### Added
 * **\[dom\]** Expose the unstable `batchedUpdates` API as `ReactDOM.batchedUpdates(Procedure)` as it is useful
   to batch changes that are coming in from a network endpoint.
