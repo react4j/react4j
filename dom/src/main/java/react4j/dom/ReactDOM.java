@@ -131,6 +131,17 @@ public class ReactDOM
    *
    * @param action the action where all state updates are batched.
    */
-  @JsMethod( name = "unstable_batchedUpdates ")
-  public static native void batchedUpdates( @Nonnull Procedure action );
+  @JsOverlay
+  public static void batchedUpdates( @Nonnull Procedure action )
+  {
+    unstable_batchedUpdates( action );
+  }
+
+  /**
+   * The native method with the unstable prefix.
+   *
+   * @param action the action where all state updates are batched.
+   */
+  @JsMethod
+  private static native void unstable_batchedUpdates( @Nonnull Procedure action );
 }
