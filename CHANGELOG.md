@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Added
+* **\[arez\]** Introduce the `ReactArezEnvironment` utility class to aid install an Arez `ReactionEnvironment`
+  that batches all updates from Arez to React.
+
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.62`.
 
