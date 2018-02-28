@@ -611,7 +611,7 @@ final class Generator
       method.addAnnotation( annotation.build() );
     }
     final Element propType = prop.getPropType();
-    if ( descriptor.isArezComponent() && ElementKind.CLASS == propType.getKind() )
+    if ( null != propType && descriptor.isArezComponent() && ElementKind.CLASS == propType.getKind() )
     {
       if ( null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
       {
