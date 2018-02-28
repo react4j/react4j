@@ -12,7 +12,7 @@
   to batch changes that are coming in from a network endpoint.
 
 #### Changed
-* 💥 **\[arez\]** Upgrade Arez to version `0.60`.
+* 💥 **\[arez\]** Upgrade Arez to version `0.61`.
 
 ### [v0.47](https://github.com/react4j/react4j/tree/v0.47) (2018-02-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.46...v0.47)
