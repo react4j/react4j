@@ -6,6 +6,9 @@
 * **\[arez\]** Avoid invoking logic within `ReactArezComponent.storeArezDataAsState()` if the component has been
   disposed. This is possible when the component triggers it's own disposal from one of the relevant lifecycle
   callback methods.
+* **\[arez\]** Gracefully handle scenario where a subclass of `ReactArezComponent` has been disposed but react
+  has requested that the component render. This can occur if the code explicitly disposes the component or a
+  `@Dependency` annotation has been used.
 
 ##### Added
 * **\[dom\]** Expose the unstable `batchedUpdates` API as `ReactDOM.batchedUpdates(Procedure)` as it is useful
