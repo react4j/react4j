@@ -2,8 +2,6 @@
 
 ### Very High Priority
 
-* figure out how to use undocumented batch method in React to batch all of our render schedules.
-
 * Add mechanism by which plugins can be used to enhance the component generation process. Something that
   could hook into the component lifecycle methods? The goal is to add `@ReplicantData` or `@GraphQL` annotations
   to component and have code generator enhance the component in some fashion to load data as appropriate.
