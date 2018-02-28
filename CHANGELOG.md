@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Added
+* **\[dom\]** Expose the unstable `batchedUpdates` API as `ReactDOM.batchedUpdates(Procedure)` as it is useful
+  to batch changes that are coming in from a network endpoint.
+
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.60`.
 

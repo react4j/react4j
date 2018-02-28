@@ -122,4 +122,15 @@ public class ReactDOM
   @JsMethod( namespace = "React" )
   public static native <P extends HtmlGlobalFields>
   ReactNode createElement( @Nonnull String type, @Nullable P props, @Nullable ReactNode... children );
+
+  /**
+   * Batch all state updates within the action.
+   * This is currently an unstable API within the React 16, mostly because it is only useful when called
+   * outside an event handler (i.e. from network code) and because it is likely to be enabled by default
+   * in a later version of React.
+   *
+   * @param action the action where all state updates are batched.
+   */
+  @JsMethod( name = "unstable_batchedUpdates ")
+  public static native void batchedUpdates( @Nonnull Procedure action );
 }
