@@ -203,6 +203,8 @@ define 'react4j' do
                  project('dom').compile.dependencies,
                  project('annotations').package(:jar),
                  project('annotations').compile.dependencies,
+                 project('arez').package(:jar),
+                 project('arez').compile.dependencies,
                  project('processor').package(:jar),
                  project('processor').compile.dependencies
 
