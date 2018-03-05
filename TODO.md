@@ -74,8 +74,6 @@
 
 * See if we can remove ReactElement.
 
-* Add support for fragments as described in https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html
-
 * Implement the "children" utilities in java or bind to native implementation.
 
 * Upgrade and build TodoMVC as part of the release process.
