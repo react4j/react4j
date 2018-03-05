@@ -95,7 +95,7 @@ public final class React
    */
   public static native ReactElement<ComponentConstructorFunction> createElement( @Nonnull ComponentConstructorFunction type,
                                                                                  @Nullable JsPropertyMap<Object> props,
-                                                                                 @Nonnull ReactNode[] children );
+                                                                                 @Nonnull ReactNode... children );
 
   /**
    * Create a Fragment with the specified children.

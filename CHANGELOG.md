@@ -10,6 +10,7 @@
 #### Changed
 * **\[core\]** Convert the `React.createElement(...,JsArray)` method from a native method to an overlay method
   to reduce size of generated code and add opportunities for optimization within the GWT compiler.
+* **\[core\]** Change the `React.createElement(...,ReactNode[])` method to a varargs method.
 
 ### [v0.49](https://github.com/react4j/react4j/tree/v0.49) (2018-02-28)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.48...v0.49)
