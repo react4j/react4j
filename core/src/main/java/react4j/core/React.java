@@ -2,6 +2,7 @@ package react4j.core;
 
 import elemental2.core.JsArray;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -145,7 +146,12 @@ public final class React
   @JsOverlay
   public static ReactNode createFragment( @Nonnull final Stream<? extends ReactNode> children )
   {
-    return createFragment( children.toArray( ReactNode[]::new ) );
+    /*
+     * The GWT compiler does not handle method refs in this context. Not sure why
+     */
+    @SuppressWarnings( "Convert2MethodRef" )
+    final IntFunction<ReactNode[]> intFunction = v -> new ReactNode[ v ];
+    return createFragment( children.toArray( intFunction ) );
   }
 
   /**
