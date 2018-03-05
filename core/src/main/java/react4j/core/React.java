@@ -67,9 +67,13 @@ public final class React
    * @param children the children of the react component.
    * @return a new ReactElement.
    */
-  public static native ReactElement<ComponentConstructorFunction> createElement( @Nonnull ComponentConstructorFunction type,
-                                                                                 @Nullable JsPropertyMap<Object> props,
-                                                                                 @Nonnull JsArray<ReactNode> children );
+  @JsOverlay
+  public static ReactElement<ComponentConstructorFunction> createElement( @Nonnull final ComponentConstructorFunction type,
+                                                                          @Nullable final JsPropertyMap<Object> props,
+                                                                          @Nonnull final JsArray<ReactNode> children )
+  {
+    return createElement( type, props, Js.<ReactNode[]>cast( children ) );
+  }
 
   /**
    * Create a ReactElement for the specified React component.
