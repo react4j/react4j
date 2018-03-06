@@ -31,6 +31,13 @@ public final class React
   private static ComponentConstructorFunction Fragment;
 
   /**
+   * Return true if the specified node is a ReactElement.
+   *
+   * @return true if the specified node is a ReactElement.
+   */
+  public static native boolean isValidElement( @Nonnull ReactNode node );
+
+  /**
    * Create a ReactElement for the specified React component with no props or children.
    *
    * @param type the constructor function for the native React component.
