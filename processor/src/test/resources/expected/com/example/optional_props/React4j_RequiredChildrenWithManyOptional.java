@@ -31,27 +31,27 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
 
   @Override
   protected String getMyPropA() {
-    return props().getAny( "myPropA" ).asString();
+    return props().has( "myPropA" ) ? props().getAny( "myPropA" ).asString() : null;
   }
 
   @Override
   protected String getMyPropB() {
-    return props().getAny( "myPropB" ).asString();
+    return props().has( "myPropB" ) ? props().getAny( "myPropB" ).asString() : null;
   }
 
   @Override
   protected String getMyPropC() {
-    return props().getAny( "myPropC" ).asString();
+    return props().has( "myPropC" ) ? props().getAny( "myPropC" ).asString() : null;
   }
 
   @Override
   protected String getMyPropD() {
-    return props().getAny( "myPropD" ).asString();
+    return props().has( "myPropD" ) ? props().getAny( "myPropD" ).asString() : null;
   }
 
   @Override
   protected ReactNode[] getChildren() {
-    return props().getAny( "children" ).cast();
+    return props().has( "children" ) ? props().getAny( "children" ).cast() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<RequiredChildrenWithManyOptional> {

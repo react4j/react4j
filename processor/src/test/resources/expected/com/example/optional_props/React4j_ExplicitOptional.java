@@ -24,17 +24,17 @@ class React4j_ExplicitOptional extends ExplicitOptional {
 
   @Override
   protected String getMyRequiredProp() {
-    return props().getAny( "myRequiredProp" ).asString();
+    return props().has( "myRequiredProp" ) ? props().getAny( "myRequiredProp" ).asString() : null;
   }
 
   @Override
   protected String getMyOptionalProp() {
-    return props().getAny( "myOptionalProp" ).asString();
+    return props().has( "myOptionalProp" ) ? props().getAny( "myOptionalProp" ).asString() : null;
   }
 
   @Override
   protected String getMyOtherOptionalProp() {
-    return props().getAny( "myOtherOptionalProp" ).asString();
+    return props().has( "myOtherOptionalProp" ) ? props().getAny( "myOtherOptionalProp" ).asString() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ExplicitOptional> {

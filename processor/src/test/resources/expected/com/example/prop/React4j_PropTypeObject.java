@@ -24,7 +24,7 @@ class React4j_PropTypeObject extends PropTypeObject {
 
   @Override
   protected PropTypeObject.MyObject getMyProp() {
-    return props().getAny( "myProp" ).cast();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).cast() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeObject> {

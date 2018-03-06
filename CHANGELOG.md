@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[processor\]** Changed the way that `@Prop` annotated methods are generated so that the GWT compiler
+  does not assume that all values are non-null and thus eliminate null checks from production code.
+
 ##### Added
 * **\[core\]** Add the `React.isValidELement(ReactNode)` method that exposes the underlying ReactJS method.
 

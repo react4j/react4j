@@ -24,7 +24,7 @@ class React4j_PropTypeByte extends PropTypeByte {
 
   @Override
   protected byte getMyProp() {
-    return props().getAny( "myProp" ).asByte();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).asByte() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeByte> {

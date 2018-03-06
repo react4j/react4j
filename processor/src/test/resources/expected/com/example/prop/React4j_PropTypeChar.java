@@ -24,7 +24,7 @@ class React4j_PropTypeChar extends PropTypeChar {
 
   @Override
   protected char getMyProp() {
-    return props().getAny( "myProp" ).asChar();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).asChar() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeChar> {

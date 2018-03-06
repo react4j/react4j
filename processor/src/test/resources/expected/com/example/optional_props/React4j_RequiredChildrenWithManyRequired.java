@@ -25,22 +25,22 @@ class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyR
 
   @Override
   protected String getMyRequiredProp1() {
-    return props().getAny( "myRequiredProp1" ).asString();
+    return props().has( "myRequiredProp1" ) ? props().getAny( "myRequiredProp1" ).asString() : null;
   }
 
   @Override
   protected String getMyRequiredProp2() {
-    return props().getAny( "myRequiredProp2" ).asString();
+    return props().has( "myRequiredProp2" ) ? props().getAny( "myRequiredProp2" ).asString() : null;
   }
 
   @Override
   protected String getMyRequiredProp3() {
-    return props().getAny( "myRequiredProp3" ).asString();
+    return props().has( "myRequiredProp3" ) ? props().getAny( "myRequiredProp3" ).asString() : null;
   }
 
   @Override
   protected ReactNode[] getChildren() {
-    return props().getAny( "children" ).cast();
+    return props().has( "children" ) ? props().getAny( "children" ).cast() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<RequiredChildrenWithManyRequired> {

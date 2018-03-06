@@ -24,7 +24,7 @@ class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
 
   @Override
   protected boolean isFoo() {
-    return props().getAny( "foo" ).asBoolean();
+    return props().has( "foo" ) ? props().getAny( "foo" ).asBoolean() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BoolJavaBeanPropComponent> {

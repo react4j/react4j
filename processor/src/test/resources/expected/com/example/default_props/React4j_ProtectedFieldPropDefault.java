@@ -27,7 +27,7 @@ class React4j_ProtectedFieldPropDefault extends ProtectedFieldPropDefault {
 
   @Override
   protected String getMyProp() {
-    return props().getAny( "myProp" ).asString();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ProtectedFieldPropDefault> {

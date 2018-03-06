@@ -25,17 +25,17 @@ class React4j_MultiPropComponent3 extends MultiPropComponent3 {
 
   @Override
   protected String getMyProp() {
-    return props().getAny( "myProp" ).asString();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
   }
 
   @Override
   protected String getMyProp2() {
-    return props().getAny( "myProp2" ).asString();
+    return props().has( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
   }
 
   @Override
   protected ReactNode getChild() {
-    return props().getAny( "children" ).cast();
+    return props().has( "children" ) ? props().getAny( "children" ).cast() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<MultiPropComponent3> {

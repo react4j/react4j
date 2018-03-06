@@ -25,7 +25,7 @@ class React4j_SingleChildPropComponent extends SingleChildPropComponent {
 
   @Override
   protected ReactNode getChild() {
-    return props().getAny( "children" ).cast();
+    return props().has( "children" ) ? props().getAny( "children" ).cast() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<SingleChildPropComponent> {

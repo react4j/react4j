@@ -25,7 +25,7 @@ class React4j_MultipleChildrenPropComponent extends MultipleChildrenPropComponen
 
   @Override
   protected ReactNode[] getChildren() {
-    return props().getAny( "children" ).cast();
+    return props().has( "children" ) ? props().getAny( "children" ).cast() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<MultipleChildrenPropComponent> {

@@ -24,7 +24,7 @@ class React4j_PropTypeDouble extends PropTypeDouble {
 
   @Override
   protected double getMyProp() {
-    return props().getAny( "myProp" ).asDouble();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).asDouble() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeDouble> {

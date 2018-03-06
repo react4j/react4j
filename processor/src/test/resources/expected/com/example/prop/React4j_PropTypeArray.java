@@ -24,7 +24,7 @@ class React4j_PropTypeArray extends PropTypeArray {
 
   @Override
   protected String[] getMyProp() {
-    return props().getAny( "myProp" ).cast();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).cast() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeArray> {

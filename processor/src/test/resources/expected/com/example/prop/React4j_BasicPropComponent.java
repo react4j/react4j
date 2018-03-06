@@ -24,7 +24,7 @@ class React4j_BasicPropComponent extends BasicPropComponent {
 
   @Override
   protected String getMyProp() {
-    return props().getAny( "myProp" ).asString();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BasicPropComponent> {

@@ -620,7 +620,14 @@ final class Generator
     }
     final String convertMethodName = getConverter( returnType, methodElement, "Prop" );
     final String key = "child".equals( name ) ? "children" : name;
-    method.addStatement( "return props().getAny( $S ).$N()", key, convertMethodName );
+    if ( null == ProcessorUtil.findAnnotationByType( methodElement, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+    {
+      method.addStatement( "return props().has( $S ) ? props().getAny( $S ).$N() : null", key, key, convertMethodName );
+    }
+    else
+    {
+      method.addStatement( "return props().getAny( $S ).$N()", key, convertMethodName );
+    }
     return method;
   }
 

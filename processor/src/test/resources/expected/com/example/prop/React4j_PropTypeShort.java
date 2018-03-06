@@ -24,7 +24,7 @@ class React4j_PropTypeShort extends PropTypeShort {
 
   @Override
   protected short getMyProp() {
-    return props().getAny( "myProp" ).asShort();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).asShort() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeShort> {

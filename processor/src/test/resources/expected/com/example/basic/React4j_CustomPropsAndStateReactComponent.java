@@ -24,7 +24,7 @@ class React4j_CustomPropsAndStateReactComponent extends CustomPropsAndStateReact
 
   @Override
   boolean isSomeField() {
-    return props().getAny( "someField" ).asBoolean();
+    return props().has( "someField" ) ? props().getAny( "someField" ).asBoolean() : null;
   }
 
   @Override

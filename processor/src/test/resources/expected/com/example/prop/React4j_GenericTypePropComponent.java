@@ -24,7 +24,7 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
 
   @Override
   protected T getValue() {
-    return props().getAny( "value" ).cast();
+    return props().has( "value" ) ? props().getAny( "value" ).cast() : null;
   }
 
   private static final class NativeReactComponent<T> extends NativeAdapterComponent<GenericTypePropComponent<T>> {

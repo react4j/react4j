@@ -24,7 +24,7 @@ class React4j_PropTypeLong extends PropTypeLong {
 
   @Override
   protected long getMyProp() {
-    return props().getAny( "myProp" ).asLong();
+    return props().has( "myProp" ) ? props().getAny( "myProp" ).asLong() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeLong> {
