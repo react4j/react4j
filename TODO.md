@@ -72,8 +72,6 @@
 
 * Consider adding support for the new ref proposal if it gets adopted. See https://github.com/reactjs/rfcs/blob/master/text/0017-new-create-ref.md
 
-* See if we can remove ReactElement. Probably true but we would need to add `React.isValidElement(...)`
-
 * Implement the "children" utilities in java or bind to native implementation.
 
 * Upgrade and build TodoMVC as part of the release process.

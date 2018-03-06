@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.Widget;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import jsinterop.base.Js;
-import react4j.core.ReactElement;
+import react4j.core.ReactNode;
 import react4j.dom.ReactDOM;
 
 /**
@@ -22,14 +22,14 @@ public class ReactWidget
   /**
    * The react widget to render.
    */
-  private final ReactElement<?> _reactElement;
+  private final ReactNode _reactElement;
 
   /**
    * Create the widget.
    *
    * @param reactElement the react element to render.
    */
-  public ReactWidget( @Nonnull final ReactElement<?> reactElement )
+  public ReactWidget( @Nonnull final ReactNode reactElement )
   {
     _element = Document.get().createDivElement();
     _reactElement = Objects.requireNonNull( reactElement );

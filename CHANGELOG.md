@@ -4,6 +4,10 @@
 
 ##### Added
 * **\[core\]** Add the `React.isValidELement(ReactNode)` method that exposes the underlying ReactJS method.
+
+##### Removed
+* **\[core\]** Remove the `ReactElement` class as it no longer adds any value.
+
 ### [v0.50](https://github.com/react4j/react4j/tree/v0.50) (2018-03-05)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.49...v0.50)
 

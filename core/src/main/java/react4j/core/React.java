@@ -6,12 +6,15 @@ import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.realityforge.braincheck.BrainCheckConfig;
+import static org.realityforge.braincheck.Guards.*;
 
 /**
  * Native interface to native runtime for creating component.
@@ -44,7 +47,7 @@ public final class React
    * @return a new ReactElement.
    */
   @JsOverlay
-  public static ReactElement<ComponentConstructorFunction> createElement( @Nonnull final ComponentConstructorFunction type )
+  public static ReactNode createElement( @Nonnull final ComponentConstructorFunction type )
   {
     return createElement( type, null );
   }
@@ -57,8 +60,8 @@ public final class React
    * @return a new ReactElement.
    */
   @JsOverlay
-  public static ReactElement<ComponentConstructorFunction> createElement( @Nonnull final ComponentConstructorFunction type,
-                                                                          @Nullable final JsPropertyMap<Object> props )
+  public static ReactNode createElement( @Nonnull final ComponentConstructorFunction type,
+                                         @Nullable final JsPropertyMap<Object> props )
   {
     // Need to pass through undefined to react otherwise the debugger tool displays
     // children as null rather than omitting children
@@ -73,9 +76,9 @@ public final class React
    * @param child the child of the react component.
    * @return a new ReactElement.
    */
-  public static native ReactElement<ComponentConstructorFunction> createElement( @Nonnull ComponentConstructorFunction type,
-                                                                                 @Nullable JsPropertyMap<Object> props,
-                                                                                 @Nullable ReactNode child );
+  public static native ReactNode createElement( @Nonnull ComponentConstructorFunction type,
+                                                @Nullable JsPropertyMap<Object> props,
+                                                @Nullable ReactNode child );
 
   /**
    * Create a ReactElement for the specified React component.
@@ -86,9 +89,9 @@ public final class React
    * @return a new ReactElement.
    */
   @JsOverlay
-  public static ReactElement<ComponentConstructorFunction> createElement( @Nonnull final ComponentConstructorFunction type,
-                                                                          @Nullable final JsPropertyMap<Object> props,
-                                                                          @Nonnull final JsArray<ReactNode> children )
+  public static ReactNode createElement( @Nonnull final ComponentConstructorFunction type,
+                                         @Nullable final JsPropertyMap<Object> props,
+                                         @Nonnull final JsArray<ReactNode> children )
   {
     return createElement( type, props, Js.<ReactNode[]>cast( children ) );
   }
@@ -101,9 +104,9 @@ public final class React
    * @param children the children of the react component.
    * @return a new ReactElement.
    */
-  public static native ReactElement<ComponentConstructorFunction> createElement( @Nonnull ComponentConstructorFunction type,
-                                                                                 @Nullable JsPropertyMap<Object> props,
-                                                                                 @Nonnull ReactNode... children );
+  public static native ReactNode createElement( @Nonnull ComponentConstructorFunction type,
+                                                @Nullable JsPropertyMap<Object> props,
+                                                @Nonnull ReactNode... children );
 
   /**
    * Create a Fragment with the specified children.
@@ -168,11 +171,27 @@ public final class React
    * ref from the original element will be preserved. There is no special behavior for merging
    * any props (unlike cloneWithProps).
    *
-   * @param <T>     the type of the component.
    * @param element the element to clone
    * @param props   the props to merge
    * @return the cloned element
    */
-  public static native <T>
-  ReactElement<T> cloneElement( @Nonnull ReactElement<T> element, @Nullable JsPropertyMap<Object> props );
+  @JsOverlay
+  public static ReactNode cloneElement( @Nonnull final ReactNode element, @Nullable JsPropertyMap<Object> props )
+  {
+    if ( BrainCheckConfig.checkInvariants() )
+    {
+      invariant( () -> isValidElement( element ), () -> "React.cloneElement() passed a non ReactElement" );
+    }
+    return cloneElement0( element, props );
+  }
+
+  /**
+   * Internal method that delegates to reacts cloneElement method.
+   *
+   * @param element the element to clone
+   * @param props   the props to merge
+   * @return the cloned element
+   */
+  @JsMethod( name = "cloneElement" )
+  private static native ReactNode cloneElement0( @Nonnull ReactNode element, @Nullable JsPropertyMap<Object> props );
 }
