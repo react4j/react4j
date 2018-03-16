@@ -193,9 +193,8 @@ const siteConfig = {
   favicon: 'img/favicon/favicon.ico',
   /* colors for website */
   colors: {
-    /* This is derived from https://coolors.co/4464ad-393939-a4b0f5-4481d6-f9f9f9 */
-    primaryColor: '#4481D6',
-    secondaryColor: '#4464AD'
+    primaryColor: '#2b9c43',
+    secondaryColor: '#04724D'
   },
   // This copyright info is used in /core/Footer.js and blog rss/atom feeds.
   copyright: 'Copyright © ' + new Date().getFullYear() + ' the React4j Project',

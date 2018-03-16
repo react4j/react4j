@@ -133,8 +133,6 @@ Copying styles from source document -
 
 * Link TodoMVC from web site in both production and development mode.
 
-* Integrate Logo into website. Update color palette of icon and website to match.
-
 * Add search capability to website
 
 * Reorganize documentation using the following sites as inspiration.
