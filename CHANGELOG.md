@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[core\]** Fixed bug where `ReactConfig` was incorrectly accessing the setting `arez.enable_component_names`
+ rather than correct `react4j.enable_component_names`.
+
 #### Changed
 * **\[docs\]** Updated favicon so that transparent background is supported.
 * **\[docs\]** Updated the color scheme of the logo and website to a green based color scheme to distinguish

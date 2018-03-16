@@ -8,7 +8,7 @@ public final class ReactConfig
   private static final boolean PRODUCTION_MODE =
     System.getProperty( "react4j.environment", "production" ).equals( "production" );
   private static boolean ENABLE_NAMES =
-    "true".equals( System.getProperty( "arez.enable_component_names", PRODUCTION_MODE ? "false" : "true" ) );
+    "true".equals( System.getProperty( "react4j.enable_component_names", PRODUCTION_MODE ? "false" : "true" ) );
   private static final boolean CHECK_COMPONENT_STATE_INVARIANTS =
     "true".equals( System.getProperty( "react4j.check_component_state_invariants",
                                        PRODUCTION_MODE ? "false" : "true" ) );
