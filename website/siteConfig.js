@@ -199,7 +199,7 @@ const siteConfig = {
   },
   // This copyright info is used in /core/Footer.js and blog rss/atom feeds.
   copyright: 'Copyright © ' + new Date().getFullYear() + ' the React4j Project',
-  organizationName: 'arez',
+  organizationName: 'react4j',
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks
     theme: 'idea'
