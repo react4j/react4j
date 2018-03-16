@@ -190,7 +190,7 @@ const siteConfig = {
   /* path to images for header/footer */
   headerIcon: 'img/logo.svg',
   footerIcon: 'img/logo.svg',
-  favicon: 'img/favicon-32x32.png',
+  favicon: 'img/favicon/favicon.ico',
   /* colors for website */
   colors: {
     /* This is derived from https://coolors.co/4464ad-393939-a4b0f5-4481d6-f9f9f9 */
