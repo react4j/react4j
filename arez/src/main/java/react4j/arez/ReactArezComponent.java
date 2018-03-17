@@ -52,6 +52,8 @@ public abstract class ReactArezComponent
 
   /**
    * Method invoked when props changes.
+   *
+   * @param nextProps the new properties of the component.
    */
   protected abstract void reportPropsChanged( @Nullable final JsPropertyMap<Object> nextProps );
 
