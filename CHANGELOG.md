@@ -19,6 +19,10 @@
 * **\[docs\]** Updated favicon so that transparent background is supported.
 * **\[docs\]** Updated the color scheme of the logo and website to a green based color scheme to distinguish
   it from Arez website on which the original site was based.
+* **\[core\]** Introduce a `react4j.check_invariants` compile time setting to control whether invariant
+  checking is enabled in react4j. Expose this setting via `ReactConfig.shouldCheckInvariants()`.
+* **\[core\]** Added guards around the `invariant(...)` calls to make it easier for the GWT compiler to optimize
+  out unused lambda expressions.
 
 ### [v0.51](https://github.com/react4j/react4j/tree/v0.51) (2018-03-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.50...v0.51)

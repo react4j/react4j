@@ -48,9 +48,12 @@ public abstract class Component
    */
   final void setPhase( @Nonnull final ComponentPhase phase )
   {
-    invariant( ReactConfig::checkComponentStateInvariants,
-               () -> "Component.setComponentPhase() invoked on " + this +
-                     " when ReactConfig.checkComponentStateInvariants() is false" );
+    if ( ReactConfig.shouldCheckInvariants() )
+    {
+      invariant( ReactConfig::checkComponentStateInvariants,
+                 () -> "Component.setComponentPhase() invoked on " + this +
+                       " when ReactConfig.checkComponentStateInvariants() is false" );
+    }
     _phase = Objects.requireNonNull( phase );
   }
 
@@ -59,9 +62,12 @@ public abstract class Component
    */
   final void setLifecycleMethod( @Nonnull final LifecycleMethod lifecycleMethod )
   {
-    invariant( ReactConfig::checkComponentStateInvariants,
-               () -> "Component.setLifecycleMethod() invoked on " + this +
-                     " when ReactConfig.checkComponentStateInvariants() is false" );
+    if ( ReactConfig.shouldCheckInvariants() )
+    {
+      invariant( ReactConfig::checkComponentStateInvariants,
+                 () -> "Component.setLifecycleMethod() invoked on " + this +
+                       " when ReactConfig.checkComponentStateInvariants() is false" );
+    }
     _lifecycleMethod = Objects.requireNonNull( lifecycleMethod );
   }
 
@@ -79,7 +85,7 @@ public abstract class Component
    */
   protected final void setInitialState( @Nonnull final JsPropertyMap<Object> state )
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
+    if ( ReactConfig.shouldCheckInvariants() && ReactConfig.checkComponentStateInvariants() )
     {
       apiInvariant( () -> ComponentPhase.INITIALIZING == _phase,
                     () -> "Attempted to invoke setInitialState on " + this + " when component is " +
@@ -94,8 +100,11 @@ public abstract class Component
   @Nonnull
   private NativeComponent component()
   {
-    invariant( () -> null != _nativeComponent,
-               () -> "Invoked component() on " + this + " before a component has been bound." );
+    if ( ReactConfig.shouldCheckInvariants() )
+    {
+      invariant( () -> null != _nativeComponent,
+                 () -> "Invoked component() on " + this + " before a component has been bound." );
+    }
     assert null != _nativeComponent;
     return _nativeComponent;
   }
@@ -195,7 +204,7 @@ public abstract class Component
    */
   private void invariantsSetState()
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
+    if ( ReactConfig.shouldCheckInvariants() && ReactConfig.checkComponentStateInvariants() )
     {
       apiInvariant( () -> LifecycleMethod.RENDER != _lifecycleMethod,
                     () -> "Incorrectly invoked scheduleStateUpdate() on " + this + " in scope of render()." );
@@ -222,7 +231,7 @@ public abstract class Component
    */
   protected final void scheduleRender( final boolean force )
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
+    if ( ReactConfig.shouldCheckInvariants() && ReactConfig.checkComponentStateInvariants() )
     {
       apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
                     () -> "Incorrectly invoked scheduleRender() on " + this + " when component is " +

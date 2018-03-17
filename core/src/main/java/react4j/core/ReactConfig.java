@@ -1,5 +1,7 @@
 package react4j.core;
 
+import org.realityforge.braincheck.BrainCheckConfig;
+
 /**
  * Location of all compile time configuration settings for framework.
  */
@@ -12,6 +14,8 @@ public final class ReactConfig
   private static final boolean CHECK_COMPONENT_STATE_INVARIANTS =
     "true".equals( System.getProperty( "react4j.check_component_state_invariants",
                                        PRODUCTION_MODE ? "false" : "true" ) );
+  private static final boolean CHECK_INVARIANTS =
+    "true".equals( System.getProperty( "react4j.check_invariants", PRODUCTION_MODE ? "false" : "true" ) );
 
   private ReactConfig()
   {
@@ -51,5 +55,15 @@ public final class ReactConfig
   public static boolean checkComponentStateInvariants()
   {
     return CHECK_COMPONENT_STATE_INVARIANTS;
+  }
+
+  /**
+   * Return true if invariants will be checked.
+   *
+   * @return true if invariants will be checked.
+   */
+  public static boolean shouldCheckInvariants()
+  {
+    return CHECK_INVARIANTS && BrainCheckConfig.checkInvariants();
   }
 }
