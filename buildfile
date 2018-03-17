@@ -313,7 +313,7 @@ define 'react4j' do
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
 
-  ipr.add_default_testng_configuration(:jvm_args => '-ea -Dbraincheck.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources')
+  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.version=#{ENV['PRODUCT_VERSION'] || project.version} -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false")
   ipr.add_component_from_artifact(:idea_codestyle)
 
   EXAMPLES.each_pair do |key, gwt_module|
