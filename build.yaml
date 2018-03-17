@@ -60,3 +60,11 @@ artifacts:
 
   javax_inject: javax.inject:javax.inject:jar:1
   javax_inject_sources: javax.inject:javax.inject:jar:sources:1
+
+  gir: org.realityforge.gir:gir-core:jar:0.02
+
+  javacsv: net.sourceforge.javacsv:javacsv:jar:2.1
+
+  gwt_symbolmap: org.realityforge.gwt.symbolmap:gwt-symbolmap:jar:0.02
+
+  testng: org.testng:testng:jar:6.11

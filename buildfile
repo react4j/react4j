@@ -171,6 +171,86 @@ define 'react4j' do
     iml.test_source_directories << _('src/test/resources/bad_input')
   end
 
+  desc 'Utilities to output of GWT when compiling React4j applications'
+  define 'gwt-output-qa' do
+    compile.with PROVIDED_DEPS,
+                 :javacsv,
+                 :jetbrains_annotations,
+                 :gwt_symbolmap,
+                 :testng
+
+    package(:jar)
+    package(:sources)
+    package(:javadoc)
+  end
+
+  desc 'Test React4j in downstream projects'
+  define 'downstream-test' do
+    compile.with :gir, PROVIDED_DEPS
+
+    test.options[:properties] =
+      {
+        # Take the version that we are releasing else fallback to project version
+        'react4j.version' => ENV['PRODUCT_VERSION'] || project.version,
+        'react4j.deploy_test.fixture_dir' => _('src/test/resources/fixtures').to_s,
+        'react4j.deploy_test.work_dir' => _(:target, 'deploy_test/workdir').to_s
+      }
+    test.options[:java_args] = ['-ea']
+
+    local_test_repository_url = URI.join('file:///', project._(:target, :local_test_repository)).to_s
+    compile.enhance do
+      projects_to_upload =projects(%w(annotations core processor arez extras dom widget))
+      old_release_to = repositories.release_to
+      begin
+        # First we install them in a local repository so we don't have to access the network during local builds
+        repositories.release_to = local_test_repository_url
+        projects_to_upload.each do |prj|
+          prj.packages.each do |pkg|
+            # Uninstall version already present in local maven cache
+            pkg.uninstall
+            # Install version into local repository
+            pkg.upload
+          end
+        end
+        if ENV['STAGING_USERNAME']
+          # Then we install it to a remote repository so that TravisCI can access the builds when it attempts
+          # to perform a release
+          repositories.release_to =
+            { :url => 'https://stocksoftware.jfrog.io/stocksoftware/staging', :username => ENV['STAGING_USERNAME'], :password => ENV['STAGING_PASSWORD'] }
+          projects_to_upload.each do |prj|
+            prj.packages.each do |pkg|
+              pkg.upload
+            end
+          end
+        end
+      ensure
+        repositories.release_to = old_release_to
+      end
+    end
+
+    test.compile.enhance do
+      cp = project.compile.dependencies.map(&:to_s) + [project.compile.target.to_s]
+
+      properties = {}
+      # Take the version that we are releasing else fallback to project version
+      properties['react4j.version'] = ENV['PRODUCT_VERSION'] || project.version
+      properties['react4j.deploy_test.work_dir'] = _(:target, 'deploy_test/workdir').to_s
+      properties['react4j.deploy_test.fixture_dir'] = _('src/test/resources/fixtures').to_s
+      properties['react4j.deploy_test.local_repository_url'] = local_test_repository_url
+      properties['react4j.deploy_test.store_statistics'] = ENV['STORE_BUILD_STATISTICS'] == 'true'
+
+      Java::Commands.java 'react4j.downstream.CollectBuildStats', { :classpath => cp, :properties => properties }
+    end
+
+    # Only run this test when preparing for release
+    test.exclude '*BuildStatsTest' unless ENV['PRODUCT_VERSION']
+
+    test.using :testng
+    test.compile.with :guiceyloops,
+                      project('gwt-output-qa').package(:jar),
+                      project('gwt-output-qa').compile.dependencies
+  end
+
   desc 'Examples that are only used to illustrate ideas in documentation'
   define 'doc-examples' do
     pom.provided_dependencies.concat PROVIDED_DEPS

@@ -117,6 +117,7 @@ HEADER
     stage('PushChanges', 'Push changes to git repository') do
       sh 'git push'
       sh 'git push --tags'
+      sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
     end
 
     stage('GithubRelease', 'Create a Release on GitHub') do

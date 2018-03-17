@@ -11,6 +11,10 @@
 * Fix the build process so that it is no longer possible to build jars where the java source is not present
   in the gwt enhanced artifacts.
 
+##### Added
+* Added test infrastructure that builds downstream `todomvc` application with the updated version of `react4j`,
+  compares the build sizes and then pushes the updates during release process.
+
 #### Changed
 * **\[docs\]** Updated favicon so that transparent background is supported.
 * **\[docs\]** Updated the color scheme of the logo and website to a green based color scheme to distinguish
