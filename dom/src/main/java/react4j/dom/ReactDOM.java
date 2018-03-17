@@ -7,9 +7,9 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import org.realityforge.braincheck.BrainCheckConfig;
 import react4j.core.Procedure;
 import react4j.core.React;
+import react4j.core.ReactConfig;
 import react4j.core.ReactNode;
 import react4j.dom.proptypes.html.HtmlGlobalFields;
 import static org.realityforge.braincheck.Guards.*;
@@ -60,7 +60,7 @@ public class ReactDOM
                                @Nonnull final Element container,
                                @Nullable final Procedure onUpdate )
   {
-    if ( BrainCheckConfig.checkInvariants() )
+    if ( ReactConfig.shouldCheckInvariants() )
     {
       invariant( () -> React.isValidElement( node ), () -> "ReactDOM.render passed a non ReactElement" );
     }

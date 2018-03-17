@@ -13,7 +13,6 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.BrainCheckConfig;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -178,7 +177,7 @@ public final class React
   @JsOverlay
   public static ReactNode cloneElement( @Nonnull final ReactNode element, @Nullable JsPropertyMap<Object> props )
   {
-    if ( BrainCheckConfig.checkInvariants() )
+    if ( ReactConfig.shouldCheckInvariants() )
     {
       invariant( () -> isValidElement( element ), () -> "React.cloneElement() passed a non ReactElement" );
     }
