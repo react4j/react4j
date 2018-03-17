@@ -24,7 +24,7 @@ install:
 - bundle install
 script: buildr package jacoco:report site:deploy publish_if_tagged
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
 git:
   depth: false
 env:
