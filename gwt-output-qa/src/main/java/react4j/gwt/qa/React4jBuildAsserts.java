@@ -38,8 +38,8 @@ public final class React4jBuildAsserts
   {
     index.assertSymbol( "react4j\\.core\\.ComponentPhase", enabled );
     index.assertSymbol( "react4j\\.core\\.LifecycleMethod", enabled );
-    index.assertSymbol( "react4j\\.core\\.LifecycleMethod", "_phase", enabled );
-    index.assertSymbol( "react4j\\.core\\.LifecycleMethod", "_lifecycleMethod", enabled );
+    index.assertSymbol( "react4j\\.core\\.Component", "_phase", enabled );
+    index.assertSymbol( "react4j\\.core\\.Component", "_lifecycleMethod", enabled );
   }
 
   /**
