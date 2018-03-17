@@ -924,16 +924,21 @@ final class Generator
   @Nonnull
   private static MethodSpec.Builder buildGetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
   {
-    return MethodSpec.methodBuilder( "getProvider" ).
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( "getProvider" ).
       addModifiers( Modifier.PRIVATE, Modifier.STATIC ).
-      returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, TypeName.get( descriptor.getDeclaredType() ) ) ).
-      addStatement( "$T.invariant( () -> null != c_provider, () -> \"Attempted to create an instance of the React4j " +
+      returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, TypeName.get( descriptor.getDeclaredType() ) ) );
+    final CodeBlock.Builder block = CodeBlock.builder();
+    block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
+    block.addStatement(
+      "$T.invariant( () -> null != c_provider, () -> \"Attempted to create an instance of the React4j " +
                     "component named '$N' before the dependency injection provider has been initialized. Please see " +
                     "the documentation at https://react4j.github.io/dependency_injection for directions how to " +
                     "configure dependency injection.\" )",
-                    GUARDS_CLASSNAME,
-                    descriptor.getName() ).
-      addStatement( "return c_provider" );
+      GUARDS_CLASSNAME,
+      descriptor.getName() );
+    block.endControlFlow();
+    method.addCode( block.build() );
+    return method.addStatement( "return c_provider" );
   }
 
   @Nonnull

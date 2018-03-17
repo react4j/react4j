@@ -32,7 +32,9 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
   }
 
   private static Provider<NestedCompleteComponent.BasicReactComponent> getProvider() {
-    Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'BasicReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'BasicReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+    }
     return c_provider;
   }
 

@@ -27,7 +27,9 @@ class React4j_DaggerTrueComponent extends DaggerTrueComponent {
   }
 
   private static Provider<DaggerTrueComponent> getProvider() {
-    Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'DaggerTrueComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'DaggerTrueComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+    }
     return c_provider;
   }
 
