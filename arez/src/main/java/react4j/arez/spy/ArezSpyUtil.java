@@ -14,6 +14,8 @@ public final class ArezSpyUtil
 
   /**
    * Return true if spy event logging is enabled.
+   *
+   * @return true if spy event logging is enabled.
    */
   public static boolean isSpyEventLoggingEnabled()
   {
