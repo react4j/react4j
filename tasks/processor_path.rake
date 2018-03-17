@@ -22,7 +22,9 @@ module Buildr
         if project.iml?
           project.iml.instance_variable_set('@main_generated_source_directories', [])
           project.iml.instance_variable_set('@processorpath', {})
-          project.iml.main_generated_source_directories << project._('generated/processors/main/java')
+          if project.enable_annotation_processor?
+            project.iml.main_generated_source_directories << project._('generated/processors/main/java')
+          end
           project.clean do
             # Clean the IDE generated sources
             rm_rf project._(:generated)
