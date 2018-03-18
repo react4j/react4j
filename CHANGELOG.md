@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.52](https://github.com/react4j/react4j/tree/v0.52) (2018-03-18)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.51...v0.52)
 
 ##### Fixed
 * **\[core\]** Fixed bug where `ReactConfig` was incorrectly accessing the setting `arez.enable_component_names`
