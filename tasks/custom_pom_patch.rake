@@ -3,14 +3,13 @@ raise 'Patch already integrated into buildr code' unless Buildr::VERSION.to_s ==
 class Buildr::CustomPom
   attr_accessor :dependency_filter
 
-    def additional_dependencies
-      @additional_dependencies ||= []
-    end
+  def additional_dependencies
+    @additional_dependencies ||= []
+  end
 
-    def additional_dependencies=(additional_dependencies)
-      @additional_dependencies = additional_dependencies
-    end
-
+  def additional_dependencies=(additional_dependencies)
+    @additional_dependencies = additional_dependencies
+  end
 
   def self.pom_xml(project, package)
     Proc.new do
