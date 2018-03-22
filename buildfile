@@ -118,7 +118,7 @@ define 'react4j' do
 
   desc 'The Annotation processor'
   define 'processor' do
-    pom.provided_dependencies.concat [:javax_jsr305]
+    pom.dependency_filter = Proc.new {|_| false }
 
     project.enable_annotation_processor = true
 
