@@ -24,6 +24,7 @@
 * Change the generated poms so that transitive dependencies of intra-project modules are not duplicated
   as dependencies within each modules dependencies list and instead intra-project dependencies include
   dependencies transitively.
+* **\[dom\]** Remove unused dependency on `gwt-user` artifact.
 
 ### [v0.52](https://github.com/react4j/react4j/tree/v0.52) (2018-03-18)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.51...v0.52)
