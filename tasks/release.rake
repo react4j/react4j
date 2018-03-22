@@ -117,7 +117,11 @@ HEADER
     stage('PushChanges', 'Push changes to git repository') do
       sh 'git push'
       sh 'git push --tags'
-      sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
+      if ENV['STAGING_USERNAME']
+        # Only push the downstream projects if we have also staged a release. This typically only
+        # happens when the release is occurring on Travis.
+        sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
+      end
     end
 
     stage('GithubRelease', 'Create a Release on GitHub') do
