@@ -4,6 +4,7 @@ import elemental2.core.JsError;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -275,6 +276,7 @@ public abstract class Component
    * By default it just delegates to the {@link #postConstruct()} method.
    * This method exists to give middleware a mechanism to hook into component construction lifecycle.
    */
+  @OverridingMethodsMustInvokeSuper
   protected void performPostConstruct()
   {
     postConstruct();
