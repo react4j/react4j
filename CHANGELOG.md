@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.53](https://github.com/react4j/react4j/tree/v0.53) (2018-03-23)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.52...v0.53)
 
 ##### Fixed
 * **\[processor\]** Remove all dependencies declared in the pom for the `react4j-processor` artifact so
