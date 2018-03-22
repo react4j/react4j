@@ -11,6 +11,14 @@ class Buildr::CustomPom
     @additional_dependencies = additional_dependencies
   end
 
+  def include_transitive_dependencies
+    @include_transitive_dependencies ||= []
+  end
+
+  def include_transitive_dependencies=(include_transitive_dependencies)
+    @include_transitive_dependencies = include_transitive_dependencies
+  end
+
   def self.pom_xml(project, package)
     Proc.new do
       xml = Builder::XmlMarkup.new(:indent => 2)
@@ -81,6 +89,7 @@ class Buildr::CustomPom
         provided_deps = Buildr.artifacts(project.pom.provided_dependencies)
         runtime_deps = Buildr.artifacts(project.pom.runtime_dependencies)
         additional_deps = Buildr.artifacts(project.pom.additional_dependencies)
+        include_transitive_deps = Buildr.artifacts(project.pom.include_transitive_dependencies).collect {|dep| dep.to_s}
         optional_deps = Buildr.artifacts(project.pom.optional_dependencies).collect{|dep| dep.to_s}
 
         done = []
@@ -89,26 +98,26 @@ class Buildr::CustomPom
         deps += provided_deps.
           select {|d| d.is_a?(ActsAsArtifact)}.
           select {|d| !done.include?(d.to_s)}.
-          collect {|dep| done << dep.to_s; dep.to_hash.merge(:scope => 'provided', :optional => optional_deps.include?(dep.to_s))}
+          collect {|dep| done << dep.to_s; dep.to_hash.merge(:scope => 'provided', :optional => optional_deps.include?(dep.to_s), :include_transitive => include_transitive_deps.include?(dep.to_s))}
         deps += runtime_deps.
           select {|d| d.is_a?(ActsAsArtifact)}.
           select {|d| !done.include?(d.to_s)}.
-          collect {|dep| done << dep.to_s; dep.to_hash.merge(:scope => 'runtime', :optional => optional_deps.include?(dep.to_s))}
+          collect {|dep| done << dep.to_s; dep.to_hash.merge(:scope => 'runtime', :optional => optional_deps.include?(dep.to_s), :include_transitive => include_transitive_deps.include?(dep.to_s))}
         deps += additional_deps.
           select {|d| d.is_a?(ActsAsArtifact)}.
           select {|d| !done.include?(d.to_s)}.
-          collect {|dep| done << dep.to_s; dep.to_hash.merge(:scope => 'compile', :optional => optional_deps.include?(dep.to_s))}
+          collect {|dep| done << dep.to_s; dep.to_hash.merge(:scope => 'compile', :optional => optional_deps.include?(dep.to_s), :include_transitive => include_transitive_deps.include?(dep.to_s))}
 
         deps +=
           Buildr.artifacts(project.compile.dependencies).
             select {|d| d.is_a?(ActsAsArtifact)}.
             select {|d| !done.include?(d.to_s)}.
-            collect {|d| done << d.to_s; d.to_hash.merge(:scope => 'compile', :optional => optional_deps.include?(d.to_s))}
+            collect {|d| done << d.to_s; d.to_hash.merge(:scope => 'compile', :optional => optional_deps.include?(d.to_s), :include_transitive => include_transitive_deps.include?(d.to_s))}
 
         deps += Buildr.artifacts(project.test.compile.dependencies).
           select {|d| d.is_a?(ActsAsArtifact)}.
           select {|d| !done.include?(d.to_s)}.
-          collect {|d| d.to_hash.merge(:scope => 'test')}
+          collect {|d| d.to_hash.merge(:scope => 'test', :include_transitive => include_transitive_deps.include?(d.to_s))}
 
         xml.dependencies do
           deps.select {|dependency| project.pom.dependency_filter.nil? ? true : project.pom.dependency_filter.call(dependency)}.each do |dependency|
@@ -119,10 +128,12 @@ class Buildr::CustomPom
               xml.classifier dependency[:classifier] if dependency[:classifier] && dependency[:classifier].to_s != 'jar'
               xml.scope dependency[:scope] unless dependency[:scope] == 'compile'
               xml.optional true if dependency[:optional]
-              xml.exclusions do
-                xml.exclusion do
-                  xml.groupId '*'
-                  xml.artifactId '*'
+              unless dependency[:include_transitive]
+                xml.exclusions do
+                  xml.exclusion do
+                    xml.groupId '*'
+                    xml.artifactId '*'
+                  end
                 end
               end
             end

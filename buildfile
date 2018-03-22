@@ -43,6 +43,7 @@ define 'react4j' do
   define 'core' do
     pom.provided_dependencies.concat PROVIDED_DEPS
     pom.additional_dependencies << project('annotations').package(:jar)
+    pom.include_transitive_dependencies << project('annotations').package(:jar)
 
     js_assets(project, :core)
 
@@ -64,6 +65,7 @@ define 'react4j' do
   desc 'React4j DOM binding'
   define 'dom' do
     pom.provided_dependencies.concat PROVIDED_DEPS
+    pom.include_transitive_dependencies << project('core').package(:jar)
 
     js_assets(project, :dom)
 
@@ -84,6 +86,7 @@ define 'react4j' do
   desc 'React4j-Arez Integration'
   define 'arez' do
     pom.provided_dependencies.concat PROVIDED_DEPS
+    pom.include_transitive_dependencies << project('dom').package(:jar)
 
     compile.with project('core').package(:jar),
                  project('core').compile.dependencies,
@@ -105,6 +108,7 @@ define 'react4j' do
   desc 'Interoperability with GWT Widget API'
   define 'widget' do
     pom.provided_dependencies.concat PROVIDED_DEPS
+    pom.include_transitive_dependencies << project('dom').package(:jar)
 
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
@@ -279,6 +283,7 @@ define 'react4j' do
   desc 'Other assorted components'
   define 'extras' do
     pom.provided_dependencies.concat PROVIDED_DEPS
+    pom.include_transitive_dependencies << project('arez').package(:jar)
 
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
