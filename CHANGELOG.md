@@ -6,6 +6,9 @@
 * **\[core\]** Annotate `performPostConstruct` method in `react4j.core.Component` with
   `@OverridingMethodsMustInvokeSuper` so that findbugs can verify that subclasses correctly invoke super
   class method if they override it.
+* **\[arez\]** Annotate several methods in `react4j.arez.ReactArezComponent` with
+  `@OverridingMethodsMustInvokeSuper` so that findbugs can verify that subclasses correctly invoke super
+  class methods if they override them.
 
 ### [v0.52](https://github.com/react4j/react4j/tree/v0.52) (2018-03-18)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.51...v0.52)
