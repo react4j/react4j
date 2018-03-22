@@ -17,6 +17,10 @@
 * **\[arez\]** Annotate several methods in `react4j.arez.ReactArezComponent` with
   `@OverridingMethodsMustInvokeSuper` so that findbugs can verify that subclasses correctly invoke super
   class methods if they override them.
+* **\[core\]** Add the `react-annotations` as a pom dependency so that downstream applications need only
+  include `react-core` dependency and be supplied the `react-annotations` on the classpath. The
+  `react-annotations` is not added as a normal compile dependency as no code within this package actually
+  makes use of the artifact or should make use of the package.
 
 ### [v0.52](https://github.com/react4j/react4j/tree/v0.52) (2018-03-18)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.51...v0.52)

@@ -42,6 +42,7 @@ define 'react4j' do
   desc 'React4j core binding'
   define 'core' do
     pom.provided_dependencies.concat PROVIDED_DEPS
+    pom.additional_dependencies << project('annotations').package(:jar)
 
     js_assets(project, :core)
 

@@ -3,6 +3,15 @@ raise 'Patch already integrated into buildr code' unless Buildr::VERSION.to_s ==
 class Buildr::CustomPom
   attr_accessor :dependency_filter
 
+    def additional_dependencies
+      @additional_dependencies ||= []
+    end
+
+    def additional_dependencies=(additional_dependencies)
+      @additional_dependencies = additional_dependencies
+    end
+
+
   def self.pom_xml(project, package)
     Proc.new do
       xml = Builder::XmlMarkup.new(:indent => 2)
@@ -72,6 +81,7 @@ class Buildr::CustomPom
 
         provided_deps = Buildr.artifacts(project.pom.provided_dependencies)
         runtime_deps = Buildr.artifacts(project.pom.runtime_dependencies)
+        additional_deps = Buildr.artifacts(project.pom.additional_dependencies)
         optional_deps = Buildr.artifacts(project.pom.optional_dependencies)
 
         done = []
@@ -85,6 +95,10 @@ class Buildr::CustomPom
           select {|d| d.is_a?(ActsAsArtifact)}.
           select {|d| !done.include?(d.to_s)}.
           collect {|dep| done << dep.to_s; dep.to_hash.merge(:scope => 'runtime', :optional => optional_deps.include?(dep.to_s))}
+        deps += additional_deps.
+          select {|d| d.is_a?(ActsAsArtifact)}.
+          select {|d| !done.include?(d.to_s)}.
+          collect {|dep| done << dep.to_s; dep.to_hash.merge(:scope => 'compile', :optional => optional_deps.include?(dep.to_s))}
 
         deps +=
           Buildr.artifacts(project.compile.dependencies).
