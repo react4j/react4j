@@ -81,7 +81,7 @@ class Buildr::CustomPom
         provided_deps = Buildr.artifacts(project.pom.provided_dependencies)
         runtime_deps = Buildr.artifacts(project.pom.runtime_dependencies)
         additional_deps = Buildr.artifacts(project.pom.additional_dependencies)
-        optional_deps = Buildr.artifacts(project.pom.optional_dependencies)
+        optional_deps = Buildr.artifacts(project.pom.optional_dependencies).collect{|dep| dep.to_s}
 
         done = []
 
