@@ -25,6 +25,7 @@ define 'react4j' do
   desc 'Annotations for defining a react component'
   define 'annotations' do
     pom.provided_dependencies.concat PROVIDED_DEPS
+    pom.dependency_filter = Proc.new {|dep| dep[:group].to_s != 'com.google.jsinterop' || (dep[:id].to_s == 'base' && dep[:classifier].nil?)}
 
     compile.with PROVIDED_DEPS,
                  :jsinterop_base,
@@ -44,6 +45,7 @@ define 'react4j' do
     pom.provided_dependencies.concat PROVIDED_DEPS
     pom.additional_dependencies << project('annotations').package(:jar)
     pom.include_transitive_dependencies << project('annotations').package(:jar)
+    pom.dependency_filter = Proc.new {|dep| !project('annotations').compile.dependencies.include?(dep[:artifact])}
 
     js_assets(project, :core)
 
@@ -66,6 +68,8 @@ define 'react4j' do
   define 'dom' do
     pom.provided_dependencies.concat PROVIDED_DEPS
     pom.include_transitive_dependencies << project('core').package(:jar)
+    pom.include_transitive_dependencies << artifact(:elemental2_dom)
+    pom.dependency_filter = Proc.new {|dep| !project('core').compile.dependencies.include?(dep[:artifact]) && dep[:id].to_s != 'elemental2-promise'}
 
     js_assets(project, :dom)
 
@@ -87,6 +91,7 @@ define 'react4j' do
   define 'arez' do
     pom.provided_dependencies.concat PROVIDED_DEPS
     pom.include_transitive_dependencies << project('dom').package(:jar)
+    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) }
 
     compile.with project('core').package(:jar),
                  project('core').compile.dependencies,
@@ -109,6 +114,7 @@ define 'react4j' do
   define 'widget' do
     pom.provided_dependencies.concat PROVIDED_DEPS
     pom.include_transitive_dependencies << project('dom').package(:jar)
+    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) }
 
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
@@ -284,6 +290,7 @@ define 'react4j' do
   define 'extras' do
     pom.provided_dependencies.concat PROVIDED_DEPS
     pom.include_transitive_dependencies << project('arez').package(:jar)
+    pom.dependency_filter = Proc.new {|dep| !project('arez').compile.dependencies.include?(dep[:artifact]) && !project('annotations').compile.dependencies.include?(dep[:artifact]) && dep[:artifact] != project('annotations').package(:jar) && !project('processor').compile.dependencies.include?(dep[:artifact]) && dep[:artifact] != project('processor').package(:jar) }
 
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,

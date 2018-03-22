@@ -21,6 +21,9 @@
   include `react-core` dependency and be supplied the `react-annotations` on the classpath. The
   `react-annotations` is not added as a normal compile dependency as no code within this package actually
   makes use of the artifact or should make use of the package.
+* Change the generated poms so that transitive dependencies of intra-project modules are not duplicated
+  as dependencies within each modules dependencies list and instead intra-project dependencies include
+  dependencies transitively.
 
 ### [v0.52](https://github.com/react4j/react4j/tree/v0.52) (2018-03-18)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.51...v0.52)
