@@ -253,8 +253,8 @@ public final class CollectBuildStats
   private static void archiveStatistics( @Nonnull final Path archiveDir )
   {
     final OrderedProperties properties = new OrderedProperties();
-    properties.setProperty( "todomvc.size", String.valueOf( getTodoMvcSize() ) );
-    properties.setProperty( "todomvc.gz.size", String.valueOf( getTodoMvcGzSize() ) );
+    properties.setProperty( "todomvc.size", String.valueOf( getTodoMvcSize( archiveDir ) ) );
+    properties.setProperty( "todomvc.gz.size", String.valueOf( getTodoMvcGzSize( archiveDir ) ) );
 
     final Path statisticsFile = archiveDir.resolve( "statistics.properties" );
     Gir.messenger().info( "Archiving statistics to " + statisticsFile + "." );
@@ -281,19 +281,20 @@ public final class CollectBuildStats
     }
   }
 
-  private static long getTodoMvcSize()
+  private static long getTodoMvcSize( @Nonnull final Path archiveDir )
   {
-    return getFileSize( "target/generated/gwt/react4j.todomvc.TodomvcProd/todomvc/todomvc.nocache.js" );
+    ;
+    return getFileSize( archiveDir.resolve( "assets" ).resolve( "todomvc" ).resolve( "todomvc.nocache.js" ) );
   }
 
-  private static long getTodoMvcGzSize()
+  private static long getTodoMvcGzSize( @Nonnull final Path archiveDir )
   {
-    return getFileSize( "target/generated/gwt/react4j.todomvc.TodomvcProd/todomvc/todomvc.nocache.js.gz" );
+    return getFileSize( archiveDir.resolve( "assets" ).resolve( "todomvc" ).resolve( "todomvc.nocache.js.gz" ) );
   }
 
-  private static long getFileSize( @Nonnull final String filename )
+  private static long getFileSize( @Nonnull final Path path )
   {
-    final File file = FileUtil.getCurrentDirectory().resolve( filename ).toFile();
+    final File file = path.toFile();
     assert file.exists();
     return file.length();
   }
