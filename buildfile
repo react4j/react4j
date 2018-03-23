@@ -42,7 +42,6 @@ define 'react4j' do
 
   desc 'React4j core binding'
   define 'core' do
-    pom.provided_dependencies.concat PROVIDED_DEPS
     pom.additional_dependencies << project('annotations').package(:jar)
     pom.include_transitive_dependencies << project('annotations').package(:jar)
     pom.dependency_filter = Proc.new {|dep| !project('annotations').compile.dependencies.include?(dep[:artifact])}
