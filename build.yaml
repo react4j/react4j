@@ -29,12 +29,12 @@ artifacts:
   elemental2_dom: com.google.elemental2:elemental2-dom:jar:1.0.0-RC1
   elemental2_promise: com.google.elemental2:elemental2-promise:jar:1.0.0-RC1
 
-  arez_annotations: org.realityforge.arez:arez-annotations:jar:gwt:0.62
-  arez_core: org.realityforge.arez:arez-core:jar:gwt:0.62
-  arez_processor: org.realityforge.arez:arez-processor:jar:0.62
-  arez_component: org.realityforge.arez:arez-component:jar:gwt:0.62
-  arez_extras: org.realityforge.arez:arez-extras:jar:gwt:0.62
-  arez_browser_extras: org.realityforge.arez:arez-browser-extras:jar:gwt:0.62
+  arez_annotations: org.realityforge.arez:arez-annotations:jar:0.71
+  arez_core: org.realityforge.arez:arez-core:jar:0.71
+  arez_processor: org.realityforge.arez:arez-processor:jar:0.71
+  arez_component: org.realityforge.arez:arez-component:jar:0.71
+  arez_extras: org.realityforge.arez:arez-extras:jar:0.71
+  arez_browser_extras: org.realityforge.arez:arez-browser-extras:jar:0.71
 
   braincheck: org.realityforge.braincheck:braincheck:jar:gwt:1.4.0
 
