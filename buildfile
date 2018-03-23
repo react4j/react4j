@@ -263,8 +263,6 @@ define 'react4j' do
 
   desc 'Examples that are only used to illustrate ideas in documentation'
   define 'doc-examples' do
-    pom.provided_dependencies.concat PROVIDED_DEPS
-
     project.enable_annotation_processor = true
 
     compile.with project('annotations').package(:jar),
