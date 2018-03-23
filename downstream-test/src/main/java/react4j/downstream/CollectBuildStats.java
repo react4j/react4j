@@ -76,7 +76,7 @@ public final class CollectBuildStats
           Git.checkout();
           Git.pull();
           Git.deleteLocalBranches();
-          Stream.of( "raw", "arez", "dagger", "raw_maven" ).forEach( branch -> {
+          Stream.of( "raw", "arez", "dagger", "raw_maven", "arez_maven" ).forEach( branch -> {
             Gir.messenger().info( "Processing branch " + branch + "." );
 
             final boolean isMaven = branch.endsWith( "_maven" );
