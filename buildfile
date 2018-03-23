@@ -284,7 +284,6 @@ define 'react4j' do
   # These will one day move to a separate repository once the API stabilizes
   desc 'Other assorted components'
   define 'extras' do
-    pom.provided_dependencies.concat PROVIDED_DEPS
     pom.include_transitive_dependencies << project('arez').package(:jar)
     pom.dependency_filter = Proc.new {|dep| !project('arez').compile.dependencies.include?(dep[:artifact]) && !project('annotations').compile.dependencies.include?(dep[:artifact]) && dep[:artifact] != project('annotations').package(:jar) && !project('processor').compile.dependencies.include?(dep[:artifact]) && dep[:artifact] != project('processor').package(:jar) }
 
