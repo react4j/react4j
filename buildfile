@@ -89,7 +89,8 @@ define 'react4j' do
   define 'arez' do
     pom.provided_dependencies.concat PROVIDED_DEPS
     pom.include_transitive_dependencies << project('dom').package(:jar)
-    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) }
+    pom.include_transitive_dependencies << artifact(:arez_browser_extras)
+    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-browser-extras') }
 
     compile.with project('core').package(:jar),
                  project('core').compile.dependencies,

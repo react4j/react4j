@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+##### Fixed
+* **\[arez\]** Correct the dependencies as declared in pom for `react4j-arez` artifact.
+
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.71`.
 
