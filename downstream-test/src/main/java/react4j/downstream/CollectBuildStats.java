@@ -117,6 +117,7 @@ public final class CollectBuildStats
               Gir.messenger().info( "Failed to build branch '" + branch + "' before modifications.", e );
             }
 
+            Git.resetBranch();
             Git.clean();
 
             if ( Buildr.patchBuildYmlDependency( appDirectory, "org.realityforge.react4j", version ) )
