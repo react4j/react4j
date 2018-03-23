@@ -120,7 +120,20 @@ public final class CollectBuildStats
             Git.resetBranch();
             Git.clean();
 
-            if ( Buildr.patchBuildYmlDependency( appDirectory, "org.realityforge.react4j", version ) )
+            final boolean patched;
+            if ( isMaven )
+            {
+              patched = Maven.patchPomProperty( appDirectory,
+                                                () -> "Update the 'react4j' dependencies to version '" + version + "'",
+                                                "react4j.version",
+                                                version );
+            }
+            else
+            {
+              patched = Buildr.patchBuildYmlDependency( appDirectory, "org.realityforge.react4j", version );
+            }
+
+            if ( patched )
             {
               Gir.messenger().info( "Building branch " + branch + " after modifications." );
               if ( isMaven )
