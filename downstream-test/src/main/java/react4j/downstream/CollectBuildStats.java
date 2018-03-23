@@ -78,6 +78,8 @@ public final class CollectBuildStats
           Stream.of( "raw", "arez", "dagger" ).forEach( branch -> {
             Gir.messenger().info( "Processing branch " + branch + "." );
 
+            final boolean isMaven = branch.endsWith( "_maven" );
+
             Git.checkout( branch );
             Git.clean();
             final String newBranch = branch + "-React4jUpgrade-" + version;
@@ -97,7 +99,7 @@ public final class CollectBuildStats
 
               final String prefix = branch + ".before";
               final Path archiveDir = getArchiveDir( workingDirectory, prefix );
-              buildAndRecordStatistics( archiveDir );
+              buildAndRecordStatistics( archiveDir, !isMaven );
               loadStatistics( overallStatistics, archiveDir, prefix );
               loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
               initialBuildSuccess = true;
@@ -118,7 +120,7 @@ public final class CollectBuildStats
               final Path archiveDir = getArchiveDir( workingDirectory, prefix );
               try
               {
-                buildAndRecordStatistics( archiveDir );
+                buildAndRecordStatistics( archiveDir, !isMaven );
                 loadStatistics( overallStatistics, archiveDir, prefix );
                 loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
                 Git.checkout( branch );
@@ -235,7 +237,7 @@ public final class CollectBuildStats
     }
   }
 
-  private static void buildAndRecordStatistics( @Nonnull final Path archiveDir )
+  private static void buildAndRecordStatistics( @Nonnull final Path archiveDir, final boolean useBuildr )
   {
     if ( !archiveDir.toFile().mkdirs() )
     {
@@ -243,10 +245,20 @@ public final class CollectBuildStats
       Gir.messenger().error( message );
     }
 
-    // Perform the build
-    Ruby.buildr( "clean", "package", "EXCLUDE_GWT_DEV_MODULE=true", "GWT=react4j-todomvc" );
+    if ( useBuildr )
+    {
+      // Perform the build
+      Ruby.buildr( "clean", "package", "EXCLUDE_GWT_DEV_MODULE=true", "GWT=react4j-todomvc" );
 
-    archiveOutput( archiveDir );
+      archiveBuildrOutput( archiveDir );
+    }
+    else
+    {
+      // Assume maven
+      Exec.system( "mvn", "clean", "package" );
+
+      archiveMavenOutput( archiveDir );
+    }
     archiveStatistics( archiveDir );
   }
 
@@ -261,10 +273,20 @@ public final class CollectBuildStats
     writeProperties( statisticsFile, properties );
   }
 
-  private static void archiveOutput( @Nonnull final Path archiveDir )
+  private static void archiveBuildrOutput( @Nonnull final Path archiveDir )
   {
-    archiveDirectory( FileUtil.getCurrentDirectory().resolve( "target/assets" ), archiveDir.resolve( "assets" ) );
-    archiveDirectory( FileUtil.getCurrentDirectory().resolve( "target/gwt_compile_reports" ), archiveDir.resolve( "compileReports" ) );
+    final Path currentDirectory = FileUtil.getCurrentDirectory();
+    archiveDirectory( currentDirectory.resolve( "target/assets" ), archiveDir.resolve( "assets" ) );
+    archiveDirectory( currentDirectory.resolve( "target/gwt_compile_reports/react4j.todomvc.TodomvcProd" ),
+                      archiveDir.resolve( "compileReports" ) );
+  }
+
+  private static void archiveMavenOutput( @Nonnull final Path archiveDir )
+  {
+    archiveDirectory( FileUtil.getCurrentDirectory().resolve( "target/react4j-todomvc-1.0.0-SNAPSHOT" ),
+                      archiveDir.resolve( "assets" ) );
+    archiveDirectory( FileUtil.getCurrentDirectory().resolve( "target/extras" ),
+                      archiveDir.resolve( "compileReports" ) );
   }
 
   private static void archiveDirectory( @Nonnull final Path assetsDir, @Nonnull final Path targetDir )
