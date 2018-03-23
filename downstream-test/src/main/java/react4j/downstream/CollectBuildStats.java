@@ -6,6 +6,7 @@ import gir.delta.Patch;
 import gir.git.Git;
 import gir.io.Exec;
 import gir.io.FileUtil;
+import gir.maven.Maven;
 import gir.ruby.Buildr;
 import gir.ruby.Ruby;
 import gir.sys.SystemProperty;
@@ -95,7 +96,14 @@ public final class CollectBuildStats
             boolean initialBuildSuccess = false;
             try
             {
-              customizeBuildr( appDirectory, localRepositoryUrl );
+              if ( isMaven )
+              {
+                customizeMaven( appDirectory, localRepositoryUrl );
+              }
+              else
+              {
+                customizeBuildr( appDirectory, localRepositoryUrl );
+              }
 
               final String prefix = branch + ".before";
               final Path archiveDir = getArchiveDir( workingDirectory, prefix );
@@ -114,7 +122,14 @@ public final class CollectBuildStats
             if ( Buildr.patchBuildYmlDependency( appDirectory, "org.realityforge.react4j", version ) )
             {
               Gir.messenger().info( "Building branch " + branch + " after modifications." );
-              customizeBuildr( appDirectory, localRepositoryUrl );
+              if ( isMaven )
+              {
+                customizeMaven( appDirectory, localRepositoryUrl );
+              }
+              else
+              {
+                customizeBuildr( appDirectory, localRepositoryUrl );
+              }
 
               final String prefix = branch + ".after";
               final Path archiveDir = getArchiveDir( workingDirectory, prefix );
@@ -203,6 +218,22 @@ public final class CollectBuildStats
     catch ( final IOException ioe )
     {
       Gir.messenger().error( "Failed to emit _buildr.rb configuration file.", ioe );
+    }
+  }
+
+  private static void customizeMaven( @Nonnull final Path appDirectory, @Nonnull final String localRepositoryUrl )
+  {
+    final String replacement =
+      "  <repositories>\n" +
+      "    <repository>\n" +
+      "      <id>local-repository</id>\n" +
+      "      <url>" + localRepositoryUrl + "</url>\n" +
+      "    </repository>\n" +
+      "  </repositories>\n" +
+      "</project>";
+    if ( !Patch.file( appDirectory.resolve( "pom.xml" ), c -> c.replace( "</project>", replacement ) ) )
+    {
+      Gir.messenger().error( "Failed to patch pom.xml to add local repository." );
     }
   }
 
