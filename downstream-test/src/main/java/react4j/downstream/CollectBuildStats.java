@@ -305,7 +305,6 @@ public final class CollectBuildStats
 
   private static long getTodoMvcSize( @Nonnull final Path archiveDir )
   {
-    ;
     return getFileSize( archiveDir.resolve( "assets" ).resolve( "todomvc" ).resolve( "todomvc.nocache.js" ) );
   }
 
