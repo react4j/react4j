@@ -36,7 +36,7 @@ artifacts:
   arez_extras: org.realityforge.arez:arez-extras:jar:0.71
   arez_browser_extras: org.realityforge.arez:arez-browser-extras:jar:0.71
 
-  braincheck: org.realityforge.braincheck:braincheck:jar:gwt:1.4.0
+  braincheck: org.realityforge.braincheck:braincheck:jar:1.5.0
 
   javax_inject: javax.inject:javax.inject:jar:1
 
