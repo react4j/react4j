@@ -6,7 +6,7 @@
 * **\[arez\]** Correct the dependencies as declared in pom for `react4j-arez` artifact.
 
 #### Changed
-* 💥 **\[arez\]** Upgrade Arez to version `0.71`.
+* 💥 **\[arez\]** Upgrade Arez to version `0.73`.
 * Upgrade `org.realityforge.braincheck:braincheck:jar` artifact to `1.5.0` which removes the gwt classifier.
 
 ### [v0.53](https://github.com/react4j/react4j/tree/v0.53) (2018-03-23)
