@@ -21,7 +21,6 @@ module Buildr
         end
         t = project.task('processors_setup') do
           mkdir_p project._(:target, 'generated/processors/main/java') if project.enable_annotation_processor?
-          #project.file(project._(:target, 'generated/processors/main/java')).invoke if project.enable_annotation_processor?
         end
         project.compile.enhance([t.name])
 
