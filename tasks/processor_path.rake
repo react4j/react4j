@@ -14,35 +14,36 @@ module Buildr
       end
 
       before_define do |project|
-        if project.enable_annotation_processor?
-          project.file(project._(:target, 'generated/processors/main/java')) do
-            mkdir_p project._(:target, 'generated/processors/main/java')
-          end
-        end
         t = project.task('processors_setup') do
-          mkdir_p project._(:target, 'generated/processors/main/java') if project.enable_annotation_processor?
+          mkdir_p project._(:generated, 'processors/main/java') if project.enable_annotation_processor?
         end
         project.compile.enhance([t.name])
 
         if project.iml?
           project.iml.instance_variable_set('@main_generated_source_directories', [])
           project.iml.instance_variable_set('@processorpath', {})
-          if project.enable_annotation_processor?
-            project.iml.main_generated_source_directories << project._('generated/processors/main/java')
-          end
-          project.clean do
-            # Clean the IDE generated sources
-            rm_rf project._('generated/processors/main/java')
-          end
         end
       end
 
       after_define do |project|
+        if project.enable_annotation_processor?
+          project.file(project._(:generated, 'processors/main/java')).enhance([project.compile])
+
+          project.compile.options.merge!(:other => ['-s', project._(:generated, 'processors/main/java')])
+          if project.iml? && project.enable_annotation_processor?
+            project.iml.main_generated_source_directories << project._(:generated, 'processors/main/java')
+          end
+          project.clean do
+            # Clean the IDE generated sources
+            rm_rf project._(:generated, 'processors/main/java')
+          end
+        end
+
         unless project.processorpath.empty?
           processor_deps = Buildr.artifacts(project.processorpath)
           project.compile.enhance(processor_deps)
           pp = processor_deps.collect {|d| d.to_s}.join(File::PATH_SEPARATOR)
-          project.compile.options[:other] = ['-processorpath', pp]
+          project.compile.options[:other] += ['-processorpath', pp]
         end
 
         if project.ipr?
