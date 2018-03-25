@@ -45,7 +45,7 @@ task 'perform_release' do
     end
 
     stage('Build', 'Build the project to ensure that the tests pass') do
-      sh "bundle exec buildr clean package PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']}"
+      sh "bundle exec buildr clean package PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} STAGE_RELEASE=true"
     end
 
     stage('PatchChangelog', 'Patch the changelog to update from previous release') do
@@ -117,11 +117,10 @@ HEADER
     stage('PushChanges', 'Push changes to git repository') do
       sh 'git push'
       sh 'git push --tags'
-      if ENV['STAGING_USERNAME']
-        # Only push the downstream projects if we have also staged a release. This typically only
-        # happens when the release is occurring on Travis.
-        sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
-      end
+      # Push the changes that have been made locally in downstream projects.
+      # Artifacts have been pushed to staging repository by this time so they should build
+      # even if it has not made it through the Maven release process
+      sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
     end
 
     stage('GithubRelease', 'Create a Release on GitHub') do
