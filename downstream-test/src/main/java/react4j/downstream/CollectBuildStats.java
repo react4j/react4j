@@ -84,7 +84,7 @@ public final class CollectBuildStats
             Git.checkout( branch );
             Git.clean();
             final String newBranch = branch + "-React4jUpgrade-" + version;
-            System.out.println( "Checking out " + newBranch );
+
             Git.checkout( newBranch, true );
             if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
             {
