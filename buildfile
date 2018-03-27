@@ -109,23 +109,6 @@ define 'react4j' do
     package(:javadoc)
   end
 
-  desc 'Interoperability with GWT Widget API'
-  define 'widget' do
-    pom.provided_dependencies.concat PROVIDED_DEPS
-    pom.include_transitive_dependencies << project('dom').package(:jar)
-    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) }
-
-    compile.with project('dom').package(:jar),
-                 project('dom').compile.dependencies,
-                 :gwt_user
-
-    gwt_enhance(project)
-
-    package(:jar)
-    package(:sources)
-    package(:javadoc)
-  end
-
   desc 'The Annotation processor'
   define 'processor' do
     pom.dependency_filter = Proc.new {|_| false }
@@ -209,7 +192,7 @@ define 'react4j' do
 
     local_test_repository_url = URI.join('file:///', project._(:target, :local_test_repository)).to_s
     compile.enhance do
-      projects_to_upload =projects(%w(annotations core processor arez extras dom widget))
+      projects_to_upload =projects(%w(annotations core processor arez extras dom))
       old_release_to = repositories.release_to
       begin
         # First we install them in a local repository so we don't have to access the network during local builds
@@ -249,6 +232,7 @@ define 'react4j' do
       properties['react4j.deploy_test.local_repository_url'] = local_test_repository_url
       properties['react4j.deploy_test.store_statistics'] = ENV['STORE_BUILD_STATISTICS'] == 'true'
 
+      Java::Commands.java 'react4j.downstream.BuildDownstream', { :classpath => cp, :properties => properties }
       Java::Commands.java 'react4j.downstream.CollectBuildStats', { :classpath => cp, :properties => properties }
     end
 
@@ -304,7 +288,7 @@ define 'react4j' do
     gwt_enhance(project)
   end
 
-  doc.from(projects(%w(annotations core dom arez processor widget))).
+  doc.from(projects(%w(annotations core dom arez processor))).
     using(:javadoc,
           :windowtitle => 'React4j API Documentation',
           :linksource => true,
@@ -314,8 +298,7 @@ define 'react4j' do
             'Core Packages' => 'react4j.core*',
             'DOM Packages' => 'react4j.dom*',
             'Annotation Packages' => 'react4j.annotations*:react4j.processor*',
-            'Arez Packages' => 'react4j.arez*',
-            'GWT Widget Integration Packages' => 'react4j.widget*'
+            'Arez Packages' => 'react4j.arez*'
           }
     )
 
