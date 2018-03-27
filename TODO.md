@@ -119,6 +119,8 @@ warning messages more cryptic and skip important checks that happen in developme
 
 #### Window Portal Notes
 
+Separate this into `react4j-windowportal`?
+
 * https://github.com/beardedtim/react-child-window/blob/master/index.jsx
 * https://www.w3schools.com/jsref/met_win_open.asp
 * https://www.npmjs.com/package/react-portal
