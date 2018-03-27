@@ -119,6 +119,8 @@ warning messages more cryptic and skip important checks that happen in developme
 
 #### Documentation
 
+* Add documentation links to `react-widget` and `react-windowportal`
+
 * Link TodoMVC from web site in both production and development mode.
 
 * Add search capability to website
