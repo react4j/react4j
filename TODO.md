@@ -117,18 +117,6 @@ warning messages more cryptic and skip important checks that happen in developme
   allocations. More importantly, it tells React that the subtree hasn’t changed so React can completely skip it
   when reconciling.
 
-#### Window Portal Notes
-
-Separate this into `react4j-windowportal`?
-
-* https://github.com/beardedtim/react-child-window/blob/master/index.jsx
-* https://www.w3schools.com/jsref/met_win_open.asp
-* https://www.npmjs.com/package/react-portal
-
-Copying styles from source document -
-
-* https://hackernoon.com/using-a-react-16-portal-to-do-something-cool-2a2d627b0202
-
 #### Documentation
 
 * Link TodoMVC from web site in both production and development mode.

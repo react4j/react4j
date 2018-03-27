@@ -192,7 +192,7 @@ define 'react4j' do
 
     local_test_repository_url = URI.join('file:///', project._(:target, :local_test_repository)).to_s
     compile.enhance do
-      projects_to_upload =projects(%w(annotations core processor arez extras dom))
+      projects_to_upload =projects(%w(annotations core processor arez dom))
       old_release_to = repositories.release_to
       begin
         # First we install them in a local repository so we don't have to access the network during local builds
@@ -264,28 +264,6 @@ define 'react4j' do
                  :gwt_user
 
     gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
-  end
-
-  # These will one day move to a separate repository once the API stabilizes
-  desc 'Other assorted components'
-  define 'extras' do
-    pom.include_transitive_dependencies << project('arez').package(:jar)
-    pom.dependency_filter = Proc.new {|dep| !project('arez').compile.dependencies.include?(dep[:artifact]) && !project('annotations').compile.dependencies.include?(dep[:artifact]) && dep[:artifact] != project('annotations').package(:jar) && !project('processor').compile.dependencies.include?(dep[:artifact]) && dep[:artifact] != project('processor').package(:jar) }
-
-    compile.with project('dom').package(:jar),
-                 project('dom').compile.dependencies,
-                 project('annotations').package(:jar),
-                 project('annotations').compile.dependencies,
-                 project('arez').package(:jar),
-                 project('arez').compile.dependencies,
-                 project('processor').package(:jar),
-                 project('processor').compile.dependencies
-
-    package(:jar)
-    package(:sources)
-    package(:javadoc)
-
-    gwt_enhance(project)
   end
 
   doc.from(projects(%w(annotations core dom arez processor))).

@@ -122,6 +122,7 @@ HEADER
       # even if it has not made it through the Maven release process
       sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
       sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-widget && bundle exec buildr perform_release STAGE=PushChanges'
+      sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-windowportal && bundle exec buildr perform_release STAGE=PushChanges'
     end
 
     stage('GithubRelease', 'Create a Release on GitHub') do
