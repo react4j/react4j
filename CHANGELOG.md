@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.55](https://github.com/react4j/react4j/tree/v0.55) (2018-03-27)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.54...v0.55)
 
 #### Changed
 * 💥 **\[widget\]** The `react-widget` artifact has been removed from the `react4j` project and migrated
