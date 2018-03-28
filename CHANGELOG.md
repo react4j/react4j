@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.56](https://github.com/react4j/react4j/tree/v0.56) (2018-03-28)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.55...v0.56)
 
 #### Changed
 * **\[processor\]** Update the processor so that `@Prop` annotated methods that are marked as `@Nullable`
