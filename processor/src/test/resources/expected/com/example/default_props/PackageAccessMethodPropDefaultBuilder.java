@@ -19,7 +19,7 @@ class PackageAccessMethodPropDefaultBuilder {
   }
 
   @Nonnull
-  static Builder2 myProp(final String myProp) {
+  static ReactNode myProp(final String myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -35,7 +35,7 @@ class PackageAccessMethodPropDefaultBuilder {
 
   public interface Builder2 {
     @Nonnull
-    Builder2 myProp(String myProp);
+    ReactNode myProp(String myProp);
 
     @Nonnull
     ReactNode build();
@@ -53,9 +53,9 @@ class PackageAccessMethodPropDefaultBuilder {
 
     @Override
     @Nonnull
-    public final Builder2 myProp(final String myProp) {
+    public final ReactNode myProp(final String myProp) {
       _props.set( "myProp", myProp );
-      return this;
+      return build();
     }
 
     @Nonnull

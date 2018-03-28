@@ -10,8 +10,8 @@ import react4j.core.React;
 import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class NullablePropAndNonnullChildComponentBuilder {
-  private NullablePropAndNonnullChildComponentBuilder() {
+class MultiPropComponent4Builder {
+  private MultiPropComponent4Builder() {
   }
 
   @Nonnull
@@ -20,7 +20,7 @@ class NullablePropAndNonnullChildComponentBuilder {
   }
 
   @Nonnull
-  static Builder3 myProp(@Nonnull final String myProp) {
+  static Builder3 myProp(final String myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -31,23 +31,27 @@ class NullablePropAndNonnullChildComponentBuilder {
 
   public interface Builder2 {
     @Nonnull
-    Builder3 myProp(@Nonnull String myProp);
+    Builder3 myProp(String myProp);
   }
 
   public interface Builder3 {
     @Nonnull
-    ReactNode myProp2(@Nullable String myProp2);
+    Builder3 myProp2(@Nullable String myProp2);
 
     @Nonnull
-    ReactNode child(ReactNode child);
-  }
+    Builder3 myProp3(@Nullable String myProp3);
 
-  public interface Builder4 {
     @Nonnull
-    ReactNode child(ReactNode child);
+    Builder3 myProp4(@Nullable String myProp4);
+
+    @Nonnull
+    Builder3 child(@Nullable ReactNode child);
+
+    @Nonnull
+    ReactNode build();
   }
 
-  private static class Builder implements Builder1, Builder2, Builder3, Builder4 {
+  private static class Builder implements Builder1, Builder2, Builder3 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
     private ReactNode _child;
@@ -61,28 +65,42 @@ class NullablePropAndNonnullChildComponentBuilder {
 
     @Override
     @Nonnull
-    public final Builder3 myProp(@Nonnull final String myProp) {
-      _props.set( "myProp", Objects.requireNonNull( myProp ) );
+    public final Builder3 myProp(final String myProp) {
+      _props.set( "myProp", myProp );
       return this;
     }
 
     @Override
     @Nonnull
-    public final ReactNode myProp2(@Nullable final String myProp2) {
+    public final Builder3 myProp2(@Nullable final String myProp2) {
       _props.set( "myProp2", myProp2 );
-      return build();
+      return this;
     }
 
     @Override
     @Nonnull
-    public final ReactNode child(final ReactNode child) {
+    public final Builder3 myProp3(@Nullable final String myProp3) {
+      _props.set( "myProp3", myProp3 );
+      return this;
+    }
+
+    @Override
+    @Nonnull
+    public final Builder3 myProp4(@Nullable final String myProp4) {
+      _props.set( "myProp4", myProp4 );
+      return this;
+    }
+
+    @Override
+    @Nonnull
+    public final Builder3 child(@Nullable final ReactNode child) {
       _child = child;
-      return build();
+      return this;
     }
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_NullablePropAndNonnullChildComponent.TYPE, Js.uncheckedCast( _props ), _child );
+      return React.createElement( React4j_MultiPropComponent4.TYPE, Js.uncheckedCast( _props ), _child );
     }
   }
 }

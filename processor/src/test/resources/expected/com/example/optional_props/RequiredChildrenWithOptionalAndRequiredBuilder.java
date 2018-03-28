@@ -38,7 +38,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
 
   public interface Builder3 {
     @Nonnull
-    Builder3 myProp(String myProp);
+    ReactNode myProp(String myProp);
 
     @Nonnull
     ReactNode children(ReactNode... children);
@@ -85,9 +85,9 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
-    public final Builder3 myProp(final String myProp) {
+    public final ReactNode myProp(final String myProp) {
       _props.set( "myProp", myProp );
-      return this;
+      return build();
     }
 
     @Override

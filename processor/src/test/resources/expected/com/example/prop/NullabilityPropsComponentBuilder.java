@@ -36,7 +36,7 @@ class NullabilityPropsComponentBuilder {
 
   public interface Builder3 {
     @Nonnull
-    Builder3 myProp2(@Nullable String myProp2);
+    ReactNode myProp2(@Nullable String myProp2);
 
     @Nonnull
     ReactNode build();
@@ -61,9 +61,9 @@ class NullabilityPropsComponentBuilder {
 
     @Override
     @Nonnull
-    public final Builder3 myProp2(@Nullable final String myProp2) {
+    public final ReactNode myProp2(@Nullable final String myProp2) {
       _props.set( "myProp2", myProp2 );
-      return this;
+      return build();
     }
 
     @Nonnull

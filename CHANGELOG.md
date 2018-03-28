@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+#### Fixed
+* **\[processor\]** A component that has a single optional `@Prop` annotated method will terminate the build after
+  the builder method for the optional prop is invoked.
+
 ### [v0.56](https://github.com/react4j/react4j/tree/v0.56) (2018-03-28)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.55...v0.56)
 

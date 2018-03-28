@@ -1252,6 +1252,7 @@ final class Generator
                null,
                0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
 
+    final boolean hasSingleOptional = props.stream().filter( PropDescriptor::isOptional ).count() == 1;
     boolean hasRequiredAfterOptional = false;
     for ( int i = 0; i < propsSize; i++ )
     {
@@ -1268,7 +1269,7 @@ final class Generator
           addChildPropStepMethod( optionalPropStep, StepMethodType.STAY );
           addChildrenStreamPropStepMethod( optionalPropStep );
         }
-        addPropStepMethod( optionalPropStep, prop, StepMethodType.STAY );
+        addPropStepMethod( optionalPropStep, prop, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY );
       }
       else
       {

@@ -19,7 +19,7 @@ class PropDefaultWithColorfulNameBuilder {
   }
 
   @Nonnull
-  static Builder2 myProp12$23(final String myProp12$23) {
+  static ReactNode myProp12$23(final String myProp12$23) {
     return new Builder().myProp12$23( myProp12$23 );
   }
 
@@ -35,7 +35,7 @@ class PropDefaultWithColorfulNameBuilder {
 
   public interface Builder2 {
     @Nonnull
-    Builder2 myProp12$23(String myProp12$23);
+    ReactNode myProp12$23(String myProp12$23);
 
     @Nonnull
     ReactNode build();
@@ -53,9 +53,9 @@ class PropDefaultWithColorfulNameBuilder {
 
     @Override
     @Nonnull
-    public final Builder2 myProp12$23(final String myProp12$23) {
+    public final ReactNode myProp12$23(final String myProp12$23) {
       _props.set( "myProp12$23", myProp12$23 );
-      return this;
+      return build();
     }
 
     @Nonnull
