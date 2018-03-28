@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+#### Changed
+* **\[processor\]** Update the processor so that `@Prop` annotated methods that are marked as `@Nullable`
+  with a `required` parameter set to `AUTODETECT` will be detected as an optional prop.
+
 ### [v0.55](https://github.com/react4j/react4j/tree/v0.55) (2018-03-27)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.54...v0.55)
 

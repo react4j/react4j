@@ -11,9 +11,6 @@
 
 ### High Priorities
 
-* Builder pattern fails when have optional props and required children. Optional props are not merged into
-  required children builder interface
-
 * Add default values for state. Can be instance methods, static methods or static final fields?
 
 * Change state setters so that if during construct then sets initial state otherwise schedules state update.

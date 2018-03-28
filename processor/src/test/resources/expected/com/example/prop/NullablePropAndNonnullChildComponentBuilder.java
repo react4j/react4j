@@ -10,8 +10,8 @@ import react4j.core.React;
 import react4j.core.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class NullabilityPropsComponentBuilder {
-  private NullabilityPropsComponentBuilder() {
+class NullablePropAndNonnullChildComponentBuilder {
+  private NullablePropAndNonnullChildComponentBuilder() {
   }
 
   @Nonnull
@@ -39,11 +39,18 @@ class NullabilityPropsComponentBuilder {
     Builder3 myProp2(@Nullable String myProp2);
 
     @Nonnull
-    ReactNode build();
+    ReactNode child(ReactNode child);
   }
 
-  private static class Builder implements Builder1, Builder2, Builder3 {
+  public interface Builder4 {
+    @Nonnull
+    ReactNode child(ReactNode child);
+  }
+
+  private static class Builder implements Builder1, Builder2, Builder3, Builder4 {
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
+
+    private ReactNode _child;
 
     @Override
     @Nonnull
@@ -66,9 +73,16 @@ class NullabilityPropsComponentBuilder {
       return this;
     }
 
+    @Override
+    @Nonnull
+    public final ReactNode child(final ReactNode child) {
+      _child = child;
+      return build();
+    }
+
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_NullabilityPropsComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_NullablePropAndNonnullChildComponent.TYPE, Js.uncheckedCast( _props ), _child );
     }
   }
 }
