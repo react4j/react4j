@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.57](https://github.com/react4j/react4j/tree/v0.57) (2018-03-28)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.56...v0.57)
 
 #### Fixed
 * **\[processor\]** A component that has a single optional `@Prop` annotated method will terminate the build after
