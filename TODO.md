@@ -66,13 +66,6 @@
   - https://reactcommunity.org/react-transition-group/
   or maybe https://react-move.js.org/
 
-* Port a hackernews clone
-  - https://github.com/clintonwoo/hackernews-react-graphql
-  - https://github.com/reasonml-community/reason-react-hacker-news
-
-* Port a medium clone. a.k.a. The "realworld example app".
-  - https://github.com/gothinkster/react-mobx-realworld-example-app
-
 * Consider adding support for the new ref proposal if it gets adopted. See https://github.com/reactjs/rfcs/blob/master/text/0017-new-create-ref.md
 
 * Implement the "children" utilities in java or bind to native implementation.
