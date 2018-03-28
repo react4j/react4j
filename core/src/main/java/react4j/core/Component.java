@@ -318,27 +318,6 @@ public abstract class Component
   }
 
   /**
-   * This method is invoked before a mounted component receives new props.
-   * If you need to update the state in response to prop changes (for example, to reset it), you
-   * may compare the {@link #props()} and supplied nextProps and perform state transitions using
-   * {@link #scheduleStateUpdate(JsPropertyMap)} in this method.
-   * See the <a href="https://reactjs.org/docs/react-component.html#componentwillreceiveprops">React Component documentation</a> for more details.
-   *
-   * <p>Note that React may call this method even if the props have not changed, so make sure to
-   * compare the current and next values if you only want to handle changes. This may occur when the
-   * parent component causes your component to re-render.</p>
-   *
-   * <p>React doesn't call this method with initial props during mounting. It only calls this method
-   * if some of component's props may update. Calling {@link #scheduleStateUpdate(JsPropertyMap)}
-   * generally doesn't trigger this method.</p>
-   *
-   * @param nextProps the new properties of the component.
-   */
-  protected void componentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps )
-  {
-  }
-
-  /**
    * This method is invoked immediately before a component is unmounted and destroyed.
    * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
    * any DOM elements that were created in {@link #componentDidMount()}

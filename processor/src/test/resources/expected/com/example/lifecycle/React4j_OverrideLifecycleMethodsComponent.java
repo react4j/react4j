@@ -34,8 +34,6 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps,
         @Nonnull JsPropertyMap<Object> nextState);
 
-    void componentWillReceiveProps(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentWillUnmount();
 
     void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
@@ -63,11 +61,6 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
         @Nonnull final JsPropertyMap<Object> nextState) {
       performComponentDidUpdate(nextProps,nextState);
-    }
-
-    @Override
-    public void componentWillReceiveProps(@Nonnull final JsPropertyMap<Object> nextProps) {
-      performComponentWillReceiveProps(nextProps);
     }
 
     @Override

@@ -23,9 +23,8 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
-* Consider implementing `getDerivedStateFromProps` static method and removing `componentWillReceiveProps` lifecycle
-  method. This will probably involve an annotation on a static method. This is contingent on `16.3` release of react
-  as described at https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#dd16
+* Consider implementing `getDerivedStateFromProps` static method probably via an annotation on a static method.
+  This is contingent on `16.3` release of react as described at https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#dd16
 
 * Add support for the new context API that will be released with `16.3`. See https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#0db6
 

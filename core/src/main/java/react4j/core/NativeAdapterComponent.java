@@ -180,33 +180,6 @@ public abstract class NativeAdapterComponent<I extends Component>
   }
 
   /**
-   * Call componentWillReceiveProps on the target component.
-   * It is expected that the subclass will implement a public method componentWillReceiveProps() that
-   * delegates to this method to perform the work.
-   *
-   * @param nextProps the new properties of the component.
-   * @see Component#componentWillReceiveProps(JsPropertyMap)
-   */
-  protected final void performComponentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps )
-  {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_WILL_RECEIVE_PROPS );
-    }
-    try
-    {
-      _component.componentWillReceiveProps( nextProps );
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-      }
-    }
-  }
-
-  /**
    * Call componentDidUpdate on the target component.
    * It is expected that the subclass will implement a public method componentDidUpdate() that
    * delegates to this method to perform the work.

@@ -32,11 +32,6 @@ abstract class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected void componentWillReceiveProps( @Nonnull final JsPropertyMap<Object> nextProps )
-  {
-  }
-
-  @Override
   protected void componentWillUnmount()
   {
   }

@@ -51,7 +51,6 @@ public final class ReactProcessor
   private static final List<String> LIFECYCLE_METHODS =
     Arrays.asList( "componentDidMount",
                    "componentDidUpdate",
-                   "componentWillReceiveProps",
                    "componentWillUnmount",
                    "componentDidCatch",
                    "shouldComponentUpdate" );
