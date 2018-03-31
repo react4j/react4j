@@ -2,6 +2,14 @@
 
 ### Very High Priority
 
+* Move to React 16.3.0 - See https://reactjs.org/blog/2018/03/29/react-v-16-3.html
+  - Implement `getDerivedStateFromProps` static method (via an annotation on a static method?)
+  - Implement `getSnapshotBeforeUpdate` lifecycle method.
+  - Add support for the new context API
+  - Add support for the new ref proposal.
+    - Support refs in generated builders.
+    - Consider typed refs for DOM factories
+
 * Add mechanism by which plugins can be used to enhance the component generation process. Something that
   could hook into the component lifecycle methods? The goal is to add `@ReplicantData` or `@GraphQL` annotations
   to component and have code generator enhance the component in some fashion to load data as appropriate.
@@ -22,11 +30,6 @@
 * Add support for methods annotated with `@PropValidate` method. These would be optimized out in production mode.
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
-
-* Consider implementing `getDerivedStateFromProps` static method probably via an annotation on a static method.
-  This is contingent on `16.3` release of react as described at https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#dd16
-
-* Add support for the new context API that will be released with `16.3`. See https://medium.com/@baphemot/whats-new-in-react-16-3-d2c9b7b6193b#0db6
 
 * Rather than using `@Dependency` to force the disposal of a component when a prop is disposed, we should instead
   set boolean flag that just indicates that we should skip the render? We probably need to add in the equivalent
@@ -62,8 +65,6 @@
   - https://reactcommunity.org/react-transition-group/
   or maybe https://react-move.js.org/
 
-* Consider adding support for the new ref proposal if it gets adopted. See https://github.com/reactjs/rfcs/blob/master/text/0017-new-create-ref.md
-
 * Implement the "children" utilities in java or bind to native implementation.
 
 * EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
@@ -78,8 +79,6 @@
   this no longer works in React 16 but the ReactJS team expect something will replace it in the future.
 
 * build in https://github.com/maicki/why-did-you-update
-
-* Possibly support refs in generated builders.
 
 #### Arez DevTools
 
