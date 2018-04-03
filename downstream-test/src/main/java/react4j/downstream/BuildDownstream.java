@@ -107,7 +107,7 @@ public final class BuildDownstream
               patchAndAddFile( appDirectory,
                                appDirectory.resolve( "CHANGELOG.md" ),
                                c -> c.replace( "### Unreleased\n\n",
-                                               "### Unreleased\n\n" + message + "\n" ) );
+                                               "### Unreleased\n\n" + message + "\n\n" ) );
               Git.commit( message );
 
               Gir.messenger().info( "Building branch master after modifications." );
