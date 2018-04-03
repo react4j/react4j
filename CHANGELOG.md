@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.58](https://github.com/react4j/react4j/tree/v0.58) (2018-04-03)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.57...v0.58)
 
 ##### Added
 * Added support for the context API added in react `16.3.0`. See `React.createContext(...)`.
