@@ -53,6 +53,7 @@ public class Context<T>
 
   /**
    * A Builder for the Provider component.
+   * A provider component is a react component that allows Consumers to subscribe to context changes.
    */
   public static final class ProviderBuilder<ST>
   {
@@ -130,6 +131,7 @@ public class Context<T>
 
   /**
    * A Builder for the Consumer component.
+   * A Consumer component is a react component that subscribes to context changes.
    */
   public static final class ConsumerBuilder<ST>
   {
