@@ -84,7 +84,7 @@ public final class BuildDownstream
             try
             {
               customizeBuildr( appDirectory, localRepositoryUrl );
-              Ruby.buildr( "clean", "package" );
+              Ruby.buildr( "clean", "package", "PRODUCT_VERSION=", "PREVIOUS_PRODUCT_VERSION=" );
               initialBuildSuccess = true;
             }
             catch ( final GirException e )
@@ -115,7 +115,10 @@ public final class BuildDownstream
 
               try
               {
-                Ruby.buildr( "perform_release", "LAST_STAGE=PatchChangelogPostRelease" );
+                Ruby.buildr( "perform_release",
+                             "LAST_STAGE=PatchChangelogPostRelease",
+                             "PRODUCT_VERSION=",
+                             "PREVIOUS_PRODUCT_VERSION=" );
                 Git.checkout( "master" );
                 Exec.system( "git", "merge", newBranch );
                 Git.deleteBranch( newBranch );
