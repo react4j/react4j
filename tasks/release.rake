@@ -1,5 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/util')
 
+ENV['PREVIOUS_PRODUCT_VERSION'] = nil if ENV['PREVIOUS_PRODUCT_VERSION'].to_s == ''
+ENV['PRODUCT_VERSION'] = nil if ENV['PRODUCT_VERSION'].to_s == ''
+
 def stage(stage_name, description, options = {})
   if ENV['STAGE'].nil? || ENV['STAGE'] == stage_name || options[:always_run]
     puts "🚀 Release Stage: #{stage_name} - #{description}"
