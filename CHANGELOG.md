@@ -5,6 +5,7 @@
 #### Changed
 * 💥 **\[core\]** Remove support for the `componentWillReceiveProps` lifecycle method as it is being deprecated in
   React 16.3 and removed in React 17.x.
+* 💥 **\[core\]** Upgrade to react `16.3.0`.
 
 ### [v0.57](https://github.com/react4j/react4j/tree/v0.57) (2018-03-28)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.56...v0.57)

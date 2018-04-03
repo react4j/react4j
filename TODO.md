@@ -3,7 +3,6 @@
 ### Very High Priority
 
 * Move to React 16.3.0 - See https://reactjs.org/blog/2018/03/29/react-v-16-3.html
-  - Update the version of the js assets
   - Add support for the `StrictMode` "component"
   - Implement `getDerivedStateFromProps` static method (via an annotation on a static method?)
   - Implement `getSnapshotBeforeUpdate` lifecycle method.
