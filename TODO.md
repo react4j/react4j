@@ -65,8 +65,6 @@
   - https://reactcommunity.org/react-transition-group/
   or maybe https://react-move.js.org/
 
-* Implement the "children" utilities in java or bind to native implementation.
-
 * EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
   schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
   and will need to be marked as runImmediately=false)
