@@ -4,6 +4,7 @@
 
 ##### Added
 * Added support for the context API added in react `16.3.0`. See `React.createContext(...)`.
+* Added support for creating the `StrictMode` component added in react `16.3.0`. See `React.createStrictMode(...)`.
 
 #### Changed
 * 💥 **\[core\]** Remove support for the `componentWillReceiveProps` lifecycle method as it is being deprecated in

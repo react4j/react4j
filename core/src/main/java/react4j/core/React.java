@@ -33,6 +33,13 @@ public final class React
   private static ComponentConstructorFunction Fragment;
 
   /**
+   * The magic component constructor function for StrictMode components.
+   */
+  @SuppressWarnings( "unused" )
+  @JsProperty( name = "StrictMode" )
+  private static ComponentConstructorFunction StrictMode;
+
+  /**
    * Return true if the specified node is a ReactElement.
    *
    * @return true if the specified node is a ReactElement.
@@ -106,6 +113,18 @@ public final class React
   public static native ReactNode createElement( @Nonnull ComponentConstructorFunction type,
                                                 @Nullable JsPropertyMap<Object> props,
                                                 @Nonnull ReactNode... children );
+
+  /**
+   * Create a StrictMode component with the specified children.
+   *
+   * @param children the child nodes.
+   * @return a new React.Fragment object.
+   */
+  @JsOverlay
+  public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
+  {
+    return createElement( StrictMode, null, children );
+  }
 
   /**
    * Create a Fragment with the specified children.
