@@ -7,7 +7,6 @@
   - Implement `getDerivedStateFromProps` static method (via an annotation on a static method?)
   - Implement `getSnapshotBeforeUpdate` lifecycle method.
   - Add `snapshot` parameter to `componentDidUpdate` 
-  - Add support for the new context API
   - Add support for the new ref proposal.
     - Support refs in generated builders.
     - Consider typed refs for DOM factories

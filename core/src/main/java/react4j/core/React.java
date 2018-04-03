@@ -164,6 +164,16 @@ public final class React
   }
 
   /**
+   * Creates a context with specified default value.
+   *
+   * @param <T>          the type of the context.
+   * @param defaultValue the default value.
+   * @return the context.
+   */
+  @Nonnull
+  public static native <T> Context<T> createContext( T defaultValue );
+
+  /**
    * Clone and return a new ReactElement using element as the starting point. The resulting
    * element will have the original element's props with the new props merged in shallowly.
    * New children will replace existing children. Unlike React.addons.cloneWithProps, key and
