@@ -990,6 +990,13 @@ public final class ReactProcessor
     final boolean needsInjection = isInjectionRequired( typeElement );
     final boolean isDaggerPresent = needsInjection && isDaggerRequired( typeElement );
 
+    if ( isDaggerPresent && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
+    {
+        throw new ReactProcessorException( "@ReactComponent target has enabled dagger injection and the class " +
+                                           "has type argument but type arguments on a component are not compatible " +
+                                           "with dagger injected components", typeElement );
+    }
+
     descriptor.setNeedsInjection( needsInjection );
     descriptor.setNeedsDaggerIntegration( isDaggerPresent );
     descriptor.setArezComponent( isArezComponent );

@@ -5,6 +5,8 @@
 #### Fixed
 * **\[processor\]** Ensure that a react component with a parameterized type will add the parameterized type
   to the builder step interfaces to avoid compilation errors if the type parameter is used by the prop methods.
+* **\[processor\]** The annotation processor will generate an error if dagger is enabled and the react component
+  has type parameters as dagger is incapable of injecting such components using the technique employed by React4j.
 
 ### [v0.58](https://github.com/react4j/react4j/tree/v0.58) (2018-04-03)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.57...v0.58)

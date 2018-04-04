@@ -218,6 +218,8 @@ public class ReactProcessorTest
         new Object[]{ "com.example.default_props.PrivateMethodPropDefault", "@PropDefault target must not be private" },
         new Object[]{ "com.example.default_props.ThrowsMethodPropDefault",
                       "@PropDefault target must not throw any exceptions" },
+        new Object[]{ "com.example.inject.GenericTypeInjectedComponent",
+                      "@ReactComponent target has enabled dagger injection and the class has type argument but type arguments on a component are not compatible with dagger injected components" },
         new Object[]{ "com.example.callback.BadName",
                       "@Callback target specified an invalid name '-fox'. The name must be a valid java identifier." },
         new Object[]{ "com.example.callback.BadName2",
