@@ -66,6 +66,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.ComponentWithArezProp", false, false },
         new Object[]{ "com.example.prop.GenericAllPropComponent", false, false },
         new Object[]{ "com.example.prop.GenericPropComponent", false, false },
+        new Object[]{ "com.example.prop.GenericTypeMultiPropComponent", false, false },
         new Object[]{ "com.example.prop.GenericTypePropComponent", false, false },
         new Object[]{ "com.example.prop.MultipleChildrenPropComponent", false, false },
         new Object[]{ "com.example.prop.MultiPropComponent", false, false },

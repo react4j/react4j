@@ -14,7 +14,7 @@ class GenericAllPropComponentBuilder {
   }
 
   @Nonnull
-  static <T> Builder2 key(@Nonnull final String key) {
+  static <T> Builder2<T> key(@Nonnull final String key) {
     return new Builder<T>().key( key );
   }
 
@@ -26,7 +26,7 @@ class GenericAllPropComponentBuilder {
   @SuppressWarnings("unused")
   public interface Builder1<T> {
     @Nonnull
-    Builder2 key(@Nonnull String key);
+    Builder2<T> key(@Nonnull String key);
   }
 
   @SuppressWarnings("unused")
@@ -40,7 +40,7 @@ class GenericAllPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final String key) {
+    public final Builder2<T> key(@Nonnull final String key) {
       _props.set( "key", Objects.requireNonNull( key ) );
       return this;
     }

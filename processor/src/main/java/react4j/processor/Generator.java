@@ -9,6 +9,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 import com.squareup.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -169,12 +170,13 @@ final class Generator
                            stepMethod.getName(),
                            stepMethod.getName() );
     }
-    configureStepMethodReturns( method, step, stepMethod.getStepMethodType() );
+    configureStepMethodReturns( descriptor, method, step, stepMethod.getStepMethodType() );
     return method.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildStepInterfaceMethod( @Nonnull final String name,
+  private static MethodSpec.Builder buildStepInterfaceMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                              @Nonnull final String name,
                                                               @Nonnull final Step step,
                                                               @Nonnull final StepMethodType stepMethodType,
                                                               @Nonnull final Consumer<MethodSpec.Builder> action )
@@ -183,11 +185,12 @@ final class Generator
     method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
     method.addAnnotation( NONNULL_CLASSNAME );
     action.accept( method );
-    configureStepMethodReturns( method, step, stepMethodType );
+    configureStepMethodReturns( descriptor, method, step, stepMethodType );
     return method;
   }
 
-  private static void configureStepMethodReturns( @Nonnull final MethodSpec.Builder method,
+  private static void configureStepMethodReturns( @Nonnull final ComponentDescriptor descriptor,
+                                                  @Nonnull final MethodSpec.Builder method,
                                                   @Nonnull final Step step,
                                                   @Nonnull final StepMethodType stepMethodType )
   {
@@ -198,7 +201,17 @@ final class Generator
     else
     {
       final int returnIndex = step.getIndex() + ( StepMethodType.STAY == stepMethodType ? 0 : 1 );
-      method.returns( ClassName.bestGuess( "Builder" + returnIndex ) );
+      final ClassName className = ClassName.bestGuess( "Builder" + returnIndex );
+      final List<TypeVariableName> variableNames =
+        ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() );
+      if ( variableNames.isEmpty() )
+      {
+        method.returns( className );
+      }
+      else
+      {
+        method.returns( ParameterizedTypeName.get( className, variableNames.toArray( new TypeName[ 0 ] ) ) );
+      }
     }
   }
 
@@ -224,12 +237,12 @@ final class Generator
       // Magically handle the step method named build
       if ( stepMethod.isBuildIntrinsic() )
       {
-        builder.addMethod( buildStepInterfaceMethod( "build", step, stepMethodType, m -> {
+        builder.addMethod( buildStepInterfaceMethod( descriptor, "build", step, stepMethodType, m -> {
         } ).build() );
       }
       else
       {
-        builder.addMethod( buildStepInterfaceMethod( stepMethod.getName(), step, stepMethodType, m -> {
+        builder.addMethod( buildStepInterfaceMethod( descriptor, stepMethod.getName(), step, stepMethodType, m -> {
           final ExecutableType propMethodType = stepMethod.getPropMethodType();
           if ( null != propMethodType )
           {
@@ -262,7 +275,7 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec buildBuilderStepImpl( @Nonnull final Step step, @Nonnull final StepMethod stepMethod )
+  private static MethodSpec buildBuilderStepImpl( @Nonnull final ComponentDescriptor descriptor, @Nonnull final Step step, @Nonnull final StepMethod stepMethod )
   {
     final MethodSpec.Builder method = MethodSpec.methodBuilder( stepMethod.getName() );
     method.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
@@ -346,7 +359,7 @@ final class Generator
     {
       method.addStatement( "return this" );
     }
-    configureStepMethodReturns( method, step, stepMethod.getStepMethodType() );
+    configureStepMethodReturns( descriptor, method, step, stepMethod.getStepMethodType() );
 
     return method.build();
   }
@@ -412,7 +425,7 @@ final class Generator
         {
           if ( !stepMethod.isBuildIntrinsic() )
           {
-            builder.addMethod( buildBuilderStepImpl( step, stepMethod ) );
+            builder.addMethod( buildBuilderStepImpl( descriptor, step, stepMethod ) );
             if ( stepMethod.isChildrenIntrinsic() )
             {
               final ParameterizedTypeName type =
