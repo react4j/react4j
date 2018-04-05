@@ -10,13 +10,6 @@
     - Support refs in generated builders.
     - Consider typed refs for DOM factories
 
-* Add mechanism by which plugins can be used to enhance the component generation process. Something that
-  could hook into the component lifecycle methods? The goal is to add `@ReplicantData` or `@GraphQL` annotations
-  to component and have code generator enhance the component in some fashion to load data as appropriate.
-  Could this be like in UI-binder where constructors have to invoke factory? (That would make it easier to
-  integrate into code generator) Or do we generate a chain of classes `MyComponent` -> `Graphql_MyComponent` ->
-  `React_Graphql_MyComponent` -> `Arez_React_Graphql_MyComponent` ?
-
 ### High Priorities
 
 * Add default values for state. Can be instance methods, static methods or static final fields?
