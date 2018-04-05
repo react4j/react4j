@@ -46,19 +46,20 @@ artifacts:
   autoservice: com.google.auto.service:auto-service:jar:1.0-rc3
   autocommon: com.google.auto:auto-common:jar:0.8
   javapoet: com.squareup:javapoet:jar:1.8.0
-  guava: com.google.guava:guava:jar:21.0
+  guava: com.google.guava:guava:jar:23.3-jre
 
   #test deps
   compile_testing: com.google.testing.compile:compile-testing:jar:0.11
   truth: com.google.truth:truth:jar:0.35
 
-  dagger_core: com.google.dagger:dagger:jar:2.13
-  dagger_producers: com.google.dagger:dagger-producers:jar:2.13
-  dagger_compiler: com.google.dagger:dagger-compiler:jar:2.13
+  dagger_core: com.google.dagger:dagger:jar:2.15
+  dagger_spi: com.google.dagger:dagger-spi:jar:2.15
+  dagger_producers: com.google.dagger:dagger-producers:jar:2.15
+  dagger_compiler: com.google.dagger:dagger-compiler:jar:2.15
   googlejavaformat: com.google.googlejavaformat:google-java-format:jar:1.4
   errorprone: com.google.errorprone:javac-shaded:jar:9-dev-r4023-3
   javapoet: com.squareup:javapoet:jar:1.8.0
-  guava: com.google.guava:guava:jar:21.0
+  guava: com.google.guava:guava:jar:23.3-jre
 
   javax_inject: javax.inject:javax.inject:jar:1
   javax_inject_sources: javax.inject:javax.inject:jar:sources:1

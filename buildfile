@@ -7,7 +7,7 @@ require 'buildr/jacoco'
 PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations, :anodoc]
 
 DAGGER_RUNTIME_DEPS = [:javax_inject, :dagger_core]
-DAGGER_PROCESSOR_DEPS = [:javax_inject, :dagger_core, :dagger_producers, :dagger_compiler, :googlejavaformat, :errorprone, :javapoet, :guava]
+DAGGER_PROCESSOR_DEPS = [:javax_inject, :dagger_core, :dagger_spi, :dagger_producers, :dagger_compiler, :googlejavaformat, :errorprone, :javapoet, :guava]
 
 EXAMPLES = {
   'hello_world' => 'react4j.examples.hello_world.HelloWorld'

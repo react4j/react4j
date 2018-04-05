@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+#### Changed
+* Upgrade the Dagger2 support to version `2.15`.
+
 ### [v0.59](https://github.com/react4j/react4j/tree/v0.59) (2018-04-04)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.58...v0.59)
 
