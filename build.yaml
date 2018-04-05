@@ -64,7 +64,7 @@ artifacts:
   javax_inject: javax.inject:javax.inject:jar:1
   javax_inject_sources: javax.inject:javax.inject:jar:sources:1
 
-  gir: org.realityforge.gir:gir-core:jar:0.03
+  gir: org.realityforge.gir:gir-core:jar:0.04
 
   javacsv: net.sourceforge.javacsv:javacsv:jar:2.1
 

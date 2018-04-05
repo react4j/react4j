@@ -96,18 +96,16 @@ public final class BuildDownstream
             Git.clean();
 
             final String group = "org.realityforge.react4j";
+            final Function<String, String> patchFunction1 = c -> Buildr.patchMavenCoordinates( c, group, version );
             final boolean patched =
-              patchAndAddFile( appDirectory,
-                               appDirectory.resolve( "build.yaml" ),
-                               c -> Buildr.patchMavenCoordinates( c, group, version ) );
+              Patch.patchAndAddFile( appDirectory, appDirectory.resolve( "build.yaml" ), patchFunction1 );
 
             if ( patched )
             {
               final String message = "Update the '" + group + "' dependencies to version '" + version + "'";
-              patchAndAddFile( appDirectory,
-                               appDirectory.resolve( "CHANGELOG.md" ),
-                               c -> c.replace( "### Unreleased\n\n",
-                                               "### Unreleased\n\n" + message + "\n\n" ) );
+              final Function<String, String> patchFunction = c -> c.replace( "### Unreleased\n\n",
+                                                                             "### Unreleased\n\n" + message + "\n\n" );
+              Patch.patchAndAddFile( appDirectory, appDirectory.resolve( "CHANGELOG.md" ), patchFunction );
               Git.commit( message );
 
               Gir.messenger().info( "Building branch master after modifications." );
@@ -147,18 +145,6 @@ public final class BuildDownstream
         } );
       } );
     } );
-  }
-
-  public static boolean patchAndAddFile( @Nonnull final Path directory,
-                                         @Nonnull final Path fileToPatch,
-                                         @Nonnull final Function<String, String> patchFunction )
-  {
-    if ( fileToPatch.toFile().exists() && Patch.file( fileToPatch, patchFunction ) )
-    {
-      FileUtil.inDirectory( directory, () -> Git.add( fileToPatch.toString() ) );
-      return true;
-    }
-    return false;
   }
 
   private static void customizeBuildr( @Nonnull final Path appDirectory, @Nonnull final String localRepositoryUrl )
