@@ -124,8 +124,14 @@ HEADER
       # Artifacts have been pushed to staging repository by this time so they should build
       # even if it has not made it through the Maven release process
       sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
-      sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-widget && bundle exec buildr perform_release STAGE=PushChanges'
-      sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-windowportal && bundle exec buildr perform_release STAGE=PushChanges'
+
+      # Release react-widget - need to extract the version from that project
+      widget_version = IO.read('target/react4j_downstream-test/deploy_test/workdir/react4j-widget/CHANGELOG.md')[/^### \[v(\d+\.\d+)\]/, 1]
+      sh "cd target/react4j_downstream-test/deploy_test/workdir/react4j-widget && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{widget_version}"
+
+      # Release react-windowportal - need to extract the version from that project
+      windowportal_version = IO.read('target/react4j_downstream-test/deploy_test/workdir/react4j-windowportal/CHANGELOG.md')[/^### \[v(\d+\.\d+)\]/, 1]
+      sh "cd target/react4j_downstream-test/deploy_test/workdir/react4j-windowportal && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{windowportal_version}"
     end
 
     stage('GithubRelease', 'Create a Release on GitHub') do
