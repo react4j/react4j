@@ -54,9 +54,8 @@ public final class BuildDownstream
           Gir.messenger().error( "Failed to create working directory: " + workingDirectory );
         }
       }
-      Stream.of( "react4j-widget", "react4j-windowportal" ).forEach( project -> {
-
-        FileUtil.inDirectory( workingDirectory, () -> {
+      Stream.of( "react4j-widget", "react4j-windowportal" )
+        .forEach( project -> FileUtil.inDirectory( workingDirectory, () -> {
           Gir.messenger().info( "Cloning " + project + " into " + workingDirectory );
           Git.clone( "https://github.com/react4j/" + project + ".git", project );
           final Path appDirectory = workingDirectory.resolve( project );
@@ -142,8 +141,7 @@ public final class BuildDownstream
               Git.deleteBranch( newBranch );
             }
           } );
-        } );
-      } );
+        } ) );
     } );
   }
 
