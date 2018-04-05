@@ -71,20 +71,6 @@
 
 * build in https://github.com/maicki/why-did-you-update
 
-#### Arez DevTools
-
-Arez probably needs the equivalent of Mobx DevTools. We already support a reasonable console logging but need
-mechanisms to enable and disable. Possibly we also need to support looking at dependencies of components. Do we
-do this by caching arez components on WeakHashmap in componentDidMount/componentWillUnmount and then supporting
-accessing transitive dependency tree via UI?
-
-Possibly we also need the ability to browse the repositories in the application. Register repositories on
-startup and then browse via tables?
-
-* See https://github.com/gaearon/redux-devtools
-
-Once this is done remove the setting of dependencies in state as can trigger infinite state updates in some scenarios.
-
 #### Compiler optimizations
 
 (Sourced from [ReactJS Changelog](https://reactjs.org/blog/2015/10/07/react-v0.14.html#compiler-optimizations))
