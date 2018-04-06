@@ -24,7 +24,7 @@ class React4j_PropTypeInt extends PropTypeInt {
 
   @Override
   protected int getMyProp() {
-    return props().has( "myProp" ) ? props().getAny( "myProp" ).asInt() : null;
+    return props().getAny( "myProp" ).asInt();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeInt> {

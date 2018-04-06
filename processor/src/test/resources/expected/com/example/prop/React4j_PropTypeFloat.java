@@ -24,7 +24,7 @@ class React4j_PropTypeFloat extends PropTypeFloat {
 
   @Override
   protected float getMyProp() {
-    return props().has( "myProp" ) ? props().getAny( "myProp" ).asFloat() : null;
+    return props().getAny( "myProp" ).asFloat();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeFloat> {

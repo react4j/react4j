@@ -24,7 +24,7 @@ class React4j_PropTypeBoolean extends PropTypeBoolean {
 
   @Override
   protected boolean getMyProp() {
-    return props().has( "myProp" ) ? props().getAny( "myProp" ).asBoolean() : null;
+    return props().getAny( "myProp" ).asBoolean();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeBoolean> {

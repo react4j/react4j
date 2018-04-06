@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+#### Fixed
+* **\[processor\]** The annotation processor would generate `@Prop` accessor implementations that explicitly cast
+  a null to a primitive value, when accessing a prop that was not marked as `@Nonnull`. However primitive values
+  can never be annotated with `@Nonnull` and thus all primitive methods included this methods, guaranteeing a
+  NullPointerException and triggering errors in several static source code analysis tools such as Findbugs.
+
 ### [v0.60](https://github.com/react4j/react4j/tree/v0.60) (2018-04-05)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.59...v0.60)
 
