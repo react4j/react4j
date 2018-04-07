@@ -193,8 +193,12 @@ const siteConfig = {
   favicon: 'img/favicon/favicon.ico',
   /* colors for website */
   colors: {
-    primaryColor: '#2b9c43',
-    secondaryColor: '#04724D'
+    /*
+     The color palette was based on "Skip Shade Gradient" at https://mycolor.space/?hex=%23023F2B&sub=1
+     which included the following colors: #023F2B, #44764A, #8DAF66, #E6E885
+     */
+    primaryColor: '#8DAF66',
+    secondaryColor: '#44764A'
   },
   // This copyright info is used in /core/Footer.js and blog rss/atom feeds.
   copyright: 'Copyright © ' + new Date().getFullYear() + ' the React4j Project',
