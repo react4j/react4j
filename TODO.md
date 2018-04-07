@@ -100,7 +100,7 @@ warning messages more cryptic and skip important checks that happen in developme
   - https://mobx.js.org
   - https://redux.js.org/
 
-* Add picture from https://hackernoon.com/reactjs-component-lifecycle-methods-a-deep-dive-38275d9d13c0
+* Add lifecycle image from https://twitter.com/dan_abramov/status/981712092611989509 and credit author
 
 * Create a jsbin-alike to display GWT code
   - https://github.com/jsbin/jsbin
