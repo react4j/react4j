@@ -126,7 +126,7 @@ HEADER
       sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
       %w(raw raw_maven arez arez_maven dagger dagger_maven).each do |branch|
         full_branch = "#{branch}-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
-        `cd target/arez_downstream-test/deploy_test/workdir/react4j-todomvc && git push origin :#{full_branch}`
+        `cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push origin :#{full_branch}`
         puts "Completed remote branch #{full_branch}. Removed." if 0 == $?.exitstatus
       end
 
