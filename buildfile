@@ -89,8 +89,8 @@ define 'react4j' do
   define 'arez' do
     pom.provided_dependencies.concat PROVIDED_DEPS
     pom.include_transitive_dependencies << project('dom').package(:jar)
-    pom.include_transitive_dependencies << artifact(:arez_browser_extras)
-    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-browser-extras') }
+    pom.include_transitive_dependencies << artifact(:arez_component)
+    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-component') }
 
     compile.with project('core').package(:jar),
                  project('core').compile.dependencies,
@@ -99,8 +99,7 @@ define 'react4j' do
                  :arez_core,
                  :arez_annotations,
                  :arez_component,
-                 :arez_extras,
-                 :arez_browser_extras
+                 :arez_spytools
 
     gwt_enhance(project)
 

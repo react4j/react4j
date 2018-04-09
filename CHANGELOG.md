@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+#### Changed
+* ð¥ **\[arez\]** Replace usage of the Arez `extra` and `browser-extra` spy utilities class with the separate
+  top level project `arez-spytools`.
+
 ### [v0.61](https://github.com/react4j/react4j/tree/v0.61) (2018-04-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.60...v0.61)
 

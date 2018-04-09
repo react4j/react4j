@@ -1,7 +1,7 @@
 package react4j.arez.spy;
 
-import arez.browser.extras.spy.ConsoleSpyEventProcessor;
-import arez.browser.extras.spy.StringifyReplacer;
+import arez.spytools.browser.ConsoleSpyEventProcessor;
+import arez.spytools.browser.StringifyReplacer;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
