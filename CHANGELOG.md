@@ -885,8 +885,8 @@
 * Made sure that `ReactElement` does not expect a native type named `ReactElement` and is an `Object`.
 
 ##### Added
-* ✨ Added [ArezSpyUtil](https://react4j.github.io/api/react4j/arez/spy/ArezSpyUtil.html) to simplify the
-  setup of Arez spy console logger during development and debugging.
+* ✨ Added `react4j.arez.spy.ArezSpyUtil` to simplify the setup of Arez spy console logger during
+  development and debugging.
 * ✨ Added `react4j.widget.ReactWidget` class that simplifies integration with applications still using
   GWT Widgets.
 
