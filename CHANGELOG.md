@@ -149,7 +149,7 @@
 
 ##### Added
 * **\[core\]** Add support for the `React.Fragment` node type introduced in React `v16.2.0` as described in
-  the [fragments]()https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html) section of the
+  the [fragments](https://reactjs.org/blog/2017/11/28/react-v16.2.0-fragment-support.html) section of the
   ReactJS release nodes. This has been implemented by adding several overlay `React.createFragment(...)` methods.
 
 #### Changed
