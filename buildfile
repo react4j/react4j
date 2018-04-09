@@ -168,7 +168,6 @@ define 'react4j' do
   define 'gwt-output-qa' do
     compile.with PROVIDED_DEPS,
                  :javacsv,
-                 :jetbrains_annotations,
                  :gwt_symbolmap,
                  :testng
 
