@@ -217,7 +217,7 @@ define 'react4j' do
       ensure
         repositories.release_to = old_release_to
       end
-    end
+    end unless ENV['TEST'] == 'no'
 
     test.compile.enhance do
       cp = project.compile.dependencies.map(&:to_s) + [project.compile.target.to_s]
