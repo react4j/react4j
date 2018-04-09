@@ -168,7 +168,7 @@ embed.register({
 
 const siteConfig = {
   title: 'React4j',
-  tagline: 'An opinionated react java binding',
+  tagline: 'An opinionated java react binding',
   url: 'https://react4j.github.io',
   baseUrl: '/',
   projectName: 'react4j',
