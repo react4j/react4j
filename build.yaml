@@ -34,6 +34,7 @@ artifacts:
   arez_core: org.realityforge.arez:arez-core:jar:0.76
   arez_processor: org.realityforge.arez:arez-processor:jar:0.76
   arez_component: org.realityforge.arez:arez-component:jar:0.76
+  arez_browserlocation: org.realityforge.arez.browserlocation:arez-browserlocation:jar:0.01
   arez_spytools: org.realityforge.arez.spytools:arez-spytools:jar:0.01
 
   braincheck: org.realityforge.braincheck:braincheck:jar:1.5.0

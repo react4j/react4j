@@ -258,6 +258,7 @@ define 'react4j' do
                  project('processor').package(:jar),
                  project('processor').compile.dependencies,
                  DAGGER_PROCESSOR_DEPS,
+                 :arez_browserlocation,
                  :arez_processor,
                  :gwt_user
 
