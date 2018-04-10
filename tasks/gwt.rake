@@ -51,7 +51,7 @@ CONTENT
   if ENV['GWT'].nil? || ENV['GWT'] == project.name
     modules = modules_complete ? gwt_modules : gwt_modules.collect {|gwt_module| "#{gwt_module}Test"}
     modules.each do |m|
-      project.gwt([m], { :java_args => %w(-Xms512M -Xmx1024M),
+      project.gwt([m], { :java_args => %w(-Xms512M -Xmx1024M -Dgwt.watchFileChanges=false),
                          :dependencies => dependencies,
                          :output_key => options[:output_key] || m })
     end
