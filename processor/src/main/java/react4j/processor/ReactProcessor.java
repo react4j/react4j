@@ -994,9 +994,9 @@ public final class ReactProcessor
 
     if ( isDaggerPresent && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
-        throw new ReactProcessorException( "@ReactComponent target has enabled dagger injection and the class " +
-                                           "has type argument but type arguments on a component are not compatible " +
-                                           "with dagger injected components", typeElement );
+      throw new ReactProcessorException( "@ReactComponent target has enabled dagger injection and the class " +
+                                         "has type argument but type arguments on a component are not compatible " +
+                                         "with dagger injected components", typeElement );
     }
 
     descriptor.setNeedsInjection( needsInjection );
