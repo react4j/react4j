@@ -71,6 +71,8 @@
 
 * build in https://github.com/maicki/why-did-you-update
 
+* Consider adopting variable arguments ala https://fblitho.com/docs/props#variable-arguments
+
 #### Compiler optimizations
 
 (Sourced from [ReactJS Changelog](https://reactjs.org/blog/2015/10/07/react-v0.14.html#compiler-optimizations))
