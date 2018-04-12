@@ -424,6 +424,14 @@ public final class ReactProcessor
                                            "by " + matched2.getMethod() + ".", callback.getMethod() );
       }
       final ExecutableType methodType = callback.getMethodType();
+      if ( !processingEnv.getTypeUtils().isAssignable( methodType.getReturnType(),
+                                                       callback.getCallbackMethod().getReturnType() ) )
+      {
+        throw new ReactProcessorException( "@Callback target has a return type that is not assignable to the return " +
+                                           "type defined in the callback type " + callbackType.getQualifiedName() + ".",
+                                           callback.getMethod() );
+      }
+
       final List<? extends TypeMirror> parameters = methodType.getParameterTypes();
       if ( !parameters.isEmpty() )
       {

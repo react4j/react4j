@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+#### Fixed
+* **\[processor\]** Methods annotated with `@Callback` will have their return values validated to ensure
+  that they align with the return value of the associated callback type.
+
 #### Changed
 * **\[processor\]** Remove restriction that methods annotated with `@Callback` must have types that are
   annotated with `@JsFunction`.

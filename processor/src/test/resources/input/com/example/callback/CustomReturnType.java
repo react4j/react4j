@@ -1,6 +1,5 @@
 package com.example.callback;
 
-import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import react4j.annotations.Callback;
 import react4j.annotations.ReactComponent;
@@ -8,16 +7,15 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class TypeParameterOnCallback
+abstract class CustomReturnType
   extends Component
 {
   @JsFunction
   public interface CustomHandler
   {
-    Object render();
+    ReactNode render();
   }
 
-  @Nullable
   @Override
   protected ReactNode render()
   {
@@ -25,7 +23,7 @@ abstract class TypeParameterOnCallback
   }
 
   @Callback( CustomHandler.class )
-  public <T> T handleFoo()
+  ReactNode handleRender()
   {
     return null;
   }

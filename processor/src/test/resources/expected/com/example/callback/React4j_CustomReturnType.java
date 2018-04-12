@@ -11,38 +11,38 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-class React4j_TypeParameterOnCallback extends TypeParameterOnCallback {
+class React4j_CustomReturnType extends CustomReturnType {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  final TypeParameterOnCallback.CustomHandler _handleFoo = create_handleFoo();
+  final CustomReturnType.CustomHandler _handleRender = create_handleRender();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "TypeParameterOnCallback" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomReturnType" );
     }
     return componentConstructor;
   }
 
   @Nonnull
-  private TypeParameterOnCallback.CustomHandler create_handleFoo() {
-    final TypeParameterOnCallback.CustomHandler handler = () -> this.handleFoo();
+  private CustomReturnType.CustomHandler create_handleRender() {
+    final CustomReturnType.CustomHandler handler = () -> this.handleRender();
     if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "TypeParameterOnCallback.handleFoo" ) ) );
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomReturnType.handleRender" ) ) );
     }
     return handler;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<TypeParameterOnCallback> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<CustomReturnType> {
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected TypeParameterOnCallback createComponent() {
-      return new React4j_TypeParameterOnCallback();
+    protected CustomReturnType createComponent() {
+      return new React4j_CustomReturnType();
     }
   }
 }
