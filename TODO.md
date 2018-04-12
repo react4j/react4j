@@ -105,6 +105,12 @@ warning messages more cryptic and skip important checks that happen in developme
   - VueGWT - https://axellience.github.io/vue-gwt/introduction/
   - https://mobx.js.org
   - https://redux.js.org/
+  - https://fblitho.com/
+
+* Incorporate many of the ideas of Litho. Inadvertantly we seem to have created something that looks similar with
+  slight differences. Probably because both libraries try to use idiomatic java patterns with a react-like engine.
+
+* Add a best practices section like: https://fblitho.com/docs/best-practices#props-vs-state
 
 * Add lifecycle image from https://twitter.com/dan_abramov/status/981712092611989509 and credit author
 
