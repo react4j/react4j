@@ -12,7 +12,7 @@
 
 ### High Priorities
 
-* Add default values for state. Can be instance methods, static methods or static final fields?
+* Add default values for state via `@InitialState`. Can be instance methods, static methods or static final fields?
 
 * Change state setters so that if during construct then sets initial state otherwise schedules state update.
 
