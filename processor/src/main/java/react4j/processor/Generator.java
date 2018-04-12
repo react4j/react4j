@@ -275,7 +275,9 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec buildBuilderStepImpl( @Nonnull final ComponentDescriptor descriptor, @Nonnull final Step step, @Nonnull final StepMethod stepMethod )
+  private static MethodSpec buildBuilderStepImpl( @Nonnull final ComponentDescriptor descriptor,
+                                                  @Nonnull final Step step,
+                                                  @Nonnull final StepMethod stepMethod )
   {
     final MethodSpec.Builder method = MethodSpec.methodBuilder( stepMethod.getName() );
     method.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
@@ -949,9 +951,9 @@ final class Generator
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
     block.addStatement(
       "$T.invariant( () -> null != c_provider, () -> \"Attempted to create an instance of the React4j " +
-                    "component named '$N' before the dependency injection provider has been initialized. Please see " +
-                    "the documentation at https://react4j.github.io/dependency_injection for directions how to " +
-                    "configure dependency injection.\" )",
+      "component named '$N' before the dependency injection provider has been initialized. Please see " +
+      "the documentation at https://react4j.github.io/dependency_injection for directions how to " +
+      "configure dependency injection.\" )",
       GUARDS_CLASSNAME,
       descriptor.getName() );
     block.endControlFlow();
