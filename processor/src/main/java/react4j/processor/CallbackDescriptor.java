@@ -69,4 +69,9 @@ final class CallbackDescriptor
   {
     return _initCallbackContext;
   }
+
+  boolean isJsFunction()
+  {
+    return null != ProcessorUtil.findAnnotationByType( getCallbackType(), Constants.JS_FUNCTION_CLASSNAME );
+  }
 }

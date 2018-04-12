@@ -87,6 +87,10 @@ warning messages more cryptic and skip important checks that happen in developme
 
 #### Documentation
 
+* Add documentation recommending that `@Callback` methods are `@JsFunction` annotated. The reason is that they
+  will be converted to javascript functions which has significantly lesss overhead in GWT2.x (i.e. no class
+  literals) and they will also have useful names attatched to them in React DevTool.
+
 * Add documentation links to `react-widget` and `react-windowportal`
 
 * Link TodoMVC from web site in both production and development mode.

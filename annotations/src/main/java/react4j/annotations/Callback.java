@@ -8,13 +8,18 @@ import jsinterop.annotations.JsFunction;
 
 /**
  * Annotation used to specify a callback passed to react components.
- * This is used to generate a helper method in factory class that wraps
- * the call back and gives it a user friendly name for debugging. This
- * will be optimized away when ReactConfig.enableComponentNames() returns false.
+ * This annotation used to generate a callback accessor method in the
+ * helper class. The callback accessor method will return the same callback
+ * instance each time it is called, making this ideal for use in "PureComponent"
+ * style components. If the callback is annotated with <code>@JsFunction</code>
+ * then the code gives the callback a user friendly name for debugging. The
+ * code for specifying the friendly name will be optimized away when
+ * ReactConfig.enableComponentNames() returns false.
  *
  * <p>Using this annotation and the corresponding helper method is entirely
  * optional but does provide some value when building components that you
- * want to easily interact with from the React DevTools.</p>
+ * want to easily interact with from the React DevTools or building a component
+ * that compares props values to determine whether it needs to re-render.</p>
  */
 @Documented
 @Target( ElementType.METHOD )

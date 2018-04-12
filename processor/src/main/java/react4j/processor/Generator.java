@@ -872,18 +872,21 @@ final class Generator
                          handlerType,
                          callback.getMethod().getSimpleName() );
 
-    final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
-    final String code =
-      "$T.defineProperty( $T.cast( handler ), \"name\", $T.cast( $T.of( \"value\", $S ) ) )";
-    block.addStatement( code,
-                        JS_OBJECT_CLASSNAME,
-                        JS_CLASSNAME,
-                        JS_CLASSNAME,
-                        JS_PROPERTY_MAP_CLASSNAME,
-                        descriptor.getName() + "." + callback.getName() );
-    block.endControlFlow();
-    method.addCode( block.build() );
+    if ( callback.isJsFunction() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
+      final String code =
+        "$T.defineProperty( $T.cast( handler ), \"name\", $T.cast( $T.of( \"value\", $S ) ) )";
+      block.addStatement( code,
+                          JS_OBJECT_CLASSNAME,
+                          JS_CLASSNAME,
+                          JS_CLASSNAME,
+                          JS_PROPERTY_MAP_CLASSNAME,
+                          descriptor.getName() + "." + callback.getName() );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
     method.addStatement( "return handler" );
     return method;
   }

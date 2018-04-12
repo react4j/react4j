@@ -6,17 +6,22 @@ import react4j.core.Component;
 import react4j.core.ReactNode;
 
 @ReactComponent
-abstract class NotJsFunction
+abstract class NonJsFunctionCustomType
   extends Component
 {
+  public interface CustomHandler
+  {
+    void onMouseEvent( int i );
+  }
+
   @Override
   protected ReactNode render()
   {
     return null;
   }
 
-  @Callback( Runnable.class )
-  void handleFoo()
+  @Callback( CustomHandler.class )
+  void handleFoo( int i )
   {
   }
 }

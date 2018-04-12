@@ -406,12 +406,6 @@ public final class ReactProcessor
         throw new ReactProcessorException( "The @Callback specified an invalid type that is not an interface.",
                                            callback.getMethod() );
       }
-      if ( null == ProcessorUtil.findAnnotationByType( callbackType, Constants.JS_FUNCTION_CLASSNAME ) )
-      {
-        throw new ReactProcessorException( "The @Callback specified an invalid type that is not annotated " +
-                                           "with the annotation jsinterop.annotations.JsFunction.",
-                                           callback.getMethod() );
-      }
       final CallbackDescriptor matched = callbacks.stream()
         .filter( h -> h != callback && h.getName().equals( callback.getName() ) )
         .findAny().orElse( null );
