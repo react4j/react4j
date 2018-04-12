@@ -230,12 +230,13 @@ define 'react4j' do
       properties['react4j.deploy_test.local_repository_url'] = local_test_repository_url
       properties['react4j.deploy_test.store_statistics'] = ENV['STORE_BUILD_STATISTICS'] == 'true'
 
-      Java::Commands.java 'react4j.downstream.BuildDownstream', { :classpath => cp, :properties => properties }
-      Java::Commands.java 'react4j.downstream.CollectBuildStats', { :classpath => cp, :properties => properties }
+      Java::Commands.java 'react4j.downstream.BuildDownstream', { :classpath => cp, :properties => properties } unless ENV['DOWNSTREAM'] == 'no'
+      Java::Commands.java 'react4j.downstream.CollectBuildStats', { :classpath => cp, :properties => properties } unless ENV['BUILD_STATS'] == 'no'
     end
 
     # Only run this test when preparing for release
-    test.exclude '*BuildStatsTest' unless ENV['PRODUCT_VERSION']
+    test.exclude '*BuildStatsTest' if ENV['PRODUCT_VERSION'].nil? || ENV['BUILD_STATS'] == 'no'
+    test.exclude '*BuildOutputTest' if ENV['BUILD_STATS'] == 'no'
 
     test.using :testng
     test.compile.with :guiceyloops,
