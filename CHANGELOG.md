@@ -2,6 +2,16 @@
 
 ### Unreleased
 
+#### Added
+* **\[core\]** Re-add the method `Component.isComponentBound()` that will return false after the
+  `Component.componentWillUnmount()` lifecycle method completes. This method should be avoided unless
+  an asynchronous task can invoke `Component.scheduleStateUpdate(..)` or `Component.scheduleRender(...)`
+   and the asynchronous tasks can not be easily aborted when the component is unmounted.
+
+#### Changed
+* 💥 **\[arez\]** Avoid overriding `ReactArezComponent.componentWillUnmount()` and mandating that subclasses
+  call the method in any overriding classes.
+
 ### [v0.63](https://github.com/react4j/react4j/tree/v0.63) (2018-04-12)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.62...v0.63)
 

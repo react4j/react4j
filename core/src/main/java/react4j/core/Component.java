@@ -111,6 +111,20 @@ public abstract class Component
   }
 
   /**
+   * Return true if a native react component is bound to this component.
+   * This will return false after the call to {@link #componentWillUnmount()} completes.
+   * This method should be avoided unless an asynchronous task can invoke {@link #scheduleStateUpdate(SetStateCallback, Procedure)}
+   * or {@link #scheduleRender(boolean)} and the asynchronous tasks can not be easily
+   * aborted when the component is unmounted.
+   *
+   * @return true if a native react component is bound to this component.
+   */
+  protected final boolean isComponentBound()
+  {
+    return null != _nativeComponent;
+  }
+
+  /**
    * Return the component state from the native component.
    * This may be null if initial state was never set.
    *

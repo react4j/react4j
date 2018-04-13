@@ -221,15 +221,14 @@ public abstract class ReactArezComponent
   /**
    * {@inheritDoc}
    */
-  @Override
-  @OverridingMethodsMustInvokeSuper
-  protected void componentWillUnmount()
+  protected final void performComponentWillUnmount()
   {
     /*
      * Dispose of all the arez resources. Necessary particularly for the render tracker that should
      * not receive notifications of updates after the component has been unmounted.
      */
     Disposable.dispose( this );
+    super.performComponentWillUnmount();
   }
 
   /**
