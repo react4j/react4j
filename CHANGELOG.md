@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+#### Fixed
+* **\[arez\]** Avoid invoking `Component.scheduleRender(...)` from `ReactArezComponent.onRenderDepsChanged()`
+  if the component is no longer bound. This can occur when the component has been removed from the DOM tree
+  and has been scheduled for disposal but Arez has yet to complete the disposal. This scenario previously
+  triggered an invariant failure in native react development library.
+
 #### Added
 * **\[core\]** Re-add the method `Component.isComponentBound()` that will return false after the
   `Component.componentWillUnmount()` lifecycle method completes. This method should be avoided unless

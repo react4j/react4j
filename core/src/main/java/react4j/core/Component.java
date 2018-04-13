@@ -342,6 +342,18 @@ public abstract class Component
   }
 
   /**
+   * Wrapper method invoked when unmounting the component.
+   * It delegates to the {@link #componentWillUnmount()} method and clears the native component.
+   * This method exists to give middleware a mechanism to hook into component unmounting lifecycle.
+   */
+  @OverridingMethodsMustInvokeSuper
+  protected void performComponentWillUnmount()
+  {
+    componentWillUnmount();
+    _nativeComponent = null;
+  }
+
+  /**
    * The componentDidCatch() method works like a JavaScript catch {} block, but for components.
    * Only class components can be error boundaries. In practice, most of the time you’ll want to
    * declare an error boundary component once and use it throughout your application.

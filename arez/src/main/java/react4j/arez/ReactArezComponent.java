@@ -102,7 +102,10 @@ public abstract class ReactArezComponent
   protected final void onRenderDepsChanged()
   {
     _renderDepsChanged = true;
-    scheduleRender( true );
+    if ( isComponentBound() )
+    {
+      scheduleRender( true );
+    }
   }
 
   /**
