@@ -43,8 +43,6 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps,
         @Nonnull JsPropertyMap<Object> nextState);
 
-    void componentWillUnmount();
-
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
         @Nonnull JsPropertyMap<Object> arg1);
   }
@@ -68,11 +66,6 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
         @Nonnull final JsPropertyMap<Object> nextState) {
       performComponentDidUpdate(nextProps,nextState);
-    }
-
-    @Override
-    public void componentWillUnmount() {
-      performComponentWillUnmount();
     }
 
     @Override
