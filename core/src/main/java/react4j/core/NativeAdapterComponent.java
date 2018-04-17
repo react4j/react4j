@@ -3,6 +3,7 @@ package react4j.core;
 import elemental2.core.JsError;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.annotations.JsMethod;
 import jsinterop.base.JsPropertyMap;
 
 /**
@@ -138,7 +139,7 @@ public abstract class NativeAdapterComponent<I extends Component>
     }
     try
     {
-      _component.componentWillUnmount();
+      _component.performComponentWillUnmount();
     }
     finally
     {
