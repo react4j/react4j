@@ -11,7 +11,7 @@ abstract class AutorunArezReactComponent
   extends ReactArezComponent
 {
   @Autorun
-  public void myAutorun()
+  void myAutorun()
   {
   }
 

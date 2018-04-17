@@ -16,7 +16,7 @@ public abstract class EmployeeDataLoader
   }
 
   @Autorun
-  public void loadEmployeeDataIfRequired()
+  void loadEmployeeDataIfRequired()
   {
     if ( _service.shouldLoadEmployeeData() )
     {
