@@ -26,6 +26,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -474,6 +475,7 @@ final class Generator
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getHelperClassName() );
 
     markTypeAsGenerated( builder );
+    addOriginatingTypes( descriptor.getElement(), builder );
 
     // Private constructor to block instantiation
     builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
@@ -509,6 +511,7 @@ final class Generator
     }
 
     markTypeAsGenerated( builder );
+    addOriginatingTypes( descriptor.getElement(), builder );
 
     final FieldSpec.Builder field =
       FieldSpec.builder( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
@@ -1171,6 +1174,7 @@ final class Generator
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerFactoryClassName() );
     markTypeAsGenerated( builder );
+    addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addModifiers( Modifier.PUBLIC );
 
@@ -1374,5 +1378,11 @@ final class Generator
                   prop.getMethod(),
                   prop.getMethodType(),
                   stepMethodType );
+  }
+
+  private static void addOriginatingTypes( @Nonnull final TypeElement element, @Nonnull final TypeSpec.Builder builder )
+  {
+    builder.addOriginatingElement( element );
+    ProcessorUtil.getSuperTypes( element ).forEach( builder::addOriginatingElement );
   }
 }

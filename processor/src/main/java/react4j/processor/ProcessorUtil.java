@@ -47,6 +47,31 @@ final class ProcessorUtil
   }
 
   @Nonnull
+  static List<TypeElement> getSuperTypes( @Nonnull final TypeElement element )
+  {
+    final List<TypeElement> superTypes = new ArrayList<>();
+    enumerateSuperTypes( element, superTypes );
+    return superTypes;
+  }
+
+  private static void enumerateSuperTypes( @Nonnull final TypeElement element,
+                                           @Nonnull final List<TypeElement> superTypes )
+  {
+    final TypeMirror superclass = element.getSuperclass();
+    if ( TypeKind.NONE != superclass.getKind() )
+    {
+      final TypeElement superclassElement = (TypeElement) ( (DeclaredType) superclass ).asElement();
+      superTypes.add( superclassElement );
+      enumerateSuperTypes( superclassElement, superTypes );
+    }
+    for ( final TypeMirror interfaceType : element.getInterfaces() )
+    {
+      final TypeElement interfaceElement = (TypeElement) ( (DeclaredType) interfaceType ).asElement();
+      enumerateSuperTypes( interfaceElement, superTypes );
+    }
+  }
+
+  @Nonnull
   static List<TypeVariableName> getTypeArgumentsAsNames( @Nonnull final DeclaredType declaredType )
   {
     return declaredType.getTypeArguments()
