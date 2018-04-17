@@ -48,7 +48,7 @@ task 'perform_release' do
     end
 
     stage('Build', 'Build the project to ensure that the tests pass') do
-      sh "bundle exec buildr clean package PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} STAGE_RELEASE=true"
+      sh "bundle exec buildr clean package PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} STAGE_RELEASE=true#{Buildr.application.options.trace ? ' --trace' : ''}"
     end
 
     stage('PatchChangelog', 'Patch the changelog to update from previous release') do
@@ -132,11 +132,11 @@ HEADER
 
       # Release react-widget - need to extract the version from that project
       widget_version = IO.read('target/react4j_downstream-test/deploy_test/workdir/react4j-widget/CHANGELOG.md')[/^### \[v(\d+\.\d+)\]/, 1]
-      sh "cd target/react4j_downstream-test/deploy_test/workdir/react4j-widget && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{widget_version}"
+      sh "cd target/react4j_downstream-test/deploy_test/workdir/react4j-widget && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{widget_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
 
       # Release react-windowportal - need to extract the version from that project
       windowportal_version = IO.read('target/react4j_downstream-test/deploy_test/workdir/react4j-windowportal/CHANGELOG.md')[/^### \[v(\d+\.\d+)\]/, 1]
-      sh "cd target/react4j_downstream-test/deploy_test/workdir/react4j-windowportal && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{windowportal_version}"
+      sh "cd target/react4j_downstream-test/deploy_test/workdir/react4j-windowportal && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{windowportal_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
     end
 
     stage('GithubRelease', 'Create a Release on GitHub') do
