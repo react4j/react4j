@@ -57,6 +57,8 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
         @Nonnull JsPropertyMap<Object> arg1);
 
+    void componentWillUnmount();
+
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
         @Nonnull JsPropertyMap<Object> arg1);
   }
@@ -80,6 +82,11 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
         @Nonnull final JsPropertyMap<Object> arg1) {
       performComponentDidUpdate(arg0,arg1);
+    }
+
+    @Override
+    public void componentWillUnmount() {
+      performComponentWillUnmount();
     }
 
     @Override

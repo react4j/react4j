@@ -60,6 +60,8 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
         @Nonnull JsPropertyMap<Object> arg1);
 
+    void componentWillUnmount();
+
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
         @Nonnull JsPropertyMap<Object> arg1);
   }
@@ -83,6 +85,11 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
         @Nonnull final JsPropertyMap<Object> arg1) {
       performComponentDidUpdate(arg0,arg1);
+    }
+
+    @Override
+    public void componentWillUnmount() {
+      performComponentWillUnmount();
     }
 
     @Override
