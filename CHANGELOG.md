@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.65](https://github.com/react4j/react4j/tree/v0.65) (2018-04-17)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.64...v0.65)
 
 #### Fixed
 * **\[core\]** Make sure that the native component invoked `Component.performComponentWillUnmount()`
