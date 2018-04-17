@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import static org.realityforge.braincheck.Guards.*;
@@ -108,20 +109,6 @@ public abstract class Component
     }
     assert null != _nativeComponent;
     return _nativeComponent;
-  }
-
-  /**
-   * Return true if a native react component is bound to this component.
-   * This will return false after the call to {@link #componentWillUnmount()} completes.
-   * This method should be avoided unless an asynchronous task can invoke {@link #scheduleStateUpdate(SetStateCallback, Procedure)}
-   * or {@link #scheduleRender(boolean)} and the asynchronous tasks can not be easily
-   * aborted when the component is unmounted.
-   *
-   * @return true if a native react component is bound to this component.
-   */
-  protected final boolean isComponentBound()
-  {
-    return null != _nativeComponent;
   }
 
   /**
@@ -343,14 +330,13 @@ public abstract class Component
 
   /**
    * Wrapper method invoked when unmounting the component.
-   * It delegates to the {@link #componentWillUnmount()} method and clears the native component.
+   * It delegates to the {@link #componentWillUnmount()} method.
    * This method exists to give middleware a mechanism to hook into component unmounting lifecycle.
    */
   @OverridingMethodsMustInvokeSuper
   protected void performComponentWillUnmount()
   {
     componentWillUnmount();
-    _nativeComponent = null;
   }
 
   /**

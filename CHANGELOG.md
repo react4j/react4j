@@ -8,6 +8,13 @@
   to the tool infrastructure to better manage dependencies. In particular incremental compilation
   by IDEs can make use of this to trigger recompilation when necessary.
 
+#### Removed
+* **\[core\]** Removed the method `Component.isComponentBound()` as it was only valid if the component
+  lifecycle method `Component.componentWillUnmount()` was specified in a component. While this was
+  documented, it proved to be too confusing a feature to rely upon. The introduction of this feature
+  in `v0.64` changed the behaviour of `ReactArezComponent` which meant that these components may not
+  clean up arez elements and could receive callbacks after the components had been unmounted.
+
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.79`.
 

@@ -45,6 +45,7 @@ public abstract class ReactArezComponent
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
   private boolean _renderDepsChanged;
+  private boolean _unmounted;
 
   protected ReactArezComponent()
   {
@@ -102,7 +103,7 @@ public abstract class ReactArezComponent
   protected final void onRenderDepsChanged()
   {
     _renderDepsChanged = true;
-    if ( isComponentBound() )
+    if ( !_unmounted )
     {
       scheduleRender( true );
     }
@@ -224,14 +225,36 @@ public abstract class ReactArezComponent
   /**
    * {@inheritDoc}
    */
-  protected final void performComponentWillUnmount()
+  @Override
+  protected void componentWillUnmount()
   {
     /*
-     * Dispose of all the arez resources. Necessary particularly for the render tracker that should
-     * not receive notifications of updates after the component has been unmounted.
+     * This method is overridden as it forces the annotation processor to generate the native
+     * componentWillUnmount method. The native method is required so that performComponentWillUnmount()
+     * is invoked and correctly cleans up state.
      */
-    Disposable.dispose( this );
-    super.performComponentWillUnmount();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  protected final void performComponentWillUnmount()
+  {
+    final Disposable schedulerLock = getContext().pauseScheduler();
+    try
+    {
+      _unmounted = true;
+      super.performComponentWillUnmount();
+      /*
+       * Dispose of all the arez resources. Necessary particularly for the render tracker that should
+       * not receive notifications of updates after the component has been unmounted.
+       */
+      Disposable.dispose( this );
+    }
+    finally
+    {
+      schedulerLock.dispose();
+    }
   }
 
   /**
