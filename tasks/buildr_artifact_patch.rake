@@ -43,6 +43,7 @@ class URI::HTTP
     options ||= {}
     connect do |http|
       trace "Uploading to #{path}"
+      http.read_timeout = 500
       content = StringIO.new
       while chunk = yield(RW_CHUNK_SIZE)
         content << chunk
