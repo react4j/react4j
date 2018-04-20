@@ -4,7 +4,7 @@
 
 #### Fixed
 * **\[processor\]** Fix bug in generated React classes where a `@Nullable @Prop` method could
-  generate a `NullPointerException` when reading the prop if the prop was explicitly set to null. 
+  generate a `NullPointerException` when reading the prop if the prop was explicitly set to null.
 
 #### Changed
 * 💥 **\[core\]** Upgrade to react `16.3.2`.
