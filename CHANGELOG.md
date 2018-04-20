@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+#### Fixed
+* The react javascript packaged in `0.66` was corrupted during download from unpkg. This release
+  is only a repackage of correct javascript.
+
 ### [v0.66](https://github.com/react4j/react4j/tree/v0.66) (2018-04-20)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.65...v0.66)
 
