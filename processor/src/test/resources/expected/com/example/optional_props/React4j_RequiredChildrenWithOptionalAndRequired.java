@@ -28,17 +28,17 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
 
   @Override
   protected String getMyRequiredProp() {
-    return props().has( "myRequiredProp" ) ? props().getAny( "myRequiredProp" ).asString() : null;
+    return null != props().getAny( "myRequiredProp" ) ? props().getAny( "myRequiredProp" ).asString() : null;
   }
 
   @Override
   protected String getMyProp() {
-    return props().has( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+    return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
   }
 
   @Override
   protected ReactNode[] getChildren() {
-    return props().has( "children" ) ? props().getAny( "children" ).cast() : null;
+    return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<RequiredChildrenWithOptionalAndRequired> {

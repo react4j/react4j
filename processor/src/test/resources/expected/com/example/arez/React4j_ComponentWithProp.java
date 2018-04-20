@@ -37,7 +37,7 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
       expectSetter = false
   )
   protected String getValue() {
-    return props().has( "value" ) ? props().getAny( "value" ).asString() : null;
+    return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
   }
 
   @Nonnull

@@ -38,7 +38,7 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
       expectSetter = false
   )
   protected String getValue() {
-    return props().has( "value" ) ? props().getAny( "value" ).asString() : null;
+    return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
   }
 
   @Nonnull
@@ -52,7 +52,7 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   )
   @Dependency
   protected ComponentWithDependency.Model getModel() {
-    return props().has( "model" ) ? props().getAny( "model" ).cast() : null;
+    return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
   }
 
   @Nonnull

@@ -642,7 +642,7 @@ final class Generator
     if ( !resultKind.isPrimitive() &&
          null == ProcessorUtil.findAnnotationByType( methodElement, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
-      method.addStatement( "return props().has( $S ) ? props().getAny( $S ).$N() : null", key, key, convertMethodName );
+      method.addStatement( "return null != props().getAny( $S ) ? props().getAny( $S ).$N() : null", key, key, convertMethodName );
     }
     else
     {

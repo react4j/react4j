@@ -32,12 +32,12 @@ class React4j_NullablePropAndNonnullChildComponent extends NullablePropAndNonnul
   @Nullable
   @Override
   protected String getMyProp2() {
-    return props().has( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+    return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
   }
 
   @Override
   protected ReactNode getChild() {
-    return props().has( "children" ) ? props().getAny( "children" ).cast() : null;
+    return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NullablePropAndNonnullChildComponent> {

@@ -49,7 +49,7 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
 
   @Override
   String getMyProp() {
-    return props().has( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+    return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
   }
 
   @Nonnull

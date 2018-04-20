@@ -24,7 +24,7 @@ class React4j_PublicProp extends PublicProp {
 
   @Override
   public String getMyProp() {
-    return props().has( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+    return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PublicProp> {

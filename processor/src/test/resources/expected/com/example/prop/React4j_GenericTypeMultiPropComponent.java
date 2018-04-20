@@ -24,24 +24,24 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
 
   @Override
   protected T getValue() {
-    return props().has( "value" ) ? props().getAny( "value" ).cast() : null;
+    return null != props().getAny( "value" ) ? props().getAny( "value" ).cast() : null;
   }
 
   @Override
   protected String getValue2() {
-    return props().has( "value2" ) ? props().getAny( "value2" ).asString() : null;
+    return null != props().getAny( "value2" ) ? props().getAny( "value2" ).asString() : null;
   }
 
   @Nullable
   @Override
   protected String getValue3() {
-    return props().has( "value3" ) ? props().getAny( "value3" ).asString() : null;
+    return null != props().getAny( "value3" ) ? props().getAny( "value3" ).asString() : null;
   }
 
   @Nullable
   @Override
   protected String getValue4() {
-    return props().has( "value4" ) ? props().getAny( "value4" ).asString() : null;
+    return null != props().getAny( "value4" ) ? props().getAny( "value4" ).asString() : null;
   }
 
   private static final class NativeReactComponent<T> extends NativeAdapterComponent<GenericTypeMultiPropComponent<T>> {
