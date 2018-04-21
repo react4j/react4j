@@ -130,13 +130,11 @@ HEADER
         puts "Completed remote branch #{full_branch}. Removed." if 0 == $?.exitstatus
       end
 
-      # Release react-widget - need to extract the version from that project
-      widget_version = IO.read('target/react4j_downstream-test/deploy_test/workdir/react4j-widget/CHANGELOG.md')[/^### \[v(\d+\.\d+)\]/, 1]
-      sh "cd target/react4j_downstream-test/deploy_test/workdir/react4j-widget && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{widget_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
-
-      # Release react-windowportal - need to extract the version from that project
-      windowportal_version = IO.read('target/react4j_downstream-test/deploy_test/workdir/react4j-windowportal/CHANGELOG.md')[/^### \[v(\d+\.\d+)\]/, 1]
-      sh "cd target/react4j_downstream-test/deploy_test/workdir/react4j-windowportal && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{windowportal_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
+      DOWNSTREAM_PROJECTS.each do |downstream|
+        # Need to extract the version from that project
+        downstream_version = IO.read("target/react4j_downstream-test/deploy_test/workdir/#{downstream}/CHANGELOG.md")[/^### \[v(\d+\.\d+)\]/, 1]
+        sh "cd target/react4j_downstream-test/deploy_test/workdir/#{downstream} && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{downstream_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
+      end
     end
 
     stage('GithubRelease', 'Create a Release on GitHub') do

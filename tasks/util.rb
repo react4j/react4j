@@ -1,5 +1,7 @@
 WORKSPACE_DIR = File.expand_path(File.dirname(__FILE__) + '/..')
 
+DOWNSTREAM_PROJECTS=%w(react4j-widget react4j-windowportal)
+
 def in_dir(dir)
   current = Dir.pwd
   begin
