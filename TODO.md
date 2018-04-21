@@ -47,7 +47,9 @@
 
 * Components that have no `@State` methods, no fields, no lifecycle methods and are not subclasses of
   `ReactArezComponent` could be made into stateless components when translating to React. This could also
-  be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`.
+  be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`. An even
+  better optimization - at least in production would be to eliminate the component altogether and effectively
+  have the `build()` method on the builder call the render method directly. 
 
 ### Low Priorities
 
