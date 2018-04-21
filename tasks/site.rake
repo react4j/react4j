@@ -85,7 +85,15 @@ task 'site:link_check' do
 
   trap('INT') {webserver.shutdown}
   begin
-    sh "yarn blc --ordered --recursive --filter-level 3 http://#{address}:#{port} --exclude https://github.com/react4j/react4j/compare/ --exclude https://medium.freecodecamp.org/ --exclude https://docs.oracle.com/javase/8/docs/api"
+    base_url = "http://#{address}:#{port}"
+    excludes = []
+    excludes << 'https://github.com/react4j/react4j/compare/'
+    excludes << 'https://medium.freecodecamp.org/'
+    excludes << 'https://docs.oracle.com/javase/8/docs/api'
+    (%w(todomvc) + DOWNSTREAM_PROJECTS).each do |project_name|
+      excludes << "#{base_url}/#{project_name.gsub(/^react4j-/, '')}"
+    end
+    sh "yarn blc --ordered --recursive --filter-level 3 #{base_url} #{excludes.collect {|e| "--exclude #{e}"}.join(' ')}"
   ensure
     webserver.shutdown
   end
