@@ -97,8 +97,6 @@ warning messages more cryptic and skip important checks that happen in developme
   will be converted to javascript functions which has significantly lesss overhead in GWT2.x (i.e. no class
   literals) and they will also have useful names attatched to them in React DevTool.
 
-* Add documentation links to `react-widget` and `react-windowportal`
-
 * Link TodoMVC from web site in both production and development mode.
 
 * Add search capability to website
