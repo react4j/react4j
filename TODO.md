@@ -93,6 +93,8 @@ warning messages more cryptic and skip important checks that happen in developme
 
 #### Documentation
 
+* Add graph reflecting size of TodoMVC over time
+
 * Add documentation recommending that `@Callback` methods are `@JsFunction` annotated. The reason is that they
   will be converted to javascript functions which has significantly lesss overhead in GWT2.x (i.e. no class
   literals) and they will also have useful names attatched to them in React DevTool.
@@ -119,3 +121,7 @@ warning messages more cryptic and skip important checks that happen in developme
 * Create a jsbin-alike to display GWT code
   - https://github.com/jsbin/jsbin
   - http://jsbin.com/?html,css,js,console,output
+
+* Prepare a screencast for React4j+Arez.
+  - See egghead training videos as well.
+  - https://www.youtube.com/playlist?list=PLV5CVI1eNcJhc9Lxu83Zp4uyqP2yKV4xl&app=desktop
