@@ -874,7 +874,7 @@ public final class ReactProcessor
 
     if ( null == overriddenRenderMethod )
     {
-      throw new ReactProcessorException( "The react component does not override any render methods.", typeElement );
+      throw new ReactProcessorException( "The react component does not override the render method.", typeElement );
     }
   }
 

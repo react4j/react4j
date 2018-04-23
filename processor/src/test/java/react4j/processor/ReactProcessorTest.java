@@ -277,7 +277,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.PropNotAbstractComponent", "@Prop target must be abstract" },
         new Object[]{ "com.example.prop.PropThrowsExceptionComponent", "@Prop target must not throw any exceptions" },
         new Object[]{ "com.example.render.MissingRenderComponent",
-                      "The react component does not override any render methods." },
+                      "The react component does not override the render method." },
         new Object[]{ "com.example.state.BadName",
                       "@State target specified an invalid name '-key'. The name must be a valid java identifier." },
         new Object[]{ "com.example.state.BadName2",

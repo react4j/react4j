@@ -15,6 +15,7 @@
   callable by subclasses. They must not be private and if they are package access then the methods
   must be defined in the same package as the class annotated with `@ReactComponent`
 * **\[annotations\]** Document the requirements for `@Callback` annotated methods.
+* **\[processor\]** Fix the error message emitted when the render method is not overridden.
 
 ### [v0.67](https://github.com/react4j/react4j/tree/v0.67) (2018-04-20)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.66...v0.67)
