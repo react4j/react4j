@@ -101,8 +101,6 @@ warning messages more cryptic and skip important checks that happen in developme
 
 * Link TodoMVC from web site in both production and development mode.
 
-* Add search capability to website
-
 * Reorganize documentation using the following sites as inspiration.
   - Reason React - https://reasonml.github.io/reason-react/
   - EmberJS - https://www.emberjs.com/

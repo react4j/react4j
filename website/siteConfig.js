@@ -177,15 +177,13 @@ const siteConfig = {
     { href: '/api', label: 'API' },
     { blog: true, label: 'Blog' },
     { href: 'https://github.com/react4j/react4j/releases', label: 'Releases', external: true },
-    { href: 'https://github.com/react4j/react4j', label: 'GitHub', external: true }/*,
-    { search: true }*/
+    { href: 'https://github.com/react4j/react4j', label: 'GitHub', external: true },
+    { search: true }
   ],
-/*
   algolia: {
-    apiKey: 'b8c49751e0914443436822868f0c5000',
+    apiKey: 'bcbf32ec3754c54aadb410fd32ca236b',
     indexName: 'react4j'
   },
-*/
   users: [],
   /* path to images for header/footer */
   headerIcon: 'img/logo.svg',
