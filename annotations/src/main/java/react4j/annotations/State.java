@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
  * <li>Must not be annotated with any other react annotation</li>
  * <li>Must be an abstract instance method</li>
  * <li>Must not throw exceptions</li>
+ * <li>Must be accessible from the same package as the class annotated by {@link ReactComponent}</li>
  * </ul>
  * <p>The getter must also comply with the following constraints:</p>
  * <ul>

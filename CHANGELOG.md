@@ -9,6 +9,12 @@
   `javax.annotation.processing.Generated` annotation is added rather than the historic
   `javax.annotation.Generated` which can be difficult to support in Java 9 due to split modules.
 * **\[docs\]** Enable search on the website.
+* **\[processor\]** Verify that methods annotated with `@Callback` are not abstract.
+* **\[processor\]** Verify that methods annotated with `@Callback` are not static.
+* **\[processor\]** Verify that methods annotated with `@Callback`, `@State` and `@Prop` are
+  callable by subclasses. They must not be private and if they are package access then the methods
+  must be defined in the same package as the class annotated with `@ReactComponent`
+* **\[annotations\]** Document the requirements for `@Callback` annotated methods.
 
 ### [v0.67](https://github.com/react4j/react4j/tree/v0.67) (2018-04-20)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.66...v0.67)

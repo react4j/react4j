@@ -513,7 +513,8 @@ public final class ReactProcessor
         "Feature.DISABLE.";
       throw new ReactProcessorException( message, method );
     }
-
+    MethodChecks.mustNotBeAbstract( Constants.CALLBACK_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustBeSubclassCallable( descriptor.getElement(), Constants.CALLBACK_ANNOTATION_CLASSNAME, method );
     return new CallbackDescriptor( name,
                                    method,
                                    methodType,
@@ -639,6 +640,9 @@ public final class ReactProcessor
     MethodChecks.mustNotHaveAnyParameters( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
+                                                           Constants.PROP_ANNOTATION_CLASSNAME,
+                                                           method );
 
     if ( "key".equals( name ) )
     {
@@ -713,7 +717,7 @@ public final class ReactProcessor
       final ExecutableType methodType =
         (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
 
-      parseStateValueMethod( method, methodType, values );
+      parseStateValueMethod( descriptor, method, methodType, values );
     }
 
     final ArrayList<StateValueDescriptor> stateValues = new ArrayList<>( values.values() );
@@ -749,7 +753,8 @@ public final class ReactProcessor
     }
   }
 
-  private void parseStateValueMethod( @Nonnull final ExecutableElement method,
+  private void parseStateValueMethod( @Nonnull final ComponentDescriptor descriptor,
+                                      @Nonnull final ExecutableElement method,
                                       @Nonnull final ExecutableType methodType,
                                       @Nonnull final Map<String, StateValueDescriptor> values )
   {
@@ -761,6 +766,9 @@ public final class ReactProcessor
     verifyNoDuplicateAnnotations( method );
     MethodChecks.mustBeAbstract( Constants.STATE_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotThrowAnyExceptions( Constants.STATE_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
+                                                           Constants.STATE_ANNOTATION_CLASSNAME,
+                                                           method );
 
     final String name;
     if ( setter )

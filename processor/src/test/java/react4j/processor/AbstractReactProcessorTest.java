@@ -190,7 +190,7 @@ abstract class AbstractReactProcessorTest
   {
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( inputs ).
-      processedWith( new ArezProcessor() ).
+      processedWith( new ArezProcessor(), new ReactProcessor() ).
       failsToCompile().
       withErrorContaining( errorMessageFragment );
   }

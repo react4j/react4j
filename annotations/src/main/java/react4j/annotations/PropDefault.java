@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
  * <li>Must be a static field</li>
  * <li>Must be a final field</li>
  * <li>Must not be private</li>
+ * <li>Must be accessible from the same package as the class annotated by {@link ReactComponent}</li>
  * </ul>
  */
 @Documented

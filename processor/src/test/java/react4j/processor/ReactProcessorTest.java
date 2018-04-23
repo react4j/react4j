@@ -1,5 +1,6 @@
 package react4j.processor;
 
+import com.google.testing.compile.JavaFileObjects;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -36,6 +37,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.callback.CustomTypeButParametersIgnored", true, false },
         new Object[]{ "com.example.callback.CustomTypeMultipleArgs", true, false },
         new Object[]{ "com.example.callback.EnabledCallback", true, false },
+        new Object[]{ "com.example.callback.FinalCallback", true, false },
         new Object[]{ "com.example.callback.NonJsFunctionCustomType", true, false },
         new Object[]{ "com.example.callback.PublicComponentWithCallback", true, false },
         new Object[]{ "com.example.callback.TypeParameterOnCallback", true, false },
@@ -234,6 +236,10 @@ public class ReactProcessorTest
                       "The @Callback target parameter named i of type int is not assignable from target type java.lang.Object of parameter o1 in method com.example.callback.BadType.CustomHandler.onMyEvent." },
         new Object[]{ "com.example.callback.CallbackAndProp",
                       "Method can not be annotated with both @Callback and @Prop" },
+        new Object[]{ "com.example.callback.CallbackNotAbstract", "@Callback target must not be abstract" },
+        new Object[]{ "com.example.callback.CallbackNotPrivate", "@Callback target must not be private" },
+        new Object[]{ "com.example.callback.CallbackNotStatic", "@Callback target must not be static" },
+
         new Object[]{ "com.example.callback.DuplicateName",
                       "The @Callback has the same name as the callback defined by a()." },
         new Object[]{ "com.example.callback.DuplicateName2",
@@ -308,5 +314,29 @@ public class ReactProcessorTest
     throws Exception
   {
     assertFailedCompile( classname, errorMessageFragment );
+  }
+
+  @DataProvider( name = "packageAccessElementInDifferentPackage" )
+  public Object[][] packageAccessElementInDifferentPackage()
+  {
+    return new Object[][]
+      {
+        new Object[]{ "Callback" },
+        new Object[]{ "State" },
+        new Object[]{ "Prop" }
+      };
+  }
+
+  @Test( dataProvider = "packageAccessElementInDifferentPackage" )
+  public void processFailedCompileInheritedPackageAccessInDifferentPackage( @Nonnull final String annotation )
+    throws Exception
+  {
+    final JavaFileObject source1 =
+      JavaFileObjects.forResource( "bad_input/com/example/package_access/other/Base" + annotation + "Model.java" );
+    final JavaFileObject source2 =
+      JavaFileObjects.forResource( "bad_input/com/example/package_access/" + annotation + "Model.java" );
+    assertFailedCompileResource( Arrays.asList( source1, source2 ),
+                                 "@" + annotation + " target must not be package access if " +
+                                 "the method is in a different package from the @ArezComponent" );
   }
 }

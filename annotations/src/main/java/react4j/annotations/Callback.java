@@ -20,6 +20,16 @@ import jsinterop.annotations.JsFunction;
  * optional but does provide some value when building components that you
  * want to easily interact with from the React DevTools or building a component
  * that compares props values to determine whether it needs to re-render.</p>
+ *
+ * <p>The method that is annotated with <code>@Callback</code> must also comply with the following constraints:</p>
+ * <ul>
+ * <li>Must not be annotated with any other react annotation</li>
+ * <li>Must not be an abstract instance method</li>
+ * <li>Must not throw exceptions</li>
+ * <li>Must be accessible from the same package as the class annotated by {@link ReactComponent}</li>
+ * <li>Must have 0 parameters or the same set of parameters as the callback type</li>
+ * <li>Must return a value of the same type as the callback type if any</li>
+ * </ul>
  */
 @Documented
 @Target( ElementType.METHOD )
