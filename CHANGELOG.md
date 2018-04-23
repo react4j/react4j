@@ -4,6 +4,10 @@
 
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.80`.
+* **\[processor\]** Change the way that the annotation processor marks generated classes as
+  generated. When the source version of input code is Java 9 or greater then the
+  `javax.annotation.processing.Generated` annotation is added rather than the historic
+  `javax.annotation.Generated` which can be difficult to support in Java 9 due to split modules.
 
 ### [v0.67](https://github.com/react4j/react4j/tree/v0.67) (2018-04-20)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.66...v0.67)

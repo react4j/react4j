@@ -20,8 +20,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -81,7 +81,7 @@ final class Generator
   static TypeSpec buildComponentBuilder( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
-    markTypeAsGenerated( builder );
+    addGeneratedAnnotation( descriptor, builder );
 
     ProcessorUtil.copyAccessModifiers( descriptor.getElement(), builder );
 
@@ -474,7 +474,7 @@ final class Generator
 
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getHelperClassName() );
 
-    markTypeAsGenerated( builder );
+    addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
     // Private constructor to block instantiation
@@ -510,7 +510,7 @@ final class Generator
       builder.addModifiers( Modifier.ABSTRACT );
     }
 
-    markTypeAsGenerated( builder );
+    addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
     final FieldSpec.Builder field =
@@ -597,13 +597,6 @@ final class Generator
     return builder.build();
   }
 
-  private static void markTypeAsGenerated( final TypeSpec.Builder builder )
-  {
-    builder.addAnnotation( AnnotationSpec.builder( Generated.class ).
-      addMember( "value", "$S", ReactProcessor.class.getName() ).
-      build() );
-  }
-
   private static MethodSpec.Builder buildPropMethod( @Nonnull final ComponentDescriptor descriptor,
                                                      @Nonnull final PropDescriptor prop )
   {
@@ -642,7 +635,10 @@ final class Generator
     if ( !resultKind.isPrimitive() &&
          null == ProcessorUtil.findAnnotationByType( methodElement, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
-      method.addStatement( "return null != props().getAny( $S ) ? props().getAny( $S ).$N() : null", key, key, convertMethodName );
+      method.addStatement( "return null != props().getAny( $S ) ? props().getAny( $S ).$N() : null",
+                           key,
+                           key,
+                           convertMethodName );
     }
     else
     {
@@ -1173,7 +1169,7 @@ final class Generator
   static TypeSpec buildDaggerFactory( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerFactoryClassName() );
-    markTypeAsGenerated( builder );
+    addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addModifiers( Modifier.PUBLIC );
@@ -1384,5 +1380,30 @@ final class Generator
   {
     builder.addOriginatingElement( element );
     ProcessorUtil.getSuperTypes( element ).forEach( builder::addOriginatingElement );
+  }
+
+  private static void addGeneratedAnnotation( @Nonnull final ComponentDescriptor descriptor,
+                                              @Nonnull final TypeSpec.Builder builder )
+  {
+    builder.addAnnotation( AnnotationSpec.builder( getGeneratedAnnotation( descriptor ) ).
+      addMember( "value", "$S", ReactProcessor.class.getName() ).
+      build() );
+  }
+
+  @Nonnull
+  private static Class<?> getGeneratedAnnotation( @Nonnull final ComponentDescriptor descriptor )
+  {
+    try
+    {
+      return Class.forName( SourceVersion.RELEASE_8.compareTo( descriptor.getSourceVersion() ) < 0 ?
+                            "javax.annotation.processing.Generated" :
+                            "javax.annotation.Generated"
+      );
+    }
+    catch ( final ClassNotFoundException e )
+    {
+      throw new ReactProcessorException( "@ReactComponent unable to determine correct @Generated annotation",
+                                         descriptor.getElement() );
+    }
   }
 }

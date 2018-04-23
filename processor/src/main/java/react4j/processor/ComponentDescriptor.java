@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -18,6 +19,8 @@ import javax.lang.model.type.DeclaredType;
 
 final class ComponentDescriptor
 {
+  @Nonnull
+  private final SourceVersion _sourceVersion;
   @Nonnull
   private final String _name;
   @Nonnull
@@ -52,10 +55,12 @@ final class ComponentDescriptor
   @Nullable
   private List<StateValueDescriptor> _stateValues;
 
-  ComponentDescriptor( @Nonnull final String name,
+  ComponentDescriptor( @Nonnull final SourceVersion sourceVersion,
+                       @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
                        @Nonnull final TypeElement element )
   {
+    _sourceVersion = Objects.requireNonNull( sourceVersion );
     _name = Objects.requireNonNull( name );
     _packageElement = Objects.requireNonNull( packageElement );
     _element = Objects.requireNonNull( element );
@@ -89,6 +94,12 @@ final class ComponentDescriptor
       throw new ReactProcessorException( "@ReactComponent target must have a single non-private, no-argument " +
                                          "constructor or the default constructor", element );
     }
+  }
+
+  @Nonnull
+  SourceVersion getSourceVersion()
+  {
+    return _sourceVersion;
   }
 
   @Nonnull
