@@ -153,7 +153,7 @@ final class MethodChecks
       {
         throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
                                            " target must not be package access if the method is in a different " +
-                                           "package from the @ArezComponent", method );
+                                           "package from the @ReactComponent", method );
       }
     }
   }

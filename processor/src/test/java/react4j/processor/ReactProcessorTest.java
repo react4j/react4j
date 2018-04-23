@@ -337,6 +337,6 @@ public class ReactProcessorTest
       JavaFileObjects.forResource( "bad_input/com/example/package_access/" + annotation + "Model.java" );
     assertFailedCompileResource( Arrays.asList( source1, source2 ),
                                  "@" + annotation + " target must not be package access if " +
-                                 "the method is in a different package from the @ArezComponent" );
+                                 "the method is in a different package from the @ReactComponent" );
   }
 }
