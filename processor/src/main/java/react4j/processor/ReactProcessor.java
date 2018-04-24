@@ -78,7 +78,7 @@ public final class ReactProcessor
       processingEnv.getElementUtils().getTypeElement( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME );
     final Set<? extends Element> elements = env.getElementsAnnotatedWith( annotation );
     processElements( elements );
-    return false;
+    return true;
   }
 
   private void processElements( @Nonnull final Set<? extends Element> elements )

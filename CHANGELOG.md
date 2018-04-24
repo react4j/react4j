@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+#### Changed
+* **\[processor\]** Claim the React4j annotations that are processed by the annotation processor.
+  Subsequent annotation processor will not be asked to process the annotation types which results
+  in a very slight performance improvement during compilation. 
+
 ### [v0.68](https://github.com/react4j/react4j/tree/v0.68) (2018-04-24)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.67...v0.68)
 
