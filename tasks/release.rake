@@ -86,12 +86,19 @@ Changes in this release:
 
 #{changelog[start_index, end_index - start_index].gsub('https://react4j.github.io','')}
 CONTENT
+      setup_filename = 'docs/project_setup.md'
+      IO.write(setup_filename, IO.read(setup_filename).
+        gsub("<version>#{ENV['PREVIOUS_PRODUCT_VERSION']}</version>", "<version>#{ENV['PRODUCT_VERSION']}</version>"))
       sh 'git reset 2>&1 1> /dev/null'
       sh "git add #{filename}"
+      sh "git add #{setup_filename}"
       # Zapwhite only runs against files added to git so we have to do this dance after adding files
       `bundle exec zapwhite`
+      sh 'git reset 2>&1 1> /dev/null'
       sh "git add #{filename}"
       sh "git commit -m \"Update site to add news about the #{ENV['PRODUCT_VERSION']} release\""
+      sh "git add #{setup_filename}"
+      sh "git commit -m \"Update documentation to reflect the #{ENV['PRODUCT_VERSION']} release\""
     end
 
     stage('BuildWebsite', 'Build the website to ensure site still builds') do

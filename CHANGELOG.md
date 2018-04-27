@@ -5,6 +5,7 @@
 ##### Added
 * **\[docs\]** Add a page that references the TodoMVC examples to the website.
 * **\[docs\]** Add some documentation on how to configure IntelliJ IDEA to the website.
+* **\[docs\]** Add some initial "Getting Started" documentation to the website.
 
 #### Changed
 * **\[processor\]** Claim the React4j annotations that are processed by the annotation processor.

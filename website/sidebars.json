@@ -2,6 +2,7 @@
   "docs": {
     "About": [
       "overview",
+      "project_setup"
     ],
     "Reference": [
       "arez",
