@@ -2,6 +2,8 @@
   "docs": {
     "About": [
       "overview",
+    ],
+    "Reference": [
       "arez",
       "compared_to_react",
       "dependency_injection"
