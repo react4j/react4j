@@ -88,7 +88,7 @@ Changes in this release:
 CONTENT
       sh 'git reset 2>&1 1> /dev/null'
       sh "git add #{filename}"
-      # Zapwhite only runs agains files added to git so we have to do this dance
+      # Zapwhite only runs against files added to git so we have to do this dance after adding files
       `bundle exec zapwhite`
       sh "git add #{filename}"
       sh "git commit -m \"Update site to add news about the #{ENV['PRODUCT_VERSION']} release\""
