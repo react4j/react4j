@@ -66,6 +66,7 @@ pre code {
   list-style: square;
   margin-left: 30px;
 }
+
 .page-toc.page-toc ul li > ul li:last-child {
   padding-bottom: 5px;
 }
@@ -73,4 +74,14 @@ pre code {
 .page-toc ul li {
   list-style: none;
   padding-left: 0;
+}
+
+th.rotate {
+  height: 140px;
+}
+
+th.rotate > div {
+  transform: /* Magic Numbers */ translate(5px, 90px) /* 45 is really 360 - 45 */ rotate(270deg);
+  vertical-align: text-top;
+  width: 30px;
 }

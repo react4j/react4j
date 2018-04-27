@@ -6,6 +6,9 @@
       "compared_to_react",
       "dependency_injection"
     ],
+    "Examples": [
+      "todomvc"
+    ],
     "Project Documentation": [
       "faq",
       "related_projects"
