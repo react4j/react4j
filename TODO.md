@@ -99,8 +99,6 @@ warning messages more cryptic and skip important checks that happen in developme
   will be converted to javascript functions which has significantly lesss overhead in GWT2.x (i.e. no class
   literals) and they will also have useful names attatched to them in React DevTool.
 
-* Link TodoMVC from web site in both production and development mode.
-
 * Reorganize documentation using the following sites as inspiration.
   - Reason React - https://reasonml.github.io/reason-react/
   - EmberJS - https://www.emberjs.com/
