@@ -22,7 +22,6 @@ import org.realityforge.braincheck.Guards;
 import react4j.core.Component;
 import react4j.core.Procedure;
 import react4j.core.ReactNode;
-import react4j.core.util.JsUtil;
 
 /**
  * A base class for all Arez enabled components. This class makes the component
@@ -192,7 +191,7 @@ public abstract class ReactArezComponent
       /*
        * We just compare the props shallowly and avoid a re-render if the props have not changed.
        */
-      final boolean modified = JsUtil.isObjectShallowModified( super.props(), nextProps );
+      final boolean modified = isObjectShallowModified( super.props(), nextProps );
       if ( modified )
       {
         reportPropsChanged( nextProps );
@@ -335,5 +334,35 @@ public abstract class ReactArezComponent
   {
     super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsPropertyMap.of( AREZ_STATE_KEY, JsObject.freeze( data ) ) ),
                                null );
+  }
+
+  /**
+   * Return true if the two objects do not have identical keys and values. The method assumes that the two
+   * objects passed are js objects and compares the objects have the same key-value.
+   *
+   * @param o1 the first object.
+   * @param o2 the second object.
+   * @return true if the two objects do not have identical keys and values.
+   */
+  private boolean isObjectShallowModified( @Nullable final JsPropertyMap<Object> o1,
+                                           @Nullable final JsPropertyMap<Object> o2 )
+  {
+    if ( null == o1 || null == o2 || !Js.typeof( o1 ).equals( "object" ) || !Js.typeof( o2 ).equals( "object" ) )
+    {
+      return !Js.isTripleEqual( o1, o2 );
+    }
+    final String[] keys = JsObject.keys( Js.uncheckedCast( o1 ) );
+    if ( JsObject.keys( Js.uncheckedCast( o2 ) ).length != keys.length )
+    {
+      return true;
+    }
+    for ( final String key : keys )
+    {
+      if ( !Js.isTripleEqual( o1.get( key ), o2.get( key ) ) )
+      {
+        return true;
+      }
+    }
+    return false;
   }
 }

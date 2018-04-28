@@ -7,6 +7,10 @@
 * **\[docs\]** Add some documentation on how to configure IntelliJ IDEA to the website.
 * **\[docs\]** Add some initial "Getting Started" documentation to the website.
 
+##### Removed
+* **\[core\]** Removed `react4j.core.util.JsUtil` and inlined the one usage of
+  the `JsUtil.isObjectShallowModified(...)` method.
+
 #### Changed
 * **\[processor\]** Claim the React4j annotations that are processed by the annotation processor.
   Subsequent annotation processor will not be asked to process the annotation types which results
