@@ -103,7 +103,7 @@ public final class BuildDownstream
             {
               final String message = "Update the '" + group + "' dependencies to version '" + version + "'";
               final Function<String, String> patchFunction = c -> c.replace( "### Unreleased\n\n",
-                                                                             "### Unreleased\n\n" + message + "\n\n" );
+                                                                             "### Unreleased\n\n* " + message + "\n\n" );
               Patch.patchAndAddFile( appDirectory, appDirectory.resolve( "CHANGELOG.md" ), patchFunction );
               Git.commit( message );
 
