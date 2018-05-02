@@ -77,6 +77,13 @@
 
 * Consider adopting variable arguments ala https://fblitho.com/docs/props#variable-arguments
 
+* HackerNews clone
+  - https://hnpwa.com/
+  - https://github.com/rwieruch/react-mobx-hackernews
+  - https://github.com/clintonwoo/hackernews-react-graphql
+  - https://github.com/prabirshrestha/hn-react-mobx
+  - https://github.com/kristoferbaxter/react-hn
+
 #### Compiler optimizations
 
 (Sourced from [ReactJS Changelog](https://reactjs.org/blog/2015/10/07/react-v0.14.html#compiler-optimizations))
