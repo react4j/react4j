@@ -24,6 +24,9 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
+* Add gwt-boot example
+  - https://github.com/gwtboot/gwt-boot-modules/blob/master/README.md
+
 * Rather than using `@Dependency` to force the disposal of a component when a prop is disposed, we should instead
   set boolean flag that just indicates that we should skip the render? We probably need to add in the equivalent
   of XonDispose observers that just set this flag if props go bad. We can then unset this flag in shouldComponentUpdate
