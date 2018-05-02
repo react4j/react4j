@@ -12,6 +12,7 @@
   the `JsUtil.isObjectShallowModified(...)` method.
 
 #### Changed
+* 💥 **\[arez\]** Upgrade Arez to version `0.82`.
 * **\[processor\]** Claim the React4j annotations that are processed by the annotation processor.
   Subsequent annotation processor will not be asked to process the annotation types which results
   in a very slight performance improvement during compilation.
