@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <module>
-  <inherits name="arez.spytools.browser.BrowserSpyTools"/>
+  <inherits name='arez.spytools.browser.BrowserSpyTools'/>
 
-  <source path=""/>
+  <source path=''/>
 </module>

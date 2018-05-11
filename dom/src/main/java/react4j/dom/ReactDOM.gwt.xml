@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <module>
-  <inherits name="react4j.core.React"/>
-  <inherits name="elemental2.dom.Dom"/>
+  <inherits name='react4j.core.React'/>
+  <inherits name='elemental2.dom.Dom'/>
 
   <source path=''/>
 </module>
