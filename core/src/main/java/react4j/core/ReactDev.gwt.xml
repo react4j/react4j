@@ -1,13 +1,13 @@
 <module>
   <inherits name='react4j.core.React'/>
-  <inherits name="org.realityforge.braincheck.BrainCheckDev"/>
+  <inherits name='org.realityforge.braincheck.BrainCheckDev'/>
 
-  <source path="ignored"/>
+  <source path='ignored'/>
 
-  <public path='public' includes="dev/*"/>
+  <public path='public' includes='dev/*'/>
 
-  <set-property name="react4j.environment" value="development"/>
-  <set-property name="react4j.enable_component_names" value="true"/>
-  <set-property name="react4j.check_component_state_invariants" value="true"/>
-  <set-property name="react4j.check_invariants" value="true"/>
+  <set-property name='react4j.environment' value='development'/>
+  <set-property name='react4j.enable_component_names' value='true'/>
+  <set-property name='react4j.check_component_state_invariants' value='true'/>
+  <set-property name='react4j.check_invariants' value='true'/>
 </module>
