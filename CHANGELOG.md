@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.69](https://github.com/react4j/react4j/tree/v0.69) (2018-05-19)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.68...v0.69)
 
 ##### Added
 * **\[docs\]** Add a page that references the TodoMVC examples to the website.
