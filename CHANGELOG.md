@@ -12,6 +12,8 @@
   the `JsUtil.isObjectShallowModified(...)` method.
 * **\[dom\]** Removed unnecessary `com.google.gwt.useragent.UserAgent` inherit from
   `ReactDOM.gwt.xml` GWT module.
+* **\[annotations\]** Removed unnecessary `com.google.gwt.core.Core` inherit from the
+  `Annotations.gwt.xml` GWT module.
 
 #### Changed
 * 💥 **\[arez\]** Upgrade Arez to version `0.82`.
