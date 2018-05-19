@@ -21,6 +21,7 @@
   Subsequent annotation processor will not be asked to process the annotation types which results
   in a very slight performance improvement during compilation.
 * **\[arez\]** Upgrade the `org.realityforge.arez.browserlocation` dependency to version `0.09`.
+* **\[arez\]** Upgrade the `org.realityforge.arez.spytools` dependency to version `0.05`.
 
 ### [v0.68](https://github.com/react4j/react4j/tree/v0.68) (2018-04-24)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.67...v0.68)
