@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+#### Changed
+* Upgrade the `org.realityforge.braincheck:braincheck:jar` dependency to `1.6.0` as
+  previous version was incompatible with GWT 3.x.
+
 ### [v0.69](https://github.com/react4j/react4j/tree/v0.69) (2018-05-19)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.68...v0.69)
 
