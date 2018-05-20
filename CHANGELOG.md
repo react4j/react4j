@@ -5,6 +5,8 @@
 #### Changed
 * Upgrade the `org.realityforge.braincheck:braincheck:jar` dependency to `1.6.0` as
   previous version was incompatible with GWT 3.x.
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.84` for
+  GWT 3.x compatibility.
 
 ### [v0.69](https://github.com/react4j/react4j/tree/v0.69) (2018-05-19)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.68...v0.69)
