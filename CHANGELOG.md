@@ -7,6 +7,8 @@
   previous version was incompatible with GWT 3.x.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.84` for
   GWT 3.x compatibility.
+* **\[arez\]** Upgrade the `org.realityforge.arez.spytools:arez-spytools:jar` dependency
+  to `0.07` as previous version was incompatible with GWT 3.x.
 
 ### [v0.69](https://github.com/react4j/react4j/tree/v0.69) (2018-05-19)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.68...v0.69)
