@@ -2,6 +2,9 @@
 
 ### Very High Priority
 
+* Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
+  - Pointer Events
+
 * Move to React 16.3.0 - See https://reactjs.org/blog/2018/03/29/react-v-16-3.html
   - Implement `getDerivedStateFromProps` static method (via an annotation on a static method?)
   - Implement `getSnapshotBeforeUpdate` lifecycle method.
