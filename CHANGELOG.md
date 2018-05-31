@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.71](https://github.com/react4j/react4j/tree/v0.71) (2018-05-31)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.70...v0.71)
 
 * **\[dom\]** Add helper method `onWheel` to `HtmlGlobalFields` so it is available for all elements.
 * **\[dom\]** Add helper method `onScroll` to `HtmlProps`, `TextAreaProps` and `SelectProps`.
