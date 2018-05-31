@@ -1495,6 +1495,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   protected native void setOnWheel( WheelEventHandler onWheel );
 
   @JsOverlay
+  public final T onWheel( @Nullable final WheelEventHandler onWheel )
+  {
+    setOnWheel( onWheel );
+    return self();
+  }
+
+  @JsOverlay
   @Nonnull
   protected final T self()
   {
