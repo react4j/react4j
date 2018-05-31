@@ -10,6 +10,7 @@ import react4j.dom.events.FormEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
+import react4j.dom.events.UIEventHandler;
 
 /**
  * Props for select elements. Refer to http://www.w3schools.com/tags/tag_select.asp
@@ -280,6 +281,13 @@ public class SelectProps
   public final SelectProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
+    return self();
+  }
+
+  @JsOverlay
+  public final SelectProps onScroll( @Nullable final UIEventHandler onScroll )
+  {
+    setOnScroll( onScroll );
     return self();
   }
 }

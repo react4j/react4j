@@ -9,6 +9,7 @@ import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
+import react4j.dom.events.UIEventHandler;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class HtmlProps
@@ -205,6 +206,13 @@ public class HtmlProps
   public final HtmlProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
+    return self();
+  }
+
+  @JsOverlay
+  public final HtmlProps onScroll( @Nullable final UIEventHandler onScroll )
+  {
+    setOnScroll( onScroll );
     return self();
   }
 }

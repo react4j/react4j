@@ -10,6 +10,7 @@ import react4j.dom.events.FormEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
+import react4j.dom.events.UIEventHandler;
 import react4j.dom.proptypes.html.attributeTypes.OnOff;
 
 /**
@@ -318,6 +319,13 @@ public class TextAreaProps
   public final TextAreaProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
+    return self();
+  }
+
+  @JsOverlay
+  public final TextAreaProps onScroll( @Nullable final UIEventHandler onScroll )
+  {
+    setOnScroll( onScroll );
     return self();
   }
 }
