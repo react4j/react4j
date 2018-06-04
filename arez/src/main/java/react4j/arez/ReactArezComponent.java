@@ -143,18 +143,29 @@ public abstract class ReactArezComponent
   /**
    * {@inheritDoc}
    */
-  @Track( name = "render" )
   @Override
-  protected ReactNode performRender()
+  protected final ReactNode performRender()
   {
-    _renderDepsChanged = false;
     /*
      * Consider generating a more efficient check than `Disposable.isDisposed( this )`. We should be able to
      * inline this variable. This could be done by adding @PreDispose hook to set a instance variable or somehow
      * updating Arez to efficiently expose the variable (which may involve the generated subclass calling
      * setDisposed() or something similar in this class).
      */
-    return Disposable.isDisposed( this ) ? null : super.performRender();
+    return Disposable.isDisposed( this ) ? null : trackRender();
+  }
+
+  /**
+   * This method is the method enhanced by arez that performs render and tracks dependencies.
+   * This SHOULD NOT be merged with {@link #performRender()} as then the isDisposed check will be present
+   * in every instance of render method which can result in unnecessary code bloat.
+   */
+  @Track( name = "render" )
+  @Nullable
+  protected ReactNode trackRender()
+  {
+    _renderDepsChanged = false;
+    return super.performRender();
   }
 
   /**
