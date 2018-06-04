@@ -1,9 +1,14 @@
 package react4j.downstream;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.realityforge.gwt.symbolmap.SymbolEntry;
+import org.realityforge.gwt.symbolmap.SymbolEntryIndex;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -32,15 +37,17 @@ public class BuildStatsTest
   }
 
   private void compareSizesForBranch( @Nonnull final String branch )
-    throws IOException
+    throws Exception
   {
     final Properties buildStatistics = loadBuildStatistics();
     final Properties fixtureStatistics = loadFixtureStatistics();
 
     final long fixtureSize =
       extractSize( fixtureStatistics, getArezVersion() + "." + branch );
-    final long beforeSize = extractSize( buildStatistics, branch + "." + "before" );
-    final long afterSize = extractSize( buildStatistics, branch + "." + "after" );
+    final String beforeBuild = branch + "." + "before";
+    final String afterBuild = branch + "." + "after";
+    final long beforeSize = extractSize( buildStatistics, beforeBuild );
+    final long afterSize = extractSize( buildStatistics, afterBuild );
 
     if ( 0 != fixtureSize )
     {
@@ -56,10 +63,55 @@ public class BuildStatsTest
     {
       if ( beforeSize != afterSize )
       {
+        reportSymbolDifferences( beforeBuild, afterBuild );
         fail( "Build size changed after upgrading react4j in branch '" + branch +
               "' from " + beforeSize + " to " + afterSize + ". If this is " +
               "acceptable then re-run the build passing PRODUCT_VERSION=... " +
               "and STORE_BUILD_STATISTICS=true to update the fixture file." );
+      }
+    }
+  }
+
+  private void reportSymbolDifferences( @Nonnull final String beforeBuild, @Nonnull final String afterBuild )
+    throws Exception
+  {
+    final SymbolEntryIndex beforeIndex = getSymbolMapIndex( getArchiveDir(), beforeBuild );
+    final SymbolEntryIndex afterIndex = getSymbolMapIndex( getArchiveDir(), afterBuild );
+    final ArrayList<SymbolEntry> missingEntries = new ArrayList<>();
+    final ArrayList<SymbolEntry> addedEntries = new ArrayList<>();
+    for ( final SymbolEntry entry : beforeIndex.findSymbolsByClassName( ".*" ) )
+    {
+      final List<SymbolEntry> matches =
+        afterIndex.findSymbolsByPatterns( Pattern.quote( entry.getClassName() ),
+                                          Pattern.quote( entry.getMemberName() ) );
+      if ( matches.isEmpty() )
+      {
+        missingEntries.add( entry );
+      }
+    }
+    for ( final SymbolEntry entry : afterIndex.findSymbolsByClassName( ".*" ) )
+    {
+      final List<SymbolEntry> matches =
+        beforeIndex.findSymbolsByPatterns( Pattern.quote( entry.getClassName() ),
+                                           Pattern.quote( entry.getMemberName() ) );
+      if ( matches.isEmpty() )
+      {
+        addedEntries.add( entry );
+      }
+    }
+    if ( !missingEntries.isEmpty() || !addedEntries.isEmpty() )
+    {
+      System.out.println( "Differences detected in symbols compiled between the " +
+                          "two variants " + beforeBuild + " and " + afterBuild );
+      if ( !missingEntries.isEmpty() )
+      {
+        System.out.println( "Removed symbols:" );
+        missingEntries.forEach( e -> System.out.println( "  " + e ) );
+      }
+      if ( !addedEntries.isEmpty() )
+      {
+        System.out.println( "Added symbols:" );
+        addedEntries.forEach( e -> System.out.println( "  " + e ) );
       }
     }
   }
