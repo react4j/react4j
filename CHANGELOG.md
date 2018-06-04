@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.72](https://github.com/react4j/react4j/tree/v0.72) (2018-06-04)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.71...v0.72)
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.88`.
 * **\[arez\]** Upgrade the `org.realityforge.arez.spytools` dependency to `0.11`.
