@@ -4,6 +4,9 @@
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.88`.
 * **\[arez\]** Upgrade the `org.realityforge.arez.spytools` dependency to `0.11`.
+* **\[arez\]** Merge the `ReactArezComponent.triggerRender()` method into
+  `ReactArezComponent.performRender()` to simplify code and eliminate the possibility
+  that an unexpected render could result in a render outside of an Arez transaction.
 
 ### [v0.71](https://github.com/react4j/react4j/tree/v0.71) (2018-05-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.70...v0.71)
