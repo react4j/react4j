@@ -13,16 +13,16 @@ import javax.annotation.Nonnull;
 import org.realityforge.gwt.symbolmap.SoycSizeMaps;
 import org.realityforge.gwt.symbolmap.SymbolEntryIndex;
 
-public abstract class AbstractDownstreamTest
+abstract class AbstractDownstreamTest
 {
   @Nonnull
-  protected final String getArezVersion()
+  final String getArezVersion()
   {
     return SystemProperty.get( "react4j.version" );
   }
 
   @Nonnull
-  protected final Properties loadProperties( @Nonnegative final File file )
+  final Properties loadProperties( @Nonnegative final File file )
     throws IOException
   {
     final Properties properties = new Properties();
@@ -34,7 +34,7 @@ public abstract class AbstractDownstreamTest
   }
 
   @Nonnull
-  protected final Path getFixtureDir()
+  final Path getFixtureDir()
   {
     return Paths
       .get( SystemProperty.get( "react4j.deploy_test.fixture_dir" ) )
@@ -43,13 +43,13 @@ public abstract class AbstractDownstreamTest
   }
 
   @Nonnull
-  protected final Path getArchiveDir()
+  final Path getArchiveDir()
   {
     return getWorkDir().resolve( "archive" );
   }
 
   @Nonnull
-  protected final Path getWorkDir()
+  final Path getWorkDir()
   {
     return Paths
       .get( SystemProperty.get( "react4j.deploy_test.work_dir" ) )
@@ -58,14 +58,14 @@ public abstract class AbstractDownstreamTest
   }
 
   @Nonnull
-  protected final SoycSizeMaps getSoycSizeMaps( @Nonnull final Path archiveDir, @Nonnull final String build )
+  final SoycSizeMaps getSoycSizeMaps( @Nonnull final Path archiveDir, @Nonnull final String build )
     throws Exception
   {
     return SoycSizeMaps.readFromGzFile( getStoriesPath( archiveDir, build ) );
   }
 
   @Nonnull
-  protected Path getStoriesPath( @Nonnull final Path archiveDir, @Nonnull final String build )
+  private Path getStoriesPath( @Nonnull final Path archiveDir, @Nonnull final String build )
     throws IOException
   {
     return archiveDir
@@ -77,7 +77,7 @@ public abstract class AbstractDownstreamTest
   }
 
   @Nonnull
-  protected final SymbolEntryIndex getSymbolMapIndex( @Nonnull final Path archiveDir, @Nonnull final String build )
+  final SymbolEntryIndex getSymbolMapIndex( @Nonnull final Path archiveDir, @Nonnull final String build )
     throws Exception
   {
     return SymbolEntryIndex.readSymbolMapIntoIndex( getSymbolMapPath( archiveDir, build ) );
