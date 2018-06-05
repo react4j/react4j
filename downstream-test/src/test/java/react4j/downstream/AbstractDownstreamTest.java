@@ -58,13 +58,6 @@ public abstract class AbstractDownstreamTest
   }
 
   @Nonnull
-  protected final SymbolEntryIndex getSymbolMapIndex( @Nonnull final Path archiveDir, @Nonnull final String build )
-    throws Exception
-  {
-    return SymbolEntryIndex.readSymbolMapIntoIndex( getSymbolMapPath( archiveDir, build ) );
-  }
-
-  @Nonnull
   protected final SoycSizeMaps getSoycSizeMaps( @Nonnull final Path archiveDir, @Nonnull final String build )
     throws Exception
   {
@@ -81,6 +74,13 @@ public abstract class AbstractDownstreamTest
       .resolve( "todomvc" )
       .resolve( "soycReport" )
       .resolve( "stories0.xml.gz" );
+  }
+
+  @Nonnull
+  protected final SymbolEntryIndex getSymbolMapIndex( @Nonnull final Path archiveDir, @Nonnull final String build )
+    throws Exception
+  {
+    return SymbolEntryIndex.readSymbolMapIntoIndex( getSymbolMapPath( archiveDir, build ) );
   }
 
   @Nonnull
