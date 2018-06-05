@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import org.realityforge.gwt.symbolmap.SoycSizeMaps;
 import org.realityforge.gwt.symbolmap.SymbolEntryIndex;
 
 public abstract class AbstractDownstreamTest
@@ -61,6 +62,25 @@ public abstract class AbstractDownstreamTest
     throws Exception
   {
     return SymbolEntryIndex.readSymbolMapIntoIndex( getSymbolMapPath( archiveDir, build ) );
+  }
+
+  @Nonnull
+  protected final SoycSizeMaps getSoycSizeMaps( @Nonnull final Path archiveDir, @Nonnull final String build )
+    throws Exception
+  {
+    return SoycSizeMaps.readFromGzFile( getStoriesPath( archiveDir, build ) );
+  }
+
+  @Nonnull
+  protected Path getStoriesPath( @Nonnull final Path archiveDir, @Nonnull final String build )
+    throws IOException
+  {
+    return archiveDir
+      .resolve( build )
+      .resolve( "compileReports" )
+      .resolve( "todomvc" )
+      .resolve( "soycReport" )
+      .resolve( "stories0.xml.gz" );
   }
 
   @Nonnull
