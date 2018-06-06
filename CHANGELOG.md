@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+* **\[dom\]** Enhanced `HtmlGlobalFields.className` so that it will filter out null className elements
+  thus allowing you to adopt simpler mechanisms for defining attribute such as inline ternaries when some
+  classes are optional. i.e. `new HtmlProps().className( "button", isActive() ? "active" : null )`
+
 ### [v0.72](https://github.com/react4j/react4j/tree/v0.72) (2018-06-04)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.71...v0.72)
 

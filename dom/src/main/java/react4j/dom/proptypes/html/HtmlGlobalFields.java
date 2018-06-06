@@ -1,6 +1,7 @@
 package react4j.dom.proptypes.html;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -208,7 +209,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   @JsOverlay
   public final T className( String... classnames )
   {
-    setClassName( Arrays.stream( classnames ).collect( Collectors.joining( " " ) ) );
+    setClassName( Arrays.stream( classnames ).filter( Objects::nonNull ).collect( Collectors.joining( " " ) ) );
     return self();
   }
 
