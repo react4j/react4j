@@ -5,6 +5,10 @@
 * **\[dom\]** Enhanced `HtmlGlobalFields.className` so that it will filter out null className elements
   thus allowing you to adopt simpler mechanisms for defining attribute such as inline ternaries when some
   classes are optional. i.e. `new HtmlProps().className( "button", isActive() ? "active" : null )`
+* **\[processor\]** Update the processor so it does not generate classes that require the
+  `javax.annotation.Generated` be present on the class path. The classes will only be annotated with
+  this annotation if it is present on the classpath at the time of generation and the source version
+  is `8`.
 
 ### [v0.72](https://github.com/react4j/react4j/tree/v0.72) (2018-06-04)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.71...v0.72)

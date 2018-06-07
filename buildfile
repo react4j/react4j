@@ -140,6 +140,7 @@ define 'react4j' do
     package(:jar).enhance do |jar|
       jar.merge(artifact(:javapoet))
       jar.merge(artifact(:guava))
+      jar.merge(artifact(:autocommon))
       jar.enhance do |f|
         shaded_jar = (f.to_s + '-shaded')
         Buildr.ant 'shade_jar' do |ant|

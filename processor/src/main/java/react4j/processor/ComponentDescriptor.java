@@ -16,9 +16,12 @@ import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.util.Elements;
 
 final class ComponentDescriptor
 {
+  @Nonnull
+  private final Elements _elements;
   @Nonnull
   private final SourceVersion _sourceVersion;
   @Nonnull
@@ -55,11 +58,13 @@ final class ComponentDescriptor
   @Nullable
   private List<StateValueDescriptor> _stateValues;
 
-  ComponentDescriptor( @Nonnull final SourceVersion sourceVersion,
+  ComponentDescriptor( @Nonnull final Elements elements,
+                       @Nonnull final SourceVersion sourceVersion,
                        @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
                        @Nonnull final TypeElement element )
   {
+    _elements = Objects.requireNonNull( elements );
     _sourceVersion = Objects.requireNonNull( sourceVersion );
     _name = Objects.requireNonNull( name );
     _packageElement = Objects.requireNonNull( packageElement );
@@ -94,6 +99,12 @@ final class ComponentDescriptor
       throw new ReactProcessorException( "@ReactComponent target must have a single non-private, no-argument " +
                                          "constructor or the default constructor", element );
     }
+  }
+
+  @Nonnull
+  Elements getElements()
+  {
+    return _elements;
   }
 
   @Nonnull

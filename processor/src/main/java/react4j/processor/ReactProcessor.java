@@ -146,7 +146,11 @@ public final class ReactProcessor
     final String name = deriveComponentName( typeElement );
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
     final ComponentDescriptor descriptor =
-      new ComponentDescriptor( processingEnv.getSourceVersion(), name, packageElement, typeElement );
+      new ComponentDescriptor( processingEnv.getElementUtils(),
+                               processingEnv.getSourceVersion(),
+                               name,
+                               packageElement,
+                               typeElement );
 
     determineComponentType( descriptor, typeElement );
     determineLifecycleMethods( typeElement, descriptor );

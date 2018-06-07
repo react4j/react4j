@@ -1,5 +1,6 @@
 package react4j.processor;
 
+import com.google.auto.common.GeneratedAnnotationSpecs;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -21,7 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -1385,25 +1385,8 @@ final class Generator
   private static void addGeneratedAnnotation( @Nonnull final ComponentDescriptor descriptor,
                                               @Nonnull final TypeSpec.Builder builder )
   {
-    builder.addAnnotation( AnnotationSpec.builder( getGeneratedAnnotation( descriptor ) ).
-      addMember( "value", "$S", ReactProcessor.class.getName() ).
-      build() );
-  }
-
-  @Nonnull
-  private static Class<?> getGeneratedAnnotation( @Nonnull final ComponentDescriptor descriptor )
-  {
-    try
-    {
-      return Class.forName( SourceVersion.RELEASE_8.compareTo( descriptor.getSourceVersion() ) < 0 ?
-                            "javax.annotation.processing.Generated" :
-                            "javax.annotation.Generated"
-      );
-    }
-    catch ( final ClassNotFoundException e )
-    {
-      throw new ReactProcessorException( "@ReactComponent unable to determine correct @Generated annotation",
-                                         descriptor.getElement() );
-    }
+    GeneratedAnnotationSpecs
+      .generatedAnnotationSpec( descriptor.getElements(), descriptor.getSourceVersion(), ReactProcessor.class )
+      .ifPresent( builder::addAnnotation );
   }
 }
