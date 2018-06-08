@@ -1,5 +1,6 @@
 package react4j.processor;
 
+import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,6 +65,11 @@ public final class ReactProcessor
    * Cache of render method method as defined by Component.
    */
   private ExecutableElement _componentRenderMethod;
+  /**
+   * Elements that were unresolved and have been deferred to a later compilation cycle.
+   */
+  @Nonnull
+  private HashSet<TypeElement> _deferred = new HashSet<>();
 
   /**
    * {@inheritDoc}
@@ -77,11 +84,59 @@ public final class ReactProcessor
     final TypeElement annotation =
       processingEnv.getElementUtils().getTypeElement( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME );
     final Set<? extends Element> elements = env.getElementsAnnotatedWith( annotation );
-    processElements( elements );
+    final Collection<Element> elementsToProcess = getElementsToProcess( elements );
+    processElements( elementsToProcess );
+    if ( env.getRootElements().isEmpty() && !_deferred.isEmpty() )
+    {
+      _deferred.forEach( this::processingErrorMessage );
+      _deferred.clear();
+    }
     return true;
   }
 
-  private void processElements( @Nonnull final Set<? extends Element> elements )
+  private void processingErrorMessage( @Nonnull final TypeElement target )
+  {
+    processingEnv
+      .getMessager()
+      .printMessage( ERROR,
+                     "ReactProcessor unable to process " + target.getQualifiedName() +
+                     " because not all of its dependencies could be resolved. Check for " +
+                     "compilation errors or a circular dependency with generated code.",
+                     target );
+  }
+
+  @Nonnull
+  private Collection<Element> getElementsToProcess( @Nonnull final Set<? extends Element> elements )
+  {
+    final List<TypeElement> deferred = _deferred
+      .stream()
+      .map( e -> processingEnv.getElementUtils().getTypeElement( e.getQualifiedName() ) )
+      .collect( Collectors.toList() );
+    _deferred = new HashSet<>();
+
+    final ArrayList<Element> elementsToProcess = new ArrayList<>();
+    collectElementsToProcess( elements, elementsToProcess );
+    collectElementsToProcess( deferred, elementsToProcess );
+    return elementsToProcess;
+  }
+
+  private void collectElementsToProcess( @Nonnull final Collection<? extends Element> elements,
+                                         @Nonnull final ArrayList<Element> elementsToProcess )
+  {
+    for ( final Element element : elements )
+    {
+      if ( SuperficialValidation.validateElement( element ) )
+      {
+        elementsToProcess.add( element );
+      }
+      else
+      {
+        _deferred.add( (TypeElement) element );
+      }
+    }
+  }
+
+  private void processElements( @Nonnull final Collection<? extends Element> elements )
   {
     for ( final Element element : elements )
     {
