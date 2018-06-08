@@ -13,6 +13,7 @@
   until they are completely resolved. If an React4j component contains a dependency on code with compilation
   errors or has a circular dependency with generated code then it will not able to be processed
   by the new annotation processor.
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.90`.
 
 ### [v0.72](https://github.com/react4j/react4j/tree/v0.72) (2018-06-04)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.71...v0.72)
