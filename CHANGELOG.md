@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.73](https://github.com/react4j/react4j/tree/v0.73) (2018-06-08)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.72...v0.73)
 
 * **\[dom\]** Enhanced `HtmlGlobalFields.className` so that it will filter out null className elements
   thus allowing you to adopt simpler mechanisms for defining attribute such as inline ternaries when some
