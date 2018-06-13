@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.75](https://github.com/react4j/react4j/tree/v0.75) (2018-06-13)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.74...v0.75)
 
 * **\[processor\]** Fixed bug introduced in `0.74` by generating `deferScheduler` parameter if a
   `@Dependency` or `@Computed(keepAlive=true)` annotation is present.
