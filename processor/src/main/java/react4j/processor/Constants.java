@@ -15,6 +15,8 @@ final class Constants
   static final String INJECT_ANNOTATION_CLASSNAME = "javax.inject.Inject";
   static final String AREZ_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ArezComponent";
   static final String AUTORUN_ANNOTATION_CLASSNAME = "arez.annotations.Autorun";
+  static final String DEPENDENCY_ANNOTATION_CLASSNAME = "arez.annotations.Dependency";
+  static final String COMPUTED_ANNOTATION_CLASSNAME = "arez.annotations.Computed";
   static final String ACTION_ANNOTATION_CLASSNAME = "arez.annotations.Action";
   static final String NONNULL_ANNOTATION_CLASSNAME = "javax.annotation.Nonnull";
   static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";

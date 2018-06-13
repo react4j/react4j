@@ -302,17 +302,24 @@ final class ProcessorUtil
   }
 
   @Nullable
-  private static AnnotationValue findAnnotationValue( @Nonnull final Elements elements,
-                                                      @Nonnull final Element typeElement,
-                                                      @Nonnull final String annotationClassName,
-                                                      @Nonnull final String parameterName )
+  static AnnotationValue findAnnotationValue( @Nonnull final Elements elements,
+                                              @Nonnull final Element typeElement,
+                                              @Nonnull final String annotationClassName,
+                                              @Nonnull final String parameterName )
   {
-    final AnnotationMirror mirror = getAnnotationByType( typeElement, annotationClassName );
-    final Map<? extends ExecutableElement, ? extends AnnotationValue> values =
-      elements.getElementValuesWithDefaults( mirror );
-    final ExecutableElement annotationKey = values.keySet().stream().
-      filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
-    return values.get( annotationKey );
+    final AnnotationMirror mirror = findAnnotationByType( typeElement, annotationClassName );
+    if ( null == mirror )
+    {
+      return null;
+    }
+    else
+    {
+      final Map<? extends ExecutableElement, ? extends AnnotationValue> values =
+        elements.getElementValuesWithDefaults( mirror );
+      final ExecutableElement annotationKey = values.keySet().stream().
+        filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
+      return values.get( annotationKey );
+    }
   }
 
   @Nonnull

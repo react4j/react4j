@@ -25,6 +25,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -663,6 +664,17 @@ public final class ReactProcessor
                                          childrenProp.getMethod() );
     }
 
+    props.forEach( prop -> {
+      final Element propType = prop.getPropType();
+      if ( null != propType && descriptor.isArezComponent() && ElementKind.CLASS == propType.getKind() )
+      {
+        if ( null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
+        {
+          descriptor.setRunArezScheduler( true );
+        }
+      }
+    } );
+
     descriptor.setProps( props );
   }
 
@@ -1054,8 +1066,9 @@ public final class ReactProcessor
     }
 
     final boolean runArezScheduler =
-      ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).
-        stream().anyMatch( this::hasAutorunAnnotation );
+      hasAnyAutorunMethods( typeElement ) ||
+      hasAnyKeepAliveComputedMethods( typeElement ) ||
+      hasAnyDependencyMethods( typeElement );
 
     final boolean needsInjection = isInjectionRequired( typeElement );
     final boolean isDaggerPresent = needsInjection && isDaggerRequired( typeElement );
@@ -1111,9 +1124,32 @@ public final class ReactProcessor
     }
   }
 
-  private boolean hasAutorunAnnotation( final Element method )
+  private boolean hasAnyAutorunMethods( @Nonnull final TypeElement typeElement )
   {
-    return null != ProcessorUtil.findAnnotationByType( method, Constants.AUTORUN_ANNOTATION_CLASSNAME );
+    return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() )
+      .stream()
+      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.AUTORUN_ANNOTATION_CLASSNAME ) );
+  }
+
+  private boolean hasAnyDependencyMethods( @Nonnull final TypeElement typeElement )
+  {
+    return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() )
+      .stream()
+      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.DEPENDENCY_ANNOTATION_CLASSNAME ) );
+  }
+
+  private boolean hasAnyKeepAliveComputedMethods( @Nonnull final TypeElement typeElement )
+  {
+    return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() )
+      .stream()
+      .anyMatch( m -> {
+        final AnnotationValue annotationValue =
+          ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
+                                             m,
+                                             Constants.COMPUTED_ANNOTATION_CLASSNAME,
+                                             "keepAlive" );
+        return null != annotationValue && (boolean) annotationValue.getValue();
+      } );
   }
 
   private boolean hasInjectAnnotation( final Element method )

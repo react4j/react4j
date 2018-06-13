@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+* **\[processor\]** Fixed bug introduced in `0.74` by generating `deferScheduler` parameter if a
+  `@Dependency` or `@Computed(keepAlive=true)` annotation is present.
+* **\[processor\]** Fixed a bug where Arez component props would not have an associated schedule
+  triggered despite the presence of a `@Dependency` annotation.
+
 ### [v0.74](https://github.com/react4j/react4j/tree/v0.74) (2018-06-13)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.73...v0.74)
 

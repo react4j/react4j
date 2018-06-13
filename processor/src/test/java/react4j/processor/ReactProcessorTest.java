@@ -24,6 +24,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.ComponentWithNoAutoActionCallback", true, false },
         new Object[]{ "com.example.arez.ComponentWithProp", false, false },
         new Object[]{ "com.example.arez.ExplicitlyEnabledCallback", true, false },
+        new Object[]{ "com.example.arez.KeepAliveComputedArezReactComponent", false, false },
         new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent", false, false },
         new Object[]{ "com.example.basic.BasicReactComponent", false, false },
         new Object[]{ "com.example.basic.CustomNameReactComponent", false, false },
