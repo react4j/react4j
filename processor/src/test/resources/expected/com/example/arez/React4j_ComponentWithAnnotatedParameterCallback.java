@@ -14,8 +14,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    name = "ComponentWithAnnotatedParameterCallback",
-    deferSchedule = true
+    name = "ComponentWithAnnotatedParameterCallback"
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ComponentWithAnnotatedParameterCallback extends ComponentWithAnnotatedParameterCallback {

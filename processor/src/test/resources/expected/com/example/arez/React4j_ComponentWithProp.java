@@ -15,8 +15,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    name = "ComponentWithProp",
-    deferSchedule = true
+    name = "ComponentWithProp"
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ComponentWithProp extends ComponentWithProp {

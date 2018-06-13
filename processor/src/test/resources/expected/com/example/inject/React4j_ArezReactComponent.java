@@ -17,7 +17,6 @@ import react4j.core.ReactConfig;
 
 @ArezComponent(
     name = "ArezReactComponent",
-    deferSchedule = true,
     inject = Feature.ENABLE
 )
 @Generated("react4j.processor.ReactProcessor")

@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* **\[processor\]** Enhance the processor so that it does not generate the `deferScheduler` parameter on
+  the `@ArezComponent` annotation if there are no `@Autorun` methods contained within the `ReactArezComponent`.
+
 ### [v0.73](https://github.com/react4j/react4j/tree/v0.73) (2018-06-08)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.72...v0.73)
 

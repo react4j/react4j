@@ -15,8 +15,7 @@ import react4j.core.NativeAdapterComponent;
 import react4j.core.ReactConfig;
 
 @ArezComponent(
-    name = "ComponentWithNoAutoActionCallback",
-    deferSchedule = true
+    name = "ComponentWithNoAutoActionCallback"
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNoAutoActionCallback {

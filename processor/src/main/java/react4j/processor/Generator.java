@@ -500,8 +500,11 @@ final class Generator
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
-          addMember( "name", "$S", descriptor.getName() ).
-          addMember( "deferSchedule", "true" );
+          addMember( "name", "$S", descriptor.getName() );
+      if ( descriptor.shouldRunArezScheduler() )
+      {
+        annotation.addMember( "deferSchedule", "true" );
+      }
       if ( descriptor.needsInjection() )
       {
         annotation.addMember( "inject", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
