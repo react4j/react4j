@@ -27,6 +27,11 @@ def gwt_enhance(project, options = {})
     Dir["#{base_dir}/**/*.gwt.xml"].each do |filename|
       gwt_modules << filename.gsub("#{base_dir}/", '').gsub('.gwt.xml', '').gsub('/', '.')
     end
+  end if gwt_modules.empty?
+
+  compile_report_dir = options[:compile_report_dir]
+  if modules_complete && compile_report_dir.nil?
+    compile_report_dir = project._(:target, :gwt_compile_reports)
   end
 
   unless modules_complete
@@ -60,6 +65,7 @@ CONTENT
       project.gwt([m], { :java_args => %w(-Xms512M -Xmx1024M -Dgwt.watchFileChanges=false),
                          :dependencies => dependencies,
                          :gwtc_args => gwtc_args,
+                         :compile_report_dir => compile_report_dir.nil? ? nil : "#{compile_report_dir}/#{output_key}",
                          :output_key => output_key })
     end
   end
