@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+* **\[core\]** Make sure the core GWT module inherits the `react4j.annotations.Annotations` module.
+  This means downstream projects need only inherit the `react4j.core.React` module or the
+  `react4j.dom.ReactDOM` module and include all the dependencies required to author components.
+
 ### [v0.75](https://github.com/react4j/react4j/tree/v0.75) (2018-06-13)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.74...v0.75)
 

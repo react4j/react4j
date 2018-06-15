@@ -56,7 +56,7 @@ define 'react4j' do
                  :jsinterop_annotations_sources,
                  :braincheck
 
-    gwt_enhance(project)
+    gwt_enhance(project, :extra_deps => [project('annotations').package(:jar)])
 
     package(:jar)
     package(:sources)
@@ -78,7 +78,7 @@ define 'react4j' do
                  :elemental2_promise
 
     generate_factory_source(project)
-    gwt_enhance(project)
+    gwt_enhance(project, :extra_deps => [project('annotations').package(:jar)])
 
     package(:jar)
     package(:sources)
