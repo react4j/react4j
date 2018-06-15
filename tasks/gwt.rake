@@ -65,6 +65,7 @@ CONTENT
       project.gwt([m], { :java_args => %w(-Xms512M -Xmx1024M -Dgwt.watchFileChanges=false),
                          :dependencies => dependencies,
                          :gwtc_args => gwtc_args,
+                         :skip_merge_gwt_dependencies => true,
                          :compile_report_dir => compile_report_dir.nil? ? nil : "#{compile_report_dir}/#{output_key}",
                          :output_key => output_key })
     end

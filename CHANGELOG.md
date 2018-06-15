@@ -5,6 +5,9 @@
 * **\[core\]** Make sure the core GWT module inherits the `react4j.annotations.Annotations` module.
   This means downstream projects need only inherit the `react4j.core.React` module or the
   `react4j.dom.ReactDOM` module and include all the dependencies required to author components.
+* Update build process so that the generated poms do not include dependencies on GWT. The GWT
+  dependencies are not required by react4j but are only required to GWT compile the project. This
+  dependency needs to be broken for GWT3.x/j2cl support.
 
 ### [v0.75](https://github.com/react4j/react4j/tree/v0.75) (2018-06-13)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.74...v0.75)
