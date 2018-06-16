@@ -8,6 +8,7 @@
 * Update build process so that the generated poms do not include dependencies on GWT. The GWT
   dependencies are not required by react4j but are only required to GWT compile the project. This
   dependency needs to be broken for GWT3.x/j2cl support.
+* Remove the unused `org.realityforge.anodoc:anodoc:jar` dependency.
 
 ### [v0.75](https://github.com/react4j/react4j/tree/v0.75) (2018-06-13)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.74...v0.75)
