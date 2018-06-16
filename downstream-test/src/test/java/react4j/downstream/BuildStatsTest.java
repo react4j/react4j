@@ -2,7 +2,6 @@ package react4j.downstream;
 
 import java.io.IOException;
 import java.util.Properties;
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.realityforge.gwt.symbolmap.SoycSizeMapsDiff;
 import org.realityforge.gwt.symbolmap.SymbolEntryIndexDiff;
@@ -92,7 +91,6 @@ public class BuildStatsTest
     }
   }
 
-  @Nonnegative
   private long extractSize( @Nonnull final Properties properties,
                             @Nonnull final String prefix )
   {
