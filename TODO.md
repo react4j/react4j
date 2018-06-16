@@ -15,6 +15,8 @@
 
 ### High Priorities
 
+* Consider marking props linked to ArezComponents as `@Dependency` and figure out a better way of handling this.
+
 * Add default values for state via `@InitialState`. Can be instance methods, static methods or static final fields?
 
 * Change state setters so that if during construct then sets initial state otherwise schedules state update.
