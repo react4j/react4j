@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import org.realityforge.gwt.symbolmap.SoycSizeMaps;
 import org.realityforge.gwt.symbolmap.SymbolEntryIndex;
@@ -22,7 +21,7 @@ abstract class AbstractDownstreamTest
   }
 
   @Nonnull
-  final Properties loadProperties( @Nonnegative final File file )
+  final Properties loadProperties( @Nonnull final File file )
     throws IOException
   {
     final Properties properties = new Properties();
