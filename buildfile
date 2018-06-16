@@ -101,7 +101,7 @@ define 'react4j' do
                  :arez_component,
                  :arez_spytools
 
-    gwt_enhance(project)
+    gwt_enhance(project, :extra_deps => [project('annotations').package(:jar)])
 
     package(:jar)
     package(:sources)
