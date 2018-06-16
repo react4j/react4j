@@ -4,7 +4,7 @@ require 'buildr/single_intermediate_layout'
 require 'buildr/gwt'
 require 'buildr/jacoco'
 
-PROVIDED_DEPS = [:javax_jsr305, :jetbrains_annotations]
+PROVIDED_DEPS = [:javax_jsr305]
 
 DAGGER_RUNTIME_DEPS = [:javax_inject, :dagger_core]
 DAGGER_PROCESSOR_DEPS = [:javax_inject, :dagger_core, :dagger_spi, :dagger_producers, :dagger_compiler, :googlejavaformat, :errorprone, :javapoet, :guava]
