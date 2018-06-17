@@ -22,8 +22,9 @@ define 'react4j' do
 
   desc 'Annotations for defining a react component'
   define 'annotations' do
-    pom.provided_dependencies.concat [:javax_annotation]
-    pom.dependency_filter = Proc.new {|dep| dep[:group].to_s != 'com.google.jsinterop' || (dep[:id].to_s == 'base' && dep[:classifier].nil?)}
+    pom.include_transitive_dependencies << artifact(:javax_annotation)
+    pom.include_transitive_dependencies << artifact(:jsinterop_base)
+    pom.dependency_filter = Proc.new {|dep| dep[:group].to_s != 'com.google.jsinterop'}
 
     compile.with :javax_annotation,
                  :jsinterop_base,
@@ -39,6 +40,8 @@ define 'react4j' do
   desc 'React4j core binding'
   define 'core' do
     pom.additional_dependencies << project('annotations').package(:jar)
+    pom.include_transitive_dependencies << artifact(:elemental2_core)
+    pom.include_transitive_dependencies << artifact(:braincheck)
     pom.include_transitive_dependencies << project('annotations').package(:jar)
     pom.dependency_filter = Proc.new {|dep| !project('annotations').compile.dependencies.include?(dep[:artifact])}
 
@@ -59,7 +62,6 @@ define 'react4j' do
 
   desc 'React4j DOM binding'
   define 'dom' do
-    pom.provided_dependencies.concat [:javax_annotation]
     pom.include_transitive_dependencies << project('core').package(:jar)
     pom.include_transitive_dependencies << artifact(:elemental2_dom)
     pom.dependency_filter = Proc.new {|dep| !project('core').compile.dependencies.include?(dep[:artifact]) && dep[:id].to_s != 'elemental2-promise'}
@@ -81,9 +83,9 @@ define 'react4j' do
 
   desc 'React4j-Arez Integration'
   define 'arez' do
-    pom.provided_dependencies.concat [:javax_annotation]
     pom.include_transitive_dependencies << project('dom').package(:jar)
     pom.include_transitive_dependencies << artifact(:arez_component)
+    pom.include_transitive_dependencies << artifact(:arez_spytools)
     pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-component') }
 
     compile.with project('core').package(:jar),
@@ -160,6 +162,10 @@ define 'react4j' do
 
   desc 'Utilities to output of GWT when compiling React4j applications'
   define 'gwt-output-qa' do
+    pom.include_transitive_dependencies << artifact(:gwt_symbolmap)
+    pom.include_transitive_dependencies << artifact(:javax_annotation)
+    pom.dependency_filter = Proc.new {|dep| %w(org.realityforge.gwt.symbolmap org.realityforge.javax.annotation).include?(dep[:group].to_s)}
+
     compile.with :javax_annotation,
                  :javacsv,
                  :gwt_symbolmap,
