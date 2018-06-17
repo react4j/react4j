@@ -4,8 +4,6 @@ require 'buildr/single_intermediate_layout'
 require 'buildr/gwt'
 require 'buildr/jacoco'
 
-PROVIDED_DEPS = [:javax_jsr305]
-
 DAGGER_RUNTIME_DEPS = [:javax_inject, :dagger_core]
 DAGGER_PROCESSOR_DEPS = [:javax_inject, :dagger_core, :dagger_spi, :dagger_producers, :dagger_compiler, :googlejavaformat, :errorprone, :javapoet, :guava]
 
@@ -24,10 +22,10 @@ define 'react4j' do
 
   desc 'Annotations for defining a react component'
   define 'annotations' do
-    pom.provided_dependencies.concat PROVIDED_DEPS
+    pom.provided_dependencies.concat [:javax_annotation]
     pom.dependency_filter = Proc.new {|dep| dep[:group].to_s != 'com.google.jsinterop' || (dep[:id].to_s == 'base' && dep[:classifier].nil?)}
 
-    compile.with PROVIDED_DEPS,
+    compile.with :javax_annotation,
                  :jsinterop_base,
                  :jsinterop_annotations
 
@@ -46,7 +44,7 @@ define 'react4j' do
 
     js_assets(project, :core)
 
-    compile.with PROVIDED_DEPS,
+    compile.with :javax_annotation,
                  :elemental2_core,
                  :jsinterop_base,
                  :jsinterop_annotations,
@@ -61,7 +59,7 @@ define 'react4j' do
 
   desc 'React4j DOM binding'
   define 'dom' do
-    pom.provided_dependencies.concat PROVIDED_DEPS
+    pom.provided_dependencies.concat [:javax_annotation]
     pom.include_transitive_dependencies << project('core').package(:jar)
     pom.include_transitive_dependencies << artifact(:elemental2_dom)
     pom.dependency_filter = Proc.new {|dep| !project('core').compile.dependencies.include?(dep[:artifact]) && dep[:id].to_s != 'elemental2-promise'}
@@ -83,7 +81,7 @@ define 'react4j' do
 
   desc 'React4j-Arez Integration'
   define 'arez' do
-    pom.provided_dependencies.concat PROVIDED_DEPS
+    pom.provided_dependencies.concat [:javax_annotation]
     pom.include_transitive_dependencies << project('dom').package(:jar)
     pom.include_transitive_dependencies << artifact(:arez_component)
     pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-component') }
@@ -114,7 +112,7 @@ define 'react4j' do
                  :autocommon,
                  :javapoet,
                  :guava,
-                 :javax_jsr305
+                 :javax_annotation
 
     test.with :compile_testing,
               Java.tools_jar,
@@ -162,7 +160,7 @@ define 'react4j' do
 
   desc 'Utilities to output of GWT when compiling React4j applications'
   define 'gwt-output-qa' do
-    compile.with PROVIDED_DEPS,
+    compile.with :javax_annotation,
                  :javacsv,
                  :gwt_symbolmap,
                  :testng
@@ -174,7 +172,8 @@ define 'react4j' do
 
   desc 'Test React4j in downstream projects'
   define 'downstream-test' do
-    compile.with :gir, PROVIDED_DEPS
+    compile.with :gir,
+                 :javax_annotation
 
     test.options[:properties] =
       {
