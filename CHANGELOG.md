@@ -14,6 +14,7 @@
   the main jar includes the sources required for the GWT compiler.
 * Remove the `com.google.jsinterop:jsinterop-annotations:jar` artifact with the `sources` classifier
   from the build as the main jar includes the sources required for the GWT compiler.
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.92`.
 
 ### [v0.75](https://github.com/react4j/react4j/tree/v0.75) (2018-06-13)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.74...v0.75)
