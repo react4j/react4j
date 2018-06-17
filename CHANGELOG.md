@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.76](https://github.com/react4j/react4j/tree/v0.76) (2018-06-17)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.75...v0.76)
 
 * **\[core\]** Make sure the core GWT module inherits the `react4j.annotations.Annotations` module.
   This means downstream projects need only inherit the `react4j.core.React` module or the
