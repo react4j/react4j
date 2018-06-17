@@ -18,6 +18,7 @@
 * Upgrade the `org.realityforge.braincheck:braincheck:jar` dependency to `1.9.0` for compatibility
   with J2CL.
 * **\[arez\]** Upgrade the `org.realityforge.arez.browserlocation` dependency to version `0.18`.
+* **\[arez\]** Upgrade the `org.realityforge.arez.spytools` dependency to version `0.16`.
 
 ### [v0.75](https://github.com/react4j/react4j/tree/v0.75) (2018-06-13)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.74...v0.75)
