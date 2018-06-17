@@ -9,7 +9,6 @@
   dependencies are not required by react4j but are only required to GWT compile the project. This
   dependency needs to be broken for GWT3.x/j2cl support.
 * Remove the unused `org.realityforge.anodoc:anodoc:jar` dependency.
-* Remove the unused `org.jetbrains:annotations:jar` dependency.
 * Remove the `com.google.jsinterop:base:jar` artifact with the `sources` classifier from the build as
   the main jar includes the sources required for the GWT compiler.
 * Remove the `com.google.jsinterop:jsinterop-annotations:jar` artifact with the `sources` classifier
