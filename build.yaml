@@ -11,7 +11,7 @@ artifacts:
 
   shade_task: org.realityforge.ant.shade:ant-shade-task:jar:0.1
 
-  javax_annotation: org.realityforge.javax.annotation:javax.annotation:jar
+  javax_annotation: org.realityforge.javax.annotation:javax.annotation:jar:1.0.0
 
   # GWT deps
   gwt_user: com.google.gwt:gwt-user:jar:2.8.2
