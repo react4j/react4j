@@ -29,7 +29,6 @@ define 'react4j' do
 
     compile.with PROVIDED_DEPS,
                  :jsinterop_base,
-                 :jsinterop_base_sources,
                  :jsinterop_annotations
 
     gwt_enhance(project)
@@ -50,7 +49,6 @@ define 'react4j' do
     compile.with PROVIDED_DEPS,
                  :elemental2_core,
                  :jsinterop_base,
-                 :jsinterop_base_sources,
                  :jsinterop_annotations,
                  :braincheck
 
