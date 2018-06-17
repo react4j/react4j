@@ -140,7 +140,7 @@ HEADER
       DOWNSTREAM_PROJECTS.each do |downstream|
         # Need to extract the version from that project
         downstream_version = IO.read("target/react4j_downstream-test/deploy_test/workdir/#{downstream}/CHANGELOG.md")[/^### \[v(\d+\.\d+)\]/, 1]
-        sh "cd target/react4j_downstream-test/deploy_test/workdir/#{downstream} && bundle exec buildr perform_release STAGE=PushChanges PRODUCT_VERSION=#{downstream_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
+        sh "cd target/react4j_downstream-test/deploy_test/workdir/#{downstream} && bundle exec buildr perform_release STAGE=PushChanges PREVIOUS_PRODUCT_VERSION= PRODUCT_VERSION=#{downstream_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
       end
     end
 
