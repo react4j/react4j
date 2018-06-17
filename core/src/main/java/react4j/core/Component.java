@@ -4,9 +4,7 @@ import elemental2.core.JsError;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 import jsinterop.annotations.JsFunction;
-import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import static org.realityforge.braincheck.Guards.*;
@@ -277,7 +275,6 @@ public abstract class Component
    * By default it just delegates to the {@link #postConstruct()} method.
    * This method exists to give middleware a mechanism to hook into component construction lifecycle.
    */
-  @OverridingMethodsMustInvokeSuper
   protected void performPostConstruct()
   {
     postConstruct();
@@ -333,7 +330,6 @@ public abstract class Component
    * It delegates to the {@link #componentWillUnmount()} method.
    * This method exists to give middleware a mechanism to hook into component unmounting lifecycle.
    */
-  @OverridingMethodsMustInvokeSuper
   protected void performComponentWillUnmount()
   {
     componentWillUnmount();

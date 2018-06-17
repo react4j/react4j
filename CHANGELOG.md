@@ -22,6 +22,8 @@
 * Replace usage of the `com.google.code.findbugs:jsr305:jar` dependency with the
   `org.realityforge.javax.annotation:javax.annotation:jar` dependency as the former includes code that
   is incompatible with J2CL compiler.
+* Remove the usage of the `javax.annotation.OverridingMethodsMustInvokeSuper` annotation as the constraint
+  is not enforced by code and it's presence requires usage of a library incompatible with J2CL. 
 
 ### [v0.75](https://github.com/react4j/react4j/tree/v0.75) (2018-06-13)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.74...v0.75)

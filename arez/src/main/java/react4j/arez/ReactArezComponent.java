@@ -15,7 +15,6 @@ import elemental2.core.JsObject;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
@@ -172,7 +171,6 @@ public abstract class ReactArezComponent
    * {@inheritDoc}
    */
   @Override
-  @OverridingMethodsMustInvokeSuper
   protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
                                            @Nullable final JsPropertyMap<Object> nextState )
   {
@@ -206,7 +204,6 @@ public abstract class ReactArezComponent
    * {@inheritDoc}
    */
   @Override
-  @OverridingMethodsMustInvokeSuper
   protected void componentDidMount()
   {
     storeArezDataAsState();
@@ -216,7 +213,6 @@ public abstract class ReactArezComponent
    * {@inheritDoc}
    */
   @Override
-  @OverridingMethodsMustInvokeSuper
   protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
                                      @Nullable final JsPropertyMap<Object> prevState )
   {
