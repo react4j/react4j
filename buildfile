@@ -30,8 +30,7 @@ define 'react4j' do
     compile.with PROVIDED_DEPS,
                  :jsinterop_base,
                  :jsinterop_base_sources,
-                 :jsinterop_annotations,
-                 :jsinterop_annotations_sources
+                 :jsinterop_annotations
 
     gwt_enhance(project)
 
@@ -53,7 +52,6 @@ define 'react4j' do
                  :jsinterop_base,
                  :jsinterop_base_sources,
                  :jsinterop_annotations,
-                 :jsinterop_annotations_sources,
                  :braincheck
 
     gwt_enhance(project, :extra_deps => [project('annotations').package(:jar)])
