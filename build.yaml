@@ -25,13 +25,13 @@ artifacts:
   elemental2_dom: com.google.elemental2:elemental2-dom:jar:1.0.0-RC1
   elemental2_promise: com.google.elemental2:elemental2-promise:jar:1.0.0-RC1
 
-  arez_browserlocation: org.realityforge.arez.browserlocation:arez-browserlocation:jar:0.09
   arez_spytools: org.realityforge.arez.spytools:arez-spytools:jar:0.11
 
   arez_annotations: org.realityforge.arez:arez-annotations:jar:0.92
   arez_core: org.realityforge.arez:arez-core:jar:0.92
   arez_processor: org.realityforge.arez:arez-processor:jar:0.92
   arez_component: org.realityforge.arez:arez-component:jar:0.92
+  arez_browserlocation: org.realityforge.arez.browserlocation:arez-browserlocation:jar:0.18
 
   braincheck: org.realityforge.braincheck:braincheck:jar:1.9.0
 
