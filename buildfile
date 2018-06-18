@@ -164,8 +164,7 @@ define 'react4j' do
   desc 'Utilities to output of GWT when compiling React4j applications'
   define 'gwt-output-qa' do
     pom.include_transitive_dependencies << artifact(:gwt_symbolmap)
-    pom.include_transitive_dependencies << artifact(:javax_annotation)
-    pom.dependency_filter = Proc.new {|dep| %w(org.realityforge.gwt.symbolmap org.realityforge.javax.annotation).include?(dep[:group].to_s)}
+    pom.dependency_filter = Proc.new {|dep| %w(org.realityforge.gwt.symbolmap).include?(dep[:group].to_s)}
 
     compile.with :javax_annotation,
                  :javacsv,
