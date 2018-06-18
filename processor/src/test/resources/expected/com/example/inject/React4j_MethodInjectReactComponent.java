@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
@@ -43,6 +44,7 @@ class React4j_MethodInjectReactComponent extends MethodInjectReactComponent {
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<MethodInjectReactComponent> {
+    @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

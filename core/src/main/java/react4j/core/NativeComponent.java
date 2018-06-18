@@ -3,6 +3,7 @@ package react4j.core;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
@@ -21,6 +22,7 @@ public abstract class NativeComponent
   @JsProperty
   private JsPropertyMap<Object> state;
 
+  @JsConstructor
   NativeComponent( @SuppressWarnings( "unused" ) @Nullable final JsPropertyMap<Object> props )
   {
   }

@@ -4,6 +4,7 @@ import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.annotations.Callback;
@@ -37,6 +38,7 @@ class React4j_CustomName extends CustomName {
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<CustomName> {
+    @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

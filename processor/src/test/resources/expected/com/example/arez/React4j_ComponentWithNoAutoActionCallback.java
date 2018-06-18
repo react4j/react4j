@@ -6,6 +6,7 @@ import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -63,6 +64,7 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithNoAutoActionCallback> implements Lifecycle {
+    @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }

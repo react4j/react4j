@@ -3,6 +3,7 @@ package com.example.nested;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.core.ComponentConstructorFunction;
@@ -23,6 +24,7 @@ class NestedReactComponent_React4j_BasicReactComponent extends NestedReactCompon
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NestedReactComponent.BasicReactComponent> {
+    @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
