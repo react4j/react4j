@@ -9,6 +9,7 @@ import arez.annotations.ComponentId;
 import arez.annotations.ContextRef;
 import arez.annotations.ObserverRef;
 import arez.annotations.OnDepsChanged;
+import arez.annotations.Priority;
 import arez.annotations.Track;
 import arez.spy.ObservableInfo;
 import elemental2.core.JsObject;
@@ -159,7 +160,7 @@ public abstract class ReactArezComponent
    * This SHOULD NOT be merged with {@link #performRender()} as then the isDisposed check will be present
    * in every instance of render method which can result in unnecessary code bloat.
    */
-  @Track( name = "render" )
+  @Track( name = "render", priority = Priority.LOW )
   @Nullable
   protected ReactNode trackRender()
   {

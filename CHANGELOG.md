@@ -3,6 +3,10 @@
 ### Unreleased
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.93`.
+* **\[arez\]** Change the priority of the `ReactArezComponent.trackRender()` method to `LOW`
+  so that component re-renders are always scheduled after other higher priority Arez reactions.
+  This reduces the chance that a single component will be re-rendered multiple times within
+  a single Arez reaction round.
 
 ### [v0.77](https://github.com/react4j/react4j/tree/v0.77) (2018-06-18)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.76...v0.77)
