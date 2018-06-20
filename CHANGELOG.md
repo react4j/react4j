@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.78](https://github.com/react4j/react4j/tree/v0.78) (2018-06-20)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.77...v0.78)
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.93`.
 * **\[arez\]** Change the priority of the `ReactArezComponent.trackRender()` method to `LOW`
