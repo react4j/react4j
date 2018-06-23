@@ -3,6 +3,9 @@
 ### Unreleased
 
 * **\[dom\]** Explicitly specify the namespace and name for event types. This is required by J2CL.
+* **\[dom\]** Move the javascript packaged in `react-dom` artifact from the `react4j.core.public`
+  package to the `react4j.dom.public` package and updated the GWT module definition to retrieve
+  resources from that package.
 
 ### [v0.78](https://github.com/react4j/react4j/tree/v0.78) (2018-06-20)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.77...v0.78)

@@ -13,8 +13,8 @@ JS_ASSET_GROUPS =
       'com.unpkg:react:js:min:16.3.2' => 'react4j/core/public/react.js'
     },
     :dom => {
-      'com.unpkg:react-dom:js:16.3.2' => 'react4j/core/public/dev/react-dom.js',
-      'com.unpkg:react-dom:js:min:16.3.2' => 'react4j/core/public/react-dom.js'
+      'com.unpkg:react-dom:js:16.3.2' => 'react4j/dom/public/dev/react-dom.js',
+      'com.unpkg:react-dom:js:min:16.3.2' => 'react4j/dom/public/react-dom.js'
     }
   }
 
