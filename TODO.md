@@ -2,6 +2,14 @@
 
 ### Very High Priority
 
+* Add assertion to Arez render - if there are no dependencies then generate an error or a big warning
+  indicating you should add some dependencies
+
+* Once optimized builds work add badge
+![GWT3/J2CL compatible](https://img.shields.io/badge/GWT3/J2CL-compatible-brightgreen.svg)
+
+* Migrate code from `react4j.core` to just `react4j`
+
 * Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
   - Pointer Events
 
