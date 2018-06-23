@@ -11,6 +11,8 @@
   included when the `react4j.core.ReactDev` GWT module is incidentally included.
 * **\[dom\]** Rename the `react4j.dom.ReactDOM` GWT module to `react4j.dom.Dom` and the
   `react4j.dom.ReactDOMDev` GWT module to `react4j.dom.DomDev` to follow existing conventions.
+* **\[arez\]** Rename the GWT modules in the `react4j-arez` module to follow conventions (i.e. to
+  be named the same as the package name) to follow existing conventions.
 
 ### [v0.78](https://github.com/react4j/react4j/tree/v0.78) (2018-06-20)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.77...v0.78)
