@@ -6,6 +6,9 @@
 * **\[dom\]** Move the javascript packaged in `react-dom` artifact from the `react4j.core.public`
   package to the `react4j.dom.public` package and updated the GWT module definition to retrieve
   resources from that package.
+* **\[dom\]** Introduce the `react4j.dom.ReactDOMDev` GWT module that includes the debug source
+  for the `react-dom` library. This is now needed as the dev source is no longer incidentally
+  included when the `react4j.core.ReactDev` GWT module is incidentally included.
 
 ### [v0.78](https://github.com/react4j/react4j/tree/v0.78) (2018-06-20)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.77...v0.78)
