@@ -1,5 +1,5 @@
 <module>
-  <inherits name='react4j.dom.ReactDOM'/>
+  <inherits name='react4j.dom.Dom'/>
   <inherits name='arez.component.Component'/>
 
   <source path='' includes='*.java'/>
