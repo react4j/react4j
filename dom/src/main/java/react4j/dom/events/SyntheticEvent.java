@@ -4,9 +4,10 @@ import elemental2.core.JsDate;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
 import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType( isNative = true )
+@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 @SuppressWarnings( "unused" )
 public class SyntheticEvent<E extends Event>
 {
