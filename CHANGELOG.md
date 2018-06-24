@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.79](https://github.com/react4j/react4j/tree/v0.79) (2018-06-24)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.78...v0.79)
 
 * **\[dom\]** Explicitly specify the namespace and name for event types. This is required by J2CL.
 * **\[dom\]** Move the javascript packaged in `react-dom` artifact from the `react4j.core.public`
