@@ -1,5 +1,5 @@
 <module>
-  <inherits name='react4j.core.React'/>
+  <inherits name='react4j.React'/>
   <inherits name='org.realityforge.braincheck.BrainCheckDev'/>
 
   <source path='ignored'/>

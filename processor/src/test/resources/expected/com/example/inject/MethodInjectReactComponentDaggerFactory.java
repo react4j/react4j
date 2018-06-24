@@ -5,7 +5,7 @@ import dagger.Provides;
 import dagger.Subcomponent;
 import javax.annotation.Generated;
 import javax.inject.Provider;
-import react4j.core.Component;
+import react4j.Component;
 
 @Generated("react4j.processor.ReactProcessor")
 public interface MethodInjectReactComponentDaggerFactory {

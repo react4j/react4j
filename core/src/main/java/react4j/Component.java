@@ -1,4 +1,4 @@
-package react4j.core;
+package react4j;
 
 import elemental2.core.JsError;
 import java.util.Objects;

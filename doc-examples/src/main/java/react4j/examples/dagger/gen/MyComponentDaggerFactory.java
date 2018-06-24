@@ -4,7 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.Subcomponent;
 import javax.inject.Provider;
-import react4j.core.Component;
+import react4j.Component;
 import react4j.examples.dagger.MyComponent;
 import react4j.examples.dagger.MyComponent_;
 

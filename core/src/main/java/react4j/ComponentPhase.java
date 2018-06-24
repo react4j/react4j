@@ -1,4 +1,4 @@
-package react4j.core;
+package react4j;
 
 import jsinterop.base.JsPropertyMap;
 

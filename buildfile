@@ -276,7 +276,7 @@ define 'react4j' do
           :timestamp => false,
           :link => %w(https://arez.github.io/api https://arez.github.io/spytools https://docs.oracle.com/javase/8/docs/api http://www.gwtproject.org/javadoc/latest/),
           :group => {
-            'Core Packages' => 'react4j.core*',
+            'Core Packages' => 'react4j*',
             'DOM Packages' => 'react4j.dom*',
             'Annotation Packages' => 'react4j.annotations*:react4j.processor*',
             'Arez Packages' => 'react4j.arez*'

@@ -1,11 +1,11 @@
 package com.example.nested;
 
+import react4j.Component;
+import react4j.ReactNode;
 import react4j.annotations.Callback;
 import react4j.annotations.Feature;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
-import react4j.core.Component;
-import react4j.core.ReactNode;
 
 public class NestedCompleteComponent
 {

@@ -4,10 +4,10 @@ import elemental2.core.JsError;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.JsPropertyMap;
+import react4j.Component;
+import react4j.ReactErrorInfo;
+import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
-import react4j.core.Component;
-import react4j.core.ReactErrorInfo;
-import react4j.core.ReactNode;
 
 @ReactComponent
 abstract class OverrideLifecycleMethodsComponent

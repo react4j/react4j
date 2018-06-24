@@ -1,6 +1,6 @@
 <module rename-to='hello_world'>
-  <inherits name="react4j.core.React"/>
-  <inherits name="react4j.dom.ReactDOM"/>
+  <inherits name="react4j.React"/>
+  <inherits name="react4j.dom.Dom"/>
 
   <entry-point class='react4j.examples.hello_world.HelloWorld'/>
   <source path=''/>

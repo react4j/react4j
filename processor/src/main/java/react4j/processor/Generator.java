@@ -66,13 +66,13 @@ final class Generator
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
 
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
-    ClassName.get( "react4j.core", "ComponentConstructorFunction" );
-  private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j.core", "ReactNode" );
+    ClassName.get( "react4j", "ComponentConstructorFunction" );
+  private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
   private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
-    ClassName.get( "react4j.core", "NativeAdapterComponent" );
-  private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j.core", "React" );
-  private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j.core", "ReactConfig" );
-  private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j.core", "Component" );
+    ClassName.get( "react4j", "NativeAdapterComponent" );
+  private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
+  private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
+  private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
 
   private Generator()
   {

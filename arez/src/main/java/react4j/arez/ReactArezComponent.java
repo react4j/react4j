@@ -19,9 +19,9 @@ import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.core.Component;
-import react4j.core.Procedure;
-import react4j.core.ReactNode;
+import react4j.Component;
+import react4j.Procedure;
+import react4j.ReactNode;
 
 /**
  * A base class for all Arez enabled components. This class makes the component

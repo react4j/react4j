@@ -7,10 +7,10 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.Procedure;
-import react4j.core.React;
-import react4j.core.ReactConfig;
-import react4j.core.ReactNode;
+import react4j.Procedure;
+import react4j.React;
+import react4j.ReactConfig;
+import react4j.ReactNode;
 import react4j.dom.proptypes.html.HtmlGlobalFields;
 import static org.realityforge.braincheck.Guards.*;
 

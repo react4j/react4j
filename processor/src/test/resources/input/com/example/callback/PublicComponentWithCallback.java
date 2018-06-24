@@ -1,9 +1,9 @@
 package com.example.callback;
 
+import react4j.Component;
+import react4j.ReactNode;
 import react4j.annotations.Callback;
 import react4j.annotations.ReactComponent;
-import react4j.core.Component;
-import react4j.core.ReactNode;
 
 @ReactComponent
 public abstract class PublicComponentWithCallback

@@ -1,10 +1,9 @@
-package react4j.core;
+package react4j;
 
 import elemental2.core.JsError;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsMethod;
 import jsinterop.base.JsPropertyMap;
 
 /**

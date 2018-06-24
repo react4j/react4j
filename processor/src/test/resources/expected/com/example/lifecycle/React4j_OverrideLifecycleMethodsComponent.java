@@ -8,10 +8,10 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.ComponentConstructorFunction;
-import react4j.core.NativeAdapterComponent;
-import react4j.core.ReactConfig;
-import react4j.core.ReactErrorInfo;
+import react4j.ComponentConstructorFunction;
+import react4j.NativeAdapterComponent;
+import react4j.ReactConfig;
+import react4j.ReactErrorInfo;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethodsComponent {

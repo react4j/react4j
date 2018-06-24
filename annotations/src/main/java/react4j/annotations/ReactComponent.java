@@ -7,8 +7,6 @@ import javax.annotation.Nonnull;
 
 /**
  * Annotation used to specify a React component.
- * The class must be a concrete subclass of react4j.core.SideComponent with a single constructor that
- * takes the underlying react component.
  */
 @Documented
 @Target( ElementType.TYPE )

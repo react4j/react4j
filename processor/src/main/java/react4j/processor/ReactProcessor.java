@@ -730,18 +730,18 @@ public final class ReactProcessor
     else if ( "child".equals( name ) &&
               (
                 methodType.getReturnType().getKind() != TypeKind.DECLARED &&
-                !"react4j.core.ReactNode".equals( methodType.getReturnType().toString() )
+                !"react4j.ReactNode".equals( methodType.getReturnType().toString() )
               ) )
     {
-      throw new ReactProcessorException( "@Prop named 'child' should be of type react4j.core.ReactNode", method );
+      throw new ReactProcessorException( "@Prop named 'child' should be of type react4j.ReactNode", method );
     }
     else if ( "children".equals( name ) &&
               (
                 methodType.getReturnType().getKind() != TypeKind.DECLARED &&
-                !"react4j.core.ReactNode[]".equals( methodType.getReturnType().toString() )
+                !"react4j.ReactNode[]".equals( methodType.getReturnType().toString() )
               ) )
     {
-      throw new ReactProcessorException( "@Prop named 'children' should be of type react4j.core.ReactNode[]", method );
+      throw new ReactProcessorException( "@Prop named 'children' should be of type react4j.ReactNode[]", method );
     }
 
     final Element propType = processingEnv.getTypeUtils().asElement( method.getReturnType() );
@@ -1049,7 +1049,7 @@ public final class ReactProcessor
 
     if ( !isComponent )
     {
-      throw new ReactProcessorException( "@ReactComponent target must be a subclass of react4j.core.Component",
+      throw new ReactProcessorException( "@ReactComponent target must be a subclass of react4j.Component",
                                          typeElement );
     }
     else if ( isArezComponent )

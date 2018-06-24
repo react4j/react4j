@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.core.ReactNode;
+import react4j.ReactNode;
 
 @SuppressWarnings( "NullableProblems" )
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )

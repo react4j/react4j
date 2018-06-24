@@ -5,8 +5,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.core.React;
-import react4j.core.ReactNode;
+import react4j.React;
+import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class InjectFalseComponentBuilder {

@@ -9,7 +9,7 @@
   <public path='public' includes='*'/>
 
   <!--
-    These properties are all defined in react4j.core.ReactConfig
+    These properties are all defined in react4j.ReactConfig
     See that class for a better understanding of what these properties do.
   -->
 

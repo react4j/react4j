@@ -54,7 +54,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
-import react4j.core.ReactNode;
+import react4j.ReactNode;
 HEADER
   factories.values.sort.uniq.each do |prop_type|
     content += "import react4j.dom.proptypes.html.#{prop_type};\n"

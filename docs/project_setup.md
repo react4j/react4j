@@ -120,7 +120,7 @@ decreased performance of development builds. The `Dev` module can be added via:
 ```xml
 <module>
   ...
-  <inherits name='react4j.core.ReactDev'/>
+  <inherits name='react4j.ReactDev'/>
   ...
 </module>
 ```

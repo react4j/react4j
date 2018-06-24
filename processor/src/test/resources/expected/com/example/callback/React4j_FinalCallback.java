@@ -7,10 +7,10 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.ComponentConstructorFunction;
+import react4j.NativeAdapterComponent;
+import react4j.ReactConfig;
 import react4j.annotations.Callback;
-import react4j.core.ComponentConstructorFunction;
-import react4j.core.NativeAdapterComponent;
-import react4j.core.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_FinalCallback extends FinalCallback {
