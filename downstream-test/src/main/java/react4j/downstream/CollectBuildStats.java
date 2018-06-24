@@ -76,72 +76,71 @@ public final class CollectBuildStats
           Git.checkout();
           Git.pull();
           Git.deleteLocalBranches();
-          Stream.of( "raw", "arez", "dagger", "raw_maven", "arez_maven", "dagger_maven" ).forEach( branch -> {
-            Gir.messenger().info( "Processing branch " + branch + "." );
+          Stream
+            .of( "raw", "arez", "dagger", "raw_maven", "arez_maven", "dagger_maven" )
+            .forEach( ( String branch ) -> {
+              Gir.messenger().info( "Processing branch " + branch + "." );
 
-            final boolean isMaven = branch.endsWith( "_maven" );
+              final boolean isMaven = branch.endsWith( "_maven" );
 
-            final String newBranch = branch + "-React4jUpgrade-" + version;
-            if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
-            {
-              Git.checkout( newBranch );
-            }
-            else
-            {
-              Git.checkout( branch );
-            }
-            Git.clean();
-
-            Git.checkout( newBranch, true );
-            if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
-            {
-              Git.pull();
-            }
-            Git.clean();
-
-            Gir.messenger().info( "Building branch " + branch + " prior to modifications." );
-            boolean initialBuildSuccess = false;
-            try
-            {
-              if ( isMaven )
+              final String newBranch = branch + "-React4jUpgrade-" + version;
+              if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
               {
-                customizeMaven( appDirectory, localRepositoryUrl );
+                Git.checkout( newBranch );
               }
               else
               {
-                customizeBuildr( appDirectory, localRepositoryUrl );
+                Git.checkout( branch );
+              }
+              Git.clean();
+
+              Git.checkout( newBranch, true );
+              if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
+              {
+                Git.pull();
+              }
+              Git.clean();
+
+              Gir.messenger().info( "Building branch " + branch + " prior to modifications." );
+              boolean initialBuildSuccess = false;
+              try
+              {
+                if ( isMaven )
+                {
+                  customizeMaven( appDirectory, localRepositoryUrl );
+                }
+                else
+                {
+                  customizeBuildr( appDirectory, localRepositoryUrl );
+                }
+
+                final String prefix = branch + ".before";
+                final Path archiveDir = getArchiveDir( workingDirectory, prefix );
+                buildAndRecordStatistics( archiveDir, !isMaven );
+                loadStatistics( overallStatistics, archiveDir, prefix );
+                loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
+                initialBuildSuccess = true;
+              }
+              catch ( final GirException | IOException e )
+              {
+                Gir.messenger().info( "Failed to build branch '" + branch + "' before modifications.", e );
               }
 
-              final String prefix = branch + ".before";
-              final Path archiveDir = getArchiveDir( workingDirectory, prefix );
-              buildAndRecordStatistics( archiveDir, !isMaven );
-              loadStatistics( overallStatistics, archiveDir, prefix );
-              loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
-              initialBuildSuccess = true;
-            }
-            catch ( final GirException | IOException e )
-            {
-              Gir.messenger().info( "Failed to build branch '" + branch + "' before modifications.", e );
-            }
+              Git.resetBranch();
+              Git.clean();
 
-            Git.resetBranch();
-            Git.clean();
+              if ( isMaven )
+              {
+                Maven.patchPomProperty( appDirectory,
+                                        () -> "Update the 'react4j' dependencies to version '" + version + "'",
+                                        "react4j.version",
+                                        version );
+              }
+              else
+              {
+                Buildr.patchBuildYmlDependency( appDirectory, "org.realityforge.react4j", version );
+              }
 
-            final boolean patched;
-            if ( isMaven )
-            {
-              patched = Maven.patchPomProperty( appDirectory,
-                                                () -> "Update the 'react4j' dependencies to version '" + version + "'",
-                                                "react4j.version",
-                                                version );
-            }
-            else
-            {
-              patched = Buildr.patchBuildYmlDependency( appDirectory, "org.realityforge.react4j", version );
-            }
-
-            if ( patched )
-            {
               Gir.messenger().info( "Building branch " + branch + " after modifications." );
               if ( isMaven )
               {
@@ -193,31 +192,7 @@ public final class CollectBuildStats
                   throw new GirException( e );
                 }
               }
-            }
-            else
-            {
-              Gir.messenger().info( "Branch " + branch + " not rebuilt as no modifications made." );
-              Git.checkout( branch );
-              Git.deleteBranch( newBranch );
-              /*
-               * We copy the before build to after directory as later steps will perform further analysis
-               * so we need to have the build on the filesystem.
-               */
-              final String build = branch + ".after";
-              final Path archiveDir = getArchiveDir( workingDirectory, build );
-              FileUtil.copyDirectory( getArchiveDir( workingDirectory, branch + ".before" ), archiveDir );
-              try
-              {
-                loadStatistics( overallStatistics, archiveDir, build );
-                loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
-              }
-              catch ( final IOException e )
-              {
-                Gir.messenger().error( "Failed to load statistics for branch '" + branch + "'.", e );
-                throw new GirException( e );
-              }
-            }
-          } );
+            } );
         } );
       } );
 
