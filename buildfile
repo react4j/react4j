@@ -3,6 +3,7 @@ require 'buildr/gpg'
 require 'buildr/single_intermediate_layout'
 require 'buildr/gwt'
 require 'buildr/jacoco'
+require 'buildr/top_level_generate_dir'
 
 DAGGER_RUNTIME_DEPS = [:javax_inject, :dagger_core]
 DAGGER_PROCESSOR_DEPS = [:javax_inject, :dagger_core, :dagger_spi, :dagger_producers, :dagger_compiler, :googlejavaformat, :errorprone, :javapoet, :guava]
