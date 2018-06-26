@@ -40,10 +40,9 @@ final class Generator
   private static final ClassName PROVIDER_CLASSNAME = ClassName.get( "javax.inject", "Provider" );
   private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
-
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
-
   private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "Observable" );
+  private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
@@ -52,19 +51,14 @@ final class Generator
     ClassName.get( "arez.annotations", "ObservableRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
-  private static final ClassName AREZ_DEPENDENCY_CLASSNAME =
-    ClassName.get( "arez.annotations", "Dependency" );
-
   private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
-
   private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
-
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j", "ComponentConstructorFunction" );
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
@@ -543,6 +537,22 @@ final class Generator
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
+    if ( descriptor.isArezComponent() )
+    {
+      final List<PropDescriptor> props =
+        descriptor.getProps().stream().filter( prop -> {
+          final Element propType = prop.getPropType();
+          return null != propType &&
+                 descriptor.isArezComponent() &&
+                 ElementKind.CLASS == propType.getKind() &&
+                 null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME );
+        } ).collect( Collectors.toList() );
+      if ( !props.isEmpty() )
+      {
+        builder.addMethod( buildAnyPropsDisposedMethod( descriptor, props ).build() );
+      }
+    }
+
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
       builder.addMethod( buildPropMethod( descriptor, prop ).build() );
@@ -601,6 +611,42 @@ final class Generator
     return builder.build();
   }
 
+  @Nonnull
+  private static MethodSpec.Builder buildAnyPropsDisposedMethod( @Nonnull final ComponentDescriptor descriptor,
+                                                                 @Nonnull final List<PropDescriptor> props )
+  {
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( "anyPropsDisposed" )
+        .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
+        .addAnnotation( Override.class )
+        .returns( TypeName.BOOLEAN );
+
+    for ( final PropDescriptor prop : props )
+    {
+      final String varName = "$$react4jv$$_" + prop.getMethod().getSimpleName();
+      method.addStatement( "final $T $N = $N()",
+                           prop.getMethodType().getReturnType(),
+                           varName,
+                           prop.getMethod().getSimpleName().toString() );
+      final CodeBlock.Builder block = CodeBlock.builder();
+      if ( prop.isOptional() )
+      {
+        block.beginControlFlow( "if ( null != $N && $T.isDisposed( $N ) )", varName, DISPOSABLE_CLASSNAME, varName );
+      }
+      else
+      {
+        block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
+      }
+      block.addStatement( "return true" );
+      block.endControlFlow();
+      method.addCode( block.build() );
+
+    }
+    method.addStatement( "return false" );
+
+    return method;
+  }
+
   private static MethodSpec.Builder buildPropMethod( @Nonnull final ComponentDescriptor descriptor,
                                                      @Nonnull final PropDescriptor prop )
   {
@@ -626,13 +672,6 @@ final class Generator
       method.addAnnotation( annotation.build() );
     }
     final Element propType = prop.getPropType();
-    if ( null != propType && descriptor.isArezComponent() && ElementKind.CLASS == propType.getKind() )
-    {
-      if ( null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
-      {
-        method.addAnnotation( AnnotationSpec.builder( AREZ_DEPENDENCY_CLASSNAME ).build() );
-      }
-    }
     final String convertMethodName = getConverter( returnType, methodElement, "Prop" );
     final String key = "child".equals( name ) ? "children" : name;
     final TypeKind resultKind = methodElement.getReturnType().getKind();

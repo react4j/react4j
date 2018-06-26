@@ -149,6 +149,17 @@ public abstract class ReactArezComponent
   }
 
   /**
+   * Return true if any prop is an ArezComponent that has been disposed.
+   * This is used to guard against rendering a react component that has invalid props.
+   *
+   * @return true if any prop is an ArezComponent that has been disposed.
+   */
+  protected boolean anyPropsDisposed()
+  {
+    return false;
+  }
+
+  /**
    * This method is the method enhanced by arez that performs render and tracks dependencies.
    * This SHOULD NOT be merged with {@link #performRender()} as then the isDisposed check will be present
    * in every instance of render method which can result in unnecessary code bloat.
@@ -158,7 +169,7 @@ public abstract class ReactArezComponent
   protected ReactNode trackRender()
   {
     _renderDepsChanged = false;
-    return super.performRender();
+    return anyPropsDisposed() ? null : super.performRender();
   }
 
   /**

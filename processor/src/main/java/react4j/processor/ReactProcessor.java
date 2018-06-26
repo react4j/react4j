@@ -664,17 +664,6 @@ public final class ReactProcessor
                                          childrenProp.getMethod() );
     }
 
-    props.forEach( prop -> {
-      final Element propType = prop.getPropType();
-      if ( null != propType && descriptor.isArezComponent() && ElementKind.CLASS == propType.getKind() )
-      {
-        if ( null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
-        {
-          descriptor.setRunArezScheduler( true );
-        }
-      }
-    } );
-
     descriptor.setProps( props );
   }
 

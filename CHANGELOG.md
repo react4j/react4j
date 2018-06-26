@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+* **\[arez\]** Stop annotating props with `@Dependency` if the prop type is annotated with
+  `@ArezComponent` and the prop is on a sub-class of `react4j.arez.ReactArezComponent`. The
+  `ReactArezComponent` has added an additional method `anyPropsDisposed()` that is overridden
+  by the annotation processor when candidate props are present. The render method skips rendering
+  if any prop is disposed.
+
 ### [v0.79](https://github.com/react4j/react4j/tree/v0.79) (2018-06-24)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.78...v0.79)
 

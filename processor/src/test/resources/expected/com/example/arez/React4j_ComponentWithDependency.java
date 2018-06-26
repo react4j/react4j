@@ -1,8 +1,8 @@
 package com.example.arez;
 
+import arez.Disposable;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
-import arez.annotations.Dependency;
 import arez.annotations.Observable;
 import arez.annotations.ObservableRef;
 import javax.annotation.Generated;
@@ -17,8 +17,7 @@ import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 
 @ArezComponent(
-    name = "ComponentWithDependency",
-    deferSchedule = true
+    name = "ComponentWithDependency"
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
@@ -31,6 +30,15 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithDependency" );
     }
     return componentConstructor;
+  }
+
+  @Override
+  protected final boolean anyPropsDisposed() {
+    final ComponentWithDependency.Model $$react4jv$$_getModel = getModel();
+    if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -51,7 +59,6 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
       name = "model",
       expectSetter = false
   )
-  @Dependency
   protected ComponentWithDependency.Model getModel() {
     return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
   }
@@ -69,11 +76,6 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
     if ( !Js.isTripleEqual( props().get( "model" ), null == nextProps ? null : nextProps.get( "model" ) ) ) {
       getModelObservable().reportChanged();
     }
-  }
-
-  @Override
-  protected final void triggerScheduler() {
-    getContext().triggerScheduler();
   }
 
   @JsType(
