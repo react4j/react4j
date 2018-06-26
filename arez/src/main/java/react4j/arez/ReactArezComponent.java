@@ -40,7 +40,6 @@ public abstract class ReactArezComponent
    * Key used to store the arez data in state.
    */
   private static final String AREZ_STATE_KEY = "arez";
-
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
   private boolean _renderDepsChanged;
