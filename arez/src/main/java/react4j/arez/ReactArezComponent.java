@@ -145,12 +145,6 @@ public abstract class ReactArezComponent
   @Override
   protected final ReactNode performRender()
   {
-    /*
-     * Consider generating a more efficient check than `Disposable.isDisposed( this )`. We should be able to
-     * inline this variable. This could be done by adding @PreDispose hook to set a instance variable or somehow
-     * updating Arez to efficiently expose the variable (which may involve the generated subclass calling
-     * setDisposed() or something similar in this class).
-     */
     return Disposable.isDisposed( this ) ? null : trackRender();
   }
 
