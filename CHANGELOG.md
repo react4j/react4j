@@ -7,6 +7,7 @@
   `ReactArezComponent` has added an additional method `anyPropsDisposed()` that is overridden
   by the annotation processor when candidate props are present. The render method skips rendering
   if any prop is disposed.
+* Update the javascript included within package to react version `16.4.1`.
 
 ### [v0.79](https://github.com/react4j/react4j/tree/v0.79) (2018-06-24)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.78...v0.79)
