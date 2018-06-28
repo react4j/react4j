@@ -9,6 +9,9 @@
   if any prop is disposed.
 * Update the javascript included within package to react version `16.4.1`.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.95`.
+* **\[arez\]** If a render is triggered on a subclass of `react4j.arez.ReactArezComponent` and the
+  render has no Arez dependencies then the code will now generate an invariant failure. Extending
+  a `react4j.arez.ReactArezComponent` when it is not needed is an unnecessary overhead.
 
 ### [v0.79](https://github.com/react4j/react4j/tree/v0.79) (2018-06-24)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.78...v0.79)

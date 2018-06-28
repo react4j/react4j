@@ -22,6 +22,7 @@ import org.realityforge.braincheck.Guards;
 import react4j.Component;
 import react4j.Procedure;
 import react4j.ReactNode;
+import static org.realityforge.braincheck.Guards.*;
 
 /**
  * A base class for all Arez enabled components. This class makes the component
@@ -169,7 +170,22 @@ public abstract class ReactArezComponent
   protected ReactNode trackRender()
   {
     _renderDepsChanged = false;
-    return anyPropsDisposed() ? null : super.performRender();
+    if ( anyPropsDisposed() )
+    {
+      return null;
+    }
+    else
+    {
+      final ReactNode result = super.performRender();
+      if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() )
+      {
+        final List<ObservableInfo> dependencies = getContext().getSpy().getDependencies( getRenderObserver() );
+        invariant( () -> !dependencies.isEmpty(),
+                   () -> "ReactArezComponent render completed on '" + this + "' but the component does not " +
+                         "have any Arez dependencies. This component should extend react4j.Component instead." );
+      }
+      return result;
+    }
   }
 
   /**
