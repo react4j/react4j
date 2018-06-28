@@ -1,5 +1,7 @@
 # Change Log
 
+### Unreleased
+
 ### [v0.80](https://github.com/react4j/react4j/tree/v0.80) (2018-06-28)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.79...v0.80)
 
