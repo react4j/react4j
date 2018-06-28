@@ -2,6 +2,8 @@
 
 ### Very High Priority
 
+* Arez Components that only have dependencies on props at end of render could warn if they may not need to be arez components 
+
 * Once optimized builds work add badge
 ![GWT3/J2CL compatible](https://img.shields.io/badge/GWT3/J2CL-compatible-brightgreen.svg)
 
