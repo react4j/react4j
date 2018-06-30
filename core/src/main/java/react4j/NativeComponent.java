@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
@@ -13,7 +14,7 @@ import jsinterop.base.JsPropertyMap;
 /**
  * The react native component.
  */
-@JsType( isNative = true, namespace = "React", name = "Component" )
+@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "React.Component" )
 public abstract class NativeComponent
 {
   @SuppressWarnings( "unused" )

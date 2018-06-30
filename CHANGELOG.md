@@ -15,6 +15,10 @@
 * **\[arez\]** If a render is triggered on a subclass of `react4j.arez.ReactArezComponent` and the
   render has no Arez dependencies then the code will now generate an invariant failure. Extending
   a `react4j.arez.ReactArezComponent` when it is not needed is an unnecessary overhead.
+* **\[core\]** Change the namespace the jsinterop typing of the `React` class from
+  `@JsType( isNative = true, namespace = "React", name = "Component" )` to
+  `@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "React.Component" )` as J2CL only
+  considers types with a namespace of `JsPackage.GLOBAL` to be capable of being externs.
 
 ### [v0.79](https://github.com/react4j/react4j/tree/v0.79) (2018-06-24)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.78...v0.79)
