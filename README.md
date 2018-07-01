@@ -5,6 +5,7 @@
 [![Build Status](https://secure.travis-ci.org/react4j/react4j.png?branch=master)](http://travis-ci.org/react4j/react4j)
 [<img src="https://img.shields.io/maven-central/v/org.realityforge.react4j/react4j-core.svg?label=latest%20release"/>](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.realityforge.react4j%22)
 [![codecov](https://codecov.io/gh/react4j/react4j/branch/master/graph/badge.svg)](https://codecov.io/gh/react4j/react4j)
+![GWT3/J2CL compatible](https://img.shields.io/badge/GWT3/J2CL-compatible-brightgreen.svg)
 
 The goal of this project is to be able to seamlessly use the [react component model](https://reactjs.org/docs/react-component.html)
 from GWT and make use of the ecosystem of react development support tooling such a React's Devtools. It would be nice to
