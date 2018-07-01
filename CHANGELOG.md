@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Upgrade the `org.realityforge.braincheck:braincheck:jar` dependency to `1.10.0` for improved
+* Upgrade the `org.realityforge.braincheck:braincheck:jar` dependency to `1.11.0` for improved
   compatibility with J2CL with respect to compile-time constants.
 * **\[processor\]** Change the jsinterop typing of the `Lifecycle` interface applied to native React4j
   components from `@JsType(isNative = true)` to `@JsType(isNative = true,namespace = JsPackage.GLOBAL,name = "?")`
