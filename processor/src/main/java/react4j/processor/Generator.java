@@ -55,6 +55,7 @@ final class Generator
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
   private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
+  private static final ClassName JS_PACKAGE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsPackage" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
@@ -1172,6 +1173,8 @@ final class Generator
 
     builder.addAnnotation( AnnotationSpec.builder( JS_TYPE_CLASSNAME ).
       addMember( "isNative", "true" ).
+      addMember( "namespace", "$T.GLOBAL", JS_PACKAGE_CLASSNAME ).
+      addMember( "name", "$S", "?" ).
       build() );
 
     builder.addModifiers( Modifier.STATIC );

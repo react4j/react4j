@@ -5,6 +5,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -27,7 +28,9 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
   }
 
   @JsType(
-      isNative = true
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
   )
   interface Lifecycle {
     void componentDidMount();
