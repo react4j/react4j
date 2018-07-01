@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.81](https://github.com/react4j/react4j/tree/v0.81) (2018-07-02)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.80...v0.81)
 
 * Upgrade the `org.realityforge.braincheck:braincheck:jar` dependency to `1.11.0` for improved
   compatibility with J2CL with respect to compile-time constants.
