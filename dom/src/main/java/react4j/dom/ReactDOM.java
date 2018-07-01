@@ -129,9 +129,11 @@ public class ReactDOM
    * @return the created ReactNode
    */
   @Nonnull
-  @JsMethod( namespace = "React" )
-  public static native <P extends HtmlGlobalFields>
-  ReactNode createElement( @Nonnull String type, @Nullable P props );
+  @JsOverlay
+  public static <P extends HtmlGlobalFields> ReactNode createElement( @Nonnull String type, @Nullable P props )
+  {
+    return React.createElement( type, props );
+  }
 
   /**
    * Create and return a new ReactElement of the given type with specified children.
@@ -143,9 +145,13 @@ public class ReactDOM
    * @return the created DOMElement
    */
   @Nonnull
-  @JsMethod( namespace = "React" )
-  public static native <P extends HtmlGlobalFields>
-  ReactNode createElement( @Nonnull String type, @Nullable P props, @Nullable ReactNode... children );
+  @JsOverlay
+  public static <P extends HtmlGlobalFields> ReactNode createElement( @Nonnull String type,
+                                                                      @Nullable P props,
+                                                                      @Nullable ReactNode... children )
+  {
+    return React.createElement( type, props, children );
+  }
 
   /**
    * Batch all state updates within the action.

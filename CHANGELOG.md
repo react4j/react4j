@@ -7,6 +7,9 @@
 * **\[processor\]** Change the jsinterop typing of the `Lifecycle` interface applied to native React4j
   components from `@JsType(isNative = true)` to `@JsType(isNative = true,namespace = JsPackage.GLOBAL,name = "?")`
   as that seems to be more inline with the code expected by J2CL or more precisely the closure compiler.
+* **\[core\]** Move the native methods `ReactDOM.createElement(String,Props,...)` to the `React` class
+  as `@JsMethod` and add `@JsOverlay` methods to `ReactDOM` that type them more specifically using types
+  within the dom package. This results in a 1% size reduction under J2CL with no performance impact.
 
 ### [v0.80](https://github.com/react4j/react4j/tree/v0.80) (2018-06-28)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.79...v0.80)

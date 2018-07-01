@@ -113,6 +113,27 @@ public final class React
   public static native ReactNode createElement( @Nonnull ComponentConstructorFunction type,
                                                 @Nullable JsPropertyMap<Object> props,
                                                 @Nonnull ReactNode... children );
+  /**
+   * Create and return a new ReactElement of the given type.
+   *
+   * @param type  A HTML tag name (eg. 'div', 'span', etc)
+   * @param props The props to pass to the element.
+   * @return the created ReactNode
+   */
+  @Nonnull
+  public static native ReactNode createElement( @Nonnull String type, @Nullable Object props );
+
+  /**
+   * Create and return a new ReactElement of the given type with specified children.
+   *
+   * @param type     A HTML tag name (eg. 'div', 'span', etc)
+   * @param props    The props to pass to the element.
+   * @param children The child elements.
+   * @return the created DOMElement
+   */
+  @Nonnull
+  @JsMethod
+  public static native ReactNode createElement( @Nonnull String type, @Nullable Object props, @Nullable ReactNode... children );
 
   /**
    * Create a StrictMode component with the specified children.
