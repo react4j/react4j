@@ -10,6 +10,12 @@
 * **\[core\]** Move the native methods `ReactDOM.createElement(String,Props,...)` to the `React` class
   as `@JsMethod` and add `@JsOverlay` methods to `ReactDOM` that type them more specifically using types
   within the dom package. This results in a 1% size reduction under J2CL with no performance impact.
+* Compile-time constants work differently between the JRE, J2CL and GWT2.x environments. Adopt an
+  approach that has the same effective outcome across all environments. This involves using instance
+  comparisons for results returned from `System.getProperty(...)` in GWT2.x and J2CL environments and
+  using normal `equals()` method in JRE. It should be noted that for this to work correctly in the J2CL
+  environment, the properties still need to defined via code such as:
+  `/** @define {string} */ goog.define('react4j.environment', 'production');`
 
 ### [v0.80](https://github.com/react4j/react4j/tree/v0.80) (2018-06-28)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.79...v0.80)

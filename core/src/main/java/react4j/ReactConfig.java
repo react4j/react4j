@@ -7,15 +7,11 @@ import org.realityforge.braincheck.BrainCheckConfig;
  */
 public final class ReactConfig
 {
-  private static final boolean PRODUCTION_MODE =
-    System.getProperty( "react4j.environment", "production" ).equals( "production" );
-  private static boolean ENABLE_NAMES =
-    "true".equals( System.getProperty( "react4j.enable_component_names", PRODUCTION_MODE ? "false" : "true" ) );
-  private static final boolean CHECK_COMPONENT_STATE_INVARIANTS =
-    "true".equals( System.getProperty( "react4j.check_component_state_invariants",
-                                       PRODUCTION_MODE ? "false" : "true" ) );
-  private static final boolean CHECK_INVARIANTS =
-    "true".equals( System.getProperty( "react4j.check_invariants", PRODUCTION_MODE ? "false" : "true" ) );
+  private static final ConfigProvider PROVIDER = new ConfigProvider();
+  private static final boolean PRODUCTION_MODE = PROVIDER.isProductionMode();
+  private static boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
+  private static final boolean CHECK_COMPONENT_STATE_INVARIANTS = PROVIDER.checkComponentStateInvariants();
+  private static final boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
   private ReactConfig()
   {
@@ -65,5 +61,63 @@ public final class ReactConfig
   public static boolean shouldCheckInvariants()
   {
     return CHECK_INVARIANTS && BrainCheckConfig.checkInvariants();
+  }
+
+  private static final class ConfigProvider
+    extends AbstractConfigProvider
+  {
+    @GwtIncompatible
+    @Override
+    boolean isProductionMode()
+    {
+      return "production".equals( System.getProperty( "react4j.environment", "production" ) );
+    }
+
+    @GwtIncompatible
+    @Override
+    boolean enableComponentNames()
+    {
+      return "true".equals( System.getProperty( "react4j.enable_component_names",
+                                                isProductionMode() ? "false" : "true" ) );
+    }
+
+    @GwtIncompatible
+    @Override
+    boolean checkComponentStateInvariants()
+    {
+      return "true".equals( System.getProperty( "react4j.check_component_state_invariants",
+                                                isProductionMode() ? "false" : "true" ) );
+    }
+
+    @GwtIncompatible
+    @Override
+    boolean shouldCheckInvariants()
+    {
+      return "true".equals( System.getProperty( "react4j.check_invariants", "true" ) );
+    }
+  }
+
+  @SuppressWarnings( { "unused", "StringEquality" } )
+  private static abstract class AbstractConfigProvider
+  {
+    boolean isProductionMode()
+    {
+      return "production" == System.getProperty( "react4j.environment" );
+    }
+
+    boolean enableComponentNames()
+    {
+      return "true" == System.getProperty( "react4j.enable_component_names" );
+    }
+
+    boolean checkComponentStateInvariants()
+    {
+      return "true" == System.getProperty( "react4j.check_component_state_invariants" );
+    }
+
+    boolean shouldCheckInvariants()
+    {
+      return "true" == System.getProperty( "react4j.check_invariants" );
+    }
   }
 }

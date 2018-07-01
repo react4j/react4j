@@ -5,8 +5,8 @@ package react4j.arez;
  */
 final class ReactArezConfig
 {
-  private static final boolean STORE_AREZ_DATA_AS_STATE =
-    "true".equals( System.getProperty( "react4j.arez.store_arez_data_as_state", "true" ) );
+  private static final ConfigProvider PROVIDER = new ConfigProvider();
+  private static final boolean STORE_AREZ_DATA_AS_STATE = PROVIDER.shouldStoreArezDataAsState();
 
   private ReactArezConfig()
   {
@@ -22,5 +22,25 @@ final class ReactArezConfig
   static boolean shouldStoreArezDataAsState()
   {
     return STORE_AREZ_DATA_AS_STATE;
+  }
+
+  private static final class ConfigProvider
+    extends AbstractConfigProvider
+  {
+    @GwtIncompatible
+    @Override
+    boolean shouldStoreArezDataAsState()
+    {
+      return System.getProperty( "react4j.arez.store_arez_data_as_state", "true" ).equals( "true" );
+    }
+  }
+
+  @SuppressWarnings( "unused" )
+  private static abstract class AbstractConfigProvider
+  {
+    boolean shouldStoreArezDataAsState()
+    {
+      return "true" == System.getProperty( "react4j.arez.store_arez_data_as_state" );
+    }
   }
 }
