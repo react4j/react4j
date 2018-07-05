@@ -2,7 +2,18 @@
 
 ### Very High Priority
 
-* Arez Components that only have dependencies on props at end of render could warn if they may not need to be arez components
+* Add ability for ReactArezComponent to skip check that forces render to have observe. Sometimes just have actions
+  that want to be triggers.
+
+* Arez Components that only have dependencies on props at end of render could warn if they may not need to
+  be arez components.
+
+* Consider rewriting @Computed and @Autorun annotations so that they have LOWEST priority.
+
+* Enforce that no methods on component other than render have `@Track`
+
+* If a ReactArezComponent is disposed then it should force a re-binding of java component to native component
+  next time render is invoked.
 
 * Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
   - Pointer Events
