@@ -94,8 +94,6 @@ define 'react4j' do
                  project('dom').package(:jar),
                  project('dom').compile.dependencies,
                  :arez_core,
-                 :arez_annotations,
-                 :arez_component,
                  :jetbrains_annotations,
                  :arez_spytools
 
