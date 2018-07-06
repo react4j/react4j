@@ -27,7 +27,7 @@ define 'react4j' do
     pom.include_transitive_dependencies << artifact(:jsinterop_base)
     pom.include_transitive_dependencies << artifact(:elemental2_core)
     pom.include_transitive_dependencies << artifact(:braincheck)
-    pom.dependency_filter = Proc.new {|_| false}
+    pom.dependency_filter = Proc.new {|dep| dep[:id].to_s != 'jsinterop-annotations' && dep[:scope].to_s != 'test'}
 
     js_assets(project, :core)
 
