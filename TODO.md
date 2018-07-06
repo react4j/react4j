@@ -10,8 +10,6 @@
 
 * Consider rewriting @Computed and @Autorun annotations so that they have LOWEST priority.
 
-* Enforce that no methods on component other than render have `@Track`
-
 * If a ReactArezComponent is disposed then it should force a re-binding of java component to native component
   next time render is invoked.
 
