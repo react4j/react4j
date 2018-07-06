@@ -40,7 +40,7 @@ define 'react4j' do
     gwt_enhance(project)
 
     test.using :testng
-    test.options[:properties] = {'react4j.core.compile_target' => compile.target.to_s}
+    test.options[:properties] = { 'react4j.core.compile_target' => compile.target.to_s }
     test.options[:java_args] = ['-ea']
     test.compile.with :jdepend
 
@@ -53,7 +53,7 @@ define 'react4j' do
   define 'dom' do
     pom.include_transitive_dependencies << project('core').package(:jar)
     pom.include_transitive_dependencies << artifact(:elemental2_dom)
-    pom.dependency_filter = Proc.new {|dep| !project('core').compile.dependencies.include?(dep[:artifact]) && dep[:id].to_s != 'elemental2-promise'}
+    pom.dependency_filter = Proc.new {|dep| !project('core').compile.dependencies.include?(dep[:artifact]) && dep[:id].to_s != 'elemental2-promise' && dep[:scope].to_s != 'test'}
 
     js_assets(project, :dom)
 
@@ -67,6 +67,11 @@ define 'react4j' do
 
     project.doc.options.merge!('Xdoclint:all,-missing' => true)
 
+    test.using :testng
+    test.options[:properties] = { 'react4j.dom.compile_target' => compile.target.to_s }
+    test.options[:java_args] = ['-ea']
+    test.compile.with :jdepend
+
     package(:jar)
     package(:sources)
     package(:javadoc)
@@ -77,7 +82,7 @@ define 'react4j' do
     pom.include_transitive_dependencies << project('dom').package(:jar)
     pom.include_transitive_dependencies << artifact(:arez_core)
     pom.include_transitive_dependencies << artifact(:arez_spytools)
-    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-component') && dep[:group].to_s != 'org.jetbrains'}
+    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-component') && dep[:group].to_s != 'org.jetbrains' && dep[:scope].to_s != 'test'}
 
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
@@ -87,6 +92,11 @@ define 'react4j' do
 
     gwt_enhance(project)
 
+    test.using :testng
+    test.options[:properties] = { 'react4j.arez.compile_target' => compile.target.to_s }
+    test.options[:java_args] = ['-ea']
+    test.compile.with :jdepend
+
     package(:jar)
     package(:sources)
     package(:javadoc)
@@ -94,7 +104,7 @@ define 'react4j' do
 
   desc 'The Annotation processor'
   define 'processor' do
-    pom.dependency_filter = Proc.new {|_| false }
+    pom.dependency_filter = Proc.new {|_| false}
 
     project.enable_annotation_processor = true
 
@@ -267,7 +277,7 @@ define 'react4j' do
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
 
-  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.version=#{ENV['PRODUCT_VERSION'] || project.version} -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes")
+  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.version=#{ENV['PRODUCT_VERSION'] || project.version} -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes -Dreact4j.arez.compile_target=target/react4j_arez/idea/classes")
   ipr.add_component_from_artifact(:idea_codestyle)
 
   EXAMPLES.each_pair do |key, gwt_module|

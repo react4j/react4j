@@ -13,8 +13,6 @@
 * If a ReactArezComponent is disposed then it should force a re-binding of java component to native component
   next time render is invoked.
 
-* Add jdepend tests to arez and dom modules.
-
 * Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
   - Pointer Events
 
