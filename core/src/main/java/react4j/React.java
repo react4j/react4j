@@ -42,6 +42,7 @@ public final class React
   /**
    * Return true if the specified node is a ReactElement.
    *
+   * @param node the node to test.
    * @return true if the specified node is a ReactElement.
    */
   public static native boolean isValidElement( @Nonnull ReactNode node );
