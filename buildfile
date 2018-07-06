@@ -89,9 +89,7 @@ define 'react4j' do
     pom.include_transitive_dependencies << artifact(:arez_spytools)
     pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-component') && dep[:group].to_s != 'org.jetbrains'}
 
-    compile.with project('core').package(:jar),
-                 project('core').compile.dependencies,
-                 project('dom').package(:jar),
+    compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
                  :arez_core,
                  :jetbrains_annotations,
