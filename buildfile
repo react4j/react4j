@@ -65,6 +65,8 @@ define 'react4j' do
     generate_factory_source(project)
     gwt_enhance(project)
 
+    project.doc.options.merge!('Xdoclint:all,-missing' => true)
+
     package(:jar)
     package(:sources)
     package(:javadoc)
