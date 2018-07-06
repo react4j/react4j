@@ -21,30 +21,13 @@ define 'react4j' do
 
   project.version = ENV['PRODUCT_VERSION'] if ENV['PRODUCT_VERSION']
 
-  desc 'Annotations for defining a react component'
-  define 'annotations' do
-    pom.include_transitive_dependencies << artifact(:javax_annotation)
-    pom.include_transitive_dependencies << artifact(:jsinterop_base)
-    pom.dependency_filter = Proc.new {|dep| dep[:group].to_s != 'com.google.jsinterop'}
-
-    compile.with :javax_annotation,
-                 :jsinterop_base,
-                 :jsinterop_annotations
-
-    gwt_enhance(project)
-
-    package(:jar)
-    package(:sources)
-    package(:javadoc)
-  end
-
   desc 'React4j core binding'
   define 'core' do
-    pom.additional_dependencies << project('annotations').package(:jar)
+    pom.include_transitive_dependencies << artifact(:javax_annotation)
+    pom.include_transitive_dependencies << artifact(:jsinterop_base)
     pom.include_transitive_dependencies << artifact(:elemental2_core)
     pom.include_transitive_dependencies << artifact(:braincheck)
-    pom.include_transitive_dependencies << project('annotations').package(:jar)
-    pom.dependency_filter = Proc.new {|dep| !project('annotations').compile.dependencies.include?(dep[:artifact])}
+    pom.dependency_filter = Proc.new {|_| false}
 
     js_assets(project, :core)
 
@@ -54,7 +37,7 @@ define 'react4j' do
                  :jsinterop_annotations,
                  :braincheck
 
-    gwt_enhance(project, :extra_deps => [project('annotations').package(:jar)])
+    gwt_enhance(project)
 
     test.using :testng
     test.options[:properties] = {'react4j.core.compile_target' => compile.target.to_s}
@@ -80,7 +63,7 @@ define 'react4j' do
                  :elemental2_promise
 
     generate_factory_source(project)
-    gwt_enhance(project, :extra_deps => [project('annotations').package(:jar)])
+    gwt_enhance(project)
 
     package(:jar)
     package(:sources)
@@ -100,7 +83,7 @@ define 'react4j' do
                  :jetbrains_annotations,
                  :arez_spytools
 
-    gwt_enhance(project, :extra_deps => [project('annotations').package(:jar)])
+    gwt_enhance(project)
 
     package(:jar)
     package(:sources)
@@ -124,8 +107,6 @@ define 'react4j' do
               :truth,
               project('arez').package(:jar),
               project('arez').compile.dependencies,
-              project('annotations').package(:jar),
-              project('annotations').compile.dependencies,
               :javax_inject,
               DAGGER_PROCESSOR_DEPS,
               :arez_processor,
@@ -195,7 +176,7 @@ define 'react4j' do
 
     local_test_repository_url = URI.join('file:///', project._(:target, :local_test_repository)).to_s
     compile.enhance do
-      projects_to_upload =projects(%w(annotations core processor arez dom))
+      projects_to_upload = projects(%w(core processor arez dom))
       old_release_to = repositories.release_to
       begin
         # First we install them in a local repository so we don't have to access the network during local builds
@@ -253,11 +234,7 @@ define 'react4j' do
   define 'doc-examples' do
     project.enable_annotation_processor = true
 
-    compile.with project('annotations').package(:jar),
-                 project('annotations').compile.dependencies,
-                 project('core').package(:jar),
-                 project('core').compile.dependencies,
-                 project('dom').package(:jar),
+    compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
                  project('arez').package(:jar),
                  project('arez').compile.dependencies,
@@ -271,7 +248,7 @@ define 'react4j' do
     gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
   end
 
-  doc.from(projects(%w(annotations core dom arez processor))).
+  doc.from(projects(%w(core dom arez processor))).
     using(:javadoc,
           :windowtitle => 'React4j API Documentation',
           :linksource => true,

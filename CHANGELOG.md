@@ -7,6 +7,10 @@
 * **\[arez\]** Update the `org.realityforge.arez.spytools` dependency to version `0.20`.
 * **\[core\]** Introduce JDepend based test that verifies that no unexpected dependencies between packages
   occur.
+* 💥💥💥💥 **\[core\]** The `react4j-annotations` module has been merged into `react4j-core` as they are
+  almost always used in combination. It was felt merging the modules simplified usage in downstream projects.
+  JDepend is used to ensure that no undesired dependencies between packages are added now that the code is
+  in a single module.
 
 ### [v0.81](https://github.com/react4j/react4j/tree/v0.81) (2018-07-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.80...v0.81)
