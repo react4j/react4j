@@ -24,11 +24,13 @@ public class JDependTest
     final DependencyConstraint constraint = new DependencyConstraint();
 
     final JavaPackage react4j = constraint.addPackage( "react4j" );
-    constraint.addPackage( "react4j.annotations" );
+    final JavaPackage annotations = constraint.addPackage( "react4j.annotations" );
     final JavaPackage braincheck = constraint.addPackage( "org.realityforge.braincheck" );
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
     final JavaPackage jsinteropBase = constraint.addPackage( "jsinterop.base" );
     final JavaPackage elemental2Core = constraint.addPackage( "elemental2.core" );
+
+    annotations.dependsUpon( jsinteropAnnotations );
 
     react4j.dependsUpon( jsinteropAnnotations );
     react4j.dependsUpon( jsinteropBase );
