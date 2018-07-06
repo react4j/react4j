@@ -163,6 +163,8 @@ public abstract class ReactArezComponent
    * This method is the method enhanced by arez that performs render and tracks dependencies.
    * This SHOULD NOT be merged with {@link #performRender()} as then the isDisposed check will be present
    * in every instance of render method which can result in unnecessary code bloat.
+   *
+   * @return the result of rendering.
    */
   @Track( name = "render", priority = Priority.LOW )
   @Nullable
