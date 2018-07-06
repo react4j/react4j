@@ -65,3 +65,5 @@ artifacts:
   gwt_symbolmap: org.realityforge.gwt.symbolmap:gwt-symbolmap:jar:0.08
 
   testng: org.testng:testng:jar:6.11
+
+  jdepend: guru.nidi:jdepend:jar:2.9.5

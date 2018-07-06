@@ -5,6 +5,8 @@
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.96`.
 * **\[arez\]** Update the `org.realityforge.arez.browserlocation` dependency to version `0.23`.
 * **\[arez\]** Update the `org.realityforge.arez.spytools` dependency to version `0.20`.
+* **\[core\]** Introduce JDepend based test that verifies that no unexpected dependencies between packages
+  occur.
 
 ### [v0.81](https://github.com/react4j/react4j/tree/v0.81) (2018-07-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.80...v0.81)

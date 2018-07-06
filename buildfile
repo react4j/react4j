@@ -56,6 +56,11 @@ define 'react4j' do
 
     gwt_enhance(project, :extra_deps => [project('annotations').package(:jar)])
 
+    test.using :testng
+    test.options[:properties] = {'react4j.core.compile_target' => compile.target.to_s}
+    test.options[:java_args] = ['-ea']
+    test.compile.with :jdepend
+
     package(:jar)
     package(:sources)
     package(:javadoc)
@@ -152,6 +157,7 @@ define 'react4j' do
 
     test.using :testng
     test.options[:properties] = { 'react4j.fixture_dir' => _('src/test/resources') }
+    test.options[:java_args] = ['-ea']
 
     iml.test_source_directories << _('src/test/resources/input')
     iml.test_source_directories << _('src/test/resources/expected')
@@ -282,7 +288,7 @@ define 'react4j' do
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
 
-  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.version=#{ENV['PRODUCT_VERSION'] || project.version} -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false")
+  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.version=#{ENV['PRODUCT_VERSION'] || project.version} -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes")
   ipr.add_component_from_artifact(:idea_codestyle)
 
   EXAMPLES.each_pair do |key, gwt_module|
