@@ -2,6 +2,8 @@
 
 ### Very High Priority
 
+* Move to using `React.createRef()` exclusively for refs. See https://www.fullstackreact.com/articles/using-refs-in-react/
+
 * Add ability for ReactArezComponent to skip check that forces render to have observe. Sometimes just have actions
   that want to be triggers.
 
