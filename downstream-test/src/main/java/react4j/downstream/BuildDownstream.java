@@ -102,43 +102,44 @@ public final class BuildDownstream
             if ( patched )
             {
               final String message = "Update the '" + group + "' dependencies to version '" + version + "'";
-              final Function<String, String> patchFunction = c -> c.replace( "### Unreleased\n\n",
-                                                                             "### Unreleased\n\n* " + message + "\n\n" );
-              Patch.patchAndAddFile( appDirectory, appDirectory.resolve( "CHANGELOG.md" ), patchFunction );
-              Git.commit( message );
-
-              Gir.messenger().info( "Building branch master after modifications." );
-              customizeBuildr( appDirectory, localRepositoryUrl );
-
-              try
-              {
-                Ruby.buildr( "perform_release",
-                             "LAST_STAGE=PatchChangelogPostRelease",
-                             "PRODUCT_VERSION=",
-                             "PREVIOUS_PRODUCT_VERSION=" );
-                Git.checkout( "master" );
-                Exec.system( "git", "merge", newBranch );
-                Git.deleteBranch( newBranch );
-              }
-              catch ( final GirException e )
-              {
-                if ( !initialBuildSuccess )
+              final Function<String, String> patchFunction = c -> {
+                if ( c.contains( "### Unreleased\n\n#" ) )
                 {
-                  Gir.messenger().error( "Failed to build branch 'master' before modifications " +
-                                         "but branch also failed prior to modifications.", e );
+                  return c.replace( "### Unreleased\n\n", "### Unreleased\n\n* " + message + "\n\n" );
                 }
                 else
                 {
-                  Gir.messenger().error( "Failed to build branch 'master' after modifications.", e );
+                  return c.replace( "### Unreleased\n\n", "### Unreleased\n\n* " + message + "\n" );
                 }
-                throw e;
-              }
+              };
+              Patch.patchAndAddFile( appDirectory, appDirectory.resolve( "CHANGELOG.md" ), patchFunction );
+              Git.commit( message );
             }
-            else
+            Gir.messenger().info( "Building branch master after modifications." );
+            customizeBuildr( appDirectory, localRepositoryUrl );
+
+            try
             {
-              Gir.messenger().info( "Branch master not rebuilt as no modifications made." );
+              Ruby.buildr( "perform_release",
+                           "LAST_STAGE=PatchChangelogPostRelease",
+                           "PRODUCT_VERSION=",
+                           "PREVIOUS_PRODUCT_VERSION=" );
               Git.checkout( "master" );
+              Exec.system( "git", "merge", newBranch );
               Git.deleteBranch( newBranch );
+            }
+            catch ( final GirException e )
+            {
+              if ( !initialBuildSuccess )
+              {
+                Gir.messenger().error( "Failed to build branch 'master' before modifications " +
+                                       "but branch also failed prior to modifications.", e );
+              }
+              else
+              {
+                Gir.messenger().error( "Failed to build branch 'master' after modifications.", e );
+              }
+              throw e;
             }
           } );
         } ) );
