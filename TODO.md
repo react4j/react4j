@@ -4,6 +4,11 @@
 
 * Move to using `React.createRef()` exclusively for refs. See https://www.fullstackreact.com/articles/using-refs-in-react/
 
+* Consider moving factories to creating elements directly ie.
+  https://github.com/kay-is/react-from-zero/blob/master/00-object-elements.html
+
+* Fragments synthesized? https://github.com/kay-is/react-from-zero/blob/master/04-components.html
+
 * Add ability for ReactArezComponent to skip check that forces render to have observe. Sometimes just have actions
   that want to be triggers.
 
