@@ -11,6 +11,8 @@
   almost always used in combination. It was felt merging the modules simplified usage in downstream projects.
   JDepend is used to ensure that no undesired dependencies between packages are added now that the code is
   in a single module.
+* 💥 **\[core\]** Move `react4j.RefConsumer` to `react4j.dom.proptypes.html.RefConsumer` and into the
+  `react4j-dom` module from the `react4j-core` module.
 
 ### [v0.81](https://github.com/react4j/react4j/tree/v0.81) (2018-07-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.80...v0.81)

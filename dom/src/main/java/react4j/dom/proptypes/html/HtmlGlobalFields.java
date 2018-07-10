@@ -13,7 +13,6 @@ import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ReactNode;
-import react4j.RefConsumer;
 import react4j.dom.events.ClipboardEventHandler;
 import react4j.dom.events.CompositionEventHandler;
 import react4j.dom.events.DragEventHandler;

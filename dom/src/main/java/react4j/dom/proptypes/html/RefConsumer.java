@@ -1,4 +1,4 @@
-package react4j;
+package react4j.dom.proptypes.html;
 
 import jsinterop.annotations.JsFunction;
 
