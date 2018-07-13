@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* **\[arez\]** Replace the jetbrains artifact with a J2CL compatible variant.
+
 ### [v0.82](https://github.com/react4j/react4j/tree/v0.82) (2018-07-10)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.81...v0.82)
 
