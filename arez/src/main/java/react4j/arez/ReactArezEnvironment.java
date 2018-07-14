@@ -41,7 +41,7 @@ public final class ReactArezEnvironment
     context.setEnvironment( INSTANCE );
   }
 
-  private static class ReactReactionEnvironment
+  private static final class ReactReactionEnvironment
     implements ReactionEnvironment
   {
     /**
