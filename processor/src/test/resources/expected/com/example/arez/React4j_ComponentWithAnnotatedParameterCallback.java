@@ -38,7 +38,6 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
   }
 
   @Override
-  @Action
   protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 

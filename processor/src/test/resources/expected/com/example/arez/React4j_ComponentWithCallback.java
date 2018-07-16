@@ -39,7 +39,6 @@ abstract class React4j_ComponentWithCallback extends ComponentWithCallback {
   }
 
   @Override
-  @Action
   protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 

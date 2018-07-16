@@ -820,18 +820,21 @@ final class Generator
     final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropsChanged" ).
       addModifiers( Modifier.PROTECTED ).
       addAnnotation( Override.class ).
-      addAnnotation( ACTION_CLASSNAME ).
       addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
         addAnnotation( NULLABLE_CLASSNAME ).build() );
-    for ( final PropDescriptor prop : descriptor.getProps() )
+    if ( !descriptor.getProps().isEmpty() )
     {
-      final CodeBlock.Builder block = CodeBlock.builder();
-      final String code =
-        "if ( !$T.isTripleEqual( props().get( $S ), null == nextProps ? null : nextProps.get( $S ) ) )";
-      block.beginControlFlow( code, JS_CLASSNAME, prop.getName(), prop.getName() );
-      block.addStatement( "$N().reportChanged()", toObservableRefMethodName( prop ) );
-      block.endControlFlow();
-      method.addCode( block.build() );
+      method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).build() );
+      for ( final PropDescriptor prop : descriptor.getProps() )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        final String code =
+          "if ( !$T.isTripleEqual( props().get( $S ), null == nextProps ? null : nextProps.get( $S ) ) )";
+        block.beginControlFlow( code, JS_CLASSNAME, prop.getName(), prop.getName() );
+        block.addStatement( "$N().reportChanged()", toObservableRefMethodName( prop ) );
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
     }
     return method;
   }

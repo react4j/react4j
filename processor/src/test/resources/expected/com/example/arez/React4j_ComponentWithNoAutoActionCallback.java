@@ -1,6 +1,5 @@
 package com.example.arez;
 
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import elemental2.core.JsObject;
 import javax.annotation.Generated;
@@ -36,7 +35,6 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
   }
 
   @Override
-  @Action
   protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 

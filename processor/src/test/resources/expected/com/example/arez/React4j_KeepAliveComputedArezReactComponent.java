@@ -1,6 +1,5 @@
 package com.example.arez;
 
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -32,7 +31,6 @@ abstract class React4j_KeepAliveComputedArezReactComponent extends KeepAliveComp
   }
 
   @Override
-  @Action
   protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 

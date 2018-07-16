@@ -1,6 +1,5 @@
 package com.example.inject;
 
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import javax.annotation.Generated;
@@ -48,7 +47,6 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
   }
 
   @Override
-  @Action
   protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 

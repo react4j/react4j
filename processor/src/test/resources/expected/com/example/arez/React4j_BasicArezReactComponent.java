@@ -1,6 +1,5 @@
 package com.example.arez;
 
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -31,7 +30,6 @@ abstract class React4j_BasicArezReactComponent extends BasicArezReactComponent {
   }
 
   @Override
-  @Action
   protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 

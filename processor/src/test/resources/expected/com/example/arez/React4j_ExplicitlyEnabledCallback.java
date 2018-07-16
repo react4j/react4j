@@ -36,7 +36,6 @@ abstract class React4j_ExplicitlyEnabledCallback extends ExplicitlyEnabledCallba
   }
 
   @Override
-  @Action
   protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
   }
 
