@@ -672,7 +672,6 @@ final class Generator
           addMember( "expectSetter", "false" );
       method.addAnnotation( annotation.build() );
     }
-    final Element propType = prop.getPropType();
     final String convertMethodName = getConverter( returnType, methodElement, "Prop" );
     final String key = "child".equals( name ) ? "children" : name;
     final TypeKind resultKind = methodElement.getReturnType().getKind();
