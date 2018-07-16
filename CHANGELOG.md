@@ -12,6 +12,7 @@
   method in the generated component subclasses where the component has a prop named `"child"`. Changes are
   no propagated as the key was not translated to the correct key `"children"`.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.98`.
+* **\[arez\]** Update the `org.realityforge.arez.browserlocation` dependency to version `0.24`.
 
 ### [v0.82](https://github.com/react4j/react4j/tree/v0.82) (2018-07-10)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.81...v0.82)
