@@ -152,7 +152,10 @@ public final class CollectBuildStats
               {
                 buildAndRecordStatistics( archiveDir, !isMaven );
                 loadStatistics( overallStatistics, archiveDir, prefix );
-                loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
+                if ( !isMaven )
+                {
+                  loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
+                }
                 if ( isMaven )
                 {
                   // Reset is required to remove changes that were made to the pom to add local repository
