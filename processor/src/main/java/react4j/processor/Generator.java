@@ -550,7 +550,7 @@ final class Generator
         } ).collect( Collectors.toList() );
       if ( !props.isEmpty() )
       {
-        builder.addMethod( buildAnyPropsDisposedMethod( descriptor, props ).build() );
+        builder.addMethod( buildAnyPropsDisposedMethod( props ).build() );
       }
     }
 
@@ -613,8 +613,7 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildAnyPropsDisposedMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                                 @Nonnull final List<PropDescriptor> props )
+  private static MethodSpec.Builder buildAnyPropsDisposedMethod( @Nonnull final List<PropDescriptor> props )
   {
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "anyPropsDisposed" )
