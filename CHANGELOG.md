@@ -8,6 +8,9 @@
 * **\[processor\]** Enhance the generated subclasses of `react4j.arez.ReactArezComponent` to eliminate
   the `arez.annotations.Action` annotation on the `reportPropsChanged(...)` method if there is no props
   as the `@Action` annotation is not needed and will generate an invariant failure in Arez version `0.97+`.
+* **\[processor\]** Fix a bug when overriding the `react4j.arez.ReactArezComponent.reportPropsChanged(...)`
+  method in the generated component subclasses where the component has a prop named `"child"`. Changes are
+  no propagated as the key was not translated to the correct key `"children"`.
 
 ### [v0.82](https://github.com/react4j/react4j/tree/v0.82) (2018-07-10)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.81...v0.82)

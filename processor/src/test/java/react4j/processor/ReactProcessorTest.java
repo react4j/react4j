@@ -20,6 +20,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.BasicArezReactComponent", false, false },
         new Object[]{ "com.example.arez.ComponentWithAnnotatedParameterCallback", true, false },
         new Object[]{ "com.example.arez.ComponentWithCallback", true, false },
+        new Object[]{ "com.example.arez.ComponentWithChildProp", false, false },
         new Object[]{ "com.example.arez.ComponentWithDependency", false, false },
         new Object[]{ "com.example.arez.ComponentWithNoAutoActionCallback", true, false },
         new Object[]{ "com.example.arez.ComponentWithProp", false, false },
