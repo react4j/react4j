@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Re-release library as a failure in the release process led to an invalid artifacts being deployed to
+  Maven central. 
 * **\[processor\]** Update the ` org.realityforge.guiceyloops:guiceyloops:jar` dependency to version `0.95`.
 
 ### [v0.83](https://github.com/react4j/react4j/tree/v0.83) (2018-07-16)
