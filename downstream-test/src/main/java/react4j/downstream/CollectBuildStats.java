@@ -113,7 +113,6 @@ public final class CollectBuildStats
                 final Path archiveDir = getArchiveDir( workingDirectory, prefix );
                 buildAndRecordStatistics( archiveDir, !isMaven );
                 loadStatistics( overallStatistics, archiveDir, prefix );
-                loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
                 initialBuildSuccess = true;
               }
               catch ( final GirException | IOException e )
