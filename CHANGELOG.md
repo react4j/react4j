@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* **\[processor\]** Update the ` org.realityforge.guiceyloops:guiceyloops:jar` dependency to version `0.95`.
+
 ### [v0.83](https://github.com/react4j/react4j/tree/v0.83) (2018-07-16)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.82...v0.83)
 
