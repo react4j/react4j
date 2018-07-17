@@ -23,7 +23,7 @@ add the following to your `pom.xml`:
     <dependency>
       <groupId>org.realityforge.react4j</groupId>
       <artifactId>react4j-dom</artifactId>
-      <version>0.83</version>
+      <version>0.84</version>
     </dependency>
     ...
   </dependencies>
@@ -42,7 +42,7 @@ following to your `pom.xml`:
     <dependency>
       <groupId>org.realityforge.react4j</groupId>
       <artifactId>react4j-arez</artifactId>
-      <version>0.83</version>
+      <version>0.84</version>
     </dependency>
     ...
   </dependencies>
@@ -69,7 +69,7 @@ snippet to configure the maven compiler plugin from within the `pom.xml`:
             <path>
               <groupId>org.realityforge.react4j</groupId>
               <artifactId>react4j-processor</artifactId>
-              <version>0.83</version>
+              <version>0.84</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
