@@ -919,12 +919,12 @@ final class Generator
         .mapToObj( i -> target.getParameters().get( i ).getSimpleName().toString() )
         .collect( Collectors.joining( "," ) );
 
-    method.addStatement( "final $T handler = " + args + " -> this.$N(" + params + ")",
-                         handlerType,
-                         callback.getMethod().getSimpleName() );
-
     if ( callback.isJsFunction() )
     {
+      method.addStatement( "final $T handler = " + args + " -> this.$N(" + params + ")",
+                           handlerType,
+                           callback.getMethod().getSimpleName() );
+
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
       final String code =
@@ -937,8 +937,12 @@ final class Generator
                           descriptor.getName() + "." + callback.getName() );
       block.endControlFlow();
       method.addCode( block.build() );
+      method.addStatement( "return handler" );
     }
-    method.addStatement( "return handler" );
+    else
+    {
+      method.addStatement( "return " + args + " -> this.$N(" + params + ")", callback.getMethod().getSimpleName() );
+    }
     return method;
   }
 
