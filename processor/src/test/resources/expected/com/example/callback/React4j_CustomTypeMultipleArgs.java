@@ -29,7 +29,7 @@ class React4j_CustomTypeMultipleArgs extends CustomTypeMultipleArgs {
 
   @Nonnull
   private CustomTypeMultipleArgs.CustomHandler create_handleFoo() {
-    final CustomTypeMultipleArgs.CustomHandler handler = (arg0,arg1) -> this.handleFoo(arg0,arg1);
+    final CustomTypeMultipleArgs.CustomHandler handler = (i,j) -> this.handleFoo(i,j);
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomTypeMultipleArgs.handleFoo" ) ) );
     }

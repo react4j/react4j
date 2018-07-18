@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+* **\[processor\]** Avoid using synthetic parameter names in cached handlers and overridden methods
+  when generating code to support the `@Callback` annotated methods. Instead use the names of the
+  implementing method or the defining interface as appropriate. This produces more readable code
+  and improves spy logging messages when the component is a subclass of `react4j.arez.ReactArezComponent`.
+
 ### [v0.84](https://github.com/react4j/react4j/tree/v0.84) (2018-07-17)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.83...v0.84)
 

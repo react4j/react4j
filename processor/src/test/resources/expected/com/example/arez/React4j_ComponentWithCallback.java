@@ -53,7 +53,7 @@ abstract class React4j_ComponentWithCallback extends ComponentWithCallback {
 
   @Nonnull
   private ComponentWithCallback.CustomHandler create_handleFoo2() {
-    final ComponentWithCallback.CustomHandler handler = arg0 -> this.handleFoo2(arg0);
+    final ComponentWithCallback.CustomHandler handler = i -> this.handleFoo2(i);
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithCallback.handleFoo2" ) ) );
     }
@@ -70,8 +70,8 @@ abstract class React4j_ComponentWithCallback extends ComponentWithCallback {
   @Action(
       reportParameters = false
   )
-  int handleFoo2(final int arg0) {
-    return super.handleFoo2(arg0);
+  int handleFoo2(final int i) {
+    return super.handleFoo2(i);
   }
 
   @JsType(

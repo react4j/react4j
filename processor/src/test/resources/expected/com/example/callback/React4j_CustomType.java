@@ -29,7 +29,7 @@ class React4j_CustomType extends CustomType {
 
   @Nonnull
   private CustomType.CustomHandler create_handleFoo() {
-    final CustomType.CustomHandler handler = arg0 -> this.handleFoo(arg0);
+    final CustomType.CustomHandler handler = i -> this.handleFoo(i);
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomType.handleFoo" ) ) );
     }

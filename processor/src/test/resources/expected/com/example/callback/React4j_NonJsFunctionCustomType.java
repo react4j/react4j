@@ -28,7 +28,7 @@ class React4j_NonJsFunctionCustomType extends NonJsFunctionCustomType {
 
   @Nonnull
   private NonJsFunctionCustomType.CustomHandler create_handleFoo() {
-    final NonJsFunctionCustomType.CustomHandler handler = arg0 -> this.handleFoo(arg0);
+    final NonJsFunctionCustomType.CustomHandler handler = i -> this.handleFoo(i);
     return handler;
   }
 

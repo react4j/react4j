@@ -16,23 +16,20 @@ import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 
 @ArezComponent(
-    name = "ComponentWithAnnotatedParameterCallback"
+    name = "ComponentWithCallbackCustomeParamNames"
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class React4j_ComponentWithAnnotatedParameterCallback extends ComponentWithAnnotatedParameterCallback {
+abstract class React4j_ComponentWithCallbackCustomeParamNames extends ComponentWithCallbackCustomeParamNames {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
-  final ComponentWithAnnotatedParameterCallback.CustomHandler2 _handleFoo = create_handleFoo();
-
-  @Nonnull
-  final ComponentWithAnnotatedParameterCallback.CustomHandler _handleFoo2 = create_handleFoo2();
+  final ComponentWithCallbackCustomeParamNames.CustomHandler _handleFoo2 = create_handleFoo2();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithAnnotatedParameterCallback" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithCallbackCustomeParamNames" );
     }
     return componentConstructor;
   }
@@ -42,36 +39,19 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
   }
 
   @Nonnull
-  private ComponentWithAnnotatedParameterCallback.CustomHandler2 create_handleFoo() {
-    final ComponentWithAnnotatedParameterCallback.CustomHandler2 handler = () -> this.handleFoo();
+  private ComponentWithCallbackCustomeParamNames.CustomHandler create_handleFoo2() {
+    final ComponentWithCallbackCustomeParamNames.CustomHandler handler = nameOnInterface -> this.handleFoo2(nameOnInterface);
     if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithAnnotatedParameterCallback.handleFoo" ) ) );
+      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithCallbackCustomeParamNames.handleFoo2" ) ) );
     }
     return handler;
-  }
-
-  @Nonnull
-  private ComponentWithAnnotatedParameterCallback.CustomHandler create_handleFoo2() {
-    final ComponentWithAnnotatedParameterCallback.CustomHandler handler = i -> this.handleFoo2(i);
-    if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "ComponentWithAnnotatedParameterCallback.handleFoo2" ) ) );
-    }
-    return handler;
-  }
-
-  @Nonnull
-  @Action(
-      reportParameters = false
-  )
-  String handleFoo() {
-    return super.handleFoo();
   }
 
   @Action(
       reportParameters = false
   )
-  void handleFoo2(@Nonnull final String i) {
-    super.handleFoo2(i);
+  int handleFoo2(final int nameOnType) {
+    return super.handleFoo2(nameOnType);
   }
 
   @JsType(
@@ -91,15 +71,15 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
         @Nonnull JsPropertyMap<Object> arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithAnnotatedParameterCallback> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithCallbackCustomeParamNames> implements Lifecycle {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected ComponentWithAnnotatedParameterCallback createComponent() {
-      return new Arez_React4j_ComponentWithAnnotatedParameterCallback();
+    protected ComponentWithCallbackCustomeParamNames createComponent() {
+      return new Arez_React4j_ComponentWithCallbackCustomeParamNames();
     }
 
     @Override

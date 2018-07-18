@@ -29,7 +29,7 @@ class React4j_CustomTypeButParametersIgnored extends CustomTypeButParametersIgno
 
   @Nonnull
   private CustomTypeButParametersIgnored.CustomHandler create_handleFoo() {
-    final CustomTypeButParametersIgnored.CustomHandler handler = arg0 -> this.handleFoo();
+    final CustomTypeButParametersIgnored.CustomHandler handler = i -> this.handleFoo();
     if( ReactConfig.enableComponentNames() ) {
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "CustomTypeButParametersIgnored.handleFoo" ) ) );
     }

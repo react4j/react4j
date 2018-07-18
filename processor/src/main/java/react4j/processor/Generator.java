@@ -903,7 +903,9 @@ final class Generator
     String args =
       0 == targetParameterCount ?
       "()" :
-      IntStream.range( 0, targetParameterCount ).mapToObj( i -> "arg" + i ).collect( Collectors.joining( "," ) );
+      IntStream.range( 0, targetParameterCount )
+        .mapToObj( i -> target.getParameters().get( i ).getSimpleName().toString() )
+        .collect( Collectors.joining( "," ) );
     if ( 1 < targetParameterCount )
     {
       args = "(" + args + ")";
@@ -913,7 +915,9 @@ final class Generator
     final String params =
       0 == paramCount ?
       "" :
-      IntStream.range( 0, paramCount ).mapToObj( i -> "arg" + i ).collect( Collectors.joining( "," ) );
+      IntStream.range( 0, paramCount )
+        .mapToObj( i -> target.getParameters().get( i ).getSimpleName().toString() )
+        .collect( Collectors.joining( "," ) );
 
     method.addStatement( "final $T handler = " + args + " -> this.$N(" + params + ")",
                          handlerType,
@@ -957,15 +961,18 @@ final class Generator
     for ( int i = 0; i < paramCount; i++ )
     {
       final TypeMirror paramType = callback.getMethodType().getParameterTypes().get( i );
+      final VariableElement param = callback.getMethod().getParameters().get( i );
       final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( TypeName.get( paramType ), "arg" + i, Modifier.FINAL );
-      ProcessorUtil.copyDocumentedAnnotations( callback.getMethod().getParameters().get( i ), parameter );
+        ParameterSpec.builder( TypeName.get( paramType ), param.getSimpleName().toString(), Modifier.FINAL );
+      ProcessorUtil.copyDocumentedAnnotations( param, parameter );
       method.addParameter( parameter.build() );
     }
     final String params =
       0 == paramCount ?
       "" :
-      IntStream.range( 0, paramCount ).mapToObj( i -> "arg" + i ).collect( Collectors.joining( "," ) );
+      IntStream.range( 0, paramCount )
+        .mapToObj( i -> callback.getMethod().getParameters().get( i ).getSimpleName().toString() )
+        .collect( Collectors.joining( "," ) );
 
     final boolean isVoid = callback.getMethodType().getReturnType().getKind() == TypeKind.VOID;
 
