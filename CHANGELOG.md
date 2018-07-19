@@ -16,6 +16,7 @@
   name elements passed to the method are not empty and do not include leading or trailing whitespace. These
   scenarios typically mean the developer should be passing multiple parameters, some of which can be null
   if they are to be omitted.
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.99`.
 
 ### [v0.84](https://github.com/react4j/react4j/tree/v0.84) (2018-07-17)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.83...v0.84)
