@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.85](https://github.com/react4j/react4j/tree/v0.85) (2018-07-19)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.84...v0.85)
 
 * **\[processor\]** Avoid using synthetic parameter names in cached handlers and overridden methods
   when generating code to support the `@Callback` annotated methods. Instead use the names of the
