@@ -10,6 +10,8 @@
   variable if it immediately returned.
 * **\[core\]** Add the `@define` configuration for the compile-time constants that is required for the
   closure compiler to correctly process constants at compile time.
+* Upgrade the `org.realityforge.braincheck:braincheck:jar` dependency to `1.12.0` to include
+  closure defines for braincheck compile-time constants.
 
 ### [v0.84](https://github.com/react4j/react4j/tree/v0.84) (2018-07-17)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.83...v0.84)
