@@ -8,6 +8,8 @@
   and improves spy logging messages when the component is a subclass of `react4j.arez.ReactArezComponent`.
 * **\[processor\]** Cleanup the method that creates the callback handler to avoid defining a local
   variable if it immediately returned.
+* **\[core\]** Add the `@define` configuration for the compile-time constants that is required for the
+  closure compiler to correctly process constants at compile time.
 
 ### [v0.84](https://github.com/react4j/react4j/tree/v0.84) (2018-07-17)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.83...v0.84)
