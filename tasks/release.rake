@@ -48,7 +48,7 @@ task 'perform_release' do
     end
 
     stage('Build', 'Build the project to ensure that the tests pass') do
-      sh "bundle exec buildr clean package PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} STAGE_RELEASE=true#{Buildr.application.options.trace ? ' --trace' : ''}"
+      sh "bundle exec buildr clean package PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} STAGE_RELEASE=true TEST=#{ENV['TEST']}#{Buildr.application.options.trace ? ' --trace' : ''}"
     end
 
     stage('PatchChangelog', 'Patch the changelog to update from previous release') do
