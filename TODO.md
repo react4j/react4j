@@ -2,6 +2,11 @@
 
 ### Very High Priority
 
+* Start to add javascript tests - starting with braincheck ala
+  https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
+
+* Collections returned from props should be made immutable.
+
 * Move to using `React.createRef()` exclusively for refs. See https://www.fullstackreact.com/articles/using-refs-in-react/
 
 * Consider moving factories to creating elements directly ie.
