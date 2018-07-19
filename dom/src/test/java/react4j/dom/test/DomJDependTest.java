@@ -45,6 +45,7 @@ public class DomJDependTest
     react4jDomEvents.dependsUpon( elemental2Core );
     react4jDomEvents.dependsUpon( elemental2Dom );
 
+    react4jDomHtml.dependsUpon( braincheck );
     react4jDomHtml.dependsUpon( react4j );
     react4jDomHtml.dependsUpon( jsinteropAnnotations );
     react4jDomHtml.dependsUpon( jsinteropBase );
