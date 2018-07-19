@@ -1,8 +1,5 @@
 package react4j.dom.proptypes.html;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
@@ -12,6 +9,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.ReactConfig;
 import react4j.ReactNode;
 import react4j.dom.events.ClipboardEventHandler;
 import react4j.dom.events.CompositionEventHandler;
@@ -25,6 +23,7 @@ import react4j.dom.events.TouchEventHandler;
 import react4j.dom.events.UIEventHandler;
 import react4j.dom.events.WheelEventHandler;
 import react4j.dom.proptypes.html.attributeTypes.YesNo;
+import static org.realityforge.braincheck.Guards.*;
 
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class HtmlGlobalFields<T extends HtmlGlobalFields>
@@ -205,10 +204,38 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   @JsProperty
   public native String getClassName();
 
+  @SuppressWarnings( "StringConcatenationInLoop" )
   @JsOverlay
-  public final T className( String... classnames )
+  public final T className( final String... elements )
   {
-    setClassName( Arrays.stream( classnames ).filter( Objects::nonNull ).collect( Collectors.joining( " " ) ) );
+    String className = null;
+    for ( final String element : elements )
+    {
+      if ( null != element )
+      {
+        if ( ReactConfig.shouldCheckInvariants() )
+        {
+          invariant( () -> !element.matches( "^\\s.*$" ),
+                     () -> "Empty classname element supplied. Remove the element." );
+          invariant( () -> !element.matches( "^\\s.*$" ),
+                     () -> "Classname element '" + element + "' starts with whitespace. Remove the whitespace." );
+          invariant( () -> !element.matches( "^.*\\s$" ),
+                     () -> "Classname element '" + element + "' ends with whitespace. Remove the whitespace." );
+        }
+        if ( null == className )
+        {
+          className = element;
+        }
+        else
+        {
+          className += " " + element;
+        }
+      }
+    }
+    if ( null != className )
+    {
+      setClassName( className );
+    }
     return self();
   }
 

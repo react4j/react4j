@@ -12,6 +12,10 @@
   closure compiler to correctly process constants at compile time.
 * Upgrade the `org.realityforge.braincheck:braincheck:jar` dependency to `1.12.0` to include
   closure defines for braincheck compile-time constants.
+* **\[dom\]** Add invariant check to the `HtmlGlobalFields.className(...)` method that verifies the class
+  name elements passed to the method are not empty and do not include leading or trailing whitespace. These
+  scenarios typically mean the developer should be passing multiple parameters, some of which can be null
+  if they are to be omitted.
 
 ### [v0.84](https://github.com/react4j/react4j/tree/v0.84) (2018-07-17)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.83...v0.84)
