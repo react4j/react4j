@@ -321,15 +321,6 @@ final class ProcessorUtil
     }
   }
 
-  @Nonnull
-  private static AnnotationMirror getAnnotationByType( @Nonnull final Element typeElement,
-                                                       @Nonnull final String annotationClassName )
-  {
-    AnnotationMirror mirror = findAnnotationByType( typeElement, annotationClassName );
-    assert null != mirror;
-    return mirror;
-  }
-
   @Nullable
   static AnnotationMirror findAnnotationByType( @Nonnull final Element typeElement,
                                                 @Nonnull final String annotationClassName )
