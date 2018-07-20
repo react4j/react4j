@@ -282,7 +282,7 @@ public final class CollectBuildStats
     if ( useBuildr )
     {
       // Perform the build
-      Ruby.buildr( "clean", "package", "EXCLUDE_GWT_DEV_MODULE=true", "GWT=react4j-todomvc" );
+      Ruby.buildr( "clean", "package", "EXCLUDE_GWT_DEV_MODULE=true", "GWT=react4j-todomvc", "--trace" );
 
       archiveBuildrOutput( archiveDir );
     }
