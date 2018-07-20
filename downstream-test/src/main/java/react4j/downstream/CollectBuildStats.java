@@ -76,66 +76,28 @@ public final class CollectBuildStats
           Git.checkout();
           Git.pull();
           Git.deleteLocalBranches();
-          Stream
-            .of( "raw", "arez", "dagger", "raw_maven", "arez_maven", "dagger_maven" )
-            .forEach( ( String branch ) -> {
-              Gir.messenger().info( "Processing branch " + branch + "." );
+          Stream.of( "raw", "arez", "dagger", "raw_maven", "arez_maven", "dagger_maven" ).forEach( branch -> {
+            Gir.messenger().info( "Processing branch " + branch + "." );
 
-              final boolean isMaven = branch.endsWith( "_maven" );
+            final boolean isMaven = branch.endsWith( "_maven" );
 
-              final String newBranch = branch + "-React4jUpgrade-" + version;
-              if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
-              {
-                Git.checkout( newBranch );
-                Git.resetBranch( "origin/" + newBranch );
-              }
-              else
-              {
-                Git.checkout( branch );
-                Git.clean();
-                Git.checkout( newBranch, true );
-              }
-
-              Gir.messenger().info( "Building branch " + branch + " prior to modifications." );
-              boolean initialBuildSuccess = false;
-              try
-              {
-                if ( isMaven )
-                {
-                  customizeMaven( appDirectory, localRepositoryUrl );
-                }
-                else
-                {
-                  customizeBuildr( appDirectory, localRepositoryUrl );
-                }
-
-                final String prefix = branch + ".before";
-                final Path archiveDir = getArchiveDir( workingDirectory, prefix );
-                buildAndRecordStatistics( archiveDir, !isMaven );
-                loadStatistics( overallStatistics, archiveDir, prefix );
-                initialBuildSuccess = true;
-              }
-              catch ( final GirException | IOException e )
-              {
-                Gir.messenger().info( "Failed to build branch '" + branch + "' before modifications.", e );
-              }
-
-              Git.resetBranch();
+            final String newBranch = branch + "-React4jUpgrade-" + version;
+            if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
+            {
+              Git.checkout( newBranch );
+              Git.resetBranch( "origin/" + newBranch );
+            }
+            else
+            {
+              Git.checkout( branch );
               Git.clean();
+              Git.checkout( newBranch, true );
+            }
 
-              if ( isMaven )
-              {
-                Maven.patchPomProperty( appDirectory,
-                                        () -> "Update the 'react4j' dependencies to version '" + version + "'",
-                                        "react4j.version",
-                                        version );
-              }
-              else
-              {
-                Buildr.patchBuildYmlDependency( appDirectory, "org.realityforge.react4j", version );
-              }
-
-              Gir.messenger().info( "Building branch " + branch + " after modifications." );
+            Gir.messenger().info( "Building branch " + branch + " prior to modifications." );
+            boolean initialBuildSuccess = false;
+            try
+            {
               if ( isMaven )
               {
                 customizeMaven( appDirectory, localRepositoryUrl );
@@ -145,51 +107,87 @@ public final class CollectBuildStats
                 customizeBuildr( appDirectory, localRepositoryUrl );
               }
 
-              final String prefix = branch + ".after";
+              final String prefix = branch + ".before";
               final Path archiveDir = getArchiveDir( workingDirectory, prefix );
-              try
+              buildAndRecordStatistics( archiveDir, !isMaven );
+              loadStatistics( overallStatistics, archiveDir, prefix );
+              initialBuildSuccess = true;
+            }
+            catch ( final GirException | IOException e )
+            {
+              Gir.messenger().info( "Failed to build branch '" + branch + "' before modifications.", e );
+            }
+
+            Git.resetBranch();
+            Git.clean();
+
+            if ( isMaven )
+            {
+              Maven.patchPomProperty( appDirectory,
+                                      () -> "Update the 'react4j' dependencies to version '" + version + "'",
+                                      "react4j.version",
+                                      version );
+            }
+            else
+            {
+              Buildr.patchBuildYmlDependency( appDirectory, "org.realityforge.react4j", version );
+            }
+
+            Gir.messenger().info( "Building branch " + branch + " after modifications." );
+            if ( isMaven )
+            {
+              customizeMaven( appDirectory, localRepositoryUrl );
+            }
+            else
+            {
+              customizeBuildr( appDirectory, localRepositoryUrl );
+            }
+
+            final String prefix = branch + ".after";
+            final Path archiveDir = getArchiveDir( workingDirectory, prefix );
+            try
+            {
+              buildAndRecordStatistics( archiveDir, !isMaven );
+              loadStatistics( overallStatistics, archiveDir, prefix );
+              if ( !isMaven )
               {
-                buildAndRecordStatistics( archiveDir, !isMaven );
-                loadStatistics( overallStatistics, archiveDir, prefix );
-                if ( !isMaven )
-                {
-                  loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
-                }
-                if ( isMaven )
-                {
-                  // Reset is required to remove changes that were made to the pom to add local repository
-                  Git.resetBranch();
-                }
-                Git.checkout( branch );
-                Exec.system( "git", "merge", newBranch );
-                Git.deleteBranch( newBranch );
+                loadStatistics( fixtureStatistics, archiveDir, version + "." + branch );
               }
-              catch ( final GirException | IOException e )
+              if ( isMaven )
               {
-                if ( !initialBuildSuccess )
-                {
-                  Gir.messenger().error( "Failed to build branch '" + branch + "' before modifications " +
-                                         "but branch also failed prior to modifications.", e );
-                }
-                else
-                {
-                  Gir.messenger().error( "Failed to build branch '" + branch + "' after modifications.", e );
-                }
-                FileUtil.deleteDir( archiveDir );
+                // Reset is required to remove changes that were made to the pom to add local repository
+                Git.resetBranch();
+              }
+              Git.checkout( branch );
+              Exec.system( "git", "merge", newBranch );
+              Git.deleteBranch( newBranch );
+            }
+            catch ( final GirException | IOException e )
+            {
+              if ( !initialBuildSuccess )
+              {
+                Gir.messenger().error( "Failed to build branch '" + branch + "' before modifications " +
+                                       "but branch also failed prior to modifications.", e );
+              }
+              else
+              {
+                Gir.messenger().error( "Failed to build branch '" + branch + "' after modifications.", e );
+              }
+              FileUtil.deleteDir( archiveDir );
                 /*
                  * If the build has failed for one of the downstream projects then make sure the command fails.
                  */
-                if ( e instanceof GirException )
-                {
-                  //noinspection RedundantCast
-                  throw (GirException) e;
-                }
-                else
-                {
-                  throw new GirException( e );
-                }
+              if ( e instanceof GirException )
+              {
+                //noinspection RedundantCast
+                throw (GirException) e;
               }
-            } );
+              else
+              {
+                throw new GirException( e );
+              }
+            }
+          } );
         } );
       } );
 
