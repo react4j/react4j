@@ -57,7 +57,6 @@ public final class ReactProcessor
                    "componentWillUnmount",
                    "componentDidCatch",
                    "shouldComponentUpdate" );
-
   /**
    * Cache of lifecycle names to methods as defined by Component.
    */
