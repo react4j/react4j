@@ -150,6 +150,13 @@ public final class CollectBuildStats
               try
               {
                 buildAndRecordStatistics( archiveDir, !isMaven );
+                // TODO: Remove this next line once TravisCI builds have been debugged
+                if ( "raw".equals( branch ) )
+                {
+                  Files.readAllLines( archiveDir.resolve( "assets" )
+                                        .resolve( "todomvc" )
+                                        .resolve( "todomvc.nocache.js" ) ).forEach( System.out::println );
+                }
                 loadStatistics( overallStatistics, archiveDir, prefix );
                 if ( !isMaven )
                 {
