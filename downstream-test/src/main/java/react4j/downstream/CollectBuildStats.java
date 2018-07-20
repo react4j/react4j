@@ -150,13 +150,6 @@ public final class CollectBuildStats
               try
               {
                 buildAndRecordStatistics( archiveDir, !isMaven );
-                // TODO: Remove this next line once TravisCI builds have been debugged
-                if ( "raw".equals( branch ) )
-                {
-                  Files.readAllLines( archiveDir.resolve( "assets" )
-                                        .resolve( "todomvc" )
-                                        .resolve( "todomvc.nocache.js" ) ).forEach( System.out::println );
-                }
                 loadStatistics( overallStatistics, archiveDir, prefix );
                 if ( !isMaven )
                 {
@@ -282,7 +275,7 @@ public final class CollectBuildStats
     if ( useBuildr )
     {
       // Perform the build
-      Ruby.buildr( "clean", "package", "EXCLUDE_GWT_DEV_MODULE=true", "GWT=react4j-todomvc", "--trace" );
+      Ruby.buildr( "clean", "package", "EXCLUDE_GWT_DEV_MODULE=true", "GWT=react4j-todomvc" );
 
       archiveBuildrOutput( archiveDir );
     }
