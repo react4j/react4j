@@ -39,7 +39,7 @@ public final class BuildDownstream
     throws Exception
   {
     Gir.go( () -> {
-      final String version = SystemProperty.get( "react4j.version" );
+      final String version = SystemProperty.get( "react4j.next.version" );
       final Path workingDirectory =
         Paths.get( SystemProperty.get( "react4j.deploy_test.work_dir" ) ).toAbsolutePath().normalize();
 

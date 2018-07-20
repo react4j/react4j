@@ -43,7 +43,7 @@ public final class CollectBuildStats
     Gir.go( () -> {
       final boolean storeStatistics =
         System.getProperty( "react4j.deploy_test.store_statistics", "false" ).equals( "true" );
-      final String version = SystemProperty.get( "react4j.version" );
+      final String version = SystemProperty.get( "react4j.next.version" );
       final OrderedProperties overallStatistics = new OrderedProperties();
       final Path workingDirectory =
         Paths.get( SystemProperty.get( "react4j.deploy_test.work_dir" ) ).toAbsolutePath().normalize();
