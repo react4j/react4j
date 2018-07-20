@@ -22,7 +22,7 @@ install:
 - rvm use 2.3.1
 - gem install bundler
 - bundle install
-script: bundle exec buildr ci
+script: bundle exec buildr package jacoco:report site:deploy mcrt:publish_if_tagged
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 git:
