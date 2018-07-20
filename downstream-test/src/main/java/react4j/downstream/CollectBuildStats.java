@@ -229,12 +229,12 @@ public final class CollectBuildStats
   private static void customizeMaven( @Nonnull final Path appDirectory, @Nonnull final String localRepositoryUrl )
   {
     final String replacement =
+      "<repositories>\n" +
       "    <repository>\n" +
       "      <id>local-repository</id>\n" +
       "      <url>" + localRepositoryUrl + "</url>\n" +
-      "    </repository>\n" +
-      "  </repositories>";
-    if ( !Patch.file( appDirectory.resolve( "pom.xml" ), c -> c.replace( "</repositories>", replacement ) ) )
+      "    </repository>";
+    if ( !Patch.file( appDirectory.resolve( "pom.xml" ), c -> c.replace( "<repositories>", replacement ) ) )
     {
       Gir.messenger().error( "Failed to patch pom.xml to add local repository." );
     }
