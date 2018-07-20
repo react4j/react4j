@@ -238,7 +238,7 @@ public final class ReactProcessor
   private void linkStateMethods( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<ExecutableElement> candidates =
-      ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() )
+      getMethods( descriptor.getElement() )
         .stream()
         .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) )
         .filter( m -> null == ProcessorUtil.findAnnotationByType( descriptor.getElement(),
@@ -279,7 +279,7 @@ public final class ReactProcessor
     if ( !descriptor.isArezComponent() )
     {
       final ExecutableElement abstractMethod =
-        ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() )
+        getMethods( descriptor.getElement() )
           .stream()
           .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) )
           // @Props and @State methods are expected to be null
@@ -298,9 +298,8 @@ public final class ReactProcessor
 
   private void determineDefaultPropsMethods( @Nonnull final ComponentDescriptor descriptor )
   {
-    final Types typeUtils = processingEnv.getTypeUtils();
     final List<ExecutableElement> defaultPropsMethods =
-      ProcessorUtil.getMethods( descriptor.getElement(), typeUtils ).stream()
+      getMethods( descriptor.getElement() ).stream()
         .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
@@ -313,7 +312,8 @@ public final class ReactProcessor
         throw new ReactProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
                                            "@Prop annotated method.", method );
       }
-      final ExecutableType methodType = (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), method );
+      final ExecutableType methodType = (ExecutableType) processingEnv.getTypeUtils()
+        .asMemberOf( descriptor.getDeclaredType(), method );
       if ( !processingEnv.getTypeUtils().isAssignable( methodType.getReturnType(),
                                                        prop.getMethodType().getReturnType() ) )
       {
@@ -453,7 +453,7 @@ public final class ReactProcessor
   private void determineCallbacks( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<CallbackDescriptor> callbacks =
-      ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
+      getMethods( descriptor.getElement() ).stream()
         .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.CALLBACK_ANNOTATION_CLASSNAME ) )
         .map( m -> createCallbackDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
@@ -543,7 +543,7 @@ public final class ReactProcessor
     final ExecutableType methodType =
       (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
     final List<ExecutableElement> callbackMethods =
-      ProcessorUtil.getMethods( callbackType, processingEnv.getTypeUtils() ).stream().
+      getMethods( callbackType ).stream().
         filter( m11 -> m11.getModifiers().contains( Modifier.ABSTRACT ) ).
         collect( Collectors.toList() );
     if ( callbackMethods.isEmpty() )
@@ -646,7 +646,7 @@ public final class ReactProcessor
   private void determineProps( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<PropDescriptor> props =
-      ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
+      getMethods( descriptor.getElement() ).stream()
         .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
         .map( m -> createPropDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
@@ -766,7 +766,7 @@ public final class ReactProcessor
   private void determineStateValues( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<ExecutableElement> methods =
-      ProcessorUtil.getMethods( descriptor.getElement(), processingEnv.getTypeUtils() ).stream()
+      getMethods( descriptor.getElement() ).stream()
         .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.STATE_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
@@ -898,7 +898,7 @@ public final class ReactProcessor
     final TypeElement componentType = elementUtils.getTypeElement( Constants.COMPONENT_CLASSNAME );
     final List<MethodDescriptor> overriddenLifecycleMethods =
       // Get all methods on type parent classes, and default methods from interfaces
-      ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).stream()
+      getMethods( typeElement ).stream()
         // Only keep methods that override the lifecycle methods
         .filter( m -> lifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
         //Remove those that come from the base classes
@@ -922,7 +922,7 @@ public final class ReactProcessor
     final TypeElement componentType = elementUtils.getTypeElement( Constants.COMPONENT_CLASSNAME );
     final MethodDescriptor overriddenRenderMethod =
       // Get all methods on type parent classes, and default methods from interfaces
-      ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).stream()
+      getMethods( typeElement ).stream()
         // Only keep method if they override the render method
         .filter( m -> elementUtils.overrides( m, renderMethod, typeElement ) )
         //Remove those that come from the base classes
@@ -976,7 +976,7 @@ public final class ReactProcessor
     if ( _componentLifecycleMethods.isEmpty() )
     {
       final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
-      for ( final ExecutableElement method : ProcessorUtil.getMethods( componentType, processingEnv.getTypeUtils() ) )
+      for ( final ExecutableElement method : getMethods( componentType ) )
       {
         final String methodName = method.getSimpleName().toString();
         if ( LIFECYCLE_METHODS.contains( methodName ) )
@@ -999,7 +999,7 @@ public final class ReactProcessor
     if ( null == _componentRenderMethod )
     {
       final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
-      for ( final ExecutableElement method : ProcessorUtil.getMethods( componentType, processingEnv.getTypeUtils() ) )
+      for ( final ExecutableElement method : getMethods( componentType ) )
       {
         final String methodName = method.getSimpleName().toString();
         if ( "render".equals( methodName ) )
@@ -1089,7 +1089,7 @@ public final class ReactProcessor
         return false;
       default:
         return ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( this::hasInjectAnnotation ) ||
-               ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ).
+               getMethods( typeElement ).
                  stream().anyMatch( this::hasInjectAnnotation );
     }
   }
@@ -1114,21 +1114,21 @@ public final class ReactProcessor
 
   private boolean hasAnyAutorunMethods( @Nonnull final TypeElement typeElement )
   {
-    return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() )
+    return getMethods( typeElement )
       .stream()
       .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.AUTORUN_ANNOTATION_CLASSNAME ) );
   }
 
   private boolean hasAnyDependencyMethods( @Nonnull final TypeElement typeElement )
   {
-    return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() )
+    return getMethods( typeElement )
       .stream()
       .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.DEPENDENCY_ANNOTATION_CLASSNAME ) );
   }
 
   private boolean hasAnyKeepAliveComputedMethods( @Nonnull final TypeElement typeElement )
   {
-    return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() )
+    return getMethods( typeElement )
       .stream()
       .anyMatch( m -> {
         final AnnotationValue annotationValue =
@@ -1183,5 +1183,11 @@ public final class ReactProcessor
         }
       }
     }
+  }
+
+  @Nonnull
+  private List<ExecutableElement> getMethods( @Nonnull final TypeElement typeElement )
+  {
+    return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() );
   }
 }
