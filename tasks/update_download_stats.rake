@@ -11,5 +11,5 @@ task 'update_downstream_build_stats' do
     ENV['PRODUCT_VERSION'] = next_version
   end
 
-  sh "buildr clean react4j:downstream-test:test DOWNSTREAM=no TEST=only GWT=no PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} STORE_BUILD_STATISTICS=true"
+  sh "buildr clean react4j:downstream-test:test DOWNSTREAM=no TEST=only GWT=no PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} PREVIOUS_PRODUCT_VERSION=#{ENV['PREVIOUS_PRODUCT_VERSION']} STORE_BUILD_STATISTICS=true"
 end

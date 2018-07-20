@@ -15,12 +15,6 @@ import org.realityforge.gwt.symbolmap.SymbolEntryIndex;
 abstract class AbstractDownstreamTest
 {
   @Nonnull
-  final String getArezVersion()
-  {
-    return SystemProperty.get( "react4j.version" );
-  }
-
-  @Nonnull
   final Properties loadProperties( @Nonnull final File file )
     throws IOException
   {
