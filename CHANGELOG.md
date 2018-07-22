@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* **\[downstream-test\]** Test against output of J2CL over time to ensure that no size regressions occur.
+
 ### [v0.86](https://github.com/react4j/react4j/tree/v0.86) (2018-07-20)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.85...v0.86)
 

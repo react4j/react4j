@@ -33,6 +33,27 @@ public class BuildStatsTest
     compareSizesForBranch( "dagger" );
   }
 
+  @Test
+  public void raw_j2cl()
+    throws Exception
+  {
+    compareSizesForBranch( "raw_maven_j2cl" );
+  }
+
+  @Test
+  public void arez_j2cl()
+    throws Exception
+  {
+    compareSizesForBranch( "arez_maven_j2cl" );
+  }
+
+  @Test
+  public void dagger_j2cl()
+    throws Exception
+  {
+    compareSizesForBranch( "dagger_maven_j2cl" );
+  }
+
   private void compareSizesForBranch( @Nonnull final String branch )
     throws Exception
   {
