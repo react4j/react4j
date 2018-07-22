@@ -1,0 +1,14 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+  <servers>
+    <server>
+      <id>vertispan-releases</id>
+      <username>${env.VERTISPAN_USERNAME}</username>
+      <password>${env.VERTISPAN_PASSWORD}</password>
+    </server>
+    <server>
+      <id>vertispan-snapshots</id>
+      <username>${env.VERTISPAN_USERNAME}</username>
+      <password>${env.VERTISPAN_PASSWORD}</password>
+    </server>
+  </servers>
+</settings>
