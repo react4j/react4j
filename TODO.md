@@ -2,6 +2,7 @@
 
 ### Very High Priority
 
+* Add invariant that fails if a prop is a ReactNode
 
 * Start to add javascript tests - starting with braincheck ala
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
