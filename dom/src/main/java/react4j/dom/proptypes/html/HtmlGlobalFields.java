@@ -215,7 +215,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
       {
         if ( ReactConfig.shouldCheckInvariants() )
         {
-          invariant( () -> !element.matches( "^\\s.*$" ),
+          invariant( () -> !element.equals( "" ) && !element.matches( "^\\s+$" ),
                      () -> "Empty classname element supplied. Remove the element." );
           invariant( () -> !element.matches( "^\\s.*$" ),
                      () -> "Classname element '" + element + "' starts with whitespace. Remove the whitespace." );
