@@ -1,6 +1,6 @@
 package react4j.examples.arez.step1.model;
 
-import arez.browserlocation.BrowserLocation;
+import react4j.examples.arez.BrowserLocation;
 
 public final class AppData
 {
