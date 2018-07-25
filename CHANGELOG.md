@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.87](https://github.com/react4j/react4j/tree/v0.87) (2018-07-25)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.86...v0.87)
 
 * **\[downstream-test\]** Test against output of J2CL over time to ensure that no size regressions occur.
 * **\[dom\]** Fix message generated for invariant check in `HtmlGlobalFields.className(...)` where the
