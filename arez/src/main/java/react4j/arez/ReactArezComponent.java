@@ -100,10 +100,13 @@ public abstract class ReactArezComponent
   @OnDepsChanged
   protected final void onRenderDepsChanged()
   {
-    _renderDepsChanged = true;
-    if ( !_unmounted )
+    if ( !_renderDepsChanged )
     {
-      scheduleRender( true );
+      _renderDepsChanged = true;
+      if ( !_unmounted )
+      {
+        scheduleRender( true );
+      }
     }
   }
 
