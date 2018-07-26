@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.102`.
+
 ### [v0.88](https://github.com/react4j/react4j/tree/v0.88) (2018-07-26)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.87...v0.88)
 
