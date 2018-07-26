@@ -3,6 +3,8 @@
 ### Unreleased
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.102`.
+* **\[dom\]** Improve the documentation of `react4j.dom.proptypes.html.RefConsumer` to clarity that the
+  element is nullable.
 
 ### [v0.88](https://github.com/react4j/react4j/tree/v0.88) (2018-07-26)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.87...v0.88)
