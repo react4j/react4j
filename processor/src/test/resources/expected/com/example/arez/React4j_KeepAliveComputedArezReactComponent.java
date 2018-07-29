@@ -31,7 +31,8 @@ abstract class React4j_KeepAliveComputedArezReactComponent extends KeepAliveComp
   }
 
   @Override
-  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    return false;
   }
 
   @Override

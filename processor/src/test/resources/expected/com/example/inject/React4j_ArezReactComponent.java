@@ -47,7 +47,8 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
   }
 
   @Override
-  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    return false;
   }
 
   @JsType(

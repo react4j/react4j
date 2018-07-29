@@ -70,13 +70,17 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
 
   @Override
   @Action
-  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    boolean modified = false;
     if ( !Js.isTripleEqual( props().get( "value" ), null == nextProps ? null : nextProps.get( "value" ) ) ) {
+      modified = true;
       getValueObservable().reportChanged();
     }
     if ( !Js.isTripleEqual( props().get( "model" ), null == nextProps ? null : nextProps.get( "model" ) ) ) {
+      modified = true;
       getModelObservable().reportChanged();
     }
+    return modified;
   }
 
   @JsType(

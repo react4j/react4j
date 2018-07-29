@@ -14,12 +14,13 @@ abstract class ArezComponentAnnotated
 {
   // This method is added to avoid failures on rebuild all within IDE.
   // In normal production code, the react annotation processor will have aborted
-  // prior to Arez detecting reportPropsChanged is unimplemented. However the react
+  // prior to Arez detecting shouldComponentUpdate is unimplemented. However the react
   // annotation processor does not run when compiling this code from IDE as it is part
   // of tests for annotation processor.
   @Override
-  protected void reportPropsChanged( @Nullable final JsPropertyMap<Object> nextProps )
+  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
+    return false;
   }
 
   @Nullable

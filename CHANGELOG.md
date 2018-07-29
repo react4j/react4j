@@ -9,6 +9,9 @@
   `ReactArezConfig.shouldStoreArezDataAsState()` returns `true`. State is not used in subclasses of
   `ReactArezComponent` except during development to simplify debugging. Eliminating the check reduces a
   small amount of code in production mode.
+* **\[arez\]** Replace `reportPropsChanged(...)` with `shouldComponentUpdate(...)` on the `ReactArezComponent`
+  class so that subclasses can control whether a prop change should update component rather than just reporting
+  a prop change as an arez change.
 
 ### [v0.88](https://github.com/react4j/react4j/tree/v0.88) (2018-07-26)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.87...v0.88)

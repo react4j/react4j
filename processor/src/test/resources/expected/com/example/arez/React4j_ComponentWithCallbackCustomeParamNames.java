@@ -35,7 +35,8 @@ abstract class React4j_ComponentWithCallbackCustomeParamNames extends ComponentW
   }
 
   @Override
-  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    return false;
   }
 
   @Nonnull

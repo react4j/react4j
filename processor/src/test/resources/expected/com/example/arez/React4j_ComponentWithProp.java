@@ -47,10 +47,13 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
 
   @Override
   @Action
-  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    boolean modified = false;
     if ( !Js.isTripleEqual( props().get( "value" ), null == nextProps ? null : nextProps.get( "value" ) ) ) {
+      modified = true;
       getValueObservable().reportChanged();
     }
+    return modified;
   }
 
   @JsType(

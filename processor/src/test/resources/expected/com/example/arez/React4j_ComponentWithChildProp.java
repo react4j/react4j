@@ -48,10 +48,13 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
 
   @Override
   @Action
-  protected void reportPropsChanged(@Nullable final JsPropertyMap<Object> nextProps) {
+  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    boolean modified = false;
     if ( !Js.isTripleEqual( props().get( "children" ), null == nextProps ? null : nextProps.get( "children" ) ) ) {
+      modified = true;
       getChildObservable().reportChanged();
     }
+    return modified;
   }
 
   @JsType(

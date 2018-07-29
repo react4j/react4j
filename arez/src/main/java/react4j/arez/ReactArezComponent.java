@@ -21,6 +21,7 @@ import jsinterop.base.JsPropertyMap;
 import react4j.Component;
 import react4j.Procedure;
 import react4j.ReactNode;
+import react4j.annotations.Prop;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -49,13 +50,6 @@ public abstract class ReactArezComponent
   {
     _arezComponentId = c_nextComponentId++;
   }
-
-  /**
-   * Method invoked when props changes.
-   *
-   * @param nextProps the new properties of the component.
-   */
-  protected abstract void reportPropsChanged( @Nullable final JsPropertyMap<Object> nextProps );
 
   /**
    * {@inheritDoc}
@@ -195,6 +189,7 @@ public abstract class ReactArezComponent
   /**
    * {@inheritDoc}
    */
+  @SuppressWarnings( "SimplifiableIfStatement" )
   @Override
   protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
                                            @Nullable final JsPropertyMap<Object> nextState )
@@ -212,17 +207,18 @@ public abstract class ReactArezComponent
     }
     else
     {
-      /*
-       * We just compare the props shallowly and avoid a re-render if the props have not changed.
-       */
-      final boolean modified = isObjectShallowModified( super.props(), nextProps );
-      if ( modified )
-      {
-        reportPropsChanged( nextProps );
-      }
-      return modified;
+      return shouldComponentUpdate( nextProps );
     }
   }
+
+  /**
+   * This method is overridden by the annotation processor. The method will return true if a prop has been updated
+   * and the prop has not set {@link Prop#shouldUpdateOnChange()} to false. Otherwise this method will return false.
+   *
+   * @param nextProps the new properties of the component.
+   * @return true if the component should be updated.
+   */
+  protected abstract boolean shouldComponentUpdate( @Nullable JsPropertyMap<Object> nextProps );
 
   /**
    * {@inheritDoc}

@@ -571,7 +571,7 @@ final class Generator
 
     if ( descriptor.isArezComponent() )
     {
-      builder.addMethod( buildReportPropsChangedMethod( descriptor ).build() );
+      builder.addMethod( buildShouldComponentUpdateMethod( descriptor ).build() );
     }
 
     if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
@@ -813,16 +813,19 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildReportPropsChangedMethod( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildShouldComponentUpdateMethod( @Nonnull final ComponentDescriptor descriptor )
   {
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropsChanged" ).
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( "shouldComponentUpdate" ).
       addModifiers( Modifier.PROTECTED ).
       addAnnotation( Override.class ).
       addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
-        addAnnotation( NULLABLE_CLASSNAME ).build() );
+        addAnnotation( NULLABLE_CLASSNAME ).build() )
+      .returns( TypeName.BOOLEAN );
+
     if ( !descriptor.getProps().isEmpty() )
     {
       method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).build() );
+      method.addStatement( "boolean modified = false" );
       for ( final PropDescriptor prop : descriptor.getProps() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
@@ -830,10 +833,16 @@ final class Generator
           "if ( !$T.isTripleEqual( props().get( $S ), null == nextProps ? null : nextProps.get( $S ) ) )";
         final String key = "child".equals( prop.getName() ) ? "children" : prop.getName();
         block.beginControlFlow( code, JS_CLASSNAME, key, key );
+        block.addStatement( "modified = true" );
         block.addStatement( "$N().reportChanged()", toObservableRefMethodName( prop ) );
         block.endControlFlow();
         method.addCode( block.build() );
       }
+      method.addStatement( "return modified" );
+    }
+    else
+    {
+      method.addStatement( "return false" );
     }
     return method;
   }
