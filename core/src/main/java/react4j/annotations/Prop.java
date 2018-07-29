@@ -40,7 +40,7 @@ public @interface Prop
    * If set to {@link Feature#ENABLE} then the user MUST supply the prop and the builder will require the user
    * to specify the value. If set to {@link Feature#DISABLE} then the user can optionally supply the prop.
    * If set to {@link Feature#AUTODETECT} then the annotation processor will treat it as {@link Feature#DISABLE}
-   * if theere is a corresponding {@link PropDefault} for the prop, otherwise it will be treated as
+   * if there is a corresponding {@link PropDefault} for the prop, otherwise it will be treated as
    * {@link Feature#ENABLE}.
    *
    * @return the flag indicating whether the prop needs to be supplied.
