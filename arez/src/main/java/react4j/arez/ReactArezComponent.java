@@ -206,9 +206,9 @@ public abstract class ReactArezComponent
     //noinspection SimplifiableIfStatement
     if ( !Js.isTripleEqual( super.state(), nextState ) )
     {
-      // If state is not identical then we need to re-render ...
-      // Previously we chose not to re-render if only AREZ_STATE_KEY that was updated but that
-      // meant deps in DevTools would not be update so now we just re-render anyway.
+      // State is only updated when we store Arez data as state. The saving of arez data will actually
+      // trigger a re-render and we need to allow this otherwise the DevTools will not contain the
+      // updated state.
       return true;
     }
     else
