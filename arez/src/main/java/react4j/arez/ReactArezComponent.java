@@ -203,7 +203,7 @@ public abstract class ReactArezComponent
     {
       return true;
     }
-    if ( ReactArezConfig.shouldStoreArezDataAsState() && !Js.isTripleEqual( super.state(), nextState ) )
+    else if ( ReactArezConfig.shouldStoreArezDataAsState() && !Js.isTripleEqual( super.state(), nextState ) )
     {
       // State is only updated when we store Arez data as state. The saving of arez data will actually
       // trigger a re-render and we need to allow this otherwise the DevTools will not contain the
