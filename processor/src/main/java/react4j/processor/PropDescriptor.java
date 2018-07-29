@@ -19,6 +19,7 @@ final class PropDescriptor
   private final ExecutableType _methodType;
   @Nullable
   private final Element _propType;
+  private final boolean _shouldUpdateOnChange;
   @Nullable
   private VariableElement _defaultField;
   @Nullable
@@ -31,12 +32,14 @@ final class PropDescriptor
   PropDescriptor( @Nonnull final String name,
                   @Nonnull final ExecutableElement method,
                   @Nonnull final ExecutableType methodType,
-                  @Nullable final Element propType )
+                  @Nullable final Element propType,
+                  final boolean shouldUpdateOnChange )
   {
     _name = Objects.requireNonNull( name );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
     _propType = propType;
+    _shouldUpdateOnChange = shouldUpdateOnChange;
   }
 
   @Nonnull
@@ -61,6 +64,11 @@ final class PropDescriptor
   Element getPropType()
   {
     return _propType;
+  }
+
+  boolean shouldUpdateOnChange()
+  {
+    return _shouldUpdateOnChange;
   }
 
   void setDefaultMethod( @Nonnull final ExecutableElement method )

@@ -733,7 +733,8 @@ public final class ReactProcessor
     }
 
     final Element propType = processingEnv.getTypeUtils().asElement( method.getReturnType() );
-    return new PropDescriptor( name, method, methodType, propType );
+    final boolean shouldUpdateOnChange = shouldUpdateOnChange( method );
+    return new PropDescriptor( name, method, methodType, propType, shouldUpdateOnChange );
   }
 
   @Nonnull
@@ -1072,6 +1073,29 @@ public final class ReactProcessor
     descriptor.setNeedsDaggerIntegration( isDaggerPresent );
     descriptor.setArezComponent( isArezComponent );
     descriptor.setRunArezScheduler( runArezScheduler );
+  }
+
+  private boolean shouldUpdateOnChange( @Nonnull final ExecutableElement method )
+  {
+    final VariableElement injectParameter = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        method,
+                                        Constants.PROP_ANNOTATION_CLASSNAME,
+                                        "shouldUpdateOnChange" ).getValue();
+    switch ( injectParameter.getSimpleName().toString() )
+    {
+      case "ENABLE":
+        return true;
+      case "DISABLE":
+        return false;
+      default:
+        final TypeMirror returnType = method.getReturnType();
+        return TypeKind.DECLARED != returnType.getKind() ||
+               null == ProcessorUtil.findAnnotationByType( processingEnv.getTypeUtils().asElement( returnType ),
+                                                           Constants.JS_FUNCTION_CLASSNAME ) &&
+               null == ProcessorUtil.findAnnotationByType( processingEnv.getTypeUtils().asElement( returnType ),
+                                                           Constants.FUNCTIONAL_INTERFACE_CLASSNAME );
+    }
   }
 
   private boolean isInjectionRequired( @Nonnull final TypeElement typeElement )

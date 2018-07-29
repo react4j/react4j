@@ -18,6 +18,10 @@ public class ReactProcessorTest
       {
         new Object[]{ "com.example.arez.AutorunArezReactComponent", false, false },
         new Object[]{ "com.example.arez.BasicArezReactComponent", false, false },
+        new Object[]{ "com.example.arez.ComponentFunctionalInterfaceProp", false, false },
+        new Object[]{ "com.example.arez.ComponentJsFunctionProp", false, false },
+        new Object[]{ "com.example.arez.ComponentShouldNotUpdateOnChangeProp", false, false },
+        new Object[]{ "com.example.arez.ComponentShouldUpdateOnChangeProp", false, false },
         new Object[]{ "com.example.arez.ComponentWithAnnotatedParameterCallback", true, false },
         new Object[]{ "com.example.arez.ComponentWithCallback", true, false },
         new Object[]{ "com.example.arez.ComponentWithCallbackCustomeParamNames", true, false },

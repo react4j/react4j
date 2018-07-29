@@ -6,6 +6,7 @@ final class Constants
   static final String DAGGER_MODULE_CLASSNAME = "dagger.Module";
   static final String DAGGER_PROVIDES_CLASSNAME = "dagger.Provides";
   static final String JS_FUNCTION_CLASSNAME = "jsinterop.annotations.JsFunction";
+  static final String FUNCTIONAL_INTERFACE_CLASSNAME = "java.lang.FunctionalInterface";
   static final String COMPONENT_CLASSNAME = "react4j.Component";
   static final String CALLBACK_ANNOTATION_CLASSNAME = "react4j.annotations.Callback";
   static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";

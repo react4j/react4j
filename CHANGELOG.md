@@ -15,6 +15,8 @@
 * **\[processor\]** Avoid generating an empty `shouldComponentUpdate(...)` if there are no props to check and
   instead add a concrete implementation on the `ReactArezComponent` class. This reduces the code size of compiled
   output.
+* **\[core\]** Add the `shouldUpdateOnChange` parameter to the `@Prop` annotation that will determine if the
+  `@Prop` needs to be checked as part of the `shouldComponentUpdate(...)` lifecycle method.
 
 ### [v0.88](https://github.com/react4j/react4j/tree/v0.88) (2018-07-26)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.87...v0.88)

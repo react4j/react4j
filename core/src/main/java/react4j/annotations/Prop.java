@@ -4,6 +4,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import javax.annotation.Nonnull;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Annotation used to specify an abstract method that returns a prop.
@@ -46,4 +47,19 @@ public @interface Prop
    * @return the flag indicating whether the prop needs to be supplied.
    */
   Feature require() default Feature.AUTODETECT;
+
+  /**
+   * Return an enum indicating whether prop should trigger a change if it updated.
+   * This setting is used when the annotation processors is responsible for implementing
+   * the {@link react4j.Component#shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} lifecycle
+   * method. If set to {@link Feature#ENABLE} then the code will check the prop when implementing
+   * <code>shouldComponentUpdate</code>. If set to {@link Feature#DISABLE} then the prop will be ignored
+   * when implementing <code>shouldComponentUpdate</code>. If set to {@link Feature#AUTODETECT} then the
+   * annotation processor will treat it as {@link Feature#ENABLE} if the type of the prop is annotated with
+   * either {@link jsinterop.annotations.JsFunction} or {@link FunctionalInterface}, otherwise it will
+   * be treated as {@link Feature#ENABLE}.
+   *
+   * @return the enum indicating whether prop should trigger a change if it updated.
+   */
+  Feature shouldUpdateOnChange() default Feature.AUTODETECT;
 }
