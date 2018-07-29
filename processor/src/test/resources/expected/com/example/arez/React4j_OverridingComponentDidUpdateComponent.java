@@ -29,11 +29,6 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     return componentConstructor;
   }
 
-  @Override
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    return false;
-  }
-
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

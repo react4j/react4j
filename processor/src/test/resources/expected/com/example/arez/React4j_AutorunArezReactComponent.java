@@ -31,11 +31,6 @@ abstract class React4j_AutorunArezReactComponent extends AutorunArezReactCompone
   }
 
   @Override
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    return false;
-  }
-
-  @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
   }

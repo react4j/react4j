@@ -37,11 +37,6 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
     return componentConstructor;
   }
 
-  @Override
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    return false;
-  }
-
   @Nonnull
   private ComponentWithAnnotatedParameterCallback.CustomHandler2 create_handleFoo() {
     final ComponentWithAnnotatedParameterCallback.CustomHandler2 handler = () -> this.handleFoo();

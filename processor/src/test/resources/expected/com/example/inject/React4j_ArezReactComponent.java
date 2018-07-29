@@ -46,11 +46,6 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     return componentConstructor;
   }
 
-  @Override
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    return false;
-  }
-
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

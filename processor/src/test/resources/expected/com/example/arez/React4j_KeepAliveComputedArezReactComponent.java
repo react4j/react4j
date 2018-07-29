@@ -31,11 +31,6 @@ abstract class React4j_KeepAliveComputedArezReactComponent extends KeepAliveComp
   }
 
   @Override
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    return false;
-  }
-
-  @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
   }

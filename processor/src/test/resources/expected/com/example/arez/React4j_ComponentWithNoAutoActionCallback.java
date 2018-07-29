@@ -34,11 +34,6 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
     return componentConstructor;
   }
 
-  @Override
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    return false;
-  }
-
   @Nonnull
   private Callback.Procedure create_handleFoo() {
     final Callback.Procedure handler = () -> this.handleFoo();

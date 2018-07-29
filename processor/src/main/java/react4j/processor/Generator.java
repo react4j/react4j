@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -571,7 +572,11 @@ final class Generator
 
     if ( descriptor.isArezComponent() )
     {
-      builder.addMethod( buildShouldComponentUpdateMethod( descriptor ).build() );
+      final MethodSpec.Builder method = buildShouldComponentUpdateMethod( descriptor );
+      if ( null != method )
+      {
+        builder.addMethod( method.build() );
+      }
     }
 
     if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
@@ -812,18 +817,23 @@ final class Generator
     return "get" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 ) + "Observable";
   }
 
-  @Nonnull
+  @Nullable
   private static MethodSpec.Builder buildShouldComponentUpdateMethod( @Nonnull final ComponentDescriptor descriptor )
   {
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( "shouldComponentUpdate" ).
-      addModifiers( Modifier.PROTECTED ).
-      addAnnotation( Override.class ).
-      addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
-        addAnnotation( NULLABLE_CLASSNAME ).build() )
-      .returns( TypeName.BOOLEAN );
-
-    if ( !descriptor.getProps().isEmpty() )
+    final List<PropDescriptor> props =
+      descriptor.getProps().stream().filter( PropDescriptor::shouldUpdateOnChange ).collect( Collectors.toList() );
+    if ( props.isEmpty() )
     {
+      return null;
+    }
+    else
+    {
+      final MethodSpec.Builder method = MethodSpec.methodBuilder( "shouldComponentUpdate" ).
+        addModifiers( Modifier.PROTECTED ).
+        addAnnotation( Override.class ).
+        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
+          addAnnotation( NULLABLE_CLASSNAME ).build() )
+        .returns( TypeName.BOOLEAN );
       method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).build() );
       method.addStatement( "boolean modified = false" );
       for ( final PropDescriptor prop : descriptor.getProps() )
@@ -839,12 +849,8 @@ final class Generator
         method.addCode( block.build() );
       }
       method.addStatement( "return modified" );
+      return method;
     }
-    else
-    {
-      method.addStatement( "return false" );
-    }
-    return method;
   }
 
   private static FieldSpec.Builder buildProviderField( @Nonnull final ComponentDescriptor descriptor )

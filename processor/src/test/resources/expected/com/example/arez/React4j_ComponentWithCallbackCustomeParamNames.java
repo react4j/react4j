@@ -34,11 +34,6 @@ abstract class React4j_ComponentWithCallbackCustomeParamNames extends ComponentW
     return componentConstructor;
   }
 
-  @Override
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    return false;
-  }
-
   @Nonnull
   private ComponentWithCallbackCustomeParamNames.CustomHandler create_handleFoo2() {
     final ComponentWithCallbackCustomeParamNames.CustomHandler handler = nameOnInterface -> this.handleFoo2(nameOnInterface);

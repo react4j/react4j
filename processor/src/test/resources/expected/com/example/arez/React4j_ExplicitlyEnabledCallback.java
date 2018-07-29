@@ -35,11 +35,6 @@ abstract class React4j_ExplicitlyEnabledCallback extends ExplicitlyEnabledCallba
     return componentConstructor;
   }
 
-  @Override
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    return false;
-  }
-
   @Nonnull
   private Callback.Procedure create_handleAction() {
     final Callback.Procedure handler = () -> this.handleAction();

@@ -218,7 +218,10 @@ public abstract class ReactArezComponent
    * @param nextProps the new properties of the component.
    * @return true if the component should be updated.
    */
-  protected abstract boolean shouldComponentUpdate( @Nullable JsPropertyMap<Object> nextProps );
+  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
+  {
+    return false;
+  }
 
   /**
    * {@inheritDoc}
