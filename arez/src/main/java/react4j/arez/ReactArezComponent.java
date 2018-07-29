@@ -203,7 +203,6 @@ public abstract class ReactArezComponent
     {
       return true;
     }
-    //noinspection SimplifiableIfStatement
     if ( !Js.isTripleEqual( super.state(), nextState ) )
     {
       // State is only updated when we store Arez data as state. The saving of arez data will actually
