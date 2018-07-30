@@ -10,11 +10,6 @@
 
 * Move to using `React.createRef()` exclusively for refs. See https://www.fullstackreact.com/articles/using-refs-in-react/
 
-* Consider moving factories to creating elements directly ie.
-  https://github.com/kay-is/react-from-zero/blob/master/00-object-elements.html
-
-* Fragments synthesized? https://github.com/kay-is/react-from-zero/blob/master/04-components.html
-
 * Arez Components that only have dependencies on props at end of render could warn if they may not need to
   be arez components.
 
@@ -125,6 +120,11 @@ warning messages more cryptic and skip important checks that happen in developme
   the top level for subtrees that are fully static, which reduces calls to React.createElement and the resulting
   allocations. More importantly, it tells React that the subtree hasn’t changed so React can completely skip it
   when reconciling.
+
+* Consider moving factories to creating elements directly ie.
+  https://github.com/kay-is/react-from-zero/blob/master/00-object-elements.html
+
+* Synthesize Fragments - https://github.com/kay-is/react-from-zero/blob/master/04-components.html
 
 #### Documentation
 
