@@ -58,7 +58,7 @@
   - https://jsbin.com/zaqenibito/1/edit?js,console,output
 
 * Move the Props and State objects back to being JsType backed under the cover rather than values looked up by
-  strings. This will significantly optimize the output size.
+  strings. This will significantly optimize the output size. At least under J2CL/Closure.
 
 * Figure out a way to define dom factories in java that are optimized away in production such that
   `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
