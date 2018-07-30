@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.102`.
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.103`.
 * **\[dom\]** Improve the documentation of `react4j.dom.proptypes.html.RefConsumer` to clarity that the
   element is nullable.
 * **\[arez\]** Skip checking of state in `ReactArezComponent.shouldComponentUpdate()` unless
