@@ -36,8 +36,10 @@ def dom_factory_types
     'source' => 'SourceProps',
     'table' => 'HtmlProps',
     'textarea' => 'TextAreaProps',
+    'tbody' => 'HtmlProps',
     'td' => 'TdProps',
     'th' => 'ThProps',
+    'thead' => 'HtmlProps',
     'tr' => 'HtmlProps',
     'ul' => 'HtmlProps'
   }
