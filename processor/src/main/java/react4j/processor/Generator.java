@@ -136,7 +136,12 @@ final class Generator
     }
     ProcessorUtil.copyTypeParameters( descriptor.getElement(), method );
 
-    if ( !stepMethod.isBuildIntrinsic() )
+    if ( stepMethod.isBuildIntrinsic() )
+    {
+      final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
+      method.addStatement( "return new $T" + infix + "().build()", ClassName.bestGuess( "Builder" ) );
+    }
+    else
     {
       final ParameterSpec.Builder parameter =
         ParameterSpec.builder( stepMethod.getType(), stepMethod.getName(), Modifier.FINAL );
@@ -154,15 +159,7 @@ final class Generator
         parameter.addAnnotation( NULLABLE_CLASSNAME );
       }
       method.addParameter( parameter.build() );
-    }
-
-    final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
-    if ( stepMethod.isBuildIntrinsic() )
-    {
-      method.addStatement( "return new $T" + infix + "().build()", ClassName.bestGuess( "Builder" ) );
-    }
-    else
-    {
+      final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
       method.addStatement( "return new $T" + infix + "().$N( $N )",
                            ClassName.bestGuess( "Builder" ),
                            stepMethod.getName(),
