@@ -11,7 +11,6 @@ import react4j.Procedure;
 import react4j.React;
 import react4j.ReactConfig;
 import react4j.ReactNode;
-import react4j.dom.proptypes.html.HtmlGlobalFields;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -106,52 +105,6 @@ public class ReactDOM
    * @return true if a component was unmounted and false if there was no component to unmount.
    */
   public static native boolean unmountComponentAtNode( @Nonnull Element container );
-
-  /**
-   * Create and return a new ReactElement of the given type.
-   *
-   * @param type A HTML tag name (eg. 'div', 'span', etc)
-   * @return the created ReactNode
-   */
-  @Nonnull
-  @JsOverlay
-  public static ReactNode createElement( @Nonnull final String type )
-  {
-    return createElement( type, null );
-  }
-
-  /**
-   * Create and return a new ReactElement of the given type.
-   *
-   * @param <P>   The type of the props. It should match the associated tag name.
-   * @param type  A HTML tag name (eg. 'div', 'span', etc)
-   * @param props The props to pass to the element.
-   * @return the created ReactNode
-   */
-  @Nonnull
-  @JsOverlay
-  public static <P extends HtmlGlobalFields> ReactNode createElement( @Nonnull String type, @Nullable P props )
-  {
-    return React.createElement( type, props );
-  }
-
-  /**
-   * Create and return a new ReactElement of the given type with specified children.
-   *
-   * @param <P>      The type of the props. It should match the associated tag name.
-   * @param type     A HTML tag name (eg. 'div', 'span', etc)
-   * @param props    The props to pass to the element.
-   * @param children The child elements.
-   * @return the created DOMElement
-   */
-  @Nonnull
-  @JsOverlay
-  public static <P extends HtmlGlobalFields> ReactNode createElement( @Nonnull String type,
-                                                                      @Nullable P props,
-                                                                      @Nullable ReactNode... children )
-  {
-    return React.createElement( type, props, children );
-  }
 
   /**
    * Batch all state updates within the action.

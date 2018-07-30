@@ -54,6 +54,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
+import react4j.React;
 import react4j.ReactNode;
 HEADER
   factories.values.sort.uniq.each do |prop_type|
@@ -83,39 +84,39 @@ HEADER
     content += <<HEADER
 
   @Nonnull
-  public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactNode... child )
+  public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactNode... children )
   {
-    return ReactDOM.createElement( "#{key}", props, child );
+    return React.createElement( "#{key}", props, children );
   }
 
   @Nonnull
-  public static ReactNode #{key}( @Nullable final ReactNode... child )
+  public static ReactNode #{key}( @Nullable final ReactNode... children )
   {
-    return ReactDOM.createElement( "#{key}", null, child );
+    return React.createElement( "#{key}", null, children );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final String content )
   {
-    return ReactDOM.createElement( "#{key}", props, text( content ) );
+    return React.createElement( "#{key}", props, text( content ) );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props )
   {
-    return ReactDOM.createElement( "#{key}", props );
+    return React.createElement( "#{key}", props );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final String content )
   {
-    return ReactDOM.createElement( "#{key}", null, text( content ) );
+    return React.createElement( "#{key}", null, text( content ) );
   }
 
   @Nonnull
   public static ReactNode #{key}()
   {
-    return ReactDOM.createElement( "#{key}", null );
+    return React.createElement( "#{key}", null );
   }
 
   @Nonnull

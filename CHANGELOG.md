@@ -20,6 +20,8 @@
 * **\[arez\]** Mark all props as `@Observable(readOutsideTransaction=true)` so that the props can be read outside
   of an arez transaction. It is not uncommon for callbacks to access props but no other arez elements. Marking
   props as `readOutsideTransaction=true` eliminates the need to add aditional `@Action` annotations everywhere.
+* **\[dom\]** Remove the `ReactDOM.createElement(...)` overlay methods. The methods simply delegate to the
+  equivalent method on the `React` class. This level of indirection is no longer required.
 
 ### [v0.88](https://github.com/react4j/react4j/tree/v0.88) (2018-07-26)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.87...v0.88)
