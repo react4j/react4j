@@ -35,7 +35,8 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
   @Override
   @Observable(
       name = "value",
-      expectSetter = false
+      expectSetter = false,
+      readOutsideTransaction = true
   )
   protected String getValue() {
     return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;

@@ -34,7 +34,8 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
   @Override
   @Observable(
       name = "value",
-      expectSetter = false
+      expectSetter = false,
+      readOutsideTransaction = true
   )
   protected ComponentJsFunctionProp.TestFunction getValue() {
     return null != props().getAny( "value" ) ? props().getAny( "value" ).cast() : null;

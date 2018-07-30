@@ -45,7 +45,8 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   @Override
   @Observable(
       name = "value",
-      expectSetter = false
+      expectSetter = false,
+      readOutsideTransaction = true
   )
   protected String getValue() {
     return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
@@ -58,7 +59,8 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   @Override
   @Observable(
       name = "model",
-      expectSetter = false
+      expectSetter = false,
+      readOutsideTransaction = true
   )
   protected ComponentWithDependency.Model getModel() {
     return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;

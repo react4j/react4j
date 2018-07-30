@@ -34,7 +34,8 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
   @Override
   @Observable(
       name = "value",
-      expectSetter = false
+      expectSetter = false,
+      readOutsideTransaction = true
   )
   protected ComponentFunctionalInterfaceProp.TestFunction getValue() {
     return null != props().getAny( "value" ) ? props().getAny( "value" ).cast() : null;

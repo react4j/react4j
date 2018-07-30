@@ -673,7 +673,8 @@ final class Generator
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
           addMember( "name", "$S", name ).
-          addMember( "expectSetter", "false" );
+          addMember( "expectSetter", "false" ).
+          addMember( "readOutsideTransaction", "true" );
       method.addAnnotation( annotation.build() );
     }
     final String convertMethodName = getConverter( returnType, methodElement, "Prop" );

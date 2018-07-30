@@ -36,7 +36,8 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   @Override
   @Observable(
       name = "child",
-      expectSetter = false
+      expectSetter = false,
+      readOutsideTransaction = true
   )
   protected ReactNode getChild() {
     return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;

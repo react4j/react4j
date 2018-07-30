@@ -17,6 +17,9 @@
   output.
 * **\[core\]** Add the `shouldUpdateOnChange` parameter to the `@Prop` annotation that will determine if the
   `@Prop` needs to be checked as part of the `shouldComponentUpdate(...)` lifecycle method.
+* **\[arez\]** Mark all props as `@Observable(readOutsideTransaction=true)` so that the props can be read outside
+  of an arez transaction. It is not uncommon for callbacks to access props but no other arez elements. Marking
+  props as `readOutsideTransaction=true` eliminates the need to add aditional `@Action` annotations everywhere.
 
 ### [v0.88](https://github.com/react4j/react4j/tree/v0.88) (2018-07-26)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.87...v0.88)
