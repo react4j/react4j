@@ -6,12 +6,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.Key;
 import react4j.React;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class GenericTypeMultiPropComponentBuilder {
   private GenericTypeMultiPropComponentBuilder() {
+  }
+
+  @Nonnull
+  static <T> Builder2<T> key(@Nonnull final Key key) {
+    return new Builder<T>().key( key );
+  }
+
+  @Nonnull
+  static <T> Builder2<T> key(final int key) {
+    return new Builder<T>().key( key );
   }
 
   @Nonnull
@@ -26,6 +37,12 @@ class GenericTypeMultiPropComponentBuilder {
 
   @SuppressWarnings("unused")
   public interface Builder1<T> {
+    @Nonnull
+    Builder2<T> key(@Nonnull Key key);
+
+    @Nonnull
+    Builder2<T> key(@Nonnull int key);
+
     @Nonnull
     Builder2<T> key(@Nonnull String key);
   }
@@ -59,9 +76,21 @@ class GenericTypeMultiPropComponentBuilder {
 
     @Override
     @Nonnull
-    public final Builder2<T> key(@Nonnull final String key) {
+    public final Builder2<T> key(@Nonnull final Key key) {
       _props.set( "key", Objects.requireNonNull( key ) );
       return this;
+    }
+
+    @Override
+    @Nonnull
+    public final Builder2<T> key(@Nonnull final int key) {
+      return key( Key.of( key ) );
+    }
+
+    @Override
+    @Nonnull
+    public final Builder2<T> key(@Nonnull final String key) {
+      return key( Key.of( key ) );
     }
 
     @Override

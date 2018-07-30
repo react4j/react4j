@@ -69,6 +69,7 @@ final class Generator
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
+  private static final ClassName KEY_CLASSNAME = ClassName.get( "react4j", "Key" );
 
   private Generator()
   {
@@ -154,7 +155,7 @@ final class Generator
       {
         parameter.addAnnotation( NONNULL_CLASSNAME );
       }
-      else if ( stepMethod.isKeyIntrinsic() )
+      else if ( stepMethod.isKeyIntrinsic() && !stepMethod.getKey().equals( "*key_int*" ) )
       {
         parameter.addAnnotation( NONNULL_CLASSNAME );
       }
@@ -305,6 +306,8 @@ final class Generator
     }
     method.addParameter( parameter.build() );
 
+    boolean returnHandled = false;
+
     if ( stepMethod.isChildrenIntrinsic() )
     {
       method.varargs();
@@ -338,6 +341,11 @@ final class Generator
         method.addStatement( "_child = $N", stepMethod.getName() );
       }
     }
+    else if ( stepMethod.getKey().equals( "*key_int*" ) || stepMethod.getKey().equals( "*key_string*" ) )
+    {
+      returnHandled = true;
+      method.addStatement( "return key( $T.of( $N ) )", KEY_CLASSNAME, stepMethod.getName() );
+    }
     else if ( stepMethod.isKeyIntrinsic() ||
               ( null != propMethod &&
                 null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) ) )
@@ -352,13 +360,16 @@ final class Generator
       method.addStatement( "_props.set( $S, $N )", stepMethod.getName(), stepMethod.getName() );
     }
 
-    if ( StepMethodType.TERMINATE == stepMethod.getStepMethodType() )
+    if ( !returnHandled )
     {
-      method.addStatement( "return build()" );
-    }
-    else
-    {
-      method.addStatement( "return this" );
+      if ( StepMethodType.TERMINATE == stepMethod.getStepMethodType() )
+      {
+        method.addStatement( "return build()" );
+      }
+      else
+      {
+        method.addStatement( "return this" );
+      }
     }
     configureStepMethodReturns( descriptor, method, step, stepMethod.getStepMethodType() );
 
@@ -1341,13 +1352,11 @@ final class Generator
     final int propsSize = props.size();
 
     // Key step
-    builder.addStep().
-      addStep( "key",
-               "key",
-               TypeName.get( String.class ),
-               null,
-               null,
-               0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+    final Step keyStep = builder.addStep();
+    final StepMethodType keyStepMethodType = 0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE;
+    keyStep.addMethod( "key", "key", KEY_CLASSNAME, null, null, keyStepMethodType );
+    keyStep.addMethod( "key", "*key_int*", TypeName.INT, null, null, keyStepMethodType );
+    keyStep.addMethod( "key", "*key_string*", TypeName.get( String.class ), null, null, keyStepMethodType );
 
     final boolean hasSingleOptional = props.stream().filter( PropDescriptor::isOptional ).count() == 1;
     boolean hasRequiredAfterOptional = false;
@@ -1410,7 +1419,7 @@ final class Generator
    */
   private static void addBuildStep( @Nonnull final Step step )
   {
-    step.addStep( "build", "build", REACT_NODE_CLASSNAME, null, null, StepMethodType.TERMINATE );
+    step.addMethod( "build", "build", REACT_NODE_CLASSNAME, null, null, StepMethodType.TERMINATE );
   }
 
   /**
@@ -1418,12 +1427,12 @@ final class Generator
    */
   private static void addChildPropStepMethod( @Nonnull final Step step, @Nonnull final StepMethodType stepMethodType )
   {
-    step.addStep( "child",
-                  "*children_child*",
-                  REACT_NODE_CLASSNAME,
-                  null,
-                  null,
-                  stepMethodType );
+    step.addMethod( "child",
+                    "*children_child*",
+                    REACT_NODE_CLASSNAME,
+                    null,
+                    null,
+                    stepMethodType );
   }
 
   /**
@@ -1433,24 +1442,24 @@ final class Generator
   {
     final ParameterizedTypeName typeName =
       ParameterizedTypeName.get( ClassName.get( Stream.class ), WildcardTypeName.subtypeOf( REACT_NODE_CLASSNAME ) );
-    step.addStep( "children",
-                  "*children_stream*",
-                  typeName,
-                  null,
-                  null,
-                  StepMethodType.TERMINATE );
+    step.addMethod( "children",
+                    "*children_stream*",
+                    typeName,
+                    null,
+                    null,
+                    StepMethodType.TERMINATE );
   }
 
   private static void addPropStepMethod( @Nonnull final Step step,
                                          @Nonnull final PropDescriptor prop,
                                          @Nonnull final StepMethodType stepMethodType )
   {
-    step.addStep( prop.getName(),
-                  prop.getName(),
-                  TypeName.get( prop.getMethodType().getReturnType() ),
-                  prop.getMethod(),
-                  prop.getMethodType(),
-                  stepMethodType );
+    step.addMethod( prop.getName(),
+                    prop.getName(),
+                    TypeName.get( prop.getMethodType().getReturnType() ),
+                    prop.getMethod(),
+                    prop.getMethodType(),
+                    stepMethodType );
   }
 
   private static void addOriginatingTypes( @Nonnull final TypeElement element, @Nonnull final TypeSpec.Builder builder )

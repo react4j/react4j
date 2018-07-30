@@ -22,12 +22,12 @@ final class Step
     return _index;
   }
 
-  void addStep( @Nonnull final String name,
-                @Nonnull final String key,
-                @Nonnull final TypeName type,
-                @Nullable final ExecutableElement propMethod,
-                @Nullable final ExecutableType propMethodType,
-                @Nonnull final StepMethodType stepMethodType )
+  void addMethod( @Nonnull final String name,
+                  @Nonnull final String key,
+                  @Nonnull final TypeName type,
+                  @Nullable final ExecutableElement propMethod,
+                  @Nullable final ExecutableType propMethodType,
+                  @Nonnull final StepMethodType stepMethodType )
   {
     getMethods().add( new StepMethod( name, key, type, propMethod, propMethodType, stepMethodType ) );
   }

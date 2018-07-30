@@ -5,12 +5,23 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.Key;
 import react4j.React;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class GenericTypeComponentBuilder {
   private GenericTypeComponentBuilder() {
+  }
+
+  @Nonnull
+  static <T> ReactNode key(@Nonnull final Key key) {
+    return new Builder<T>().key( key );
+  }
+
+  @Nonnull
+  static <T> ReactNode key(final int key) {
+    return new Builder<T>().key( key );
   }
 
   @Nonnull
@@ -26,6 +37,12 @@ class GenericTypeComponentBuilder {
   @SuppressWarnings("unused")
   public interface Builder1<T> {
     @Nonnull
+    ReactNode key(@Nonnull Key key);
+
+    @Nonnull
+    ReactNode key(@Nonnull int key);
+
+    @Nonnull
     ReactNode key(@Nonnull String key);
   }
 
@@ -40,9 +57,21 @@ class GenericTypeComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode key(@Nonnull final String key) {
+    public final ReactNode key(@Nonnull final Key key) {
       _props.set( "key", Objects.requireNonNull( key ) );
       return build();
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode key(@Nonnull final int key) {
+      return key( Key.of( key ) );
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode key(@Nonnull final String key) {
+      return key( Key.of( key ) );
     }
 
     @Nonnull

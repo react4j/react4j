@@ -3,12 +3,23 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.Key;
 import react4j.React;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class RootPackageReactComponentBuilder {
   private RootPackageReactComponentBuilder() {
+  }
+
+  @Nonnull
+  static ReactNode key(@Nonnull final Key key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static ReactNode key(final int key) {
+    return new Builder().key( key );
   }
 
   @Nonnull
@@ -23,6 +34,12 @@ class RootPackageReactComponentBuilder {
 
   public interface Builder1 {
     @Nonnull
+    ReactNode key(@Nonnull Key key);
+
+    @Nonnull
+    ReactNode key(@Nonnull int key);
+
+    @Nonnull
     ReactNode key(@Nonnull String key);
   }
 
@@ -36,9 +53,21 @@ class RootPackageReactComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode key(@Nonnull final String key) {
+    public final ReactNode key(@Nonnull final Key key) {
       _props.set( "key", Objects.requireNonNull( key ) );
       return build();
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode key(@Nonnull final int key) {
+      return key( Key.of( key ) );
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode key(@Nonnull final String key) {
+      return key( Key.of( key ) );
     }
 
     @Nonnull

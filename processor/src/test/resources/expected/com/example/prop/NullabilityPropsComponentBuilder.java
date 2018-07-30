@@ -6,12 +6,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.Key;
 import react4j.React;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class NullabilityPropsComponentBuilder {
   private NullabilityPropsComponentBuilder() {
+  }
+
+  @Nonnull
+  static Builder2 key(@Nonnull final Key key) {
+    return new Builder().key( key );
+  }
+
+  @Nonnull
+  static Builder2 key(final int key) {
+    return new Builder().key( key );
   }
 
   @Nonnull
@@ -25,6 +36,12 @@ class NullabilityPropsComponentBuilder {
   }
 
   public interface Builder1 {
+    @Nonnull
+    Builder2 key(@Nonnull Key key);
+
+    @Nonnull
+    Builder2 key(@Nonnull int key);
+
     @Nonnull
     Builder2 key(@Nonnull String key);
   }
@@ -47,9 +64,21 @@ class NullabilityPropsComponentBuilder {
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final String key) {
+    public final Builder2 key(@Nonnull final Key key) {
       _props.set( "key", Objects.requireNonNull( key ) );
       return this;
+    }
+
+    @Override
+    @Nonnull
+    public final Builder2 key(@Nonnull final int key) {
+      return key( Key.of( key ) );
+    }
+
+    @Override
+    @Nonnull
+    public final Builder2 key(@Nonnull final String key) {
+      return key( Key.of( key ) );
     }
 
     @Override
