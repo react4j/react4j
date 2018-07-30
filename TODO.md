@@ -18,7 +18,7 @@
 * Arez Components that only have dependencies on props at end of render could warn if they may not need to
   be arez components.
 
-* Consider rewriting @Computed and @Autorun annotations so that they have LOWEST priority.
+* Consider rewriting `@Computed`, `@Memoize` and `@Autorun` annotations so that they have LOWEST priority.
 
 * If a ReactArezComponent is disposed then it should force a re-binding of java component to native component
   next time render is invoked.
