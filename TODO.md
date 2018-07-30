@@ -15,9 +15,6 @@
 
 * Fragments synthesized? https://github.com/kay-is/react-from-zero/blob/master/04-components.html
 
-* Add ability for ReactArezComponent to skip check that forces render to have observe. Sometimes just have actions
-  that want to be triggers.
-
 * Arez Components that only have dependencies on props at end of render could warn if they may not need to
   be arez components.
 
