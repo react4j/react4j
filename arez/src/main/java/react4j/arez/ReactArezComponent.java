@@ -163,7 +163,7 @@ public abstract class ReactArezComponent
    *
    * @return the result of rendering.
    */
-  @Track( name = "render", priority = Priority.LOW )
+  @Track( name = "render", priority = Priority.LOW, observeLowerPriorityDependencies = true )
   @Nullable
   protected ReactNode trackRender()
   {

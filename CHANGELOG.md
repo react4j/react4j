@@ -25,6 +25,12 @@
 * **\[dom\]** Add `DOM.<element>(..., JsArray<ReactNode> children)` methods. These constructions are useful when
   creating elements where you do not want the overhead of Java collections.
 * **\[dom\]** Add `DOM.thead(...)` and `DOM.tbody(...)` element factory methods.
+* **\[arez\]** Configure the `ReactArezComponent.trackRender()` method so that it can observe lower priority
+  dependencies. This is useful when `@Computed` properties are accessed from within the `render()` method. If
+  the `@Computed` is a lower priority than render (which is `LOW`) then it will not be recalculated if the render
+  method ceases to observe the value. This is of particular relevance as the render method will cease to observe
+  all computeds if a `@Prop` is disposed as render will return a `null`. Thus if the `@Computed` also depends upon
+  the prop and is not referenced by an autorun within the class then it need not check whether the prop is disposed.
 
 ### [v0.88](https://github.com/react4j/react4j/tree/v0.88) (2018-07-26)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.87...v0.88)
