@@ -2,6 +2,12 @@
 
 ### Very High Priority
 
+* Consider whether can turn off remove `@Callback` annotation altogether.
+- It seems we probably want to turn off `@Action` wrapping for `@Callback`? Unless (see next point)
+- EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
+  schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
+  and will need to be marked as runImmediately=false)
+- if we support disabling change checking on props then do we need callbacks anymore?
 
 * Start to add javascript tests - starting with braincheck ala
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
@@ -86,10 +92,6 @@
   - https://github.com/reactjs/react-transition-group
   - https://reactcommunity.org/react-transition-group/
   or maybe https://react-move.js.org/
-
-* EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
-  schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
-  and will need to be marked as runImmediately=false)
 
 * React `classSet` addon equiv. Also see scalajs variant - https://github.com/japgolly/scalajs-react/blob/master/doc/USAGE.md#react-extensions
 
