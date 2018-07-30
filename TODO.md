@@ -13,11 +13,6 @@
 * Arez Components that only have dependencies on props at end of render could warn if they may not need to
   be arez components.
 
-* Consider rewriting `@Computed`, `@Memoize` and `@Autorun` annotations so that they have LOWEST priority.
-
-* If a ReactArezComponent is disposed then it should force a re-binding of java component to native component
-  next time render is invoked.
-
 * Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
   - Pointer Events
 
@@ -28,6 +23,17 @@
   - Add support for the new ref proposal.
     - Support refs in generated builders.
     - Consider typed refs for DOM factories
+
+### Dispose Problems
+
+* Consider rewriting `@Computed`, `@Memoize` and `@Autorun` annotations so that they have LOWEST priority.
+
+* If a ReactArezComponent is disposed then it should force a re-binding of java component to native component
+  next time render is invoked.
+
+* Rather than using `@Dependency` to force the disposal of a component when a prop is disposed, we should instead
+  set boolean flag that just indicates that we should skip the render? We probably need to add in the equivalent
+  of XonDispose observers that just set this flag if props go bad. We can then unset this flag in shouldComponentUpdate
 
 ### High Priorities
 
@@ -45,10 +51,6 @@
 
 * Add gwt-boot example
   - https://github.com/gwtboot/gwt-boot-modules/blob/master/README.md
-
-* Rather than using `@Dependency` to force the disposal of a component when a prop is disposed, we should instead
-  set boolean flag that just indicates that we should skip the render? We probably need to add in the equivalent
-  of XonDispose observers that just set this flag if props go bad. We can then unset this flag in shouldComponentUpdate
 
 ### Medium Priorities
 
