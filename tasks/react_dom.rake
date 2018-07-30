@@ -82,6 +82,29 @@ public final class DOM
     return ReactNode.of( content );
   }
 
+  @Nonnull
+  public static ReactNode fragment( @Nonnull final ReactNode... children )
+  {
+    return React.createFragment( children );
+  }
+
+  @Nonnull
+  public static ReactNode fragment( @Nonnull final JsArray<ReactNode> children )
+  {
+    return React.createFragment( children );
+  }
+
+  @Nonnull
+  public static ReactNode fragment( @Nonnull final List<? extends ReactNode> children )
+  {
+    return React.createFragment( children );
+  }
+
+  @Nonnull
+  public static ReactNode fragment( @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return React.createFragment( children );
+  }
 HEADER
   factories.each_pair do |key, prop_type|
     content += <<HEADER
@@ -141,9 +164,21 @@ HEADER
   }
 
   @Nonnull
+  public static ReactNode #{key}( @Nonnull final List<? extends ReactNode> children )
+  {
+    return #{key}( children.stream() );
+  }
+
+  @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final Stream<? extends ReactNode> children )
   {
     return #{key}( props, children.toArray( ReactNode[]::new ) );
+  }
+
+  @Nonnull
+  public static ReactNode #{key}( @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return #{key}( children.toArray( ReactNode[]::new ) );
   }
 HEADER
   end
