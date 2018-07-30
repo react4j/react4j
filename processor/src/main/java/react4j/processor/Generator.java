@@ -150,7 +150,11 @@ final class Generator
       {
         ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
       }
-      else if ( stepMethod.isKeyIntrinsic() || stepMethod.isChildrenStreamIntrinsic() )
+      else if ( stepMethod.isChildrenStreamIntrinsic() )
+      {
+        parameter.addAnnotation( NONNULL_CLASSNAME );
+      }
+      else if ( stepMethod.isKeyIntrinsic() )
       {
         parameter.addAnnotation( NONNULL_CLASSNAME );
       }
