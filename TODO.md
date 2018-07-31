@@ -37,9 +37,6 @@
 
 * Consider rewriting `@Computed`, `@Memoize` and `@Autorun` annotations so that they have LOWEST priority.
 
-* If a ReactArezComponent is disposed then it should force a re-binding of java component to native component
-  next time render is invoked.
-
 ### High Priorities
 
 * Add default values for state via `@InitialState`. Can be instance methods, static methods or static final fields?
