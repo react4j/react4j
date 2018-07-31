@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+* **\[processor\]** Change the annotation processor so that only whitelisted annotations are copied to
+  subclasses and overridden methods. The whitelisted annotations include `javax.annotations.Nonnull`,
+  `javax.annotations.Nullable` and `java.lang.Deprecated`.
+
 ### [v0.89](https://github.com/react4j/react4j/tree/v0.89) (2018-07-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.88...v0.89)
 

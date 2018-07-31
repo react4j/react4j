@@ -149,7 +149,7 @@ final class Generator
       final ExecutableElement propMethod = stepMethod.getPropMethod();
       if ( null != propMethod )
       {
-        ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
+        ProcessorUtil.copyWhitelistedAnnotations( propMethod, parameter );
       }
       else if ( stepMethod.isChildrenStreamIntrinsic() )
       {
@@ -256,7 +256,7 @@ final class Generator
           final ExecutableElement propMethod = stepMethod.getPropMethod();
           if ( null != propMethod )
           {
-            ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
+            ProcessorUtil.copyWhitelistedAnnotations( propMethod, parameter );
           }
           else if ( stepMethod.isKeyIntrinsic() || stepMethod.isChildrenStreamIntrinsic() )
           {
@@ -294,7 +294,7 @@ final class Generator
     final ExecutableElement propMethod = stepMethod.getPropMethod();
     if ( null != propMethod )
     {
-      ProcessorUtil.copyDocumentedAnnotations( propMethod, parameter );
+      ProcessorUtil.copyWhitelistedAnnotations( propMethod, parameter );
     }
     else if ( stepMethod.isKeyIntrinsic() || stepMethod.isChildrenStreamIntrinsic() )
     {
@@ -675,7 +675,7 @@ final class Generator
         returns( TypeName.get( returnType ) );
     ProcessorUtil.copyTypeParameters( methodType, method );
     ProcessorUtil.copyAccessModifiers( methodElement, method );
-    ProcessorUtil.copyDocumentedAnnotations( methodElement, method );
+    ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
 
     method.addAnnotation( Override.class );
 
@@ -756,7 +756,7 @@ final class Generator
     final MethodSpec.Builder method = MethodSpec.methodBuilder( methodElement.getSimpleName().toString() );
     ProcessorUtil.copyTypeParameters( stateValue.getSetterType(), method );
     ProcessorUtil.copyAccessModifiers( methodElement, method );
-    ProcessorUtil.copyDocumentedAnnotations( methodElement, method );
+    ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
 
     method.addAnnotation( Override.class );
 
@@ -775,7 +775,7 @@ final class Generator
     final TypeName type = TypeName.get( parameterType );
     final ParameterSpec.Builder param =
       ParameterSpec.builder( type, paramName, Modifier.FINAL );
-    ProcessorUtil.copyDocumentedAnnotations( element, param );
+    ProcessorUtil.copyWhitelistedAnnotations( element, param );
     method.addParameter( param.build() );
 
     method.addStatement(
@@ -796,7 +796,7 @@ final class Generator
         returns( TypeName.get( returnType ) );
     ProcessorUtil.copyTypeParameters( stateValue.getGetterType(), method );
     ProcessorUtil.copyAccessModifiers( methodElement, method );
-    ProcessorUtil.copyDocumentedAnnotations( methodElement, method );
+    ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
 
     method.addAnnotation( Override.class );
 
@@ -982,7 +982,7 @@ final class Generator
         returns( TypeName.get( callback.getMethodType().getReturnType() ) );
     ProcessorUtil.copyTypeParameters( callback.getMethodType(), method );
     ProcessorUtil.copyAccessModifiers( callback.getMethod(), method );
-    ProcessorUtil.copyDocumentedAnnotations( callback.getMethod(), method );
+    ProcessorUtil.copyWhitelistedAnnotations( callback.getMethod(), method );
 
     final AnnotationSpec.Builder annotation =
       AnnotationSpec.builder( ACTION_CLASSNAME ).
@@ -996,7 +996,7 @@ final class Generator
       final VariableElement param = callback.getMethod().getParameters().get( i );
       final ParameterSpec.Builder parameter =
         ParameterSpec.builder( TypeName.get( paramType ), param.getSimpleName().toString(), Modifier.FINAL );
-      ProcessorUtil.copyDocumentedAnnotations( param, parameter );
+      ProcessorUtil.copyWhitelistedAnnotations( param, parameter );
       method.addParameter( parameter.build() );
     }
     final String params =

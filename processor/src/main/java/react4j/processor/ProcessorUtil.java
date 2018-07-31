@@ -159,34 +159,35 @@ final class ProcessorUtil
     }
   }
 
-  static void copyDocumentedAnnotations( @Nonnull final AnnotatedConstruct element,
-                                         @Nonnull final MethodSpec.Builder builder )
+  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                          @Nonnull final MethodSpec.Builder builder )
   {
     for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )
     {
-      if ( shouldCopyAnnotation( annotation ) )
+      if ( shouldCopyAnnotation( annotation.getAnnotationType().toString() ) )
       {
         builder.addAnnotation( AnnotationSpec.get( annotation ) );
       }
     }
   }
 
-  static void copyDocumentedAnnotations( @Nonnull final AnnotatedConstruct element,
-                                         @Nonnull final ParameterSpec.Builder builder )
+  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                          @Nonnull final ParameterSpec.Builder builder )
   {
     for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )
     {
-      if ( shouldCopyAnnotation( annotation ) )
+      if ( shouldCopyAnnotation( annotation.getAnnotationType().toString() ) )
       {
         builder.addAnnotation( AnnotationSpec.get( annotation ) );
       }
     }
   }
 
-  private static boolean shouldCopyAnnotation( @Nonnull final AnnotationMirror annotation )
+  private static boolean shouldCopyAnnotation( @Nonnull final String classname )
   {
-    return !annotation.getAnnotationType().toString().startsWith( "react4j.annotations." ) &&
-           null != annotation.getAnnotationType().asElement().getAnnotation( Documented.class );
+    return Constants.NONNULL_ANNOTATION_CLASSNAME.equals( classname ) ||
+           Constants.NULLABLE_ANNOTATION_CLASSNAME.equals( classname ) ||
+           Constants.DEPRECATED_ANNOTATION_CLASSNAME.equals( classname );
   }
 
   static void copyTypeParameters( @Nonnull final ExecutableType action, @Nonnull final MethodSpec.Builder builder )

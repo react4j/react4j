@@ -21,6 +21,7 @@ final class Constants
   static final String ACTION_ANNOTATION_CLASSNAME = "arez.annotations.Action";
   static final String NONNULL_ANNOTATION_CLASSNAME = "javax.annotation.Nonnull";
   static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
+  static final String DEPRECATED_ANNOTATION_CLASSNAME = "java.lang.Deprecated";
 
   private Constants()
   {
