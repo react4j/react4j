@@ -40,10 +40,6 @@
 * If a ReactArezComponent is disposed then it should force a re-binding of java component to native component
   next time render is invoked.
 
-* Rather than using `@Dependency` to force the disposal of a component when a prop is disposed, we should instead
-  set boolean flag that just indicates that we should skip the render? We probably need to add in the equivalent
-  of XonDispose observers that just set this flag if props go bad. We can then unset this flag in shouldComponentUpdate
-
 ### High Priorities
 
 * Add default values for state via `@InitialState`. Can be instance methods, static methods or static final fields?
