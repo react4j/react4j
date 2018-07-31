@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.89](https://github.com/react4j/react4j/tree/v0.89) (2018-07-31)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.88...v0.89)
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.103`.
 * **\[dom\]** Improve the documentation of `react4j.dom.proptypes.html.RefConsumer` to clarity that the
