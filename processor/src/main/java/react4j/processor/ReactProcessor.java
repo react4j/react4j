@@ -1055,9 +1055,12 @@ public final class ReactProcessor
     }
 
     final boolean runArezScheduler =
-      hasAnyAutorunMethods( typeElement ) ||
-      hasAnyKeepAliveComputedMethods( typeElement ) ||
-      hasAnyDependencyMethods( typeElement );
+      isArezComponent &&
+      (
+        hasAnyAutorunMethods( typeElement ) ||
+        hasAnyKeepAliveComputedMethods( typeElement ) ||
+        hasAnyDependencyMethods( typeElement )
+      );
 
     final boolean needsInjection = isInjectionRequired( typeElement );
     final boolean isDaggerPresent = needsInjection && isDaggerRequired( typeElement );
