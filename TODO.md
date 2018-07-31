@@ -14,8 +14,6 @@
 
 * Collections returned from props should be made immutable.
 
-* Move to using `React.createRef()` exclusively for refs. See https://www.fullstackreact.com/articles/using-refs-in-react/
-
 * Arez Components that only have dependencies on props at end of render could warn if they may not need to
   be arez components.
 
@@ -28,6 +26,8 @@
   - Add `snapshot` parameter to `componentDidUpdate`
   - Add support for the new ref proposal.
     - Consider typed refs for DOM factories
+    - Support `React.createRef()` for refs as well as callbacks. They should be typed as well:
+      See https://www.fullstackreact.com/articles/using-refs-in-react/
 
 ### Dispose Problems
 
