@@ -1054,14 +1054,6 @@ public final class ReactProcessor
       }
     }
 
-    final boolean runArezScheduler =
-      isArezComponent &&
-      (
-        hasAnyAutorunMethods( typeElement ) ||
-        hasAnyKeepAliveComputedMethods( typeElement ) ||
-        hasAnyDependencyMethods( typeElement )
-      );
-
     final boolean needsInjection = isInjectionRequired( typeElement );
     final boolean isDaggerPresent = needsInjection && isDaggerRequired( typeElement );
 
@@ -1075,7 +1067,15 @@ public final class ReactProcessor
     descriptor.setNeedsInjection( needsInjection );
     descriptor.setNeedsDaggerIntegration( isDaggerPresent );
     descriptor.setArezComponent( isArezComponent );
-    descriptor.setRunArezScheduler( runArezScheduler );
+
+    if ( isArezComponent )
+    {
+      final boolean runArezScheduler =
+        hasAnyAutorunMethods( typeElement ) ||
+        hasAnyKeepAliveComputedMethods( typeElement ) ||
+        hasAnyDependencyMethods( typeElement );
+      descriptor.setRunArezScheduler( runArezScheduler );
+    }
   }
 
   private boolean shouldUpdateOnChange( @Nonnull final ExecutableElement method )
