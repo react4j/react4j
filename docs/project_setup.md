@@ -12,8 +12,8 @@ developed using an IDE and this is the recommended approach.
 
 Most React4j applications make use of the `react4j-dom` library for the DOM factories and this library
 needs to be added to the Maven `pom.xml` as a `compile` scope dependency. It will transitively include
-the `react4j-core` and `react4j-annotations`. To add this library to your Maven project, simply
-add the following to your `pom.xml`:
+the `react4j-core` library. To add this library to your Maven project, simply add the following to your
+`pom.xml`:
 
 ```xml
 <project>
@@ -94,7 +94,7 @@ GWT module in your `.gwt.xml` file. For React4j applications that use Arez compo
 ```xml
 <module>
   ...
-  <inherits name='react4j.arez.ReactArez'/>
+  <inherits name='react4j.arez.Arez'/>
   ...
 </module>
 ```
@@ -104,7 +104,7 @@ Otherwise you can simply rely on the dom library via:
 ```xml
 <module>
   ...
-  <inherits name='react4j.dom.ReactDOM'/>
+  <inherits name='react4j.dom.Dom'/>
   ...
 </module>
 ```
@@ -130,7 +130,7 @@ If you are using Arez components you can enable further invariant checking via:
 ```xml
 <module>
   ...
-  <inherits name='react4j.arez.ReactArezDev'/>
+  <inherits name='react4j.arez.ArezDev'/>
   ...
 </module>
 ```
