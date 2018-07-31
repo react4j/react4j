@@ -1089,12 +1089,7 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        final TypeMirror returnType = method.getReturnType();
-        return TypeKind.DECLARED != returnType.getKind() ||
-               null == ProcessorUtil.findAnnotationByType( processingEnv.getTypeUtils().asElement( returnType ),
-                                                           Constants.JS_FUNCTION_CLASSNAME ) &&
-               null == ProcessorUtil.findAnnotationByType( processingEnv.getTypeUtils().asElement( returnType ),
-                                                           Constants.FUNCTIONAL_INTERFACE_CLASSNAME );
+        return true;
     }
   }
 

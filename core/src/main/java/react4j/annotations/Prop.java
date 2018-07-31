@@ -55,9 +55,7 @@ public @interface Prop
    * method. If set to {@link Feature#ENABLE} then the code will check the prop when implementing
    * <code>shouldComponentUpdate</code>. If set to {@link Feature#DISABLE} then the prop will be ignored
    * when implementing <code>shouldComponentUpdate</code>. If set to {@link Feature#AUTODETECT} then the
-   * annotation processor will treat it as {@link Feature#ENABLE} if the type of the prop is annotated with
-   * either {@link jsinterop.annotations.JsFunction} or {@link FunctionalInterface}, otherwise it will
-   * be treated as {@link Feature#ENABLE}.
+   * annotation processor will treat it as {@link Feature#ENABLE}.
    *
    * @return the enum indicating whether prop should trigger a change if it updated.
    */

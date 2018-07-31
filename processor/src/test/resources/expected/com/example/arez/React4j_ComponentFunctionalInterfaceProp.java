@@ -1,5 +1,6 @@
 package com.example.arez;
 
+import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
 import arez.annotations.ObservableRef;
@@ -44,6 +45,17 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
   @Nonnull
   @ObservableRef
   protected abstract arez.Observable getValueObservable();
+
+  @Override
+  @Action
+  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    boolean modified = false;
+    if ( !Js.isTripleEqual( props().get( "value" ), null == nextProps ? null : nextProps.get( "value" ) ) ) {
+      modified = true;
+      getValueObservable().reportChanged();
+    }
+    return modified;
+  }
 
   @JsType(
       isNative = true,
