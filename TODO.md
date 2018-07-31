@@ -9,6 +9,10 @@
   and will need to be marked as runImmediately=false)
 - if we support disabling change checking on props then do we need callbacks anymore?
 
+* Should we mark `@JsFunction`/`@FunctionalInterface` props that are not via a callback. They can be tracked as
+  coming from a callback by magic prop put on function. Does that mean we should track `@FunctionalInterface` props
+  that are not `@JsFunction` instances?  
+
 * Start to add javascript tests - starting with braincheck ala
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
 
