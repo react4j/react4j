@@ -15,6 +15,8 @@
   not need to include checks to see if props are disposed unless accessed from other observers.
 * **\[processor\]** Detect `@Memoize` methods and default priority to `LOWEST` unless specified.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.104`.
+* **\[processor\]** Generate a compile error if any react4j component lifecycle method is annotated with
+  an Arez annotation that is not `@Action`.
 
 ### [v0.89](https://github.com/react4j/react4j/tree/v0.89) (2018-07-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.88...v0.89)

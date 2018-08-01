@@ -907,6 +907,23 @@ public final class ReactProcessor
         .map( m -> new MethodDescriptor( m, (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), m ) ) )
         .collect( Collectors.toList() );
 
+    for ( final MethodDescriptor method : overriddenLifecycleMethods )
+    {
+      for ( final AnnotationMirror mirror : method.getMethod().getAnnotationMirrors() )
+      {
+        final String classname = mirror.getAnnotationType().toString();
+        if ( classname.startsWith( "arez.annotations." ) &&
+             !classname.equals( Constants.ACTION_ANNOTATION_CLASSNAME ) )
+        {
+          throw new ReactProcessorException( "@ReactComponent target has a lifecycle method '" +
+                                             method.getMethod().getSimpleName() + "' with an invalid arez " +
+                                             "annotation '" + classname + "'. It is invalid for any arez annotation " +
+                                             "other than " + Constants.ACTION_ANNOTATION_CLASSNAME + " to be on a " +
+                                             "lifecycle method.", method.getMethod() );
+        }
+      }
+    }
+
     descriptor.setLifecycleMethods( overriddenLifecycleMethods );
   }
 
