@@ -23,6 +23,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -47,6 +48,8 @@ final class Generator
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
+  private static final ClassName COMPUTED_CLASSNAME = ClassName.get( "arez.annotations", "Computed" );
+  private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVABLE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ObservableRef" );
@@ -619,6 +622,13 @@ final class Generator
         }
       }
     }
+    if ( descriptor.isArezComponent() )
+    {
+      for ( final MethodDescriptor method : descriptor.getComputedMethods() )
+      {
+        builder.addMethod( buildComputedWrapperMethod( method ).build() );
+      }
+    }
 
     if ( !descriptor.getLifecycleMethods().isEmpty() )
     {
@@ -627,6 +637,82 @@ final class Generator
     builder.addType( buildNativeComponent( descriptor ) );
 
     return builder.build();
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildComputedWrapperMethod( @Nonnull final MethodDescriptor descriptor )
+  {
+    return generateOverrideMethod( descriptor ).addAnnotation( buildComputedAnnotation( descriptor ).build() );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder generateOverrideMethod( final @Nonnull MethodDescriptor descriptor )
+  {
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( descriptor.getMethod().getSimpleName().toString() ).
+        addAnnotation( Override.class ).
+        returns( TypeName.get( descriptor.getMethodType().getReturnType() ) );
+    ProcessorUtil.copyTypeParameters( descriptor.getMethodType(), method );
+    ProcessorUtil.copyAccessModifiers( descriptor.getMethod(), method );
+    ProcessorUtil.copyWhitelistedAnnotations( descriptor.getMethod(), method );
+
+    final int paramCount = descriptor.getMethod().getParameters().size();
+    for ( int i = 0; i < paramCount; i++ )
+    {
+      final TypeMirror paramType = descriptor.getMethodType().getParameterTypes().get( i );
+      final VariableElement param = descriptor.getMethod().getParameters().get( i );
+      final ParameterSpec.Builder parameter =
+        ParameterSpec.builder( TypeName.get( paramType ), param.getSimpleName().toString(), Modifier.FINAL );
+      ProcessorUtil.copyWhitelistedAnnotations( param, parameter );
+      method.addParameter( parameter.build() );
+    }
+    final String params =
+      0 == paramCount ?
+      "" :
+      IntStream.range( 0, paramCount )
+        .mapToObj( i -> descriptor.getMethod().getParameters().get( i ).getSimpleName().toString() )
+        .collect( Collectors.joining( "," ) );
+
+    final boolean isVoid = descriptor.getMethodType().getReturnType().getKind() == TypeKind.VOID;
+
+    method.addStatement( ( isVoid ? "" : "return " ) + "super.$N(" + params + ")",
+                         descriptor.getMethod().getSimpleName() );
+    return method;
+  }
+
+  @Nonnull
+  private static AnnotationSpec.Builder buildComputedAnnotation( @Nonnull final MethodDescriptor descriptor )
+  {
+    final AnnotationSpec.Builder annotation =
+      AnnotationSpec.builder( COMPUTED_CLASSNAME ).
+        addMember( "priority", "$T.LOWEST", PRIORITY_CLASSNAME );
+    final AnnotationValue nameValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
+                                                 "name" );
+    if ( null != nameValue )
+    {
+      annotation.addMember( "name", "$S", nameValue.getValue().toString() );
+    }
+    final AnnotationValue keepAliveValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
+                                                 "keepAlive" );
+    if ( null != keepAliveValue )
+    {
+      annotation.addMember( "keepAlive", "$N", keepAliveValue.getValue().toString() );
+    }
+    final AnnotationValue observeLowerPriorityDependenciesValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
+                                                 "observeLowerPriorityDependencies" );
+    if ( null != observeLowerPriorityDependenciesValue )
+    {
+      annotation.addMember( "observeLowerPriorityDependencies",
+                            "$N",
+                            observeLowerPriorityDependenciesValue.getValue().toString() );
+    }
+    return annotation;
   }
 
   @Nonnull

@@ -1,4 +1,4 @@
-package com.example.arez;
+package com.example.arez.computed;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Computed;
@@ -16,18 +16,18 @@ import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 
 @ArezComponent(
-    name = "KeepAliveComputedArezReactComponent",
+    name = "ParameterizedComputedComponent",
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class React4j_KeepAliveComputedArezReactComponent extends KeepAliveComputedArezReactComponent {
+abstract class React4j_ParameterizedComputedComponent extends ParameterizedComputedComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "KeepAliveComputedArezReactComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ParameterizedComputedComponent" );
     }
     return componentConstructor;
   }
@@ -40,10 +40,12 @@ abstract class React4j_KeepAliveComputedArezReactComponent extends KeepAliveComp
   @Override
   @Computed(
       priority = Priority.LOWEST,
-      keepAlive = true
+      name = "foo",
+      keepAlive = true,
+      observeLowerPriorityDependencies = true
   )
-  int myAutorun() {
-    return super.myAutorun();
+  boolean isActive() {
+    return super.isActive();
   }
 
   @JsType(
@@ -63,15 +65,15 @@ abstract class React4j_KeepAliveComputedArezReactComponent extends KeepAliveComp
         @Nonnull JsPropertyMap<Object> arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<KeepAliveComputedArezReactComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<ParameterizedComputedComponent> implements Lifecycle {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected KeepAliveComputedArezReactComponent createComponent() {
-      return new Arez_React4j_KeepAliveComputedArezReactComponent();
+    protected ParameterizedComputedComponent createComponent() {
+      return new Arez_React4j_ParameterizedComputedComponent();
     }
 
     @Override

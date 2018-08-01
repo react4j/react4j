@@ -5,6 +5,14 @@
 * **\[processor\]** Change the annotation processor so that only whitelisted annotations are copied to
   subclasses and overridden methods. The whitelisted annotations include `javax.annotations.Nonnull`,
   `javax.annotations.Nullable` and `java.lang.Deprecated`.
+* **\[processor\]** Change the way the annotation processor handles the Arez annotation `@Computed`.
+  If the annotation processor detects that the user has not supplied a `priority` then the annotation
+  processor will override the method and redefine the priority as `LOWEST`. This simplifies code in
+  `@Computed` methods that will not attempt to schedule before the `render()` reaction that is scheduled
+  at `LOW` priority and will thus be un-observed if no longer needed. In the scenario where a `@Computed`
+  is derived from a `@Prop` that is an Arez element and the arez element is disposed, then the `render()`
+  method will trigger, render null and un-observe any `@Computed` methods. Thus `@Computed` methods will
+  not need to include checks to see if props are disposed unless accessed from other observers.
 
 ### [v0.89](https://github.com/react4j/react4j/tree/v0.89) (2018-07-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.88...v0.89)

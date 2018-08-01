@@ -1,8 +1,6 @@
-package com.example.arez;
+package com.example.arez.computed;
 
 import arez.annotations.ArezComponent;
-import arez.annotations.Computed;
-import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,34 +14,19 @@ import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 
 @ArezComponent(
-    name = "KeepAliveComputedArezReactComponent",
-    deferSchedule = true
+    name = "AlreadyPrioritizedComputedComponent"
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class React4j_KeepAliveComputedArezReactComponent extends KeepAliveComputedArezReactComponent {
+abstract class React4j_AlreadyPrioritizedComputedComponent extends AlreadyPrioritizedComputedComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "KeepAliveComputedArezReactComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "AlreadyPrioritizedComputedComponent" );
     }
     return componentConstructor;
-  }
-
-  @Override
-  protected final void triggerScheduler() {
-    getContext().triggerScheduler();
-  }
-
-  @Override
-  @Computed(
-      priority = Priority.LOWEST,
-      keepAlive = true
-  )
-  int myAutorun() {
-    return super.myAutorun();
   }
 
   @JsType(
@@ -63,15 +46,15 @@ abstract class React4j_KeepAliveComputedArezReactComponent extends KeepAliveComp
         @Nonnull JsPropertyMap<Object> arg1);
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<KeepAliveComputedArezReactComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<AlreadyPrioritizedComputedComponent> implements Lifecycle {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected KeepAliveComputedArezReactComponent createComponent() {
-      return new Arez_React4j_KeepAliveComputedArezReactComponent();
+    protected AlreadyPrioritizedComputedComponent createComponent() {
+      return new Arez_React4j_AlreadyPrioritizedComputedComponent();
     }
 
     @Override

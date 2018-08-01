@@ -16,6 +16,14 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
+        new Object[]{ "com.example.arez.computed.AlreadyPrioritizedComputedComponent", false, false },
+        new Object[]{ "com.example.arez.computed.AnnotatedComputedComponent", false, false },
+        new Object[]{ "com.example.arez.computed.BasicComputedComponent", false, false },
+        new Object[]{ "com.example.arez.computed.GenericsReturnComputedComponent", false, false },
+        new Object[]{ "com.example.arez.computed.ParameterizedComputedComponent", false, false },
+        new Object[]{ "com.example.arez.computed.ParameterizedReturnComputedComponent", false, false },
+        new Object[]{ "com.example.arez.computed.ProtectedComputedComponent", false, false },
+        new Object[]{ "com.example.arez.computed.PublicComputedComponent", false, false },
         new Object[]{ "com.example.arez.AutorunArezReactComponent", false, false },
         new Object[]{ "com.example.arez.BasicArezReactComponent", false, false },
         new Object[]{ "com.example.arez.ComponentFunctionalInterfaceProp", false, false },

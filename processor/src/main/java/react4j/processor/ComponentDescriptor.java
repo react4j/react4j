@@ -57,6 +57,11 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<StateValueDescriptor> _stateValues;
+  /**
+   * Methods annotated with arez's @Computed annotation. Should be null if not an arez component
+   */
+  @Nullable
+  private List<MethodDescriptor> _computedMethods;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
@@ -266,6 +271,19 @@ final class ComponentDescriptor
         throw new ReactProcessorException( "@Callback target must not be a lifecycle method", m );
       }
     }
+  }
+
+  @Nonnull
+  List<MethodDescriptor> getComputedMethods()
+  {
+    assert null != _computedMethods;
+    return _computedMethods;
+  }
+
+  void setComputedMethods( @Nonnull final List<MethodDescriptor> computedMethods )
+  {
+    assert isArezComponent();
+    _computedMethods = Objects.requireNonNull( computedMethods );
   }
 
   @Nonnull
