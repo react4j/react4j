@@ -1096,7 +1096,7 @@ public final class ReactProcessor
             4 == parameters.size() ) )
     {
       throw new ReactProcessorException( "The @" + Constants.COMPUTED_ANNOTATION_CLASSNAME + " annotation was " +
-                                         "expected to have the parameters name, priority. keepAlive and " +
+                                         "expected to have the parameters name, priority, keepAlive and " +
                                          "observeLowerPriorityDependencies but has " + parameters + ". The " +
                                          "react4j annotation processor needs to be updated to handle " +
                                          "the change in parameters.", typeElement );
