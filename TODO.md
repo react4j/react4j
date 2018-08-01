@@ -35,6 +35,8 @@
 
 ### High Priorities
 
+* Update generated builder to allow skipping of default steps and onto next step and set default value in builder
+
 * Add default values for state via `@InitialState`. Can be instance methods, static methods or static final fields?
 
 * Change state setters so that if during construct then sets initial state otherwise schedules state update.
