@@ -14,6 +14,7 @@
   method will trigger, render null and un-observe any `@Computed` methods. Thus `@Computed` methods will
   not need to include checks to see if props are disposed unless accessed from other observers.
 * **\[processor\]** Detect `@Memoize` methods and default priority to `LOWEST` unless specified.
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.104`.
 
 ### [v0.89](https://github.com/react4j/react4j/tree/v0.89) (2018-07-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.88...v0.89)
