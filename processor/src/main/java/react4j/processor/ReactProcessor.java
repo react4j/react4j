@@ -231,7 +231,13 @@ public final class ReactProcessor
     descriptor.sortProps();
 
     verifyNoUnexpectedAbstractMethod( descriptor );
+    verifyStateNotAnnotatedWithArezAnnotations( descriptor );
 
+    return descriptor;
+  }
+
+  private void verifyStateNotAnnotatedWithArezAnnotations( @Nonnull final ComponentDescriptor descriptor )
+  {
     for ( final StateValueDescriptor stateValue : descriptor.getStateValues() )
     {
       final ExecutableElement getter = stateValue.getGetter();
@@ -255,8 +261,6 @@ public final class ReactProcessor
         }
       }
     }
-
-    return descriptor;
   }
 
   private void linkStateMethods( @Nonnull final ComponentDescriptor descriptor )
