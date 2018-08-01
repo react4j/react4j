@@ -19,6 +19,7 @@
   an Arez annotation that is not `@Action`.
 * **\[processor\]** Generate a compile error if a component has arez annotations but does not
   extend `ReactArezComponent`.
+* **\[processor\]** Generate a compile error if a `@Prop` method is annotated with an arez annotation.
 
 ### [v0.89](https://github.com/react4j/react4j/tree/v0.89) (2018-07-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.88...v0.89)

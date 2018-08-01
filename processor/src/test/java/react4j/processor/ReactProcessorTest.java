@@ -285,6 +285,8 @@ public class ReactProcessorTest
                       "The @Callback target has 1 parameters but the type parameter specified a callback with method type com.example.callback.TooFewParams.CustomHandler that has a callback method with 2 parameters. The @Callback target should have zero parameters or match the number of parameter in the target method onMouseEvent." },
         new Object[]{ "com.example.callback.TooManyParams",
                       "The @Callback target has 1 parameters but the type parameter specified a callback with method type react4j.annotations.Callback.Procedure that has a callback method with 0 parameters. The @Callback target should have zero parameters or match the number of parameter in the target method call." },
+        new Object[]{ "com.example.prop.ArezAnnotatedProp",
+                      "@Prop target must not be annotated with any arez annotations but is annotated by 'arez.annotations.Computed'." },
         new Object[]{ "com.example.prop.BadNameProp",
                       "@Prop target specified an invalid name '-key'. The name must be a valid java identifier." },
         new Object[]{ "com.example.prop.BadNameProp2",

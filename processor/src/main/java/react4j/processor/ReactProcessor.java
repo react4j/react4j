@@ -663,6 +663,20 @@ public final class ReactProcessor
                                          childrenProp.getMethod() );
     }
 
+    for ( final PropDescriptor prop : props )
+    {
+      final ExecutableElement method = prop.getMethod();
+      for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
+      {
+        final String classname = mirror.getAnnotationType().toString();
+        if ( classname.startsWith( "arez.annotations." ) )
+        {
+          throw new ReactProcessorException( "@Prop target must not be annotated with any arez annotations but " +
+                                             "is annotated by '" + classname + "'.", method );
+        }
+      }
+    }
+
     descriptor.setProps( props );
   }
 
