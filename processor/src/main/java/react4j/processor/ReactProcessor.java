@@ -33,6 +33,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
@@ -233,8 +234,89 @@ public final class ReactProcessor
     verifyNoUnexpectedAbstractMethod( descriptor );
     verifyStateNotAnnotatedWithArezAnnotations( descriptor );
     verifyPropsNotAnnotatedWithArezAnnotations( descriptor );
+    verifyPropsNotCollectionOfArezComponents( descriptor );
 
     return descriptor;
+  }
+
+  private void verifyPropsNotCollectionOfArezComponents( @Nonnull final ComponentDescriptor descriptor )
+  {
+    for ( final PropDescriptor prop : descriptor.getProps() )
+    {
+      final ExecutableElement method = prop.getMethod();
+      final TypeMirror returnType = method.getReturnType();
+      if ( TypeKind.DECLARED == returnType.getKind() )
+      {
+        final DeclaredType declaredType = (DeclaredType) returnType;
+        final List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+        if ( isCollection( declaredType ) )
+        {
+          if ( 1 == typeArguments.size() && isArezComponent( typeArguments.get( 0 ) ) )
+          {
+            throw new ReactProcessorException( "@Prop target is a collection that contains Arez components. " +
+                                               "This is not a safe pattern when the arez components can be disposed.",
+                                               method );
+          }
+        }
+        else if ( isMap( declaredType ) )
+        {
+          if ( 2 == typeArguments.size() &&
+               ( isArezComponent( typeArguments.get( 0 ) ) ||
+                 isArezComponent( typeArguments.get( 1 ) ) ) )
+          {
+            throw new ReactProcessorException( "@Prop target is a collection that contains Arez components. " +
+                                               "This is not a safe pattern when the arez components can be disposed.",
+                                               method );
+          }
+        }
+      }
+      else if ( TypeKind.ARRAY == returnType.getKind() )
+      {
+        final ArrayType arrayType = (ArrayType) returnType;
+        if ( isArezComponent( arrayType.getComponentType() ) )
+        {
+          throw new ReactProcessorException( "@Prop target is an array that contains Arez components. " +
+                                             "This is not a safe pattern when the arez components can be disposed.",
+                                             method );
+        }
+      }
+    }
+  }
+
+  private boolean isCollection( @Nonnull final DeclaredType declaredType )
+  {
+    final TypeElement returnType = (TypeElement) processingEnv.getTypeUtils().asElement( declaredType );
+    final String classname = returnType.getQualifiedName().toString();
+    /*
+     * For the time being lets just list out a bunch of collections. We can ge more specific when/if
+     * it is ever required
+     */
+    return Collection.class.getName().equals( classname ) ||
+           Set.class.getName().equals( classname ) ||
+           List.class.getName().equals( classname ) ||
+           HashSet.class.getName().equals( classname ) ||
+           ArrayList.class.getName().equals( classname );
+  }
+
+  private boolean isMap( @Nonnull final DeclaredType declaredType )
+  {
+    final TypeElement returnType = (TypeElement) processingEnv.getTypeUtils().asElement( declaredType );
+    final String classname = returnType.getQualifiedName().toString();
+    /*
+     * For the time being lets just list out a bunch of collections. We can ge more specific when/if
+     * it is ever required
+     */
+    return Map.class.getName().equals( classname ) || HashMap.class.getName().equals( classname );
+  }
+
+  private boolean isArezComponent( @Nonnull final TypeMirror typeMirror )
+  {
+    return typeMirror instanceof DeclaredType &&
+           processingEnv.getTypeUtils()
+             .asElement( typeMirror )
+             .getAnnotationMirrors()
+             .stream()
+             .anyMatch( a -> a.getAnnotationType().toString().equals( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) );
   }
 
   private void verifyPropsNotAnnotatedWithArezAnnotations( @Nonnull final ComponentDescriptor descriptor )
