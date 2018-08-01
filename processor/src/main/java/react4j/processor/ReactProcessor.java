@@ -232,6 +232,30 @@ public final class ReactProcessor
 
     verifyNoUnexpectedAbstractMethod( descriptor );
 
+    for ( final StateValueDescriptor stateValue : descriptor.getStateValues() )
+    {
+      final ExecutableElement getter = stateValue.getGetter();
+      for ( final AnnotationMirror mirror : getter.getAnnotationMirrors() )
+      {
+        final String classname = mirror.getAnnotationType().toString();
+        if ( isArezAnnotation( classname ) )
+        {
+          throw new ReactProcessorException( "@State target must not be annotated with any arez annotations but " +
+                                             "is annotated by '" + classname + "'.", getter );
+        }
+      }
+      final ExecutableElement setter = stateValue.getSetter();
+      for ( final AnnotationMirror mirror : setter.getAnnotationMirrors() )
+      {
+        final String classname = mirror.getAnnotationType().toString();
+        if ( isArezAnnotation( classname ) )
+        {
+          throw new ReactProcessorException( "@State target must not be annotated with any arez annotations but " +
+                                             "is annotated by '" + classname + "'.", setter );
+        }
+      }
+    }
+
     return descriptor;
   }
 
@@ -669,7 +693,7 @@ public final class ReactProcessor
       for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
       {
         final String classname = mirror.getAnnotationType().toString();
-        if ( classname.startsWith( "arez.annotations." ) )
+        if ( isArezAnnotation( classname ) )
         {
           throw new ReactProcessorException( "@Prop target must not be annotated with any arez annotations but " +
                                              "is annotated by '" + classname + "'.", method );
@@ -926,8 +950,7 @@ public final class ReactProcessor
       for ( final AnnotationMirror mirror : method.getMethod().getAnnotationMirrors() )
       {
         final String classname = mirror.getAnnotationType().toString();
-        if ( classname.startsWith( "arez.annotations." ) &&
-             !classname.equals( Constants.ACTION_ANNOTATION_CLASSNAME ) )
+        if ( isArezAnnotation( classname ) && !classname.equals( Constants.ACTION_ANNOTATION_CLASSNAME ) )
         {
           throw new ReactProcessorException( "@ReactComponent target has a lifecycle method '" +
                                              method.getMethod().getSimpleName() + "' with an invalid arez " +
@@ -1119,7 +1142,7 @@ public final class ReactProcessor
         for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
         {
           final String classname = mirror.getAnnotationType().toString();
-          if ( classname.startsWith( "arez.annotations." ) )
+          if ( isArezAnnotation( classname ) )
           {
             throw new ReactProcessorException( "@ReactComponent target has a method '" + method.getSimpleName() +
                                                "' with an arez annotation '" + classname + "' but is not an " +
@@ -1348,5 +1371,10 @@ public final class ReactProcessor
   private List<ExecutableElement> getMethods( @Nonnull final TypeElement typeElement )
   {
     return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() );
+  }
+
+  private boolean isArezAnnotation( @Nonnull final String classname )
+  {
+    return classname.startsWith( "arez.annotations." );
   }
 }

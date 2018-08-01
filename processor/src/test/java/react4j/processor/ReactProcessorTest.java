@@ -308,6 +308,8 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.PropThrowsExceptionComponent", "@Prop target must not throw any exceptions" },
         new Object[]{ "com.example.render.MissingRenderComponent",
                       "The react component does not override the render method." },
+        new Object[]{ "com.example.state.ArezOnGetterName", "@State target must not be annotated with any arez annotations but is annotated by 'arez.annotations.Computed'." },
+        new Object[]{ "com.example.state.ArezOnSetterName", "@State target must not be annotated with any arez annotations but is annotated by 'arez.annotations.Action'." },
         new Object[]{ "com.example.state.BadName",
                       "@State target specified an invalid name '-key'. The name must be a valid java identifier." },
         new Object[]{ "com.example.state.BadName2",
