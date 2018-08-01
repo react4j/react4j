@@ -5,7 +5,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
-import java.lang.annotation.Documented;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
