@@ -2,6 +2,8 @@
 
 ### Very High Priority
 
+* Add helper to autoload js assets
+
 * Consider whether can turn off remove `@Callback` annotation altogether.
 - It seems we probably want to turn off `@Action` wrapping for `@Callback`? Unless (see next point)
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
