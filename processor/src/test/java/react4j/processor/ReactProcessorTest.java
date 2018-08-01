@@ -138,13 +138,6 @@ public class ReactProcessorTest
   }
 
   @Test
-  public void XXXX()
-    throws Exception
-  {
-    assertSuccessfulCompile( "com.example.arez.memoize.BasicMemoizeComponent", false, false );
-  }
-
-  @Test
   public void nestedReactComponent()
     throws Exception
   {
