@@ -33,10 +33,6 @@
     - Support `React.createRef()` for refs as well as callbacks. They should be typed as well:
       See https://www.fullstackreact.com/articles/using-refs-in-react/
 
-### Dispose Problems
-
-* Consider rewriting `@Computed`, `@Memoize` and `@Autorun` annotations so that they have LOWEST priority.
-
 ### High Priorities
 
 * Add default values for state via `@InitialState`. Can be instance methods, static methods or static final fields?
