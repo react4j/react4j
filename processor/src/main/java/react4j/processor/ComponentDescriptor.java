@@ -62,6 +62,11 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<MethodDescriptor> _computedMethods;
+  /**
+   * Methods annotated with arez's @Memoize annotation. Should be null if not an arez component
+   */
+  @Nullable
+  private List<MethodDescriptor> _memoizeMethods;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
@@ -284,6 +289,19 @@ final class ComponentDescriptor
   {
     assert isArezComponent();
     _computedMethods = Objects.requireNonNull( computedMethods );
+  }
+
+  @Nonnull
+  List<MethodDescriptor> getMemoizeMethods()
+  {
+    assert null != _memoizeMethods;
+    return _memoizeMethods;
+  }
+
+  void setMemoizeMethods( @Nonnull final List<MethodDescriptor> memoizeMethods )
+  {
+    assert isArezComponent();
+    _memoizeMethods = Objects.requireNonNull( memoizeMethods );
   }
 
   @Nonnull

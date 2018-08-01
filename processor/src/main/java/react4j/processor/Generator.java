@@ -49,6 +49,7 @@ final class Generator
     ClassName.get( "arez.annotations", "Feature" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName COMPUTED_CLASSNAME = ClassName.get( "arez.annotations", "Computed" );
+  private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVABLE_REF_ANNOTATION_CLASSNAME =
@@ -628,6 +629,10 @@ final class Generator
       {
         builder.addMethod( buildComputedWrapperMethod( method ).build() );
       }
+      for ( final MethodDescriptor method : descriptor.getMemoizeMethods() )
+      {
+        builder.addMethod( buildMemoizeWrapperMethod( method ).build() );
+      }
     }
 
     if ( !descriptor.getLifecycleMethods().isEmpty() )
@@ -643,6 +648,12 @@ final class Generator
   private static MethodSpec.Builder buildComputedWrapperMethod( @Nonnull final MethodDescriptor descriptor )
   {
     return generateOverrideMethod( descriptor ).addAnnotation( buildComputedAnnotation( descriptor ).build() );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildMemoizeWrapperMethod( @Nonnull final MethodDescriptor descriptor )
+  {
+    return generateOverrideMethod( descriptor ).addAnnotation( buildMemoizeAnnotation( descriptor ).build() );
   }
 
   @Nonnull
@@ -705,6 +716,33 @@ final class Generator
     final AnnotationValue observeLowerPriorityDependenciesValue =
       ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
                                                  Constants.COMPUTED_ANNOTATION_CLASSNAME,
+                                                 "observeLowerPriorityDependencies" );
+    if ( null != observeLowerPriorityDependenciesValue )
+    {
+      annotation.addMember( "observeLowerPriorityDependencies",
+                            "$N",
+                            observeLowerPriorityDependenciesValue.getValue().toString() );
+    }
+    return annotation;
+  }
+
+  @Nonnull
+  private static AnnotationSpec.Builder buildMemoizeAnnotation( @Nonnull final MethodDescriptor descriptor )
+  {
+    final AnnotationSpec.Builder annotation =
+      AnnotationSpec.builder( MEMOIZE_CLASSNAME ).
+        addMember( "priority", "$T.LOWEST", PRIORITY_CLASSNAME );
+    final AnnotationValue nameValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
+                                                 "name" );
+    if ( null != nameValue )
+    {
+      annotation.addMember( "name", "$S", nameValue.getValue().toString() );
+    }
+    final AnnotationValue observeLowerPriorityDependenciesValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
                                                  "observeLowerPriorityDependencies" );
     if ( null != observeLowerPriorityDependenciesValue )
     {

@@ -24,6 +24,14 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.computed.ParameterizedReturnComputedComponent", false, false },
         new Object[]{ "com.example.arez.computed.ProtectedComputedComponent", false, false },
         new Object[]{ "com.example.arez.computed.PublicComputedComponent", false, false },
+        new Object[]{ "com.example.arez.memoize.AlreadyPrioritizedMemoizeComponent", false, false },
+        new Object[]{ "com.example.arez.memoize.AnnotatedMemoizeComponent", false, false },
+        new Object[]{ "com.example.arez.memoize.BasicMemoizeComponent", false, false },
+        new Object[]{ "com.example.arez.memoize.GenericsReturnMemoizeComponent", false, false },
+        new Object[]{ "com.example.arez.memoize.ParameterizedMemoizeComponent", false, false },
+        new Object[]{ "com.example.arez.memoize.ParameterizedReturnMemoizeComponent", false, false },
+        new Object[]{ "com.example.arez.memoize.ProtectedMemoizeComponent", false, false },
+        new Object[]{ "com.example.arez.memoize.PublicMemoizeComponent", false, false },
         new Object[]{ "com.example.arez.AutorunArezReactComponent", false, false },
         new Object[]{ "com.example.arez.BasicArezReactComponent", false, false },
         new Object[]{ "com.example.arez.ComponentFunctionalInterfaceProp", false, false },
@@ -127,6 +135,13 @@ public class ReactProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( classname, needsHelper, dagger );
+  }
+
+  @Test
+  public void XXXX()
+    throws Exception
+  {
+    assertSuccessfulCompile( "com.example.arez.memoize.BasicMemoizeComponent", false, false );
   }
 
   @Test

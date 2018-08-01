@@ -1071,6 +1071,7 @@ public final class ReactProcessor
     if ( isArezComponent )
     {
       ensureComputedMatchesExpectations( typeElement );
+      ensureMemoizeMatchesExpectations( typeElement );
       final boolean runArezScheduler =
         hasAnyAutorunMethods( typeElement ) ||
         hasAnyKeepAliveComputedMethods( typeElement ) ||
@@ -1078,6 +1079,7 @@ public final class ReactProcessor
       descriptor.setRunArezScheduler( runArezScheduler );
 
       descriptor.setComputedMethods( getComputedMethods( typeElement ) );
+      descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
     }
   }
 
@@ -1097,6 +1099,28 @@ public final class ReactProcessor
     {
       throw new ReactProcessorException( "The @" + Constants.COMPUTED_ANNOTATION_CLASSNAME + " annotation was " +
                                          "expected to have the parameters name, priority, keepAlive and " +
+                                         "observeLowerPriorityDependencies but has " + parameters + ". The " +
+                                         "react4j annotation processor needs to be updated to handle " +
+                                         "the change in parameters.", typeElement );
+
+    }
+  }
+
+  private void ensureMemoizeMatchesExpectations( @Nonnull final TypeElement typeElement )
+  {
+    final TypeElement computedElement =
+      processingEnv.getElementUtils().getTypeElement( Constants.MEMOIZE_ANNOTATION_CLASSNAME );
+    final Set<String> parameters = computedElement.getEnclosedElements()
+      .stream()
+      .map( e -> e.getSimpleName().toString() )
+      .collect( Collectors.toSet() );
+    if ( !( parameters.contains( "name" ) &&
+            parameters.contains( "priority" ) &&
+            parameters.contains( "observeLowerPriorityDependencies" ) &&
+            3 == parameters.size() ) )
+    {
+      throw new ReactProcessorException( "The @" + Constants.MEMOIZE_ANNOTATION_CLASSNAME + " annotation was " +
+                                         "expected to have the parameters name, priority and " +
                                          "observeLowerPriorityDependencies but has " + parameters + ". The " +
                                          "react4j annotation processor needs to be updated to handle " +
                                          "the change in parameters.", typeElement );
@@ -1216,6 +1240,26 @@ public final class ReactProcessor
       .filter( method -> {
         final AnnotationMirror mirror =
           ProcessorUtil.findAnnotationByType( method, Constants.COMPUTED_ANNOTATION_CLASSNAME );
+        return null != mirror &&
+               mirror.getElementValues().keySet().stream()
+                 .noneMatch( v -> "priority".equals( v.getSimpleName().toString() ) );
+      } )
+      .map( m -> new MethodDescriptor( m, (ExecutableType) processingEnv.getTypeUtils().asMemberOf( type, m ) ) )
+      .collect( Collectors.toList() );
+  }
+
+  /**
+   * Return @Memoize that have not had the priority parameter explicitly set.
+   */
+  @Nonnull
+  private List<MethodDescriptor> getMemoizeMethods( @Nonnull final TypeElement typeElement )
+  {
+    final DeclaredType type = (DeclaredType) typeElement.asType();
+    return getMethods( typeElement )
+      .stream()
+      .filter( method -> {
+        final AnnotationMirror mirror =
+          ProcessorUtil.findAnnotationByType( method, Constants.MEMOIZE_ANNOTATION_CLASSNAME );
         return null != mirror &&
                mirror.getElementValues().keySet().stream()
                  .noneMatch( v -> "priority".equals( v.getSimpleName().toString() ) );
