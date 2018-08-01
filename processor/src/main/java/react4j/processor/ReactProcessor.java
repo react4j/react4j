@@ -1098,6 +1098,22 @@ public final class ReactProcessor
       descriptor.setComputedMethods( getComputedMethods( typeElement ) );
       descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
     }
+    else
+    {
+      for ( final ExecutableElement method : ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ) )
+      {
+        for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
+        {
+          final String classname = mirror.getAnnotationType().toString();
+          if ( classname.startsWith( "arez.annotations." ) )
+          {
+            throw new ReactProcessorException( "@ReactComponent target has a method '" + method.getSimpleName() +
+                                               "' with an arez annotation '" + classname + "' but is not an " +
+                                               "arez component.", method );
+          }
+        }
+      }
+    }
   }
 
   private void ensureComputedMatchesExpectations( @Nonnull final TypeElement typeElement )
