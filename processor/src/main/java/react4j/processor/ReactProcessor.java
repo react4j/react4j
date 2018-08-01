@@ -1081,7 +1081,7 @@ public final class ReactProcessor
     }
   }
 
-  private void ensureComputedMatchesExpectations( final @Nonnull TypeElement typeElement )
+  private void ensureComputedMatchesExpectations( @Nonnull final TypeElement typeElement )
   {
     final TypeElement computedElement =
       processingEnv.getElementUtils().getTypeElement( Constants.COMPUTED_ANNOTATION_CLASSNAME );
