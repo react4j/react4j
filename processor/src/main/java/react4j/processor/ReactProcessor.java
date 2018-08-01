@@ -232,8 +232,26 @@ public final class ReactProcessor
 
     verifyNoUnexpectedAbstractMethod( descriptor );
     verifyStateNotAnnotatedWithArezAnnotations( descriptor );
+    verifyPropsNotAnnotatedWithArezAnnotations( descriptor );
 
     return descriptor;
+  }
+
+  private void verifyPropsNotAnnotatedWithArezAnnotations( @Nonnull final ComponentDescriptor descriptor )
+  {
+    for ( final PropDescriptor prop : descriptor.getProps() )
+    {
+      final ExecutableElement method = prop.getMethod();
+      for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
+      {
+        final String classname = mirror.getAnnotationType().toString();
+        if ( isArezAnnotation( classname ) )
+        {
+          throw new ReactProcessorException( "@Prop target must not be annotated with any arez annotations but " +
+                                             "is annotated by '" + classname + "'.", method );
+        }
+      }
+    }
   }
 
   private void verifyStateNotAnnotatedWithArezAnnotations( @Nonnull final ComponentDescriptor descriptor )
@@ -689,20 +707,6 @@ public final class ReactProcessor
                                          childrenProp.getMethod().getSimpleName() + " and " +
                                          childProp.getMethod().getSimpleName(),
                                          childrenProp.getMethod() );
-    }
-
-    for ( final PropDescriptor prop : props )
-    {
-      final ExecutableElement method = prop.getMethod();
-      for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
-      {
-        final String classname = mirror.getAnnotationType().toString();
-        if ( isArezAnnotation( classname ) )
-        {
-          throw new ReactProcessorException( "@Prop target must not be annotated with any arez annotations but " +
-                                             "is annotated by '" + classname + "'.", method );
-        }
-      }
     }
 
     descriptor.setProps( props );
