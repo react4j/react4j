@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* **\[processor\]** Change the annotation processor to eliminate type checking in `@Prop` method
+  implementation when `ReactConfig.shouldCheckInvariants()` return false. This also reduces code size.
+
 ### [v0.90](https://github.com/react4j/react4j/tree/v0.90) (2018-08-01)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.89...v0.90)
 

@@ -26,22 +26,38 @@ class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyR
 
   @Override
   protected String getMyRequiredProp1() {
-    return null != props().getAny( "myRequiredProp1" ) ? props().getAny( "myRequiredProp1" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myRequiredProp1" ) ? props().getAny( "myRequiredProp1" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myRequiredProp1" ) );
+    }
   }
 
   @Override
   protected String getMyRequiredProp2() {
-    return null != props().getAny( "myRequiredProp2" ) ? props().getAny( "myRequiredProp2" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myRequiredProp2" ) ? props().getAny( "myRequiredProp2" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myRequiredProp2" ) );
+    }
   }
 
   @Override
   protected String getMyRequiredProp3() {
-    return null != props().getAny( "myRequiredProp3" ) ? props().getAny( "myRequiredProp3" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myRequiredProp3" ) ? props().getAny( "myRequiredProp3" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myRequiredProp3" ) );
+    }
   }
 
   @Override
   protected ReactNode[] getChildren() {
-    return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "children" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<RequiredChildrenWithManyRequired> {

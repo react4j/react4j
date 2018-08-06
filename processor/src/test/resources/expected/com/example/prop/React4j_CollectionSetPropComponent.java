@@ -26,7 +26,11 @@ class React4j_CollectionSetPropComponent extends CollectionSetPropComponent {
 
   @Override
   protected Set<String> getMyProp() {
-    return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<CollectionSetPropComponent> {

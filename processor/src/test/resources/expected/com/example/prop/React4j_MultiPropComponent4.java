@@ -26,31 +26,51 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
 
   @Override
   protected String getMyProp() {
-    return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp" ) );
+    }
   }
 
   @Nullable
   @Override
   protected String getMyProp2() {
-    return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp2" ) );
+    }
   }
 
   @Nullable
   @Override
   protected String getMyProp3() {
-    return null != props().getAny( "myProp3" ) ? props().getAny( "myProp3" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp3" ) ? props().getAny( "myProp3" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp3" ) );
+    }
   }
 
   @Nullable
   @Override
   protected String getMyProp4() {
-    return null != props().getAny( "myProp4" ) ? props().getAny( "myProp4" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp4" ) ? props().getAny( "myProp4" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp4" ) );
+    }
   }
 
   @Nullable
   @Override
   protected ReactNode getChild() {
-    return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "children" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<MultiPropComponent4> {

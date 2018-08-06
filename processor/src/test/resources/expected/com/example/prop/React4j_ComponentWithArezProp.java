@@ -25,12 +25,20 @@ class React4j_ComponentWithArezProp extends ComponentWithArezProp {
 
   @Override
   protected String getValue() {
-    return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "value" ) );
+    }
   }
 
   @Override
   protected ComponentWithArezProp.Model getModel() {
-    return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "model" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithArezProp> {

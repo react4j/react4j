@@ -40,7 +40,11 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
       readOutsideTransaction = true
   )
   protected ReactNode getChild() {
-    return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "children" ) );
+    }
   }
 
   @Nonnull

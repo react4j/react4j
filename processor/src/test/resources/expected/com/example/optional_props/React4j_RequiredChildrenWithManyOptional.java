@@ -32,27 +32,47 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
 
   @Override
   protected String getMyPropA() {
-    return null != props().getAny( "myPropA" ) ? props().getAny( "myPropA" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myPropA" ) ? props().getAny( "myPropA" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myPropA" ) );
+    }
   }
 
   @Override
   protected String getMyPropB() {
-    return null != props().getAny( "myPropB" ) ? props().getAny( "myPropB" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myPropB" ) ? props().getAny( "myPropB" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myPropB" ) );
+    }
   }
 
   @Override
   protected String getMyPropC() {
-    return null != props().getAny( "myPropC" ) ? props().getAny( "myPropC" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myPropC" ) ? props().getAny( "myPropC" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myPropC" ) );
+    }
   }
 
   @Override
   protected String getMyPropD() {
-    return null != props().getAny( "myPropD" ) ? props().getAny( "myPropD" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myPropD" ) ? props().getAny( "myPropD" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myPropD" ) );
+    }
   }
 
   @Override
   protected ReactNode[] getChildren() {
-    return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "children" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<RequiredChildrenWithManyOptional> {

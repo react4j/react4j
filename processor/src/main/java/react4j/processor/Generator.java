@@ -819,10 +819,18 @@ final class Generator
     if ( !resultKind.isPrimitive() &&
          null == ProcessorUtil.findAnnotationByType( methodElement, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
-      method.addStatement( "return null != props().getAny( $S ) ? props().getAny( $S ).$N() : null",
-                           key,
-                           key,
-                           convertMethodName );
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
+      block.addStatement( "return null != props().getAny( $S ) ? props().getAny( $S ).$N() : null",
+                          key,
+                          key,
+                          convertMethodName );
+      block.nextControlFlow( "else" );
+      block.addStatement( "return $T.uncheckedCast( props().getAny( $S ) )",
+                          JS_CLASSNAME,
+                          key );
+      block.endControlFlow();
+      method.addCode( block.build() );
     }
     else
     {

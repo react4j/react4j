@@ -28,7 +28,11 @@ class React4j_ProtectedMethodPropDefault extends ProtectedMethodPropDefault {
 
   @Override
   protected String getMyProp() {
-    return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ProtectedMethodPropDefault> {

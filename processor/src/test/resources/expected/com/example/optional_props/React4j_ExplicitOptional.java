@@ -25,17 +25,29 @@ class React4j_ExplicitOptional extends ExplicitOptional {
 
   @Override
   protected String getMyRequiredProp() {
-    return null != props().getAny( "myRequiredProp" ) ? props().getAny( "myRequiredProp" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myRequiredProp" ) ? props().getAny( "myRequiredProp" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myRequiredProp" ) );
+    }
   }
 
   @Override
   protected String getMyOptionalProp() {
-    return null != props().getAny( "myOptionalProp" ) ? props().getAny( "myOptionalProp" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myOptionalProp" ) ? props().getAny( "myOptionalProp" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myOptionalProp" ) );
+    }
   }
 
   @Override
   protected String getMyOtherOptionalProp() {
-    return null != props().getAny( "myOtherOptionalProp" ) ? props().getAny( "myOtherOptionalProp" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myOtherOptionalProp" ) ? props().getAny( "myOtherOptionalProp" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myOtherOptionalProp" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ExplicitOptional> {

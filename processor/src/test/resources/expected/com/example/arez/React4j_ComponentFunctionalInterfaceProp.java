@@ -39,7 +39,11 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
       readOutsideTransaction = true
   )
   protected ComponentFunctionalInterfaceProp.TestFunction getValue() {
-    return null != props().getAny( "value" ) ? props().getAny( "value" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "value" ) ? props().getAny( "value" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "value" ) );
+    }
   }
 
   @Nonnull

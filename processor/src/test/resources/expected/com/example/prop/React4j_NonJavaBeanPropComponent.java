@@ -25,7 +25,11 @@ class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent {
 
   @Override
   protected String window() {
-    return null != props().getAny( "window" ) ? props().getAny( "window" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "window" ) ? props().getAny( "window" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "window" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NonJavaBeanPropComponent> {

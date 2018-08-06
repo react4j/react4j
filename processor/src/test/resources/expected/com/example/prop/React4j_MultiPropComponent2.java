@@ -26,17 +26,29 @@ class React4j_MultiPropComponent2 extends MultiPropComponent2 {
 
   @Override
   protected String getMyProp() {
-    return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp" ) );
+    }
   }
 
   @Override
   protected String getMyProp2() {
-    return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp2" ) );
+    }
   }
 
   @Override
   protected ReactNode[] getChildren() {
-    return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "children" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<MultiPropComponent2> {

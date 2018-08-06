@@ -28,7 +28,11 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
 
   @Override
   protected String getMyProp12$23() {
-    return null != props().getAny( "myProp12$23" ) ? props().getAny( "myProp12$23" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp12$23" ) ? props().getAny( "myProp12$23" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp12$23" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropDefaultWithColorfulName> {

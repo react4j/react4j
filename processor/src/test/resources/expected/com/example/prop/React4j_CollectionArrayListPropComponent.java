@@ -26,7 +26,11 @@ class React4j_CollectionArrayListPropComponent extends CollectionArrayListPropCo
 
   @Override
   protected ArrayList<String> getMyProp() {
-    return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<CollectionArrayListPropComponent> {

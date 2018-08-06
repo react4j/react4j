@@ -49,7 +49,11 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
       readOutsideTransaction = true
   )
   protected String getValue() {
-    return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "value" ) );
+    }
   }
 
   @Nonnull
@@ -63,7 +67,11 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
       readOutsideTransaction = true
   )
   protected ComponentWithDependency.Model getModel() {
-    return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "model" ) );
+    }
   }
 
   @Nonnull

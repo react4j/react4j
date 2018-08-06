@@ -32,7 +32,11 @@ class React4j_NullabilityPropsComponent extends NullabilityPropsComponent {
   @Nullable
   @Override
   protected String getMyProp2() {
-    return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "myProp2" ) );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NullabilityPropsComponent> {

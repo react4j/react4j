@@ -39,7 +39,11 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
       readOutsideTransaction = true
   )
   protected String getValue() {
-    return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+    if ( ReactConfig.shouldCheckInvariants() ) {
+      return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( "value" ) );
+    }
   }
 
   @Nonnull
