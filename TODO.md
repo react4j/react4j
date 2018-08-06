@@ -91,8 +91,6 @@
   - https://reactcommunity.org/react-transition-group/
   or maybe https://react-move.js.org/
 
-* React `classSet` addon equiv. Also see scalajs variant - https://github.com/japgolly/scalajs-react/blob/master/doc/USAGE.md#react-extensions
-
 * Introduce performance tools as in https://github.com/nitin42/react-perf-devtool into tool chain
 
 * In base class have configuration that warns on re-renders that produced duplicate values. Note: that the tool to do
