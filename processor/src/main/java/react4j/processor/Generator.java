@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -558,13 +557,7 @@ final class Generator
     if ( descriptor.isArezComponent() )
     {
       final List<PropDescriptor> props =
-        descriptor.getProps().stream().filter( prop -> {
-          final Element propType = prop.getPropType();
-          return null != propType &&
-                 descriptor.isArezComponent() &&
-                 ElementKind.CLASS == propType.getKind() &&
-                 null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME );
-        } ).collect( Collectors.toList() );
+        descriptor.getProps().stream().filter( PropDescriptor::isDisposable ).collect( Collectors.toList() );
       if ( !props.isEmpty() )
       {
         builder.addMethod( buildAnyPropsDisposedMethod( props ).build() );

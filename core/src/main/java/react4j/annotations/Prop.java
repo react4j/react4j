@@ -60,4 +60,20 @@ public @interface Prop
    * @return the enum indicating whether prop should trigger a change if it updated.
    */
   Feature shouldUpdateOnChange() default Feature.AUTODETECT;
+
+  /**
+   * Return an enum indicating whether prop is disposable and should be checked before rendering component.
+   * If a prop is disposable then the class will override {@link react4j.arez.ReactArezComponent#anyPropsDisposed()}
+   * and check whether the prop is disposed prior to attempting to render the component. If any props
+   * are disposed then rendering will be aborted and the render method will return null.
+   * If set to {@link Feature#ENABLE} then the code will add an isDisposed() check while if set to
+   * {@link Feature#DISABLE} no such check will be generated. If set to {@link Feature#AUTODETECT} then the
+   * annotation processor will inspect the type of the prop and treat it as {@link Feature#ENABLE} if the
+   * type is annotated with the <code>arez.annotations.ArezComponent</code> annotation and the host component is
+   * an Arez component. It is invalid to specify {@link Feature#ENABLE} unless the host component is an Arez
+   * component.
+   *
+   * @return the enum indicating whether prop is disposable and should be checked before rendering component.
+   */
+  Feature disposable() default Feature.AUTODETECT;
 }

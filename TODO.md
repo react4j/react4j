@@ -2,8 +2,6 @@
 
 ### Very High Priority
 
-* `@Prop(disposable=ENABLE)` should be possible which will determine whether `isAnyPropDisposed()`
-
 * Add helper to autoload js assets
 
 * Consider whether can turn off remove `@Callback` annotation altogether.

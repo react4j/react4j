@@ -862,7 +862,13 @@ public final class ReactProcessor
 
     final Element propType = processingEnv.getTypeUtils().asElement( method.getReturnType() );
     final boolean shouldUpdateOnChange = shouldUpdateOnChange( method );
-    return new PropDescriptor( name, method, methodType, propType, shouldUpdateOnChange );
+    final boolean disposable = null != propType && isPropDisposable( descriptor, method, propType );
+    if ( disposable && !descriptor.isArezComponent() )
+    {
+      throw new ReactProcessorException( "@Prop named '" + name + "' is marked as disposable but the host component " +
+                                         "is not a subclass of react4j.arez.ReactArezComponent", method );
+    }
+    return new PropDescriptor( name, method, methodType, propType, shouldUpdateOnChange, disposable );
   }
 
   @Nonnull
@@ -1303,6 +1309,28 @@ public final class ReactProcessor
         return false;
       default:
         return true;
+    }
+  }
+
+  private boolean isPropDisposable( @Nonnull final ComponentDescriptor descriptor,
+                                    @Nonnull final ExecutableElement method,
+                                    @Nonnull final Element propType )
+  {
+    final VariableElement injectParameter = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        method,
+                                        Constants.PROP_ANNOTATION_CLASSNAME,
+                                        "disposable" ).getValue();
+    switch ( injectParameter.getSimpleName().toString() )
+    {
+      case "ENABLE":
+        return true;
+      case "DISABLE":
+        return false;
+      default:
+        return descriptor.isArezComponent() &&
+               ElementKind.CLASS == propType.getKind() &&
+               null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME );
     }
   }
 
