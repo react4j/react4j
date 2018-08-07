@@ -63,7 +63,7 @@ public @interface Prop
 
   /**
    * Return an enum indicating whether prop is disposable and should be checked before rendering component.
-   * If a prop is disposable then the class will override {@link react4j.arez.ReactArezComponent#anyPropsDisposed()}
+   * If a prop is disposable then the class will override <code>ReactArezComponent.anyPropsDisposed()</code>
    * and check whether the prop is disposed prior to attempting to render the component. If any props
    * are disposed then rendering will be aborted and the render method will return null.
    * If set to {@link Feature#ENABLE} then the code will add an isDisposed() check while if set to
