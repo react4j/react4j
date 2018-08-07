@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.92](https://github.com/react4j/react4j/tree/v0.92) (2018-08-07)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.91...v0.92)
 
 * **\[core\]** Add the `disposable` parameter to `@Prop` that allows more explicit control over whether a
   prop needs to be checked in `isAnyPropDisposed()` to see if the prop is disposed prior to rendering
