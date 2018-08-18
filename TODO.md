@@ -2,6 +2,9 @@
 
 ### Very High Priority
 
+* `@Memoize`, `@Computed` and `@Autorun` that are copied and have permissions lowered should be skipped if
+  on private methods
+
 * Add helper to autoload js assets
 
 * Consider whether can turn off remove `@Callback` annotation altogether.
@@ -20,8 +23,15 @@
 
 * Collections returned from props should be made immutable.
 
+* Fix `@Prop` change propagation in Arez components so changes are generated even if renderRequired flag is set.
+
+* Add the ability to disable arez prop change detection/propagation. `AUTODETECT` will enable it if `@Computed`
+  `@Track` or `@Autorun` present.
+
 * Arez Components that only have dependencies on props at end of render could warn if they may not need to
   be arez components.
+
+* Add `Observer` react component that is just an arez component that performs change tracking for render prop.
 
 * Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
   - Pointer Events
@@ -51,8 +61,12 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
+* Add ability to `@Prop` to add enhancers to builder.
+
 * Add gwt-boot example
   - https://github.com/gwtboot/gwt-boot-modules/blob/master/README.md
+
+* Consider separating Arez react component infrastructure into a mixin with default methods.
 
 ### Medium Priorities
 
