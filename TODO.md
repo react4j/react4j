@@ -2,9 +2,6 @@
 
 ### Very High Priority
 
-* `@Memoize`, `@Computed` and `@Autorun` that are copied and have permissions lowered should be skipped if
-  on private methods
-
 * Add helper to autoload js assets
 
 * Consider whether can turn off remove `@Callback` annotation altogether.

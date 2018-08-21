@@ -4,6 +4,10 @@
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.105`.
 * **\[arez\]** Update the `org.realityforge.arez.spytools` dependency to version `0.29`.
+* **\[processor\]** Avoid overriding methods annotated with `@Memoize` or `@Computed` to lower priorities if
+  the method is private as private methods are not valid in this scenario. The Arez annotation processor will
+  detect this scenario and generate an error and will report the error on the original method if the react4j
+  annotation processor does not override the method.
 
 ### [v0.92](https://github.com/react4j/react4j/tree/v0.92) (2018-08-07)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.91...v0.92)

@@ -206,6 +206,8 @@ public class ReactProcessorTest
                       "@Callback target is also annotated with @arez.annotations.Action but the @Callback parameter 'initCallbackContext' is not set to Feature.DISABLE which would stop react4j from also annotating the method with @Action. Please remove @Action or change the 'initCallbackContext' to Feature.DISABLE." },
         new Object[]{ "com.example.arez.ArezComponentAnnotated",
                       "@ReactComponent target extends react4j.arez.ReactArezComponent and should not be annotated with arez.annotations.ArezComponent as React4j will add annotation" },
+        new Object[]{ "com.example.arez.ComputedOnPrivateComponent", "@Computed target must not be private" },
+        new Object[]{ "com.example.arez.MemoizeOnPrivateComponent", "@Memoize target must not be private" },
         new Object[]{ "com.example.arez.NonArezHasArezAnnotation",
                       "@ReactComponent target has a method 'handleFoo' with an arez annotation 'arez.annotations.Action' but is not an arez component." },
         new Object[]{ "com.example.component.AbstractMethodComponent",

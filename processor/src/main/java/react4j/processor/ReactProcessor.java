@@ -1425,6 +1425,7 @@ public final class ReactProcessor
     final DeclaredType type = (DeclaredType) typeElement.asType();
     return getMethods( typeElement )
       .stream()
+      .filter( method -> !method.getModifiers().contains( Modifier.PRIVATE ) )
       .filter( method -> {
         final AnnotationMirror mirror =
           ProcessorUtil.findAnnotationByType( method, Constants.COMPUTED_ANNOTATION_CLASSNAME );
@@ -1445,6 +1446,7 @@ public final class ReactProcessor
     final DeclaredType type = (DeclaredType) typeElement.asType();
     return getMethods( typeElement )
       .stream()
+      .filter( method -> !method.getModifiers().contains( Modifier.PRIVATE ) )
       .filter( method -> {
         final AnnotationMirror mirror =
           ProcessorUtil.findAnnotationByType( method, Constants.MEMOIZE_ANNOTATION_CLASSNAME );
