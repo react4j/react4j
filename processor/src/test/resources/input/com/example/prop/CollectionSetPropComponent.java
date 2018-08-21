@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import java.util.Collection;
 import java.util.Set;
 import javax.annotation.Nullable;
 import react4j.Component;

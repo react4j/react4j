@@ -1,7 +1,6 @@
 package com.example.arez;
 
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsFunction;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;

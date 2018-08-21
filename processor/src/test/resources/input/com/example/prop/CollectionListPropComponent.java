@@ -1,7 +1,6 @@
 package com.example.prop;
 
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.ReactNode;
