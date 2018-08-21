@@ -8,7 +8,7 @@ import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 
 @ReactComponent
-@ArezComponent( allowEmpty = true, allowConcrete = true )
+@ArezComponent
 abstract class ArezComponentAnnotated
   extends ReactArezComponent
 {
