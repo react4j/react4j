@@ -1,5 +1,6 @@
 package com.example.arez;
 
+import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
@@ -48,7 +49,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
 
   @Nonnull
   @ObservableRef
-  protected abstract arez.Observable getValueObservable();
+  protected abstract ObservableValue getValueObservable();
 
   @Override
   @Action

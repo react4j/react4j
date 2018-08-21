@@ -4,14 +4,14 @@ import arez.Arez;
 import arez.ArezContext;
 import arez.Disposable;
 import arez.Observer;
+import arez.Priority;
 import arez.annotations.Action;
 import arez.annotations.ComponentId;
 import arez.annotations.ContextRef;
 import arez.annotations.ObserverRef;
 import arez.annotations.OnDepsChanged;
-import arez.annotations.Priority;
 import arez.annotations.Track;
-import arez.spy.ObservableInfo;
+import arez.spy.ObservableValueInfo;
 import elemental2.core.JsObject;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -177,7 +177,7 @@ public abstract class ReactArezComponent
       final ReactNode result = super.performRender();
       if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() )
       {
-        final List<ObservableInfo> dependencies = getContext().getSpy().getDependencies( getRenderObserver() );
+        final List<ObservableValueInfo> dependencies = getContext().getSpy().getDependencies( getRenderObserver() );
         invariant( () -> !dependencies.isEmpty(),
                    () -> "ReactArezComponent render completed on '" + this + "' but the component does not " +
                          "have any Arez dependencies. This component should extend react4j.Component instead." );
@@ -287,7 +287,7 @@ public abstract class ReactArezComponent
     if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() && !Disposable.isDisposed( this ) )
     {
       final Observer renderTracker = getRenderObserver();
-      final List<ObservableInfo> dependencies = getContext().getSpy().getDependencies( renderTracker );
+      final List<ObservableValueInfo> dependencies = getContext().getSpy().getDependencies( renderTracker );
       final JsPropertyMap<Object> deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), getValue( d ) ) );
       final JsPropertyMap<Object> state = super.state();
@@ -334,7 +334,7 @@ public abstract class ReactArezComponent
    * @return the value as a string.
    */
   @Nullable
-  private Object getValue( @Nonnull final ObservableInfo observableInfo )
+  private Object getValue( @Nonnull final ObservableValueInfo observableInfo )
   {
     try
     {

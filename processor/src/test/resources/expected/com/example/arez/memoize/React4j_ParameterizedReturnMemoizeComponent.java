@@ -1,8 +1,8 @@
 package com.example.arez.memoize;
 
+import arez.Priority;
 import arez.annotations.ArezComponent;
 import arez.annotations.Memoize;
-import arez.annotations.Priority;
 import java.util.function.Consumer;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;

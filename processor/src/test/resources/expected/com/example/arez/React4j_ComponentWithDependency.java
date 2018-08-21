@@ -1,6 +1,7 @@
 package com.example.arez;
 
 import arez.Disposable;
+import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
@@ -58,7 +59,7 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
 
   @Nonnull
   @ObservableRef
-  protected abstract arez.Observable getValueObservable();
+  protected abstract ObservableValue getValueObservable();
 
   @Override
   @Observable(
@@ -76,7 +77,7 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
 
   @Nonnull
   @ObservableRef
-  protected abstract arez.Observable getModelObservable();
+  protected abstract ObservableValue getModelObservable();
 
   @Override
   @Action

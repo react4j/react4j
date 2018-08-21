@@ -42,14 +42,14 @@ final class Generator
   private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
-  private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "Observable" );
+  private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "ObservableValue" );
+  private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez", "Priority" );
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName COMPUTED_CLASSNAME = ClassName.get( "arez.annotations", "Computed" );
   private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
-  private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVABLE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ObservableRef" );

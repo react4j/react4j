@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
@@ -48,7 +49,7 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
 
   @Nonnull
   @ObservableRef
-  protected abstract arez.Observable getModelObservable();
+  protected abstract ObservableValue getModelObservable();
 
   @Override
   @Action

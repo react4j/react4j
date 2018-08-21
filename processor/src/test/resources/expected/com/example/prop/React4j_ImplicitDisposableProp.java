@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import arez.Disposable;
+import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
@@ -58,7 +59,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
 
   @Nonnull
   @ObservableRef
-  protected abstract arez.Observable getModelObservable();
+  protected abstract ObservableValue getModelObservable();
 
   @Override
   @Action
