@@ -3,6 +3,7 @@
 ### Unreleased
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.105`.
+* **\[arez\]** Update the `org.realityforge.arez.spytools` dependency to version `0.29`.
 
 ### [v0.92](https://github.com/react4j/react4j/tree/v0.92) (2018-08-07)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.91...v0.92)
