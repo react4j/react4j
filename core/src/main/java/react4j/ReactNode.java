@@ -16,19 +16,19 @@ public interface ReactNode
   @JsOverlay
   static ReactNode of( final byte value )
   {
-    return Js.uncheckedCast( value );
+    return Js.uncheckedCast( Js.asAny( value ) );
   }
 
   @JsOverlay
   static ReactNode of( final short value )
   {
-    return Js.uncheckedCast( value );
+    return Js.uncheckedCast( Js.asAny( value ) );
   }
 
   @JsOverlay
   static ReactNode of( final int value )
   {
-    return Js.uncheckedCast( value );
+    return Js.uncheckedCast( Js.asAny( value ) );
   }
 
   @JsOverlay
@@ -40,13 +40,13 @@ public interface ReactNode
   @JsOverlay
   static ReactNode of( final float value )
   {
-    return Js.uncheckedCast( value );
+    return Js.uncheckedCast( Js.asAny( value ) );
   }
 
   @JsOverlay
   static ReactNode of( final double value )
   {
-    return Js.uncheckedCast( value );
+    return Js.uncheckedCast( Js.asAny( value ) );
   }
 
   @JsOverlay

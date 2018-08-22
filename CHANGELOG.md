@@ -11,6 +11,8 @@
 * **\[core\]** Change the method `ReactNode.of(long)` as boxed primitives can not be processed by `react.js`
   and you can not safely convert a `long` value to a javascript `number` value. The method instead converts the
   long value to a string before passing the value to react.
+* **\[core\]** Change the implementation of the `ReactNode.of(...)` methods that have a primitive parameter
+  type other than long so that they are not boxed prior to being passed to react.
 
 ### [v0.92](https://github.com/react4j/react4j/tree/v0.92) (2018-08-07)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.91...v0.92)
