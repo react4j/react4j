@@ -34,7 +34,7 @@ public interface ReactNode
   @JsOverlay
   static ReactNode of( final long value )
   {
-    return Js.uncheckedCast( value );
+    return of( Long.toString( value ) );
   }
 
   @JsOverlay
