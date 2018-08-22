@@ -2,6 +2,9 @@
 
 ### Very High Priority
 
+* Consider auto-observing all props at start of render - skipping those that will be observed in anyPropsDisposed().
+  Perhaps we could skip this if there are no `@Computed` (which would normally be invoked later as lower priority)
+
 * Add helper to autoload js assets
 
 * Consider whether can turn off remove `@Callback` annotation altogether.
