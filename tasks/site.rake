@@ -80,7 +80,7 @@ task 'site:link_check' do
   port = socket.local_address.ip_port
   socket.close
 
-  webserver = WEBrick::HTTPServer.new(:Port => port, :DocumentRoot => root)
+  webserver = WEBrick::HTTPServer.new(:Port => port, :DocumentRoot => root, :AccessLog => [])
   Thread.new {webserver.start}
 
   trap('INT') {webserver.shutdown}
