@@ -90,6 +90,8 @@ task 'site:link_check' do
     excludes << 'https://github.com/react4j/react4j/compare/'
     excludes << 'https://medium.freecodecamp.org/'
     excludes << 'https://docs.oracle.com/javase/8/docs/api'
+    excludes << 'https://buildr.apache.org'
+    excludes << 'https://maven.apache.org'
     (%w(todomvc) + DOWNSTREAM_PROJECTS).each do |project_name|
       excludes << "#{base_url}/#{project_name.gsub(/^react4j-/, '')}"
     end
