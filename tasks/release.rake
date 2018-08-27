@@ -135,7 +135,7 @@ HEADER
       # Artifacts have been pushed to staging repository by this time so they should build
       # even if it has not made it through the Maven release process
       sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
-      %w(raw raw_maven arez arez_maven dagger dagger_maven).each do |branch|
+      %w(raw raw_maven arez arez_maven dagger dagger_maven raw_maven_j2cl arez_maven_j2cl dagger_maven_j2cl).each do |branch|
         full_branch = "#{branch}-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
         `cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push origin :#{full_branch}`
         puts "Completed remote branch #{full_branch}. Removed." if 0 == $?.exitstatus
