@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.106`.
+* **\[processor\]** Add support for the `arezOnlyDependencies` parameter on the `arez.annotations.Computed`
+  annotation.
+
 ### [v0.93](https://github.com/react4j/react4j/tree/v0.93) (2018-08-23)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.92...v0.93)
 

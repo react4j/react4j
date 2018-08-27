@@ -706,6 +706,15 @@ final class Generator
     {
       annotation.addMember( "keepAlive", "$N", keepAliveValue.getValue().toString() );
     }
+    final AnnotationValue arezOnlyDependenciesValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
+                                                 "arezOnlyDependencies" );
+    if ( null != arezOnlyDependenciesValue )
+    {
+      annotation.addMember( "arezOnlyDependencies", "$N", arezOnlyDependenciesValue.getValue().toString() );
+    }
+
     final AnnotationValue observeLowerPriorityDependenciesValue =
       ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
                                                  Constants.COMPUTED_ANNOTATION_CLASSNAME,
