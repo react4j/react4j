@@ -1,5 +1,0 @@
-<module>
-  <inherits name='arez.spytools.browser.BrowserSpyTools'/>
-
-  <source path=''/>
-</module>
