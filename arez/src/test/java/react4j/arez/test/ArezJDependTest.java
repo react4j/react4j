@@ -27,14 +27,12 @@ public class ArezJDependTest
     final JavaPackage annotations = constraint.addPackage( "react4j.annotations" );
     final JavaPackage react4jDom = constraint.addPackage( "react4j.dom" );
     final JavaPackage react4jArez = constraint.addPackage( "react4j.arez" );
-    final JavaPackage react4jArezSpy = constraint.addPackage( "react4j.arez.spy" );
     final JavaPackage braincheck = constraint.addPackage( "org.realityforge.braincheck" );
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
     final JavaPackage jsinteropBase = constraint.addPackage( "jsinterop.base" );
     final JavaPackage elemental2Core = constraint.addPackage( "elemental2.core" );
     final JavaPackage arez = constraint.addPackage( "arez" );
     final JavaPackage arezSpy = constraint.addPackage( "arez.spy" );
-    final JavaPackage arezSpytoolsBrowser = constraint.addPackage( "arez.spytools.browser" );
 
     annotations.dependsUpon( jsinteropAnnotations );
 
@@ -45,9 +43,6 @@ public class ArezJDependTest
     react4jArez.dependsUpon( arezSpy );
     react4jArez.dependsUpon( elemental2Core );
     react4jArez.dependsUpon( react4jDom );
-
-    react4jArezSpy.dependsUpon( arez );
-    react4jArezSpy.dependsUpon( arezSpytoolsBrowser );
 
     final DependencyConstraint.MatchResult result = jdepend.analyzeDependencies( constraint );
 
