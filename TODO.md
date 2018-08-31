@@ -63,9 +63,6 @@
 
 * Add ability to `@Prop` to add enhancers to builder.
 
-* Add gwt-boot example
-  - https://github.com/gwtboot/gwt-boot-modules/blob/master/README.md
-
 * Consider separating Arez react component infrastructure into a mixin with default methods.
 
 ### Medium Priorities
