@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.94](https://github.com/react4j/react4j/tree/v0.94) (2018-08-31)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.93...v0.94)
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.106`.
 * **\[processor\]** Add support for the `arezOnlyDependencies` parameter on the `arez.annotations.Computed`
