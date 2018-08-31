@@ -67,9 +67,6 @@
 
 ### Medium Priorities
 
-* Consider manual implementation of react suspense
-  - https://jsbin.com/zaqenibito/1/edit?js,console,output
-
 * Move the Props and State objects back to being JsType backed under the cover rather than values looked up by
   strings. This will significantly optimize the output size. At least under J2CL/Closure.
 
