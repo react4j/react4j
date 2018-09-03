@@ -75,7 +75,7 @@
   compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
   Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
   element factories can be built by looking at html spec and auto-generating?
-  - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/v15/index.d.ts
+  - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
 
 * Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
