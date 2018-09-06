@@ -177,7 +177,8 @@ public abstract class ReactArezComponent
       final ReactNode result = super.performRender();
       if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() )
       {
-        final List<ObservableValueInfo> dependencies = getContext().getSpy().getDependencies( getRenderObserver() );
+        final List<ObservableValueInfo> dependencies =
+          getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies();
         invariant( () -> !dependencies.isEmpty(),
                    () -> "ReactArezComponent render completed on '" + this + "' but the component does not " +
                          "have any Arez dependencies. This component should extend react4j.Component instead." );
@@ -286,8 +287,8 @@ public abstract class ReactArezComponent
   {
     if ( ReactArezConfig.shouldStoreArezDataAsState() && Arez.areSpiesEnabled() && !Disposable.isDisposed( this ) )
     {
-      final Observer renderTracker = getRenderObserver();
-      final List<ObservableValueInfo> dependencies = getContext().getSpy().getDependencies( renderTracker );
+      final List<ObservableValueInfo> dependencies =
+        getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies();
       final JsPropertyMap<Object> deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), getValue( d ) ) );
       final JsPropertyMap<Object> state = super.state();
