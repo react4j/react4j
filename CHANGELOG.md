@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* **\[arez\]** Restructure spy code to prepare for Arez version `0.107`.
+
 ### [v0.94](https://github.com/react4j/react4j/tree/v0.94) (2018-08-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.93...v0.94)
 
