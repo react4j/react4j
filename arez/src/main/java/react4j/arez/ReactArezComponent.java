@@ -83,6 +83,7 @@ public abstract class ReactArezComponent
    *
    * @return true if render dependencies changed, false otherwise.
    */
+  @SuppressWarnings( "WeakerAccess" )
   protected final boolean hasRenderDepsChanged()
   {
     return _renderDepsChanged;
