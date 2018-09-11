@@ -5,7 +5,7 @@ import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
-import arez.annotations.ObservableRef;
+import arez.annotations.ObservableValueRef;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,8 +58,8 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   }
 
   @Nonnull
-  @ObservableRef
-  protected abstract ObservableValue getValueObservable();
+  @ObservableValueRef
+  protected abstract ObservableValue getValueObservableValue();
 
   @Override
   @Observable(
@@ -76,8 +76,8 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   }
 
   @Nonnull
-  @ObservableRef
-  protected abstract ObservableValue getModelObservable();
+  @ObservableValueRef
+  protected abstract ObservableValue getModelObservableValue();
 
   @Override
   @Action
@@ -85,11 +85,11 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
     boolean modified = false;
     if ( !Js.isTripleEqual( props().get( "value" ), null == nextProps ? null : nextProps.get( "value" ) ) ) {
       modified = true;
-      getValueObservable().reportChanged();
+      getValueObservableValue().reportChanged();
     }
     if ( !Js.isTripleEqual( props().get( "model" ), null == nextProps ? null : nextProps.get( "model" ) ) ) {
       modified = true;
-      getModelObservable().reportChanged();
+      getModelObservableValue().reportChanged();
     }
     return modified;
   }

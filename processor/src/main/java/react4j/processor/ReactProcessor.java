@@ -1223,7 +1223,7 @@ public final class ReactProcessor
       ensureComputedMatchesExpectations( typeElement );
       ensureMemoizeMatchesExpectations( typeElement );
       final boolean runArezScheduler =
-        hasAnyAutorunMethods( typeElement ) ||
+        hasAnyArezScheduledObserverMethods( typeElement ) ||
         hasAnyKeepAliveComputedMethods( typeElement ) ||
         hasAnyDependencyMethods( typeElement );
       descriptor.setRunArezScheduler( runArezScheduler );
@@ -1373,11 +1373,19 @@ public final class ReactProcessor
     }
   }
 
-  private boolean hasAnyAutorunMethods( @Nonnull final TypeElement typeElement )
+  private boolean hasAnyArezScheduledObserverMethods( @Nonnull final TypeElement typeElement )
   {
     return getMethods( typeElement )
       .stream()
-      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.AUTORUN_ANNOTATION_CLASSNAME ) );
+      .anyMatch( m -> {
+        final AnnotationValue annotationValue =
+          ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
+                                             m,
+                                             Constants.OBSERVED_ANNOTATION_CLASSNAME,
+                                             "executor" );
+        return null != annotationValue &&
+               ( (VariableElement) annotationValue.getValue() ).getSimpleName().toString().equals( "AREZ" );
+      } );
   }
 
   private boolean hasAnyDependencyMethods( @Nonnull final TypeElement typeElement )

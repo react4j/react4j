@@ -4,13 +4,14 @@ import arez.Arez;
 import arez.ArezContext;
 import arez.Disposable;
 import arez.Observer;
-import arez.Priority;
 import arez.annotations.Action;
 import arez.annotations.ComponentId;
 import arez.annotations.ContextRef;
+import arez.annotations.Executor;
+import arez.annotations.Observed;
 import arez.annotations.ObserverRef;
 import arez.annotations.OnDepsChanged;
-import arez.annotations.Track;
+import arez.annotations.Priority;
 import arez.spy.ObservableValueInfo;
 import elemental2.core.JsObject;
 import java.util.List;
@@ -164,7 +165,7 @@ public abstract class ReactArezComponent
    *
    * @return the result of rendering.
    */
-  @Track( name = "render", priority = Priority.LOW, observeLowerPriorityDependencies = true )
+  @Observed( executor = Executor.APPLICATION, name = "render", priority = Priority.LOW, observeLowerPriorityDependencies = true )
   @Nullable
   protected ReactNode trackRender()
   {

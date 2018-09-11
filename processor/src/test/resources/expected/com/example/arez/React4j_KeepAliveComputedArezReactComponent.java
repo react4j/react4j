@@ -1,8 +1,8 @@
 package com.example.arez;
 
-import arez.Priority;
 import arez.annotations.ArezComponent;
 import arez.annotations.Computed;
+import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

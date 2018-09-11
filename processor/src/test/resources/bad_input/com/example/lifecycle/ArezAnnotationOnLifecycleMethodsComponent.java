@@ -1,6 +1,6 @@
 package com.example.lifecycle;
 
-import arez.annotations.Autorun;
+import arez.annotations.Observed;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 
@@ -8,7 +8,7 @@ import react4j.arez.ReactArezComponent;
 abstract class ArezAnnotationOnLifecycleMethodsComponent
   extends ReactArezComponent
 {
-  @Autorun
+  @Observed
   @Override
   protected void componentWillUnmount()
   {

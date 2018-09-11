@@ -1,6 +1,6 @@
 package com.example.arez.computed;
 
-import arez.Priority;
+import arez.annotations.Priority;
 import arez.annotations.Computed;
 import javax.annotation.Nullable;
 import react4j.ReactNode;

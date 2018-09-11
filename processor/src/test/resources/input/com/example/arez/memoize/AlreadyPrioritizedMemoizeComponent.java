@@ -1,7 +1,7 @@
 package com.example.arez.memoize;
 
-import arez.Priority;
 import arez.annotations.Memoize;
+import arez.annotations.Priority;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;

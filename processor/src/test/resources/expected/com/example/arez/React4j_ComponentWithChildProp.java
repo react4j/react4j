@@ -4,7 +4,7 @@ import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
-import arez.annotations.ObservableRef;
+import arez.annotations.ObservableValueRef;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,8 +49,8 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   }
 
   @Nonnull
-  @ObservableRef
-  protected abstract ObservableValue getChildObservable();
+  @ObservableValueRef
+  protected abstract ObservableValue getChildObservableValue();
 
   @Override
   @Action
@@ -58,7 +58,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
     boolean modified = false;
     if ( !Js.isTripleEqual( props().get( "children" ), null == nextProps ? null : nextProps.get( "children" ) ) ) {
       modified = true;
-      getChildObservable().reportChanged();
+      getChildObservableValue().reportChanged();
     }
     return modified;
   }

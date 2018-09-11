@@ -1,6 +1,6 @@
 package com.example.arez;
 
-import arez.annotations.Autorun;
+import arez.annotations.Observed;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
@@ -10,7 +10,7 @@ import react4j.arez.ReactArezComponent;
 abstract class AutorunArezReactComponent
   extends ReactArezComponent
 {
-  @Autorun
+  @Observed
   void myAutorun()
   {
   }

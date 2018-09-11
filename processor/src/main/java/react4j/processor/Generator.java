@@ -43,16 +43,16 @@ final class Generator
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "ObservableValue" );
-  private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez", "Priority" );
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName COMPUTED_CLASSNAME = ClassName.get( "arez.annotations", "Computed" );
   private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
+  private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
-  private static final ClassName OBSERVABLE_REF_ANNOTATION_CLASSNAME =
-    ClassName.get( "arez.annotations", "ObservableRef" );
+  private static final ClassName OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME =
+    ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
   private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
@@ -569,7 +569,7 @@ final class Generator
       builder.addMethod( buildPropMethod( descriptor, prop ).build() );
       if ( descriptor.isArezComponent() )
       {
-        builder.addMethod( buildPropObservableRefMethod( prop ).build() );
+        builder.addMethod( buildPropObservableValueRefMethod( prop ).build() );
       }
     }
 
@@ -948,20 +948,20 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildPropObservableRefMethod( @Nonnull final PropDescriptor prop )
+  private static MethodSpec.Builder buildPropObservableValueRefMethod( @Nonnull final PropDescriptor prop )
   {
-    return MethodSpec.methodBuilder( toObservableRefMethodName( prop ) ).
+    return MethodSpec.methodBuilder( toObservableValueRefMethodName( prop ) ).
       addModifiers( Modifier.PROTECTED, Modifier.ABSTRACT ).
       addAnnotation( NONNULL_CLASSNAME ).
-      addAnnotation( OBSERVABLE_REF_ANNOTATION_CLASSNAME ).
+      addAnnotation( OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME ).
       returns( OBSERVABLE_CLASSNAME );
   }
 
   @Nonnull
-  private static String toObservableRefMethodName( @Nonnull final PropDescriptor prop )
+  private static String toObservableValueRefMethodName( @Nonnull final PropDescriptor prop )
   {
     final String name = prop.getName();
-    return "get" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 ) + "Observable";
+    return "get" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 ) + "ObservableValue";
   }
 
   @Nullable
@@ -991,7 +991,7 @@ final class Generator
         final String key = "child".equals( prop.getName() ) ? "children" : prop.getName();
         block.beginControlFlow( code, JS_CLASSNAME, key, key );
         block.addStatement( "modified = true" );
-        block.addStatement( "$N().reportChanged()", toObservableRefMethodName( prop ) );
+        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
         block.endControlFlow();
         method.addCode( block.build() );
       }
