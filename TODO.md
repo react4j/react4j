@@ -37,6 +37,7 @@
   - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
   - DevTools profiling capabilities
   - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
+  - https://elijahmanor.com/react-devtools-profiler/
 
 * Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
   - Pointer Events
