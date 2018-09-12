@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.Component;
@@ -288,42 +289,37 @@ public abstract class ReactArezComponent
     {
       final List<ObservableValueInfo> dependencies =
         getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies();
-      final JsPropertyMap<Object> deps = JsPropertyMap.of();
-      dependencies.forEach( d -> deps.set( d.getName(), getValue( d ) ) );
+      final JsPropertyMap<Object> newState = JsPropertyMap.of();
+      dependencies.forEach( d -> newState.set( d.getName(), getValue( d ) ) );
       final JsPropertyMap<Object> state = super.state();
-      final JsPropertyMap<Object> currentDepsData = null == state ? null : Js.asPropertyMap( state );
+      final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
       /*
-       * Do a shallow comparison against object and the deps. If either has changed then state needs to be updated.
-       * We skip deps on shallow comparison of data as it is always recreated anew.
+       * To determine whether we need to do a state update we do compare each key and value and make sure
+       * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
+       * updates in react are merges, we need to implement this by putting undefined values into the state.
        */
-      if ( null == currentDepsData )
+      if ( null == currentState )
       {
-        scheduleArezKeyUpdate( deps );
+        scheduleArezKeyUpdate( newState );
       }
       else
       {
-        /*
-         * Deps are mappings to Info objects that can be garbage collected over time.
-         * So we just make sure that the key and values match.
-         */
-        final String[] currentDeps = JsObject.keys( Js.uncheckedCast( currentDepsData ) );
-        final String[] newDeps = JsObject.keys( Js.uncheckedCast( deps ) );
-        if ( currentDeps.length != newDeps.length )
+        for ( final String key : JsObject.keys( Js.uncheckedCast( currentState ) ) )
         {
-          scheduleArezKeyUpdate( deps );
-        }
-        else
-        {
-          for ( int i = 0; i < currentDeps.length; i++ )
+          if ( !newState.has( key ) )
           {
-            final String currentKey = currentDeps[ i ];
-            final String newKey = newDeps[ i ];
-            if ( !Objects.equals( currentKey, newKey ) ||
-                 !Objects.equals( currentDepsData.get( currentKey ), deps.get( newKey ) )
-              )
-            {
-              scheduleArezKeyUpdate( deps );
-            }
+            newState.set( key, Js.undefined() );
+          }
+        }
+
+        for ( final String key : JsObject.keys( Js.uncheckedCast( newState ) ) )
+        {
+          final Any newValue = currentState.getAny( key );
+          final Any existingValue = newState.getAny( key );
+          if ( !Objects.equals( newValue, existingValue ) )
+          {
+            scheduleArezKeyUpdate( newState );
+            return;
           }
         }
       }

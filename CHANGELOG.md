@@ -16,6 +16,10 @@
   removed from other locations where it is no longer required.
 * **\[arez\]** Unwrap boxed values and convert enums into strings when emitting arez property values in the
   react state.
+* **\[arez\]** If a dependency was removed from a component and `ReactArezConfig.shouldStoreArezDataAsState()`
+  returns true then `ReactArezComponent` could result in an infinite loop trying to converge state as reacts
+  `setState` merges new state and will not replace state. This has been fixed by setting the value of the keys
+  to `undefined` value.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)
