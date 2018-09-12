@@ -15,6 +15,7 @@ import arez.annotations.Priority;
 import arez.spy.ObservableValueInfo;
 import elemental2.core.JsObject;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
@@ -294,7 +295,8 @@ public abstract class ReactArezComponent
       final JsPropertyMap<Object> deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), getValue( d ) ) );
       final JsPropertyMap<Object> state = super.state();
-      final Object currentDepsData = null != state ? Js.asPropertyMap( state ).get( AREZ_STATE_KEY ) : null;
+      final JsPropertyMap<Object> currentDepsData =
+        null == state ? null : Js.asPropertyMap( Js.asPropertyMap( state ).get( AREZ_STATE_KEY ) );
       /*
        * Do a shallow comparison against object and the deps. If either has changed then state needs to be updated.
        * We skip deps on shallow comparison of data as it is always recreated anew.
@@ -307,7 +309,7 @@ public abstract class ReactArezComponent
       {
         /*
          * Deps are mappings to Info objects that can be garbage collected over time.
-         * So we just make sure the keys (which are the info objects names) match.
+         * So we just make sure that the key and values match.
          */
         final String[] currentDeps = JsObject.keys( Js.uncheckedCast( currentDepsData ) );
         final String[] newDeps = JsObject.keys( Js.uncheckedCast( deps ) );
@@ -319,7 +321,10 @@ public abstract class ReactArezComponent
         {
           for ( int i = 0; i < currentDeps.length; i++ )
           {
-            if ( !currentDeps[ i ].equals( newDeps[ i ] ) )
+            final String currentKey = currentDeps[ i ];
+            final String newKey = newDeps[ i ];
+            if ( !Objects.equals( currentKey, newKey ) ||
+                 !Objects.equals( currentDepsData.get( currentKey ), deps.get( newKey ) ) )
             {
               scheduleArezKeyUpdate( deps );
             }

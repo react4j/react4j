@@ -4,6 +4,9 @@
 
 * Update the javascript included within package to react version `16.5.0`.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.107`.
+* **\[arez\]** The values of computed and observable properties were not being updated under arez state key
+  when they were being changed resulting in incorrect values being presented in DevTools inspector and
+  profiler. This has been fixed.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)
