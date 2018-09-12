@@ -7,6 +7,9 @@
 
 * Add helper to autoload js assets
 
+* Make the name of the assets based off the version of the underlying react library. i.e. Name them `react-16.5.0.js`
+  rather than `react.js` so cache is never in conflict.
+
 * Consider whether can turn off remove `@Callback` annotation altogether.
 - It seems we probably want to turn off `@Action` wrapping for `@Callback`? Unless (see next point)
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
