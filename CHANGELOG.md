@@ -7,6 +7,9 @@
 * **\[arez\]** The values of computed and observable properties were not being updated under arez state key
   when they were being changed resulting in incorrect values being presented in DevTools inspector and
   profiler. This has been fixed.
+* **\[arez\]** Subclasses of `ReactArezComponent` are no longer able to store values in reacts native state,
+  thus there is no need to namespace the dependency state under a key named `arez` so remove the key and add
+  dependency data directly into state object.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)

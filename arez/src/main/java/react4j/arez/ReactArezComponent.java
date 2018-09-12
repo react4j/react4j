@@ -39,10 +39,6 @@ import static org.realityforge.braincheck.Guards.*;
 public abstract class ReactArezComponent
   extends Component
 {
-  /**
-   * Key used to store the arez data in state.
-   */
-  private static final String AREZ_STATE_KEY = "arez";
   private static int c_nextComponentId = 1;
   private final int _arezComponentId;
   private boolean _renderDepsChanged;
@@ -296,7 +292,7 @@ public abstract class ReactArezComponent
       dependencies.forEach( d -> deps.set( d.getName(), getValue( d ) ) );
       final JsPropertyMap<Object> state = super.state();
       final JsPropertyMap<Object> currentDepsData =
-        null == state ? null : Js.asPropertyMap( Js.asPropertyMap( state ).get( AREZ_STATE_KEY ) );
+        null == state ? null : Js.asPropertyMap( state );
       /*
        * Do a shallow comparison against object and the deps. If either has changed then state needs to be updated.
        * We skip deps on shallow comparison of data as it is always recreated anew.
@@ -324,7 +320,8 @@ public abstract class ReactArezComponent
             final String currentKey = currentDeps[ i ];
             final String newKey = newDeps[ i ];
             if ( !Objects.equals( currentKey, newKey ) ||
-                 !Objects.equals( currentDepsData.get( currentKey ), deps.get( newKey ) ) )
+                 !Objects.equals( currentDepsData.get( currentKey ), deps.get( newKey ) )
+              )
             {
               scheduleArezKeyUpdate( deps );
             }
@@ -361,7 +358,6 @@ public abstract class ReactArezComponent
    */
   private void scheduleArezKeyUpdate( @Nonnull final JsPropertyMap<Object> data )
   {
-    super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsPropertyMap.of( AREZ_STATE_KEY, JsObject.freeze( data ) ) ),
-                               null );
+    super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsObject.freeze( data ) ), null );
   }
 }
