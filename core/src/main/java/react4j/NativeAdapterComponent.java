@@ -112,7 +112,7 @@ public abstract class NativeAdapterComponent<I extends Component>
     }
     try
     {
-      _component.componentDidMount();
+      _component.performComponentDidMount();
     }
     finally
     {

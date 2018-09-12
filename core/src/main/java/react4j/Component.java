@@ -303,6 +303,15 @@ public abstract class Component
   }
 
   /**
+   * Wrapper method invoked  that delegates to the {@link #componentDidMount()} method.
+   * This method exists to give middleware a mechanism to hook into component unmounting lifecycle.
+   */
+  protected void performComponentDidMount()
+  {
+    componentDidMount();
+  }
+
+  /**
    * This method is invoked immediately after updating occurs.
    * If you need to interact with the DOM after the component has been updated.
    * See the <a href="https://reactjs.org/docs/react-component.html#componentdidupdate">React Component documentation</a> for more details.

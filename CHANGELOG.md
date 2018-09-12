@@ -22,6 +22,9 @@
   to `undefined` value.
 * **\[arez\]** Expose the id and name of the react component according to arez as state values under the
   `Arez.id` and `Arez.name` keys when `ReactArezConfig.shouldStoreArezDataAsState()` returns true.
+* **\[core\]** Introduce `Component.performComponentDidMount()` as a wrapper around the call to
+  `Component.componentDidMount()` that makes it possible for frameworks to override `performComponentDidMount()`
+  to provide custom behaviour.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)
