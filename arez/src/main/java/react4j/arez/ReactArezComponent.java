@@ -291,8 +291,7 @@ public abstract class ReactArezComponent
       final JsPropertyMap<Object> deps = JsPropertyMap.of();
       dependencies.forEach( d -> deps.set( d.getName(), getValue( d ) ) );
       final JsPropertyMap<Object> state = super.state();
-      final JsPropertyMap<Object> currentDepsData =
-        null == state ? null : Js.asPropertyMap( state );
+      final JsPropertyMap<Object> currentDepsData = null == state ? null : Js.asPropertyMap( state );
       /*
        * Do a shallow comparison against object and the deps. If either has changed then state needs to be updated.
        * We skip deps on shallow comparison of data as it is always recreated anew.
