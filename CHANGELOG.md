@@ -10,6 +10,10 @@
 * **\[arez\]** Subclasses of `ReactArezComponent` are no longer able to store values in reacts native state,
   thus there is no need to namespace the dependency state under a key named `arez` so remove the key and add
   dependency data directly into state object.
+* **\[arez\]** The method `ReactArezConfig.shouldStoreArezDataAsState()` should never return true if
+  `Arez.areSpiesEnabled()` returns false as the Arez spy system is used to extract and store arez state. The
+  `shouldStoreArezDataAsState()` method has been adapted to incorporate this condition and this guard has been
+  removed from other locations where it is no longer required.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)

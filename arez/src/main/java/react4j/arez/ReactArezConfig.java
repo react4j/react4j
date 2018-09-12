@@ -1,5 +1,7 @@
 package react4j.arez;
 
+import arez.Arez;
+
 /**
  * Location of all compile time configuration settings for arez part of framework.
  */
@@ -16,12 +18,13 @@ final class ReactArezConfig
    * Return true if arez should store dependencies on state of component.
    * Useful if you want to observe the dependencies via DevTools or other tool chains.
    * It is somewhat resource intensive so should not be enabled in production.
+   * It requires arez spies to be enabled and thus will return false if {@link Arez#areSpiesEnabled()} returns false.
    *
    * @return true if arez should store dependencies on state of component.
    */
   static boolean shouldStoreArezDataAsState()
   {
-    return STORE_AREZ_DATA_AS_STATE;
+    return STORE_AREZ_DATA_AS_STATE && Arez.areSpiesEnabled();
   }
 
   private static final class ConfigProvider
