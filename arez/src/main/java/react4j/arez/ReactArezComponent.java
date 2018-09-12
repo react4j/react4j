@@ -13,6 +13,7 @@ import arez.annotations.ObserverRef;
 import arez.annotations.OnDepsChanged;
 import arez.annotations.Priority;
 import arez.spy.ObservableValueInfo;
+import arez.spy.ObserverInfo;
 import elemental2.core.JsObject;
 import java.util.List;
 import java.util.Objects;
@@ -287,10 +288,12 @@ public abstract class ReactArezComponent
   {
     if ( ReactArezConfig.shouldStoreArezDataAsState() && !Disposable.isDisposed( this ) )
     {
-      final List<ObservableValueInfo> dependencies =
-        getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies();
       final JsPropertyMap<Object> newState = JsPropertyMap.of();
-      dependencies.forEach( d -> newState.set( d.getName(), getValue( d ) ) );
+
+      // Collect existing dependencies as state
+      final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );
+      observerInfo.getDependencies().forEach( d -> newState.set( d.getName(), getValue( d ) ) );
+
       final JsPropertyMap<Object> state = super.state();
       final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
       /*
