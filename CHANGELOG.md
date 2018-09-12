@@ -14,6 +14,8 @@
   `Arez.areSpiesEnabled()` returns false as the Arez spy system is used to extract and store arez state. The
   `shouldStoreArezDataAsState()` method has been adapted to incorporate this condition and this guard has been
   removed from other locations where it is no longer required.
+* **\[arez\]** Unwrap boxed values and convert enums into strings when emitting arez property values in the
+  react state.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)

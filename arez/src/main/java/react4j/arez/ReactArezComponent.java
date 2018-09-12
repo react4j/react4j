@@ -337,13 +337,61 @@ public abstract class ReactArezComponent
    * @param observableInfo the observable.
    * @return the value as a string.
    */
+  @SuppressWarnings( "UnnecessaryUnboxing" )
   @Nullable
   private Object getValue( @Nonnull final ObservableValueInfo observableInfo )
   {
     try
     {
-      //Consider unwrapping the boxed values and collections so they are presented correctly in DevTools
-      return Arez.arePropertyIntrospectorsEnabled() ? observableInfo.getValue() : "?";
+      if ( Arez.arePropertyIntrospectorsEnabled() )
+      {
+        // Consider unwrapping collections and potentially serializing Arez entities so they are presented correctly in DevTools
+        final Object value = observableInfo.getValue();
+        if ( null == value )
+        {
+          return null;
+        }
+        else if ( value instanceof Enum )
+        {
+          return ( (Enum) value ).name();
+        }
+        else if ( value instanceof Integer )
+        {
+          return Js.asAny( ( (Integer) value ).intValue() );
+        }
+        else if ( value instanceof Boolean )
+        {
+          return Js.asAny( ( (Boolean) value ).booleanValue() );
+        }
+        else if ( value instanceof Long )
+        {
+          return Js.asAny( ( (Long) value ).doubleValue() );
+        }
+        else if ( value instanceof Float )
+        {
+          return Js.asAny( ( (Float) value ).doubleValue() );
+        }
+        else if ( value instanceof Short )
+        {
+          return Js.asAny( ( (Short) value ).intValue() );
+        }
+        else if ( value instanceof Byte )
+        {
+          return Js.asAny( ( (Byte) value ).intValue() );
+        }
+        else if ( value instanceof Character )
+        {
+          return value.toString();
+        }
+        else
+        {
+          return value;
+        }
+      }
+      else
+      {
+        return "?";
+      }
     }
     catch ( final Throwable throwable )
     {
