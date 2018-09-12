@@ -6,6 +6,7 @@ import arez.Disposable;
 import arez.Observer;
 import arez.annotations.Action;
 import arez.annotations.ComponentId;
+import arez.annotations.ComponentNameRef;
 import arez.annotations.ContextRef;
 import arez.annotations.Executor;
 import arez.annotations.Observed;
@@ -126,6 +127,14 @@ public abstract class ReactArezComponent
   {
     return _arezComponentId;
   }
+
+  /**
+   * Return the name of the component according to Arez.
+   *
+   * @return the name of the component according to Arez.
+   */
+  @ComponentNameRef
+  protected abstract String getArezComponentName();
 
   /**
    * Return the Observer associated with the render tracker method.
@@ -288,6 +297,10 @@ public abstract class ReactArezComponent
     if ( ReactArezConfig.shouldStoreArezDataAsState() && !Disposable.isDisposed( this ) )
     {
       final JsPropertyMap<Object> newState = JsPropertyMap.of();
+
+      // Present component id as state. Useful to track when instance ids change.
+      newState.set( "Arez.id", getArezComponentId() );
+      newState.set( "Arez.name", getArezComponentName() );
 
       // Collect existing dependencies as state
       final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );

@@ -20,6 +20,8 @@
   returns true then `ReactArezComponent` could result in an infinite loop trying to converge state as reacts
   `setState` merges new state and will not replace state. This has been fixed by setting the value of the keys
   to `undefined` value.
+* **\[arez\]** Expose the id and name of the react component according to arez as state values under the
+  `Arez.id` and `Arez.name` keys when `ReactArezConfig.shouldStoreArezDataAsState()` returns true.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)
