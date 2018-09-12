@@ -25,8 +25,10 @@
 
 * Fix `@Prop` change propagation in Arez components so changes are generated even if renderRequired flag is set.
 
-* Add the ability to disable arez prop change detection/propagation. `AUTODETECT` will enable it if `@Computed`
-  `@Track` or `@Autorun` present.
+* Props should not be observable by default. Maybe mark each prop as observable or not (and thus requiring change
+  propagation or not). We could have `ENABLE`, `DISABLE`, `AUTODETECT` scenario. `AUTODETECT` would be driven by a
+  class level annotation which defines default - perhaps it could be `ENABLE`, `DISABLE`, `AUTODETECT` too - with
+  `AUTODETECT` only enabling propagation if there is `@Computed` or `@Observed` methods present?  
 
 * Arez Components that only have dependencies on props at end of render could warn if they may not need to
   be arez components.
