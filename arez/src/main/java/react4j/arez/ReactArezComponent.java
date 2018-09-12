@@ -239,7 +239,21 @@ public abstract class ReactArezComponent
   @Override
   protected void componentDidMount()
   {
+    /*
+     * This method is overridden as it forces the annotation processor to generate the native
+     * componentDidMount method. The native method is required so that performComponentDidMount()
+     * is invoked and correctly records state.
+     */
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final void performComponentDidMount()
+  {
     storeArezDataAsState();
+    super.performComponentDidMount();
   }
 
   /**

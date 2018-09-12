@@ -25,6 +25,10 @@
 * **\[core\]** Introduce `Component.performComponentDidMount()` as a wrapper around the call to
   `Component.componentDidMount()` that makes it possible for frameworks to override `performComponentDidMount()`
   to provide custom behaviour.
+* **\[arez\]** Rework `ReactArezComponent` so that it overrides `performComponentDidMount()` method to store
+  Arez dependencies in react state when `ReactArezConfig.shouldStoreArezDataAsState()` returns `true`. This means
+  that sub-classes no longer need to call `super.componentDidMount()` if they override the `componentDidMount()`
+  method.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)
