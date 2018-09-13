@@ -10,6 +10,7 @@
   code (it is just empty). We should instead consider writing `LiteLifecycle` and `Lifecycle extends LiteLifecycle`
   as well as `LiteNativeReactComponent` and `NativeReactComponent extends LiteNativeReactComponent`. Then the
   `getConstructorFunction()` would select the appropriate `NativeReactComponent` based on compile time setting.
+  The same could be said for `componentDidUpdate`...
 
 * Add helper to autoload js assets
 
