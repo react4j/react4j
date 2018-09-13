@@ -49,6 +49,8 @@
   - DevTools profiling capabilities
   - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
   - https://elijahmanor.com/react-devtools-profiler/
+  - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
+    production js produced. - https://github.com/facebook/react/issues/13634 
 
 * Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
   - Pointer Events
