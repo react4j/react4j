@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Update the javascript included within package to react version `16.5.0`.
+* Update the javascript included within package to react version `16.5.1`.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.107`.
 * **\[arez\]** The values of computed and observable properties were not being updated under arez state key
   when they were being changed resulting in incorrect values being presented in DevTools inspector and
