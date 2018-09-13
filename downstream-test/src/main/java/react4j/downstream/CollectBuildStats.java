@@ -90,18 +90,8 @@ public final class CollectBuildStats
             final boolean isMaven = branch.contains( "_maven" );
             final boolean isj2cl = branch.contains( "_j2cl" );
 
-            final String newBranch = branch + "-React4jUpgrade-" + version;
-            if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
-            {
-              Git.checkout( newBranch );
-              Git.resetBranch( "origin/" + newBranch );
-            }
-            else
-            {
-              Git.checkout( branch );
-              Git.clean();
-              Git.checkout( newBranch, true );
-            }
+            Git.checkout( branch );
+            Git.clean();
 
             Gir.messenger().info( "Building branch " + branch + " prior to modifications." );
             boolean initialBuildSuccess = false;
@@ -129,6 +119,19 @@ public final class CollectBuildStats
 
             Git.resetBranch();
             Git.clean();
+
+            final String newBranch = branch + "-React4jUpgrade-" + version;
+            if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
+            {
+              Git.checkout( newBranch );
+              Git.resetBranch( "origin/" + newBranch );
+            }
+            else
+            {
+              Git.checkout( branch );
+              Git.clean();
+              Git.checkout( newBranch, true );
+            }
 
             if ( isMaven )
             {
