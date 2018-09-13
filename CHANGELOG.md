@@ -22,9 +22,10 @@
   to `undefined` value.
 * **\[arez\]** Expose the id and name of the react component according to arez as state values under the
   `Arez.id` and `Arez.name` keys when `ReactArezConfig.shouldStoreArezDataAsState()` returns true.
-* **\[core\]** Introduce `Component.performComponentDidMount()` as a wrapper around the call to
-  `Component.componentDidMount()` that makes it possible for frameworks to override `performComponentDidMount()`
-  to provide custom behaviour.
+* **\[core\]** Introduce several methods that wrap around the component lifecycle method so frameworks can
+  customize particular lifecycle steps to provide custom behaviour. This was already possible with specific
+  lifecycle steps but support for customization has been added to the lifecycle methods `componentDidMount()`,
+  `componentDidUpdate()`, `componentDidCatch()` and `shouldComponentUpdate(...)`.
 * **\[arez\]** Rework `ReactArezComponent` so that it overrides `performComponentDidMount()` method to store
   Arez dependencies in react state when `ReactArezConfig.shouldStoreArezDataAsState()` returns `true`. This means
   that sub-classes no longer need to call `super.componentDidMount()` if they override the `componentDidMount()`

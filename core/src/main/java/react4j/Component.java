@@ -323,6 +323,19 @@ public abstract class Component
   }
 
   /**
+   * Wrapper method that delegates to the {@link #componentDidUpdate(JsPropertyMap, JsPropertyMap)} method.
+   * This method exists to give middleware a mechanism to hook into component lifecycle step.
+   *
+   * @param prevProps the props before the component was updated.
+   * @param prevState the state before the component was updated.
+   */
+  protected void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
+                                            @Nullable final JsPropertyMap<Object> prevState )
+  {
+    componentDidUpdate( prevProps, prevState );
+  }
+
+  /**
    * This method is invoked immediately before a component is unmounted and destroyed.
    * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
    * any DOM elements that were created in {@link #componentDidMount()}
@@ -359,6 +372,18 @@ public abstract class Component
   }
 
   /**
+   * Wrapper method that delegates to the {@link #componentDidCatch(JsError, ReactErrorInfo)} method.
+   * This method exists to give middleware a mechanism to hook into component lifecycle step.
+   *
+   * @param error the error that has been thrown.
+   * @param info  information about component stack during thrown error.
+   */
+  protected void performComponentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
+  {
+    componentDidCatch( error, info );
+  }
+
+  /**
    * Use this method to let React know if a component's output is not affected
    * by the current change in state or props. The default behavior is to re-render on
    * every state change, and in the vast majority of cases you should rely on the default behavior.
@@ -382,5 +407,19 @@ public abstract class Component
                                            @Nullable final JsPropertyMap<Object> nextState )
   {
     return true;
+  }
+
+  /**
+   * Wrapper method that delegates to the {@link #shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} method.
+   * This method exists to give middleware a mechanism to hook into component lifecycle step.
+   *
+   * @param nextProps the new properties of the component.
+   * @param nextState the new state of the component.
+   * @return true if the component should be updated.
+   */
+  protected boolean performShouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
+                                                  @Nullable final JsPropertyMap<Object> nextState )
+  {
+    return shouldComponentUpdate( nextProps, nextState );
   }
 }

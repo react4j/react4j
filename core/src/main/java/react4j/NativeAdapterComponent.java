@@ -170,7 +170,7 @@ public abstract class NativeAdapterComponent<I extends Component>
     }
     try
     {
-      return _component.shouldComponentUpdate( nextProps, nextState );
+      return _component.performShouldComponentUpdate( nextProps, nextState );
     }
     finally
     {
@@ -199,7 +199,7 @@ public abstract class NativeAdapterComponent<I extends Component>
     }
     try
     {
-      _component.componentDidUpdate( nextProps, nextState );
+      _component.performComponentDidUpdate( nextProps, nextState );
     }
     finally
     {
@@ -227,7 +227,7 @@ public abstract class NativeAdapterComponent<I extends Component>
     }
     try
     {
-      _component.componentDidCatch( error, info );
+      _component.performComponentDidCatch( error, info );
     }
     finally
     {
