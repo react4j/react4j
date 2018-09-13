@@ -258,9 +258,8 @@ public abstract class Component
   protected abstract ReactNode render();
 
   /**
-   * Wrapper method for rendering the component.
-   * By default it just delegates to the {@link #render()} method.
-   * This method exists to give middleware a mechanism of wrapping calls to render
+   * Wrapper method that delegates to the {@link #render()} method.
+   * This method exists to give middleware a mechanism to hook into component lifecycle step.
    *
    * @return the result of rendering.
    */
@@ -271,9 +270,8 @@ public abstract class Component
   }
 
   /**
-   * Wrapper method for constructing the component.
-   * By default it just delegates to the {@link #postConstruct()} method.
-   * This method exists to give middleware a mechanism to hook into component construction lifecycle.
+   * Wrapper method that delegates to the {@link #postConstruct()} method.
+   * This method exists to give middleware a mechanism to hook into component lifecycle step.
    */
   protected void performPostConstruct()
   {
@@ -303,8 +301,8 @@ public abstract class Component
   }
 
   /**
-   * Wrapper method invoked  that delegates to the {@link #componentDidMount()} method.
-   * This method exists to give middleware a mechanism to hook into component unmounting lifecycle.
+   * Wrapper method that delegates to the {@link #componentDidMount()} method.
+   * This method exists to give middleware a mechanism to hook into component lifecycle step.
    */
   protected void performComponentDidMount()
   {
@@ -335,9 +333,8 @@ public abstract class Component
   }
 
   /**
-   * Wrapper method invoked when unmounting the component.
-   * It delegates to the {@link #componentWillUnmount()} method.
-   * This method exists to give middleware a mechanism to hook into component unmounting lifecycle.
+   * Wrapper method that delegates to the {@link #componentWillUnmount()} method.
+   * This method exists to give middleware a mechanism to hook into component lifecycle step.
    */
   protected void performComponentWillUnmount()
   {
