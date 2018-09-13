@@ -263,6 +263,21 @@ public abstract class ReactArezComponent
   protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
                                      @Nullable final JsPropertyMap<Object> prevState )
   {
+    /*
+     * This method is overridden as it forces the annotation processor to generate the native
+     * componentDidUpdate method. The native method is required so that performComponentDidUpdate()
+     * is invoked and correctly cleans up state.
+     */
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
+                                            @Nullable final JsPropertyMap<Object> prevState )
+  {
+    super.performComponentDidUpdate( prevProps, prevState );
     storeArezDataAsState();
   }
 

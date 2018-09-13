@@ -26,10 +26,11 @@
   customize particular lifecycle steps to provide custom behaviour. This was already possible with specific
   lifecycle steps but support for customization has been added to the lifecycle methods `componentDidMount()`,
   `componentDidUpdate()`, `componentDidCatch()` and `shouldComponentUpdate(...)`.
-* **\[arez\]** Rework `ReactArezComponent` so that it overrides `performComponentDidMount()` method to store
-  Arez dependencies in react state when `ReactArezConfig.shouldStoreArezDataAsState()` returns `true`. This means
-  that sub-classes no longer need to call `super.componentDidMount()` if they override the `componentDidMount()`
-  method.
+* **\[arez\]** Rework `ReactArezComponent` so that it overrides the `performComponentDidMount()` method and the
+  `performComponentDidUpdate()` method to store Arez dependencies in react state when
+  `ReactArezConfig.shouldStoreArezDataAsState()` returns `true`. This means that sub-classes no longer need to
+  call the `super.componentDidMount()` method or the `super.componentDidUpdate()` method if the component overrides
+  the `componentDidMount()` method or the `componentDidUpdate()` method.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)
