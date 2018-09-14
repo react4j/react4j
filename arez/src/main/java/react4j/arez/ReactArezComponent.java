@@ -437,7 +437,6 @@ public abstract class ReactArezComponent
 
   /**
    * Schedule state update the updates arez state.
-   * Makes sure the super class is invoked so reportStateChanged() is not invoked on State observable.
    */
   private void scheduleArezKeyUpdate( @Nonnull final JsPropertyMap<Object> data )
   {
