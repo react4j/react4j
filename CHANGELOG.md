@@ -31,6 +31,9 @@
   `ReactArezConfig.shouldStoreArezDataAsState()` returns `true`. This means that sub-classes no longer need to
   call the `super.componentDidMount()` method or the `super.componentDidUpdate()` method if the component overrides
   the `componentDidMount()` method or the `componentDidUpdate()` method.
+* **\[arez\]** Avoid comparisons of state in `ReactArezComponent.shouldComponentUpdate()` as state is unused in arez
+  based react components and `ReactArezComponent.scheduleArezKeyUpdate()` has been updated for forcefully schedule
+  a render which skips `ReactArezComponent.shouldComponentUpdate()` lifecycle step.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)

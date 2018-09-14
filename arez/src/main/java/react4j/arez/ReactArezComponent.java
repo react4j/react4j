@@ -208,15 +208,11 @@ public abstract class ReactArezComponent
     {
       return true;
     }
-    else if ( ReactArezConfig.shouldStoreArezDataAsState() && !Js.isTripleEqual( super.state(), nextState ) )
-    {
-      // State is only updated when we store Arez data as state. The saving of arez data will actually
-      // trigger a re-render and we need to allow this otherwise the DevTools will not contain the
-      // updated state.
-      return true;
-    }
     else
     {
+      // No need to check state as this component can not schedule state updates. The only thing that can
+      // write to react's state is "scheduleArezKeyUpdate()" and this performs forced render by calling
+      // "scheduleRender( true )" and thus does not come through this method.
       return shouldComponentUpdate( nextProps );
     }
   }
@@ -446,5 +442,9 @@ public abstract class ReactArezComponent
   private void scheduleArezKeyUpdate( @Nonnull final JsPropertyMap<Object> data )
   {
     super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsObject.freeze( data ) ), null );
+    /*
+     * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
+     */
+    scheduleRender( true );
   }
 }
