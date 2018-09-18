@@ -174,6 +174,8 @@ warning messages more cryptic and skip important checks that happen in developme
 
 * Add lifecycle image from https://twitter.com/dan_abramov/status/981712092611989509 and credit author
 
+* Or most excellent image from https://medium.freecodecamp.org/why-react16-is-a-blessing-to-react-developers-31433bfc210a 
+
 * Create a jsbin-alike to display GWT code
   - https://github.com/jsbin/jsbin
   - http://jsbin.com/?html,css,js,console,output
