@@ -77,7 +77,7 @@ public class CssProps
   @JsOverlay
   public final CssProps bottom( String bottom )
   {
-    setBorder( bottom );
+    setBottom( bottom );
     return this;
   }
 
