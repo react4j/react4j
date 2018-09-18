@@ -69,6 +69,19 @@ public class CssProps
   }
 
   @JsProperty
+  public native String getBottom();
+
+  @JsProperty
+  public native void setBottom( String bottom );
+
+  @JsOverlay
+  public final CssProps bottom( String bottom )
+  {
+    setBorder( bottom );
+    return this;
+  }
+
+  @JsProperty
   public native int getColumnCount();
 
   @JsProperty
