@@ -2,6 +2,7 @@ package com.example.arez.computed;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Computed;
+import arez.annotations.DepType;
 import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -42,7 +43,7 @@ abstract class React4j_ParameterizedComputedComponent extends ParameterizedCompu
       priority = Priority.LOWEST,
       name = "foo",
       keepAlive = true,
-      arezOnlyDependencies = false,
+      depType = DepType.AREZ_OR_EXTERNAL,
       observeLowerPriorityDependencies = true
   )
   boolean isActive() {

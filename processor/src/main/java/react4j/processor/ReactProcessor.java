@@ -1261,12 +1261,12 @@ public final class ReactProcessor
             parameters.contains( "priority" ) &&
             parameters.contains( "keepAlive" ) &&
             parameters.contains( "observeLowerPriorityDependencies" ) &&
-            parameters.contains( "arezOnlyDependencies" ) &&
+            parameters.contains( "depType" ) &&
             5 == parameters.size() ) )
     {
       throw new ReactProcessorException( "The @" + Constants.COMPUTED_ANNOTATION_CLASSNAME + " annotation was " +
                                          "expected to have the parameters name, priority, keepAlive, " +
-                                         "arezOnlyDependencies and observeLowerPriorityDependencies but has " +
+                                         "depType and observeLowerPriorityDependencies but has " +
                                          parameters + ". The react4j annotation processor needs to be updated to " +
                                          "handle the change in parameters.", typeElement );
 

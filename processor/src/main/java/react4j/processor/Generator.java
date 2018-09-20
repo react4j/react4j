@@ -48,6 +48,7 @@ final class Generator
     ClassName.get( "arez.annotations", "Feature" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName COMPUTED_CLASSNAME = ClassName.get( "arez.annotations", "Computed" );
+  private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
   private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
@@ -706,13 +707,13 @@ final class Generator
     {
       annotation.addMember( "keepAlive", "$N", keepAliveValue.getValue().toString() );
     }
-    final AnnotationValue arezOnlyDependenciesValue =
+    final AnnotationValue depTypeValue =
       ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
                                                  Constants.COMPUTED_ANNOTATION_CLASSNAME,
-                                                 "arezOnlyDependencies" );
-    if ( null != arezOnlyDependenciesValue )
+                                                 "depType" );
+    if ( null != depTypeValue )
     {
-      annotation.addMember( "arezOnlyDependencies", "$N", arezOnlyDependenciesValue.getValue().toString() );
+      annotation.addMember( "depType", "$T.$N", DEP_TYPE_CLASSNAME, depTypeValue.getValue().toString() );
     }
 
     final AnnotationValue observeLowerPriorityDependenciesValue =
