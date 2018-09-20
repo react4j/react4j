@@ -47,6 +47,15 @@ public abstract class ReactArezComponent
   private final int _arezComponentId;
   private boolean _renderDepsChanged;
   private boolean _unmounted;
+  /**
+   * If the last render resulted in state update to record new arez state then this will be true.
+   * It guards against multiple renders of a single component where rendering is just updating
+   * react state. Otherwise dependencies on values that are never equal (i.e. Streams) will result
+   * in infinite re-renders ultimately triggering invariant failure from React.
+   *
+   * This should only be true if ReactArezConfig.shouldStoreArezDataAsState() returns true.
+   */
+  private boolean _scheduledArezStateUpdate;
 
   protected ReactArezComponent()
   {
@@ -212,7 +221,7 @@ public abstract class ReactArezComponent
     else
     {
       // No need to check state as this component can not schedule state updates. The only thing that can
-      // write to react's state is "scheduleArezKeyUpdate()" and this performs forced render by calling
+      // write to react's state is "scheduleArezStateUpdate()" and this performs forced render by calling
       // "scheduleRender( true )" and thus does not come through this method.
       return shouldComponentUpdate( nextProps );
     }
@@ -322,45 +331,52 @@ public abstract class ReactArezComponent
   {
     if ( ReactArezConfig.shouldStoreArezDataAsState() && !Disposable.isDisposed( this ) )
     {
-      final JsPropertyMap<Object> newState = JsPropertyMap.of();
+      if ( _scheduledArezStateUpdate )
+      {
+        _scheduledArezStateUpdate = false;
+      }
+      else
+      {
+        final JsPropertyMap<Object> newState = JsPropertyMap.of();
 
-      // Present component id as state. Useful to track when instance ids change.
-      newState.set( "Arez.id", getArezComponentId() );
-      newState.set( "Arez.name", getArezComponentName() );
+        // Present component id as state. Useful to track when instance ids change.
+        newState.set( "Arez.id", getArezComponentId() );
+        newState.set( "Arez.name", getArezComponentName() );
 
-      // Collect existing dependencies as state
-      final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );
-      observerInfo.getDependencies().forEach( d -> newState.set( d.getName(), getValue( d ) ) );
+        // Collect existing dependencies as state
+        final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );
+        observerInfo.getDependencies().forEach( d -> newState.set( d.getName(), getValue( d ) ) );
 
-      final JsPropertyMap<Object> state = super.state();
-      final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
+        final JsPropertyMap<Object> state = super.state();
+        final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
       /*
        * To determine whether we need to do a state update we do compare each key and value and make sure
        * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
        * updates in react are merges, we need to implement this by putting undefined values into the state.
        */
-      if ( null == currentState )
-      {
-        scheduleArezKeyUpdate( newState );
-      }
-      else
-      {
-        for ( final String key : JsObject.keys( Js.uncheckedCast( currentState ) ) )
+        if ( null == currentState )
         {
-          if ( !newState.has( key ) )
-          {
-            newState.set( key, Js.undefined() );
-          }
+          scheduleArezStateUpdate( newState );
         }
-
-        for ( final String key : JsObject.keys( Js.uncheckedCast( newState ) ) )
+        else
         {
-          final Any newValue = currentState.getAny( key );
-          final Any existingValue = newState.getAny( key );
-          if ( !Objects.equals( newValue, existingValue ) )
+          for ( final String key : JsObject.keys( Js.uncheckedCast( currentState ) ) )
           {
-            scheduleArezKeyUpdate( newState );
-            return;
+            if ( !newState.has( key ) )
+            {
+              newState.set( key, Js.undefined() );
+            }
+          }
+
+          for ( final String key : JsObject.keys( Js.uncheckedCast( newState ) ) )
+          {
+            final Any newValue = currentState.getAny( key );
+            final Any existingValue = newState.getAny( key );
+            if ( !Objects.equals( newValue, existingValue ) )
+            {
+              scheduleArezStateUpdate( newState );
+              return;
+            }
           }
         }
       }
@@ -451,12 +467,13 @@ public abstract class ReactArezComponent
   /**
    * Schedule state update the updates arez state.
    */
-  private void scheduleArezKeyUpdate( @Nonnull final JsPropertyMap<Object> data )
+  private void scheduleArezStateUpdate( @Nonnull final JsPropertyMap<Object> data )
   {
     super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsObject.freeze( data ) ), null );
     /*
      * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
      */
     scheduleRender( true );
+    _scheduledArezStateUpdate = true;
   }
 }
