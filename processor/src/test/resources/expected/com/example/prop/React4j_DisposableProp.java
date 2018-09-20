@@ -62,7 +62,9 @@ abstract class React4j_DisposableProp extends DisposableProp {
   protected abstract ObservableValue getValueObservableValue();
 
   @Override
-  @Action
+  @Action(
+      verifyRequired = false
+  )
   protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
     boolean modified = false;
     if ( !Js.isTripleEqual( props().get( "value" ), null == nextProps ? null : nextProps.get( "value" ) ) ) {
