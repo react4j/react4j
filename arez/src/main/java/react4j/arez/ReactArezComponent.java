@@ -18,6 +18,7 @@ import arez.spy.ObserverInfo;
 import elemental2.core.JsObject;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Any;
@@ -418,6 +419,11 @@ public abstract class ReactArezComponent
         else if ( value instanceof Character )
         {
           return value.toString();
+        }
+        else if ( value instanceof Stream )
+        {
+          // Streams are new instances every time so render them as strings to avoid infinite loops.
+          return "<Stream>";
         }
         else
         {

@@ -35,6 +35,8 @@
   based react components and `ReactArezComponent.scheduleArezKeyUpdate()` has been updated for forcefully schedule
   a render which skips `ReactArezComponent.shouldComponentUpdate()` lifecycle step.
 * **\[dom\]** Add missing "bottom" property to `react4j.dom.proptypes.html.CssProps`.
+* **\[arez\]** Specially handle `java.util.stream.Stream` values when emitting them as values in component state
+  for DevTools by converting them to string constants. This vastly improves the readability in the DevTools.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)
