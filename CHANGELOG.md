@@ -37,6 +37,8 @@
 * **\[dom\]** Add missing "bottom" property to `react4j.dom.proptypes.html.CssProps`.
 * **\[arez\]** Specially handle `java.util.stream.Stream` values when emitting them as values in component state
   for DevTools by converting them to string constants. This vastly improves the readability in the DevTools.
+* **\[arez\]** Add mechanisms for customizing values emitted in state for DevTools by adding a template method
+  named `ReactArezComponent.renderValueAsState(ObservableValueInfo,Object)`.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)
