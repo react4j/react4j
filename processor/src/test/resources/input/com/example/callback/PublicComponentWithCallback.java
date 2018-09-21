@@ -16,7 +16,7 @@ public abstract class PublicComponentWithCallback
   }
 
   @Callback
-  public void handleFoo()
+  void handleFoo()
   {
   }
 }

@@ -278,6 +278,8 @@ public class ReactProcessorTest
                       "Method can not be annotated with both @Callback and @Prop" },
         new Object[]{ "com.example.callback.CallbackNotAbstract", "@Callback target must not be abstract" },
         new Object[]{ "com.example.callback.CallbackNotPrivate", "@Callback target must not be private" },
+        new Object[]{ "com.example.callback.CallbackNotPublic",
+                      "@Callback target must not be public unless it is a default method on an interface" },
         new Object[]{ "com.example.callback.CallbackNotStatic", "@Callback target must not be static" },
 
         new Object[]{ "com.example.callback.DuplicateName",

@@ -41,6 +41,8 @@
   named `ReactArezComponent.renderValueAsState(ObservableValueInfo,Object)`.
 * **\[arez\]** Add guard to avoid infinite recursion as a result storing dependencies in react state causing a
   re-render.
+* **\[processor\]** Generate a compile error if methods annotated with `@Callback` have a public access modifier
+  unless the method is defined as a default method on an interface.
 
 ### [v0.95](https://github.com/react4j/react4j/tree/v0.95) (2018-09-06)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.94...v0.95)

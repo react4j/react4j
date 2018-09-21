@@ -701,6 +701,12 @@ public final class ReactProcessor
       throw new ReactProcessorException( message, method );
     }
     MethodChecks.mustNotBeAbstract( Constants.CALLBACK_ANNOTATION_CLASSNAME, method );
+    final TypeElement element = (TypeElement) method.getEnclosingElement();
+    if ( ElementKind.CLASS == element.getKind() && method.getModifiers().contains( Modifier.PUBLIC ) )
+    {
+      throw new ReactProcessorException( "@Callback target must not be public unless it is a " +
+                                         "default method on an interface", method );
+    }
     MethodChecks.mustBeSubclassCallable( descriptor.getElement(), Constants.CALLBACK_ANNOTATION_CLASSNAME, method );
     return new CallbackDescriptor( name,
                                    method,
