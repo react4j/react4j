@@ -51,7 +51,7 @@
   - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
   - https://elijahmanor.com/react-devtools-profiler/
   - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
-    production js produced. - https://github.com/facebook/react/issues/13634 
+    production js produced. - https://github.com/facebook/react/issues/13634
 
 * Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
   - Pointer Events
@@ -174,7 +174,7 @@ warning messages more cryptic and skip important checks that happen in developme
 
 * Add lifecycle image from https://twitter.com/dan_abramov/status/981712092611989509 and credit author
 
-* Or most excellent image from https://medium.freecodecamp.org/why-react16-is-a-blessing-to-react-developers-31433bfc210a 
+* Or most excellent image from https://medium.freecodecamp.org/why-react16-is-a-blessing-to-react-developers-31433bfc210a
 
 * Create a jsbin-alike to display GWT code
   - https://github.com/jsbin/jsbin
