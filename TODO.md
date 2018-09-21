@@ -2,6 +2,8 @@
 
 ### Very High Priority
 
+* SHould we generate a failure if callbacks on public methods?
+
 * Consider auto-observing all props at start of render - skipping those that will be observed in anyPropsDisposed().
   Perhaps we could skip this if there are no `@Computed` (which would normally be invoked later as lower priority)
 
