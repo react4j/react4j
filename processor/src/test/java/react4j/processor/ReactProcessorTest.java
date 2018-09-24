@@ -98,6 +98,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.CollectionPropComponent", false, false },
         new Object[]{ "com.example.prop.CollectionSetPropComponent", false, false },
         new Object[]{ "com.example.prop.ComponentWithArezProp", false, false },
+        new Object[]{ "com.example.prop.CustomNameProp", false, false },
         new Object[]{ "com.example.prop.DisposableProp", false, false },
         new Object[]{ "com.example.prop.GenericAllPropComponent", false, false },
         new Object[]{ "com.example.prop.GenericPropComponent", false, false },
