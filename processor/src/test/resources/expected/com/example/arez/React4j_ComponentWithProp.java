@@ -16,6 +16,7 @@ import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
+import react4j.arez.ReactArezConfig;
 
 @ArezComponent(
     name = "ComponentWithProp"
@@ -26,7 +27,7 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithProp" );
     }
@@ -69,6 +70,18 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
+  interface LiteLifecycle {
+    void componentWillUnmount();
+
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
+        @Nonnull JsPropertyMap<Object> arg1);
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
   interface Lifecycle {
     void componentDidMount();
 
@@ -79,6 +92,29 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
 
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
         @Nonnull JsPropertyMap<Object> arg1);
+  }
+
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ComponentWithProp> implements LiteLifecycle {
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+    }
+
+    @Override
+    protected ComponentWithProp createComponent() {
+      return new Arez_React4j_ComponentWithProp();
+    }
+
+    @Override
+    public void componentWillUnmount() {
+      performComponentWillUnmount();
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
+        @Nonnull final JsPropertyMap<Object> arg1) {
+      return performShouldComponentUpdate(arg0,arg1);
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithProp> implements Lifecycle {

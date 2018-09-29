@@ -1,5 +1,8 @@
 package react4j.processor;
 
+import java.util.Arrays;
+import java.util.List;
+
 final class Constants
 {
   static final String DAGGER_SUBCOMPONENT_CLASSNAME = "dagger.Subcomponent";
@@ -7,6 +10,7 @@ final class Constants
   static final String DAGGER_PROVIDES_CLASSNAME = "dagger.Provides";
   static final String JS_FUNCTION_CLASSNAME = "jsinterop.annotations.JsFunction";
   static final String COMPONENT_CLASSNAME = "react4j.Component";
+  static final String REACT_AREZ_COMPONENT_CLASSNAME = "react4j.arez.ReactArezComponent";
   static final String CALLBACK_ANNOTATION_CLASSNAME = "react4j.annotations.Callback";
   static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";
   static final String PROP_DEFAULT_ANNOTATION_CLASSNAME = "react4j.annotations.PropDefault";
@@ -22,6 +26,14 @@ final class Constants
   static final String NONNULL_ANNOTATION_CLASSNAME = "javax.annotation.Nonnull";
   static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
   static final String DEPRECATED_ANNOTATION_CLASSNAME = "java.lang.Deprecated";
+  static final String COMPONENT_DID_MOUNT = "componentDidMount";
+  static final String COMPONENT_DID_UPDATE = "componentDidUpdate";
+  static final List<String> LIFECYCLE_METHODS =
+    Arrays.asList( COMPONENT_DID_MOUNT,
+                   COMPONENT_DID_UPDATE,
+                   "componentWillUnmount",
+                   "componentDidCatch",
+                   "shouldComponentUpdate" );
 
   private Constants()
   {

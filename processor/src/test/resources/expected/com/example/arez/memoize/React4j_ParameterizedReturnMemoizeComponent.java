@@ -15,6 +15,7 @@ import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
+import react4j.arez.ReactArezConfig;
 
 @ArezComponent(
     name = "ParameterizedReturnMemoizeComponent"
@@ -25,7 +26,7 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ParameterizedReturnMemoizeComponent" );
     }
@@ -45,6 +46,18 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
+  interface LiteLifecycle {
+    void componentWillUnmount();
+
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
+        @Nonnull JsPropertyMap<Object> arg1);
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
   interface Lifecycle {
     void componentDidMount();
 
@@ -55,6 +68,29 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
 
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
         @Nonnull JsPropertyMap<Object> arg1);
+  }
+
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ParameterizedReturnMemoizeComponent> implements LiteLifecycle {
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+    }
+
+    @Override
+    protected ParameterizedReturnMemoizeComponent createComponent() {
+      return new Arez_React4j_ParameterizedReturnMemoizeComponent();
+    }
+
+    @Override
+    public void componentWillUnmount() {
+      performComponentWillUnmount();
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
+        @Nonnull final JsPropertyMap<Object> arg1) {
+      return performShouldComponentUpdate(arg0,arg1);
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ParameterizedReturnMemoizeComponent> implements Lifecycle {

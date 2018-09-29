@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,12 +51,6 @@ import static javax.tools.Diagnostic.Kind.*;
 public final class ReactProcessor
   extends AbstractProcessor
 {
-  private static final List<String> LIFECYCLE_METHODS =
-    Arrays.asList( "componentDidMount",
-                   "componentDidUpdate",
-                   "componentWillUnmount",
-                   "componentDidCatch",
-                   "shouldComponentUpdate" );
   /**
    * Cache of lifecycle names to methods as defined by Component.
    */
@@ -1136,7 +1129,7 @@ public final class ReactProcessor
       for ( final ExecutableElement method : getMethods( componentType ) )
       {
         final String methodName = method.getSimpleName().toString();
-        if ( LIFECYCLE_METHODS.contains( methodName ) )
+        if ( Constants.LIFECYCLE_METHODS.contains( methodName ) )
         {
           _componentLifecycleMethods.put( methodName, method );
         }

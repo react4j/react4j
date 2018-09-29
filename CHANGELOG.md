@@ -3,6 +3,15 @@
 ### Unreleased
 
 * Update the javascript included within package to react version `16.5.2`.
+* **\[arez\]** Make the `ReactArezConfig` class public to make the compile time constants accessible by
+  generated component classes.
+* **\[arez\]** Change the way subclasses of `ReactArezComponent` are generated. If a `ReactArezComponent` does
+  not override `componentDidMount()` or does not override `componentDidUpdate()` then generate a `LiteLifecycle`
+  and a `LiteNativeReactComponent` along with the normal `Lifecycle` and `NativeReactComponent`. If the compile
+  time setting `ReactArezConfig.shouldStoreArezDataAsState()` returns `false` then use `LiteNativeReactComponent`
+  when constructing the components. This improves dead code elimination in both the GWT and J2CL toolchain as
+  the `componentDidMount()` and/or `componentDidUpdate()` methods need not be generated and empty and can instead
+  just be removed by the compiler. This also has a positive impact on runtime performance.
 
 ### [v0.96](https://github.com/react4j/react4j/tree/v0.96) (2018-09-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.95...v0.96)

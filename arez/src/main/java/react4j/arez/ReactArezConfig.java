@@ -5,7 +5,7 @@ import arez.Arez;
 /**
  * Location of all compile time configuration settings for arez part of framework.
  */
-final class ReactArezConfig
+public final class ReactArezConfig
 {
   private static final ConfigProvider PROVIDER = new ConfigProvider();
   private static final boolean STORE_AREZ_DATA_AS_STATE = PROVIDER.shouldStoreArezDataAsState();
@@ -22,7 +22,7 @@ final class ReactArezConfig
    *
    * @return true if arez should store dependencies on state of component.
    */
-  static boolean shouldStoreArezDataAsState()
+  public static boolean shouldStoreArezDataAsState()
   {
     return STORE_AREZ_DATA_AS_STATE && Arez.areSpiesEnabled();
   }

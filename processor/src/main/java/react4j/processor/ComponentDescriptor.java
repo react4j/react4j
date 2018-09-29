@@ -279,6 +279,31 @@ final class ComponentDescriptor
   }
 
   @Nonnull
+  List<MethodDescriptor> getLiteLifecycleMethods()
+  {
+    assert null != _lifecycleMethods;
+    return _lifecycleMethods.stream().filter( m -> !canOmitFromLiteLifecycle( m ) ).collect( Collectors.toList() );
+  }
+
+  boolean shouldGenerateLiteLifecycle()
+  {
+    assert null != _lifecycleMethods;
+    return _lifecycleMethods.stream().anyMatch( this::canOmitFromLiteLifecycle );
+  }
+
+  private boolean canOmitFromLiteLifecycle( @Nonnull final MethodDescriptor method )
+  {
+    final ExecutableElement element = method.getMethod();
+    final String methodName = element.getSimpleName().toString();
+    final String className = ( (TypeElement) element.getEnclosingElement() ).getQualifiedName().toString();
+    return Constants.REACT_AREZ_COMPONENT_CLASSNAME.equals( className ) &&
+           (
+             Constants.COMPONENT_DID_MOUNT.equals( methodName ) ||
+             Constants.COMPONENT_DID_UPDATE.equals( methodName )
+           );
+  }
+
+  @Nonnull
   List<MethodDescriptor> getComputedMethods()
   {
     assert null != _computedMethods;

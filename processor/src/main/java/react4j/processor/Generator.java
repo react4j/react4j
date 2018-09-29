@@ -74,6 +74,7 @@ final class Generator
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
   private static final ClassName KEY_CLASSNAME = ClassName.get( "react4j", "Key" );
+  private static final ClassName REACT_AREZ_CONFIG_CLASSNAME = ClassName.get( "react4j.arez", "ReactArezConfig" );
 
   private Generator()
   {
@@ -631,9 +632,17 @@ final class Generator
 
     if ( !descriptor.getLifecycleMethods().isEmpty() )
     {
+      if ( descriptor.shouldGenerateLiteLifecycle() )
+      {
+        builder.addType( buildNativeLiteLifecycleInterface( descriptor ) );
+      }
       builder.addType( buildNativeLifecycleInterface( descriptor ) );
     }
-    builder.addType( buildNativeComponent( descriptor ) );
+    if ( descriptor.shouldGenerateLiteLifecycle() )
+    {
+      builder.addType( buildNativeComponent( descriptor, true ) );
+    }
+    builder.addType( buildNativeComponent( descriptor, false ) );
 
     return builder.build();
   }
@@ -1189,9 +1198,20 @@ final class Generator
         addModifiers( Modifier.STATIC, Modifier.PRIVATE ).
         returns( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME );
 
-    method.addStatement( "final $T componentConstructor = $T::new",
-                         COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
-                         ClassName.bestGuess( "NativeReactComponent" ) );
+    if ( descriptor.shouldGenerateLiteLifecycle() )
+    {
+      method.addStatement( "final $T componentConstructor = $T.shouldStoreArezDataAsState() ? $T::new : $T::new",
+                           COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
+                           REACT_AREZ_CONFIG_CLASSNAME,
+                           ClassName.bestGuess( "NativeReactComponent" ),
+                           ClassName.bestGuess( "LiteNativeReactComponent" ) );
+    }
+    else
+    {
+      method.addStatement( "final $T componentConstructor = $T::new",
+                           COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
+                           ClassName.bestGuess( "NativeReactComponent" ) );
+    }
     final CodeBlock.Builder codeBlock = CodeBlock.builder();
     codeBlock.beginControlFlow( "if ( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
     codeBlock.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"displayName\", $S )",
@@ -1231,9 +1251,9 @@ final class Generator
   }
 
   @Nonnull
-  private static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor )
+  private static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor, final boolean lite )
   {
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( "NativeReactComponent" );
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( ( lite ? "Lite" : "" ) + "NativeReactComponent" );
 
     //Ensure it can not be subclassed
     builder.addModifiers( Modifier.FINAL );
@@ -1246,9 +1266,11 @@ final class Generator
     builder.superclass( superType );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
-    if ( !descriptor.getLifecycleMethods().isEmpty() )
+    final List<MethodDescriptor> lifecycleMethods =
+      lite ? descriptor.getLiteLifecycleMethods() : descriptor.getLifecycleMethods();
+    if ( !lifecycleMethods.isEmpty() )
     {
-      builder.addSuperinterface( ClassName.bestGuess( "Lifecycle" ) );
+      builder.addSuperinterface( ClassName.bestGuess( ( lite ? "Lite" : "" ) + "Lifecycle" ) );
     }
 
     // build the constructor
@@ -1285,8 +1307,7 @@ final class Generator
 
     // Lifecycle methods
     {
-
-      for ( final MethodDescriptor lifecycleMethod : descriptor.getLifecycleMethods() )
+      for ( final MethodDescriptor lifecycleMethod : lifecycleMethods )
       {
         final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
         final MethodSpec.Builder method =
@@ -1343,6 +1364,27 @@ final class Generator
   }
 
   @Nonnull
+  private static TypeSpec buildNativeLiteLifecycleInterface( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "LiteLifecycle" );
+
+    builder.addAnnotation( AnnotationSpec.builder( JS_TYPE_CLASSNAME ).
+      addMember( "isNative", "true" ).
+      addMember( "namespace", "$T.GLOBAL", JS_PACKAGE_CLASSNAME ).
+      addMember( "name", "$S", "?" ).
+      build() );
+
+    builder.addModifiers( Modifier.STATIC );
+
+    for ( final MethodDescriptor method : descriptor.getLiteLifecycleMethods() )
+    {
+      buildLfecycleMethod( builder, method );
+    }
+
+    return builder.build();
+  }
+
+  @Nonnull
   private static TypeSpec buildNativeLifecycleInterface( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Lifecycle" );
@@ -1355,37 +1397,36 @@ final class Generator
 
     builder.addModifiers( Modifier.STATIC );
 
-    // Lifecycle methods
-    {
-
-      for ( final MethodDescriptor lifecycleMethod : descriptor.getLifecycleMethods() )
-      {
-        final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
-        final MethodSpec.Builder method =
-          MethodSpec.methodBuilder( methodName ).
-            addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
-            returns( ClassName.get( lifecycleMethod.getMethodType().getReturnType() ) );
-
-        ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
-
-        final List<? extends VariableElement> sourceParameters = lifecycleMethod.getMethod().getParameters();
-        final List<? extends TypeMirror> sourceParameterTypes = lifecycleMethod.getMethodType().getParameterTypes();
-        final int parameterCount = sourceParameters.size();
-        for ( int i = 0; i < parameterCount; i++ )
-        {
-          final VariableElement parameter = sourceParameters.get( i );
-          final TypeMirror parameterType = sourceParameterTypes.get( i );
-          final String parameterName = parameter.getSimpleName().toString();
-          final ParameterSpec.Builder parameterSpec =
-            ParameterSpec.builder( TypeName.get( parameterType ), parameterName ).addAnnotation( NONNULL_CLASSNAME );
-          method.addParameter( parameterSpec.build() );
-        }
-
-        builder.addMethod( method.build() );
-      }
-    }
+    descriptor.getLifecycleMethods().forEach( method -> buildLfecycleMethod( builder, method ) );
 
     return builder.build();
+  }
+
+  private static void buildLfecycleMethod( @Nonnull final TypeSpec.Builder builder,
+                                           @Nonnull final MethodDescriptor lifecycleMethod )
+  {
+    final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( methodName ).
+        addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
+        returns( ClassName.get( lifecycleMethod.getMethodType().getReturnType() ) );
+
+    ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
+
+    final List<? extends VariableElement> sourceParameters = lifecycleMethod.getMethod().getParameters();
+    final List<? extends TypeMirror> sourceParameterTypes = lifecycleMethod.getMethodType().getParameterTypes();
+    final int parameterCount = sourceParameters.size();
+    for ( int i = 0; i < parameterCount; i++ )
+    {
+      final VariableElement parameter = sourceParameters.get( i );
+      final TypeMirror parameterType = sourceParameterTypes.get( i );
+      final String parameterName = parameter.getSimpleName().toString();
+      final ParameterSpec.Builder parameterSpec =
+        ParameterSpec.builder( TypeName.get( parameterType ), parameterName ).addAnnotation( NONNULL_CLASSNAME );
+      method.addParameter( parameterSpec.build() );
+    }
+
+    builder.addMethod( method.build() );
   }
 
   @Nonnull
