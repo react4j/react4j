@@ -40,7 +40,6 @@
 
 * Migrate to React 16.5.0 features
   - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
-  - DevTools profiling capabilities
   - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
   - https://elijahmanor.com/react-devtools-profiler/
   - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
