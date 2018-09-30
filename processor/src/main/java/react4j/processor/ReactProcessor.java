@@ -31,12 +31,14 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import static javax.tools.Diagnostic.Kind.*;
@@ -829,7 +831,7 @@ public final class ReactProcessor
     MethodChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
                                                            Constants.PROP_ANNOTATION_CLASSNAME,
                                                            method );
-
+    final TypeMirror returnType = method.getReturnType();
     if ( "key".equals( name ) )
     {
       throw new ReactProcessorException( "@Prop named 'key' is invalid as the name references value used in the " +
@@ -843,23 +845,29 @@ public final class ReactProcessor
                                          method );
     }
     else if ( "child".equals( name ) &&
-              (
-                methodType.getReturnType().getKind() != TypeKind.DECLARED &&
-                !"react4j.ReactNode".equals( methodType.getReturnType().toString() )
-              ) )
+              ( returnType.getKind() != TypeKind.DECLARED && !"react4j.ReactNode".equals( returnType.toString() ) ) )
     {
       throw new ReactProcessorException( "@Prop named 'child' should be of type react4j.ReactNode", method );
     }
     else if ( "children".equals( name ) &&
-              (
-                methodType.getReturnType().getKind() != TypeKind.DECLARED &&
-                !"react4j.ReactNode[]".equals( methodType.getReturnType().toString() )
-              ) )
+              ( returnType.getKind() != TypeKind.DECLARED && !"react4j.ReactNode[]".equals( returnType.toString() ) ) )
     {
       throw new ReactProcessorException( "@Prop named 'children' should be of type react4j.ReactNode[]", method );
     }
 
-    final Element propType = processingEnv.getTypeUtils().asElement( method.getReturnType() );
+    if ( returnType instanceof TypeVariable )
+    {
+      final TypeVariable typeVariable = (TypeVariable) returnType;
+      final String typeVariableName = typeVariable.asElement().getSimpleName().toString();
+      List<? extends TypeParameterElement> typeParameters = method.getTypeParameters();
+      if ( typeParameters.stream().anyMatch( p -> p.getSimpleName().toString().equals( typeVariableName ) ) )
+      {
+        throw new ReactProcessorException( "@Prop named '" + name + "' is has a type variable as a return type " +
+                                           "that is declared on the method.", method );
+      }
+    }
+
+    final Element propType = processingEnv.getTypeUtils().asElement( returnType );
     final boolean shouldUpdateOnChange = shouldUpdateOnChange( method );
     final boolean disposable = null != propType && isPropDisposable( descriptor, method, propType );
     if ( disposable && !descriptor.isArezComponent() )
