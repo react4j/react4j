@@ -34,7 +34,7 @@ public final class ReactConfig
    * Return true if components should have human readable names specified.
    * Useful if you want to interact via DevTools or other tool chains.
    *
-   * @return to enable human readable names for components.
+   * @return true to enable human readable names for components.
    */
   public static boolean enableComponentNames()
   {
