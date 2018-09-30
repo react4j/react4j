@@ -14,6 +14,8 @@ import react4j.ReactConfig;
 class React4j_PackageAccessFieldPropDefault extends PackageAccessFieldPropDefault {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -21,7 +23,7 @@ class React4j_PackageAccessFieldPropDefault extends PackageAccessFieldPropDefaul
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PackageAccessFieldPropDefault" );
     }
     final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( "myProp", PackageAccessFieldPropDefault.DEFAULT_MY_PROP );
+    defaultProps.set( PROP_myProp, PackageAccessFieldPropDefault.DEFAULT_MY_PROP );
     Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
@@ -29,9 +31,9 @@ class React4j_PackageAccessFieldPropDefault extends PackageAccessFieldPropDefaul
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }
   }
 

@@ -42,6 +42,18 @@ public final class ReactConfig
   }
 
   /**
+   * Return true if prop keys should be minimized.
+   * This will significantly reduce the size of the compiled output but will make inspecting the props
+   * in DevTools difficult if not impossible.
+   *
+   * @return true to minimize prop keys.
+   */
+  public static boolean shouldMinimizePropKeys()
+  {
+    return ENABLE_NAMES;
+  }
+
+  /**
    * Return true if we should check that the user interacts with React component in a way compatible with the state.
    * i.e. setInitialState should only be invoked at the start, setState should not be invoked while render
    * is running etc.
@@ -83,6 +95,13 @@ public final class ReactConfig
 
     @GwtIncompatible
     @Override
+    boolean shouldMinimizePropKeys()
+    {
+      return "true".equals( System.getProperty( "react4j.minimize_prop_keys", isProductionMode() ? "true" : "false" ) );
+    }
+
+    @GwtIncompatible
+    @Override
     boolean checkComponentStateInvariants()
     {
       return "true".equals( System.getProperty( "react4j.check_component_state_invariants",
@@ -108,6 +127,11 @@ public final class ReactConfig
     boolean enableComponentNames()
     {
       return "true" == System.getProperty( "react4j.enable_component_names" );
+    }
+
+    boolean shouldMinimizePropKeys()
+    {
+      return "true" == System.getProperty( "react4j.minimize_prop_keys" );
     }
 
     boolean checkComponentStateInvariants()

@@ -15,6 +15,16 @@ import react4j.ReactNode;
 class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
+  private static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
+
+  private static final String PROP_myProp3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "myProp3";
+
+  private static final String PROP_myProp4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "myProp4";
+
+  private static final String PROP_child = "children";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -27,9 +37,9 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }
   }
 
@@ -37,9 +47,9 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp2() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+      return null != props().getAny( PROP_myProp2 ) ? props().getAny( PROP_myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp2" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp2 ) );
     }
   }
 
@@ -47,9 +57,9 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp3() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp3" ) ? props().getAny( "myProp3" ).asString() : null;
+      return null != props().getAny( PROP_myProp3 ) ? props().getAny( PROP_myProp3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp3" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp3 ) );
     }
   }
 
@@ -57,9 +67,9 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp4() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp4" ) ? props().getAny( "myProp4" ).asString() : null;
+      return null != props().getAny( PROP_myProp4 ) ? props().getAny( PROP_myProp4 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp4" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp4 ) );
     }
   }
 
@@ -67,9 +77,9 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected ReactNode getChild() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+      return null != props().getAny( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
+      return Js.uncheckedCast( props().getAny( PROP_child ) );
     }
   }
 

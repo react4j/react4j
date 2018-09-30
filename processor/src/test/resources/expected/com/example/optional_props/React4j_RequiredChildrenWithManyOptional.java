@@ -15,6 +15,16 @@ import react4j.ReactNode;
 class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyOptional {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_myPropA = ReactConfig.shouldMinimizePropKeys() ? "a" : "myPropA";
+
+  private static final String PROP_myPropB = ReactConfig.shouldMinimizePropKeys() ? "b" : "myPropB";
+
+  private static final String PROP_myPropC = ReactConfig.shouldMinimizePropKeys() ? "c" : "myPropC";
+
+  private static final String PROP_myPropD = ReactConfig.shouldMinimizePropKeys() ? "d" : "myPropD";
+
+  private static final String PROP_children = "children";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -22,10 +32,10 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
       Js.asPropertyMap( componentConstructor ).set( "displayName", "RequiredChildrenWithManyOptional" );
     }
     final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( "myPropA", RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_A );
-    defaultProps.set( "myPropB", RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_B );
-    defaultProps.set( "myPropC", RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_C );
-    defaultProps.set( "myPropD", RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_D );
+    defaultProps.set( PROP_myPropA, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_A );
+    defaultProps.set( PROP_myPropB, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_B );
+    defaultProps.set( PROP_myPropC, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_C );
+    defaultProps.set( PROP_myPropD, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_D );
     Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
@@ -33,45 +43,45 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
   @Override
   protected String getMyPropA() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myPropA" ) ? props().getAny( "myPropA" ).asString() : null;
+      return null != props().getAny( PROP_myPropA ) ? props().getAny( PROP_myPropA ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myPropA" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myPropA ) );
     }
   }
 
   @Override
   protected String getMyPropB() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myPropB" ) ? props().getAny( "myPropB" ).asString() : null;
+      return null != props().getAny( PROP_myPropB ) ? props().getAny( PROP_myPropB ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myPropB" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myPropB ) );
     }
   }
 
   @Override
   protected String getMyPropC() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myPropC" ) ? props().getAny( "myPropC" ).asString() : null;
+      return null != props().getAny( PROP_myPropC ) ? props().getAny( PROP_myPropC ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myPropC" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myPropC ) );
     }
   }
 
   @Override
   protected String getMyPropD() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myPropD" ) ? props().getAny( "myPropD" ).asString() : null;
+      return null != props().getAny( PROP_myPropD ) ? props().getAny( PROP_myPropD ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myPropD" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myPropD ) );
     }
   }
 
   @Override
   protected ReactNode[] getChildren() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+      return null != props().getAny( PROP_children ) ? props().getAny( PROP_children ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
+      return Js.uncheckedCast( props().getAny( PROP_children ) );
     }
   }
 

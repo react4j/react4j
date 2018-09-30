@@ -14,6 +14,10 @@ import react4j.ReactConfig;
 class React4j_MultiPropComponent extends MultiPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
+  private static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -26,18 +30,18 @@ class React4j_MultiPropComponent extends MultiPropComponent {
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }
   }
 
   @Override
   protected String getMyProp2() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+      return null != props().getAny( PROP_myProp2 ) ? props().getAny( PROP_myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp2" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp2 ) );
     }
   }
 

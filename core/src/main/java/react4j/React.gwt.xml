@@ -24,4 +24,7 @@
 
   <define-property name='react4j.check_component_state_invariants' values='true,false'/>
   <set-property name='react4j.check_component_state_invariants' value='false'/>
+
+  <define-property name='react4j.minimize_prop_keys' values='true,false'/>
+  <set-property name='react4j.minimize_prop_keys' value='true'/>
 </module>

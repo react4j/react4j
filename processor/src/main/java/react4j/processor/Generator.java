@@ -538,6 +538,13 @@ final class Generator
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
+    final List<PropDescriptor> props = descriptor.getProps();
+    final int propCount = props.size();
+    for ( int i = 0; i < propCount; i++ )
+    {
+      builder.addField( buildPropKeyConstantField( props.get( i ), i ).build() );
+    }
+
     if ( descriptor.needsInjection() )
     {
       builder.addField( buildProviderField( descriptor ).build() );
@@ -558,15 +565,15 @@ final class Generator
 
     if ( descriptor.isArezComponent() )
     {
-      final List<PropDescriptor> props =
-        descriptor.getProps().stream().filter( PropDescriptor::isDisposable ).collect( Collectors.toList() );
-      if ( !props.isEmpty() )
+      final List<PropDescriptor> disposableProps =
+        props.stream().filter( PropDescriptor::isDisposable ).collect( Collectors.toList() );
+      if ( !disposableProps.isEmpty() )
       {
-        builder.addMethod( buildAnyPropsDisposedMethod( props ).build() );
+        builder.addMethod( buildAnyPropsDisposedMethod( disposableProps ).build() );
       }
     }
 
-    for ( final PropDescriptor prop : descriptor.getProps() )
+    for ( final PropDescriptor prop : props )
     {
       builder.addMethod( buildPropMethod( descriptor, prop ).build() );
       if ( descriptor.isArezComponent() )
@@ -645,6 +652,30 @@ final class Generator
     builder.addType( buildNativeComponent( descriptor, false ) );
 
     return builder.build();
+  }
+
+  private static FieldSpec.Builder buildPropKeyConstantField( @Nonnull final PropDescriptor descriptor,
+                                                              final int index )
+  {
+    final String name = descriptor.getName();
+
+    final FieldSpec.Builder field =
+      FieldSpec.builder( TypeName.get( String.class ),
+                         descriptor.getConstantName(),
+                         Modifier.STATIC,
+                         Modifier.FINAL,
+                         Modifier.PRIVATE );
+    if ( descriptor.isSpecialChildrenProp() )
+    {
+      return field.initializer( "$S", "children" );
+    }
+    else
+    {
+      return field.initializer( "$T.shouldMinimizePropKeys() ? $S : $S",
+                                REACT_CONFIG_CLASSNAME,
+                                Character.toString( (char) ( 'a' + index ) ),
+                                name );
+    }
   }
 
   @Nonnull
@@ -815,38 +846,36 @@ final class Generator
 
     method.addAnnotation( Override.class );
 
-    final String name = prop.getName();
     if ( descriptor.isArezComponent() )
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
-          addMember( "name", "$S", name ).
+          addMember( "name", "$S", prop.getName() ).
           addMember( "expectSetter", "false" ).
           addMember( "readOutsideTransaction", "true" );
       method.addAnnotation( annotation.build() );
     }
     final String convertMethodName = getConverter( returnType, methodElement, "Prop" );
-    final String key = "child".equals( name ) ? "children" : name;
     final TypeKind resultKind = methodElement.getReturnType().getKind();
     if ( !resultKind.isPrimitive() &&
          null == ProcessorUtil.findAnnotationByType( methodElement, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
-      block.addStatement( "return null != props().getAny( $S ) ? props().getAny( $S ).$N() : null",
-                          key,
-                          key,
+      block.addStatement( "return null != props().getAny( $N ) ? props().getAny( $N ).$N() : null",
+                          prop.getConstantName(),
+                          prop.getConstantName(),
                           convertMethodName );
       block.nextControlFlow( "else" );
-      block.addStatement( "return $T.uncheckedCast( props().getAny( $S ) )",
+      block.addStatement( "return $T.uncheckedCast( props().getAny( $N ) )",
                           JS_CLASSNAME,
-                          key );
+                          prop.getConstantName() );
       block.endControlFlow();
       method.addCode( block.build() );
     }
     else
     {
-      method.addStatement( "return props().getAny( $S ).$N()", key, convertMethodName );
+      method.addStatement( "return props().getAny( $N ).$N()", prop.getConstantName(), convertMethodName );
     }
     return method;
   }
@@ -997,9 +1026,8 @@ final class Generator
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         final String code =
-          "if ( !$T.isTripleEqual( props().get( $S ), null == nextProps ? null : nextProps.get( $S ) ) )";
-        final String key = "child".equals( prop.getName() ) ? "children" : prop.getName();
-        block.beginControlFlow( code, JS_CLASSNAME, key, key );
+          "if ( !$T.isTripleEqual( props().get( $N ), null == nextProps ? null : nextProps.get( $N ) ) )";
+        block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), prop.getConstantName() );
         block.addStatement( "modified = true" );
         block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
         block.endControlFlow();
@@ -1234,8 +1262,8 @@ final class Generator
       for ( final PropDescriptor prop : propsWithDefaults )
       {
 
-        method.addStatement( "defaultProps.set( $S, $T.$N" + ( prop.hasDefaultField() ? "" : "()" ) + " )",
-                             prop.getName(),
+        method.addStatement( "defaultProps.set( $N, $T.$N" + ( prop.hasDefaultField() ? "" : "()" ) + " )",
+                             prop.getConstantName(),
                              descriptor.getClassName(),
                              prop.hasDefaultField() ?
                              prop.getDefaultField().getSimpleName() :

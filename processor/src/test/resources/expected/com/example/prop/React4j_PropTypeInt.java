@@ -14,6 +14,8 @@ import react4j.ReactConfig;
 class React4j_PropTypeInt extends PropTypeInt {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -25,7 +27,7 @@ class React4j_PropTypeInt extends PropTypeInt {
 
   @Override
   protected int getMyProp() {
-    return props().getAny( "myProp" ).asInt();
+    return props().getAny( PROP_myProp ).asInt();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeInt> {

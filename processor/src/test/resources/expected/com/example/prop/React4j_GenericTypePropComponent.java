@@ -14,6 +14,8 @@ import react4j.ReactConfig;
 class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -26,9 +28,9 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
   @Override
   protected T getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value" ) ? props().getAny( "value" ).cast() : null;
+      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "value" ) );
+      return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
   }
 

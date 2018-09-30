@@ -26,6 +26,10 @@ import react4j.arez.ReactArezConfig;
 abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
+  private static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -52,9 +56,9 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   )
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "value" ) );
+      return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
   }
 
@@ -70,9 +74,9 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   )
   protected ComponentWithDependency.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
+      return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "model" ) );
+      return Js.uncheckedCast( props().getAny( PROP_model ) );
     }
   }
 
@@ -86,11 +90,11 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   )
   protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
     boolean modified = false;
-    if ( !Js.isTripleEqual( props().get( "value" ), null == nextProps ? null : nextProps.get( "value" ) ) ) {
+    if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? null : nextProps.get( PROP_value ) ) ) {
       modified = true;
       getValueObservableValue().reportChanged();
     }
-    if ( !Js.isTripleEqual( props().get( "model" ), null == nextProps ? null : nextProps.get( "model" ) ) ) {
+    if ( !Js.isTripleEqual( props().get( PROP_model ), null == nextProps ? null : nextProps.get( PROP_model ) ) ) {
       modified = true;
       getModelObservableValue().reportChanged();
     }

@@ -14,6 +14,14 @@ import react4j.ReactConfig;
 class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropComponent<T> {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
+  private static final String PROP_value2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "value2";
+
+  private static final String PROP_value3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "value3";
+
+  private static final String PROP_value4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "value4";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -26,18 +34,18 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
   @Override
   protected T getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value" ) ? props().getAny( "value" ).cast() : null;
+      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "value" ) );
+      return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
   }
 
   @Override
   protected String getValue2() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value2" ) ? props().getAny( "value2" ).asString() : null;
+      return null != props().getAny( PROP_value2 ) ? props().getAny( PROP_value2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "value2" ) );
+      return Js.uncheckedCast( props().getAny( PROP_value2 ) );
     }
   }
 
@@ -45,9 +53,9 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
   @Override
   protected String getValue3() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value3" ) ? props().getAny( "value3" ).asString() : null;
+      return null != props().getAny( PROP_value3 ) ? props().getAny( PROP_value3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "value3" ) );
+      return Js.uncheckedCast( props().getAny( PROP_value3 ) );
     }
   }
 
@@ -55,9 +63,9 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
   @Override
   protected String getValue4() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value4" ) ? props().getAny( "value4" ).asString() : null;
+      return null != props().getAny( PROP_value4 ) ? props().getAny( PROP_value4 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "value4" ) );
+      return Js.uncheckedCast( props().getAny( PROP_value4 ) );
     }
   }
 

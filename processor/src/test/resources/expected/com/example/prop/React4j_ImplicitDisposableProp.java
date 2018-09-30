@@ -26,6 +26,8 @@ import react4j.arez.ReactArezConfig;
 abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -52,9 +54,9 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   )
   protected ImplicitDisposableProp.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
+      return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "model" ) );
+      return Js.uncheckedCast( props().getAny( PROP_model ) );
     }
   }
 
@@ -68,7 +70,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   )
   protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
     boolean modified = false;
-    if ( !Js.isTripleEqual( props().get( "model" ), null == nextProps ? null : nextProps.get( "model" ) ) ) {
+    if ( !Js.isTripleEqual( props().get( PROP_model ), null == nextProps ? null : nextProps.get( PROP_model ) ) ) {
       modified = true;
       getModelObservableValue().reportChanged();
     }

@@ -15,6 +15,8 @@ import react4j.ReactNode;
 class React4j_MultipleChildrenPropComponent extends MultipleChildrenPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  private static final String PROP_children = "children";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -27,9 +29,9 @@ class React4j_MultipleChildrenPropComponent extends MultipleChildrenPropComponen
   @Override
   protected ReactNode[] getChildren() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+      return null != props().getAny( PROP_children ) ? props().getAny( PROP_children ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
+      return Js.uncheckedCast( props().getAny( PROP_children ) );
     }
   }
 
