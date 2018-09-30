@@ -3,7 +3,6 @@ package react4j.processor;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
@@ -17,8 +16,6 @@ final class PropDescriptor
   private final ExecutableElement _method;
   @Nonnull
   private final ExecutableType _methodType;
-  @Nullable
-  private final Element _propType;
   private final boolean _shouldUpdateOnChange;
   private final boolean _disposable;
   @Nullable
@@ -33,14 +30,12 @@ final class PropDescriptor
   PropDescriptor( @Nonnull final String name,
                   @Nonnull final ExecutableElement method,
                   @Nonnull final ExecutableType methodType,
-                  @Nullable final Element propType,
                   final boolean shouldUpdateOnChange,
                   final boolean disposable )
   {
     _name = Objects.requireNonNull( name );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
-    _propType = propType;
     _shouldUpdateOnChange = shouldUpdateOnChange;
     _disposable = disposable;
   }
@@ -61,12 +56,6 @@ final class PropDescriptor
   ExecutableType getMethodType()
   {
     return _methodType;
-  }
-
-  @Nullable
-  Element getPropType()
-  {
-    return _propType;
   }
 
   boolean shouldUpdateOnChange()

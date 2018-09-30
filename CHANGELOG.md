@@ -12,6 +12,8 @@
   when constructing the components. This improves dead code elimination in both the GWT and J2CL toolchain as
   the `componentDidMount()` and/or `componentDidUpdate()` methods need not be generated and empty and can instead
   just be removed by the compiler. This also has a positive impact on runtime performance.
+* **\[processor\]** Generate a compile time error if the return type of a method annotated with `@Prop` is a type
+  variable that was declared on the method.
 
 ### [v0.96](https://github.com/react4j/react4j/tree/v0.96) (2018-09-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.95...v0.96)
