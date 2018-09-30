@@ -14,6 +14,8 @@
   just be removed by the compiler. This also has a positive impact on runtime performance.
 * **\[processor\]** Generate a compile time error if the return type of a method annotated with `@Prop` is a type
   variable that was declared on the method.
+* **\[processor\]** Move the props data back to being annotated by `@JsType` under the cover rather than values
+  looked up by strings. The intention is top optimize  the output size.
 
 ### [v0.96](https://github.com/react4j/react4j/tree/v0.96) (2018-09-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.95...v0.96)

@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -26,38 +28,40 @@ class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyR
 
   @Override
   protected String getMyRequiredProp1() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myRequiredProp1" ) ? props().getAny( "myRequiredProp1" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myRequiredProp1" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myRequiredProp1;
   }
 
   @Override
   protected String getMyRequiredProp2() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myRequiredProp2" ) ? props().getAny( "myRequiredProp2" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myRequiredProp2" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myRequiredProp2;
   }
 
   @Override
   protected String getMyRequiredProp3() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myRequiredProp3" ) ? props().getAny( "myRequiredProp3" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myRequiredProp3" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myRequiredProp3;
   }
 
   @Override
   protected ReactNode[] getChildren() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
-    }
+    return Js.uncheckedCast( Js.<Props>uncheckedCast( props() ).children );
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String myRequiredProp1;
+
+    String myRequiredProp2;
+
+    String myRequiredProp3;
+
+    Object children;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<RequiredChildrenWithManyRequired> {

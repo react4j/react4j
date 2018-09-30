@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -25,20 +27,26 @@ class React4j_ComponentWithArezProp extends ComponentWithArezProp {
 
   @Override
   protected String getValue() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "value" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).value;
   }
 
   @Override
   protected ComponentWithArezProp.Model getModel() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "model" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).model;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String value;
+
+    ComponentWithArezProp.Model model;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithArezProp> {

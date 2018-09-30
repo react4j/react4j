@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -25,29 +27,33 @@ class React4j_ExplicitOptional extends ExplicitOptional {
 
   @Override
   protected String getMyRequiredProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myRequiredProp" ) ? props().getAny( "myRequiredProp" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myRequiredProp" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myRequiredProp;
   }
 
   @Override
   protected String getMyOptionalProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myOptionalProp" ) ? props().getAny( "myOptionalProp" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myOptionalProp" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myOptionalProp;
   }
 
   @Override
   protected String getMyOtherOptionalProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myOtherOptionalProp" ) ? props().getAny( "myOtherOptionalProp" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myOtherOptionalProp" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myOtherOptionalProp;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String myRequiredProp;
+
+    String myOptionalProp;
+
+    String myOtherOptionalProp;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ExplicitOptional> {

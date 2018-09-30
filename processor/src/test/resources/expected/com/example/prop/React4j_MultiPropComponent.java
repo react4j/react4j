@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -25,20 +27,26 @@ class React4j_MultiPropComponent extends MultiPropComponent {
 
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp;
   }
 
   @Override
   protected String getMyProp2() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp2" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp2;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String myProp;
+
+    String myProp2;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<MultiPropComponent> {

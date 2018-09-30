@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -29,29 +31,33 @@ class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalChildrenWi
 
   @Override
   protected String getMyRequiredProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myRequiredProp" ) ? props().getAny( "myRequiredProp" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myRequiredProp" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myRequiredProp;
   }
 
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp;
   }
 
   @Override
   protected ReactNode[] getChildren() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
-    }
+    return Js.uncheckedCast( Js.<Props>uncheckedCast( props() ).children );
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String myRequiredProp;
+
+    String myProp;
+
+    Object children;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<OptionalChildrenWithOptionalAndRequired> {

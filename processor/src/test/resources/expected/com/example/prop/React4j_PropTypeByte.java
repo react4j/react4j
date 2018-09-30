@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -25,7 +27,19 @@ class React4j_PropTypeByte extends PropTypeByte {
 
   @Override
   protected byte getMyProp() {
-    return props().getAny( "myProp" ).asByte();
+    return Js.<Props>uncheckedCast( props() ).myProp;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    byte myProp;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeByte> {

@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -21,6 +23,16 @@ class React4j_BaseRenderComponent extends BaseRenderComponent {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BaseRenderComponent" );
     }
     return componentConstructor;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<BaseRenderComponent> {

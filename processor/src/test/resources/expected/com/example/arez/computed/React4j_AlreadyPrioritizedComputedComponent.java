@@ -33,6 +33,16 @@ abstract class React4j_AlreadyPrioritizedComputedComponent extends AlreadyPriori
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
       name = "?"
   )
   interface LiteLifecycle {

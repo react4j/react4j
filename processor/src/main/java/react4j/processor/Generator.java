@@ -28,6 +28,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -538,6 +539,8 @@ final class Generator
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
+    builder.addType( buildPropsType( descriptor ) );
+
     if ( descriptor.needsInjection() )
     {
       builder.addField( buildProviderField( descriptor ).build() );
@@ -825,36 +828,40 @@ final class Generator
           addMember( "readOutsideTransaction", "true" );
       method.addAnnotation( annotation.build() );
     }
-    final String convertMethodName = getConverter( returnType, methodElement, "Prop" );
     final String key = "child".equals( name ) ? "children" : name;
-    final TypeKind resultKind = methodElement.getReturnType().getKind();
-    if ( !resultKind.isPrimitive() &&
-         null == ProcessorUtil.findAnnotationByType( methodElement, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+    final TypeName propsType;
+    List<? extends TypeParameterElement> typeParameters = descriptor.getElement().getTypeParameters();
+    if ( typeParameters.isEmpty() )
     {
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
-      block.addStatement( "return null != props().getAny( $S ) ? props().getAny( $S ).$N() : null",
-                          key,
-                          key,
-                          convertMethodName );
-      block.nextControlFlow( "else" );
-      block.addStatement( "return $T.uncheckedCast( props().getAny( $S ) )",
-                          JS_CLASSNAME,
-                          key );
-      block.endControlFlow();
-      method.addCode( block.build() );
+      propsType = ClassName.bestGuess( "Props" );
     }
     else
     {
-      method.addStatement( "return props().getAny( $S ).$N()", key, convertMethodName );
+      final TypeName[] bounds =
+        typeParameters
+          .stream()
+          .map( Element::asType )
+          .map( TypeName::get )
+          .toArray( TypeName[]::new );
+      propsType = ParameterizedTypeName.get( ClassName.bestGuess( "Props" ), bounds );
+    }
+    if ( prop.isSpecialChildrenProp() )
+    {
+      method.addStatement( "return $T.uncheckedCast( $T.<$T>uncheckedCast( props() ).$N )",
+                           JS_CLASSNAME,
+                           JS_CLASSNAME,
+                           propsType,
+                           key );
+    }
+    else
+    {
+      method.addStatement( "return $T.<$T>uncheckedCast( props() ).$N", JS_CLASSNAME, propsType, key );
     }
     return method;
   }
 
   @Nonnull
-  private static String getConverter( @Nonnull final TypeMirror type,
-                                      @Nonnull final Element element,
-                                      @Nonnull final String key )
+  private static String getConverter( @Nonnull final TypeMirror type, @Nonnull final Element element )
   {
     switch ( type.getKind() )
     {
@@ -888,7 +895,7 @@ final class Generator
       case ARRAY:
         return "cast";
       default:
-        throw new ReactProcessorException( "Return type of @" + key + " method is not yet " +
+        throw new ReactProcessorException( "Return type of @State method is not yet " +
                                            "handled. Type: " + type.getKind(), element );
     }
   }
@@ -952,7 +959,7 @@ final class Generator
           addMember( "name", "$S", name );
       method.addAnnotation( annotation.build() );
     }
-    final String convertMethodName = getConverter( returnType, methodElement, "State" );
+    final String convertMethodName = getConverter( returnType, methodElement );
     method.addStatement( "return state().getAny( $S ).$N()", name, convertMethodName );
     return method;
   }
@@ -1248,6 +1255,45 @@ final class Generator
     }
     method.addStatement( "return componentConstructor" );
     return method;
+  }
+
+  @Nonnull
+  private static TypeSpec buildPropsType( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "Props" );
+
+    //Ensure it can not be subclassed
+    builder.addModifiers( Modifier.FINAL );
+    builder.addModifiers( Modifier.STATIC );
+    ProcessorUtil.copyTypeParameters( descriptor.getElement(), builder );
+
+    builder.addAnnotation( AnnotationSpec.builder( JS_TYPE_CLASSNAME ).
+      addMember( "isNative", "true" ).
+      addMember( "namespace", "$T.GLOBAL", JS_PACKAGE_CLASSNAME ).
+      addMember( "name", "$S", "Object" ).
+      build() );
+
+    // Key can be a string or a number
+    builder.addField( FieldSpec.builder( TypeName.OBJECT, "key" ).addAnnotation( NULLABLE_CLASSNAME ).build() );
+
+    for ( final PropDescriptor prop : descriptor.getProps() )
+    {
+      final boolean isChildren = prop.isSpecialChildrenProp();
+      final TypeName type = isChildren ? TypeName.OBJECT : TypeName.get( prop.getMethod().getReturnType() );
+      final String name = isChildren ? "children" : prop.getName();
+      final FieldSpec.Builder field = FieldSpec.builder( type, name );
+      if ( null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+      {
+        field.addAnnotation( NONNULL_CLASSNAME );
+      }
+      if ( null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME ) )
+      {
+        field.addAnnotation( NULLABLE_CLASSNAME );
+      }
+      builder.addField( field.build() );
+    }
+
+    return builder.build();
   }
 
   @Nonnull

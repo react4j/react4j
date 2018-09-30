@@ -42,11 +42,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
       readOutsideTransaction = true
   )
   protected ReactNode getChild() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
-    }
+    return Js.uncheckedCast( Js.<Props>uncheckedCast( props() ).children );
   }
 
   @Nonnull
@@ -64,6 +60,18 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
       getChildObservableValue().reportChanged();
     }
     return modified;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    Object children;
   }
 
   @JsType(

@@ -6,6 +6,8 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
@@ -41,6 +43,16 @@ class React4j_DaggerFalseComponent extends DaggerFalseComponent {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "DaggerFalseComponent" );
     }
     return componentConstructor;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<DaggerFalseComponent> {
