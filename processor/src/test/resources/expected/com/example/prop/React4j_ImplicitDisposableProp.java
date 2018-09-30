@@ -51,11 +51,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
       readOutsideTransaction = true
   )
   protected ImplicitDisposableProp.Model getModel() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "model" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).model;
   }
 
   @Nonnull
@@ -73,6 +69,18 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
       getModelObservableValue().reportChanged();
     }
     return modified;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    ImplicitDisposableProp.Model model;
   }
 
   @JsType(

@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -25,11 +27,19 @@ class React4j_CustomNameProp extends CustomNameProp {
 
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "foo" ) ? props().getAny( "foo" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "foo" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).foo;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String foo;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<CustomNameProp> {

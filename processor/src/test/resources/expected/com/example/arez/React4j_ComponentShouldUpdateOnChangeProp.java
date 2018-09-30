@@ -41,11 +41,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
       readOutsideTransaction = true
   )
   protected String getValue() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "value" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).value;
   }
 
   @Nonnull
@@ -63,6 +59,18 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
       getValueObservableValue().reportChanged();
     }
     return modified;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String value;
   }
 
   @JsType(

@@ -45,6 +45,16 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
       name = "?"
   )
   interface LiteLifecycle {

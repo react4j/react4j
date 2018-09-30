@@ -74,6 +74,16 @@ abstract class React4j_ComponentWithCallback extends ComponentWithCallback {
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
       name = "?"
   )
   interface LiteLifecycle {

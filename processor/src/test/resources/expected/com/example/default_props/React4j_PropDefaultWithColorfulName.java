@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -28,11 +30,19 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
 
   @Override
   protected String getMyProp12$23() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp12$23" ) ? props().getAny( "myProp12$23" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp12$23" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp12$23;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String myProp12$23;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropDefaultWithColorfulName> {

@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
@@ -50,11 +52,7 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
 
   @Override
   String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp;
   }
 
   @Nonnull
@@ -64,6 +62,18 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
       JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "BasicReactComponent.myEventHandler" ) ) );
     }
     return handler;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String myProp;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NestedCompleteComponent.BasicReactComponent> {

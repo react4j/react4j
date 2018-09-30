@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -26,51 +28,55 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
 
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp;
   }
 
   @Nullable
   @Override
   protected String getMyProp2() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp2" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp2;
   }
 
   @Nullable
   @Override
   protected String getMyProp3() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp3" ) ? props().getAny( "myProp3" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp3" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp3;
   }
 
   @Nullable
   @Override
   protected String getMyProp4() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp4" ) ? props().getAny( "myProp4" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp4" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp4;
   }
 
   @Nullable
   @Override
   protected ReactNode getChild() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
-    }
+    return Js.uncheckedCast( Js.<Props>uncheckedCast( props() ).children );
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String myProp;
+
+    @Nullable
+    String myProp2;
+
+    @Nullable
+    String myProp3;
+
+    @Nullable
+    String myProp4;
+
+    @Nullable
+    Object children;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<MultiPropComponent4> {

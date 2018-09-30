@@ -41,11 +41,7 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
       readOutsideTransaction = true
   )
   protected NonDisposableDisposableProp.Model getModel() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "model" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).model;
   }
 
   @Nonnull
@@ -63,6 +59,18 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
       getModelObservableValue().reportChanged();
     }
     return modified;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    NonDisposableDisposableProp.Model model;
   }
 
   @JsType(

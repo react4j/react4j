@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -27,26 +29,36 @@ class React4j_NullablePropAndNonnullChildComponent extends NullablePropAndNonnul
   @Nonnull
   @Override
   protected String getMyProp() {
-    return props().getAny( "myProp" ).asString();
+    return Js.<Props>uncheckedCast( props() ).myProp;
   }
 
   @Nullable
   @Override
   protected String getMyProp2() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp2" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp2;
   }
 
   @Override
   protected ReactNode getChild() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
-    }
+    return Js.uncheckedCast( Js.<Props>uncheckedCast( props() ).children );
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    @Nonnull
+    String myProp;
+
+    @Nullable
+    String myProp2;
+
+    Object children;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NullablePropAndNonnullChildComponent> {

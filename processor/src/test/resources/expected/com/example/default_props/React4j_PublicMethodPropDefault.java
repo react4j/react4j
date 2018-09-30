@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -28,11 +30,19 @@ class React4j_PublicMethodPropDefault extends PublicMethodPropDefault {
 
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAny( "myProp" ) );
-    }
+    return Js.<Props>uncheckedCast( props() ).myProp;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+
+    String myProp;
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PublicMethodPropDefault> {

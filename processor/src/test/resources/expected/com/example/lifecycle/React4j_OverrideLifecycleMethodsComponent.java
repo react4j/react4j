@@ -30,6 +30,16 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,
+      name = "Object"
+  )
+  static final class Props {
+    @Nullable
+    Object key;
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
       name = "?"
   )
   interface Lifecycle {
