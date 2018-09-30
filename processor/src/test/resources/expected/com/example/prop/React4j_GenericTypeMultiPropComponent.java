@@ -14,13 +14,13 @@ import react4j.ReactConfig;
 class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropComponent<T> {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
 
-  private static final String PROP_value2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "value2";
+  static final String PROP_value2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "value2";
 
-  private static final String PROP_value3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "value3";
+  static final String PROP_value3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "value3";
 
-  private static final String PROP_value4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "value4";
+  static final String PROP_value4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "value4";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

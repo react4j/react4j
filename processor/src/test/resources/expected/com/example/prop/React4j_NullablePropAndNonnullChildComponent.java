@@ -15,11 +15,11 @@ import react4j.ReactNode;
 class React4j_NullablePropAndNonnullChildComponent extends NullablePropAndNonnullChildComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
 
-  private static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
+  static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
 
-  private static final String PROP_child = "children";
+  static final String PROP_child = "children";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

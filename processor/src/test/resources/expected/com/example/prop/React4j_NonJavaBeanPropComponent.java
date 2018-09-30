@@ -14,7 +14,7 @@ import react4j.ReactConfig;
 class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_window = ReactConfig.shouldMinimizePropKeys() ? "a" : "window";
+  static final String PROP_window = ReactConfig.shouldMinimizePropKeys() ? "a" : "window";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

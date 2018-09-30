@@ -14,7 +14,7 @@ import react4j.ReactConfig;
 class React4j_CustomPropsAndStateReactComponent extends CustomPropsAndStateReactComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_someField = ReactConfig.shouldMinimizePropKeys() ? "a" : "someField";
+  static final String PROP_someField = ReactConfig.shouldMinimizePropKeys() ? "a" : "someField";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

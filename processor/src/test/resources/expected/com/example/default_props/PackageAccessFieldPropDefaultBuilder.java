@@ -83,7 +83,7 @@ class PackageAccessFieldPropDefaultBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( "myProp", myProp );
+      _props.set( React4j_PackageAccessFieldPropDefault.PROP_myProp, myProp );
       return build();
     }
 

@@ -15,15 +15,15 @@ import react4j.ReactNode;
 class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
 
-  private static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
+  static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
 
-  private static final String PROP_myProp3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "myProp3";
+  static final String PROP_myProp3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "myProp3";
 
-  private static final String PROP_myProp4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "myProp4";
+  static final String PROP_myProp4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "myProp4";
 
-  private static final String PROP_child = "children";
+  static final String PROP_child = "children";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

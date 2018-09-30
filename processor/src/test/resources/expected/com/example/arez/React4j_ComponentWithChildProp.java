@@ -26,7 +26,7 @@ import react4j.arez.ReactArezConfig;
 abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_child = "children";
+  static final String PROP_child = "children";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

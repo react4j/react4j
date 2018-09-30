@@ -15,7 +15,7 @@ import react4j.ReactNode;
 class React4j_MultipleChildrenPropComponent extends MultipleChildrenPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_children = "children";
+  static final String PROP_children = "children";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

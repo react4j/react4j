@@ -15,7 +15,7 @@ import react4j.ReactConfig;
 class React4j_CollectionListPropComponent extends CollectionListPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

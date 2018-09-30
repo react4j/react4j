@@ -14,7 +14,7 @@ import react4j.ReactConfig;
 class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

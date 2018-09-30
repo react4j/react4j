@@ -14,7 +14,7 @@ import react4j.ReactConfig;
 class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposablePropOnComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
+  static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

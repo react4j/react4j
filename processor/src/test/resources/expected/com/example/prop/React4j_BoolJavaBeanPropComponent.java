@@ -14,7 +14,7 @@ import react4j.ReactConfig;
 class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_foo = ReactConfig.shouldMinimizePropKeys() ? "a" : "foo";
+  static final String PROP_foo = ReactConfig.shouldMinimizePropKeys() ? "a" : "foo";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

@@ -15,7 +15,7 @@ import react4j.ReactNode;
 class React4j_SingleChildPropComponent extends SingleChildPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_child = "children";
+  static final String PROP_child = "children";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

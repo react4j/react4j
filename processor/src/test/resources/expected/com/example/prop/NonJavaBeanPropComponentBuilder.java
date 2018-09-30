@@ -75,7 +75,7 @@ class NonJavaBeanPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode window(final String window) {
-      _props.set( "window", window );
+      _props.set( React4j_NonJavaBeanPropComponent.PROP_window, window );
       return build();
     }
 

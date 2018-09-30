@@ -75,7 +75,7 @@ class NestedCompleteComponent_BasicReactComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( "myProp", myProp );
+      _props.set( NestedCompleteComponent_React4j_BasicReactComponent.PROP_myProp, myProp );
       return build();
     }
 

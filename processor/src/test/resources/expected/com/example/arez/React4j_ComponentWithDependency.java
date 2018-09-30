@@ -26,9 +26,9 @@ import react4j.arez.ReactArezConfig;
 abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
 
-  private static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
+  static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

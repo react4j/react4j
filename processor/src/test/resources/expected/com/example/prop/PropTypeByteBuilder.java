@@ -75,7 +75,7 @@ class PropTypeByteBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final byte myProp) {
-      _props.set( "myProp", myProp );
+      _props.set( React4j_PropTypeByte.PROP_myProp, myProp );
       return build();
     }
 

@@ -75,7 +75,7 @@ class PropTypeStringBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( "myProp", myProp );
+      _props.set( React4j_PropTypeString.PROP_myProp, myProp );
       return build();
     }
 

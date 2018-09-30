@@ -25,7 +25,7 @@ import react4j.arez.ReactArezConfig;
 abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposableProp {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
+  static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

@@ -75,7 +75,7 @@ class CustomNamePropBuilder {
     @Override
     @Nonnull
     public final ReactNode foo(final String foo) {
-      _props.set( "foo", foo );
+      _props.set( React4j_CustomNameProp.PROP_foo, foo );
       return build();
     }
 

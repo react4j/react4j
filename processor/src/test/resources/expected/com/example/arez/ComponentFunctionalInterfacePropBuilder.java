@@ -75,7 +75,7 @@ class ComponentFunctionalInterfacePropBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final ComponentFunctionalInterfaceProp.TestFunction value) {
-      _props.set( "value", value );
+      _props.set( React4j_ComponentFunctionalInterfaceProp.PROP_value, value );
       return build();
     }
 

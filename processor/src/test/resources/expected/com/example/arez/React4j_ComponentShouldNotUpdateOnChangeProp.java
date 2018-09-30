@@ -24,7 +24,7 @@ import react4j.arez.ReactArezConfig;
 abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentShouldNotUpdateOnChangeProp {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

@@ -15,15 +15,15 @@ import react4j.ReactNode;
 class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyOptional {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_myPropA = ReactConfig.shouldMinimizePropKeys() ? "a" : "myPropA";
+  static final String PROP_myPropA = ReactConfig.shouldMinimizePropKeys() ? "a" : "myPropA";
 
-  private static final String PROP_myPropB = ReactConfig.shouldMinimizePropKeys() ? "b" : "myPropB";
+  static final String PROP_myPropB = ReactConfig.shouldMinimizePropKeys() ? "b" : "myPropB";
 
-  private static final String PROP_myPropC = ReactConfig.shouldMinimizePropKeys() ? "c" : "myPropC";
+  static final String PROP_myPropC = ReactConfig.shouldMinimizePropKeys() ? "c" : "myPropC";
 
-  private static final String PROP_myPropD = ReactConfig.shouldMinimizePropKeys() ? "d" : "myPropD";
+  static final String PROP_myPropD = ReactConfig.shouldMinimizePropKeys() ? "d" : "myPropD";
 
-  private static final String PROP_children = "children";
+  static final String PROP_children = "children";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

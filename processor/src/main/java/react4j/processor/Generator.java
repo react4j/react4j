@@ -362,7 +362,18 @@ final class Generator
     }
     else
     {
-      method.addStatement( "_props.set( $S, $N )", stepMethod.getName(), stepMethod.getName() );
+      final PropDescriptor prop = stepMethod.getProp();
+      if ( null != prop )
+      {
+        method.addStatement( "_props.set( $T.$N, $N )",
+                             descriptor.getEnhancedClassName(),
+                             prop.getConstantName(),
+                             stepMethod.getName() );
+      }
+      else
+      {
+        method.addStatement( "_props.set( $S, $N )", stepMethod.getName(), stepMethod.getName() );
+      }
     }
 
     if ( !returnHandled )
@@ -663,8 +674,7 @@ final class Generator
       FieldSpec.builder( TypeName.get( String.class ),
                          descriptor.getConstantName(),
                          Modifier.STATIC,
-                         Modifier.FINAL,
-                         Modifier.PRIVATE );
+                         Modifier.FINAL );
     if ( descriptor.isSpecialChildrenProp() )
     {
       return field.initializer( "$S", "children" );
@@ -1558,9 +1568,9 @@ final class Generator
     // Key step
     final Step keyStep = builder.addStep();
     final StepMethodType keyStepMethodType = 0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE;
-    keyStep.addMethod( "key", "key", KEY_CLASSNAME, null, null, keyStepMethodType );
-    keyStep.addMethod( "key", "*key_int*", TypeName.INT, null, null, keyStepMethodType );
-    keyStep.addMethod( "key", "*key_string*", TypeName.get( String.class ), null, null, keyStepMethodType );
+    keyStep.addMethod( "key", "key", KEY_CLASSNAME, keyStepMethodType );
+    keyStep.addMethod( "key", "*key_int*", TypeName.INT, keyStepMethodType );
+    keyStep.addMethod( "key", "*key_string*", TypeName.get( String.class ), keyStepMethodType );
 
     final boolean hasSingleOptional = props.stream().filter( PropDescriptor::isOptional ).count() == 1;
     boolean hasRequiredAfterOptional = false;
@@ -1623,7 +1633,7 @@ final class Generator
    */
   private static void addBuildStep( @Nonnull final Step step )
   {
-    step.addMethod( "build", "build", REACT_NODE_CLASSNAME, null, null, StepMethodType.TERMINATE );
+    step.addMethod( "build", "build", REACT_NODE_CLASSNAME, StepMethodType.TERMINATE );
   }
 
   /**
@@ -1634,8 +1644,6 @@ final class Generator
     step.addMethod( "child",
                     "*children_child*",
                     REACT_NODE_CLASSNAME,
-                    null,
-                    null,
                     stepMethodType );
   }
 
@@ -1649,8 +1657,6 @@ final class Generator
     step.addMethod( "children",
                     "*children_stream*",
                     typeName,
-                    null,
-                    null,
                     StepMethodType.TERMINATE );
   }
 
@@ -1658,12 +1664,7 @@ final class Generator
                                          @Nonnull final PropDescriptor prop,
                                          @Nonnull final StepMethodType stepMethodType )
   {
-    step.addMethod( prop.getName(),
-                    prop.getName(),
-                    TypeName.get( prop.getMethodType().getReturnType() ),
-                    prop.getMethod(),
-                    prop.getMethodType(),
-                    stepMethodType );
+    step.addMethod( prop, stepMethodType );
   }
 
   private static void addOriginatingTypes( @Nonnull final TypeElement element, @Nonnull final TypeSpec.Builder builder )

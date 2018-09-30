@@ -15,13 +15,13 @@ import react4j.ReactNode;
 class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyRequired {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
-  private static final String PROP_myRequiredProp1 = ReactConfig.shouldMinimizePropKeys() ? "a" : "myRequiredProp1";
+  static final String PROP_myRequiredProp1 = ReactConfig.shouldMinimizePropKeys() ? "a" : "myRequiredProp1";
 
-  private static final String PROP_myRequiredProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myRequiredProp2";
+  static final String PROP_myRequiredProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myRequiredProp2";
 
-  private static final String PROP_myRequiredProp3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "myRequiredProp3";
+  static final String PROP_myRequiredProp3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "myRequiredProp3";
 
-  private static final String PROP_children = "children";
+  static final String PROP_children = "children";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
