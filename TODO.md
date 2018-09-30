@@ -73,8 +73,6 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
-* Add ability to `@Prop` to add enhancers to builder.
-
 * Consider separating Arez react component infrastructure into a mixin with default methods.
 
 ### Medium Priorities
