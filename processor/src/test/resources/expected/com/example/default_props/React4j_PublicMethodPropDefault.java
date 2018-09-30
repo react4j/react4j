@@ -14,6 +14,8 @@ import react4j.ReactConfig;
 class React4j_PublicMethodPropDefault extends PublicMethodPropDefault {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -21,7 +23,7 @@ class React4j_PublicMethodPropDefault extends PublicMethodPropDefault {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PublicMethodPropDefault" );
     }
     final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( "myProp", PublicMethodPropDefault.getMyPropDefault() );
+    defaultProps.set( PROP_myProp, PublicMethodPropDefault.getMyPropDefault() );
     Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
@@ -29,9 +31,9 @@ class React4j_PublicMethodPropDefault extends PublicMethodPropDefault {
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp" ) ? props().getAny( "myProp" ).asString() : null;
+      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }
   }
 

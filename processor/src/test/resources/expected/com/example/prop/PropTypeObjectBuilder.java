@@ -75,7 +75,7 @@ class PropTypeObjectBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final PropTypeObject.MyObject myProp) {
-      _props.set( "myProp", myProp );
+      _props.set( React4j_PropTypeObject.PROP_myProp, myProp );
       return build();
     }
 

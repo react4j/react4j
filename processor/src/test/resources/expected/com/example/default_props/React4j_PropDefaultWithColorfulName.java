@@ -14,6 +14,8 @@ import react4j.ReactConfig;
 class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_myProp12$23 = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp12$23";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -21,7 +23,7 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PropDefaultWithColorfulName" );
     }
     final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( "myProp12$23", PropDefaultWithColorfulName.DEFAULT_MY_PROP12$23 );
+    defaultProps.set( PROP_myProp12$23, PropDefaultWithColorfulName.DEFAULT_MY_PROP12$23 );
     Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
@@ -29,9 +31,9 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
   @Override
   protected String getMyProp12$23() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp12$23" ) ? props().getAny( "myProp12$23" ).asString() : null;
+      return null != props().getAny( PROP_myProp12$23 ) ? props().getAny( PROP_myProp12$23 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp12$23" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp12$23 ) );
     }
   }
 

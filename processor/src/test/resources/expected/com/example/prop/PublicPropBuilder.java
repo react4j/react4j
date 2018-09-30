@@ -75,7 +75,7 @@ class PublicPropBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( "myProp", myProp );
+      _props.set( React4j_PublicProp.PROP_myProp, myProp );
       return build();
     }
 

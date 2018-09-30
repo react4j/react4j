@@ -75,7 +75,7 @@ class BoolJavaBeanPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode foo(final boolean foo) {
-      _props.set( "foo", foo );
+      _props.set( React4j_BoolJavaBeanPropComponent.PROP_foo, foo );
       return build();
     }
 

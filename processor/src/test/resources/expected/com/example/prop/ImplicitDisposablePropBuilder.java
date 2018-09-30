@@ -75,7 +75,7 @@ class ImplicitDisposablePropBuilder {
     @Override
     @Nonnull
     public final ReactNode model(final ImplicitDisposableProp.Model model) {
-      _props.set( "model", model );
+      _props.set( React4j_ImplicitDisposableProp.PROP_model, model );
       return build();
     }
 

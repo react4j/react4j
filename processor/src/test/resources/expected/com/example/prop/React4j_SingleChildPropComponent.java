@@ -15,6 +15,8 @@ import react4j.ReactNode;
 class React4j_SingleChildPropComponent extends SingleChildPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_child = "children";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -27,9 +29,9 @@ class React4j_SingleChildPropComponent extends SingleChildPropComponent {
   @Override
   protected ReactNode getChild() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+      return null != props().getAny( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
+      return Js.uncheckedCast( props().getAny( PROP_child ) );
     }
   }
 

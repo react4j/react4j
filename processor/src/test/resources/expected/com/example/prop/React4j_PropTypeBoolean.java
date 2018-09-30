@@ -14,6 +14,8 @@ import react4j.ReactConfig;
 class React4j_PropTypeBoolean extends PropTypeBoolean {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -25,7 +27,7 @@ class React4j_PropTypeBoolean extends PropTypeBoolean {
 
   @Override
   protected boolean getMyProp() {
-    return props().getAny( "myProp" ).asBoolean();
+    return props().getAny( PROP_myProp ).asBoolean();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeBoolean> {

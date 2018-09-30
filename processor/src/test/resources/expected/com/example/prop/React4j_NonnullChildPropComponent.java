@@ -15,6 +15,8 @@ import react4j.ReactNode;
 class React4j_NonnullChildPropComponent extends NonnullChildPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_child = "children";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -27,7 +29,7 @@ class React4j_NonnullChildPropComponent extends NonnullChildPropComponent {
   @Nonnull
   @Override
   protected ReactNode getChild() {
-    return props().getAny( "children" ).cast();
+    return props().getAny( PROP_child ).cast();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NonnullChildPropComponent> {

@@ -24,6 +24,8 @@ import react4j.arez.ReactArezConfig;
 abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentShouldNotUpdateOnChangeProp {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -41,9 +43,9 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
   )
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "value" ) );
+      return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
   }
 

@@ -14,6 +14,10 @@ import react4j.ReactConfig;
 class React4j_NullabilityPropsComponent extends NullabilityPropsComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
+  static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -26,16 +30,16 @@ class React4j_NullabilityPropsComponent extends NullabilityPropsComponent {
   @Nonnull
   @Override
   protected String getMyProp() {
-    return props().getAny( "myProp" ).asString();
+    return props().getAny( PROP_myProp ).asString();
   }
 
   @Nullable
   @Override
   protected String getMyProp2() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myProp2" ) ? props().getAny( "myProp2" ).asString() : null;
+      return null != props().getAny( PROP_myProp2 ) ? props().getAny( PROP_myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myProp2" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myProp2 ) );
     }
   }
 

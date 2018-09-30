@@ -77,7 +77,7 @@ class GenericTypePropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final T value) {
-      _props.set( "value", value );
+      _props.set( React4j_GenericTypePropComponent.PROP_value, value );
       return build();
     }
 

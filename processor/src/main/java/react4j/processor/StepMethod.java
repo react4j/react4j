@@ -36,34 +36,33 @@ final class StepMethod
    */
   @Nonnull
   private final TypeName _type;
-  /**
-   * The @Prop method if this step was derived from a prop. Used to copy documented annotations to builder.
-   */
   @Nullable
-  private final ExecutableElement _propMethod;
-  /**
-   * The @Prop method type if this step was derived from a prop. Only used to derive the type and copy type parameters.
-   */
-  @Nullable
-  private final ExecutableType _propMethodType;
+  private final PropDescriptor _prop;
   /**
    * After this method is called should the builder STAY on the same step, ADVANCE to the next step or TERMINATE builder and call build().
    */
   @Nonnull
   private final StepMethodType _stepMethodType;
 
+  StepMethod( @Nonnull final PropDescriptor prop, @Nonnull final StepMethodType stepMethodType )
+  {
+    this( prop.getName(),
+          prop.getName(),
+          TypeName.get( prop.getMethodType().getReturnType() ),
+          prop,
+          stepMethodType );
+  }
+
   StepMethod( @Nonnull final String name,
               @Nonnull final String key,
               @Nonnull final TypeName type,
-              @Nullable final ExecutableElement propMethod,
-              @Nullable final ExecutableType propMethodType,
+              @Nullable final PropDescriptor prop,
               @Nonnull final StepMethodType stepMethodType )
   {
     _name = Objects.requireNonNull( name );
     _key = Objects.requireNonNull( key );
     _type = Objects.requireNonNull( type );
-    _propMethod = propMethod;
-    _propMethodType = propMethodType;
+    _prop = prop;
     _stepMethodType = Objects.requireNonNull( stepMethodType );
   }
 
@@ -86,15 +85,21 @@ final class StepMethod
   }
 
   @Nullable
+  PropDescriptor getProp()
+  {
+    return _prop;
+  }
+
+  @Nullable
   ExecutableElement getPropMethod()
   {
-    return _propMethod;
+    return null != _prop ? _prop.getMethod() : null;
   }
 
   @Nullable
   ExecutableType getPropMethodType()
   {
-    return _propMethodType;
+    return null != _prop ? _prop.getMethodType() : null;
   }
 
   @Nonnull

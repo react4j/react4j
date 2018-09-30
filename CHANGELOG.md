@@ -14,6 +14,11 @@
   just be removed by the compiler. This also has a positive impact on runtime performance.
 * **\[processor\]** Generate a compile time error if the return type of a method annotated with `@Prop` is a type
   variable that was declared on the method.
+* **\[processor\]** Add a mechanism for minimizing prop names in generated component class to reduce code size.
+  A `@JsType` annotated `Props` class does not work in J2CL as the closure compiler would need to be told about
+  the keys as part of externs so that the `Object` type is correctly typed. This would stop the names being
+  renamed. Manually minimizing the keys based on a compile time constant `react4j.minimize_prop_keys` will work
+  around this limitation and make sure the optimization is available in both GWT2 and J2CL builds.
 
 ### [v0.96](https://github.com/react4j/react4j/tree/v0.96) (2018-09-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.95...v0.96)

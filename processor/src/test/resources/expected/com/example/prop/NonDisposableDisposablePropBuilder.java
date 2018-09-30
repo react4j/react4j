@@ -75,7 +75,7 @@ class NonDisposableDisposablePropBuilder {
     @Override
     @Nonnull
     public final ReactNode model(final NonDisposableDisposableProp.Model model) {
-      _props.set( "model", model );
+      _props.set( React4j_NonDisposableDisposableProp.PROP_model, model );
       return build();
     }
 

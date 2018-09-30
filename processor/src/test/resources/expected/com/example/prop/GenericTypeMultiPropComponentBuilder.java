@@ -96,28 +96,28 @@ class GenericTypeMultiPropComponentBuilder {
     @Override
     @Nonnull
     public final Builder3<T> value(final T value) {
-      _props.set( "value", value );
+      _props.set( React4j_GenericTypeMultiPropComponent.PROP_value, value );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder4<T> value2(final String value2) {
-      _props.set( "value2", value2 );
+      _props.set( React4j_GenericTypeMultiPropComponent.PROP_value2, value2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder4<T> value3(@Nullable final String value3) {
-      _props.set( "value3", value3 );
+      _props.set( React4j_GenericTypeMultiPropComponent.PROP_value3, value3 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder4<T> value4(@Nullable final String value4) {
-      _props.set( "value4", value4 );
+      _props.set( React4j_GenericTypeMultiPropComponent.PROP_value4, value4 );
       return this;
     }
 

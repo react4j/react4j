@@ -14,6 +14,8 @@ import react4j.ReactConfig;
 class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_window = ReactConfig.shouldMinimizePropKeys() ? "a" : "window";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -26,9 +28,9 @@ class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent {
   @Override
   protected String window() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "window" ) ? props().getAny( "window" ).asString() : null;
+      return null != props().getAny( PROP_window ) ? props().getAny( PROP_window ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "window" ) );
+      return Js.uncheckedCast( props().getAny( PROP_window ) );
     }
   }
 

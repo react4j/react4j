@@ -26,6 +26,8 @@ import react4j.arez.ReactArezConfig;
 abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_child = "children";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -43,9 +45,9 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   )
   protected ReactNode getChild() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "children" ) ? props().getAny( "children" ).cast() : null;
+      return null != props().getAny( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "children" ) );
+      return Js.uncheckedCast( props().getAny( PROP_child ) );
     }
   }
 
@@ -59,7 +61,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   )
   protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
     boolean modified = false;
-    if ( !Js.isTripleEqual( props().get( "children" ), null == nextProps ? null : nextProps.get( "children" ) ) ) {
+    if ( !Js.isTripleEqual( props().get( PROP_child ), null == nextProps ? null : nextProps.get( PROP_child ) ) ) {
       modified = true;
       getChildObservableValue().reportChanged();
     }

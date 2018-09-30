@@ -142,28 +142,28 @@ class RequiredChildrenWithManyOptionalBuilder {
     @Override
     @Nonnull
     public final Builder2 myPropA(final String myPropA) {
-      _props.set( "myPropA", myPropA );
+      _props.set( React4j_RequiredChildrenWithManyOptional.PROP_myPropA, myPropA );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder2 myPropB(final String myPropB) {
-      _props.set( "myPropB", myPropB );
+      _props.set( React4j_RequiredChildrenWithManyOptional.PROP_myPropB, myPropB );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder2 myPropC(final String myPropC) {
-      _props.set( "myPropC", myPropC );
+      _props.set( React4j_RequiredChildrenWithManyOptional.PROP_myPropC, myPropC );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder2 myPropD(final String myPropD) {
-      _props.set( "myPropD", myPropD );
+      _props.set( React4j_RequiredChildrenWithManyOptional.PROP_myPropD, myPropD );
       return this;
     }
 

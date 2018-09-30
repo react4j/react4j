@@ -25,6 +25,8 @@ import react4j.arez.ReactArezConfig;
 abstract class React4j_ComponentWithProp extends ComponentWithProp {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -42,9 +44,9 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
   )
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "value" ) );
+      return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
   }
 
@@ -58,7 +60,7 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
   )
   protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
     boolean modified = false;
-    if ( !Js.isTripleEqual( props().get( "value" ), null == nextProps ? null : nextProps.get( "value" ) ) ) {
+    if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? null : nextProps.get( PROP_value ) ) ) {
       modified = true;
       getValueObservableValue().reportChanged();
     }

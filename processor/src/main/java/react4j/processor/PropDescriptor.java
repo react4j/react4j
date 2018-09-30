@@ -148,6 +148,12 @@ final class PropDescriptor
     _optional = true;
   }
 
+  @Nonnull
+  String getConstantName()
+  {
+    return "PROP_" + getName();
+  }
+
   boolean isSpecialChildrenProp()
   {
     return getName().equals( "children" ) || getName().equals( "child" );

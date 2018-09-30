@@ -14,6 +14,10 @@ import react4j.ReactConfig;
 class React4j_ComponentWithArezProp extends ComponentWithArezProp {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
+  static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -26,18 +30,18 @@ class React4j_ComponentWithArezProp extends ComponentWithArezProp {
   @Override
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "value" ) ? props().getAny( "value" ).asString() : null;
+      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "value" ) );
+      return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
   }
 
   @Override
   protected ComponentWithArezProp.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
+      return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "model" ) );
+      return Js.uncheckedCast( props().getAny( PROP_model ) );
     }
   }
 

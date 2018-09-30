@@ -14,6 +14,8 @@ import react4j.ReactConfig;
 class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposablePropOnComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -26,9 +28,9 @@ class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposablePropOn
   @Override
   protected ImplicitDisposablePropOnComponent.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "model" ) ? props().getAny( "model" ).cast() : null;
+      return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "model" ) );
+      return Js.uncheckedCast( props().getAny( PROP_model ) );
     }
   }
 

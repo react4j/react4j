@@ -10,6 +10,7 @@ public final class ReactConfig
   private static final ConfigProvider PROVIDER = new ConfigProvider();
   private static final boolean PRODUCTION_MODE = PROVIDER.isProductionMode();
   private static boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
+  private static boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
   private static final boolean CHECK_COMPONENT_STATE_INVARIANTS = PROVIDER.checkComponentStateInvariants();
   private static final boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
@@ -34,11 +35,23 @@ public final class ReactConfig
    * Return true if components should have human readable names specified.
    * Useful if you want to interact via DevTools or other tool chains.
    *
-   * @return to enable human readable names for components.
+   * @return true to enable human readable names for components.
    */
   public static boolean enableComponentNames()
   {
     return ENABLE_NAMES;
+  }
+
+  /**
+   * Return true if prop keys should be minimized.
+   * This will significantly reduce the size of the compiled output but will make inspecting the props
+   * in DevTools difficult if not impossible.
+   *
+   * @return true to minimize prop keys.
+   */
+  public static boolean shouldMinimizePropKeys()
+  {
+    return SHOULD_MINIMIZE_PROP_KEYS;
   }
 
   /**
@@ -83,6 +96,13 @@ public final class ReactConfig
 
     @GwtIncompatible
     @Override
+    boolean shouldMinimizePropKeys()
+    {
+      return "true".equals( System.getProperty( "react4j.minimize_prop_keys", isProductionMode() ? "true" : "false" ) );
+    }
+
+    @GwtIncompatible
+    @Override
     boolean checkComponentStateInvariants()
     {
       return "true".equals( System.getProperty( "react4j.check_component_state_invariants",
@@ -108,6 +128,11 @@ public final class ReactConfig
     boolean enableComponentNames()
     {
       return "true" == System.getProperty( "react4j.enable_component_names" );
+    }
+
+    boolean shouldMinimizePropKeys()
+    {
+      return "true" == System.getProperty( "react4j.minimize_prop_keys" );
     }
 
     boolean checkComponentStateInvariants()

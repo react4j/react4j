@@ -98,7 +98,7 @@ class NullablePropAndNonnullChildComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp2(@Nullable final String myProp2) {
-      _props.set( "myProp2", myProp2 );
+      _props.set( React4j_NullablePropAndNonnullChildComponent.PROP_myProp2, myProp2 );
       return build();
     }
 

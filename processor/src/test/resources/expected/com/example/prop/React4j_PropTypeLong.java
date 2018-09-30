@@ -14,6 +14,8 @@ import react4j.ReactConfig;
 class React4j_PropTypeLong extends PropTypeLong {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -25,7 +27,7 @@ class React4j_PropTypeLong extends PropTypeLong {
 
   @Override
   protected long getMyProp() {
-    return props().getAny( "myProp" ).asLong();
+    return props().getAny( PROP_myProp ).asLong();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeLong> {

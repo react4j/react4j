@@ -14,6 +14,12 @@ import react4j.ReactConfig;
 class React4j_ExplicitOptional extends ExplicitOptional {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
+  static final String PROP_myRequiredProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myRequiredProp";
+
+  static final String PROP_myOptionalProp = ReactConfig.shouldMinimizePropKeys() ? "b" : "myOptionalProp";
+
+  static final String PROP_myOtherOptionalProp = ReactConfig.shouldMinimizePropKeys() ? "c" : "myOtherOptionalProp";
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -26,27 +32,27 @@ class React4j_ExplicitOptional extends ExplicitOptional {
   @Override
   protected String getMyRequiredProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myRequiredProp" ) ? props().getAny( "myRequiredProp" ).asString() : null;
+      return null != props().getAny( PROP_myRequiredProp ) ? props().getAny( PROP_myRequiredProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myRequiredProp" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myRequiredProp ) );
     }
   }
 
   @Override
   protected String getMyOptionalProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myOptionalProp" ) ? props().getAny( "myOptionalProp" ).asString() : null;
+      return null != props().getAny( PROP_myOptionalProp ) ? props().getAny( PROP_myOptionalProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myOptionalProp" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myOptionalProp ) );
     }
   }
 
   @Override
   protected String getMyOtherOptionalProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( "myOtherOptionalProp" ) ? props().getAny( "myOtherOptionalProp" ).asString() : null;
+      return null != props().getAny( PROP_myOtherOptionalProp ) ? props().getAny( PROP_myOtherOptionalProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( "myOtherOptionalProp" ) );
+      return Js.uncheckedCast( props().getAny( PROP_myOtherOptionalProp ) );
     }
   }
 
