@@ -98,6 +98,13 @@
   have the `build()` method on the builder call the render method directly. Caching could also be enabled based
   on props.
 
+* Consider adding a `type=STATELESS|PURE|STATEFUL|AUTODETECT` to component. `STATELESS` would be inlined into
+  caller without a component in production mode, `PURE` would have SCU automagically created assuming
+  `Object.equals()`, `STATEFUL` == `AREZ`. `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods,
+  `@State` methods or `@Observed`/`@Computed` annotated methods and no prop is an arez component. `AUTODETECT`
+  will be `PURE` if it satisfies `STATELESS` and all props are primitives or know simple compares. Otherwise
+  it is `STATEFUL`
+
 ### Low Priorities
 
 * Port transition code ala
