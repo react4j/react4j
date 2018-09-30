@@ -349,11 +349,11 @@ public abstract class ReactArezComponent
 
         final JsPropertyMap<Object> state = super.state();
         final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
-      /*
-       * To determine whether we need to do a state update we do compare each key and value and make sure
-       * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
-       * updates in react are merges, we need to implement this by putting undefined values into the state.
-       */
+        /*
+         * To determine whether we need to do a state update we do compare each key and value and make sure
+         * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
+         * updates in react are merges, we need to implement this by putting undefined values into the state.
+         */
         if ( null == currentState )
         {
           scheduleArezStateUpdate( newState );
