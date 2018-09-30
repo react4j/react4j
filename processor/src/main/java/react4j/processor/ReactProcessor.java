@@ -875,7 +875,7 @@ public final class ReactProcessor
       throw new ReactProcessorException( "@Prop named '" + name + "' is marked as disposable but the host component " +
                                          "is not a subclass of react4j.arez.ReactArezComponent", method );
     }
-    return new PropDescriptor( name, method, methodType, propType, shouldUpdateOnChange, disposable );
+    return new PropDescriptor( name, method, methodType, shouldUpdateOnChange, disposable );
   }
 
   @Nonnull
