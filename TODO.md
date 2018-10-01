@@ -2,8 +2,6 @@
 
 ### Very High Priority
 
-* Change `@Prop.observable=AUTODETECT` so that it can be driven by a parameter in the `ReactComponent`.
-
 * Add helper to autoload js assets
 
 * Make the name of the assets based off the version of the underlying react library. i.e. Name them `react-16.5.0.js`
