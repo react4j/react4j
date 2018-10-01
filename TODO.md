@@ -1,5 +1,23 @@
 ## TODO
 
+### Next Release
+
+* Collections returned from props should be made immutable.
+
+* Components that have no fields, no lifecycle methods and are not subclasses of
+  `ReactArezComponent` could be made into stateless components when translating to React. This could also
+  be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`. An even
+  better optimization - at least in production would be to eliminate the component altogether and effectively
+  have the `build()` method on the builder call the render method directly. Caching could also be enabled based
+  on props.
+
+* Consider adding a `type=STATELESS|PURE|STATEFUL|AUTODETECT` to component. `STATELESS` would be inlined into
+  caller without a component in production mode, `PURE` would have SCU automagically created assuming
+  `Object.equals()`, `STATEFUL` == `AREZ`. `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods,
+  `@State` methods or `@Observed`/`@Computed` annotated methods and no prop is an arez component. `AUTODETECT`
+  will be `PURE` if it satisfies `STATELESS` and all props are primitives or know simple compares. Otherwise
+  it is `STATEFUL`
+
 ### Very High Priority
 
 * Consider remove `@State` and all related infrastructure. Arez should be sufficient.
@@ -17,8 +35,6 @@
 
 * Start to add javascript tests - starting with braincheck ala
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
-
-* Collections returned from props should be made immutable.
 
 * Add `Observer` react component that is just an arez component that performs change tracking for render prop.
 
@@ -63,20 +79,6 @@
   element factories can be built by looking at html spec and auto-generating?
   - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
-
-* Components that have no fields, no lifecycle methods and are not subclasses of
-  `ReactArezComponent` could be made into stateless components when translating to React. This could also
-  be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`. An even
-  better optimization - at least in production would be to eliminate the component altogether and effectively
-  have the `build()` method on the builder call the render method directly. Caching could also be enabled based
-  on props.
-
-* Consider adding a `type=STATELESS|PURE|STATEFUL|AUTODETECT` to component. `STATELESS` would be inlined into
-  caller without a component in production mode, `PURE` would have SCU automagically created assuming
-  `Object.equals()`, `STATEFUL` == `AREZ`. `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods,
-  `@State` methods or `@Observed`/`@Computed` annotated methods and no prop is an arez component. `AUTODETECT`
-  will be `PURE` if it satisfies `STATELESS` and all props are primitives or know simple compares. Otherwise
-  it is `STATEFUL`
 
 ### Low Priorities
 
