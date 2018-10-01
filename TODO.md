@@ -23,9 +23,6 @@
 
 * Collections returned from props should be made immutable.
 
-* Arez Components that only have dependencies on props at end of render could warn if they may not need to
-  be arez components.
-
 * Add `Observer` react component that is just an arez component that performs change tracking for render prop.
 
 * Migrate to React 16.5.0 features
