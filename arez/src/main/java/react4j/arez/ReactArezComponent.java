@@ -214,7 +214,8 @@ public abstract class ReactArezComponent
   protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
                                            @Nullable final JsPropertyMap<Object> nextState )
   {
-    if ( hasRenderDepsChanged() )
+    final boolean changed = notifyOnObservablePropChanges( nextProps );
+    if ( changed || hasRenderDepsChanged() )
     {
       return true;
     }
@@ -223,8 +224,21 @@ public abstract class ReactArezComponent
       // No need to check state as this component can not schedule state updates. The only thing that can
       // write to react's state is "scheduleArezStateUpdate()" and this performs forced render by calling
       // "scheduleRender( true )" and thus does not come through this method.
+      // Note that this method ONLY checks props that are not marked as observable as observable props
+      // have already been checked in notifyOnObservablePropChanges
       return shouldComponentUpdate( nextProps );
     }
+  }
+
+  /**
+   * Detect changes in props that are backed by observables and notify observers of change.
+   *
+   * @param nextProps the new properties of the component.
+   * @return true if a prop was marked with {@link Prop#shouldUpdateOnChange()} and has changed.
+   */
+  protected boolean notifyOnObservablePropChanges( @Nullable final JsPropertyMap<Object> nextProps )
+  {
+    return false;
   }
 
   /**
@@ -349,11 +363,11 @@ public abstract class ReactArezComponent
 
         final JsPropertyMap<Object> state = super.state();
         final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
-      /*
-       * To determine whether we need to do a state update we do compare each key and value and make sure
-       * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
-       * updates in react are merges, we need to implement this by putting undefined values into the state.
-       */
+        /*
+         * To determine whether we need to do a state update we do compare each key and value and make sure
+         * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
+         * updates in react are merges, we need to implement this by putting undefined values into the state.
+         */
         if ( null == currentState )
         {
           scheduleArezStateUpdate( newState );

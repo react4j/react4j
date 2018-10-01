@@ -1,9 +1,6 @@
 package com.example.arez;
 
-import arez.ObservableValue;
 import arez.annotations.ArezComponent;
-import arez.annotations.Observable;
-import arez.annotations.ObservableValueRef;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,11 +33,6 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
   }
 
   @Override
-  @Observable(
-      name = "value",
-      expectSetter = false,
-      readOutsideTransaction = true
-  )
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
       return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
@@ -48,10 +40,6 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
   }
-
-  @Nonnull
-  @ObservableValueRef
-  protected abstract ObservableValue getValueObservableValue();
 
   @JsType(
       isNative = true,

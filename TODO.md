@@ -2,9 +2,6 @@
 
 ### Very High Priority
 
-* Consider auto-observing all props at start of render - skipping those that will be observed in anyPropsDisposed().
-  Perhaps we could skip this if there are no `@Computed` (which would normally be invoked later as lower priority)
-
 * Add helper to autoload js assets
 
 * Make the name of the assets based off the version of the underlying react library. i.e. Name them `react-16.5.0.js`
@@ -25,13 +22,6 @@
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
 
 * Collections returned from props should be made immutable.
-
-* Fix `@Prop` change propagation in Arez components so changes are generated even if renderRequired flag is set.
-
-* Props should not be observable by default. Maybe mark each prop as observable or not (and thus requiring change
-  propagation or not). We could have `ENABLE`, `DISABLE`, `AUTODETECT` scenario. `AUTODETECT` would be driven by a
-  class level annotation which defines default - perhaps it could be `ENABLE`, `DISABLE`, `AUTODETECT` too - with
-  `AUTODETECT` only enabling propagation if there is `@Computed` or `@Observed` methods present?
 
 * Arez Components that only have dependencies on props at end of render could warn if they may not need to
   be arez components.
@@ -73,8 +63,6 @@
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
 
-* Add ability to `@Prop` to add enhancers to builder.
-
 * Consider separating Arez react component infrastructure into a mixin with default methods.
 
 ### Medium Priorities
@@ -87,16 +75,19 @@
   - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
 
-* Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
-  Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
-  default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
-
 * Components that have no `@State` methods, no fields, no lifecycle methods and are not subclasses of
   `ReactArezComponent` could be made into stateless components when translating to React. This could also
   be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`. An even
   better optimization - at least in production would be to eliminate the component altogether and effectively
   have the `build()` method on the builder call the render method directly. Caching could also be enabled based
   on props.
+
+* Consider adding a `type=STATELESS|PURE|STATEFUL|AUTODETECT` to component. `STATELESS` would be inlined into
+  caller without a component in production mode, `PURE` would have SCU automagically created assuming
+  `Object.equals()`, `STATEFUL` == `AREZ`. `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods,
+  `@State` methods or `@Observed`/`@Computed` annotated methods and no prop is an arez component. `AUTODETECT`
+  will be `PURE` if it satisfies `STATELESS` and all props are primitives or know simple compares. Otherwise
+  it is `STATEFUL`
 
 ### Low Priorities
 

@@ -587,7 +587,7 @@ final class Generator
     for ( final PropDescriptor prop : props )
     {
       builder.addMethod( buildPropMethod( descriptor, prop ).build() );
-      if ( descriptor.isArezComponent() )
+      if ( descriptor.isArezComponent() && prop.isObservable() )
       {
         builder.addMethod( buildPropObservableValueRefMethod( prop ).build() );
       }
@@ -597,6 +597,15 @@ final class Generator
     {
       builder.addMethod( buildStateGetterMethod( descriptor, stateValue ).build() );
       builder.addMethod( buildStateSetterMethod( descriptor, stateValue ).build() );
+    }
+
+    if ( descriptor.isArezComponent() && descriptor.getProps().stream().anyMatch( PropDescriptor::isObservable ) )
+    {
+      final MethodSpec.Builder method = buildNotifyOnObservablePropChangesMethod( descriptor );
+      if ( null != method )
+      {
+        builder.addMethod( method.build() );
+      }
     }
 
     if ( descriptor.isArezComponent() )
@@ -856,7 +865,7 @@ final class Generator
 
     method.addAnnotation( Override.class );
 
-    if ( descriptor.isArezComponent() )
+    if ( descriptor.isArezComponent() && prop.isObservable() )
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
@@ -1014,10 +1023,53 @@ final class Generator
   }
 
   @Nullable
+  private static MethodSpec.Builder buildNotifyOnObservablePropChangesMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final List<PropDescriptor> props =
+      descriptor.getProps().stream().filter( PropDescriptor::isObservable ).collect( Collectors.toList() );
+    if ( props.isEmpty() )
+    {
+      return null;
+    }
+    else
+    {
+      final MethodSpec.Builder method = MethodSpec.methodBuilder( "notifyOnObservablePropChanges" ).
+        addModifiers( Modifier.PROTECTED ).
+        addAnnotation( Override.class ).
+        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
+          addAnnotation( NULLABLE_CLASSNAME ).build() ).
+        returns( TypeName.BOOLEAN );
+      method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
+      method.addStatement( "boolean modified = false" );
+      for ( final PropDescriptor prop : descriptor.getProps() )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        final String code =
+          "if ( !$T.equals( props().get( $N ), null == nextProps ? null : nextProps.get( $N ) ) )";
+        block.beginControlFlow( code, Objects.class, prop.getConstantName(), prop.getConstantName() );
+        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
+        if ( prop.shouldUpdateOnChange() )
+        {
+          block.addStatement( "modified = true" );
+        }
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
+      method.addStatement( "return modified" );
+      return method;
+    }
+  }
+
+  @Nullable
   private static MethodSpec.Builder buildShouldComponentUpdateMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<PropDescriptor> props =
-      descriptor.getProps().stream().filter( PropDescriptor::shouldUpdateOnChange ).collect( Collectors.toList() );
+      descriptor.getProps()
+        .stream()
+        .filter( PropDescriptor::shouldUpdateOnChange )
+        // Observable properties already checked in notifyOnObservablePropChanges
+        .filter( p -> !p.isObservable() )
+        .collect( Collectors.toList() );
     if ( props.isEmpty() )
     {
       return null;
@@ -1039,7 +1091,6 @@ final class Generator
           "if ( !$T.isTripleEqual( props().get( $N ), null == nextProps ? null : nextProps.get( $N ) ) )";
         block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), prop.getConstantName() );
         block.addStatement( "modified = true" );
-        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
         block.endControlFlow();
         method.addCode( block.build() );
       }

@@ -869,13 +869,19 @@ public final class ReactProcessor
 
     final Element propType = processingEnv.getTypeUtils().asElement( returnType );
     final boolean shouldUpdateOnChange = shouldUpdateOnChange( method );
+    final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange );
     final boolean disposable = null != propType && isPropDisposable( descriptor, method, propType );
+    if ( observable && !descriptor.isArezComponent() )
+    {
+      throw new ReactProcessorException( "@Prop named '" + name + "' is marked as observable but the host component " +
+                                         "is not a subclass of react4j.arez.ReactArezComponent", method );
+    }
     if ( disposable && !descriptor.isArezComponent() )
     {
       throw new ReactProcessorException( "@Prop named '" + name + "' is marked as disposable but the host component " +
                                          "is not a subclass of react4j.arez.ReactArezComponent", method );
     }
-    return new PropDescriptor( name, method, methodType, shouldUpdateOnChange, disposable );
+    return new PropDescriptor( name, method, methodType, shouldUpdateOnChange, observable, disposable );
   }
 
   @Nonnull
@@ -1318,6 +1324,38 @@ public final class ReactProcessor
       default:
         return true;
     }
+  }
+
+  private boolean isPropObservable( @Nonnull final ComponentDescriptor descriptor,
+                                    @Nonnull final ExecutableElement method,
+                                    final boolean shouldUpdateOnChange )
+  {
+    final VariableElement injectParameter = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        method,
+                                        Constants.PROP_ANNOTATION_CLASSNAME,
+                                        "observable" ).getValue();
+    switch ( injectParameter.getSimpleName().toString() )
+    {
+      case "ENABLE":
+        return true;
+      case "DISABLE":
+        return false;
+      default:
+        return descriptor.isArezComponent() &&
+               shouldUpdateOnChange &&
+               hasAnyArezObserverMethods( descriptor.getElement() );
+    }
+  }
+
+  private boolean hasAnyArezObserverMethods( @Nonnull final TypeElement typeElement )
+  {
+    return getMethods( typeElement )
+      .stream()
+      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.COMPUTED_ANNOTATION_CLASSNAME ) ||
+                      null != ProcessorUtil.findAnnotationByType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
+                      ( null != ProcessorUtil.findAnnotationByType( m, Constants.OBSERVED_ANNOTATION_CLASSNAME ) &&
+                        ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
   }
 
   private boolean isPropDisposable( @Nonnull final ComponentDescriptor descriptor,

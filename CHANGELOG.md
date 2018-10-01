@@ -19,6 +19,12 @@
   the keys as part of externs so that the `Object` type is correctly typed. This would stop the names being
   renamed. Manually minimizing the keys based on a compile time constant `react4j.minimize_prop_keys` will work
   around this limitation and make sure the optimization is available in both GWT2 and J2CL builds.
+* **\[core\]** Add the `observable` parameter to the `@Prop` annotation. This will control whether a prop is
+  modelled as an Arez observable. This change fixes a bug where not all prop changes were detected and reported.
+  The default value is to `AUTODETECT` which eliminates observation unless the annotation processor detects that
+  it may be needed (i.e. the prop must be on subclasses of `ReactArezComponent` and the component must declare
+  methods annotated with `@Computed`, `@Memoize` or `@Observed`). This reduces output code size in scenarios where
+  observable props are not needed.
 
 ### [v0.96](https://github.com/react4j/react4j/tree/v0.96) (2018-09-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.95...v0.96)

@@ -62,6 +62,20 @@ public @interface Prop
   Feature shouldUpdateOnChange() default Feature.AUTODETECT;
 
   /**
+   * Indicate whether prop is Arez observable.
+   * If set to {@link Feature#ENABLE} the generated class will make the prop observable and report changes
+   * in the prop when the prop changes. The component MUST be a subclass of <code>ReactArezComponent</code>.
+   * If set to {@link Feature#DISABLE} then the prop will not be observable. If set to {@link Feature#AUTODETECT}
+   * then the prop will be observable if the component is a subclass of <code>ReactArezComponent</code>, the value
+   * of {@link #shouldUpdateOnChange()} is equivalent to {@link Feature#ENABLE} and the component has a method
+   * annotated with <code>arez.annotations.Computed</code>, <code>arez.annotations.Memoize</code> or
+   * <code>arez.annotations.Observed</code>.
+   *
+   * @return the enum indicating whether prop is observable.
+   */
+  Feature observable() default Feature.AUTODETECT;
+
+  /**
    * Return an enum indicating whether prop is disposable and should be checked before rendering component.
    * If a prop is disposable then the class will override <code>ReactArezComponent.anyPropsDisposed()</code>
    * and check whether the prop is disposed prior to attempting to render the component. If any props

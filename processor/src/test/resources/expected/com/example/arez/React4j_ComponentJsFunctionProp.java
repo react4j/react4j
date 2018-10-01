@@ -1,10 +1,7 @@
 package com.example.arez;
 
-import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
-import arez.annotations.Observable;
-import arez.annotations.ObservableValueRef;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,11 +34,6 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
   }
 
   @Override
-  @Observable(
-      name = "value",
-      expectSetter = false,
-      readOutsideTransaction = true
-  )
   protected ComponentJsFunctionProp.TestFunction getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
       return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
@@ -49,10 +41,6 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
   }
-
-  @Nonnull
-  @ObservableValueRef
-  protected abstract ObservableValue getValueObservableValue();
 
   @Override
   @Action(
@@ -62,7 +50,6 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
     boolean modified = false;
     if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? null : nextProps.get( PROP_value ) ) ) {
       modified = true;
-      getValueObservableValue().reportChanged();
     }
     return modified;
   }
