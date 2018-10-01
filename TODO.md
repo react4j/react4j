@@ -2,6 +2,8 @@
 
 ### Very High Priority
 
+* Consider remove `@State` and all related infrastructure. Arez should be sufficient.
+
 * Add helper to autoload js assets
 
 * Make the name of the assets based off the version of the underlying react library. i.e. Name them `react-16.5.0.js`
@@ -31,7 +33,6 @@
   - Pointer Events
 
 * Move to React 16.3.0 - See https://reactjs.org/blog/2018/03/29/react-v-16-3.html
-  - Implement `getDerivedStateFromProps` static method (via an annotation on a static method?)
   - Implement `getSnapshotBeforeUpdate` lifecycle method.
   - Add `snapshot` parameter to `componentDidUpdate`
   - Add support for the new ref proposal.
@@ -43,13 +44,9 @@
 
 * Update generated builder to allow skipping of default steps and onto next step and set default value in builder
 
-* Add default values for state via `@InitialState`. Can be instance methods, static methods or static final fields?
-
-* Change state setters so that if during construct then sets initial state otherwise schedules state update.
-
 * Add ability to `@Prop` to add enhancers to builder.
 
-* Add support for methods annotated with `@OnPropChanged` and `@OnStateChanged`
+* Add support for methods annotated with `@OnPropChanged`
 
 * Add support for methods annotated with `@PropValidate` method. These would be optimized out in production mode.
   In development mode the types, and requiredness should already be checked but this would allow additional custom
@@ -67,7 +64,7 @@
   - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
 
-* Components that have no `@State` methods, no fields, no lifecycle methods and are not subclasses of
+* Components that have no fields, no lifecycle methods and are not subclasses of
   `ReactArezComponent` could be made into stateless components when translating to React. This could also
   be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`. An even
   better optimization - at least in production would be to eliminate the component altogether and effectively
