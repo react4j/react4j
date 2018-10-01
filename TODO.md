@@ -13,10 +13,6 @@
   schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
   and will need to be marked as runImmediately=false)
 
-* Should we mark `@JsFunction`/`@FunctionalInterface` props that are not via a callback. They can be tracked as
-  coming from a callback by magic prop put on function. Does that mean we should track `@FunctionalInterface` props
-  that are not `@JsFunction` instances?
-
 * Start to add javascript tests - starting with braincheck ala
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
 
