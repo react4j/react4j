@@ -21,7 +21,7 @@ import jsinterop.annotations.JsFunction;
  * want to easily interact with from the React DevTools or building a component
  * that compares props values to determine whether it needs to re-render.</p>
  *
- * <p>The method that is annotated with <code>@Callback</code> must also comply with the following constraints:</p>
+ * <p>The method that is annotated with this annotation must also comply with the following constraints:</p>
  * <ul>
  * <li>Must not be annotated with any other react annotation</li>
  * <li>Must not be an abstract instance method</li>

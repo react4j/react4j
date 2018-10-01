@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
  * Annotation used to annotate a pair of methods to access and mutate reacts underlying state object.
  * The annotation need only be applied to one of the methods; either the getter or setter.
  *
- * <p>The methods that are annotated with <code>@State</code> must also comply with the following constraints:</p>
+ * <p>The methods that are annotated with this annotation must also comply with the following constraints:</p>
  * <ul>
  * <li>Must not be annotated with any other react annotation</li>
  * <li>Must be an abstract instance method</li>
