@@ -11,6 +11,7 @@ public final class ReactConfig
   private static final boolean PRODUCTION_MODE = PROVIDER.isProductionMode();
   private static final boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
   private static final boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
+  private static final boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
   private static final boolean CHECK_COMPONENT_STATE_INVARIANTS = PROVIDER.checkComponentStateInvariants();
   private static final boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
@@ -52,6 +53,16 @@ public final class ReactConfig
   public static boolean shouldMinimizePropKeys()
   {
     return SHOULD_MINIMIZE_PROP_KEYS;
+  }
+
+  /**
+   * Return true if the prop value should be validated when initially set or when changed.
+   *
+   * @return true to validate prop values.
+   */
+  public static boolean shouldValidatePropValues()
+  {
+    return SHOULD_VALIDATE_PROP_VALUES;
   }
 
   /**
@@ -103,6 +114,13 @@ public final class ReactConfig
 
     @GwtIncompatible
     @Override
+    boolean shouldValidatePropValues()
+    {
+      return "true".equals( System.getProperty( "react4j.validate_prop_values", isProductionMode() ? "false" : "true" ) );
+    }
+
+    @GwtIncompatible
+    @Override
     boolean checkComponentStateInvariants()
     {
       return "true".equals( System.getProperty( "react4j.check_component_state_invariants",
@@ -133,6 +151,11 @@ public final class ReactConfig
     boolean shouldMinimizePropKeys()
     {
       return "true" == System.getProperty( "react4j.minimize_prop_keys" );
+    }
+
+    boolean shouldValidatePropValues()
+    {
+      return "true" == System.getProperty( "react4j.validate_prop_values" );
     }
 
     boolean checkComponentStateInvariants()

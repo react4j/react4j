@@ -11,4 +11,5 @@
   <set-property name='react4j.check_component_state_invariants' value='true'/>
   <set-property name='react4j.check_invariants' value='true'/>
   <set-property name='react4j.minimize_prop_keys' value='false'/>
+  <set-property name='react4j.validate_prop_values' value='true'/>
 </module>

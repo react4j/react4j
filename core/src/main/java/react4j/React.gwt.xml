@@ -27,4 +27,7 @@
 
   <define-property name='react4j.minimize_prop_keys' values='true,false'/>
   <set-property name='react4j.minimize_prop_keys' value='true'/>
+
+  <define-property name='react4j.validate_prop_values' values='true,false'/>
+  <set-property name='react4j.validate_prop_values' value='false'/>
 </module>
