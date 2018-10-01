@@ -43,7 +43,7 @@ public final class ReactConfig
   }
 
   /**
-   * Return true if prop keys should be minimized.
+   * Return true if the prop keys should be minimized.
    * This will significantly reduce the size of the compiled output but will make inspecting the props
    * in DevTools difficult if not impossible.
    *
