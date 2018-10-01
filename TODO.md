@@ -12,7 +12,6 @@
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
   schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
   and will need to be marked as runImmediately=false)
-- if we support disabling change checking on props then do we need callbacks anymore?
 
 * Should we mark `@JsFunction`/`@FunctionalInterface` props that are not via a callback. They can be tracked as
   coming from a callback by magic prop put on function. Does that mean we should track `@FunctionalInterface` props
