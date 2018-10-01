@@ -11,7 +11,7 @@ import jsinterop.annotations.JsFunction;
  * This annotation used to generate a callback accessor method in the
  * helper class. The callback accessor method will return the same callback
  * instance each time it is called, making this ideal for use in "PureComponent"
- * style components. If the callback is annotated with <code>@JsFunction</code>
+ * style components. If the callback is annotated with {@link JsFunction}
  * then the code gives the callback a user friendly name for debugging. The
  * code for specifying the friendly name will be optimized away when
  * ReactConfig.enableComponentNames() returns false.
