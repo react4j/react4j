@@ -87,8 +87,6 @@
   - https://reactcommunity.org/react-transition-group/
   or maybe https://react-move.js.org/
 
-* Introduce performance tools as in https://github.com/nitin42/react-perf-devtool into tool chain
-
 * In base class have configuration that warns on re-renders that produced duplicate values. Note: that the tool to do
   this no longer works in React 16 but the ReactJS team expect something will replace it in the future.
 
