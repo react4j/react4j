@@ -14,7 +14,8 @@ import jsinterop.annotations.JsFunction;
  * style components. If the callback is annotated with {@link JsFunction}
  * then the code gives the callback a user friendly name for debugging. The
  * code for specifying the friendly name will be optimized away when
- * ReactConfig.enableComponentNames() returns false.
+ * ReactConfig.enableComponentNames() returns false. Using {@link JsFunction}
+ * also reduces the generated code size.
  *
  * <p>Using this annotation and the corresponding helper method is entirely
  * optional but does provide some value when building components that you

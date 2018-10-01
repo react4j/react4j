@@ -119,10 +119,6 @@ warning messages more cryptic and skip important checks that happen in developme
 
 * Add graph reflecting size of TodoMVC over time
 
-* Add documentation recommending that `@Callback` methods are `@JsFunction` annotated. The reason is that they
-  will be converted to javascript functions which has significantly less overhead in GWT2.x (i.e. no class
-  literals) and they will have useful names attached to them in React DevTool.
-
 * Reorganize documentation using the following sites as inspiration.
   - Reason React - https://reasonml.github.io/reason-react/
   - EmberJS - https://www.emberjs.com/
