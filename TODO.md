@@ -62,8 +62,6 @@
 
 * Add ability to `@Prop` to add enhancers to builder.
 
-* Add support for methods annotated with `@OnPropChanged`
-
 * Add support for methods annotated with `@PropValidate` method. These would be optimized out in production mode.
   In development mode the types, and requiredness should already be checked but this would allow additional custom
   validation.
