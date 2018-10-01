@@ -9,8 +9,8 @@ public final class ReactConfig
 {
   private static final ConfigProvider PROVIDER = new ConfigProvider();
   private static final boolean PRODUCTION_MODE = PROVIDER.isProductionMode();
-  private static boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
-  private static boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
+  private static final boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
+  private static final boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
   private static final boolean CHECK_COMPONENT_STATE_INVARIANTS = PROVIDER.checkComponentStateInvariants();
   private static final boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
