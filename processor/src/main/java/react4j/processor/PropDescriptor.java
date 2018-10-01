@@ -17,6 +17,7 @@ final class PropDescriptor
   @Nonnull
   private final ExecutableType _methodType;
   private final boolean _shouldUpdateOnChange;
+  private final boolean _observable;
   private final boolean _disposable;
   @Nullable
   private VariableElement _defaultField;
@@ -31,12 +32,14 @@ final class PropDescriptor
                   @Nonnull final ExecutableElement method,
                   @Nonnull final ExecutableType methodType,
                   final boolean shouldUpdateOnChange,
+                  final boolean observable,
                   final boolean disposable )
   {
     _name = Objects.requireNonNull( name );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
     _shouldUpdateOnChange = shouldUpdateOnChange;
+    _observable = observable;
     _disposable = disposable;
   }
 
@@ -61,6 +64,11 @@ final class PropDescriptor
   boolean shouldUpdateOnChange()
   {
     return _shouldUpdateOnChange;
+  }
+
+  boolean isObservable()
+  {
+    return _observable;
   }
 
   boolean isDisposable()

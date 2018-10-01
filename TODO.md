@@ -2,8 +2,7 @@
 
 ### Very High Priority
 
-* Consider auto-observing all props at start of render - skipping those that will be observed in anyPropsDisposed().
-  Perhaps we could skip this if there are no `@Computed` (which would normally be invoked later as lower priority)
+* Change `@Prop.observable=AUTODETECT` so that it can be driven by a parameter in the `ReactComponent`.
 
 * Add helper to autoload js assets
 
@@ -25,13 +24,6 @@
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
 
 * Collections returned from props should be made immutable.
-
-* Fix `@Prop` change propagation in Arez components so changes are generated even if renderRequired flag is set.
-
-* Props should not be observable by default. Maybe mark each prop as observable or not (and thus requiring change
-  propagation or not). We could have `ENABLE`, `DISABLE`, `AUTODETECT` scenario. `AUTODETECT` would be driven by a
-  class level annotation which defines default - perhaps it could be `ENABLE`, `DISABLE`, `AUTODETECT` too - with
-  `AUTODETECT` only enabling propagation if there is `@Computed` or `@Observed` methods present?
 
 * Arez Components that only have dependencies on props at end of render could warn if they may not need to
   be arez components.
@@ -84,10 +76,6 @@
   element factories can be built by looking at html spec and auto-generating?
   - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
-
-* Add decorations to `@Props` that indicate whether they will be looked at in `PureComponent` scenario. i.e.
-  Could decide to skip event handlers to reduce overhead and changes due to parent re-render. Or maybe just
-  default to skipping `@FunctionalInterface` annotated ot `@JsFunction`
 
 * Components that have no `@State` methods, no fields, no lifecycle methods and are not subclasses of
   `ReactArezComponent` could be made into stateless components when translating to React. This could also

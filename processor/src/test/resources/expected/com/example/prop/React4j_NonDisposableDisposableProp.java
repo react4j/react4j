@@ -1,10 +1,7 @@
 package com.example.prop;
 
-import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
-import arez.annotations.Observable;
-import arez.annotations.ObservableValueRef;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,11 +34,6 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
   }
 
   @Override
-  @Observable(
-      name = "model",
-      expectSetter = false,
-      readOutsideTransaction = true
-  )
   protected NonDisposableDisposableProp.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
       return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
@@ -49,10 +41,6 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
       return Js.uncheckedCast( props().getAny( PROP_model ) );
     }
   }
-
-  @Nonnull
-  @ObservableValueRef
-  protected abstract ObservableValue getModelObservableValue();
 
   @Override
   @Action(
@@ -62,7 +50,6 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     boolean modified = false;
     if ( !Js.isTripleEqual( props().get( PROP_model ), null == nextProps ? null : nextProps.get( PROP_model ) ) ) {
       modified = true;
-      getModelObservableValue().reportChanged();
     }
     return modified;
   }

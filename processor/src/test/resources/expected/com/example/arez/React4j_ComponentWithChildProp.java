@@ -1,10 +1,7 @@
 package com.example.arez;
 
-import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
-import arez.annotations.Observable;
-import arez.annotations.ObservableValueRef;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,11 +35,6 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   }
 
   @Override
-  @Observable(
-      name = "child",
-      expectSetter = false,
-      readOutsideTransaction = true
-  )
   protected ReactNode getChild() {
     if ( ReactConfig.shouldCheckInvariants() ) {
       return null != props().getAny( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
@@ -50,10 +42,6 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
       return Js.uncheckedCast( props().getAny( PROP_child ) );
     }
   }
-
-  @Nonnull
-  @ObservableValueRef
-  protected abstract ObservableValue getChildObservableValue();
 
   @Override
   @Action(
@@ -63,7 +51,6 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
     boolean modified = false;
     if ( !Js.isTripleEqual( props().get( PROP_child ), null == nextProps ? null : nextProps.get( PROP_child ) ) ) {
       modified = true;
-      getChildObservableValue().reportChanged();
     }
     return modified;
   }
