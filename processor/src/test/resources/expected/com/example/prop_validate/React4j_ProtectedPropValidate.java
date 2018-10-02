@@ -50,14 +50,6 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
-  interface LiteLifecycle {
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
   interface Lifecycle {
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
         @Nonnull JsPropertyMap<Object> arg1);

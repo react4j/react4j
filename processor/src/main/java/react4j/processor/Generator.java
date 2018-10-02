@@ -664,7 +664,7 @@ final class Generator
 
     if ( !descriptor.getLifecycleMethods().isEmpty() )
     {
-      if ( descriptor.shouldGenerateLiteLifecycle() )
+      if ( descriptor.shouldGenerateLiteLifecycle() && !descriptor.getLiteLifecycleMethods().isEmpty() )
       {
         builder.addType( buildNativeLiteLifecycleInterface( descriptor ) );
       }
