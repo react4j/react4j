@@ -4,19 +4,14 @@
 
 * Collections returned from props should be made immutable.
 
-* Components that have no fields, no `@Callback` methods, no lifecycle methods and are not subclasses of
-  `ReactArezComponent` could be made into stateless components when translating to React. This could also
-  be enforced by a `stateless` parameter on the `@ReactComponent` annotation of type `Feature`. An even
-  better optimization - at least in production would be to eliminate the component altogether and effectively
-  have the `build()` method on the builder call the render method directly. Caching could also be enabled based
-  on props.
-
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AUTODETECT` to component. `STATELESS` would be inlined into
   caller without a component in production mode, `PURE` would have SCU automagically created assuming
-  `Object.equals()`, `STATEFUL` == `AREZ`. `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods,
-  `@State` methods or `@Observed`/`@Computed` annotated methods and no prop is an arez component. `AUTODETECT`
-  will be `PURE` if it satisfies `STATELESS` and all props are primitives or know simple compares. Otherwise
-  it is `STATEFUL`
+  `Object.equals()`, `STATEFUL` == `AREZ`. `AUTODETECT` will be `STATELESS` if no fields, `@Callback` methods,
+  lifecycle methods, `@State` methods or `@Observed`/`@Computed` annotated methods and no prop is an arez component.
+  `AUTODETECT` will be `PURE` if it satisfies `STATELESS` and all props are primitives or the processor knows shallow
+   comparison works. Otherwise it is `STATEFUL`. For `STATELESS|PURE` components we would need to add an invariant
+   check to ensure it is not invoked out of turn. When inlining the `build()` method in builder will access static 
+   singleton instance of component, set props and call render.
 
 ### Very High Priority
 
