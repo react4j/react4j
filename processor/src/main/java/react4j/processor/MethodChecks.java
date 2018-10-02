@@ -12,6 +12,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
+@SuppressWarnings( "SameParameterValue" )
 final class MethodChecks
 {
   private MethodChecks()
@@ -75,6 +76,16 @@ final class MethodChecks
     {
       throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
                                          " target must not be private", method );
+    }
+  }
+
+  static void mustNotBePublic( @Nonnull final String annotationName, @Nonnull final Element method )
+    throws ReactProcessorException
+  {
+    if ( method.getModifiers().contains( Modifier.PUBLIC ) )
+    {
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                         " target must not be public", method );
     }
   }
 

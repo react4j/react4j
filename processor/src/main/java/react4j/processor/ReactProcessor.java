@@ -204,13 +204,14 @@ public final class ReactProcessor
                                typeElement );
 
     determineComponentType( descriptor, typeElement );
-    determineLifecycleMethods( typeElement, descriptor );
     determineRenderMethod( typeElement, descriptor );
     determineCallbacks( descriptor );
     determineProps( descriptor );
+    determinePropValidatesMethods( descriptor );
     determineDefaultPropsMethods( descriptor );
     determineDefaultPropsFields( descriptor );
     determineStateValues( descriptor );
+    determineLifecycleMethods( typeElement, descriptor );
 
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
@@ -416,6 +417,74 @@ public final class ReactProcessor
         throw new ReactProcessorException( "@ReactComponent target has an unexpected abstract method",
                                            abstractMethod );
       }
+    }
+  }
+
+  private void determinePropValidatesMethods( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final List<ExecutableElement> methods =
+      getMethods( descriptor.getElement() ).stream()
+        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME ) )
+        .collect( Collectors.toList() );
+
+    for ( final ExecutableElement method : methods )
+    {
+      final String name = derivePropValidateName( method );
+      final PropDescriptor prop = descriptor.findPropNamed( name );
+      if ( null == prop )
+      {
+        throw new ReactProcessorException( "@PropValidate target for prop named '" + name + "' has no corresponding " +
+                                           "@Prop annotated method.", method );
+      }
+      if ( 1 != method.getParameters().size() )
+      {
+        throw new ReactProcessorException( "@PropValidate target must have exactly 1 parameter", method );
+      }
+      final ExecutableType methodType =
+        (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
+      if ( !processingEnv.getTypeUtils().isAssignable( methodType.getParameterTypes().get( 0 ),
+                                                       prop.getMethodType().getReturnType() ) )
+      {
+        throw new ReactProcessorException( "@PropValidate target has a parameter type that is not assignable to the " +
+                                           "return type of the associated @Prop annotated method.", method );
+      }
+      prop.setValidateMethod( method );
+    }
+  }
+
+  @Nonnull
+  private String derivePropValidateName( @Nonnull final Element element )
+    throws ReactProcessorException
+  {
+    final String name =
+      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                 element,
+                                                 Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
+                                                 "name" ).getValue();
+
+    if ( ProcessorUtil.isSentinelName( name ) )
+    {
+      final String deriveName = ProcessorUtil.deriveName( element, ProcessorUtil.VALIDATE_PROP_PATTERN, name );
+      if ( null == deriveName )
+      {
+        throw new ReactProcessorException( "@PropValidate target has not specified name nor is it named according " +
+                                           "to the convention 'validate[Name]Prop'.", element );
+      }
+      return deriveName;
+    }
+    else
+    {
+      if ( !SourceVersion.isIdentifier( name ) )
+      {
+        throw new ReactProcessorException( "@PropValidate target specified an invalid name '" + name + "'. The " +
+                                           "name must be a valid java identifier.", element );
+      }
+      else if ( SourceVersion.isKeyword( name ) )
+      {
+        throw new ReactProcessorException( "@PropValidate target specified an invalid name '" + name + "'. The " +
+                                           "name must not be a java keyword.", element );
+      }
+      return name;
     }
   }
 
@@ -881,7 +950,7 @@ public final class ReactProcessor
       throw new ReactProcessorException( "@Prop named '" + name + "' is marked as disposable but the host component " +
                                          "is not a subclass of react4j.arez.ReactArezComponent", method );
     }
-    return new PropDescriptor( name, method, methodType, shouldUpdateOnChange, observable, disposable );
+    return new PropDescriptor( descriptor, name, method, methodType, shouldUpdateOnChange, observable, disposable );
   }
 
   @Nonnull
@@ -1035,22 +1104,25 @@ public final class ReactProcessor
   private void determineLifecycleMethods( @Nonnull final TypeElement typeElement,
                                           @Nonnull final ComponentDescriptor descriptor )
   {
+    final boolean forceShouldComponentUpdate =
+      !descriptor.isArezComponent() && descriptor.shouldGeneratePropValidator();
     /*
      * Get the list of lifecycle methods that have been overridden by typeElement
      * a parent class, or by a default method method implemented by typeElement or
-     * a parent class.
+     * a parent class. Also include Component.shouldComponentUpdate() if forceShouldComponentUpdate is true.
      */
     final Collection<ExecutableElement> lifecycleMethods = getComponentLifecycleMethods().values();
     final Elements elementUtils = processingEnv.getElementUtils();
     final Types typeUtils = processingEnv.getTypeUtils();
-    final TypeElement componentType = elementUtils.getTypeElement( Constants.COMPONENT_CLASSNAME );
     final List<MethodDescriptor> overriddenLifecycleMethods =
       // Get all methods on type parent classes, and default methods from interfaces
       getMethods( typeElement ).stream()
         // Only keep methods that override the lifecycle methods
-        .filter( m -> lifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
-        //Remove those that come from the base classes
-        .filter( m -> m.getEnclosingElement() != componentType )
+        .filter( m -> (
+                        forceShouldComponentUpdate &&
+                        m.getSimpleName().toString().equals( Constants.SHOULD_COMPONENT_UPDATE )
+                      ) ||
+                      lifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
         .map( m -> new MethodDescriptor( m, (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), m ) ) )
         .collect( Collectors.toList() );
 
