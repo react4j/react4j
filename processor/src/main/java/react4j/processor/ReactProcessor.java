@@ -512,6 +512,9 @@ public final class ReactProcessor
         throw new ReactProcessorException( "@PropDefault target has a return type that is not assignable to the " +
                                            "return type of the associated @Prop annotated method.", method );
       }
+      MethodChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
+                                                     Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
+                                                     method );
       prop.setDefaultMethod( method );
     }
   }
@@ -537,6 +540,9 @@ public final class ReactProcessor
         throw new ReactProcessorException( "@PropDefault target has a type that is not assignable to the " +
                                            "return type of the associated @Prop annotated method.", field );
       }
+      MethodChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
+                                                     Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
+                                                     field );
       prop.setDefaultField( field );
     }
   }

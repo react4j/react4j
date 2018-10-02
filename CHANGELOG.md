@@ -30,6 +30,8 @@
   is passed to the component and will optimized out if `ReactConfig.shouldValidatePropValues()` returns `false`
   which is the default for production builds. The framework will test the type and nullness of props even if there
   is no `@PropValidate` for prop.
+* **\[processor\]** If the element annotated by the `@PropDefault` annotation is not accessible in the package that
+  has the type annotated with `@ReactComponent` then generate a descriptive compile error.
 
 ### [v0.96](https://github.com/react4j/react4j/tree/v0.96) (2018-09-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.95...v0.96)

@@ -417,20 +417,23 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "Callback" },
-        new Object[]{ "State" },
-        new Object[]{ "Prop" },
-        new Object[]{ "PropValidate" }
+        new Object[]{ "Callback", "Callback" },
+        new Object[]{ "State", "State" },
+        new Object[]{ "Prop", "Prop" },
+        new Object[]{ "PropDefault", "PropDefault" },
+        new Object[]{ "PropDefault", "PropDefaultField" },
+        new Object[]{ "PropValidate", "PropValidate" }
       };
   }
 
   @Test( dataProvider = "packageAccessElementInDifferentPackage" )
-  public void processFailedCompileInheritedPackageAccessInDifferentPackage( @Nonnull final String annotation )
+  public void processFailedCompileInheritedPackageAccessInDifferentPackage( @Nonnull final String annotation,
+                                                                            @Nonnull final String name )
   {
     final JavaFileObject source1 =
-      fixture( "bad_input/com/example/package_access/other/Base" + annotation + "Model.java" );
+      fixture( "bad_input/com/example/package_access/other/Base" + name + "Model.java" );
     final JavaFileObject source2 =
-      fixture( "bad_input/com/example/package_access/" + annotation + "Model.java" );
+      fixture( "bad_input/com/example/package_access/" + name + "Model.java" );
     assertFailedCompileResource( Arrays.asList( source1, source2 ),
                                  "@" + annotation + " target must not be package access if " +
                                  "the method is in a different package from the @ReactComponent" );

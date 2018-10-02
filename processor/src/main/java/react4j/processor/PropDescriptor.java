@@ -84,8 +84,6 @@ final class PropDescriptor
 
   void setDefaultMethod( @Nonnull final ExecutableElement method )
   {
-    MethodChecks.mustBeStatic( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotBePrivate( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotHaveAnyParameters( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustReturnAValue( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
@@ -157,9 +155,7 @@ final class PropDescriptor
 
   void setDefaultField( @Nonnull final VariableElement field )
   {
-    MethodChecks.mustBeStatic( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
     MethodChecks.mustBeFinal( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
-    MethodChecks.mustNotBePrivate( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
 
     if ( null != _defaultMethod )
     {
