@@ -37,6 +37,7 @@ final class ProcessorUtil
   private static final Pattern SETTER_PATTERN = Pattern.compile( "^set([A-Z].*)$" );
   private static final Pattern GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)$" );
   static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
+  static final Pattern VALIDATE_PROP_PATTERN = Pattern.compile( "^validate([A-Z].*)$" );
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
   static final String SENTINEL_NAME = "<default>";
 

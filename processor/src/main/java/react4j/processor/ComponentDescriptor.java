@@ -296,10 +296,15 @@ final class ComponentDescriptor
     final ExecutableElement element = method.getMethod();
     final String methodName = element.getSimpleName().toString();
     final String className = ( (TypeElement) element.getEnclosingElement() ).getQualifiedName().toString();
-    return Constants.REACT_AREZ_COMPONENT_CLASSNAME.equals( className ) &&
-           (
-             Constants.COMPONENT_DID_MOUNT.equals( methodName ) ||
-             Constants.COMPONENT_DID_UPDATE.equals( methodName )
+    return (
+             Constants.REACT_AREZ_COMPONENT_CLASSNAME.equals( className ) &&
+             (
+               Constants.COMPONENT_DID_MOUNT.equals( methodName ) ||
+               Constants.COMPONENT_DID_UPDATE.equals( methodName )
+             )
+           ) || (
+             Constants.COMPONENT_CLASSNAME.equals( className ) &&
+             Constants.SHOULD_COMPONENT_UPDATE.equals( methodName )
            );
   }
 
@@ -366,6 +371,11 @@ final class ComponentDescriptor
   {
     assert null != _props;
     _props.sort( PropComparator.COMPARATOR );
+  }
+
+  boolean shouldGeneratePropValidator()
+  {
+    return getProps().stream().anyMatch( PropDescriptor::hasValidateMethod );
   }
 
   @Nonnull

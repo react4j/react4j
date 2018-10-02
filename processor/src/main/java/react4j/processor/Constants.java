@@ -14,6 +14,7 @@ final class Constants
   static final String CALLBACK_ANNOTATION_CLASSNAME = "react4j.annotations.Callback";
   static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";
   static final String PROP_DEFAULT_ANNOTATION_CLASSNAME = "react4j.annotations.PropDefault";
+  static final String PROP_VALIDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PropValidate";
   static final String STATE_ANNOTATION_CLASSNAME = "react4j.annotations.State";
   static final String REACT_COMPONENT_ANNOTATION_CLASSNAME = "react4j.annotations.ReactComponent";
   static final String INJECT_ANNOTATION_CLASSNAME = "javax.inject.Inject";
@@ -28,12 +29,13 @@ final class Constants
   static final String DEPRECATED_ANNOTATION_CLASSNAME = "java.lang.Deprecated";
   static final String COMPONENT_DID_MOUNT = "componentDidMount";
   static final String COMPONENT_DID_UPDATE = "componentDidUpdate";
+  static final String SHOULD_COMPONENT_UPDATE = "shouldComponentUpdate";
   static final List<String> LIFECYCLE_METHODS =
     Arrays.asList( COMPONENT_DID_MOUNT,
                    COMPONENT_DID_UPDATE,
                    "componentWillUnmount",
                    "componentDidCatch",
-                   "shouldComponentUpdate" );
+                   SHOULD_COMPONENT_UPDATE );
 
   private Constants()
   {

@@ -12,6 +12,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
+@SuppressWarnings( "SameParameterValue" )
 final class MethodChecks
 {
   private MethodChecks()
@@ -78,6 +79,16 @@ final class MethodChecks
     }
   }
 
+  static void mustNotBePublic( @Nonnull final String annotationName, @Nonnull final Element method )
+    throws ReactProcessorException
+  {
+    if ( method.getModifiers().contains( Modifier.PUBLIC ) )
+    {
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                         " target must not be public", method );
+    }
+  }
+
   static void mustNotHaveAnyParameters( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
     throws ReactProcessorException
   {
@@ -124,7 +135,7 @@ final class MethodChecks
    */
   static void mustBeSubclassCallable( @Nonnull final TypeElement targetType,
                                       @Nonnull final String annotationName,
-                                      @Nonnull final ExecutableElement method )
+                                      @Nonnull final Element method )
     throws ReactProcessorException
   {
     mustNotBeStatic( annotationName, method );
@@ -132,9 +143,19 @@ final class MethodChecks
     mustNotBePackageAccessInDifferentPackage( targetType, annotationName, method );
   }
 
+  static void mustBeStaticallySubclassCallable( @Nonnull final TypeElement targetType,
+                                                @Nonnull final String annotationName,
+                                                @Nonnull final Element method )
+    throws ReactProcessorException
+  {
+    mustBeStatic( annotationName, method );
+    mustNotBePrivate( annotationName, method );
+    mustNotBePackageAccessInDifferentPackage( targetType, annotationName, method );
+  }
+
   static void mustNotBePackageAccessInDifferentPackage( @Nonnull final TypeElement component,
                                                         @Nonnull final String annotationName,
-                                                        @Nonnull final ExecutableElement method )
+                                                        @Nonnull final Element method )
     throws ReactProcessorException
   {
     final Set<Modifier> modifiers = method.getModifiers();

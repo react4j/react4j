@@ -10,8 +10,7 @@ import javax.annotation.Nonnull;
  * The annotation can be applied to a static field or static method on the component.
  * The field or method is then accessed when initializing the default props for the component.
  *
- * <p>If a method is annotated with the <code>@PropDefault</code> annotation then it must also
- * comply with the following constraints:</p>
+ * <p>If a method is annotated with this annotation then it must also comply with the following constraints:</p>
  * <ul>
  * <li>Must have 0 parameters</li>
  * <li>Must return a value with the same type as the associated <code>@Prop</code> annotated method</li>
@@ -20,8 +19,7 @@ import javax.annotation.Nonnull;
  * <li>Must not throw exceptions</li>
  * </ul>
  *
- * <p>If a field is annotated with the <code>@PropDefault</code> annotation then it must also
- * comply with the following constraints:</p>
+ * <p>If a field is annotated with this annotation then it must also comply with the following constraints:</p>
  * <ul>
  * <li>Must have the same type as the associated <code>@Prop</code> annotated method</li>
  * <li>Must be a static field</li>

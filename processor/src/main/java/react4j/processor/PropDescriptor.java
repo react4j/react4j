@@ -11,6 +11,8 @@ import javax.lang.model.type.ExecutableType;
 final class PropDescriptor
 {
   @Nonnull
+  private final ComponentDescriptor _descriptor;
+  @Nonnull
   private final String _name;
   @Nonnull
   private final ExecutableElement _method;
@@ -23,18 +25,22 @@ final class PropDescriptor
   private VariableElement _defaultField;
   @Nullable
   private ExecutableElement _defaultMethod;
+  @Nullable
+  private ExecutableElement _validateMethod;
   /**
    * Flag set to true if prop is optional.
    */
   private boolean _optional;
 
-  PropDescriptor( @Nonnull final String name,
+  PropDescriptor( @Nonnull final ComponentDescriptor descriptor,
+                  @Nonnull final String name,
                   @Nonnull final ExecutableElement method,
                   @Nonnull final ExecutableType methodType,
                   final boolean shouldUpdateOnChange,
                   final boolean observable,
                   final boolean disposable )
   {
+    _descriptor = Objects.requireNonNull( descriptor );
     _name = Objects.requireNonNull( name );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
@@ -78,8 +84,6 @@ final class PropDescriptor
 
   void setDefaultMethod( @Nonnull final ExecutableElement method )
   {
-    MethodChecks.mustBeStatic( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotBePrivate( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotHaveAnyParameters( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustReturnAValue( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
@@ -100,11 +104,58 @@ final class PropDescriptor
     }
   }
 
+  boolean hasValidateMethod()
+  {
+    return null != _validateMethod;
+  }
+
+  @Nonnull
+  ExecutableElement getValidateMethod()
+  {
+    assert null != _validateMethod;
+    return _validateMethod;
+  }
+
+  void setValidateMethod( @Nonnull final ExecutableElement method )
+  {
+    MethodChecks.mustBeSubclassCallable( _descriptor.getElement(),
+                                         Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
+                                         method );
+    MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotReturnAValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotBePublic( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+
+    final VariableElement param = method.getParameters().get( 0 );
+    final boolean mismatchedNullability =
+      (
+        null != ProcessorUtil.findAnnotationByType( param, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
+        null != ProcessorUtil.findAnnotationByType( _method, Constants.NULLABLE_ANNOTATION_CLASSNAME )
+      ) ||
+      (
+        null != ProcessorUtil.findAnnotationByType( param, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
+        null != ProcessorUtil.findAnnotationByType( _method, Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+
+    if ( mismatchedNullability )
+    {
+      throw new ReactProcessorException( "@PropValidate target has a parameter that has a nullability annotation " +
+                                         "incompatible with the associated @Prop method named " +
+                                         _method.getSimpleName(), method );
+    }
+
+    if ( null != _validateMethod )
+    {
+      throw new ReactProcessorException( "@PropValidate target duplicates existing method named " +
+                                         _validateMethod.getSimpleName(), method );
+    }
+    else
+    {
+      _validateMethod = Objects.requireNonNull( method );
+    }
+  }
+
   void setDefaultField( @Nonnull final VariableElement field )
   {
-    MethodChecks.mustBeStatic( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
     MethodChecks.mustBeFinal( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
-    MethodChecks.mustNotBePrivate( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
 
     if ( null != _defaultMethod )
     {

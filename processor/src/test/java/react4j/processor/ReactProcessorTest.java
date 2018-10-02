@@ -1,6 +1,5 @@
 package react4j.processor;
 
-import com.google.testing.compile.JavaFileObjects;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -130,8 +129,21 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.PropTypeObject", false, false },
         new Object[]{ "com.example.prop.PropTypeShort", false, false },
         new Object[]{ "com.example.prop.PropTypeString", false, false },
-        new Object[]{ "com.example.prop.PublicProp", false, false },
         new Object[]{ "com.example.prop.SingleChildPropComponent", false, false },
+        new Object[]{ "com.example.prop_validate.BooleanPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.BytePropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.CharPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.DoublePropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.ExplicitNamePropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.FloatPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.IntPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.LongPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.NonnullPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.OtherPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.PackageAccessPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.ProtectedPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.ShortPropValidate", false, false },
+        new Object[]{ "com.example.prop_validate.StringPropValidate", false, false },
         new Object[]{ "com.example.render.BaseRenderComponent", false, false },
         new Object[]{ "com.example.state.BasicState", false, false },
         new Object[]{ "com.example.state.CustomName", false, false },
@@ -342,6 +354,31 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.PropNoReturnComponent", "@Prop target must return a value" },
         new Object[]{ "com.example.prop.PropNotAbstractComponent", "@Prop target must be abstract" },
         new Object[]{ "com.example.prop.PropThrowsExceptionComponent", "@Prop target must not throw any exceptions" },
+        new Object[]{ "com.example.prop.PublicProp", "@Prop target must not be public" },
+        new Object[]{ "com.example.prop_validate.BadName1PropValidate",
+                      "@PropValidate target specified an invalid name 'long'. The name must not be a java keyword." },
+        new Object[]{ "com.example.prop_validate.BadName2PropValidate",
+                      "@PropValidate target specified an invalid name '-ace-'. The name must be a valid java identifier." },
+        new Object[]{ "com.example.prop_validate.BadName3PropValidate",
+                      "@PropValidate target for prop named 'noExist' has no corresponding @Prop annotated method." },
+        new Object[]{ "com.example.prop_validate.BadNullabilityPropValidate",
+                      "@PropValidate target has a parameter that has a nullability annotation incompatible with the associated @Prop method named getMyProp" },
+        new Object[]{ "com.example.prop_validate.BadTypeParamPropValidate",
+                      "@PropValidate target has a parameter type that is not assignable to the return type of the associated @Prop annotated method." },
+        new Object[]{ "com.example.prop_validate.DuplicatePropValidate",
+                      "@PropValidate target duplicates existing method named validateMyProp" },
+        new Object[]{ "com.example.prop_validate.MissingPropPropValidate",
+                      "@PropValidate target for prop named 'myProp' has no corresponding @Prop annotated method." },
+        new Object[]{ "com.example.prop_validate.NoParamPropValidate",
+                      "@PropValidate target must have exactly 1 parameter" },
+        new Object[]{ "com.example.prop_validate.PrivatePropValidate", "@PropValidate target must not be private" },
+        new Object[]{ "com.example.prop_validate.PublicPropValidate", "@PropValidate target must not be public" },
+        new Object[]{ "com.example.prop_validate.ReturnPropValidate", "@PropValidate target must not return a value" },
+        new Object[]{ "com.example.prop_validate.StaticPropValidate", "@PropValidate target must not be static" },
+        new Object[]{ "com.example.prop_validate.ThrowsPropValidate",
+                      "@PropValidate target must not throw any exceptions" },
+        new Object[]{ "com.example.prop_validate.TooManyParamsPropValidate",
+                      "@PropValidate target must have exactly 1 parameter" },
         new Object[]{ "com.example.render.MissingRenderComponent",
                       "The react component does not override the render method." },
         new Object[]{ "com.example.state.ArezOnGetterName",
@@ -381,7 +418,6 @@ public class ReactProcessorTest
 
   @Test( dataProvider = "failedCompiles" )
   public void processFailedCompile( @Nonnull final String classname, @Nonnull final String errorMessageFragment )
-    throws Exception
   {
     assertFailedCompile( classname, errorMessageFragment );
   }
@@ -391,20 +427,23 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "Callback" },
-        new Object[]{ "State" },
-        new Object[]{ "Prop" }
+        new Object[]{ "Callback", "Callback" },
+        new Object[]{ "State", "State" },
+        new Object[]{ "Prop", "Prop" },
+        new Object[]{ "PropDefault", "PropDefault" },
+        new Object[]{ "PropDefault", "PropDefaultField" },
+        new Object[]{ "PropValidate", "PropValidate" }
       };
   }
 
   @Test( dataProvider = "packageAccessElementInDifferentPackage" )
-  public void processFailedCompileInheritedPackageAccessInDifferentPackage( @Nonnull final String annotation )
-    throws Exception
+  public void processFailedCompileInheritedPackageAccessInDifferentPackage( @Nonnull final String annotation,
+                                                                            @Nonnull final String name )
   {
     final JavaFileObject source1 =
-      JavaFileObjects.forResource( "bad_input/com/example/package_access/other/Base" + annotation + "Model.java" );
+      fixture( "bad_input/com/example/package_access/other/Base" + name + "Model.java" );
     final JavaFileObject source2 =
-      JavaFileObjects.forResource( "bad_input/com/example/package_access/" + annotation + "Model.java" );
+      fixture( "bad_input/com/example/package_access/" + name + "Model.java" );
     assertFailedCompileResource( Arrays.asList( source1, source2 ),
                                  "@" + annotation + " target must not be package access if " +
                                  "the method is in a different package from the @ReactComponent" );

@@ -275,6 +275,11 @@ public abstract class Component
    */
   protected void performPostConstruct()
   {
+    final JsPropertyMap<Object> props = props();
+    if ( ReactConfig.shouldValidatePropValues() && null != props )
+    {
+      validatePropValues( props );
+    }
     postConstruct();
   }
 
@@ -420,6 +425,19 @@ public abstract class Component
   protected boolean performShouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
                                                   @Nullable final JsPropertyMap<Object> nextState )
   {
+    if ( ReactConfig.shouldValidatePropValues() && null != nextProps )
+    {
+      validatePropValues( nextProps );
+    }
     return shouldComponentUpdate( nextProps, nextState );
+  }
+
+  /**
+   * Perform validation on props supplied to the component.
+   *
+   * @param props the props of the component.
+   */
+  protected void validatePropValues( @Nonnull final JsPropertyMap<Object> props )
+  {
   }
 }

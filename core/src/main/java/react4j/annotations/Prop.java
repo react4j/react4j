@@ -10,7 +10,7 @@ import jsinterop.base.JsPropertyMap;
  * Annotation used to specify an abstract method that returns a prop.
  * The property is extracted from Reacts underlying props object.
  *
- * <p>The method that is annotated with <code>@Prop</code> must also comply with the following constraints:</p>
+ * <p>The method that is annotated with this annotation must also comply with the following constraints:</p>
  * <ul>
  * <li>Must not be annotated with any other react annotation</li>
  * <li>Must have 0 parameters</li>

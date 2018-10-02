@@ -593,6 +593,11 @@ final class Generator
       }
     }
 
+    if ( descriptor.shouldGeneratePropValidator() )
+    {
+      builder.addMethod( buildPropValidatorMethod( descriptor ).build() );
+    }
+
     for ( final StateValueDescriptor stateValue : descriptor.getStateValues() )
     {
       builder.addMethod( buildStateGetterMethod( descriptor, stateValue ).build() );
@@ -659,7 +664,7 @@ final class Generator
 
     if ( !descriptor.getLifecycleMethods().isEmpty() )
     {
-      if ( descriptor.shouldGenerateLiteLifecycle() )
+      if ( descriptor.shouldGenerateLiteLifecycle() && !descriptor.getLiteLifecycleMethods().isEmpty() )
       {
         builder.addType( buildNativeLiteLifecycleInterface( descriptor ) );
       }
@@ -1060,6 +1065,57 @@ final class Generator
     }
   }
 
+  @Nonnull
+  private static MethodSpec.Builder buildPropValidatorMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( "validatePropValues" ).
+        addAnnotation( Override.class ).
+        addModifiers( Modifier.PROTECTED, Modifier.FINAL ).
+        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
+          addAnnotation( NONNULL_CLASSNAME ).build() );
+
+    for ( final PropDescriptor prop : descriptor.getProps() )
+    {
+      final String name = prop.getName();
+      final String rawName = "raw$" + name;
+      final String typedName = "typed$" + name;
+      method.addStatement( "final $T $N = props.get( $N )", Object.class, rawName, prop.getConstantName() );
+      final boolean isNonNull =
+        null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME );
+      if ( !prop.isOptional() && isNonNull )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
+        block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required prop named '$N' is missing from " +
+                            "component named '$N' so it was either incorrectly omitted or a null value has been " +
+                            "incorrectly specified.\" ) ",
+                            GUARDS_CLASSNAME,
+                            rawName,
+                            prop.getName(),
+                            descriptor.getName() );
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( null != $N )", rawName );
+      final TypeMirror returnType = prop.getMethodType().getReturnType();
+      block.addStatement( "final $T $N = $T.$N( $N )",
+                          returnType,
+                          typedName,
+                          JS_CLASSNAME,
+                          getConverter( returnType, prop.getMethod(), "Prop" ),
+                          rawName );
+      if ( prop.hasValidateMethod() )
+      {
+        block.addStatement( "$N( $N )", prop.getValidateMethod().getSimpleName().toString(), typedName );
+      }
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    return method;
+  }
+
   @Nullable
   private static MethodSpec.Builder buildShouldComponentUpdateMethod( @Nonnull final ComponentDescriptor descriptor )
   {
@@ -1287,11 +1343,21 @@ final class Generator
         addModifiers( Modifier.STATIC, Modifier.PRIVATE ).
         returns( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME );
 
-    if ( descriptor.shouldGenerateLiteLifecycle() )
+    final boolean shouldGenerateLiteLifecycle = descriptor.shouldGenerateLiteLifecycle();
+    final boolean arezComponent = descriptor.isArezComponent();
+    if ( arezComponent && shouldGenerateLiteLifecycle )
     {
       method.addStatement( "final $T componentConstructor = $T.shouldStoreArezDataAsState() ? $T::new : $T::new",
                            COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
                            REACT_AREZ_CONFIG_CLASSNAME,
+                           ClassName.bestGuess( "NativeReactComponent" ),
+                           ClassName.bestGuess( "LiteNativeReactComponent" ) );
+    }
+    else if ( !arezComponent && shouldGenerateLiteLifecycle )
+    {
+      method.addStatement( "final $T componentConstructor = $T.shouldValidatePropValues() ? $T::new : $T::new",
+                           COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
+                           REACT_CONFIG_CLASSNAME,
                            ClassName.bestGuess( "NativeReactComponent" ),
                            ClassName.bestGuess( "LiteNativeReactComponent" ) );
     }

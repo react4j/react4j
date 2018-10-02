@@ -1,4 +1,4 @@
-package com.example.prop;
+package com.example.prop_validate;
 
 import java.util.Objects;
 import javax.annotation.Generated;
@@ -10,8 +10,8 @@ import react4j.React;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class PublicPropBuilder {
-  private PublicPropBuilder() {
+class CharPropValidateBuilder {
+  private CharPropValidateBuilder() {
   }
 
   @Nonnull
@@ -30,7 +30,7 @@ class PublicPropBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(final String myProp) {
+  static ReactNode myProp(final char myProp) {
     return new Builder().myProp( myProp );
   }
 
@@ -47,7 +47,7 @@ class PublicPropBuilder {
 
   public interface Builder2 {
     @Nonnull
-    ReactNode myProp(String myProp);
+    ReactNode myProp(char myProp);
   }
 
   private static class Builder implements Builder1, Builder2 {
@@ -74,14 +74,14 @@ class PublicPropBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(final String myProp) {
-      _props.set( React4j_PublicProp.PROP_myProp, myProp );
+    public final ReactNode myProp(final char myProp) {
+      _props.set( React4j_CharPropValidate.PROP_myProp, myProp );
       return build();
     }
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_PublicProp.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CharPropValidate.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }
