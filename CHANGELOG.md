@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.97](https://github.com/react4j/react4j/tree/v0.97) (2018-10-02)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.96...v0.97)
 
 * Update the javascript included within package to react version `16.5.2`.
 * **\[arez\]** Make the `ReactArezConfig` class public to make the compile time constants accessible by
