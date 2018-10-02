@@ -13,5 +13,5 @@ public abstract class BasePropValidateModel
   }
 
   @Prop
-  public abstract String foo();
+  protected abstract String foo();
 }

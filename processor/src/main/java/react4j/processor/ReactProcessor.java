@@ -900,6 +900,7 @@ public final class ReactProcessor
 
     verifyNoDuplicateAnnotations( method );
     MethodChecks.mustBeAbstract( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotBePublic( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotHaveAnyParameters( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
