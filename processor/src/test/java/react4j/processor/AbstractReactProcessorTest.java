@@ -164,7 +164,6 @@ abstract class AbstractReactProcessorTest
   }
 
   void assertFailedCompile( @Nonnull final String classname, @Nonnull final String errorMessageFragment )
-    throws Exception
   {
     final String[] elements = classname.contains( "." ) ? classname.split( "\\." ) : new String[]{ classname };
     final StringBuilder input = new StringBuilder();
@@ -180,14 +179,12 @@ abstract class AbstractReactProcessorTest
 
   private void assertFailedCompileResource( @Nonnull final String inputResource,
                                             @Nonnull final String errorMessageFragment )
-    throws Exception
   {
     assertFailedCompileResource( Collections.singletonList( fixture( inputResource ) ), errorMessageFragment );
   }
 
   void assertFailedCompileResource( @Nonnull final List<JavaFileObject> inputs,
                                     @Nonnull final String errorMessageFragment )
-    throws Exception
   {
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( inputs ).
