@@ -32,6 +32,7 @@
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
   schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
   and will need to be marked as runImmediately=false)
+_ EventHandlers should probably start scopes for profiler by default with the ability to optionally disable
 
 * Start to add javascript tests - starting with braincheck ala
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
