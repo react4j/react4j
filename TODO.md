@@ -53,7 +53,6 @@ _ EventHandlers should probably start scopes for profiler by default with the ab
   - Implement `getSnapshotBeforeUpdate` lifecycle method.
   - Add `snapshot` parameter to `componentDidUpdate`
   - Add support for the new ref proposal.
-    - Consider typed refs for DOM factories
     - Support `React.createRef()` for refs as well as callbacks. They should be typed as well:
       See https://www.fullstackreact.com/articles/using-refs-in-react/
 
@@ -72,6 +71,7 @@ _ EventHandlers should probably start scopes for profiler by default with the ab
   element factories can be built by looking at html spec and auto-generating?
   - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
+  - Consider typed refs that bind to underlying Elemental2 element.
 
 ### Low Priorities
 
