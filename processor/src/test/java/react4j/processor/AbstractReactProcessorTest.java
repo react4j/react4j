@@ -81,7 +81,7 @@ abstract class AbstractReactProcessorTest
     {
       outputs.add( daggerFactory.toString() );
     }
-    assertSuccessfulCompile( input.toString(), outputs.toArray( new String[ outputs.size() ] ) );
+    assertSuccessfulCompile( input.toString(), outputs.toArray( new String[ 0 ] ) );
   }
 
   void assertSuccessfulCompile( @Nonnull final String inputResource, @Nonnull final String... expectedOutputResources )
