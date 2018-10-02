@@ -10,7 +10,7 @@
   lifecycle methods, `@State` methods or `@Observed`/`@Computed` annotated methods and no prop is an arez component.
   `AUTODETECT` will be `PURE` if it satisfies `STATELESS` and all props are primitives or the processor knows shallow
    comparison works. Otherwise it is `STATEFUL`. For `STATELESS|PURE` components we would need to add an invariant
-   check to ensure it is not invoked out of turn. When inlining the `build()` method in builder will access static 
+   check to ensure it is not invoked out of turn. When inlining the `build()` method in builder will access static
    singleton instance of component, set props and call render.
 
 ### Very High Priority
