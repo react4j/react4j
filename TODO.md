@@ -47,9 +47,6 @@ _ EventHandlers should probably start scopes for profiler by default with the ab
 * Move to React 16.3.0 - See https://reactjs.org/blog/2018/03/29/react-v-16-3.html
   - Implement `getSnapshotBeforeUpdate` lifecycle method.
   - Add `snapshot` parameter to `componentDidUpdate`
-  - Add support for the new ref proposal.
-    - Support `React.createRef()` for refs as well as callbacks. They should be typed as well:
-      See https://www.fullstackreact.com/articles/using-refs-in-react/
 
 ### High Priorities
 
