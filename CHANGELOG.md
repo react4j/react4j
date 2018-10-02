@@ -25,6 +25,11 @@
   it may be needed (i.e. the prop must be on subclasses of `ReactArezComponent` and the component must declare
   methods annotated with `@Computed`, `@Memoize` or `@Observed`). This reduces output code size in scenarios where
   observable props are not needed.
+* **\[core\]** Add the `@PropValidate` annotation to identify method that must be called when the value of a prop
+  is initially specified or changed. This method is expected to generate an invariant failure if an invalid prop
+  is passed to the component and will optimized out if `ReactConfig.shouldValidatePropValues()` returns `false`
+  which is the default for production builds. The framework will test the type and nullness of props even if there
+  is no `@PropValidate` for prop.
 
 ### [v0.96](https://github.com/react4j/react4j/tree/v0.96) (2018-09-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.95...v0.96)
