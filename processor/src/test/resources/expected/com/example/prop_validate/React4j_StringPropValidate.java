@@ -13,7 +13,7 @@ import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-class React4j_PackageAccessPropValidate extends PackageAccessPropValidate {
+class React4j_StringPropValidate extends StringPropValidate {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
@@ -22,7 +22,7 @@ class React4j_PackageAccessPropValidate extends PackageAccessPropValidate {
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ReactConfig.shouldValidatePropValues() ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "PackageAccessPropValidate" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "StringPropValidate" );
     }
     return componentConstructor;
   }
@@ -55,27 +55,27 @@ class React4j_PackageAccessPropValidate extends PackageAccessPropValidate {
         @Nonnull JsPropertyMap<Object> arg1);
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<PackageAccessPropValidate> {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<StringPropValidate> {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected PackageAccessPropValidate createComponent() {
-      return new React4j_PackageAccessPropValidate();
+    protected StringPropValidate createComponent() {
+      return new React4j_StringPropValidate();
     }
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<PackageAccessPropValidate> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<StringPropValidate> implements Lifecycle {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected PackageAccessPropValidate createComponent() {
-      return new React4j_PackageAccessPropValidate();
+    protected StringPropValidate createComponent() {
+      return new React4j_StringPropValidate();
     }
 
     @Override

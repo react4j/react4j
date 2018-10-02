@@ -40,7 +40,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
   protected final void validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
     final Object raw$myProp = props.get( PROP_myProp );
     if ( null != raw$myProp ) {
-      final String typed$myProp = Js.cast( raw$myProp );
+      final String typed$myProp = Js.asString( raw$myProp );
       zapzap( typed$myProp );
     }
   }

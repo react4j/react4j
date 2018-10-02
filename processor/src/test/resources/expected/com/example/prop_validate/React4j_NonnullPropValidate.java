@@ -41,7 +41,7 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Required prop named 'myProp' is missing from component named 'NonnullPropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
     }
     if ( null != raw$myProp ) {
-      final String typed$myProp = Js.cast( raw$myProp );
+      final String typed$myProp = Js.asString( raw$myProp );
       validateMyProp( typed$myProp );
     }
   }

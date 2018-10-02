@@ -1099,11 +1099,13 @@ final class Generator
       }
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != $N )", rawName );
-      block.addStatement( "final $T $N = $T.cast( $N )",
-                           prop.getMethodType().getReturnType(),
-                           typedName,
-                           JS_CLASSNAME,
-                           rawName );
+      final TypeMirror returnType = prop.getMethodType().getReturnType();
+      block.addStatement( "final $T $N = $T.$N( $N )",
+                          returnType,
+                          typedName,
+                          JS_CLASSNAME,
+                          getConverter( returnType, prop.getMethod(), "Prop" ),
+                          rawName );
       if ( prop.hasValidateMethod() )
       {
         block.addStatement( "$N( $N )", prop.getValidateMethod().getSimpleName().toString(), typedName );
