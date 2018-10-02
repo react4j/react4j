@@ -1356,8 +1356,8 @@ final class Generator
       method.addStatement( "final $T componentConstructor = $T.shouldValidatePropValues() ? $T::new : $T::new",
                            COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
                            REACT_CONFIG_CLASSNAME,
-                           ClassName.bestGuess( "LiteNativeReactComponent" ),
-                           ClassName.bestGuess( "NativeReactComponent" ) );
+                           ClassName.bestGuess( "NativeReactComponent" ),
+                           ClassName.bestGuess( "LiteNativeReactComponent" ) );
     }
     else
     {

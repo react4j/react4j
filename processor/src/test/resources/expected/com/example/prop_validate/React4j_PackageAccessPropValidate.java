@@ -20,7 +20,7 @@ class React4j_PackageAccessPropValidate extends PackageAccessPropValidate {
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ReactConfig.shouldValidatePropValues() ? LiteNativeReactComponent::new : NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ReactConfig.shouldValidatePropValues() ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PackageAccessPropValidate" );
     }
