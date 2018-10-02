@@ -11,7 +11,7 @@ abstract class PackageAccessPropValidate
   extends Component
 {
   @PropValidate
-  void validateMyProp(String prop)
+  void validateMyProp( String prop )
   {
   }
 

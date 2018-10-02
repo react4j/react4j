@@ -11,7 +11,7 @@ abstract class ProtectedPropValidate
   extends Component
 {
   @PropValidate
-  protected void validateMyProp(String prop)
+  protected void validateMyProp( String prop )
   {
   }
 
