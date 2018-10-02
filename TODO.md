@@ -113,10 +113,7 @@ warning messages more cryptic and skip important checks that happen in developme
 
 * Reorganize documentation using the following sites as inspiration.
   - Reason React - https://reasonml.github.io/reason-react/
-  - EmberJS - https://www.emberjs.com/
   - VueGWT - https://axellience.github.io/vue-gwt/introduction/
-  - https://mobx.js.org
-  - https://redux.js.org/
   - https://fblitho.com/
 
 * Incorporate many of the ideas of Litho. Inadvertantly we seem to have created something that looks similar with
