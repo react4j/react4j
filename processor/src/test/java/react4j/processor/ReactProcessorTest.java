@@ -408,7 +408,6 @@ public class ReactProcessorTest
 
   @Test( dataProvider = "failedCompiles" )
   public void processFailedCompile( @Nonnull final String classname, @Nonnull final String errorMessageFragment )
-    throws Exception
   {
     assertFailedCompile( classname, errorMessageFragment );
   }
@@ -427,7 +426,6 @@ public class ReactProcessorTest
 
   @Test( dataProvider = "packageAccessElementInDifferentPackage" )
   public void processFailedCompileInheritedPackageAccessInDifferentPackage( @Nonnull final String annotation )
-    throws Exception
   {
     final JavaFileObject source1 =
       fixture( "bad_input/com/example/package_access/other/Base" + annotation + "Model.java" );
