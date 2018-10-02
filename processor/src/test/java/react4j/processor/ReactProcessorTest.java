@@ -1,6 +1,5 @@
 package react4j.processor;
 
-import com.google.testing.compile.JavaFileObjects;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -431,9 +430,9 @@ public class ReactProcessorTest
     throws Exception
   {
     final JavaFileObject source1 =
-      JavaFileObjects.forResource( "bad_input/com/example/package_access/other/Base" + annotation + "Model.java" );
+      fixture( "bad_input/com/example/package_access/other/Base" + annotation + "Model.java" );
     final JavaFileObject source2 =
-      JavaFileObjects.forResource( "bad_input/com/example/package_access/" + annotation + "Model.java" );
+      fixture( "bad_input/com/example/package_access/" + annotation + "Model.java" );
     assertFailedCompileResource( Arrays.asList( source1, source2 ),
                                  "@" + annotation + " target must not be package access if " +
                                  "the method is in a different package from the @ReactComponent" );
