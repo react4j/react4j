@@ -40,26 +40,15 @@ import static org.realityforge.braincheck.Guards.*;
  * of an Arez transaction. (Typically this means it needs to be accessed within the
  * scope of a {@link Action} annotated method or within the scope of the render method.</p>
  */
+@SuppressWarnings( "WeakerAccess" )
 public abstract class ReactArezComponent
   extends Component
 {
-  private static int c_nextComponentId = 1;
-  private final int _arezComponentId;
-  private boolean _renderDepsChanged;
-  private boolean _unmounted;
-  /**
-   * If the last render resulted in state update to record new arez state then this will be true.
-   * It guards against multiple renders of a single component where rendering is just updating
-   * react state. Otherwise dependencies on values that are never equal (i.e. Streams) will result
-   * in infinite re-renders ultimately triggering invariant failure from React.
-   *
-   * This should only be true if ReactArezConfig.shouldStoreArezDataAsState() returns true.
-   */
-  private boolean _scheduledArezStateUpdate;
+  @Nonnull
+  private final ReactArezComponentState _state = new ReactArezComponentState();
 
   protected ReactArezComponent()
   {
-    _arezComponentId = c_nextComponentId++;
   }
 
   /**
@@ -94,10 +83,9 @@ public abstract class ReactArezComponent
    *
    * @return true if render dependencies changed, false otherwise.
    */
-  @SuppressWarnings( "WeakerAccess" )
   protected final boolean hasRenderDepsChanged()
   {
-    return _renderDepsChanged;
+    return getState().hasRenderDepsChanged();
   }
 
   /**
@@ -106,13 +94,9 @@ public abstract class ReactArezComponent
   @OnDepsChanged
   protected final void onRenderDepsChanged()
   {
-    if ( !_renderDepsChanged )
+    if ( getState().onRenderDepsChanged() )
     {
-      _renderDepsChanged = true;
-      if ( !_unmounted )
-      {
-        scheduleRender( true );
-      }
+      scheduleRender( true );
     }
   }
 
@@ -135,7 +119,7 @@ public abstract class ReactArezComponent
   @ComponentId
   protected final int getArezComponentId()
   {
-    return _arezComponentId;
+    return getState().getArezComponentId();
   }
 
   /**
@@ -186,7 +170,7 @@ public abstract class ReactArezComponent
   @Nullable
   protected ReactNode trackRender()
   {
-    _renderDepsChanged = false;
+    getState().onRender();
     if ( anyPropsDisposed() )
     {
       return null;
@@ -214,20 +198,13 @@ public abstract class ReactArezComponent
   protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
                                            @Nullable final JsPropertyMap<Object> nextState )
   {
+    // No need to check state as this component can not schedule state updates. The only thing that can
+    // write to react's state is "scheduleArezStateUpdate()" and this performs forced render by calling
+    // "scheduleRender( true )" and thus does not come through this method.
+    // Note that this method ONLY checks props that are not marked as observable as observable props
+    // have already been checked in notifyOnObservablePropChanges
     final boolean changed = notifyOnObservablePropChanges( nextProps );
-    if ( changed || hasRenderDepsChanged() )
-    {
-      return true;
-    }
-    else
-    {
-      // No need to check state as this component can not schedule state updates. The only thing that can
-      // write to react's state is "scheduleArezStateUpdate()" and this performs forced render by calling
-      // "scheduleRender( true )" and thus does not come through this method.
-      // Note that this method ONLY checks props that are not marked as observable as observable props
-      // have already been checked in notifyOnObservablePropChanges
-      return shouldComponentUpdate( nextProps );
-    }
+    return changed || hasRenderDepsChanged() || shouldComponentUpdate( nextProps );
   }
 
   /**
@@ -322,7 +299,7 @@ public abstract class ReactArezComponent
     final Disposable schedulerLock = getContext().pauseScheduler();
     try
     {
-      _unmounted = true;
+      getState().onUnmount();
       super.performComponentWillUnmount();
       /*
        * Dispose of all the arez resources. Necessary particularly for the render tracker that should
@@ -345,9 +322,9 @@ public abstract class ReactArezComponent
   {
     if ( ReactArezConfig.shouldStoreArezDataAsState() && !Disposable.isDisposed( this ) )
     {
-      if ( _scheduledArezStateUpdate )
+      if ( getState().isScheduledArezStateUpdate() )
       {
-        _scheduledArezStateUpdate = false;
+        getState().setScheduledArezStateUpdate( false );
       }
       else
       {
@@ -488,6 +465,12 @@ public abstract class ReactArezComponent
      * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
      */
     scheduleRender( true );
-    _scheduledArezStateUpdate = true;
+    getState().setScheduledArezStateUpdate( true );
+  }
+
+  @Nonnull
+  ReactArezComponentState getState()
+  {
+    return _state;
   }
 }
