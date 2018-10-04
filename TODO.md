@@ -21,6 +21,8 @@
 
 * Make it possible to specify an arez component that may not always read arez state ... somehow
 
+* Add `@DisposeOnUnmount` which is functionally equivalent to `@CascadeDispose` but available on normal react components
+
 ### Very High Priority
 
 * Consider remove `@State` and all related infrastructure. Arez should be sufficient.
