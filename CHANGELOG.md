@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.98](https://github.com/react4j/react4j/tree/v0.98) (2018-10-04)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.97...v0.98)
 
 * **\[arez\]** Fixed a bug in `ReactArezComponent` that could cause `react.js` to generate an error message
   indicating `setState()` or `forceRender()` was invoked from within the `render()` method of a component.
