@@ -15,8 +15,6 @@
    out of turn. When inlining the `build()` method in builder will access static singleton instance of component, set
    props and call render.
 
-* Detect any Arez annotations on react components and generate an error if they appear on non arez elements
-
 * Make it possible to specify an arez component that may not always read arez state ... somehow
 
 * Add `@DisposeOnUnmount` which is functionally equivalent to `@CascadeDispose` but available on normal react components

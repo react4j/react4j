@@ -1346,6 +1346,19 @@ public final class ReactProcessor
           }
         }
       }
+      for ( final VariableElement element : ProcessorUtil.getFieldElements( typeElement ) )
+      {
+        for ( final AnnotationMirror mirror : element.getAnnotationMirrors() )
+        {
+          final String classname = mirror.getAnnotationType().toString();
+          if ( isArezAnnotation( classname ) )
+          {
+            throw new ReactProcessorException( "@ReactComponent target has a field '" + element.getSimpleName() +
+                                               "' with an arez annotation '" + classname + "' but is not an " +
+                                               "arez component.", element );
+          }
+        }
+      }
     }
   }
 
