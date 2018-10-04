@@ -3,6 +3,7 @@ package react4j.processor;
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -956,6 +957,13 @@ public final class ReactProcessor
     {
       throw new ReactProcessorException( "@Prop named '" + name + "' is marked as disposable but the host component " +
                                          "is not a subclass of react4j.arez.ReactArezComponent", method );
+    }
+    if ( TypeName.get( returnType ).isBoxedPrimitive() &&
+         null != ProcessorUtil.findAnnotationByType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+    {
+      throw new ReactProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
+                                         "@Nonnull annotation. The return type should be the primitive type.",
+                                         method );
     }
     return new PropDescriptor( descriptor, name, method, methodType, shouldUpdateOnChange, observable, disposable );
   }

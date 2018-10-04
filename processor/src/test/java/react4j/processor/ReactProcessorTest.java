@@ -321,6 +321,8 @@ public class ReactProcessorTest
                       "@Prop target specified an invalid name '-key'. The name must be a valid java identifier." },
         new Object[]{ "com.example.prop.BadNameProp2",
                       "@Prop target specified an invalid name 'true'. The name must not be a java keyword." },
+        new Object[]{ "com.example.prop.BoxedPrimitiveBuild",
+                      "@Prop named 'myValue' is a boxed primitive annotated with a @Nonnull annotation. The return type should be the primitive type." },
         new Object[]{ "com.example.prop.ChildrenPropBadTypeComponent",
                       "@Prop named 'children' should be of type react4j.ReactNode[]" },
         new Object[]{ "com.example.prop.ChildPropBadTypeComponent",
