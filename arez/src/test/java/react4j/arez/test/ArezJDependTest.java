@@ -31,6 +31,7 @@ public class ArezJDependTest
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
     final JavaPackage jsinteropBase = constraint.addPackage( "jsinterop.base" );
     final JavaPackage elemental2Core = constraint.addPackage( "elemental2.core" );
+    final JavaPackage elemental2Promise = constraint.addPackage( "elemental2.promise" );
     final JavaPackage arez = constraint.addPackage( "arez" );
     final JavaPackage arezSpy = constraint.addPackage( "arez.spy" );
 
@@ -42,6 +43,7 @@ public class ArezJDependTest
     react4jArez.dependsUpon( arez );
     react4jArez.dependsUpon( arezSpy );
     react4jArez.dependsUpon( elemental2Core );
+    react4jArez.dependsUpon( elemental2Promise );
     react4jArez.dependsUpon( react4jDom );
 
     final DependencyConstraint.MatchResult result = jdepend.analyzeDependencies( constraint );
