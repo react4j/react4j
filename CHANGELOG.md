@@ -2,6 +2,14 @@
 
 ### Unreleased
 
+* **\[arez\]** Fixed a bug in `ReactArezComponent` that could cause `react.js` to generate an error message
+  indicating `setState()` or `forceRender()` was invoked from within the `render()` method of a component.
+  This could occur where an event handler caused a change that resulted in a component re-rendering and ceasing
+  to observe a component with `disposeOnDeactivate` set to `true`. The component would then dispose, potentially
+  triggering changes and triggering re-rendering other components (via `setState()` or `forceRender()` ) from
+  within the `render()` of the react component that un-observed the arez components. The fix was to pause the
+  arez scheduler and re-enable it in a microtask following the render.
+
 ### [v0.97](https://github.com/react4j/react4j/tree/v0.97) (2018-10-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.96...v0.97)
 
