@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* **\[processor\]** Generate a compile time error if a `@Prop` annotated method returns a boxed primitive and
+  is annotated with `@Nonnull` annotation. The code should just use the primitive type.
+
 ### [v0.98](https://github.com/react4j/react4j/tree/v0.98) (2018-10-04)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.97...v0.98)
 
@@ -12,8 +15,6 @@
   triggering changes and triggering re-rendering other components (via `setState()` or `forceRender()` ) from
   within the `render()` of the react component that un-observed the arez components. The fix was to pause the
   arez scheduler and re-enable it in a microtask following the render.
-* **\[processor\]** Generate a compile time error if a `@Prop` annotated method returns a boxed primitive and
-  is annotated with `@Nonnull` annotation. The code should just use the primitive type.
 
 ### [v0.97](https://github.com/react4j/react4j/tree/v0.97) (2018-10-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.96...v0.97)
