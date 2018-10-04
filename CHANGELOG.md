@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.99](https://github.com/react4j/react4j/tree/v0.99) (2018-10-05)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.98...v0.99)
 
 * **\[processor\]** Generate a compile time error if a `@Prop` annotated method returns a boxed primitive and
   is annotated with `@Nonnull` annotation. The code should just use the primitive type.
