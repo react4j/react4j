@@ -15,6 +15,12 @@
    out of turn. When inlining the `build()` method in builder will access static singleton instance of component, set
    props and call render.
 
+* Generate an error if there is `@Nonnull` boxed types as props
+
+* Detect any Arez annotations on react components and generate an error if they appear on non arez elements
+
+* Make it possible to specify an arez component that may not always read arez state ... somehow
+
 ### Very High Priority
 
 * Consider remove `@State` and all related infrastructure. Arez should be sufficient.
