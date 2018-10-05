@@ -3,11 +3,11 @@ package react4j.dom;
 import elemental2.dom.Element;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.Procedure;
 import react4j.React;
 import react4j.ReactConfig;
 import react4j.ReactNode;
@@ -21,6 +21,22 @@ public class ReactDOM
 {
   private ReactDOM()
   {
+  }
+
+  /**
+   * Interface for performing an action inside batch.
+   */
+  @FunctionalInterface
+  @JsFunction
+  public interface BatchedUpdatesFn
+  {
+    /**
+     * Perform action while batching react changes.
+     *
+     * @throws Throwable if an error occurred.
+     */
+    void call()
+      throws Throwable;
   }
 
   /**
@@ -128,7 +144,7 @@ public class ReactDOM
    * @param action the action where all state updates are batched.
    */
   @JsOverlay
-  public static void batchedUpdates( @Nonnull Procedure action )
+  public static void batchedUpdates( @Nonnull final BatchedUpdatesFn action )
   {
     unstable_batchedUpdates( action );
   }
@@ -139,5 +155,5 @@ public class ReactDOM
    * @param action the action where all state updates are batched.
    */
   @JsMethod
-  private static native void unstable_batchedUpdates( @Nonnull Procedure action );
+  private static native void unstable_batchedUpdates( @Nonnull BatchedUpdatesFn action );
 }
