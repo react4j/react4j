@@ -23,6 +23,8 @@
 
 * Generate an error if a cached `@Callback` field is passed to a `STATELESS` component. It is ultimately useless.
 
+* Replace `strong( Integer.toString( count ) )` with `strong( count )` in `FooterTodoCount` in `react4j-todomvc` after next release.
+
 ### Very High Priority
 
 * Consider remove `@State` and all related infrastructure. Arez should be sufficient.
