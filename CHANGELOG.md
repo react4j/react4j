@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* **\[dom\]** Introduce a functional interface `react.dom.ReactDOM.RenderCallbackFn` to replace the use of
+  `react.Procedure` as the type of the callback in the top-level rendering methods.
+
 ### [v0.99](https://github.com/react4j/react4j/tree/v0.99) (2018-10-05)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.98...v0.99)
 

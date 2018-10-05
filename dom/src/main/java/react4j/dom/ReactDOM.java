@@ -24,6 +24,19 @@ public class ReactDOM
   }
 
   /**
+   * Interface for performing an action on render complete.
+   */
+  @FunctionalInterface
+  @JsFunction
+  public interface RenderCallbackFn
+  {
+    /**
+     * Perform action on render complete.
+     */
+    void call();
+  }
+
+  /**
    * Portals provide a first-class way to render children into a DOM node that exists outside the DOM hierarchy
    * of the parent component.
    *
@@ -57,7 +70,7 @@ public class ReactDOM
   @JsOverlay
   public static Object render( @Nonnull final ReactNode node,
                                @Nonnull final Element container,
-                               @Nullable final Procedure onUpdate )
+                               @Nullable final RenderCallbackFn onUpdate )
   {
     if ( ReactConfig.shouldCheckInvariants() )
     {
@@ -77,7 +90,7 @@ public class ReactDOM
   @JsMethod( name = "render" )
   private static native Object render0( @Nonnull ReactNode node,
                                         @Nonnull Element container,
-                                        @Nullable Procedure onUpdate );
+                                        @Nullable RenderCallbackFn onUpdate );
 
   /**
    * Render a React element into the DOM in the supplied container.
@@ -88,7 +101,7 @@ public class ReactDOM
    * @param node      the react node to render.
    * @param container the DOM element to render into.
    * @return a reference to the created React Component, DOM Node, Portal or null (stateless components).
-   * @see #render(ReactNode, Element, Procedure)
+   * @see #render(ReactNode, Element, RenderCallbackFn)
    */
   @Nullable
   @JsOverlay
