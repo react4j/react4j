@@ -19,6 +19,10 @@
 
 * Add `@DisposeOnUnmount` which is functionally equivalent to `@CascadeDispose` but available on normal react components
 
+* Generate an error if a cached `@Callback` field is passed to a DOM element. It is ultimately useless.
+
+* Generate an error if a cached `@Callback` field is passed to a `STATELESS` component. It is ultimately useless.
+
 ### Very High Priority
 
 * Consider remove `@State` and all related infrastructure. Arez should be sufficient.
