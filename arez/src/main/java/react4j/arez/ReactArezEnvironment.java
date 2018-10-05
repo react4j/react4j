@@ -2,8 +2,9 @@ package react4j.arez;
 
 import arez.Arez;
 import arez.ArezContext;
+import arez.Function;
 import arez.ReactionEnvironment;
-import arez.SafeProcedure;
+import arez.SafeFunction;
 import javax.annotation.Nonnull;
 import react4j.dom.ReactDOM;
 
@@ -41,6 +42,7 @@ public final class ReactArezEnvironment
     context.setEnvironment( INSTANCE );
   }
 
+  @SuppressWarnings( "unchecked" )
   private static final class ReactReactionEnvironment
     implements ReactionEnvironment
   {
@@ -48,9 +50,23 @@ public final class ReactArezEnvironment
      * {@inheritDoc}
      */
     @Override
-    public void run( @Nonnull final SafeProcedure action )
+    public <T> T run( @Nonnull final SafeFunction<T> function )
     {
-      ReactDOM.batchedUpdates( action::call );
+      final T[] result = (T[]) new Object[ 1 ];
+      ReactDOM.batchedUpdates( () -> result[ 0 ] = function.call() );
+      return result[ 0 ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T run( @Nonnull final Function<T> function )
+      throws Throwable
+    {
+      final T[] result = (T[]) new Object[ 1 ];
+      ReactDOM.batchedUpdates( () -> result[ 0 ] = function.call() );
+      return result[ 0 ];
     }
   }
 }

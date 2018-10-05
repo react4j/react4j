@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.109`.
 * **\[dom\]** Introduce a functional interface `react.dom.ReactDOM.RenderCallbackFn` to replace the use of
   `react.Procedure` as the type of the callback in the top-level rendering methods.
 * **\[dom\]** Introduce a functional interface `react.dom.ReactDOM.BatchedUpdatesFn` to replace the use of
