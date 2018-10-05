@@ -2,14 +2,14 @@ package react4j.arez;
 
 import arez.Arez;
 import arez.ArezContext;
+import arez.Environment;
 import arez.Function;
-import arez.ReactionEnvironment;
 import arez.SafeFunction;
 import javax.annotation.Nonnull;
 import react4j.dom.ReactDOM;
 
 /**
- * Utility class for configuring the Arez {@link ReactionEnvironment} suitable for React.
+ * Utility class for configuring the Arez {@link Environment} suitable for React.
  * The only difference is that all changes that occur as a result of Arez reactions are
  * batched to minimize the number of changes propagated to react.
  */
@@ -18,14 +18,14 @@ public final class ReactArezEnvironment
   /**
    * The underlying instance of the environment.
    */
-  private static final ReactionEnvironment INSTANCE = new ReactReactionEnvironment();
+  private static final Environment INSTANCE = new ReactEnvironment();
 
   private ReactArezEnvironment()
   {
   }
 
   /**
-   * Install the appropriate {@link ReactionEnvironment} into the current ArezContext.
+   * Install the appropriate {@link Environment} into the current ArezContext.
    */
   public static void install()
   {
@@ -33,7 +33,7 @@ public final class ReactArezEnvironment
   }
 
   /**
-   * Install the appropriate {@link ReactionEnvironment} into the specified ArezContext.
+   * Install the appropriate {@link Environment} into the specified ArezContext.
    *
    * @param context the arez context to configure environment.
    */
@@ -43,8 +43,8 @@ public final class ReactArezEnvironment
   }
 
   @SuppressWarnings( "unchecked" )
-  private static final class ReactReactionEnvironment
-    implements ReactionEnvironment
+  private static final class ReactEnvironment
+    implements Environment
   {
     /**
      * {@inheritDoc}
