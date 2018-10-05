@@ -148,7 +148,43 @@ HEADER
   @Nonnull
   public static ReactNode #{key}( @Nonnull final String content )
   {
-    return React.createElement( "#{key}", null, text( content ) );
+    return #{key}( ReactNode.of( content ) );
+  }
+
+  @Nonnull
+  public static ReactNode #{key}( final byte content )
+  {
+    return #{key}( ReactNode.of( content ) );
+  }
+
+  @Nonnull
+  public static ReactNode #{key}( final short content )
+  {
+    return #{key}( ReactNode.of( content ) );
+  }
+
+  @Nonnull
+  public static ReactNode #{key}( final int content )
+  {
+    return #{key}( ReactNode.of( content ) );
+  }
+
+  @Nonnull
+  public static ReactNode #{key}( final long content )
+  {
+    return #{key}( ReactNode.of( content ) );
+  }
+
+  @Nonnull
+  public static ReactNode #{key}( final float content )
+  {
+    return #{key}( ReactNode.of( content ) );
+  }
+
+  @Nonnull
+  public static ReactNode #{key}( final double content )
+  {
+    return #{key}( ReactNode.of( content ) );
   }
 
   @Nonnull
