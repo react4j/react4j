@@ -1,7 +1,7 @@
 package react4j.examples.arez.best_practice.step2;
 
 import arez.annotations.ArezComponent;
-import arez.annotations.Observed;
+import arez.annotations.Observe;
 
 @ArezComponent
 public abstract class EmployeeDataLoader
@@ -15,7 +15,7 @@ public abstract class EmployeeDataLoader
     _service = service;
   }
 
-  @Observed
+  @Observe
   void loadEmployeeDataIfRequired()
   {
     if ( _service.shouldLoadEmployeeData() )

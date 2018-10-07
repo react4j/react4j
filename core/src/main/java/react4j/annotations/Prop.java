@@ -69,7 +69,7 @@ public @interface Prop
    * then the prop will be observable if the component is a subclass of <code>ReactArezComponent</code>, the value
    * of {@link #shouldUpdateOnChange()} is equivalent to {@link Feature#ENABLE} and the component has a method
    * annotated with <code>arez.annotations.Computed</code>, <code>arez.annotations.Memoize</code> or
-   * <code>arez.annotations.Observed</code>.
+   * <code>arez.annotations.Observe</code>.
    *
    * @return the enum indicating whether prop is observable.
    */

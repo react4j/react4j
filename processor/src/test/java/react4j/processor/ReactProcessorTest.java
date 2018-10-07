@@ -281,7 +281,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.inject.GenericTypeInjectedComponent",
                       "@ReactComponent target has enabled dagger injection and the class has type argument but type arguments on a component are not compatible with dagger injected components" },
         new Object[]{ "com.example.lifecycle.ArezAnnotationOnLifecycleMethodsComponent",
-                      "@ReactComponent target has a lifecycle method 'componentWillUnmount' with an invalid arez annotation 'arez.annotations.Observed'. It is invalid for any arez annotation other than arez.annotations.Action to be on a lifecycle method." },
+                      "@ReactComponent target has a lifecycle method 'componentWillUnmount' with an invalid arez annotation 'arez.annotations.Observe'. It is invalid for any arez annotation other than arez.annotations.Action to be on a lifecycle method." },
         new Object[]{ "com.example.callback.BadName",
                       "@Callback target specified an invalid name '-fox'. The name must be a valid java identifier." },
         new Object[]{ "com.example.callback.BadName2",

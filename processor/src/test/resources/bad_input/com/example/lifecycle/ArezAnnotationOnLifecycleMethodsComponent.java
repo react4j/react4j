@@ -1,6 +1,6 @@
 package com.example.lifecycle;
 
-import arez.annotations.Observed;
+import arez.annotations.Observe;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
@@ -10,7 +10,7 @@ import react4j.arez.ReactArezComponent;
 abstract class ArezAnnotationOnLifecycleMethodsComponent
   extends ReactArezComponent
 {
-  @Observed
+  @Observe
   @Override
   protected void componentWillUnmount()
   {

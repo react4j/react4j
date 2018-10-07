@@ -9,7 +9,7 @@ import arez.annotations.ComponentId;
 import arez.annotations.ComponentNameRef;
 import arez.annotations.ContextRef;
 import arez.annotations.Executor;
-import arez.annotations.Observed;
+import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.OnDepsChanged;
 import arez.annotations.Priority;
@@ -217,7 +217,7 @@ public abstract class ReactArezComponent
    *
    * @return the result of rendering.
    */
-  @Observed( executor = Executor.APPLICATION, name = "render", priority = Priority.LOW, observeLowerPriorityDependencies = true )
+  @Observe( executor = Executor.APPLICATION, name = "render", priority = Priority.LOW, observeLowerPriorityDependencies = true )
   @Nullable
   protected ReactNode trackRender()
   {

@@ -1454,7 +1454,7 @@ public final class ReactProcessor
       .stream()
       .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.COMPUTED_ANNOTATION_CLASSNAME ) ||
                       null != ProcessorUtil.findAnnotationByType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
-                      ( null != ProcessorUtil.findAnnotationByType( m, Constants.OBSERVED_ANNOTATION_CLASSNAME ) &&
+                      ( null != ProcessorUtil.findAnnotationByType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
                         ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
   }
 
@@ -1526,7 +1526,7 @@ public final class ReactProcessor
         final AnnotationValue annotationValue =
           ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
                                              m,
-                                             Constants.OBSERVED_ANNOTATION_CLASSNAME,
+                                             Constants.OBSERVE_ANNOTATION_CLASSNAME,
                                              "executor" );
         return null != annotationValue &&
                ( (VariableElement) annotationValue.getValue() ).getSimpleName().toString().equals( "AREZ" );
