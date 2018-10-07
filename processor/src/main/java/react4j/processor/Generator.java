@@ -771,6 +771,14 @@ final class Generator
     {
       annotation.addMember( "keepAlive", "$N", keepAliveValue.getValue().toString() );
     }
+    final AnnotationValue requireEnvironmentValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
+                                                 "requireEnvironment" );
+    if ( null != requireEnvironmentValue )
+    {
+      annotation.addMember( "requireEnvironment", "$N", requireEnvironmentValue.getValue().toString() );
+    }
     final AnnotationValue depTypeValue =
       ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
                                                  Constants.COMPUTED_ANNOTATION_CLASSNAME,

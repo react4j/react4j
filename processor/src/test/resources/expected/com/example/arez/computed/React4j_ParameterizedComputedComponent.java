@@ -44,6 +44,7 @@ abstract class React4j_ParameterizedComputedComponent extends ParameterizedCompu
       priority = Priority.LOWEST,
       name = "foo",
       keepAlive = true,
+      requireEnvironment = true,
       depType = DepType.AREZ_OR_EXTERNAL,
       observeLowerPriorityDependencies = true
   )

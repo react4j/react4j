@@ -20,7 +20,7 @@ abstract class ParameterizedComputedComponent
     return null;
   }
 
-  @Computed( name = "foo", observeLowerPriorityDependencies = true, keepAlive = true, depType = DepType.AREZ_OR_EXTERNAL )
+  @Computed( name = "foo", observeLowerPriorityDependencies = true, keepAlive = true, depType = DepType.AREZ_OR_EXTERNAL, requireEnvironment = true )
   boolean isActive()
   {
     return true;
