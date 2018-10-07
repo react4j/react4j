@@ -25,6 +25,8 @@
 
 * Replace `strong( Integer.toString( count ) )` with `strong( count )` in `FooterTodoCount` in `react4j-todomvc` after next release.
 
+* Introduce `TreeLocal` component which is effectively context
+
 ### Very High Priority
 
 * Consider remove `@State` and all related infrastructure. Arez should be sufficient.
