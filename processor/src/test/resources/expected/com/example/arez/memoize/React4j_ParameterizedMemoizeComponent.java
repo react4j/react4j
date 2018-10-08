@@ -36,6 +36,7 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
   @Memoize(
       priority = Priority.LOWEST,
       name = "foo",
+      requireEnvironment = true,
       observeLowerPriorityDependencies = true
   )
   String getIcon(final String key) {

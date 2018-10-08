@@ -815,6 +815,14 @@ final class Generator
     {
       annotation.addMember( "name", "$S", nameValue.getValue().toString() );
     }
+    final AnnotationValue requireEnvironmentValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
+                                                 "requireEnvironment" );
+    if ( null != requireEnvironmentValue )
+    {
+      annotation.addMember( "requireEnvironment", "$N", requireEnvironmentValue.getValue().toString() );
+    }
     final AnnotationValue observeLowerPriorityDependenciesValue =
       ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
                                                  Constants.MEMOIZE_ANNOTATION_CLASSNAME,
