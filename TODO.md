@@ -25,8 +25,6 @@
 
 * Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
 
-* Replace `strong( Integer.toString( count ) )` with `strong( count )` in `FooterTodoCount` in `react4j-todomvc` after next release.
-
 * Introduce `TreeLocal` component which is effectively context
 
 ### Very High Priority
