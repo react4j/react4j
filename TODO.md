@@ -2,6 +2,22 @@
 
 ### Next Release
 
+* Remove `@State` and all related infrastructure.
+  - This includes the appropriate parameters to all the lifecycle methods.
+  - This also includes moving the storage of debug values in state back into main component and out of Arez
+  - Also add hook method `componentDidUpdate()` with no parameters.
+  - Possibly also `shouldComponentUpdate()` or maybe that is now covered by `notifyOnObservablePropChanges()`
+    that should be moved back to core Component
+  - Stop having empty methods for Arez lifecycles and instead just force overrides in annotation processor
+
+* Add `@OnPropChanged` that is invoked for each prop whenever they change values. Change replicant to use this.
+  Will probably need to adapt `notifyOnObservablePropChanges()` to handle this.
+
+* Fix `notifyOnObservablePropChanges()` so that it gracefully handles scenario where primitives are used in props
+  - same fix as in replicant
+
+### Next Next Release
+
 * Collections returned from props should be made immutable.
 
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component. `STATELESS` would be inlined into
@@ -28,8 +44,6 @@
 * Introduce `TreeLocal` component which is effectively context
 
 ### Very High Priority
-
-* Consider remove `@State` and all related infrastructure. Arez should be sufficient.
 
 * Add helper to autoload js assets
 
