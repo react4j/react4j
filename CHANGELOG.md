@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* **\[core\]** Remove the `@State` annotation. This is the first step to removing the infrastructure to
+  support the traditional react state model.
+
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)
 

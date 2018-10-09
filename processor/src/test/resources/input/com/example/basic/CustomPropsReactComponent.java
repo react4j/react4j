@@ -1,19 +1,17 @@
-package com.example.state;
+package com.example.basic;
 
-import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.ReactNode;
+import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
-import react4j.annotations.State;
 
 @ReactComponent
-abstract class SetterMissing
+abstract class CustomPropsReactComponent
   extends Component
 {
-  @State
-  protected abstract String getMyKey();
+  @Prop
+  abstract boolean isSomeField();
 
-  @Nullable
   @Override
   protected ReactNode render()
   {

@@ -52,12 +52,6 @@ final class ComponentDescriptor
   @Nullable
   private List<PropDescriptor> _props;
   /**
-   * Descriptors for state accessor/mutator pairs.
-   * These should be implemented as accesses to the underlying state value.
-   */
-  @Nullable
-  private List<StateValueDescriptor> _stateValues;
-  /**
    * Methods annotated with arez's @Computed annotation. Should be null if not an arez component
    */
   @Nullable
@@ -376,23 +370,5 @@ final class ComponentDescriptor
   boolean shouldGeneratePropValidator()
   {
     return getProps().stream().anyMatch( PropDescriptor::hasValidateMethod );
-  }
-
-  @Nonnull
-  List<StateValueDescriptor> getStateValues()
-  {
-    assert null != _stateValues;
-    return _stateValues;
-  }
-
-  void setStateValues( @Nonnull final List<StateValueDescriptor> stateValues )
-  {
-    _stateValues = Objects.requireNonNull( stateValues );
-  }
-
-  @Nullable
-  StateValueDescriptor findStateValueNamed( @Nonnull final String name )
-  {
-    return getStateValues().stream().filter( p -> p.getName().equals( name ) ).findAny().orElse( null );
   }
 }

@@ -211,7 +211,6 @@ public final class ReactProcessor
     determinePropValidatesMethods( descriptor );
     determineDefaultPropsMethods( descriptor );
     determineDefaultPropsFields( descriptor );
-    determineStateValues( descriptor );
     determineLifecycleMethods( typeElement, descriptor );
 
     for ( final PropDescriptor prop : descriptor.getProps() )
@@ -229,7 +228,6 @@ public final class ReactProcessor
     descriptor.sortProps();
 
     verifyNoUnexpectedAbstractMethod( descriptor );
-    verifyStateNotAnnotatedWithArezAnnotations( descriptor );
     verifyPropsNotAnnotatedWithArezAnnotations( descriptor );
     verifyPropsNotCollectionOfArezComponents( descriptor );
 
@@ -333,72 +331,6 @@ public final class ReactProcessor
     }
   }
 
-  private void verifyStateNotAnnotatedWithArezAnnotations( @Nonnull final ComponentDescriptor descriptor )
-  {
-    for ( final StateValueDescriptor stateValue : descriptor.getStateValues() )
-    {
-      final ExecutableElement getter = stateValue.getGetter();
-      for ( final AnnotationMirror mirror : getter.getAnnotationMirrors() )
-      {
-        final String classname = mirror.getAnnotationType().toString();
-        if ( isArezAnnotation( classname ) )
-        {
-          throw new ReactProcessorException( "@State target must not be annotated with any arez annotations but " +
-                                             "is annotated by '" + classname + "'.", getter );
-        }
-      }
-      final ExecutableElement setter = stateValue.getSetter();
-      for ( final AnnotationMirror mirror : setter.getAnnotationMirrors() )
-      {
-        final String classname = mirror.getAnnotationType().toString();
-        if ( isArezAnnotation( classname ) )
-        {
-          throw new ReactProcessorException( "@State target must not be annotated with any arez annotations but " +
-                                             "is annotated by '" + classname + "'.", setter );
-        }
-      }
-    }
-  }
-
-  private void linkStateMethods( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final List<ExecutableElement> candidates =
-      getMethods( descriptor.getElement() )
-        .stream()
-        .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) )
-        .filter( m -> null == ProcessorUtil.findAnnotationByType( descriptor.getElement(),
-                                                                  Constants.PROP_ANNOTATION_CLASSNAME ) &&
-                      null == ProcessorUtil.findAnnotationByType( descriptor.getElement(),
-                                                                  Constants.STATE_ANNOTATION_CLASSNAME ) )
-        .collect( Collectors.toList() );
-    for ( final ExecutableElement method : candidates )
-    {
-      final ExecutableType methodType =
-        (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
-
-      if ( method.getReturnType().getKind() == TypeKind.VOID && 1 == method.getParameters().size() )
-      {
-        final String stateName =
-          ProcessorUtil.getPropertyMutatorName( method, ProcessorUtil.SENTINEL_NAME );
-        final StateValueDescriptor stateValueNamed = descriptor.findStateValueNamed( stateName );
-        if ( null != stateValueNamed && !stateValueNamed.hasSetter() )
-        {
-          stateValueNamed.setSetter( method, methodType );
-        }
-      }
-      else if ( method.getReturnType().getKind() != TypeKind.VOID && 0 == method.getParameters().size() )
-      {
-        final String stateName =
-          ProcessorUtil.getPropertyAccessorName( method, ProcessorUtil.SENTINEL_NAME );
-        final StateValueDescriptor stateValueNamed = descriptor.findStateValueNamed( stateName );
-        if ( null != stateValueNamed && !stateValueNamed.hasGetter() )
-        {
-          stateValueNamed.setGetter( method, methodType );
-        }
-      }
-    }
-  }
-
   private void verifyNoUnexpectedAbstractMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     if ( !descriptor.isArezComponent() )
@@ -407,10 +339,8 @@ public final class ReactProcessor
         getMethods( descriptor.getElement() )
           .stream()
           .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) )
-          // @Props and @State methods are expected to be null
-          .filter( m -> descriptor.getProps().stream().noneMatch( p -> p.getMethod() == m ) &&
-                        descriptor.getStateValues().stream()
-                          .noneMatch( p -> p.getGetter() == m || p.getSetter() == m ) )
+          // @Props methods are expected to be abstract
+          .filter( m -> descriptor.getProps().stream().noneMatch( p -> p.getMethod() == m ) )
           .findAny()
           .orElse( null );
       if ( null != abstractMethod )
@@ -995,127 +925,6 @@ public final class ReactProcessor
     }
   }
 
-  private void determineStateValues( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final List<ExecutableElement> methods =
-      getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.STATE_ANNOTATION_CLASSNAME ) )
-        .collect( Collectors.toList() );
-
-    final Map<String, StateValueDescriptor> values = new HashMap<>();
-    for ( final ExecutableElement method : methods )
-    {
-      final ExecutableType methodType =
-        (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
-
-      parseStateValueMethod( descriptor, method, methodType, values );
-    }
-
-    final ArrayList<StateValueDescriptor> stateValues = new ArrayList<>( values.values() );
-    descriptor.setStateValues( stateValues );
-
-    linkStateMethods( descriptor );
-
-    for ( final StateValueDescriptor stateValue : stateValues )
-    {
-      if ( !stateValue.hasGetter() )
-      {
-        throw new ReactProcessorException( "@State target defined setter but no getter was defined and no " +
-                                           "getter could be automatically determined", stateValue.getSetter() );
-
-      }
-      else if ( !stateValue.hasSetter() )
-      {
-        throw new ReactProcessorException( "@State target defined getter but no setter was defined and no " +
-                                           "setter could be automatically determined", stateValue.getGetter() );
-
-      }
-    }
-    for ( final StateValueDescriptor stateValue : stateValues )
-    {
-      final TypeMirror returnType = stateValue.getGetterType().getReturnType();
-      final TypeMirror parameterType = stateValue.getSetterType().getParameterTypes().get( 0 );
-      if ( !processingEnv.getTypeUtils().isSameType( parameterType, returnType ) )
-      {
-        throw new ReactProcessorException( "@State property defines a setter and getter with different types." +
-                                           " Getter type: " + returnType + " Setter type: " + parameterType + ".",
-                                           stateValue.getGetter() );
-      }
-    }
-  }
-
-  private void parseStateValueMethod( @Nonnull final ComponentDescriptor descriptor,
-                                      @Nonnull final ExecutableElement method,
-                                      @Nonnull final ExecutableType methodType,
-                                      @Nonnull final Map<String, StateValueDescriptor> values )
-  {
-    final String declaredName = getAnnotationParameter( method, Constants.STATE_ANNOTATION_CLASSNAME, "name" );
-    final TypeMirror returnType = method.getReturnType();
-
-    final boolean setter = TypeKind.VOID == returnType.getKind();
-
-    verifyNoDuplicateAnnotations( method );
-    MethodChecks.mustBeAbstract( Constants.STATE_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotThrowAnyExceptions( Constants.STATE_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
-                                                           Constants.STATE_ANNOTATION_CLASSNAME,
-                                                           method );
-
-    final String name;
-    if ( setter )
-    {
-      if ( 1 != method.getParameters().size() )
-      {
-        throw new ReactProcessorException( "@State target must have a single parameter", method );
-      }
-
-      MethodChecks.mustNotReturnAValue( Constants.STATE_ANNOTATION_CLASSNAME, method );
-
-      name = ProcessorUtil.getPropertyMutatorName( method, declaredName );
-    }
-    else
-    {
-      MethodChecks.mustNotHaveAnyParameters( Constants.STATE_ANNOTATION_CLASSNAME, method );
-      MethodChecks.mustReturnAValue( Constants.STATE_ANNOTATION_CLASSNAME, method );
-
-      name = ProcessorUtil.getPropertyAccessorName( method, declaredName );
-    }
-
-    if ( !SourceVersion.isIdentifier( name ) )
-    {
-      throw new ReactProcessorException( "@State target specified an invalid name '" + name + "'. The " +
-                                         "name must be a valid java identifier.", method );
-    }
-    else if ( SourceVersion.isKeyword( name ) )
-    {
-      throw new ReactProcessorException( "@State target specified an invalid name '" + name + "'. The " +
-                                         "name must not be a java keyword.", method );
-    }
-
-    //Find or create descriptor
-    final StateValueDescriptor stateValueDescriptor = values.computeIfAbsent( name, StateValueDescriptor::new );
-    if ( setter )
-    {
-      if ( stateValueDescriptor.hasSetter() )
-      {
-        throw new ReactProcessorException( "@State target defines duplicate state property mutator for " +
-                                           "property named '" + name + "'. Existing mutator: " +
-                                           stateValueDescriptor.getSetter().getSimpleName(), method );
-      }
-      stateValueDescriptor.setSetter( method, methodType );
-    }
-    else
-    {
-      if ( stateValueDescriptor.hasGetter() )
-      {
-        throw new ReactProcessorException( "@State target defines duplicate state property accessor for " +
-                                           "property named '" + name + "'. Existing accessor: " +
-                                           stateValueDescriptor.getGetter().getSimpleName(), method );
-      }
-      stateValueDescriptor.setGetter( method, methodType );
-    }
-  }
-
   private void determineLifecycleMethods( @Nonnull final TypeElement typeElement,
                                           @Nonnull final ComponentDescriptor descriptor )
   {
@@ -1561,17 +1370,6 @@ public final class ReactProcessor
     return null != ProcessorUtil.findAnnotationByType( method, Constants.INJECT_ANNOTATION_CLASSNAME );
   }
 
-  @SuppressWarnings( { "unchecked", "SameParameterValue" } )
-  private <T> T getAnnotationParameter( @Nonnull final Element element,
-                                        @Nonnull final String annotationName,
-                                        @Nonnull final String parameterName )
-  {
-    return (T) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                 element,
-                                                 annotationName,
-                                                 parameterName ).getValue();
-  }
-
   /**
    * Return computed that have not had the priority parameter explicitly set.
    */
@@ -1619,7 +1417,6 @@ public final class ReactProcessor
   {
     final String[] annotationTypes =
       new String[]{ Constants.CALLBACK_ANNOTATION_CLASSNAME,
-                    Constants.STATE_ANNOTATION_CLASSNAME,
                     Constants.PROP_ANNOTATION_CLASSNAME };
     for ( int i = 0; i < annotationTypes.length; i++ )
     {

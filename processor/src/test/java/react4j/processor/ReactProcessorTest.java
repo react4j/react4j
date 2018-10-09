@@ -50,7 +50,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent", false, false },
         new Object[]{ "com.example.basic.BasicReactComponent", false, false },
         new Object[]{ "com.example.basic.CustomNameReactComponent", false, false },
-        new Object[]{ "com.example.basic.CustomPropsAndStateReactComponent", false, false },
+        new Object[]{ "com.example.basic.CustomPropsReactComponent", false, false },
         new Object[]{ "com.example.basic.GenericTypeComponent", false, false },
         new Object[]{ "com.example.basic.PublicReactComponent", false, false },
         new Object[]{ "com.example.callback.BasicCallback", true, false },
@@ -145,12 +145,6 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop_validate.ShortPropValidate", false, false },
         new Object[]{ "com.example.prop_validate.StringPropValidate", false, false },
         new Object[]{ "com.example.render.BaseRenderComponent", false, false },
-        new Object[]{ "com.example.state.BasicState", false, false },
-        new Object[]{ "com.example.state.CustomName", false, false },
-        new Object[]{ "com.example.state.GetterMissingAnnotation", false, false },
-        new Object[]{ "com.example.state.NonStandardName", false, false },
-        new Object[]{ "com.example.state.NullabilityAnnotations", false, false },
-        new Object[]{ "com.example.state.SetterMissingAnnotation", false, false },
         new Object[]{ "RootPackageReactComponent", false, false }
       };
   }
@@ -384,39 +378,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop_validate.TooManyParamsPropValidate",
                       "@PropValidate target must have exactly 1 parameter" },
         new Object[]{ "com.example.render.MissingRenderComponent",
-                      "The react component does not override the render method." },
-        new Object[]{ "com.example.state.ArezOnGetterName",
-                      "@State target must not be annotated with any arez annotations but is annotated by 'arez.annotations.Computed'." },
-        new Object[]{ "com.example.state.ArezOnSetterName",
-                      "@State target must not be annotated with any arez annotations but is annotated by 'arez.annotations.Action'." },
-        new Object[]{ "com.example.state.BadName",
-                      "@State target specified an invalid name '-key'. The name must be a valid java identifier." },
-        new Object[]{ "com.example.state.BadName2",
-                      "@State target specified an invalid name 'import'. The name must not be a java keyword." },
-        new Object[]{ "com.example.state.StateAndProp", "Method can not be annotated with both @State and @Prop" },
-        new Object[]{ "com.example.state.SetterHasReturnValue", "@State target must not have any parameters" },
-        new Object[]{ "com.example.state.SetterIsPrivate", "@State target must be abstract" },
-        new Object[]{ "com.example.state.SetterIsStatic", "@State target must be abstract" },
-        new Object[]{ "com.example.state.SetterIsFinal", "@State target must be abstract" },
-        new Object[]{ "com.example.state.SetterHasNoParameter", "@State target must have a single parameter" },
-        new Object[]{ "com.example.state.SetterHasMultipleParameters", "@State target must have a single parameter" },
-        new Object[]{ "com.example.state.SetterThrows", "@State target must not throw any exceptions" },
-        new Object[]{ "com.example.state.SetterDuplicate",
-                      "@State target defines duplicate state property mutator for property named 'myKey'. Existing mutator: setMyKey2" },
-        new Object[]{ "com.example.state.SetterMissing",
-                      "@State target defined getter but no setter was defined and no setter could be automatically determined" },
-        new Object[]{ "com.example.state.GetterHasNoReturnValue", "@State target must have a single parameter" },
-        new Object[]{ "com.example.state.GetterIsPrivate", "@State target must be abstract" },
-        new Object[]{ "com.example.state.GetterIsStatic", "@State target must be abstract" },
-        new Object[]{ "com.example.state.GetterIsFinal", "@State target must be abstract" },
-        new Object[]{ "com.example.state.GetterHasParameter", "@State target must not have any parameters" },
-        new Object[]{ "com.example.state.GetterThrows", "@State target must not throw any exceptions" },
-        new Object[]{ "com.example.state.GetterDuplicate",
-                      "@State target defines duplicate state property accessor for property named 'myKey'. Existing accessor: getMyKey2" },
-        new Object[]{ "com.example.state.GetterMissing",
-                      "@State target defined setter but no getter was defined and no getter could be automatically determined" },
-        new Object[]{ "com.example.state.TypeNoMatch",
-                      "@State property defines a setter and getter with different types. Getter type: int Setter type: java.lang.String." }
+                      "The react component does not override the render method." }
       };
   }
 
@@ -432,7 +394,6 @@ public class ReactProcessorTest
     return new Object[][]
       {
         new Object[]{ "Callback", "Callback" },
-        new Object[]{ "State", "State" },
         new Object[]{ "Prop", "Prop" },
         new Object[]{ "PropDefault", "PropDefault" },
         new Object[]{ "PropDefault", "PropDefaultField" },

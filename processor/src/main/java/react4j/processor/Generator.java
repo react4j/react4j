@@ -596,12 +596,6 @@ final class Generator
       builder.addMethod( buildPropValidatorMethod( descriptor ).build() );
     }
 
-    for ( final StateValueDescriptor stateValue : descriptor.getStateValues() )
-    {
-      builder.addMethod( buildStateGetterMethod( descriptor, stateValue ).build() );
-      builder.addMethod( buildStateSetterMethod( descriptor, stateValue ).build() );
-    }
-
     if ( descriptor.isArezComponent() && descriptor.getProps().stream().anyMatch( PropDescriptor::isObservable ) )
     {
       final MethodSpec.Builder method = buildNotifyOnObservablePropChangesMethod( descriptor );
@@ -958,70 +952,6 @@ final class Generator
         throw new ReactProcessorException( "Return type of @" + key + " method is not yet " +
                                            "handled. Type: " + type.getKind(), element );
     }
-  }
-
-  private static MethodSpec.Builder buildStateSetterMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                            @Nonnull final StateValueDescriptor stateValue )
-  {
-    final ExecutableElement methodElement = stateValue.getSetter();
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( methodElement.getSimpleName().toString() );
-    ProcessorUtil.copyTypeParameters( stateValue.getSetterType(), method );
-    ProcessorUtil.copyAccessModifiers( methodElement, method );
-    ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
-
-    method.addAnnotation( Override.class );
-
-    final String name = stateValue.getName();
-    if ( descriptor.isArezComponent() )
-    {
-      final AnnotationSpec.Builder annotation =
-        AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
-          addMember( "name", "$S", name );
-      method.addAnnotation( annotation.build() );
-    }
-
-    final TypeMirror parameterType = stateValue.getSetterType().getParameterTypes().get( 0 );
-    final VariableElement element = stateValue.getSetter().getParameters().get( 0 );
-    final String paramName = element.getSimpleName().toString();
-    final TypeName type = TypeName.get( parameterType );
-    final ParameterSpec.Builder param =
-      ParameterSpec.builder( type, paramName, Modifier.FINAL );
-    ProcessorUtil.copyWhitelistedAnnotations( element, param );
-    method.addParameter( param.build() );
-
-    method.addStatement(
-      "scheduleStateUpdate( ( ( previousState, currentProps ) -> $T.of( $S, $N ) ) )",
-      JS_PROPERTY_MAP_CLASSNAME,
-      name,
-      paramName );
-    return method;
-  }
-
-  private static MethodSpec.Builder buildStateGetterMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                            @Nonnull final StateValueDescriptor stateValue )
-  {
-    final TypeMirror returnType = stateValue.getGetterType().getReturnType();
-    final ExecutableElement methodElement = stateValue.getGetter();
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( methodElement.getSimpleName().toString() ).
-        returns( TypeName.get( returnType ) );
-    ProcessorUtil.copyTypeParameters( stateValue.getGetterType(), method );
-    ProcessorUtil.copyAccessModifiers( methodElement, method );
-    ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
-
-    method.addAnnotation( Override.class );
-
-    final String name = stateValue.getName();
-    if ( descriptor.isArezComponent() )
-    {
-      final AnnotationSpec.Builder annotation =
-        AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
-          addMember( "name", "$S", name );
-      method.addAnnotation( annotation.build() );
-    }
-    final String convertMethodName = getConverter( returnType, methodElement, "State" );
-    method.addStatement( "return state().getAny( $S ).$N()", name, convertMethodName );
-    return method;
   }
 
   @Nonnull

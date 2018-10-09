@@ -1,4 +1,4 @@
-package com.example.state;
+package com.example.basic;
 
 import java.util.Objects;
 import javax.annotation.Generated;
@@ -10,44 +10,44 @@ import react4j.React;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class NonStandardNameBuilder {
-  private NonStandardNameBuilder() {
+class CustomPropsReactComponentBuilder {
+  private CustomPropsReactComponentBuilder() {
   }
 
   @Nonnull
-  static ReactNode key(@Nonnull final Key key) {
+  static Builder2 key(@Nonnull final Key key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static ReactNode key(final int key) {
+  static Builder2 key(final int key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static ReactNode key(@Nonnull final String key) {
+  static Builder2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static ReactNode build() {
-    return new Builder().build();
+  static ReactNode someField(final boolean someField) {
+    return new Builder().someField( someField );
   }
 
   public interface Builder1 {
     @Nonnull
-    ReactNode key(@Nonnull Key key);
+    Builder2 key(@Nonnull Key key);
 
     @Nonnull
-    ReactNode key(@Nonnull int key);
+    Builder2 key(@Nonnull int key);
 
     @Nonnull
-    ReactNode key(@Nonnull String key);
+    Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
     @Nonnull
-    ReactNode build();
+    ReactNode someField(boolean someField);
   }
 
   private static class Builder implements Builder1, Builder2 {
@@ -55,27 +55,34 @@ class NonStandardNameBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode key(@Nonnull final Key key) {
+    public final Builder2 key(@Nonnull final Key key) {
       Objects.requireNonNull( key );
       _props.set( "key", key );
+      return this;
+    }
+
+    @Override
+    @Nonnull
+    public final Builder2 key(@Nonnull final int key) {
+      return key( Key.of( key ) );
+    }
+
+    @Override
+    @Nonnull
+    public final Builder2 key(@Nonnull final String key) {
+      return key( Key.of( key ) );
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode someField(final boolean someField) {
+      _props.set( React4j_CustomPropsReactComponent.PROP_someField, someField );
       return build();
-    }
-
-    @Override
-    @Nonnull
-    public final ReactNode key(@Nonnull final int key) {
-      return key( Key.of( key ) );
-    }
-
-    @Override
-    @Nonnull
-    public final ReactNode key(@Nonnull final String key) {
-      return key( Key.of( key ) );
     }
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_NonStandardName.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CustomPropsReactComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -1,4 +1,4 @@
-package com.example.state;
+package com.example.basic;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -11,37 +11,34 @@ import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
-class React4j_GetterMissingAnnotation extends GetterMissingAnnotation {
+class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
+
+  static final String PROP_someField = ReactConfig.shouldMinimizePropKeys() ? "a" : "someField";
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "GetterMissingAnnotation" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomPropsReactComponent" );
     }
     return componentConstructor;
   }
 
   @Override
-  protected String getMyValue() {
-    return state().getAny( "myValue" ).asString();
+  boolean isSomeField() {
+    return props().getAny( PROP_someField ).asBoolean();
   }
 
-  @Override
-  protected void setMyValue(final String value) {
-    scheduleStateUpdate( ( ( previousState, currentProps ) -> JsPropertyMap.of( "myValue", value ) ) );
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<GetterMissingAnnotation> {
+  private static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsReactComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected GetterMissingAnnotation createComponent() {
-      return new React4j_GetterMissingAnnotation();
+    protected CustomPropsReactComponent createComponent() {
+      return new React4j_CustomPropsReactComponent();
     }
   }
 }
