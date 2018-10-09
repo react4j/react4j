@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)
 
 * **\[processor\]** Fix a bug where primitive types that had a `@Nonnull` annotation were being
   incorrectly boxed as `Objects.requireNonNull(...)` was invoked on the value before being passed
