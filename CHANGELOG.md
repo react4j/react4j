@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+* **\[processor\]** Fix a bug where primitive types that had a `@Nonnull` annotation were being
+  incorrectly boxed as `Objects.requireNonNull(...)` was invoked on the value before being passed
+  to prop setter. This resulted in the value being boxed prior to reaching the `@DoNotAutobox` method.
+
 ### [v0.100](https://github.com/react4j/react4j/tree/v0.100) (2018-10-08)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.99...v0.100)
 

@@ -72,7 +72,8 @@ class NullablePropAndNonnullChildComponentBuilder {
     @Override
     @Nonnull
     public final Builder2 key(@Nonnull final Key key) {
-      _props.set( "key", Objects.requireNonNull( key ) );
+      Objects.requireNonNull( key );
+      _props.set( "key", key );
       return this;
     }
 
@@ -91,7 +92,8 @@ class NullablePropAndNonnullChildComponentBuilder {
     @Override
     @Nonnull
     public final Builder3 myProp(@Nonnull final String myProp) {
-      _props.set( "myProp", Objects.requireNonNull( myProp ) );
+      Objects.requireNonNull( myProp );
+      _props.set( React4j_NullablePropAndNonnullChildComponent.PROP_myProp, myProp );
       return this;
     }
 

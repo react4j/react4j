@@ -56,7 +56,8 @@ class PublicMemoizeComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode key(@Nonnull final Key key) {
-      _props.set( "key", Objects.requireNonNull( key ) );
+      Objects.requireNonNull( key );
+      _props.set( "key", key );
       return build();
     }
 

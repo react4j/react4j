@@ -351,17 +351,15 @@ final class Generator
       returnHandled = true;
       method.addStatement( "return key( $T.of( $N ) )", KEY_CLASSNAME, stepMethod.getName() );
     }
-    else if ( stepMethod.isKeyIntrinsic() ||
-              ( null != propMethod &&
-                null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) ) )
-    {
-      method.addStatement( "_props.set( $S, $T.requireNonNull( $N ) )",
-                           stepMethod.getName(),
-                           Objects.class,
-                           stepMethod.getName() );
-    }
     else
     {
+      if ( ( stepMethod.isKeyIntrinsic() ||
+             ( null != propMethod &&
+               null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) ) ) &&
+           !stepMethod.getType().isPrimitive() )
+      {
+        method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
+      }
       final PropDescriptor prop = stepMethod.getProp();
       if ( null != prop )
       {

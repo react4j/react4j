@@ -85,7 +85,8 @@ class MultipleChildrenPropComponentBuilder {
     @Override
     @Nonnull
     public final Builder2 key(@Nonnull final Key key) {
-      _props.set( "key", Objects.requireNonNull( key ) );
+      Objects.requireNonNull( key );
+      _props.set( "key", key );
       return this;
     }
 

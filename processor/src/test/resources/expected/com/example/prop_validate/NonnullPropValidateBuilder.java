@@ -56,7 +56,8 @@ class NonnullPropValidateBuilder {
     @Override
     @Nonnull
     public final Builder2 key(@Nonnull final Key key) {
-      _props.set( "key", Objects.requireNonNull( key ) );
+      Objects.requireNonNull( key );
+      _props.set( "key", key );
       return this;
     }
 
@@ -75,7 +76,8 @@ class NonnullPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(@Nonnull final String myProp) {
-      _props.set( "myProp", Objects.requireNonNull( myProp ) );
+      Objects.requireNonNull( myProp );
+      _props.set( React4j_NonnullPropValidate.PROP_myProp, myProp );
       return build();
     }
 
