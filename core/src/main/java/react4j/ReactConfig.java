@@ -129,7 +129,8 @@ public final class ReactConfig
     @Override
     boolean shouldValidatePropValues()
     {
-      return "true".equals( System.getProperty( "react4j.validate_prop_values", isProductionMode() ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.validate_prop_values",
+                                                isProductionMode() ? "false" : "true" ) );
     }
 
     @GwtIncompatible
