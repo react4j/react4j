@@ -16,3 +16,5 @@ goog.define('react4j.check_invariants', 'false');
 goog.define('react4j.minimize_prop_keys', 'true');
 /** @define {string} */
 goog.define('react4j.validate_prop_values', 'false');
+/** @define {string} */
+goog.define('react4j.store_debug_data_as_state', 'false');

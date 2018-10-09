@@ -30,4 +30,7 @@
 
   <define-property name='react4j.validate_prop_values' values='true,false'/>
   <set-property name='react4j.validate_prop_values' value='false'/>
+
+  <define-property name='react4j.store_debug_data_as_state' values='true,false'/>
+  <set-property name='react4j.store_debug_data_as_state' value='false'/>
 </module>

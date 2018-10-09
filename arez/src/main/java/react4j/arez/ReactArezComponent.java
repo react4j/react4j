@@ -27,6 +27,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.Component;
 import react4j.Procedure;
+import react4j.ReactConfig;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import static org.realityforge.braincheck.Guards.*;
@@ -59,7 +60,7 @@ public abstract class ReactArezComponent
    * react state. Otherwise dependencies on values that are never equal (i.e. Streams) will result
    * in infinite re-renders ultimately triggering invariant failure from React.
    *
-   * This should only be true if ReactArezConfig.shouldStoreArezDataAsState() returns true.
+   * This should only be true if {@link ReactConfig#shouldStoreDebugDataAsState()} returns true.
    */
   private boolean _scheduledArezStateUpdate;
 
@@ -307,7 +308,7 @@ public abstract class ReactArezComponent
   @Override
   protected final void performComponentDidMount()
   {
-    storeArezDataAsState();
+    storeDebugDataAsState();
     super.performComponentDidMount();
   }
 
@@ -333,7 +334,7 @@ public abstract class ReactArezComponent
                                             @Nullable final JsPropertyMap<Object> prevState )
   {
     super.performComponentDidUpdate( prevProps, prevState );
-    storeArezDataAsState();
+    storeDebugDataAsState();
   }
 
   /**
@@ -373,12 +374,12 @@ public abstract class ReactArezComponent
 
   /**
    * Store arez data such as dependencies on the state of component.
-   * This is only done if {@link ReactArezConfig#shouldStoreArezDataAsState()} returns true and is primarily
+   * This is only done if {@link ReactConfig#shouldStoreDebugDataAsState()} returns true and is primarily
    * done to make it easy to debug from within React DevTools.
    */
-  private void storeArezDataAsState()
+  private void storeDebugDataAsState()
   {
-    if ( ReactArezConfig.shouldStoreArezDataAsState() && !Disposable.isDisposed( this ) )
+    if ( ReactConfig.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() && !Disposable.isDisposed( this ) )
     {
       if ( _scheduledArezStateUpdate )
       {

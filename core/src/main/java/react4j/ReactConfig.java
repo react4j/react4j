@@ -12,6 +12,7 @@ public final class ReactConfig
   private static final boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
   private static final boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
   private static final boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
+  private static final boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
   private static final boolean CHECK_COMPONENT_STATE_INVARIANTS = PROVIDER.checkComponentStateInvariants();
   private static final boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
@@ -63,6 +64,18 @@ public final class ReactConfig
   public static boolean shouldValidatePropValues()
   {
     return SHOULD_VALIDATE_PROP_VALUES;
+  }
+
+  /**
+   * Return true if react state should be used to store debug data.
+   * Useful if you want to inspect the debug data via DevTools. This feature is resource intensive
+   * and should not be enabled in production.
+   *
+   * @return true if react state should be used to store debug data.
+   */
+  public static boolean shouldStoreDebugDataAsState()
+  {
+    return SHOULD_STORE_DEBUG_DATA_AS_STATE;
   }
 
   /**
@@ -121,6 +134,13 @@ public final class ReactConfig
 
     @GwtIncompatible
     @Override
+    boolean shouldStoreDebugDataAsState()
+    {
+      return System.getProperty( "react4j.store_debug_data_as_state", "true" ).equals( "true" );
+    }
+
+    @GwtIncompatible
+    @Override
     boolean checkComponentStateInvariants()
     {
       return "true".equals( System.getProperty( "react4j.check_component_state_invariants",
@@ -156,6 +176,11 @@ public final class ReactConfig
     boolean shouldValidatePropValues()
     {
       return "true" == System.getProperty( "react4j.validate_prop_values" );
+    }
+
+    boolean shouldStoreDebugDataAsState()
+    {
+      return "true" == System.getProperty( "react4j.store_debug_data_as_state" );
     }
 
     boolean checkComponentStateInvariants()

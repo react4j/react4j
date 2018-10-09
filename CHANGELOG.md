@@ -4,6 +4,9 @@
 
 * **\[core\]** Remove the `@State` annotation. This is the first step to removing the infrastructure to
   support the traditional react state model.
+* **\[core\]** Replace the compile time constant `react4j.arez.store_arez_data_as_state` with
+  `react4j.store_debug_data_as_state`, expose it via `ReactConfig.shouldStoreDebugDataAsState()` and move
+  the configuration property to the `[core]` module.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)

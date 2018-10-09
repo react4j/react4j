@@ -74,7 +74,6 @@ final class Generator
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
   private static final ClassName KEY_CLASSNAME = ClassName.get( "react4j", "Key" );
-  private static final ClassName REACT_AREZ_CONFIG_CLASSNAME = ClassName.get( "react4j.arez", "ReactArezConfig" );
 
   private Generator()
   {
@@ -1291,9 +1290,9 @@ final class Generator
     final boolean arezComponent = descriptor.isArezComponent();
     if ( arezComponent && shouldGenerateLiteLifecycle )
     {
-      method.addStatement( "final $T componentConstructor = $T.shouldStoreArezDataAsState() ? $T::new : $T::new",
+      method.addStatement( "final $T componentConstructor = $T.shouldStoreDebugDataAsState() ? $T::new : $T::new",
                            COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
-                           REACT_AREZ_CONFIG_CLASSNAME,
+                           REACT_CONFIG_CLASSNAME,
                            ClassName.bestGuess( "NativeReactComponent" ),
                            ClassName.bestGuess( "LiteNativeReactComponent" ) );
     }

@@ -15,7 +15,6 @@ import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 import react4j.annotations.Callback;
-import react4j.arez.ReactArezConfig;
 
 @ArezComponent(
     name = "ExplicitlyEnabledCallback"
@@ -29,7 +28,7 @@ abstract class React4j_ExplicitlyEnabledCallback extends ExplicitlyEnabledCallba
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ReactConfig.shouldStoreDebugDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ExplicitlyEnabledCallback" );
     }
