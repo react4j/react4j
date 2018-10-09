@@ -9,6 +9,7 @@
   - Possibly also `shouldComponentUpdate()` or maybe that is now covered by `notifyOnObservablePropChanges()`
     that should be moved back to core Component
   - Stop having empty methods for Arez lifecycles and instead just force overrides in annotation processor
+  - remove `arez.Procedure` or at least make it package access.
 
 * Add `@OnPropChanged` that is invoked for each prop whenever they change values. Change replicant to use this.
   Will probably need to adapt `notifyOnObservablePropChanges()` to handle this.
