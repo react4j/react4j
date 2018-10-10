@@ -42,6 +42,9 @@
 
 * Introduce `TreeLocal` component which is effectively context
 
+* Consider marking callbacks with marker type `<T extends MouseEventHandler & Serializable>` and mandate the usage
+  of such in pure components?
+
 ### Very High Priority
 
 * Add helper to autoload js assets
