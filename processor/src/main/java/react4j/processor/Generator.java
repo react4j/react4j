@@ -886,7 +886,7 @@ final class Generator
           addMember( "readOutsideTransaction", "true" );
       method.addAnnotation( annotation.build() );
     }
-    final String convertMethodName = getConverter( returnType, methodElement, "Prop" );
+    final String convertMethodName = getConverter( returnType, methodElement );
     final TypeKind resultKind = methodElement.getReturnType().getKind();
     if ( !resultKind.isPrimitive() &&
          null == ProcessorUtil.findAnnotationByType( methodElement, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
@@ -912,9 +912,7 @@ final class Generator
   }
 
   @Nonnull
-  private static String getConverter( @Nonnull final TypeMirror type,
-                                      @Nonnull final Element element,
-                                      @Nonnull final String key )
+  private static String getConverter( @Nonnull final TypeMirror type, @Nonnull final Element element )
   {
     switch ( type.getKind() )
     {
@@ -948,7 +946,7 @@ final class Generator
       case ARRAY:
         return "cast";
       default:
-        throw new ReactProcessorException( "Return type of @" + key + " method is not yet " +
+        throw new ReactProcessorException( "Return type of @Prop method is not yet " +
                                            "handled. Type: " + type.getKind(), element );
     }
   }
@@ -1047,7 +1045,7 @@ final class Generator
                           returnType,
                           typedName,
                           JS_CLASSNAME,
-                          getConverter( returnType, prop.getMethod(), "Prop" ),
+                          getConverter( returnType, prop.getMethod() ),
                           rawName );
       if ( prop.hasValidateMethod() )
       {
