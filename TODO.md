@@ -4,7 +4,6 @@
 
 * Remove `@State` and all related infrastructure.
   - This includes the appropriate parameters to all the lifecycle methods.
-  - This also includes moving the storage of debug values in state back into main component and out of Arez
   - Also add hook method `componentDidUpdate()` with no parameters.
   - Possibly also `shouldComponentUpdate()` or maybe that is now covered by `notifyOnObservablePropChanges()`
     that should be moved back to core Component

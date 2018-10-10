@@ -20,7 +20,7 @@ class React4j_ShortPropValidate extends ShortPropValidate {
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ReactConfig.shouldValidatePropValues() ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ShortPropValidate" );
     }
@@ -47,6 +47,11 @@ class React4j_ShortPropValidate extends ShortPropValidate {
       name = "?"
   )
   interface Lifecycle {
+    void componentDidMount();
+
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
+        @Nonnull JsPropertyMap<Object> arg1);
+
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
         @Nonnull JsPropertyMap<Object> arg1);
   }
@@ -72,6 +77,17 @@ class React4j_ShortPropValidate extends ShortPropValidate {
     @Override
     protected ShortPropValidate createComponent() {
       return new React4j_ShortPropValidate();
+    }
+
+    @Override
+    public void componentDidMount() {
+      performComponentDidMount();
+    }
+
+    @Override
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
+        @Nonnull final JsPropertyMap<Object> arg1) {
+      performComponentDidUpdate(arg0,arg1);
     }
 
     @Override

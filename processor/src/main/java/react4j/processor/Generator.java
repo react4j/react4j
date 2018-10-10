@@ -1287,19 +1287,11 @@ final class Generator
         returns( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME );
 
     final boolean shouldGenerateLiteLifecycle = descriptor.shouldGenerateLiteLifecycle();
-    final boolean arezComponent = descriptor.isArezComponent();
-    if ( arezComponent && shouldGenerateLiteLifecycle )
+    if ( shouldGenerateLiteLifecycle )
     {
-      method.addStatement( "final $T componentConstructor = $T.shouldStoreDebugDataAsState() ? $T::new : $T::new",
+      method.addStatement( "final $T componentConstructor = ( $T.shouldStoreDebugDataAsState() || $T.shouldValidatePropValues() ) ? $T::new : $T::new",
                            COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
                            REACT_CONFIG_CLASSNAME,
-                           ClassName.bestGuess( "NativeReactComponent" ),
-                           ClassName.bestGuess( "LiteNativeReactComponent" ) );
-    }
-    else if ( !arezComponent && shouldGenerateLiteLifecycle )
-    {
-      method.addStatement( "final $T componentConstructor = $T.shouldValidatePropValues() ? $T::new : $T::new",
-                           COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
                            REACT_CONFIG_CLASSNAME,
                            ClassName.bestGuess( "NativeReactComponent" ),
                            ClassName.bestGuess( "LiteNativeReactComponent" ) );

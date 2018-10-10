@@ -9,6 +9,8 @@
   the configuration property to the `[core]` module.
 * **\[arez\]** Remove the empty lifecycle methods in the `ReactArezComponent` class and enhance the annotation
   processor so that they are no longer needed to store arez details as debug data.
+* **\[core\]** Move the capability to store arbitrary debug data as react component state into the
+  `react4j.Component` class from the `react4j.arez.ReactArezComponent` class.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)

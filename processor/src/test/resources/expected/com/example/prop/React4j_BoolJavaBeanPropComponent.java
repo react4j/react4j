@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -18,7 +20,7 @@ class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BoolJavaBeanPropComponent" );
     }
@@ -30,7 +32,31 @@ class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
     return props().getAny( PROP_foo ).asBoolean();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BoolJavaBeanPropComponent> {
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
+  interface Lifecycle {
+    void componentDidMount();
+
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
+        @Nonnull JsPropertyMap<Object> arg1);
+  }
+
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<BoolJavaBeanPropComponent> {
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+    }
+
+    @Override
+    protected BoolJavaBeanPropComponent createComponent() {
+      return new React4j_BoolJavaBeanPropComponent();
+    }
+  }
+
+  private static final class NativeReactComponent extends NativeAdapterComponent<BoolJavaBeanPropComponent> implements Lifecycle {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -39,6 +65,17 @@ class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
     @Override
     protected BoolJavaBeanPropComponent createComponent() {
       return new React4j_BoolJavaBeanPropComponent();
+    }
+
+    @Override
+    public void componentDidMount() {
+      performComponentDidMount();
+    }
+
+    @Override
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
+        @Nonnull final JsPropertyMap<Object> arg1) {
+      performComponentDidUpdate(arg0,arg1);
     }
   }
 }

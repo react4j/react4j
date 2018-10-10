@@ -948,11 +948,8 @@ public final class ReactProcessor
                         Constants.SHOULD_COMPONENT_UPDATE.equals( m.getSimpleName().toString() )
                       ) ||
                       (
-                        arezComponent &&
-                        (
-                          Constants.COMPONENT_DID_MOUNT.equals( m.getSimpleName().toString() ) ||
-                          Constants.COMPONENT_DID_UPDATE.equals( m.getSimpleName().toString() )
-                        )
+                        Constants.COMPONENT_DID_MOUNT.equals( m.getSimpleName().toString() ) ||
+                        Constants.COMPONENT_DID_UPDATE.equals( m.getSimpleName().toString() )
                       ) ||
                       lifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
         .map( m -> new MethodDescriptor( m, (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), m ) ) )

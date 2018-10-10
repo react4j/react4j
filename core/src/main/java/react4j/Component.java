@@ -1,10 +1,12 @@
 package react4j;
 
 import elemental2.core.JsError;
+import elemental2.core.JsObject;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
+import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import static org.realityforge.braincheck.Guards.*;
@@ -42,6 +44,13 @@ public abstract class Component
   private LifecycleMethod _lifecycleMethod = LifecycleMethod.UNKNOWN;
   @Nullable
   private NativeComponent _nativeComponent;
+  /**
+   * If the last render resulted in state update to record new debug state then this will be true.
+   * It guards against multiple renders of a single component where rendering is just updating
+   * react state to expose debug data. This should only be true if {@link ReactConfig#shouldStoreDebugDataAsState()}
+   * returns true.
+   */
+  private boolean _scheduledDebugStateUpdate;
 
   /**
    * Set the phase of the component. Only used for invariant checking.
@@ -312,6 +321,7 @@ public abstract class Component
   protected void performComponentDidMount()
   {
     componentDidMount();
+    storeDebugDataAsState();
   }
 
   /**
@@ -338,6 +348,7 @@ public abstract class Component
                                             @Nullable final JsPropertyMap<Object> prevState )
   {
     componentDidUpdate( prevProps, prevState );
+    storeDebugDataAsState();
   }
 
   /**
@@ -439,5 +450,81 @@ public abstract class Component
    */
   protected void validatePropValues( @Nonnull final JsPropertyMap<Object> props )
   {
+  }
+
+  /**
+   * Store debug data on the state object of the native component.
+   * This is only done if {@link ReactConfig#shouldStoreDebugDataAsState()} returns true and is primarily
+   * done to make it easy to debug the component from within React DevTools.
+   */
+  private void storeDebugDataAsState()
+  {
+    if ( ReactConfig.shouldStoreDebugDataAsState() )
+    {
+      if ( _scheduledDebugStateUpdate )
+      {
+        _scheduledDebugStateUpdate = false;
+      }
+      else
+      {
+        final JsPropertyMap<Object> newState = JsPropertyMap.of();
+        populateDebugData( newState );
+
+        final JsPropertyMap<Object> state = state();
+        final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
+        /*
+         * To determine whether we need to do a state update we do compare each key and value and make sure
+         * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
+         * updates in react are merges, we need to implement this by putting undefined values into the state.
+         */
+        if ( null == currentState )
+        {
+          scheduleDebugStateUpdate( newState );
+        }
+        else
+        {
+          for ( final String key : JsObject.keys( Js.uncheckedCast( currentState ) ) )
+          {
+            if ( !newState.has( key ) )
+            {
+              newState.set( key, Js.undefined() );
+            }
+          }
+
+          for ( final String key : JsObject.keys( Js.uncheckedCast( newState ) ) )
+          {
+            final Any newValue = currentState.getAny( key );
+            final Any existingValue = newState.getAny( key );
+            if ( !Objects.equals( newValue, existingValue ) )
+            {
+              scheduleDebugStateUpdate( newState );
+              return;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Populate the state parameter with any data that is useful when debugging the component.
+   *
+   * @param state the property map to populate with debug data.
+   */
+  protected void populateDebugData( @Nonnull final JsPropertyMap<Object> state )
+  {
+  }
+
+  /**
+   * Schedule state update the updates debug state.
+   */
+  private void scheduleDebugStateUpdate( @Nonnull final JsPropertyMap<Object> data )
+  {
+    scheduleStateUpdate( ( p, s ) -> Js.cast( JsObject.freeze( data ) ) );
+    /*
+     * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
+     */
+    scheduleRender( true );
+    _scheduledDebugStateUpdate = true;
   }
 }
