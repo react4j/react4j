@@ -928,8 +928,9 @@ public final class ReactProcessor
   private void determineLifecycleMethods( @Nonnull final TypeElement typeElement,
                                           @Nonnull final ComponentDescriptor descriptor )
   {
+    final boolean arezComponent = descriptor.isArezComponent();
     final boolean forceShouldComponentUpdate =
-      !descriptor.isArezComponent() && descriptor.shouldGeneratePropValidator();
+      !arezComponent && descriptor.shouldGeneratePropValidator();
     /*
      * Get the list of lifecycle methods that have been overridden by typeElement
      * a parent class, or by a default method method implemented by typeElement or
@@ -944,7 +945,14 @@ public final class ReactProcessor
         // Only keep methods that override the lifecycle methods
         .filter( m -> (
                         forceShouldComponentUpdate &&
-                        m.getSimpleName().toString().equals( Constants.SHOULD_COMPONENT_UPDATE )
+                        Constants.SHOULD_COMPONENT_UPDATE.equals( m.getSimpleName().toString() )
+                      ) ||
+                      (
+                        arezComponent &&
+                        (
+                          Constants.COMPONENT_DID_MOUNT.equals( m.getSimpleName().toString() ) ||
+                          Constants.COMPONENT_DID_UPDATE.equals( m.getSimpleName().toString() )
+                        )
                       ) ||
                       lifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
         .map( m -> new MethodDescriptor( m, (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), m ) ) )

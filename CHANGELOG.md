@@ -7,6 +7,8 @@
 * **\[core\]** Replace the compile time constant `react4j.arez.store_arez_data_as_state` with
   `react4j.store_debug_data_as_state`, expose it via `ReactConfig.shouldStoreDebugDataAsState()` and move
   the configuration property to the `[core]` module.
+* **\[arez\]** Remove the empty lifecycle methods in the `ReactArezComponent` class and enhance the annotation
+  processor so that they are no longer needed to store arez details as debug data.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)

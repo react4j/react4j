@@ -293,37 +293,10 @@ public abstract class ReactArezComponent
    * {@inheritDoc}
    */
   @Override
-  protected void componentDidMount()
-  {
-    /*
-     * This method is overridden as it forces the annotation processor to generate the native
-     * componentDidMount method. The native method is required so that performComponentDidMount()
-     * is invoked and correctly records state.
-     */
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   protected final void performComponentDidMount()
   {
     storeDebugDataAsState();
     super.performComponentDidMount();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
-                                     @Nullable final JsPropertyMap<Object> prevState )
-  {
-    /*
-     * This method is overridden as it forces the annotation processor to generate the native
-     * componentDidUpdate method. The native method is required so that performComponentDidUpdate()
-     * is invoked and correctly cleans up state.
-     */
   }
 
   /**

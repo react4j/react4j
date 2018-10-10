@@ -287,11 +287,13 @@ final class ComponentDescriptor
 
   private boolean canOmitFromLiteLifecycle( @Nonnull final MethodDescriptor method )
   {
+    final boolean arezComponent = isArezComponent();
     final ExecutableElement element = method.getMethod();
     final String methodName = element.getSimpleName().toString();
     final String className = ( (TypeElement) element.getEnclosingElement() ).getQualifiedName().toString();
     return (
-             Constants.REACT_AREZ_COMPONENT_CLASSNAME.equals( className ) &&
+             arezComponent &&
+             Constants.COMPONENT_CLASSNAME.equals( className ) &&
              (
                Constants.COMPONENT_DID_MOUNT.equals( methodName ) ||
                Constants.COMPONENT_DID_UPDATE.equals( methodName )
