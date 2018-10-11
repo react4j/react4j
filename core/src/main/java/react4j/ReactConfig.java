@@ -83,7 +83,7 @@ public final class ReactConfig
    *
    * @return true to enable invariant checking about how we interact with native react component.
    */
-  public static boolean checkComponentStateInvariants()
+  static boolean checkComponentStateInvariants()
   {
     return CHECK_COMPONENT_STATE_INVARIANTS;
   }
