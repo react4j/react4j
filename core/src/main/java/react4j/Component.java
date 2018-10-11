@@ -325,6 +325,15 @@ public abstract class Component
    * This method is a template method that may be overridden by subclasses generated
    * by the annotation processor based on configuration of props.
    *
+   * <p>Note: This is required when the component is an arez component and the props
+   * are marked as {@link Prop#observable()} and are used by a <code>@Computed</code>
+   * method from within the render call. This method gives an opportunity to mark
+   * the props as changed so that the computed is marked as potentially stale, so that
+   * it will recomputed next time it is invoked which may be the render. If this template
+   * method did not exist then the change would not reported until after the render occurred
+   * in the {@link #componentDidUpdate(JsPropertyMap)} which would result in a re-render of
+   * the component.</p>
+   *
    * @param nextProps the new properties of the component.
    * @return true if a prop was marked with {@link Prop#shouldUpdateOnChange()} and has changed.
    */
