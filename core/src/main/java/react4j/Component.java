@@ -143,20 +143,13 @@ public abstract class Component
 
   /**
    * Schedule this component for re-rendering.
-   * The component re-renders when state or props change but calling this method is another way to
-   * schedule the component to be re-rendered.
-   *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap)} will be skipped
-   * and it is equivalent to calling forceUpdate() on the native react component. See the
-   * <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component documentation</a> for more
-   * details.</p>
-   *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap)} will be
-   * invoked. This is equivalent to calling setState({}) on the native react component.</p>
-   *
-   * @param force true to skip shouldComponentUpdate during re-render, false otherwise.
+   * The component re-renders when props change but calling this method is another way to schedule the
+   * component to be re-rendered. When this method is called the {@link #shouldComponentUpdate(JsPropertyMap)}
+   * lifecycle method will be skipped. Calling this method is equivalent to calling forceUpdate() on the native
+   * react component. See the <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component
+   * documentation</a> for more details.</p>
    */
-  protected final void scheduleRender( final boolean force )
+  protected final void scheduleRender()
   {
     if ( ReactConfig.shouldCheckInvariants() && ReactConfig.checkComponentStateInvariants() )
     {
@@ -164,15 +157,7 @@ public abstract class Component
                     () -> "Incorrectly invoked scheduleRender() on " + this + " when component is " +
                           "unmounting or has unmounted." );
     }
-    if ( force )
-    {
-      component().forceUpdate();
-    }
-    else
-    {
-      // This schedules a re-render but will not skip shouldComponentUpdate
-      scheduleStateUpdate( JsPropertyMap.of() );
-    }
+    component().forceUpdate();
   }
 
   /**
@@ -318,7 +303,7 @@ public abstract class Component
    * See the <a href="https://reactjs.org/docs/react-component.html#shouldcomponentupdate">React Component documentation</a> for more details.
    *
    * <p>This method is invoked before rendering when new props or state are being received.
-   * This method is not called for the initial render or when {@link #scheduleRender(boolean)}} is called
+   * This method is not called for the initial render or when {@link #scheduleRender()} is called
    * with the force parameter set to true.</p>
    *
    * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
@@ -458,7 +443,7 @@ public abstract class Component
     /*
      * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
      */
-    scheduleRender( true );
+    scheduleRender();
     _scheduledDebugStateUpdate = true;
   }
 }

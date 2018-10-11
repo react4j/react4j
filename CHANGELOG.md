@@ -34,6 +34,8 @@
   not intended to be used outside the package.
 * **\[core\]** Remove the unused method `ReactConfig.isProductionMode()` and the associated compile time
   constant `react4j.environment`.
+* **\[core\]** Remove the `force` parameter from the method `Component.scheduleRender()` as every render
+  triggered through this mechanism is expected to explicitly render the component.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)

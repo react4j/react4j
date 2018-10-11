@@ -92,7 +92,7 @@ public abstract class ReactArezComponent
       _renderDepsChanged = true;
       if ( !_unmounted )
       {
-        scheduleRender( true );
+        scheduleRender();
       }
     }
   }
