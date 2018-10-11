@@ -14,16 +14,16 @@ import jsinterop.base.JsPropertyMap;
  * The react native component.
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "React.Component" )
+@SuppressWarnings( "unused" )
 public abstract class NativeComponent
 {
-  @SuppressWarnings( "unused" )
   @JsProperty
   private JsPropertyMap<Object> props;
   @JsProperty
   private JsPropertyMap<Object> state;
 
   @JsConstructor
-  NativeComponent( @SuppressWarnings( "unused" ) @Nullable final JsPropertyMap<Object> props )
+  NativeComponent( @Nullable final JsPropertyMap<Object> props )
   {
   }
 
