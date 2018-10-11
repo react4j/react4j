@@ -22,6 +22,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.computed.ParameterizedComputedComponent", false, false },
         new Object[]{ "com.example.arez.computed.ParameterizedReturnComputedComponent", false, false },
         new Object[]{ "com.example.arez.computed.ProtectedComputedComponent", false, false },
+        new Object[]{ "com.example.arez.computed.PropAndComputedComponent", false, false },
         new Object[]{ "com.example.arez.computed.PublicComputedComponent", false, false },
         new Object[]{ "com.example.arez.lifecycle.ActionOnLifecycleComponent", false, false },
         new Object[]{ "com.example.arez.memoize.AlreadyPrioritizedMemoizeComponent", false, false },
