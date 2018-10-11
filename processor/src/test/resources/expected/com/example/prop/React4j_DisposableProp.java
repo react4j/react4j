@@ -1,7 +1,6 @@
 package com.example.prop;
 
 import arez.Disposable;
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -52,9 +51,6 @@ abstract class React4j_DisposableProp extends DisposableProp {
   }
 
   @Override
-  @Action(
-      verifyRequired = false
-  )
   protected boolean shouldUpdateOnPropChanges(@Nullable final JsPropertyMap<Object> nextProps) {
     if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? Js.undefined() : nextProps.get( PROP_value ) ) ) {
       return true;

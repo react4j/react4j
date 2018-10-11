@@ -1096,7 +1096,6 @@ final class Generator
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
           addAnnotation( NULLABLE_CLASSNAME ).build() )
         .returns( TypeName.BOOLEAN );
-      method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
       for ( final PropDescriptor prop : descriptor.getProps() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();

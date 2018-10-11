@@ -1,6 +1,5 @@
 package com.example.arez;
 
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -43,9 +42,6 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   }
 
   @Override
-  @Action(
-      verifyRequired = false
-  )
   protected boolean shouldUpdateOnPropChanges(@Nullable final JsPropertyMap<Object> nextProps) {
     if ( !Js.isTripleEqual( props().get( PROP_child ), null == nextProps ? Js.undefined() : nextProps.get( PROP_child ) ) ) {
       return true;
