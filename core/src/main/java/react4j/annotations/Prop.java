@@ -60,7 +60,7 @@ public @interface Prop
   Feature shouldUpdateOnChange() default Feature.AUTODETECT;
 
   /**
-   * Indicate whether prop is Arez observable.
+   * Indicate whether the prop is an Arez observable.
    * If set to {@link Feature#ENABLE} the generated class will make the prop observable and report changes
    * in the prop when the prop changes. The component MUST be a subclass of <code>ReactArezComponent</code>.
    * If set to {@link Feature#DISABLE} then the prop will not be observable. If set to {@link Feature#AUTODETECT}
