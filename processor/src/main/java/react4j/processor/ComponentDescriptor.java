@@ -296,10 +296,6 @@ final class ComponentDescriptor
           Constants.COMPONENT_DID_MOUNT.equals( methodName ) ||
           Constants.COMPONENT_DID_UPDATE.equals( methodName )
         )
-      ) ||
-      (
-        Constants.REACT_AREZ_COMPONENT_CLASSNAME.equals( getClassNameForMethod( method ) ) &&
-        Constants.COMPONENT_WILL_UNMOUNT.equals( methodName )
       );
   }
 
