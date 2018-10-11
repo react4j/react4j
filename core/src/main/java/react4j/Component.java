@@ -310,10 +310,12 @@ public abstract class Component
    * in the {@link #componentDidUpdate(JsPropertyMap)} which would result in a re-render of
    * the component.</p>
    *
+   * @param props     the old properties of the component.
    * @param nextProps the new properties of the component.
    * @return true if a prop was marked with {@link Prop#shouldUpdateOnChange()} and has changed.
    */
-  protected boolean notifyOnPropChanges( @Nullable final JsPropertyMap<Object> nextProps )
+  protected boolean notifyOnPropChanges( @Nonnull final JsPropertyMap<Object> props,
+                                         @Nullable final JsPropertyMap<Object> nextProps )
   {
     return false;
   }
@@ -355,7 +357,7 @@ public abstract class Component
     {
       validatePropValues( nextProps );
     }
-    return notifyOnPropChanges( nextProps ) || shouldUpdateOnPropChanges( nextProps );
+    return notifyOnPropChanges( props(), nextProps ) || shouldUpdateOnPropChanges( nextProps );
   }
 
   /**

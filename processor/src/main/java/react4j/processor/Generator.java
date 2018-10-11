@@ -982,6 +982,8 @@ final class Generator
       final MethodSpec.Builder method = MethodSpec.methodBuilder( "notifyOnPropChanges" ).
         addModifiers( Modifier.PROTECTED ).
         addAnnotation( Override.class ).
+        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
+          addAnnotation( NONNULL_CLASSNAME ).build() ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
           addAnnotation( NULLABLE_CLASSNAME ).build() ).
         returns( TypeName.BOOLEAN );
@@ -996,7 +998,7 @@ final class Generator
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         final String code =
-          "if ( !$T.isTripleEqual( props().get( $N ), null == nextProps ? $T.undefined() : nextProps.get( $N ) ) )";
+          "if ( !$T.isTripleEqual( props.get( $N ), null == nextProps ? $T.undefined() : nextProps.get( $N ) ) )";
         block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), JS_CLASSNAME, prop.getConstantName() );
         if ( prop.isObservable() )
         {

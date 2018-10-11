@@ -57,9 +57,10 @@ abstract class React4j_ObservableProp extends ObservableProp {
   @Action(
       verifyRequired = false
   )
-  protected boolean notifyOnPropChanges(@Nullable final JsPropertyMap<Object> nextProps) {
+  protected boolean notifyOnPropChanges(@Nonnull final JsPropertyMap<Object> props,
+      @Nullable final JsPropertyMap<Object> nextProps) {
     boolean modified = false;
-    if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? Js.undefined() : nextProps.get( PROP_value ) ) ) {
+    if ( !Js.isTripleEqual( props.get( PROP_value ), null == nextProps ? Js.undefined() : nextProps.get( PROP_value ) ) ) {
       getValueObservableValue().reportChanged();
       modified = true;
     }
