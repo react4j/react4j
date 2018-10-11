@@ -35,7 +35,7 @@ enum ComponentPhase
    * <ul>
    * <li>{@link Component#shouldComponentUpdate(JsPropertyMap)} and if the component returns false the update will be aborted.</li>
    * <li>{@link Component#render()}.</li>
-   * <li>{@link Component#componentDidUpdate(JsPropertyMap, JsPropertyMap)}.</li>
+   * <li>{@link Component#componentDidUpdate(JsPropertyMap)}.</li>
    * </ul>
    */
   UPDATING,
