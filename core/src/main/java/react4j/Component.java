@@ -5,7 +5,6 @@ import elemental2.core.JsObject;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsFunction;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -17,28 +16,6 @@ import static org.realityforge.braincheck.Guards.*;
  */
 public abstract class Component
 {
-  /**
-   * Callback function for updating state.
-   * Useful if the state update is based on current state.
-   */
-  @JsFunction
-  @FunctionalInterface
-  public interface SetStateCallback
-  {
-    /**
-     * Callback used to update state.
-     * Result is merged into existing state.
-     * Return null to abort state update.
-     *
-     * @param previousState the preiovus state.
-     * @param currentProps  the current props.
-     * @return the state to shallow merge or null to abort state update.
-     */
-    @Nullable
-    JsPropertyMap<Object> onSetState( @Nullable JsPropertyMap<Object> previousState,
-                                      @Nullable JsPropertyMap<Object> currentProps );
-  }
-
   @Nonnull
   private ComponentPhase _phase = ComponentPhase.INITIALIZING;
   @Nonnull
@@ -84,24 +61,6 @@ public abstract class Component
   final void bindComponent( @Nonnull final NativeComponent nativeComponent )
   {
     _nativeComponent = Objects.requireNonNull( nativeComponent );
-  }
-
-  /**
-   * Set the initial state of the component.
-   * This should only be invoked when the component is initializing.
-   * Calling this at any other time is an error.
-   *
-   * @param state the state.
-   */
-  protected final void setInitialState( @Nonnull final JsPropertyMap<Object> state )
-  {
-    if ( ReactConfig.shouldCheckInvariants() && ReactConfig.checkComponentStateInvariants() )
-    {
-      apiInvariant( () -> ComponentPhase.INITIALIZING == _phase,
-                    () -> "Attempted to invoke setInitialState on " + this + " when component is " +
-                          "not in INITIALIZING phase but in phase " + _phase + " and state " + _lifecycleMethod );
-    }
-    component().setInitialState( state );
   }
 
   /**
@@ -158,55 +117,13 @@ public abstract class Component
 
   /**
    * Schedule a shallow merge of supplied state into current state.
-   * This will trigger an update cycle and is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
    *
-   * @param state the object literal representing state.
+   * @param state the state to merge.
    */
-  protected final void scheduleStateUpdate( @Nonnull final JsPropertyMap<Object> state )
-  {
-    scheduleStateUpdate( ( p, s ) -> state );
-  }
-
-  /**
-   * Schedule a shallow merge of supplied state into current state.
-   * This will trigger an update cycle and is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
-   *
-   * @param state                 the object literal representing state.
-   * @param onStateUpdateComplete a callback that will be invoked after state has been updated.
-   */
-  protected final void scheduleStateUpdate( @Nonnull final JsPropertyMap<Object> state,
-                                            @Nullable final Procedure onStateUpdateComplete )
-  {
-    scheduleStateUpdate( ( p, s ) -> state, onStateUpdateComplete );
-  }
-
-  /**
-   * Schedule a shallow merge of supplied state into current state.
-   * This will trigger an update cycle and is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
-   *
-   * @param callback the callback that will be invoked to update state.
-   */
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback callback )
-  {
-    scheduleStateUpdate( callback, null );
-  }
-
-  /**
-   * Schedule a shallow merge of supplied state into current state.
-   * This will trigger an update cycle and is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
-   *
-   * @param callback              the callback that will be invoked to update state.
-   * @param onStateUpdateComplete a callback that will be invoked after state has been updated.
-   */
-  protected void scheduleStateUpdate( @Nonnull final SetStateCallback callback,
-                                      @Nullable final Procedure onStateUpdateComplete )
+  private void scheduleStateUpdate( @Nonnull JsPropertyMap<Object> state )
   {
     invariantsSetState();
-    component().setState( callback, onStateUpdateComplete );
+    component().setState( state );
   }
 
   /**
@@ -539,7 +456,7 @@ public abstract class Component
    */
   private void scheduleDebugStateUpdate( @Nonnull final JsPropertyMap<Object> data )
   {
-    scheduleStateUpdate( ( p, s ) -> Js.cast( JsObject.freeze( data ) ) );
+    scheduleStateUpdate( Js.cast( JsObject.freeze( data ) ) );
     /*
      * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
      */

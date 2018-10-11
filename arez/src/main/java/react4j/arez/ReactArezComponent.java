@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.Component;
-import react4j.Procedure;
 import react4j.ReactNode;
 import static org.realityforge.braincheck.Guards.*;
 
@@ -53,16 +52,6 @@ public abstract class ReactArezComponent
   protected ReactArezComponent()
   {
     _arezComponentId = c_nextComponentId++;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback callback,
-                                            @Nullable final Procedure onStateUpdateComplete )
-  {
-    fail( () -> "Attempted to schedule state update on ReactArezComponent subclass. Use Arez @Observable or @Computed properties instead." );
   }
 
   /**

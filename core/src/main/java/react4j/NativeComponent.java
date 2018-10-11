@@ -1,6 +1,5 @@
 package react4j;
 
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
@@ -46,13 +45,7 @@ public abstract class NativeComponent
     return state;
   }
 
-  final native void setState( @Nonnull Component.SetStateCallback callback, @Nullable Procedure onStateUpdateComplete );
-
-  @JsOverlay
-  final void setInitialState( @Nonnull final JsPropertyMap<Object> state )
-  {
-    this.state = Objects.requireNonNull( state );
-  }
+  final native void setState( @Nonnull JsPropertyMap<Object> state );
 
   final native void forceUpdate();
 }
