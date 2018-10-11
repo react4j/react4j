@@ -1287,7 +1287,8 @@ final class Generator
     final boolean shouldGenerateLiteLifecycle = descriptor.shouldGenerateLiteLifecycle();
     if ( shouldGenerateLiteLifecycle )
     {
-      method.addStatement( "final $T componentConstructor = ( $T.shouldStoreDebugDataAsState() || $T.shouldValidatePropValues() ) ? $T::new : $T::new",
+      method.addStatement( "final $T componentConstructor = ( $T.shouldStoreDebugDataAsState() || " +
+                           "$T.shouldValidatePropValues() ) ? $T::new : $T::new",
                            COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
                            REACT_CONFIG_CLASSNAME,
                            REACT_CONFIG_CLASSNAME,
