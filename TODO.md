@@ -3,7 +3,6 @@
 ### Next Release
 
 * Remove `@State` and all related infrastructure.
-  - This includes the appropriate parameters to all the lifecycle methods.
   - Also add hook method `componentDidUpdate()` with no parameters.
   - remove `arez.Procedure` or at least make it package access.
 
