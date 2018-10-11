@@ -8,7 +8,6 @@ import org.realityforge.braincheck.BrainCheckConfig;
 public final class ReactConfig
 {
   private static final ConfigProvider PROVIDER = new ConfigProvider();
-  private static final boolean PRODUCTION_MODE = PROVIDER.isProductionMode();
   private static final boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
   private static final boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
   private static final boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
@@ -18,19 +17,6 @@ public final class ReactConfig
 
   private ReactConfig()
   {
-  }
-
-  /**
-   * Return true if in production mode.
-   * Production mode sets the default values for other compile time constants to the variant
-   * that assumes your code is correct and does not generate additional assert or debug statements.
-   * The individual configuration settings can still be specified to override this value.
-   *
-   * @return true if in production mode.
-   */
-  public static boolean isProductionMode()
-  {
-    return PRODUCTION_MODE;
   }
 
   /**
@@ -103,32 +89,23 @@ public final class ReactConfig
   {
     @GwtIncompatible
     @Override
-    boolean isProductionMode()
-    {
-      return "production".equals( System.getProperty( "react4j.environment", "production" ) );
-    }
-
-    @GwtIncompatible
-    @Override
     boolean enableComponentNames()
     {
-      return "true".equals( System.getProperty( "react4j.enable_component_names",
-                                                isProductionMode() ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.enable_component_names", "false" ) );
     }
 
     @GwtIncompatible
     @Override
     boolean shouldMinimizePropKeys()
     {
-      return "true".equals( System.getProperty( "react4j.minimize_prop_keys", isProductionMode() ? "true" : "false" ) );
+      return "true".equals( System.getProperty( "react4j.minimize_prop_keys", "true" ) );
     }
 
     @GwtIncompatible
     @Override
     boolean shouldValidatePropValues()
     {
-      return "true".equals( System.getProperty( "react4j.validate_prop_values",
-                                                isProductionMode() ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.validate_prop_values", "false" ) );
     }
 
     @GwtIncompatible
@@ -142,8 +119,7 @@ public final class ReactConfig
     @Override
     boolean checkComponentStateInvariants()
     {
-      return "true".equals( System.getProperty( "react4j.check_component_state_invariants",
-                                                isProductionMode() ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.check_component_state_invariants", "false" ) );
     }
 
     @GwtIncompatible
@@ -157,11 +133,6 @@ public final class ReactConfig
   @SuppressWarnings( { "unused", "StringEquality" } )
   private static abstract class AbstractConfigProvider
   {
-    boolean isProductionMode()
-    {
-      return "production" == System.getProperty( "react4j.environment" );
-    }
-
     boolean enableComponentNames()
     {
       return "true" == System.getProperty( "react4j.enable_component_names" );

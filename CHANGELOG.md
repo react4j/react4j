@@ -30,6 +30,8 @@
 * **\[core\]** Remove the `arez.Procedure` interface as it is no longer used.
 * **\[core\]** Reduce the access level of `ReactConfig.checkComponentStateInvariants()` to package access as
   not intended to be used outside the package.
+* **\[core\]** Remove the unused method `ReactConfig.isProductionMode()` and the associated compile time
+  constant `react4j.environment`.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)
