@@ -306,7 +306,7 @@ public abstract class Component
    * @param error the error that has been thrown.
    * @param info  information about component stack during thrown error.
    */
-  protected void performComponentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
+  final void performComponentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
     componentDidCatch( error, info );
   }
