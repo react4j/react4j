@@ -81,7 +81,7 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
+      return shouldComponentUpdate(arg0);
     }
   }
 
@@ -108,7 +108,7 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
+      return shouldComponentUpdate(arg0);
     }
   }
 }

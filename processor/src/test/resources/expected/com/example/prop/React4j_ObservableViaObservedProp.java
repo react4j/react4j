@@ -117,7 +117,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
+      return shouldComponentUpdate(arg0);
     }
   }
 
@@ -149,7 +149,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
+      return shouldComponentUpdate(arg0);
     }
   }
 }

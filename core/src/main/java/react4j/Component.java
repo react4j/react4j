@@ -144,7 +144,7 @@ public abstract class Component
   /**
    * Schedule this component for re-rendering.
    * The component re-renders when props change but calling this method is another way to schedule the
-   * component to be re-rendered. When this method is called the {@link #performShouldComponentUpdate(JsPropertyMap)}
+   * component to be re-rendered. When this method is called the {@link #shouldComponentUpdate(JsPropertyMap)}
    * lifecycle method will be skipped. Calling this method is equivalent to calling forceUpdate() on the native
    * react component. See the <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component
    * documentation</a> for more details.
@@ -351,7 +351,7 @@ public abstract class Component
    * @param nextProps the new properties of the component.
    * @return true if the component should be updated.
    */
-  final boolean performShouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
+  final boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
     if ( ReactConfig.shouldValidatePropValues() && null != nextProps )
     {

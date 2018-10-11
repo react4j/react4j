@@ -1445,9 +1445,16 @@ final class Generator
           sb.append( "return " );
         }
 
-        sb.append( "perform" );
-        sb.append( Character.toUpperCase( methodName.charAt( 0 ) ) );
-        sb.append( methodName.substring( 1 ) );
+        if ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) )
+        {
+          sb.append( methodName );
+        }
+        else
+        {
+          sb.append( "perform" );
+          sb.append( Character.toUpperCase( methodName.charAt( 0 ) ) );
+          sb.append( methodName.substring( 1 ) );
+        }
         sb.append( "(" );
         sb.append( params.toString() );
         sb.append( ")" );

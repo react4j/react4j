@@ -80,7 +80,7 @@ class React4j_PackageAccessPropValidate extends PackageAccessPropValidate {
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
+      return shouldComponentUpdate(arg0);
     }
   }
 
@@ -107,7 +107,7 @@ class React4j_PackageAccessPropValidate extends PackageAccessPropValidate {
 
     @Override
     public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
+      return shouldComponentUpdate(arg0);
     }
   }
 }
