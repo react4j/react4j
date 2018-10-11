@@ -25,6 +25,8 @@
   marking the `shouldUpdateOnChange()` as package-access and final and updating the annotation processor to
   generate the native glue code only if there is any logic generated to support `shouldUpdateOnChange`.
 * **\[core\]** Remove the mechanisms by which component authors can update react state.
+* **\[core\]** Fix a bug where methods annotated with `@Prop(observable=true)` that return a primitive
+  value would always force a re-render of the component even if the value is the same.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)

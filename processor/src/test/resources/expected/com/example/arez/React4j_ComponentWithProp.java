@@ -46,7 +46,7 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
       verifyRequired = false
   )
   protected boolean shouldUpdateOnPropChanges(@Nullable final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? null : nextProps.get( PROP_value ) ) ) {
+    if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? Js.undefined() : nextProps.get( PROP_value ) ) ) {
       return true;
     }
     return false;

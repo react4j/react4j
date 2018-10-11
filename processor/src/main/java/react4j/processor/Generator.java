@@ -996,8 +996,8 @@ final class Generator
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         final String code =
-          "if ( !$T.equals( props().get( $N ), null == nextProps ? null : nextProps.get( $N ) ) )";
-        block.beginControlFlow( code, Objects.class, prop.getConstantName(), prop.getConstantName() );
+          "if ( !$T.isTripleEqual( props().get( $N ), null == nextProps ? $T.undefined() : nextProps.get( $N ) ) )";
+        block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), JS_CLASSNAME, prop.getConstantName() );
         if ( prop.isObservable() )
         {
           block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
@@ -1099,8 +1099,8 @@ final class Generator
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         final String code =
-          "if ( !$T.isTripleEqual( props().get( $N ), null == nextProps ? null : nextProps.get( $N ) ) )";
-        block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), prop.getConstantName() );
+          "if ( !$T.isTripleEqual( props().get( $N ), null == nextProps ? $T.undefined() : nextProps.get( $N ) ) )";
+        block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), JS_CLASSNAME, prop.getConstantName() );
         block.addStatement( "return true" );
         block.endControlFlow();
         method.addCode( block.build() );

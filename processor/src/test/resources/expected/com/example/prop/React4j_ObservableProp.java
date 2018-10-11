@@ -5,7 +5,6 @@ import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
-import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,7 +59,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
   )
   protected boolean notifyOnPropChanges(@Nullable final JsPropertyMap<Object> nextProps) {
     boolean modified = false;
-    if ( !Objects.equals( props().get( PROP_value ), null == nextProps ? null : nextProps.get( PROP_value ) ) ) {
+    if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? Js.undefined() : nextProps.get( PROP_value ) ) ) {
       getValueObservableValue().reportChanged();
       modified = true;
     }

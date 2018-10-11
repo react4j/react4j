@@ -56,7 +56,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
       verifyRequired = false
   )
   protected boolean shouldUpdateOnPropChanges(@Nullable final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( PROP_model ), null == nextProps ? null : nextProps.get( PROP_model ) ) ) {
+    if ( !Js.isTripleEqual( props().get( PROP_model ), null == nextProps ? Js.undefined() : nextProps.get( PROP_model ) ) ) {
       return true;
     }
     return false;
