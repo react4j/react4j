@@ -35,13 +35,11 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
       name = "?"
   )
   interface LiteLifecycle {
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps,
-        @Nonnull JsPropertyMap<Object> nextState);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   @JsType(
@@ -52,13 +50,11 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps,
-        @Nonnull JsPropertyMap<Object> nextState);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<OverridingComponentDidUpdateComponent> implements LiteLifecycle {
@@ -73,9 +69,8 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final JsPropertyMap<Object> nextState) {
-      performComponentDidUpdate(nextProps,nextState);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      performComponentDidUpdate(nextProps);
     }
 
     @Override
@@ -84,9 +79,8 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 
@@ -107,9 +101,8 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final JsPropertyMap<Object> nextState) {
-      performComponentDidUpdate(nextProps,nextState);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      performComponentDidUpdate(nextProps);
     }
 
     @Override
@@ -118,9 +111,8 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 }

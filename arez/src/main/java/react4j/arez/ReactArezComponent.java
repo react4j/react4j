@@ -234,8 +234,7 @@ public abstract class ReactArezComponent
    */
   @SuppressWarnings( "SimplifiableIfStatement" )
   @Override
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final JsPropertyMap<Object> nextState )
+  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
     final boolean changed = notifyOnObservablePropChanges( nextProps );
     if ( changed || hasRenderDepsChanged() )

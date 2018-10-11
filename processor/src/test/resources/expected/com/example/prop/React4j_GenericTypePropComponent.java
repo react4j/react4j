@@ -44,8 +44,7 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent<T> extends NativeAdapterComponent<GenericTypePropComponent<T>> {
@@ -77,9 +76,8 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      performComponentDidUpdate(arg0);
     }
   }
 }

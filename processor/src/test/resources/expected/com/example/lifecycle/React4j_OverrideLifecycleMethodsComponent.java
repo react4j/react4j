@@ -35,15 +35,13 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps,
-        @Nonnull JsPropertyMap<Object> nextState);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentWillUnmount();
 
     void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps,
-        @Nonnull JsPropertyMap<Object> nextState);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<OverrideLifecycleMethodsComponent> implements Lifecycle {
@@ -63,9 +61,8 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final JsPropertyMap<Object> nextState) {
-      performComponentDidUpdate(nextProps,nextState);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      performComponentDidUpdate(nextProps);
     }
 
     @Override
@@ -80,9 +77,8 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps,
-        @Nonnull final JsPropertyMap<Object> nextState) {
-      return performShouldComponentUpdate(nextProps,nextState);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate(nextProps);
     }
   }
 }

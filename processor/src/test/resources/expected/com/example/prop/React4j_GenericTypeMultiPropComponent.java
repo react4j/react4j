@@ -79,8 +79,7 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent<T> extends NativeAdapterComponent<GenericTypeMultiPropComponent<T>> {
@@ -112,9 +111,8 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      performComponentDidUpdate(arg0);
     }
   }
 }

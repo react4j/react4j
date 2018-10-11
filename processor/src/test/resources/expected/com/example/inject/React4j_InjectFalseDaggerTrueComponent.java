@@ -33,8 +33,7 @@ class React4j_InjectFalseDaggerTrueComponent extends InjectFalseDaggerTrueCompon
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<InjectFalseDaggerTrueComponent> {
@@ -66,9 +65,8 @@ class React4j_InjectFalseDaggerTrueComponent extends InjectFalseDaggerTrueCompon
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      performComponentDidUpdate(arg0);
     }
   }
 }

@@ -228,12 +228,12 @@ public abstract class Component
    * The component re-renders when state or props change but calling this method is another way to
    * schedule the component to be re-rendered.
    *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} will be skipped
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap)} will be skipped
    * and it is equivalent to calling forceUpdate() on the native react component. See the
    * <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component documentation</a> for more
    * details.</p>
    *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} will be
+   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap)} will be
    * invoked. This is equivalent to calling setState({}) on the native react component.</p>
    *
    * @param force true to skip shouldComponentUpdate during re-render, false otherwise.
@@ -330,24 +330,20 @@ public abstract class Component
    * See the <a href="https://reactjs.org/docs/react-component.html#componentdidupdate">React Component documentation</a> for more details.
    *
    * @param prevProps the props before the component was updated.
-   * @param prevState the state before the component was updated.
    */
-  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
-                                     @Nullable final JsPropertyMap<Object> prevState )
+  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
   }
 
   /**
-   * Wrapper method that delegates to the {@link #componentDidUpdate(JsPropertyMap, JsPropertyMap)} method.
+   * Wrapper method that delegates to the {@link #componentDidUpdate(JsPropertyMap)} method.
    * This method exists to give middleware a mechanism to hook into component lifecycle step.
    *
    * @param prevProps the props before the component was updated.
-   * @param prevState the state before the component was updated.
    */
-  protected void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
-                                            @Nullable final JsPropertyMap<Object> prevState )
+  protected void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
-    componentDidUpdate( prevProps, prevState );
+    componentDidUpdate( prevProps );
     storeDebugDataAsState();
   }
 
@@ -411,36 +407,32 @@ public abstract class Component
    *
    * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
    *
-   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap, JsPropertyMap)}
+   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap)}
    * will not be invoked. In the future React may treat this method  as a hint rather than a strict directive, and
    * returning false may still result in a re-rendering of the component.</p>
    *
    * @param nextProps the new properties of the component.
-   * @param nextState the new state of the component.
    * @return true if the component should be updated.
    */
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final JsPropertyMap<Object> nextState )
+  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
     return true;
   }
 
   /**
-   * Wrapper method that delegates to the {@link #shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} method.
+   * Wrapper method that delegates to the {@link #shouldComponentUpdate(JsPropertyMap)} method.
    * This method exists to give middleware a mechanism to hook into component lifecycle step.
    *
    * @param nextProps the new properties of the component.
-   * @param nextState the new state of the component.
    * @return true if the component should be updated.
    */
-  protected boolean performShouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                                  @Nullable final JsPropertyMap<Object> nextState )
+  protected boolean performShouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
     if ( ReactConfig.shouldValidatePropValues() && null != nextProps )
     {
       validatePropValues( nextProps );
     }
-    return shouldComponentUpdate( nextProps, nextState );
+    return shouldComponentUpdate( nextProps );
   }
 
   /**

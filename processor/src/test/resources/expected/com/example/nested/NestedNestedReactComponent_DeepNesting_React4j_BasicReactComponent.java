@@ -33,8 +33,7 @@ class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<NestedNestedReactComponent.DeepNesting.BasicReactComponent> {
@@ -66,9 +65,8 @@ class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      performComponentDidUpdate(arg0);
     }
   }
 }

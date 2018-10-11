@@ -45,8 +45,7 @@ class React4j_CollectionArrayListPropComponent extends CollectionArrayListPropCo
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<CollectionArrayListPropComponent> {
@@ -78,9 +77,8 @@ class React4j_CollectionArrayListPropComponent extends CollectionArrayListPropCo
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      performComponentDidUpdate(arg0);
     }
   }
 }

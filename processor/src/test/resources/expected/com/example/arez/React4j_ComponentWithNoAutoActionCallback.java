@@ -51,8 +51,7 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
   interface LiteLifecycle {
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   @JsType(
@@ -63,13 +62,11 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ComponentWithNoAutoActionCallback> implements LiteLifecycle {
@@ -89,9 +86,8 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 
@@ -112,9 +108,8 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      performComponentDidUpdate(arg0);
     }
 
     @Override
@@ -123,9 +118,8 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 }

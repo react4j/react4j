@@ -936,10 +936,10 @@ public final class ReactProcessor
      * a parent class, or by a default method method implemented by typeElement or
      * a parent class. Also include Component.shouldComponentUpdate() if forceShouldComponentUpdate is true.
      */
-    final Collection<ExecutableElement> lifecycleMethods = getComponentLifecycleMethods().values();
+    final Collection<ExecutableElement> componentLifecycleMethods = getComponentLifecycleMethods().values();
     final Elements elementUtils = processingEnv.getElementUtils();
     final Types typeUtils = processingEnv.getTypeUtils();
-    final List<MethodDescriptor> overriddenLifecycleMethods =
+    final List<MethodDescriptor> lifecycleMethods =
       // Get all methods on type parent classes, and default methods from interfaces
       getMethods( typeElement ).stream()
         // Only keep methods that override the lifecycle methods
@@ -951,11 +951,11 @@ public final class ReactProcessor
                         Constants.COMPONENT_DID_MOUNT.equals( m.getSimpleName().toString() ) ||
                         Constants.COMPONENT_DID_UPDATE.equals( m.getSimpleName().toString() )
                       ) ||
-                      lifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
+                      componentLifecycleMethods.stream().anyMatch( l -> elementUtils.overrides( m, l, typeElement ) ) )
         .map( m -> new MethodDescriptor( m, (ExecutableType) typeUtils.asMemberOf( descriptor.getDeclaredType(), m ) ) )
         .collect( Collectors.toList() );
 
-    for ( final MethodDescriptor method : overriddenLifecycleMethods )
+    for ( final MethodDescriptor method : lifecycleMethods )
     {
       for ( final AnnotationMirror mirror : method.getMethod().getAnnotationMirrors() )
       {
@@ -971,7 +971,7 @@ public final class ReactProcessor
       }
     }
 
-    descriptor.setLifecycleMethods( overriddenLifecycleMethods );
+    descriptor.setLifecycleMethods( lifecycleMethods );
   }
 
   private void determineRenderMethod( @Nonnull final TypeElement typeElement,

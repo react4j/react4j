@@ -26,8 +26,7 @@ abstract class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected final void componentDidUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final JsPropertyMap<Object> nextState )
+  protected final void componentDidUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
   }
 
@@ -47,9 +46,8 @@ abstract class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final JsPropertyMap<Object> nextState )
+  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
-    return super.shouldComponentUpdate( nextProps, nextState );
+    return super.shouldComponentUpdate( nextProps );
   }
 }

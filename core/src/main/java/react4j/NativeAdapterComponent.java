@@ -157,12 +157,10 @@ public abstract class NativeAdapterComponent<I extends Component>
    * delegates to this method to perform the work.
    *
    * @param nextProps the new properties of the component.
-   * @param nextState the new state of the component.
    * @return true if the component should be updated.
-   * @see Component#shouldComponentUpdate(JsPropertyMap, JsPropertyMap)
+   * @see Component#shouldComponentUpdate(JsPropertyMap)
    */
-  protected final boolean performShouldComponentUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
-                                                        @Nonnull final JsPropertyMap<Object> nextState )
+  protected final boolean performShouldComponentUpdate( @Nonnull final JsPropertyMap<Object> nextProps )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -170,7 +168,7 @@ public abstract class NativeAdapterComponent<I extends Component>
     }
     try
     {
-      return _component.performShouldComponentUpdate( nextProps, nextState );
+      return _component.performShouldComponentUpdate( nextProps );
     }
     finally
     {
@@ -187,11 +185,9 @@ public abstract class NativeAdapterComponent<I extends Component>
    * delegates to this method to perform the work.
    *
    * @param nextProps the new properties of the component.
-   * @param nextState the new state of the component.
-   * @see Component#componentDidUpdate(JsPropertyMap, JsPropertyMap)
+   * @see Component#componentDidUpdate(JsPropertyMap)
    */
-  protected final void performComponentDidUpdate( @Nonnull final JsPropertyMap<Object> nextProps,
-                                                  @Nonnull final JsPropertyMap<Object> nextState )
+  protected final void performComponentDidUpdate( @Nonnull final JsPropertyMap<Object> nextProps )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -199,7 +195,7 @@ public abstract class NativeAdapterComponent<I extends Component>
     }
     try
     {
-      _component.performComponentDidUpdate( nextProps, nextState );
+      _component.performComponentDidUpdate( nextProps );
     }
     finally
     {

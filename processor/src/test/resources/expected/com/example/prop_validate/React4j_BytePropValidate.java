@@ -49,11 +49,9 @@ class React4j_BytePropValidate extends BytePropValidate {
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<BytePropValidate> {
@@ -85,15 +83,13 @@ class React4j_BytePropValidate extends BytePropValidate {
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      performComponentDidUpdate(arg0);
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 }

@@ -20,9 +20,8 @@ abstract class OverridingComponentDidUpdateComponent
 
   @Action
   @Override
-  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                     @Nullable final JsPropertyMap<Object> nextState )
+  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
-    super.componentDidUpdate( nextProps, nextState );
+    super.componentDidUpdate( nextProps );
   }
 }
