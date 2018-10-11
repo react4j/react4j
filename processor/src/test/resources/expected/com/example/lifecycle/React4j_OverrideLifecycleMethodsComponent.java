@@ -40,8 +40,6 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     void componentWillUnmount();
 
     void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<OverrideLifecycleMethodsComponent> implements Lifecycle {
@@ -74,11 +72,6 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     public void componentDidCatch(@Nonnull final JsError error,
         @Nonnull final ReactErrorInfo info) {
       performComponentDidCatch(error,info);
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate(nextProps);
     }
   }
 }

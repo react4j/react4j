@@ -50,8 +50,6 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   @JsType(
@@ -65,8 +63,6 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ComponentWithNoAutoActionCallback> implements LiteLifecycle {
@@ -83,11 +79,6 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 
@@ -115,11 +106,6 @@ abstract class React4j_ComponentWithNoAutoActionCallback extends ComponentWithNo
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 }

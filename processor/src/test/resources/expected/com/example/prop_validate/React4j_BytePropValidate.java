@@ -46,6 +46,15 @@ class React4j_BytePropValidate extends BytePropValidate {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
+  interface LiteLifecycle {
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
   interface Lifecycle {
     void componentDidMount();
 
@@ -54,7 +63,7 @@ class React4j_BytePropValidate extends BytePropValidate {
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<BytePropValidate> {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<BytePropValidate> implements LiteLifecycle {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -63,6 +72,11 @@ class React4j_BytePropValidate extends BytePropValidate {
     @Override
     protected BytePropValidate createComponent() {
       return new React4j_BytePropValidate();
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 

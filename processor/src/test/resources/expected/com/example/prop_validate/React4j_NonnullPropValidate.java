@@ -51,6 +51,15 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
+  interface LiteLifecycle {
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
   interface Lifecycle {
     void componentDidMount();
 
@@ -59,7 +68,7 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<NonnullPropValidate> {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<NonnullPropValidate> implements LiteLifecycle {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -68,6 +77,11 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
     @Override
     protected NonnullPropValidate createComponent() {
       return new React4j_NonnullPropValidate();
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 

@@ -45,12 +45,11 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
   @Action(
       verifyRequired = false
   )
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    boolean modified = false;
+  protected boolean shouldUpdateOnPropChanges(@Nullable final JsPropertyMap<Object> nextProps) {
     if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? null : nextProps.get( PROP_value ) ) ) {
-      modified = true;
+      return true;
     }
-    return modified;
+    return false;
   }
 
   @JsType(
@@ -60,8 +59,6 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   @JsType(
@@ -75,8 +72,6 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ComponentWithProp> implements LiteLifecycle {
@@ -93,11 +88,6 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 
@@ -125,11 +115,6 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 }

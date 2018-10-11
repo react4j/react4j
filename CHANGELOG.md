@@ -17,6 +17,13 @@
 * Compile with `-parameters` passed to javac so that debug information includes parameter names. This will
   result in the annotation processor generating methods using real parameter names rather than synthesized
   parameter names (such as `arg0`) in java version 9+.
+* **\[processor\]** Optimize the code generated for detecting changes in props annotated with
+  `@Prop(shouldUpdateOnChange=true)` but not `@Prop(observable=false)` by immediately returning `true` when
+  a change is detected and avoiding comparing any further props that may exist.
+* **\[core\]** Add support for the `shouldUpdateOnChange` parameter on the `@Prop` annotation for non-arez
+  subclasses. This involved moving functionality from `ReactArezComponent` back to `arez.Component` class,
+  marking the `shouldUpdateOnChange()` as package-access and final and updating the annotation processor to
+  generate the native glue code only if there is any logic generated to support `shouldUpdateOnChange`. 
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)

@@ -287,19 +287,22 @@ final class ComponentDescriptor
 
   private boolean canOmitFromLiteLifecycle( @Nonnull final MethodDescriptor method )
   {
-    final ExecutableElement element = method.getMethod();
-    final String methodName = element.getSimpleName().toString();
-    final String className = ( (TypeElement) element.getEnclosingElement() ).getQualifiedName().toString();
-    return (
-             Constants.COMPONENT_CLASSNAME.equals( className ) &&
-             (
-               Constants.COMPONENT_DID_MOUNT.equals( methodName ) ||
-               Constants.COMPONENT_DID_UPDATE.equals( methodName )
-             )
-           ) || (
-             Constants.COMPONENT_CLASSNAME.equals( className ) &&
-             Constants.SHOULD_COMPONENT_UPDATE.equals( methodName )
-           );
+    final String methodName = method.getMethod().getSimpleName().toString();
+    return
+      ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) && !generateShouldComponentUpdate() ) ||
+      (
+        Constants.COMPONENT_CLASSNAME.equals( getClassNameForMethod( method ) ) &&
+        (
+          Constants.COMPONENT_DID_MOUNT.equals( methodName ) ||
+          Constants.COMPONENT_DID_UPDATE.equals( methodName )
+        )
+      );
+  }
+
+  @Nonnull
+  private String getClassNameForMethod( @Nonnull final MethodDescriptor method )
+  {
+    return ( (TypeElement) method.getMethod().getEnclosingElement() ).getQualifiedName().toString();
   }
 
   @Nonnull
@@ -365,6 +368,11 @@ final class ComponentDescriptor
   {
     assert null != _props;
     _props.sort( PropComparator.COMPARATOR );
+  }
+
+  boolean generateShouldComponentUpdate()
+  {
+    return getProps().stream().anyMatch( p -> p.hasValidateMethod() || p.isObservable() );
   }
 
   boolean shouldGeneratePropValidator()

@@ -53,8 +53,6 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   @JsType(
@@ -68,8 +66,6 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ArezReactComponent> implements LiteLifecycle {
@@ -86,11 +82,6 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 
@@ -118,11 +109,6 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 }

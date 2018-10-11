@@ -50,14 +50,12 @@ public @interface Prop
 
   /**
    * Return an enum indicating whether prop should trigger a change if it updated.
-   * This setting is used when the annotation processors is responsible for implementing
-   * the {@link react4j.Component#shouldComponentUpdate(JsPropertyMap)} lifecycle
-   * method. If set to {@link Feature#ENABLE} then the code will check the prop when implementing
-   * <code>shouldComponentUpdate</code>. If set to {@link Feature#DISABLE} then the prop will be ignored
-   * when implementing <code>shouldComponentUpdate</code>. If set to {@link Feature#AUTODETECT} then the
-   * annotation processor will treat it as {@link Feature#ENABLE}.
+   * If set to {@link Feature#ENABLE} then the code will check the prop when implementing
+   * <code>shouldComponentUpdate</code> while setting the value to {@link Feature#DISABLE} will result in
+   * the value of the prop being ignored when determining whether a prop change should cause a re-render.
+   * If set to {@link Feature#AUTODETECT} then the annotation processor will treat it as {@link Feature#ENABLE}.
    *
-   * @return the enum indicating whether prop should trigger a change if it updated.
+   * @return the enum indicating whether prop should trigger a render if it is modified.
    */
   Feature shouldUpdateOnChange() default Feature.AUTODETECT;
 

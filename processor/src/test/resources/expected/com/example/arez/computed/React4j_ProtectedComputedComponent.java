@@ -46,8 +46,6 @@ abstract class React4j_ProtectedComputedComponent extends ProtectedComputedCompo
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   @JsType(
@@ -61,8 +59,6 @@ abstract class React4j_ProtectedComputedComponent extends ProtectedComputedCompo
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ProtectedComputedComponent> implements LiteLifecycle {
@@ -79,11 +75,6 @@ abstract class React4j_ProtectedComputedComponent extends ProtectedComputedCompo
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 
@@ -111,11 +102,6 @@ abstract class React4j_ProtectedComputedComponent extends ProtectedComputedCompo
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 }

@@ -50,6 +50,15 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
+  interface LiteLifecycle {
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
   interface Lifecycle {
     void componentDidMount();
 
@@ -58,7 +67,7 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ProtectedPropValidate> {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ProtectedPropValidate> implements LiteLifecycle {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -67,6 +76,11 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
     @Override
     protected ProtectedPropValidate createComponent() {
       return new React4j_ProtectedPropValidate();
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 

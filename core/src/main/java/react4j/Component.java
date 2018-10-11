@@ -9,6 +9,7 @@ import jsinterop.annotations.JsFunction;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.annotations.Prop;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -414,9 +415,35 @@ public abstract class Component
    * @param nextProps the new properties of the component.
    * @return true if the component should be updated.
    */
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
+  final boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
-    return true;
+    return notifyOnPropChanges( nextProps ) || shouldUpdateOnPropChanges( nextProps );
+  }
+
+  /**
+   * Detect changes in props that that are require specific actions on change.
+   * This method is a template method that may be overridden by subclasses generated
+   * by the annotation processor based on configuration of props.
+   *
+   * @param nextProps the new properties of the component.
+   * @return true if a prop was marked with {@link Prop#shouldUpdateOnChange()} and has changed.
+   */
+  protected boolean notifyOnPropChanges( @Nullable final JsPropertyMap<Object> nextProps )
+  {
+    return false;
+  }
+
+  /**
+   * Detect changes in props that that do not require specific actions on change.
+   * This method may be overridden by the annotation processor. The method will return true if a prop has been updated
+   * and the prop has not set {@link Prop#shouldUpdateOnChange()} to false. Otherwise this method will return false.
+   *
+   * @param nextProps the new properties of the component.
+   * @return true if the component should be updated.
+   */
+  protected boolean shouldUpdateOnPropChanges( @Nullable final JsPropertyMap<Object> nextProps )
+  {
+    return false;
   }
 
   /**

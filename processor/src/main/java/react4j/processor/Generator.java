@@ -597,7 +597,7 @@ final class Generator
 
     if ( descriptor.isArezComponent() && descriptor.getProps().stream().anyMatch( PropDescriptor::isObservable ) )
     {
-      final MethodSpec.Builder method = buildNotifyOnObservablePropChangesMethod( descriptor );
+      final MethodSpec.Builder method = buildNotifyOnPropChangesMethod( descriptor );
       if ( null != method )
       {
         builder.addMethod( method.build() );
@@ -969,7 +969,7 @@ final class Generator
   }
 
   @Nullable
-  private static MethodSpec.Builder buildNotifyOnObservablePropChangesMethod( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildNotifyOnPropChangesMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<PropDescriptor> props =
       descriptor.getProps().stream().filter( PropDescriptor::isObservable ).collect( Collectors.toList() );
@@ -979,21 +979,29 @@ final class Generator
     }
     else
     {
-      final MethodSpec.Builder method = MethodSpec.methodBuilder( "notifyOnObservablePropChanges" ).
+      final MethodSpec.Builder method = MethodSpec.methodBuilder( "notifyOnPropChanges" ).
         addModifiers( Modifier.PROTECTED ).
         addAnnotation( Override.class ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
           addAnnotation( NULLABLE_CLASSNAME ).build() ).
         returns( TypeName.BOOLEAN );
-      method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
+      if ( descriptor.isArezComponent() )
+      {
+        final AnnotationSpec.Builder annotation =
+          AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" );
+        method.addAnnotation( annotation.build() );
+      }
       method.addStatement( "boolean modified = false" );
-      for ( final PropDescriptor prop : descriptor.getProps() )
+      for ( final PropDescriptor prop : props )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         final String code =
           "if ( !$T.equals( props().get( $N ), null == nextProps ? null : nextProps.get( $N ) ) )";
         block.beginControlFlow( code, Objects.class, prop.getConstantName(), prop.getConstantName() );
-        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
+        if ( prop.isObservable() )
+        {
+          block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
+        }
         if ( prop.shouldUpdateOnChange() )
         {
           block.addStatement( "modified = true" );
@@ -1001,7 +1009,14 @@ final class Generator
         block.endControlFlow();
         method.addCode( block.build() );
       }
-      method.addStatement( "return modified" );
+      if ( descriptor.isArezComponent() )
+      {
+        method.addStatement( "return modified || hasRenderDepsChanged()" );
+      }
+      else
+      {
+        method.addStatement( "return modified" );
+      }
       return method;
     }
   }
@@ -1073,25 +1088,24 @@ final class Generator
     }
     else
     {
-      final MethodSpec.Builder method = MethodSpec.methodBuilder( "shouldComponentUpdate" ).
+      final MethodSpec.Builder method = MethodSpec.methodBuilder( "shouldUpdateOnPropChanges" ).
         addModifiers( Modifier.PROTECTED ).
         addAnnotation( Override.class ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
           addAnnotation( NULLABLE_CLASSNAME ).build() )
         .returns( TypeName.BOOLEAN );
       method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
-      method.addStatement( "boolean modified = false" );
       for ( final PropDescriptor prop : descriptor.getProps() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         final String code =
           "if ( !$T.isTripleEqual( props().get( $N ), null == nextProps ? null : nextProps.get( $N ) ) )";
         block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), prop.getConstantName() );
-        block.addStatement( "modified = true" );
+        block.addStatement( "return true" );
         block.endControlFlow();
         method.addCode( block.build() );
       }
-      method.addStatement( "return modified" );
+      method.addStatement( "return false" );
       return method;
     }
   }

@@ -46,6 +46,15 @@ class React4j_DoublePropValidate extends DoublePropValidate {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
+  interface LiteLifecycle {
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
   interface Lifecycle {
     void componentDidMount();
 
@@ -54,7 +63,7 @@ class React4j_DoublePropValidate extends DoublePropValidate {
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<DoublePropValidate> {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<DoublePropValidate> implements LiteLifecycle {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -63,6 +72,11 @@ class React4j_DoublePropValidate extends DoublePropValidate {
     @Override
     protected DoublePropValidate createComponent() {
       return new React4j_DoublePropValidate();
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 

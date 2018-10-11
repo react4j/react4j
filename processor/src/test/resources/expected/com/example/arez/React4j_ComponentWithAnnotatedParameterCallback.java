@@ -77,8 +77,6 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   @JsType(
@@ -92,8 +90,6 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ComponentWithAnnotatedParameterCallback> implements LiteLifecycle {
@@ -110,11 +106,6 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 
@@ -142,11 +133,6 @@ abstract class React4j_ComponentWithAnnotatedParameterCallback extends Component
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 }

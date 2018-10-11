@@ -58,8 +58,6 @@ abstract class React4j_ExplicitlyEnabledCallback extends ExplicitlyEnabledCallba
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   @JsType(
@@ -73,8 +71,6 @@ abstract class React4j_ExplicitlyEnabledCallback extends ExplicitlyEnabledCallba
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ExplicitlyEnabledCallback> implements LiteLifecycle {
@@ -91,11 +87,6 @@ abstract class React4j_ExplicitlyEnabledCallback extends ExplicitlyEnabledCallba
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 
@@ -123,11 +114,6 @@ abstract class React4j_ExplicitlyEnabledCallback extends ExplicitlyEnabledCallba
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return performShouldComponentUpdate(arg0);
     }
   }
 }

@@ -46,6 +46,15 @@ class React4j_FloatPropValidate extends FloatPropValidate {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
+  interface LiteLifecycle {
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
   interface Lifecycle {
     void componentDidMount();
 
@@ -54,7 +63,7 @@ class React4j_FloatPropValidate extends FloatPropValidate {
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<FloatPropValidate> {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<FloatPropValidate> implements LiteLifecycle {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -63,6 +72,11 @@ class React4j_FloatPropValidate extends FloatPropValidate {
     @Override
     protected FloatPropValidate createComponent() {
       return new React4j_FloatPropValidate();
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      return performShouldComponentUpdate(arg0);
     }
   }
 

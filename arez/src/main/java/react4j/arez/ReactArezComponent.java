@@ -25,7 +25,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.Component;
 import react4j.Procedure;
 import react4j.ReactNode;
-import react4j.annotations.Prop;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -88,7 +87,6 @@ public abstract class ReactArezComponent
    *
    * @return true if render dependencies changed, false otherwise.
    */
-  @SuppressWarnings( "WeakerAccess" )
   protected final boolean hasRenderDepsChanged()
   {
     return _renderDepsChanged;
@@ -227,52 +225,6 @@ public abstract class ReactArezComponent
       }
       return result;
     }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @SuppressWarnings( "SimplifiableIfStatement" )
-  @Override
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
-  {
-    final boolean changed = notifyOnObservablePropChanges( nextProps );
-    if ( changed || hasRenderDepsChanged() )
-    {
-      return true;
-    }
-    else
-    {
-      // No need to check state as this component can not schedule state updates. The only thing that can
-      // write to react's state is "scheduleDebugStateUpdate()" and this performs forced render by calling
-      // "scheduleRender( true )" and thus does not come through this method.
-      // Note that this method ONLY checks props that are not marked as observable as observable props
-      // have already been checked in notifyOnObservablePropChanges
-      return shouldComponentUpdate( nextProps );
-    }
-  }
-
-  /**
-   * Detect changes in props that are backed by observables and notify observers of change.
-   *
-   * @param nextProps the new properties of the component.
-   * @return true if a prop was marked with {@link Prop#shouldUpdateOnChange()} and has changed.
-   */
-  protected boolean notifyOnObservablePropChanges( @Nullable final JsPropertyMap<Object> nextProps )
-  {
-    return false;
-  }
-
-  /**
-   * This method is overridden by the annotation processor. The method will return true if a prop has been updated
-   * and the prop has not set {@link Prop#shouldUpdateOnChange()} to false. Otherwise this method will return false.
-   *
-   * @param nextProps the new properties of the component.
-   * @return true if the component should be updated.
-   */
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
-  {
-    return false;
   }
 
   /**

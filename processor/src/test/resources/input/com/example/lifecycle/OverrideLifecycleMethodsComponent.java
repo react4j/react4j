@@ -44,10 +44,4 @@ abstract class OverrideLifecycleMethodsComponent
   protected void componentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
   }
-
-  @Override
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
-  {
-    return super.shouldComponentUpdate( nextProps );
-  }
 }
