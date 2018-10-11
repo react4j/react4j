@@ -36,6 +36,7 @@ define 'react4j' do
                  :jsinterop_base,
                  :jsinterop_annotations,
                  :braincheck
+    compile.options[:other] = %w(-parameters)
 
     gwt_enhance(project)
 
@@ -61,6 +62,7 @@ define 'react4j' do
                  project('core').compile.dependencies,
                  :elemental2_dom,
                  :elemental2_promise
+    compile.options[:other] = %w(-parameters)
 
     generate_factory_source(project)
     gwt_enhance(project)
@@ -87,6 +89,7 @@ define 'react4j' do
                  project('dom').compile.dependencies,
                  :arez_core,
                  :jetbrains_annotations
+    compile.options[:other] = %w(-parameters)
 
     gwt_enhance(project)
 
@@ -164,6 +167,7 @@ define 'react4j' do
                  :javacsv,
                  :gwt_symbolmap,
                  :testng
+    compile.options[:other] = %w(-parameters)
 
     package(:jar)
     package(:sources)

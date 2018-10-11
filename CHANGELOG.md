@@ -14,6 +14,9 @@
 * **\[core\]** Remove the `nextState` parameter from `Component.shouldComponentUpdate(...)` and
   `Component.componentDidUpdate(...)` as it is no longer used now that individual components do not manage
   state.
+* Compile with `-parameters` passed to javac so that debug information includes parameter names. This will
+  result in the annotation processor generating methods using real parameter names rather than synthesized
+  parameter names (such as `arg0`) in java version 9+.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)
