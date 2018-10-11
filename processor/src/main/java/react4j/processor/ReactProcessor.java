@@ -371,8 +371,7 @@ public final class ReactProcessor
       {
         throw new ReactProcessorException( "@PropValidate target must have exactly 1 parameter", method );
       }
-      final ExecutableType methodType =
-        (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
+      final ExecutableType methodType = resolveMethodType( descriptor, method );
       if ( !processingEnv.getTypeUtils().isAssignable( methodType.getParameterTypes().get( 0 ),
                                                        prop.getMethodType().getReturnType() ) )
       {
@@ -435,8 +434,7 @@ public final class ReactProcessor
         throw new ReactProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
                                            "@Prop annotated method.", method );
       }
-      final ExecutableType methodType = (ExecutableType) processingEnv.getTypeUtils()
-        .asMemberOf( descriptor.getDeclaredType(), method );
+      final ExecutableType methodType = resolveMethodType( descriptor, method );
       if ( !processingEnv.getTypeUtils().isAssignable( methodType.getReturnType(),
                                                        prop.getMethodType().getReturnType() ) )
       {
@@ -669,8 +667,7 @@ public final class ReactProcessor
     verifyNoDuplicateAnnotations( method );
     final String name = deriveCallbackName( method );
     final TypeElement callbackType = getCallbackType( method );
-    final ExecutableType methodType =
-      (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
+    final ExecutableType methodType = resolveMethodType( descriptor, method );
     final List<ExecutableElement> callbackMethods =
       getMethods( callbackType ).stream().
         filter( m11 -> m11.getModifiers().contains( Modifier.ABSTRACT ) ).
@@ -826,8 +823,7 @@ public final class ReactProcessor
                                                @Nonnull final ExecutableElement method )
   {
     final String name = derivePropName( method );
-    final ExecutableType methodType =
-      (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
+    final ExecutableType methodType = resolveMethodType( descriptor, method );
 
     verifyNoDuplicateAnnotations( method );
     MethodChecks.mustBeAbstract( Constants.PROP_ANNOTATION_CLASSNAME, method );
