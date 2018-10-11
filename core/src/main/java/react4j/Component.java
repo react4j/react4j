@@ -147,7 +147,7 @@ public abstract class Component
    * component to be re-rendered. When this method is called the {@link #shouldComponentUpdate(JsPropertyMap)}
    * lifecycle method will be skipped. Calling this method is equivalent to calling forceUpdate() on the native
    * react component. See the <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component
-   * documentation</a> for more details.</p>
+   * documentation</a> for more details.
    */
   protected final void scheduleRender()
   {
