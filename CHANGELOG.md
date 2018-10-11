@@ -24,6 +24,8 @@
   subclasses. This involved moving functionality from `ReactArezComponent` back to `arez.Component` class,
   marking the `shouldUpdateOnChange()` as package-access and final and updating the annotation processor to
   generate the native glue code only if there is any logic generated to support `shouldUpdateOnChange`.
+* **\[core\]** Make the methods `Component.performComponentDidUpdate(...)` and `Component.performComponentDidMount()`
+  final and package access as no longer any need to allow middleware to customize these methods.
 * **\[core\]** Remove the mechanisms by which component authors can update react state.
 * **\[core\]** Fix a bug where methods annotated with `@Prop(observable=true)` that return a primitive
   value would always force a re-render of the component even if the value is the same.

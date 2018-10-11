@@ -234,9 +234,8 @@ public abstract class Component
 
   /**
    * Wrapper method that delegates to the {@link #componentDidMount()} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
    */
-  protected void performComponentDidMount()
+  final void performComponentDidMount()
   {
     componentDidMount();
     storeDebugDataAsState();
@@ -255,11 +254,10 @@ public abstract class Component
 
   /**
    * Wrapper method that delegates to the {@link #componentDidUpdate(JsPropertyMap)} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
    *
    * @param prevProps the props before the component was updated.
    */
-  protected void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
+  final void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
     componentDidUpdate( prevProps );
     storeDebugDataAsState();
