@@ -12,6 +12,10 @@
 * Fix `notifyOnObservablePropChanges()` so that it gracefully handles scenario where primitives are used in props
   - same fix as in replicant
 
+* Should `scheduleRender` ever not be force?
+
+* Change all remaining lifecycle hooks so they have less name cruft. (i.e. `didUpdate()` rather than `componentDidUpdate()`)
+
 ### Next Next Release
 
 * Collections returned from props should be made immutable.
