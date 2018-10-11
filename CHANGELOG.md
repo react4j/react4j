@@ -23,7 +23,7 @@
 * **\[core\]** Add support for the `shouldUpdateOnChange` parameter on the `@Prop` annotation for non-arez
   subclasses. This involved moving functionality from `ReactArezComponent` back to `arez.Component` class,
   marking the `shouldUpdateOnChange()` as package-access and final and updating the annotation processor to
-  generate the native glue code only if there is any logic generated to support `shouldUpdateOnChange`. 
+  generate the native glue code only if there is any logic generated to support `shouldUpdateOnChange`.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)
