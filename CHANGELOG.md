@@ -38,6 +38,9 @@
   triggered through this mechanism is expected to explicitly render the component.
 * **\[processor\]** Remove the `@Action` annotation from the generated `shouldUpdateOnPropChanges`
   method as it is unnecessary and increases codesize and decreases runtime performance.
+* **\[processor\]** Eliminate numerous null checks when implementing `Component.shouldUpdateOnPropChanges()`
+  using the annotation processor by moving the null check into the caller. This resulted in a significant
+  decrease in code-size and a slight performance improvement.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)

@@ -590,18 +590,14 @@ final class Generator
       }
     }
 
-    if ( descriptor.shouldGeneratePropValidator() )
+    if ( descriptor.hasValidatedProps() )
     {
       builder.addMethod( buildPropValidatorMethod( descriptor ).build() );
     }
 
-    if ( descriptor.isArezComponent() && descriptor.getProps().stream().anyMatch( PropDescriptor::isObservable ) )
+    if ( descriptor.isArezComponent() && descriptor.hasObservableProps() )
     {
-      final MethodSpec.Builder method = buildNotifyOnPropChangesMethod( descriptor );
-      if ( null != method )
-      {
-        builder.addMethod( method.build() );
-      }
+      builder.addMethod( buildReportPropChangesMethod( descriptor ).build() );
     }
 
     if ( descriptor.isArezComponent() )
@@ -968,59 +964,96 @@ final class Generator
     return "get" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 ) + "ObservableValue";
   }
 
-  @Nullable
-  private static MethodSpec.Builder buildNotifyOnPropChangesMethod( @Nonnull final ComponentDescriptor descriptor )
+  @Nonnull
+  private static MethodSpec.Builder buildReportPropChangesMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<PropDescriptor> props =
       descriptor.getProps().stream().filter( PropDescriptor::isObservable ).collect( Collectors.toList() );
-    if ( props.isEmpty() )
+    assert !props.isEmpty();
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropChanges" ).
+      addModifiers( Modifier.PROTECTED ).
+      addAnnotation( Override.class ).
+      addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME ).build() ).
+      addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME ).build() ).
+      addParameter( ParameterSpec.builder( TypeName.BOOLEAN, "inComponentDidUpdate", Modifier.FINAL ).build() ).
+      returns( TypeName.BOOLEAN );
+    if ( descriptor.isArezComponent() )
     {
-      return null;
+      final AnnotationSpec.Builder annotation =
+        AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" );
+      method.addAnnotation( annotation.build() );
     }
-    else
+    method.addStatement( "boolean modified = false" );
+    if ( props.stream().anyMatch( PropDescriptor::isObservable ) )
     {
-      final MethodSpec.Builder method = MethodSpec.methodBuilder( "notifyOnPropChanges" ).
-        addModifiers( Modifier.PROTECTED ).
-        addAnnotation( Override.class ).
-        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
-          addAnnotation( NONNULL_CLASSNAME ).build() ).
-        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
-          addAnnotation( NULLABLE_CLASSNAME ).build() ).
-        returns( TypeName.BOOLEAN );
-      if ( descriptor.isArezComponent() )
-      {
-        final AnnotationSpec.Builder annotation =
-          AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" );
-        method.addAnnotation( annotation.build() );
-      }
-      method.addStatement( "boolean modified = false" );
-      for ( final PropDescriptor prop : props )
+      method.addStatement( "final boolean reportChanges = shouldReportPropChanges( inComponentDidUpdate )" );
+    }
+    // observable only
+    final List<PropDescriptor> ooProps =
+      props.stream().filter( p -> p.isObservable() && !p.shouldUpdateOnChange() ).collect( Collectors.toList() );
+    if ( !ooProps.isEmpty() )
+    {
+      final CodeBlock.Builder observableBlock = CodeBlock.builder();
+      observableBlock.beginControlFlow( "if ( reportChanges )" );
+      for ( final PropDescriptor prop : ooProps )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
-        final String code =
-          "if ( !$T.isTripleEqual( props.get( $N ), null == nextProps ? $T.undefined() : nextProps.get( $N ) ) )";
-        block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), JS_CLASSNAME, prop.getConstantName() );
-        if ( prop.isObservable() )
+        block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( $N ), nextProps.get( $N ) ) )",
+                                JS_CLASSNAME,
+                                prop.getConstantName(),
+                                prop.getConstantName() );
+        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
+        block.endControlFlow();
+        observableBlock.add( block.build() );
+      }
+      observableBlock.endControlFlow();
+      method.addCode( observableBlock.build() );
+    }
+
+    final List<PropDescriptor> remaining =
+      props.stream()
+        .filter( p -> !ooProps.contains( p ) )
+        .collect( Collectors.toList() );
+
+    if ( !remaining.isEmpty() )
+    {
+      for ( final PropDescriptor prop : remaining )
+      {
+        final boolean observable = prop.isObservable();
+        final boolean shouldUpdateOnChange = prop.shouldUpdateOnChange();
+
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( $N ), nextProps.get( $N ) ) )",
+                                JS_CLASSNAME,
+                                prop.getConstantName(),
+                                prop.getConstantName() );
+        if ( observable )
         {
-          block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
+          final CodeBlock.Builder reportBlock = CodeBlock.builder();
+          reportBlock.beginControlFlow( "if ( reportChanges )" );
+          reportBlock.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
+          reportBlock.endControlFlow();
+          block.add( reportBlock.build() );
         }
-        if ( prop.shouldUpdateOnChange() )
+        if ( shouldUpdateOnChange )
         {
           block.addStatement( "modified = true" );
         }
         block.endControlFlow();
         method.addCode( block.build() );
       }
-      if ( descriptor.isArezComponent() )
-      {
-        method.addStatement( "return modified || hasRenderDepsChanged()" );
-      }
-      else
-      {
-        method.addStatement( "return modified" );
-      }
-      return method;
     }
+    if ( descriptor.isArezComponent() )
+    {
+      method.addStatement( "return modified || hasRenderDepsChanged()" );
+    }
+    else
+    {
+      method.addStatement( "return modified" );
+    }
+    return method;
   }
 
   @Nonnull
@@ -1078,10 +1111,11 @@ final class Generator
   private static MethodSpec.Builder buildShouldComponentUpdateMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<PropDescriptor> props =
-      descriptor.getProps()
+      descriptor
+        .getProps()
         .stream()
         .filter( PropDescriptor::shouldUpdateOnChange )
-        // Observable properties already checked in notifyOnObservablePropChanges
+        // Observable properties already checked in reportPropChanges
         .filter( p -> !p.isObservable() )
         .collect( Collectors.toList() );
     if ( props.isEmpty() )
@@ -1094,14 +1128,15 @@ final class Generator
         addModifiers( Modifier.PROTECTED ).
         addAnnotation( Override.class ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
-          addAnnotation( NULLABLE_CLASSNAME ).build() )
+          addAnnotation( NONNULL_CLASSNAME ).build() )
         .returns( TypeName.BOOLEAN );
       for ( final PropDescriptor prop : descriptor.getProps() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
-        final String code =
-          "if ( !$T.isTripleEqual( props().get( $N ), null == nextProps ? $T.undefined() : nextProps.get( $N ) ) )";
-        block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), JS_CLASSNAME, prop.getConstantName() );
+        block.beginControlFlow( "if ( !$T.isTripleEqual( props().get( $N ), nextProps.get( $N ) ) )",
+                                JS_CLASSNAME,
+                                prop.getConstantName(),
+                                prop.getConstantName() );
         block.addStatement( "return true" );
         block.endControlFlow();
         method.addCode( block.build() );

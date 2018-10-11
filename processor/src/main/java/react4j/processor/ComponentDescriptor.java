@@ -61,6 +61,8 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<MethodDescriptor> _memoizeMethods;
+  private boolean _hasObservableProps;
+  private boolean _hasValidatedProps;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
@@ -288,14 +290,16 @@ final class ComponentDescriptor
   private boolean canOmitFromLiteLifecycle( @Nonnull final MethodDescriptor method )
   {
     final String methodName = method.getMethod().getSimpleName().toString();
+    final String classname = getClassNameForMethod( method );
     return
       ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) && !generateShouldComponentUpdate() ) ||
       (
-        Constants.COMPONENT_CLASSNAME.equals( getClassNameForMethod( method ) ) &&
-        (
-          Constants.COMPONENT_DID_MOUNT.equals( methodName ) ||
-          Constants.COMPONENT_DID_UPDATE.equals( methodName )
-        )
+        Constants.COMPONENT_CLASSNAME.equals( classname ) && Constants.COMPONENT_DID_MOUNT.equals( methodName )
+      ) ||
+      (
+        Constants.COMPONENT_CLASSNAME.equals( classname ) &&
+        Constants.COMPONENT_DID_UPDATE.equals( methodName ) &&
+        !generateComponentDidUpdate()
       );
   }
 
@@ -359,6 +363,8 @@ final class ComponentDescriptor
   void setProps( @Nonnull final List<PropDescriptor> events )
   {
     _props = Objects.requireNonNull( events );
+    _hasObservableProps = getProps().stream().anyMatch( PropDescriptor::isObservable );
+    _hasValidatedProps = getProps().stream().anyMatch( PropDescriptor::hasValidateMethod );
   }
 
   /**
@@ -370,13 +376,23 @@ final class ComponentDescriptor
     _props.sort( PropComparator.COMPARATOR );
   }
 
-  boolean generateShouldComponentUpdate()
+  boolean hasObservableProps()
   {
-    return getProps().stream().anyMatch( p -> p.hasValidateMethod() || p.isObservable() );
+    return _hasObservableProps;
   }
 
-  boolean shouldGeneratePropValidator()
+  boolean generateShouldComponentUpdate()
   {
-    return getProps().stream().anyMatch( PropDescriptor::hasValidateMethod );
+    return hasObservableProps() || hasValidatedProps();
+  }
+
+  boolean generateComponentDidUpdate()
+  {
+    return hasObservableProps();
+  }
+
+  boolean hasValidatedProps()
+  {
+    return _hasValidatedProps;
   }
 }

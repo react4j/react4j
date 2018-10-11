@@ -41,8 +41,8 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
   }
 
   @Override
-  protected boolean shouldUpdateOnPropChanges(@Nullable final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( PROP_model ), null == nextProps ? Js.undefined() : nextProps.get( PROP_model ) ) ) {
+  protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
+    if ( !Js.isTripleEqual( props().get( PROP_model ), nextProps.get( PROP_model ) ) ) {
       return true;
     }
     return false;

@@ -58,11 +58,14 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   @Action(
       verifyRequired = false
   )
-  protected boolean notifyOnPropChanges(@Nonnull final JsPropertyMap<Object> props,
-      @Nullable final JsPropertyMap<Object> nextProps) {
+  protected boolean reportPropChanges(@Nonnull final JsPropertyMap<Object> props,
+      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentDidUpdate) {
     boolean modified = false;
-    if ( !Js.isTripleEqual( props.get( PROP_value ), null == nextProps ? Js.undefined() : nextProps.get( PROP_value ) ) ) {
-      getValueObservableValue().reportChanged();
+    final boolean reportChanges = shouldReportPropChanges( inComponentDidUpdate );
+    if ( !Js.isTripleEqual( props.get( PROP_value ), nextProps.get( PROP_value ) ) ) {
+      if ( reportChanges ) {
+        getValueObservableValue().reportChanged();
+      }
       modified = true;
     }
     return modified || hasRenderDepsChanged();
@@ -79,6 +82,8 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       name = "?"
   )
   interface LiteLifecycle {
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
+
     void componentWillUnmount();
 
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
@@ -108,6 +113,11 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     @Override
     protected ObservableViaObservedProp createComponent() {
       return new Arez_React4j_ObservableViaObservedProp();
+    }
+
+    @Override
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
+      performComponentDidUpdate(arg0);
     }
 
     @Override
