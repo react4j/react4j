@@ -144,7 +144,7 @@ public abstract class Component
   /**
    * Schedule this component for re-rendering.
    * The component re-renders when props change but calling this method is another way to schedule the
-   * component to be re-rendered. When this method is called the {@link #shouldComponentUpdate(JsPropertyMap)}
+   * component to be re-rendered. When this method is called the {@link #performShouldComponentUpdate(JsPropertyMap)}
    * lifecycle method will be skipped. Calling this method is equivalent to calling forceUpdate() on the native
    * react component. See the <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component
    * documentation</a> for more details.
@@ -297,30 +297,6 @@ public abstract class Component
   }
 
   /**
-   * Use this method to let React know if a component's output is not affected
-   * by the current change in state or props. The default behavior is to re-render on
-   * every state change, and in the vast majority of cases you should rely on the default behavior.
-   * See the <a href="https://reactjs.org/docs/react-component.html#shouldcomponentupdate">React Component documentation</a> for more details.
-   *
-   * <p>This method is invoked before rendering when new props or state are being received.
-   * This method is not called for the initial render or when {@link #scheduleRender()} is called
-   * with the force parameter set to true.</p>
-   *
-   * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
-   *
-   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap)}
-   * will not be invoked. In the future React may treat this method  as a hint rather than a strict directive, and
-   * returning false may still result in a re-rendering of the component.</p>
-   *
-   * @param nextProps the new properties of the component.
-   * @return true if the component should be updated.
-   */
-  final boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
-  {
-    return notifyOnPropChanges( nextProps ) || shouldUpdateOnPropChanges( nextProps );
-  }
-
-  /**
    * Detect changes in props that that are require specific actions on change.
    * This method is a template method that may be overridden by subclasses generated
    * by the annotation processor based on configuration of props.
@@ -356,19 +332,30 @@ public abstract class Component
   }
 
   /**
-   * Wrapper method that delegates to the {@link #shouldComponentUpdate(JsPropertyMap)} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
+   * This method let's React know if a component's output is not affected
+   * by the current change in props. The default behavior is to re-render on
+   * every state change, and in the vast majority of cases you should rely on the default behavior.
+   * See the <a href="https://reactjs.org/docs/react-component.html#shouldcomponentupdate">React Component documentation</a> for more details.
+   *
+   * <p>This method is invoked before rendering when new props or state are being received.
+   * This method is not called for the initial render or when {@link #scheduleRender()}.</p>
+   *
+   * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
+   *
+   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap)}
+   * will not be invoked. In the future React may treat this method  as a hint rather than a strict directive, and
+   * returning false may still result in a re-rendering of the component.</p>
    *
    * @param nextProps the new properties of the component.
    * @return true if the component should be updated.
    */
-  protected boolean performShouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
+  final boolean performShouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
     if ( ReactConfig.shouldValidatePropValues() && null != nextProps )
     {
       validatePropValues( nextProps );
     }
-    return shouldComponentUpdate( nextProps );
+    return notifyOnPropChanges( nextProps ) || shouldUpdateOnPropChanges( nextProps );
   }
 
   /**

@@ -158,7 +158,6 @@ public abstract class NativeAdapterComponent<I extends Component>
    *
    * @param nextProps the new properties of the component.
    * @return true if the component should be updated.
-   * @see Component#shouldComponentUpdate(JsPropertyMap)
    */
   protected final boolean performShouldComponentUpdate( @Nonnull final JsPropertyMap<Object> nextProps )
   {
