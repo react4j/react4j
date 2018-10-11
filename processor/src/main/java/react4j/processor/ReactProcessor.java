@@ -944,6 +944,10 @@ public final class ReactProcessor
                         Constants.SHOULD_COMPONENT_UPDATE.equals( m.getSimpleName().toString() )
                       ) ||
                       (
+                        descriptor.isArezComponent() &&
+                        Constants.COMPONENT_WILL_UNMOUNT.equals( m.getSimpleName().toString() )
+                      ) ||
+                      (
                         Constants.COMPONENT_DID_MOUNT.equals( m.getSimpleName().toString() ) ||
                         Constants.COMPONENT_DID_UPDATE.equals( m.getSimpleName().toString() )
                       ) ||

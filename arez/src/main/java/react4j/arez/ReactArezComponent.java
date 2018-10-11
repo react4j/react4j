@@ -219,19 +219,6 @@ public abstract class ReactArezComponent
   /**
    * {@inheritDoc}
    */
-  @Override
-  protected void componentWillUnmount()
-  {
-    /*
-     * This method is overridden as it forces the annotation processor to generate the native
-     * componentWillUnmount method. The native method is required so that performComponentWillUnmount()
-     * is invoked and correctly cleans up state.
-     */
-  }
-
-  /**
-   * {@inheritDoc}
-   */
   protected final void performComponentWillUnmount()
   {
     final Disposable schedulerLock = getContext().pauseScheduler();

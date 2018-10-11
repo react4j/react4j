@@ -10,6 +10,7 @@ final class Constants
   static final String DAGGER_PROVIDES_CLASSNAME = "dagger.Provides";
   static final String JS_FUNCTION_CLASSNAME = "jsinterop.annotations.JsFunction";
   static final String COMPONENT_CLASSNAME = "react4j.Component";
+  static final String REACT_AREZ_COMPONENT_CLASSNAME = "react4j.arez.ReactArezComponent";
   static final String CALLBACK_ANNOTATION_CLASSNAME = "react4j.annotations.Callback";
   static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";
   static final String PROP_DEFAULT_ANNOTATION_CLASSNAME = "react4j.annotations.PropDefault";
@@ -28,10 +29,11 @@ final class Constants
   static final String COMPONENT_DID_MOUNT = "componentDidMount";
   static final String COMPONENT_DID_UPDATE = "componentDidUpdate";
   static final String SHOULD_COMPONENT_UPDATE = "shouldComponentUpdate";
+  static final String COMPONENT_WILL_UNMOUNT = "componentWillUnmount";
   static final List<String> LIFECYCLE_METHODS =
     Arrays.asList( COMPONENT_DID_MOUNT,
                    COMPONENT_DID_UPDATE,
-                   "componentWillUnmount",
+                   COMPONENT_WILL_UNMOUNT,
                    "componentDidCatch",
                    SHOULD_COMPONENT_UPDATE );
 
