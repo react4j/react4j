@@ -5,8 +5,6 @@
 * Remove `@State` and all related infrastructure.
   - This includes the appropriate parameters to all the lifecycle methods.
   - Also add hook method `componentDidUpdate()` with no parameters.
-  - Possibly also `shouldComponentUpdate()` or maybe that is now covered by `notifyOnObservablePropChanges()`
-    that should be moved back to core Component
   - remove `arez.Procedure` or at least make it package access.
 
 * Add `@OnPropChanged` that is invoked for each prop whenever they change values. Change replicant to use this.
