@@ -994,93 +994,62 @@ final class Generator
     {
       method.addStatement( "final boolean reportChanges = shouldReportPropChanges( inComponentDidUpdate )" );
     }
-    // observable only
-    final List<PropDescriptor> ooProps =
-      props.stream()
-        .filter( p -> p.isObservable() && !p.shouldUpdateOnChange() && !p.hasOnPropChangedMethod() )
-        .collect( Collectors.toList() );
-    if ( !ooProps.isEmpty() )
+
+    for ( final PropDescriptor prop : props )
     {
-      final CodeBlock.Builder observableBlock = CodeBlock.builder();
-      observableBlock.beginControlFlow( "if ( reportChanges )" );
-      for ( final PropDescriptor prop : ooProps )
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( $N ), nextProps.get( $N ) ) )",
+                              JS_CLASSNAME,
+                              prop.getConstantName(),
+                              prop.getConstantName() );
+      if ( prop.isObservable() )
       {
-        final CodeBlock.Builder block = CodeBlock.builder();
-        block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( $N ), nextProps.get( $N ) ) )",
-                                JS_CLASSNAME,
-                                prop.getConstantName(),
-                                prop.getConstantName() );
-        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
-        block.endControlFlow();
-        observableBlock.add( block.build() );
+        final CodeBlock.Builder reportBlock = CodeBlock.builder();
+        reportBlock.beginControlFlow( "if ( reportChanges )" );
+        reportBlock.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
+        reportBlock.endControlFlow();
+        block.add( reportBlock.build() );
       }
-      observableBlock.endControlFlow();
-      method.addCode( observableBlock.build() );
-    }
-
-    final List<PropDescriptor> remaining =
-      props.stream()
-        .filter( p -> !ooProps.contains( p ) )
-        .collect( Collectors.toList() );
-
-    if ( !remaining.isEmpty() )
-    {
-      for ( final PropDescriptor prop : remaining )
+      if ( prop.hasOnPropChangedMethod() )
       {
-        final CodeBlock.Builder block = CodeBlock.builder();
-        block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( $N ), nextProps.get( $N ) ) )",
-                                JS_CLASSNAME,
-                                prop.getConstantName(),
-                                prop.getConstantName() );
-        if ( prop.isObservable() )
-        {
-          final CodeBlock.Builder reportBlock = CodeBlock.builder();
-          reportBlock.beginControlFlow( "if ( reportChanges )" );
-          reportBlock.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
-          reportBlock.endControlFlow();
-          block.add( reportBlock.build() );
-        }
-        if ( prop.hasOnPropChangedMethod() )
-        {
-          final CodeBlock.Builder onChangeBlock = CodeBlock.builder();
-          onChangeBlock.beginControlFlow( "if ( inComponentDidUpdate )" );
+        final CodeBlock.Builder onChangeBlock = CodeBlock.builder();
+        onChangeBlock.beginControlFlow( "if ( inComponentDidUpdate )" );
 
-          final ExecutableElement onPropChangedMethod = prop.getPropChangedMethod();
-          if ( onPropChangedMethod.getParameters().isEmpty() )
+        final ExecutableElement onPropChangedMethod = prop.getPropChangedMethod();
+        if ( onPropChangedMethod.getParameters().isEmpty() )
+        {
+          onChangeBlock.addStatement( "$N()", onPropChangedMethod.getSimpleName().toString() );
+        }
+        else
+        {
+          final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
+          final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
+          if ( !resultKind.isPrimitive() &&
+               null ==
+               ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) )
           {
-            onChangeBlock.addStatement( "$N()", onPropChangedMethod.getSimpleName().toString() );
+            onChangeBlock.addStatement( "$N( $T.uncheckedCast( props.getAny( $N ) ) )",
+                                        onPropChangedMethod.getSimpleName().toString(),
+                                        JS_CLASSNAME,
+                                        prop.getConstantName() );
           }
           else
           {
-            final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
-            final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
-            if ( !resultKind.isPrimitive() &&
-                 null ==
-                 ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) )
-            {
-              onChangeBlock.addStatement( "$N( $T.uncheckedCast( props.getAny( $N ) ) )",
-                                          onPropChangedMethod.getSimpleName().toString(),
-                                          JS_CLASSNAME,
-                                          prop.getConstantName() );
-            }
-            else
-            {
-              onChangeBlock.addStatement( "$N( props.getAny( $N ).$N() )",
-                                          onPropChangedMethod.getSimpleName().toString(),
-                                          prop.getConstantName(),
-                                          convertMethodName );
-            }
+            onChangeBlock.addStatement( "$N( props.getAny( $N ).$N() )",
+                                        onPropChangedMethod.getSimpleName().toString(),
+                                        prop.getConstantName(),
+                                        convertMethodName );
           }
-          onChangeBlock.endControlFlow();
-          block.add( onChangeBlock.build() );
         }
-        if ( prop.shouldUpdateOnChange() )
-        {
-          block.addStatement( "modified = true" );
-        }
-        block.endControlFlow();
-        method.addCode( block.build() );
+        onChangeBlock.endControlFlow();
+        block.add( onChangeBlock.build() );
       }
+      if ( prop.shouldUpdateOnChange() )
+      {
+        block.addStatement( "modified = true" );
+      }
+      block.endControlFlow();
+      method.addCode( block.build() );
     }
     if ( descriptor.isArezComponent() )
     {
