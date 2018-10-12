@@ -112,7 +112,7 @@ public final class ReactConfig
     @Override
     boolean shouldStoreDebugDataAsState()
     {
-      return System.getProperty( "react4j.store_debug_data_as_state", "true" ).equals( "true" );
+      return "true".equals( System.getProperty( "react4j.store_debug_data_as_state", "false" ) );
     }
 
     @GwtIncompatible
