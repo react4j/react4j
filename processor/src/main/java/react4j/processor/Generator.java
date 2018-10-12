@@ -596,7 +596,7 @@ final class Generator
       builder.addMethod( buildPropValidatorMethod( descriptor ).build() );
     }
 
-    if ( descriptor.isArezComponent() && descriptor.hasObservableProps() )
+    if ( descriptor.hasObservableProps() || descriptor.hasOnPropChangedProps() )
     {
       builder.addMethod( buildReportPropChangesMethod( descriptor ).build() );
     }
@@ -890,7 +890,7 @@ final class Generator
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
-      block.addStatement( "return null != props().getAny( $N ) ? props().getAny( $N ).$N() : null",
+      block.addStatement( "return props().has( $N ) ? props().getAny( $N ).$N() : null",
                           prop.getConstantName(),
                           prop.getConstantName(),
                           convertMethodName );
@@ -969,7 +969,10 @@ final class Generator
   private static MethodSpec.Builder buildReportPropChangesMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<PropDescriptor> props =
-      descriptor.getProps().stream().filter( PropDescriptor::isObservable ).collect( Collectors.toList() );
+      descriptor.getProps()
+        .stream()
+        .filter( p -> p.isObservable() || p.hasOnPropChangedMethod() )
+        .collect( Collectors.toList() );
     assert !props.isEmpty();
     final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropChanges" ).
       addModifiers( Modifier.PROTECTED ).
@@ -993,7 +996,9 @@ final class Generator
     }
     // observable only
     final List<PropDescriptor> ooProps =
-      props.stream().filter( p -> p.isObservable() && !p.shouldUpdateOnChange() ).collect( Collectors.toList() );
+      props.stream()
+        .filter( p -> p.isObservable() && !p.shouldUpdateOnChange() && !p.hasOnPropChangedMethod() )
+        .collect( Collectors.toList() );
     if ( !ooProps.isEmpty() )
     {
       final CodeBlock.Builder observableBlock = CodeBlock.builder();
@@ -1022,15 +1027,12 @@ final class Generator
     {
       for ( final PropDescriptor prop : remaining )
       {
-        final boolean observable = prop.isObservable();
-        final boolean shouldUpdateOnChange = prop.shouldUpdateOnChange();
-
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( $N ), nextProps.get( $N ) ) )",
                                 JS_CLASSNAME,
                                 prop.getConstantName(),
                                 prop.getConstantName() );
-        if ( observable )
+        if ( prop.isObservable() )
         {
           final CodeBlock.Builder reportBlock = CodeBlock.builder();
           reportBlock.beginControlFlow( "if ( reportChanges )" );
@@ -1038,7 +1040,41 @@ final class Generator
           reportBlock.endControlFlow();
           block.add( reportBlock.build() );
         }
-        if ( shouldUpdateOnChange )
+        if ( prop.hasOnPropChangedMethod() )
+        {
+          final CodeBlock.Builder onChangeBlock = CodeBlock.builder();
+          onChangeBlock.beginControlFlow( "if ( inComponentDidUpdate )" );
+
+          final ExecutableElement onPropChangedMethod = prop.getPropChangedMethod();
+          if ( onPropChangedMethod.getParameters().isEmpty() )
+          {
+            onChangeBlock.addStatement( "$N()", onPropChangedMethod.getSimpleName().toString() );
+          }
+          else
+          {
+            final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
+            final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
+            if ( !resultKind.isPrimitive() &&
+                 null ==
+                 ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+            {
+              onChangeBlock.addStatement( "$N( $T.uncheckedCast( props.getAny( $N ) ) )",
+                                          onPropChangedMethod.getSimpleName().toString(),
+                                          JS_CLASSNAME,
+                                          prop.getConstantName() );
+            }
+            else
+            {
+              onChangeBlock.addStatement( "$N( props.getAny( $N ).$N() )",
+                                          onPropChangedMethod.getSimpleName().toString(),
+                                          prop.getConstantName(),
+                                          convertMethodName );
+            }
+          }
+          onChangeBlock.endControlFlow();
+          block.add( onChangeBlock.build() );
+        }
+        if ( prop.shouldUpdateOnChange() )
         {
           block.addStatement( "modified = true" );
         }

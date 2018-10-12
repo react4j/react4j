@@ -38,7 +38,7 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
   @Override
   protected String getMyRequiredProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myRequiredProp ) ? props().getAny( PROP_myRequiredProp ).asString() : null;
+      return props().has( PROP_myRequiredProp ) ? props().getAny( PROP_myRequiredProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myRequiredProp ) );
     }
@@ -47,7 +47,7 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
+      return props().has( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }
@@ -56,7 +56,7 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
   @Override
   protected ReactNode[] getChildren() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_children ) ? props().getAny( PROP_children ).cast() : null;
+      return props().has( PROP_children ) ? props().getAny( PROP_children ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_children ) );
     }

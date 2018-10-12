@@ -33,7 +33,7 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
   @Override
   protected String getMyProp12$23() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp12$23 ) ? props().getAny( PROP_myProp12$23 ).asString() : null;
+      return props().has( PROP_myProp12$23 ) ? props().getAny( PROP_myProp12$23 ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp12$23 ) );
     }

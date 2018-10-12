@@ -31,7 +31,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
   @Override
   protected ArrayList getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).cast() : null;
+      return props().has( PROP_myProp ) ? props().getAny( PROP_myProp ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }

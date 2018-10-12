@@ -34,7 +34,7 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
   @Override
   protected ComponentJsFunctionProp.TestFunction getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
+      return props().has( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }

@@ -2,9 +2,6 @@
 
 ### Next Release
 
-* Add `@OnPropChanged` that is invoked for each prop whenever they change values. Change replicant to use this.
-  Will probably need to adapt `notifyOnObservablePropChanges()` to handle this.
-
 * Change all remaining lifecycle hooks so they have less name cruft. (i.e. `didUpdate()` rather than `componentDidUpdate()`)
 
 ### Next Next Release

@@ -35,7 +35,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   @Override
   protected ReactNode getChild() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
+      return props().has( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_child ) );
     }

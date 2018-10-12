@@ -43,6 +43,8 @@
   decrease in code-size and a slight performance improvement.
 * **\[core\]** Remove the `prevProps` parameter from the method `Component.componentDidUpdate()` as component
   writers can not safely use parameter and are expected to make use of annotation processor features instead.
+* **\[core\]** Introduce the `@OnPropChanged` annotation that can be applied to methods that will be invoked
+  in the `Component.componentDidUpdate()` lifecycle stage when a prop has actually changed.
 
 ### [v0.101](https://github.com/react4j/react4j/tree/v0.101) (2018-10-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.100...v0.101)

@@ -45,7 +45,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
   )
   protected Object getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
+      return props().has( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }

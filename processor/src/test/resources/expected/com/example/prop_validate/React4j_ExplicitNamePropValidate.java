@@ -30,7 +30,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
+      return props().has( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }

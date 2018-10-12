@@ -30,7 +30,7 @@ class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent {
   @Override
   protected String window() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_window ) ? props().getAny( PROP_window ).asString() : null;
+      return props().has( PROP_window ) ? props().getAny( PROP_window ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_window ) );
     }

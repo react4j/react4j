@@ -34,7 +34,7 @@ class React4j_ExplicitOptional extends ExplicitOptional {
   @Override
   protected String getMyRequiredProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myRequiredProp ) ? props().getAny( PROP_myRequiredProp ).asString() : null;
+      return props().has( PROP_myRequiredProp ) ? props().getAny( PROP_myRequiredProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myRequiredProp ) );
     }
@@ -43,7 +43,7 @@ class React4j_ExplicitOptional extends ExplicitOptional {
   @Override
   protected String getMyOptionalProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myOptionalProp ) ? props().getAny( PROP_myOptionalProp ).asString() : null;
+      return props().has( PROP_myOptionalProp ) ? props().getAny( PROP_myOptionalProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myOptionalProp ) );
     }
@@ -52,7 +52,7 @@ class React4j_ExplicitOptional extends ExplicitOptional {
   @Override
   protected String getMyOtherOptionalProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myOtherOptionalProp ) ? props().getAny( PROP_myOtherOptionalProp ).asString() : null;
+      return props().has( PROP_myOtherOptionalProp ) ? props().getAny( PROP_myOtherOptionalProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myOtherOptionalProp ) );
     }

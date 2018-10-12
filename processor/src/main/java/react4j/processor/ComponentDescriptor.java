@@ -63,6 +63,7 @@ final class ComponentDescriptor
   private List<MethodDescriptor> _memoizeMethods;
   private Boolean _hasObservableProps;
   private Boolean _hasValidatedProps;
+  private Boolean _hasOnPropChangedProps;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
@@ -390,7 +391,16 @@ final class ComponentDescriptor
 
   boolean generateComponentDidUpdate()
   {
-    return hasObservableProps();
+    return hasObservableProps() || hasOnPropChangedProps();
+  }
+
+  boolean hasOnPropChangedProps()
+  {
+    if ( null == _hasOnPropChangedProps )
+    {
+      _hasOnPropChangedProps = getProps().stream().anyMatch( PropDescriptor::hasOnPropChangedMethod );
+    }
+    return _hasOnPropChangedProps;
   }
 
   boolean hasValidatedProps()

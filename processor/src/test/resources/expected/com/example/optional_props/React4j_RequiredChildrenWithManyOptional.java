@@ -45,7 +45,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
   @Override
   protected String getMyPropA() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myPropA ) ? props().getAny( PROP_myPropA ).asString() : null;
+      return props().has( PROP_myPropA ) ? props().getAny( PROP_myPropA ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myPropA ) );
     }
@@ -54,7 +54,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
   @Override
   protected String getMyPropB() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myPropB ) ? props().getAny( PROP_myPropB ).asString() : null;
+      return props().has( PROP_myPropB ) ? props().getAny( PROP_myPropB ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myPropB ) );
     }
@@ -63,7 +63,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
   @Override
   protected String getMyPropC() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myPropC ) ? props().getAny( PROP_myPropC ).asString() : null;
+      return props().has( PROP_myPropC ) ? props().getAny( PROP_myPropC ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myPropC ) );
     }
@@ -72,7 +72,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
   @Override
   protected String getMyPropD() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myPropD ) ? props().getAny( PROP_myPropD ).asString() : null;
+      return props().has( PROP_myPropD ) ? props().getAny( PROP_myPropD ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myPropD ) );
     }
@@ -81,7 +81,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
   @Override
   protected ReactNode[] getChildren() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_children ) ? props().getAny( PROP_children ).cast() : null;
+      return props().has( PROP_children ) ? props().getAny( PROP_children ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_children ) );
     }
