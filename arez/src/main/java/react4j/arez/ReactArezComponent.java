@@ -15,20 +15,15 @@ import arez.annotations.OnDepsChanged;
 import arez.annotations.Priority;
 import arez.spy.ObservableValueInfo;
 import arez.spy.ObserverInfo;
-import elemental2.core.JsObject;
 import elemental2.promise.Promise;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.Component;
-import react4j.Procedure;
 import react4j.ReactNode;
-import react4j.annotations.Prop;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -53,29 +48,10 @@ public abstract class ReactArezComponent
   private final int _arezComponentId;
   private boolean _renderDepsChanged;
   private boolean _unmounted;
-  /**
-   * If the last render resulted in state update to record new arez state then this will be true.
-   * It guards against multiple renders of a single component where rendering is just updating
-   * react state. Otherwise dependencies on values that are never equal (i.e. Streams) will result
-   * in infinite re-renders ultimately triggering invariant failure from React.
-   *
-   * This should only be true if ReactArezConfig.shouldStoreArezDataAsState() returns true.
-   */
-  private boolean _scheduledArezStateUpdate;
 
   protected ReactArezComponent()
   {
     _arezComponentId = c_nextComponentId++;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback callback,
-                                            @Nullable final Procedure onStateUpdateComplete )
-  {
-    fail( () -> "Attempted to schedule state update on ReactArezComponent subclass. Use Arez @Observable or @Computed properties instead." );
   }
 
   /**
@@ -100,7 +76,6 @@ public abstract class ReactArezComponent
    *
    * @return true if render dependencies changed, false otherwise.
    */
-  @SuppressWarnings( "WeakerAccess" )
   protected final boolean hasRenderDepsChanged()
   {
     return _renderDepsChanged;
@@ -117,7 +92,7 @@ public abstract class ReactArezComponent
       _renderDepsChanged = true;
       if ( !_unmounted )
       {
-        scheduleRender( true );
+        scheduleRender();
       }
     }
   }
@@ -244,114 +219,6 @@ public abstract class ReactArezComponent
   /**
    * {@inheritDoc}
    */
-  @SuppressWarnings( "SimplifiableIfStatement" )
-  @Override
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final JsPropertyMap<Object> nextState )
-  {
-    final boolean changed = notifyOnObservablePropChanges( nextProps );
-    if ( changed || hasRenderDepsChanged() )
-    {
-      return true;
-    }
-    else
-    {
-      // No need to check state as this component can not schedule state updates. The only thing that can
-      // write to react's state is "scheduleArezStateUpdate()" and this performs forced render by calling
-      // "scheduleRender( true )" and thus does not come through this method.
-      // Note that this method ONLY checks props that are not marked as observable as observable props
-      // have already been checked in notifyOnObservablePropChanges
-      return shouldComponentUpdate( nextProps );
-    }
-  }
-
-  /**
-   * Detect changes in props that are backed by observables and notify observers of change.
-   *
-   * @param nextProps the new properties of the component.
-   * @return true if a prop was marked with {@link Prop#shouldUpdateOnChange()} and has changed.
-   */
-  protected boolean notifyOnObservablePropChanges( @Nullable final JsPropertyMap<Object> nextProps )
-  {
-    return false;
-  }
-
-  /**
-   * This method is overridden by the annotation processor. The method will return true if a prop has been updated
-   * and the prop has not set {@link Prop#shouldUpdateOnChange()} to false. Otherwise this method will return false.
-   *
-   * @param nextProps the new properties of the component.
-   * @return true if the component should be updated.
-   */
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
-  {
-    return false;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void componentDidMount()
-  {
-    /*
-     * This method is overridden as it forces the annotation processor to generate the native
-     * componentDidMount method. The native method is required so that performComponentDidMount()
-     * is invoked and correctly records state.
-     */
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected final void performComponentDidMount()
-  {
-    storeArezDataAsState();
-    super.performComponentDidMount();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
-                                     @Nullable final JsPropertyMap<Object> prevState )
-  {
-    /*
-     * This method is overridden as it forces the annotation processor to generate the native
-     * componentDidUpdate method. The native method is required so that performComponentDidUpdate()
-     * is invoked and correctly cleans up state.
-     */
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
-                                            @Nullable final JsPropertyMap<Object> prevState )
-  {
-    super.performComponentDidUpdate( prevProps, prevState );
-    storeArezDataAsState();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void componentWillUnmount()
-  {
-    /*
-     * This method is overridden as it forces the annotation processor to generate the native
-     * componentWillUnmount method. The native method is required so that performComponentWillUnmount()
-     * is invoked and correctly cleans up state.
-     */
-  }
-
-  /**
-   * {@inheritDoc}
-   */
   protected final void performComponentWillUnmount()
   {
     final Disposable schedulerLock = getContext().pauseScheduler();
@@ -372,64 +239,18 @@ public abstract class ReactArezComponent
   }
 
   /**
-   * Store arez data such as dependencies on the state of component.
-   * This is only done if {@link ReactArezConfig#shouldStoreArezDataAsState()} returns true and is primarily
-   * done to make it easy to debug from within React DevTools.
+   * {@inheritDoc}
    */
-  private void storeArezDataAsState()
+  @Override
+  protected final void populateDebugData( @Nonnull final JsPropertyMap<Object> newState )
   {
-    if ( ReactArezConfig.shouldStoreArezDataAsState() && !Disposable.isDisposed( this ) )
-    {
-      if ( _scheduledArezStateUpdate )
-      {
-        _scheduledArezStateUpdate = false;
-      }
-      else
-      {
-        final JsPropertyMap<Object> newState = JsPropertyMap.of();
+    // Present component id as state. Useful to track when instance ids change.
+    newState.set( "Arez.id", getArezComponentId() );
+    newState.set( "Arez.name", getArezComponentName() );
 
-        // Present component id as state. Useful to track when instance ids change.
-        newState.set( "Arez.id", getArezComponentId() );
-        newState.set( "Arez.name", getArezComponentName() );
-
-        // Collect existing dependencies as state
-        final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );
-        observerInfo.getDependencies().forEach( d -> newState.set( d.getName(), getValue( d ) ) );
-
-        final JsPropertyMap<Object> state = super.state();
-        final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
-        /*
-         * To determine whether we need to do a state update we do compare each key and value and make sure
-         * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
-         * updates in react are merges, we need to implement this by putting undefined values into the state.
-         */
-        if ( null == currentState )
-        {
-          scheduleArezStateUpdate( newState );
-        }
-        else
-        {
-          for ( final String key : JsObject.keys( Js.uncheckedCast( currentState ) ) )
-          {
-            if ( !newState.has( key ) )
-            {
-              newState.set( key, Js.undefined() );
-            }
-          }
-
-          for ( final String key : JsObject.keys( Js.uncheckedCast( newState ) ) )
-          {
-            final Any newValue = currentState.getAny( key );
-            final Any existingValue = newState.getAny( key );
-            if ( !Objects.equals( newValue, existingValue ) )
-            {
-              scheduleArezStateUpdate( newState );
-              return;
-            }
-          }
-        }
-      }
-    }
+    // Collect existing dependencies as state
+    final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );
+    observerInfo.getDependencies().forEach( d -> newState.set( d.getName(), getValue( d ) ) );
   }
 
   /**
@@ -511,18 +332,5 @@ public abstract class ReactArezComponent
                                        @Nonnull final Object value )
   {
     return value;
-  }
-
-  /**
-   * Schedule state update the updates arez state.
-   */
-  private void scheduleArezStateUpdate( @Nonnull final JsPropertyMap<Object> data )
-  {
-    super.scheduleStateUpdate( ( p, s ) -> Js.cast( JsObject.freeze( data ) ), null );
-    /*
-     * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
-     */
-    scheduleRender( true );
-    _scheduledArezStateUpdate = true;
   }
 }

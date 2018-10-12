@@ -2,6 +2,10 @@
 
 ### Next Release
 
+* Change all remaining lifecycle hooks so they have less name cruft. (i.e. `didUpdate()` rather than `componentDidUpdate()`)
+
+### Next Next Release
+
 * Collections returned from props should be made immutable.
 
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component. `STATELESS` would be inlined into
@@ -27,9 +31,10 @@
 
 * Introduce `TreeLocal` component which is effectively context
 
-### Very High Priority
+* Consider marking callbacks with marker type `<T extends MouseEventHandler & Serializable>` and mandate the usage
+  of such in pure components?
 
-* Consider remove `@State` and all related infrastructure. Arez should be sufficient.
+### Very High Priority
 
 * Add helper to autoload js assets
 

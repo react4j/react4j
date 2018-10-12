@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.StringJoiner;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -58,6 +57,7 @@ final class Generator
     ClassName.get( "arez.annotations", "ArezComponent" );
   private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
+  private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
   private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
   private static final ClassName JS_PACKAGE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsPackage" );
@@ -68,13 +68,13 @@ final class Generator
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j", "ComponentConstructorFunction" );
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
+  private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
   private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
     ClassName.get( "react4j", "NativeAdapterComponent" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
   private static final ClassName KEY_CLASSNAME = ClassName.get( "react4j", "Key" );
-  private static final ClassName REACT_AREZ_CONFIG_CLASSNAME = ClassName.get( "react4j.arez", "ReactArezConfig" );
 
   private Generator()
   {
@@ -591,24 +591,14 @@ final class Generator
       }
     }
 
-    if ( descriptor.shouldGeneratePropValidator() )
+    if ( descriptor.hasValidatedProps() )
     {
       builder.addMethod( buildPropValidatorMethod( descriptor ).build() );
     }
 
-    for ( final StateValueDescriptor stateValue : descriptor.getStateValues() )
+    if ( descriptor.hasObservableProps() || descriptor.hasOnPropChangedProps() )
     {
-      builder.addMethod( buildStateGetterMethod( descriptor, stateValue ).build() );
-      builder.addMethod( buildStateSetterMethod( descriptor, stateValue ).build() );
-    }
-
-    if ( descriptor.isArezComponent() && descriptor.getProps().stream().anyMatch( PropDescriptor::isObservable ) )
-    {
-      final MethodSpec.Builder method = buildNotifyOnObservablePropChangesMethod( descriptor );
-      if ( null != method )
-      {
-        builder.addMethod( method.build() );
-      }
+      builder.addMethod( buildReportPropChangesMethod( descriptor ).build() );
     }
 
     if ( descriptor.isArezComponent() )
@@ -893,14 +883,14 @@ final class Generator
           addMember( "readOutsideTransaction", "true" );
       method.addAnnotation( annotation.build() );
     }
-    final String convertMethodName = getConverter( returnType, methodElement, "Prop" );
+    final String convertMethodName = getConverter( returnType, methodElement );
     final TypeKind resultKind = methodElement.getReturnType().getKind();
     if ( !resultKind.isPrimitive() &&
          null == ProcessorUtil.findAnnotationByType( methodElement, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
-      block.addStatement( "return null != props().getAny( $N ) ? props().getAny( $N ).$N() : null",
+      block.addStatement( "return props().has( $N ) ? props().getAny( $N ).$N() : null",
                           prop.getConstantName(),
                           prop.getConstantName(),
                           convertMethodName );
@@ -919,9 +909,7 @@ final class Generator
   }
 
   @Nonnull
-  private static String getConverter( @Nonnull final TypeMirror type,
-                                      @Nonnull final Element element,
-                                      @Nonnull final String key )
+  private static String getConverter( @Nonnull final TypeMirror type, @Nonnull final Element element )
   {
     switch ( type.getKind() )
     {
@@ -955,73 +943,9 @@ final class Generator
       case ARRAY:
         return "cast";
       default:
-        throw new ReactProcessorException( "Return type of @" + key + " method is not yet " +
+        throw new ReactProcessorException( "Return type of @Prop method is not yet " +
                                            "handled. Type: " + type.getKind(), element );
     }
-  }
-
-  private static MethodSpec.Builder buildStateSetterMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                            @Nonnull final StateValueDescriptor stateValue )
-  {
-    final ExecutableElement methodElement = stateValue.getSetter();
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( methodElement.getSimpleName().toString() );
-    ProcessorUtil.copyTypeParameters( stateValue.getSetterType(), method );
-    ProcessorUtil.copyAccessModifiers( methodElement, method );
-    ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
-
-    method.addAnnotation( Override.class );
-
-    final String name = stateValue.getName();
-    if ( descriptor.isArezComponent() )
-    {
-      final AnnotationSpec.Builder annotation =
-        AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
-          addMember( "name", "$S", name );
-      method.addAnnotation( annotation.build() );
-    }
-
-    final TypeMirror parameterType = stateValue.getSetterType().getParameterTypes().get( 0 );
-    final VariableElement element = stateValue.getSetter().getParameters().get( 0 );
-    final String paramName = element.getSimpleName().toString();
-    final TypeName type = TypeName.get( parameterType );
-    final ParameterSpec.Builder param =
-      ParameterSpec.builder( type, paramName, Modifier.FINAL );
-    ProcessorUtil.copyWhitelistedAnnotations( element, param );
-    method.addParameter( param.build() );
-
-    method.addStatement(
-      "scheduleStateUpdate( ( ( previousState, currentProps ) -> $T.of( $S, $N ) ) )",
-      JS_PROPERTY_MAP_CLASSNAME,
-      name,
-      paramName );
-    return method;
-  }
-
-  private static MethodSpec.Builder buildStateGetterMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                            @Nonnull final StateValueDescriptor stateValue )
-  {
-    final TypeMirror returnType = stateValue.getGetterType().getReturnType();
-    final ExecutableElement methodElement = stateValue.getGetter();
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( methodElement.getSimpleName().toString() ).
-        returns( TypeName.get( returnType ) );
-    ProcessorUtil.copyTypeParameters( stateValue.getGetterType(), method );
-    ProcessorUtil.copyAccessModifiers( methodElement, method );
-    ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
-
-    method.addAnnotation( Override.class );
-
-    final String name = stateValue.getName();
-    if ( descriptor.isArezComponent() )
-    {
-      final AnnotationSpec.Builder annotation =
-        AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
-          addMember( "name", "$S", name );
-      method.addAnnotation( annotation.build() );
-    }
-    final String convertMethodName = getConverter( returnType, methodElement, "State" );
-    method.addStatement( "return state().getAny( $S ).$N()", name, convertMethodName );
-    return method;
   }
 
   @Nonnull
@@ -1041,42 +965,101 @@ final class Generator
     return "get" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 ) + "ObservableValue";
   }
 
-  @Nullable
-  private static MethodSpec.Builder buildNotifyOnObservablePropChangesMethod( @Nonnull final ComponentDescriptor descriptor )
+  @Nonnull
+  private static MethodSpec.Builder buildReportPropChangesMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<PropDescriptor> props =
-      descriptor.getProps().stream().filter( PropDescriptor::isObservable ).collect( Collectors.toList() );
-    if ( props.isEmpty() )
+      descriptor.getProps()
+        .stream()
+        .filter( p -> p.isObservable() || p.hasOnPropChangedMethod() )
+        .collect( Collectors.toList() );
+    assert !props.isEmpty();
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropChanges" ).
+      addModifiers( Modifier.PROTECTED ).
+      addAnnotation( Override.class ).
+      addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME ).build() ).
+      addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME ).build() ).
+      addParameter( ParameterSpec.builder( TypeName.BOOLEAN, "inComponentDidUpdate", Modifier.FINAL ).build() ).
+      returns( TypeName.BOOLEAN );
+    if ( descriptor.isArezComponent() )
     {
-      return null;
+      final AnnotationSpec.Builder annotation =
+        AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" );
+      method.addAnnotation( annotation.build() );
+    }
+    method.addStatement( "boolean modified = false" );
+    if ( props.stream().anyMatch( PropDescriptor::isObservable ) )
+    {
+      method.addStatement( "final boolean reportChanges = shouldReportPropChanges( inComponentDidUpdate )" );
+    }
+
+    for ( final PropDescriptor prop : props )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( $N ), nextProps.get( $N ) ) )",
+                              JS_CLASSNAME,
+                              prop.getConstantName(),
+                              prop.getConstantName() );
+      if ( prop.isObservable() )
+      {
+        final CodeBlock.Builder reportBlock = CodeBlock.builder();
+        reportBlock.beginControlFlow( "if ( reportChanges )" );
+        reportBlock.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
+        reportBlock.endControlFlow();
+        block.add( reportBlock.build() );
+      }
+      if ( prop.hasOnPropChangedMethod() )
+      {
+        final CodeBlock.Builder onChangeBlock = CodeBlock.builder();
+        onChangeBlock.beginControlFlow( "if ( inComponentDidUpdate )" );
+
+        final ExecutableElement onPropChangedMethod = prop.getPropChangedMethod();
+        if ( onPropChangedMethod.getParameters().isEmpty() )
+        {
+          onChangeBlock.addStatement( "$N()", onPropChangedMethod.getSimpleName().toString() );
+        }
+        else
+        {
+          final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
+          final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
+          if ( !resultKind.isPrimitive() &&
+               null ==
+               ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+          {
+            onChangeBlock.addStatement( "$N( $T.uncheckedCast( props.getAny( $N ) ) )",
+                                        onPropChangedMethod.getSimpleName().toString(),
+                                        JS_CLASSNAME,
+                                        prop.getConstantName() );
+          }
+          else
+          {
+            onChangeBlock.addStatement( "$N( props.getAny( $N ).$N() )",
+                                        onPropChangedMethod.getSimpleName().toString(),
+                                        prop.getConstantName(),
+                                        convertMethodName );
+          }
+        }
+        onChangeBlock.endControlFlow();
+        block.add( onChangeBlock.build() );
+      }
+      if ( prop.shouldUpdateOnChange() )
+      {
+        block.addStatement( "modified = true" );
+      }
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    if ( descriptor.isArezComponent() )
+    {
+      method.addStatement( "return modified || hasRenderDepsChanged()" );
     }
     else
     {
-      final MethodSpec.Builder method = MethodSpec.methodBuilder( "notifyOnObservablePropChanges" ).
-        addModifiers( Modifier.PROTECTED ).
-        addAnnotation( Override.class ).
-        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
-          addAnnotation( NULLABLE_CLASSNAME ).build() ).
-        returns( TypeName.BOOLEAN );
-      method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
-      method.addStatement( "boolean modified = false" );
-      for ( final PropDescriptor prop : descriptor.getProps() )
-      {
-        final CodeBlock.Builder block = CodeBlock.builder();
-        final String code =
-          "if ( !$T.equals( props().get( $N ), null == nextProps ? null : nextProps.get( $N ) ) )";
-        block.beginControlFlow( code, Objects.class, prop.getConstantName(), prop.getConstantName() );
-        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
-        if ( prop.shouldUpdateOnChange() )
-        {
-          block.addStatement( "modified = true" );
-        }
-        block.endControlFlow();
-        method.addCode( block.build() );
-      }
       method.addStatement( "return modified" );
-      return method;
     }
+    return method;
   }
 
   @Nonnull
@@ -1118,7 +1101,7 @@ final class Generator
                           returnType,
                           typedName,
                           JS_CLASSNAME,
-                          getConverter( returnType, prop.getMethod(), "Prop" ),
+                          getConverter( returnType, prop.getMethod() ),
                           rawName );
       if ( prop.hasValidateMethod() )
       {
@@ -1134,10 +1117,11 @@ final class Generator
   private static MethodSpec.Builder buildShouldComponentUpdateMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<PropDescriptor> props =
-      descriptor.getProps()
+      descriptor
+        .getProps()
         .stream()
         .filter( PropDescriptor::shouldUpdateOnChange )
-        // Observable properties already checked in notifyOnObservablePropChanges
+        // Observable properties already checked in reportPropChanges
         .filter( p -> !p.isObservable() )
         .collect( Collectors.toList() );
     if ( props.isEmpty() )
@@ -1146,25 +1130,24 @@ final class Generator
     }
     else
     {
-      final MethodSpec.Builder method = MethodSpec.methodBuilder( "shouldComponentUpdate" ).
+      final MethodSpec.Builder method = MethodSpec.methodBuilder( "shouldUpdateOnPropChanges" ).
         addModifiers( Modifier.PROTECTED ).
         addAnnotation( Override.class ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
-          addAnnotation( NULLABLE_CLASSNAME ).build() )
+          addAnnotation( NONNULL_CLASSNAME ).build() )
         .returns( TypeName.BOOLEAN );
-      method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
-      method.addStatement( "boolean modified = false" );
       for ( final PropDescriptor prop : descriptor.getProps() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
-        final String code =
-          "if ( !$T.isTripleEqual( props().get( $N ), null == nextProps ? null : nextProps.get( $N ) ) )";
-        block.beginControlFlow( code, JS_CLASSNAME, prop.getConstantName(), prop.getConstantName() );
-        block.addStatement( "modified = true" );
+        block.beginControlFlow( "if ( !$T.isTripleEqual( props().get( $N ), nextProps.get( $N ) ) )",
+                                JS_CLASSNAME,
+                                prop.getConstantName(),
+                                prop.getConstantName() );
+        block.addStatement( "return true" );
         block.endControlFlow();
         method.addCode( block.build() );
       }
-      method.addStatement( "return modified" );
+      method.addStatement( "return false" );
       return method;
     }
   }
@@ -1358,19 +1341,12 @@ final class Generator
         returns( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME );
 
     final boolean shouldGenerateLiteLifecycle = descriptor.shouldGenerateLiteLifecycle();
-    final boolean arezComponent = descriptor.isArezComponent();
-    if ( arezComponent && shouldGenerateLiteLifecycle )
+    if ( shouldGenerateLiteLifecycle )
     {
-      method.addStatement( "final $T componentConstructor = $T.shouldStoreArezDataAsState() ? $T::new : $T::new",
+      method.addStatement( "final $T componentConstructor = ( $T.shouldStoreDebugDataAsState() || " +
+                           "$T.shouldValidatePropValues() ) ? $T::new : $T::new",
                            COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
-                           REACT_AREZ_CONFIG_CLASSNAME,
-                           ClassName.bestGuess( "NativeReactComponent" ),
-                           ClassName.bestGuess( "LiteNativeReactComponent" ) );
-    }
-    else if ( !arezComponent && shouldGenerateLiteLifecycle )
-    {
-      method.addStatement( "final $T componentConstructor = $T.shouldValidatePropValues() ? $T::new : $T::new",
-                           COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
+                           REACT_CONFIG_CLASSNAME,
                            REACT_CONFIG_CLASSNAME,
                            ClassName.bestGuess( "NativeReactComponent" ),
                            ClassName.bestGuess( "LiteNativeReactComponent" ) );
@@ -1475,53 +1451,59 @@ final class Generator
     }
 
     // Lifecycle methods
+    for ( final MethodDescriptor lifecycleMethod : lifecycleMethods )
     {
-      for ( final MethodDescriptor lifecycleMethod : lifecycleMethods )
-      {
-        final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
-        final MethodSpec.Builder method =
-          MethodSpec.methodBuilder( methodName ).
-            addModifiers( Modifier.PUBLIC ).
-            addAnnotation( Override.class ).
-            returns( ClassName.get( lifecycleMethod.getMethodType().getReturnType() ) );
-
-        ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
-
-        final StringJoiner params = new StringJoiner( "," );
-        final List<? extends VariableElement> sourceParameters = lifecycleMethod.getMethod().getParameters();
-        final List<? extends TypeMirror> sourceParameterTypes = lifecycleMethod.getMethodType().getParameterTypes();
-        final int parameterCount = sourceParameters.size();
-        for ( int i = 0; i < parameterCount; i++ )
-        {
-          final VariableElement parameter = sourceParameters.get( i );
-          final TypeMirror parameterType = sourceParameterTypes.get( i );
-          final String parameterName = parameter.getSimpleName().toString();
-          final ParameterSpec.Builder parameterSpec =
-            ParameterSpec.builder( TypeName.get( parameterType ), parameterName, Modifier.FINAL ).
-              addAnnotation( NONNULL_CLASSNAME );
-          method.addParameter( parameterSpec.build() );
-          params.add( parameterName );
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        if ( TypeKind.VOID != lifecycleMethod.getMethodType().getReturnType().getKind() )
-        {
-          sb.append( "return " );
-        }
-
-        sb.append( "perform" );
-        sb.append( Character.toUpperCase( methodName.charAt( 0 ) ) );
-        sb.append( methodName.substring( 1 ) );
-        sb.append( "(" );
-        sb.append( params.toString() );
-        sb.append( ")" );
-
-        method.addStatement( sb.toString() );
-        builder.addMethod( method.build() );
-      }
+      builder.addMethod( buildLifecycleMethod( lifecycleMethod ).build() );
     }
 
     return builder.build();
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildLifecycleMethod( @Nonnull final MethodDescriptor descriptor )
+  {
+    final String methodName = descriptor.getMethod().getSimpleName().toString();
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( methodName ).
+        addModifiers( Modifier.PUBLIC ).
+        addAnnotation( Override.class ).
+        returns( ClassName.get( descriptor.getMethodType().getReturnType() ) );
+
+    ProcessorUtil.copyTypeParameters( descriptor.getMethodType(), method );
+
+    if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME ).build() );
+      method.addStatement( "performComponentDidUpdate( prevProps )" );
+    }
+    else if ( Constants.COMPONENT_DID_MOUNT.equals( methodName ) )
+    {
+      method.addStatement( "performComponentDidMount()" );
+    }
+    else if ( Constants.COMPONENT_WILL_UNMOUNT.equals( methodName ) )
+    {
+      method.addStatement( "performComponentWillUnmount()" );
+    }
+    else if ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME ).build() );
+      method.addStatement( "return performShouldComponentUpdate( nextProps )" );
+    }
+    else
+    {
+      assert Constants.COMPONENT_DID_CATCH.equals( methodName );
+
+      method.addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error", Modifier.FINAL )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info", Modifier.FINAL )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addStatement( "performComponentDidCatch( error, info )" );
+    }
+    return method;
   }
 
   private static String asTypeArgumentsInfix( final DeclaredType declaredType )
@@ -1582,17 +1564,24 @@ final class Generator
 
     ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
 
-    final List<? extends VariableElement> sourceParameters = lifecycleMethod.getMethod().getParameters();
-    final List<? extends TypeMirror> sourceParameterTypes = lifecycleMethod.getMethodType().getParameterTypes();
-    final int parameterCount = sourceParameters.size();
-    for ( int i = 0; i < parameterCount; i++ )
+    if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
     {
-      final VariableElement parameter = sourceParameters.get( i );
-      final TypeMirror parameterType = sourceParameterTypes.get( i );
-      final String parameterName = parameter.getSimpleName().toString();
-      final ParameterSpec.Builder parameterSpec =
-        ParameterSpec.builder( TypeName.get( parameterType ), parameterName ).addAnnotation( NONNULL_CLASSNAME );
-      method.addParameter( parameterSpec.build() );
+      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" ).
+        addAnnotation( NONNULL_CLASSNAME ).build() );
+    }
+    else if ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps" ).
+        addAnnotation( NONNULL_CLASSNAME ).build() );
+    }
+    else if ( Constants.COMPONENT_DID_CATCH.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error" )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info" )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
     }
 
     builder.addMethod( method.build() );

@@ -1,6 +1,5 @@
 package react4j;
 
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
@@ -15,16 +14,16 @@ import jsinterop.base.JsPropertyMap;
  * The react native component.
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "React.Component" )
+@SuppressWarnings( "unused" )
 public abstract class NativeComponent
 {
-  @SuppressWarnings( "unused" )
   @JsProperty
   private JsPropertyMap<Object> props;
   @JsProperty
   private JsPropertyMap<Object> state;
 
   @JsConstructor
-  NativeComponent( @SuppressWarnings( "unused" ) @Nullable final JsPropertyMap<Object> props )
+  NativeComponent( @Nullable final JsPropertyMap<Object> props )
   {
   }
 
@@ -46,13 +45,7 @@ public abstract class NativeComponent
     return state;
   }
 
-  final native void setState( @Nonnull Component.SetStateCallback callback, @Nullable Procedure onStateUpdateComplete );
-
-  @JsOverlay
-  final void setInitialState( @Nonnull final JsPropertyMap<Object> state )
-  {
-    this.state = Objects.requireNonNull( state );
-  }
+  final native void setState( @Nonnull JsPropertyMap<Object> state );
 
   final native void forceUpdate();
 }

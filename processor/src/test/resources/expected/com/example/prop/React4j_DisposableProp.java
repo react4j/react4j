@@ -1,7 +1,6 @@
 package com.example.prop;
 
 import arez.Disposable;
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -14,7 +13,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
-import react4j.arez.ReactArezConfig;
 
 @ArezComponent(
     name = "DisposableProp"
@@ -27,7 +25,7 @@ abstract class React4j_DisposableProp extends DisposableProp {
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "DisposableProp" );
     }
@@ -46,22 +44,18 @@ abstract class React4j_DisposableProp extends DisposableProp {
   @Override
   protected Object getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
+      return props().has( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
   }
 
   @Override
-  @Action(
-      verifyRequired = false
-  )
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    boolean modified = false;
-    if ( !Js.isTripleEqual( props().get( PROP_value ), null == nextProps ? null : nextProps.get( PROP_value ) ) ) {
-      modified = true;
+  protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
+    if ( !Js.isTripleEqual( props().get( PROP_value ), nextProps.get( PROP_value ) ) ) {
+      return true;
     }
-    return modified;
+    return false;
   }
 
   @JsType(
@@ -71,9 +65,6 @@ abstract class React4j_DisposableProp extends DisposableProp {
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
   }
 
   @JsType(
@@ -84,13 +75,9 @@ abstract class React4j_DisposableProp extends DisposableProp {
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<DisposableProp> implements LiteLifecycle {
@@ -107,12 +94,6 @@ abstract class React4j_DisposableProp extends DisposableProp {
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
     }
   }
 
@@ -133,20 +114,13 @@ abstract class React4j_DisposableProp extends DisposableProp {
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
     }
   }
 }

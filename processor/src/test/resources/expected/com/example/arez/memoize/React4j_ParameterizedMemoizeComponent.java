@@ -14,7 +14,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
-import react4j.arez.ReactArezConfig;
 
 @ArezComponent(
     name = "ParameterizedMemoizeComponent"
@@ -25,7 +24,7 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ParameterizedMemoizeComponent" );
     }
@@ -50,9 +49,6 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
   }
 
   @JsType(
@@ -63,13 +59,9 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ParameterizedMemoizeComponent> implements LiteLifecycle {
@@ -86,12 +78,6 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
     }
   }
 
@@ -112,20 +98,13 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
     }
   }
 }

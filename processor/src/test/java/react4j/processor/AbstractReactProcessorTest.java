@@ -99,7 +99,10 @@ abstract class AbstractReactProcessorTest
     if ( outputFiles() )
     {
       final Compilation compilation =
-        Compiler.javac().withProcessors( new ReactProcessor(), new ArezProcessor() ).compile( inputs );
+        Compiler.javac()
+          .withOptions( Collections.singletonList( "-parameters" ) )
+          .withProcessors( new ReactProcessor(), new ArezProcessor() )
+          .compile( inputs );
 
       final Compilation.Status status = compilation.status();
       if ( Compilation.Status.SUCCESS != status )
@@ -157,6 +160,7 @@ abstract class AbstractReactProcessorTest
         .toArray( JavaFileObject[]::new );
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( inputs ).
+      withCompilerOptions( "-parameters" ).
       processedWith( new ReactProcessor(), new ArezProcessor() ).
       compilesWithoutError().
       and().

@@ -3,12 +3,4 @@
   <inherits name='arez.component.Component'/>
 
   <source path='' includes='*.java'/>
-
-  <!--
-    These properties are all defined in react4j.arez.ReactArezConfig
-    See that class for a better understanding of what these properties do.
-  -->
-
-  <define-property name='react4j.arez.store_arez_data_as_state' values='true,false'/>
-  <set-property name='react4j.arez.store_arez_data_as_state' value='false'/>
 </module>

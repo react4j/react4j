@@ -12,7 +12,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
-import react4j.arez.ReactArezConfig;
 
 @ArezComponent(
     name = "ComponentShouldNotUpdateOnChangeProp"
@@ -25,7 +24,7 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentShouldNotUpdateOnChangeProp" );
     }
@@ -35,7 +34,7 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
   @Override
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
+      return props().has( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
@@ -48,9 +47,6 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
   }
 
   @JsType(
@@ -61,13 +57,9 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ComponentShouldNotUpdateOnChangeProp> implements LiteLifecycle {
@@ -84,12 +76,6 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
     }
   }
 
@@ -110,20 +96,13 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
     }
   }
 }

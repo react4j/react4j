@@ -52,12 +52,6 @@ final class ComponentDescriptor
   @Nullable
   private List<PropDescriptor> _props;
   /**
-   * Descriptors for state accessor/mutator pairs.
-   * These should be implemented as accesses to the underlying state value.
-   */
-  @Nullable
-  private List<StateValueDescriptor> _stateValues;
-  /**
    * Methods annotated with arez's @Computed annotation. Should be null if not an arez component
    */
   @Nullable
@@ -67,6 +61,9 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<MethodDescriptor> _memoizeMethods;
+  private Boolean _hasObservableProps;
+  private Boolean _hasValidatedProps;
+  private Boolean _hasOnPropChangedProps;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
@@ -293,19 +290,24 @@ final class ComponentDescriptor
 
   private boolean canOmitFromLiteLifecycle( @Nonnull final MethodDescriptor method )
   {
-    final ExecutableElement element = method.getMethod();
-    final String methodName = element.getSimpleName().toString();
-    final String className = ( (TypeElement) element.getEnclosingElement() ).getQualifiedName().toString();
-    return (
-             Constants.REACT_AREZ_COMPONENT_CLASSNAME.equals( className ) &&
-             (
-               Constants.COMPONENT_DID_MOUNT.equals( methodName ) ||
-               Constants.COMPONENT_DID_UPDATE.equals( methodName )
-             )
-           ) || (
-             Constants.COMPONENT_CLASSNAME.equals( className ) &&
-             Constants.SHOULD_COMPONENT_UPDATE.equals( methodName )
-           );
+    final String methodName = method.getMethod().getSimpleName().toString();
+    final String classname = getClassNameForMethod( method );
+    return
+      ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) && !generateShouldComponentUpdate() ) ||
+      (
+        Constants.COMPONENT_CLASSNAME.equals( classname ) && Constants.COMPONENT_DID_MOUNT.equals( methodName )
+      ) ||
+      (
+        Constants.COMPONENT_CLASSNAME.equals( classname ) &&
+        Constants.COMPONENT_DID_UPDATE.equals( methodName ) &&
+        !generateComponentDidUpdate()
+      );
+  }
+
+  @Nonnull
+  private String getClassNameForMethod( @Nonnull final MethodDescriptor method )
+  {
+    return ( (TypeElement) method.getMethod().getEnclosingElement() ).getQualifiedName().toString();
   }
 
   @Nonnull
@@ -373,26 +375,40 @@ final class ComponentDescriptor
     _props.sort( PropComparator.COMPARATOR );
   }
 
-  boolean shouldGeneratePropValidator()
+  boolean hasObservableProps()
   {
-    return getProps().stream().anyMatch( PropDescriptor::hasValidateMethod );
+    if ( null == _hasObservableProps )
+    {
+      _hasObservableProps = getProps().stream().anyMatch( PropDescriptor::isObservable );
+    }
+    return _hasObservableProps;
   }
 
-  @Nonnull
-  List<StateValueDescriptor> getStateValues()
+  boolean generateShouldComponentUpdate()
   {
-    assert null != _stateValues;
-    return _stateValues;
+    return hasObservableProps() || hasValidatedProps();
   }
 
-  void setStateValues( @Nonnull final List<StateValueDescriptor> stateValues )
+  boolean generateComponentDidUpdate()
   {
-    _stateValues = Objects.requireNonNull( stateValues );
+    return hasObservableProps() || hasOnPropChangedProps();
   }
 
-  @Nullable
-  StateValueDescriptor findStateValueNamed( @Nonnull final String name )
+  boolean hasOnPropChangedProps()
   {
-    return getStateValues().stream().filter( p -> p.getName().equals( name ) ).findAny().orElse( null );
+    if ( null == _hasOnPropChangedProps )
+    {
+      _hasOnPropChangedProps = getProps().stream().anyMatch( PropDescriptor::hasOnPropChangedMethod );
+    }
+    return _hasOnPropChangedProps;
+  }
+
+  boolean hasValidatedProps()
+  {
+    if ( null == _hasValidatedProps )
+    {
+      _hasValidatedProps = getProps().stream().anyMatch( PropDescriptor::hasValidateMethod );
+    }
+    return _hasValidatedProps;
   }
 }

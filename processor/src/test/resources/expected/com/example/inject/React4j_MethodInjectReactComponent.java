@@ -6,6 +6,8 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
@@ -36,14 +38,37 @@ class React4j_MethodInjectReactComponent extends MethodInjectReactComponent {
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "MethodInjectReactComponent" );
     }
     return componentConstructor;
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<MethodInjectReactComponent> {
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
+  interface Lifecycle {
+    void componentDidMount();
+
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
+  }
+
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<MethodInjectReactComponent> {
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+    }
+
+    @Override
+    protected MethodInjectReactComponent createComponent() {
+      return getProvider().get();
+    }
+  }
+
+  private static final class NativeReactComponent extends NativeAdapterComponent<MethodInjectReactComponent> implements Lifecycle {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -52,6 +77,16 @@ class React4j_MethodInjectReactComponent extends MethodInjectReactComponent {
     @Override
     protected MethodInjectReactComponent createComponent() {
       return getProvider().get();
+    }
+
+    @Override
+    public void componentDidMount() {
+      performComponentDidMount();
+    }
+
+    @Override
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
   }
 }

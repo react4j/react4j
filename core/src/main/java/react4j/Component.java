@@ -1,12 +1,14 @@
 package react4j;
 
 import elemental2.core.JsError;
+import elemental2.core.JsObject;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsFunction;
+import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.annotations.Prop;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -14,34 +16,23 @@ import static org.realityforge.braincheck.Guards.*;
  */
 public abstract class Component
 {
-  /**
-   * Callback function for updating state.
-   * Useful if the state update is based on current state.
-   */
-  @JsFunction
-  @FunctionalInterface
-  public interface SetStateCallback
-  {
-    /**
-     * Callback used to update state.
-     * Result is merged into existing state.
-     * Return null to abort state update.
-     *
-     * @param previousState the preiovus state.
-     * @param currentProps  the current props.
-     * @return the state to shallow merge or null to abort state update.
-     */
-    @Nullable
-    JsPropertyMap<Object> onSetState( @Nullable JsPropertyMap<Object> previousState,
-                                      @Nullable JsPropertyMap<Object> currentProps );
-  }
-
   @Nonnull
   private ComponentPhase _phase = ComponentPhase.INITIALIZING;
   @Nonnull
   private LifecycleMethod _lifecycleMethod = LifecycleMethod.UNKNOWN;
   @Nullable
   private NativeComponent _nativeComponent;
+  /**
+   * If the last render resulted in state update to record new debug state then this will be true.
+   * It guards against multiple renders of a single component where rendering is just updating
+   * react state to expose debug data. This should only be true if {@link ReactConfig#shouldStoreDebugDataAsState()}
+   * returns true.
+   */
+  private boolean _scheduledDebugStateUpdate;
+  /**
+   * Flag that is set to true if the observable props had changes reported prior to render.
+   */
+  private boolean _propChangesNotified;
 
   /**
    * Set the phase of the component. Only used for invariant checking.
@@ -74,24 +65,6 @@ public abstract class Component
   final void bindComponent( @Nonnull final NativeComponent nativeComponent )
   {
     _nativeComponent = Objects.requireNonNull( nativeComponent );
-  }
-
-  /**
-   * Set the initial state of the component.
-   * This should only be invoked when the component is initializing.
-   * Calling this at any other time is an error.
-   *
-   * @param state the state.
-   */
-  protected final void setInitialState( @Nonnull final JsPropertyMap<Object> state )
-  {
-    if ( ReactConfig.shouldCheckInvariants() && ReactConfig.checkComponentStateInvariants() )
-    {
-      apiInvariant( () -> ComponentPhase.INITIALIZING == _phase,
-                    () -> "Attempted to invoke setInitialState on " + this + " when component is " +
-                          "not in INITIALIZING phase but in phase " + _phase + " and state " + _lifecycleMethod );
-    }
-    component().setInitialState( state );
   }
 
   /**
@@ -148,55 +121,13 @@ public abstract class Component
 
   /**
    * Schedule a shallow merge of supplied state into current state.
-   * This will trigger an update cycle and is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
    *
-   * @param state the object literal representing state.
+   * @param state the state to merge.
    */
-  protected final void scheduleStateUpdate( @Nonnull final JsPropertyMap<Object> state )
-  {
-    scheduleStateUpdate( ( p, s ) -> state );
-  }
-
-  /**
-   * Schedule a shallow merge of supplied state into current state.
-   * This will trigger an update cycle and is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
-   *
-   * @param state                 the object literal representing state.
-   * @param onStateUpdateComplete a callback that will be invoked after state has been updated.
-   */
-  protected final void scheduleStateUpdate( @Nonnull final JsPropertyMap<Object> state,
-                                            @Nullable final Procedure onStateUpdateComplete )
-  {
-    scheduleStateUpdate( ( p, s ) -> state, onStateUpdateComplete );
-  }
-
-  /**
-   * Schedule a shallow merge of supplied state into current state.
-   * This will trigger an update cycle and is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
-   *
-   * @param callback the callback that will be invoked to update state.
-   */
-  protected final void scheduleStateUpdate( @Nonnull final SetStateCallback callback )
-  {
-    scheduleStateUpdate( callback, null );
-  }
-
-  /**
-   * Schedule a shallow merge of supplied state into current state.
-   * This will trigger an update cycle and is the primary method you
-   * use to trigger UI updates from event handlers and server request callbacks.
-   *
-   * @param callback              the callback that will be invoked to update state.
-   * @param onStateUpdateComplete a callback that will be invoked after state has been updated.
-   */
-  protected void scheduleStateUpdate( @Nonnull final SetStateCallback callback,
-                                      @Nullable final Procedure onStateUpdateComplete )
+  private void scheduleStateUpdate( @Nonnull JsPropertyMap<Object> state )
   {
     invariantsSetState();
-    component().setState( callback, onStateUpdateComplete );
+    component().setState( state );
   }
 
   /**
@@ -216,20 +147,13 @@ public abstract class Component
 
   /**
    * Schedule this component for re-rendering.
-   * The component re-renders when state or props change but calling this method is another way to
-   * schedule the component to be re-rendered.
-   *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} will be skipped
-   * and it is equivalent to calling forceUpdate() on the native react component. See the
-   * <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component documentation</a> for more
-   * details.</p>
-   *
-   * <p>If the force parameter is true then the {@link #shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} will be
-   * invoked. This is equivalent to calling setState({}) on the native react component.</p>
-   *
-   * @param force true to skip shouldComponentUpdate during re-render, false otherwise.
+   * The component re-renders when props change but calling this method is another way to schedule the
+   * component to be re-rendered. When this method is called the {@link #shouldComponentUpdate(JsPropertyMap)}
+   * lifecycle method will be skipped. Calling this method is equivalent to calling forceUpdate() on the native
+   * react component. See the <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component
+   * documentation</a> for more details.
    */
-  protected final void scheduleRender( final boolean force )
+  protected final void scheduleRender()
   {
     if ( ReactConfig.shouldCheckInvariants() && ReactConfig.checkComponentStateInvariants() )
     {
@@ -237,15 +161,7 @@ public abstract class Component
                     () -> "Incorrectly invoked scheduleRender() on " + this + " when component is " +
                           "unmounting or has unmounted." );
     }
-    if ( force )
-    {
-      component().forceUpdate();
-    }
-    else
-    {
-      // This schedules a re-render but will not skip shouldComponentUpdate
-      scheduleStateUpdate( JsPropertyMap.of() );
-    }
+    component().forceUpdate();
   }
 
   /**
@@ -307,37 +223,35 @@ public abstract class Component
 
   /**
    * Wrapper method that delegates to the {@link #componentDidMount()} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
    */
-  protected void performComponentDidMount()
+  final void performComponentDidMount()
   {
     componentDidMount();
+    storeDebugDataAsState();
   }
 
   /**
    * This method is invoked immediately after updating occurs.
    * If you need to interact with the DOM after the component has been updated.
    * See the <a href="https://reactjs.org/docs/react-component.html#componentdidupdate">React Component documentation</a> for more details.
-   *
-   * @param prevProps the props before the component was updated.
-   * @param prevState the state before the component was updated.
    */
-  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
-                                     @Nullable final JsPropertyMap<Object> prevState )
+  protected void componentDidUpdate()
   {
   }
 
   /**
-   * Wrapper method that delegates to the {@link #componentDidUpdate(JsPropertyMap, JsPropertyMap)} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
+   * Wrapper method that delegates to the {@link #componentDidUpdate()} method.
    *
    * @param prevProps the props before the component was updated.
-   * @param prevState the state before the component was updated.
    */
-  protected void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps,
-                                            @Nullable final JsPropertyMap<Object> prevState )
+  final void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
-    componentDidUpdate( prevProps, prevState );
+    if ( null != prevProps )
+    {
+      reportPropChanges( prevProps, props(), true );
+    }
+    componentDidUpdate();
+    storeDebugDataAsState();
   }
 
   /**
@@ -383,53 +297,110 @@ public abstract class Component
    * @param error the error that has been thrown.
    * @param info  information about component stack during thrown error.
    */
-  protected void performComponentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
+  final void performComponentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
     componentDidCatch( error, info );
   }
 
   /**
-   * Use this method to let React know if a component's output is not affected
-   * by the current change in state or props. The default behavior is to re-render on
-   * every state change, and in the vast majority of cases you should rely on the default behavior.
-   * See the <a href="https://reactjs.org/docs/react-component.html#shouldcomponentupdate">React Component documentation</a> for more details.
+   * Detect and report changes in props that are {@link Prop#observable()}.
+   * This method is a template method that may be overridden by subclasses generated
+   * by the annotation processor based on configuration of props.
    *
-   * <p>This method is invoked before rendering when new props or state are being received.
-   * This method is not called for the initial render or when {@link #scheduleRender(boolean)}} is called
-   * with the force parameter set to true.</p>
+   * <p>This method can be invoked from either the {@link #shouldComponentUpdate(JsPropertyMap)} method
+   * or the {@link #componentDidUpdate()} method. If the method is not invoked from the
+   * {@link #shouldComponentUpdate(JsPropertyMap)} method first due to a {@link Component#scheduleRender()}
+   * call then the call from {@link #componentDidUpdate()} will report any changes to
+   * the observable props otherwise this will only occur in the invocation of the method from the
+   * {@link #shouldComponentUpdate(JsPropertyMap)} method. This means that the props
+   * are marked as {@link Prop#observable()} and are used by a <code>@Computed</code>
+   * method from within the render call will only be reported as being changed once, normally before the
+   * render call. Thus the computed will be marked as potentially stale and recomputed if used in the render.
+   * Otherwise the computed will be marked as potentially stale after the render which could potentially
+   * trigger a re-render of the component.</p>
    *
-   * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
-   *
-   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap, JsPropertyMap)}
-   * will not be invoked. In the future React may treat this method  as a hint rather than a strict directive, and
-   * returning false may still result in a re-rendering of the component.</p>
-   *
-   * @param nextProps the new properties of the component.
-   * @param nextState the new state of the component.
-   * @return true if the component should be updated.
+   * @param props                the old properties of the component.
+   * @param nextProps            the new properties of the component.
+   * @param inComponentDidUpdate true if this is being invoked from {@link #componentDidUpdate()}, false if this is being invoked from {@link #shouldComponentUpdate(JsPropertyMap)}
+   * @return true if a prop was marked with {@link Prop#shouldUpdateOnChange()} and has changed.
    */
-  protected boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                           @Nullable final JsPropertyMap<Object> nextState )
+  protected boolean reportPropChanges( @Nonnull final JsPropertyMap<Object> props,
+                                       @Nonnull final JsPropertyMap<Object> nextProps,
+                                       final boolean inComponentDidUpdate )
   {
+    return false;
+  }
+
+  /**
+   * Helper method invoked by {@link #reportPropChanges(JsPropertyMap, JsPropertyMap, boolean)} method
+   * generated by the annotation processor. This will return true if the changes should be reported.
+   *
+   * @param inComponentDidUpdate true if this is being invoked from {@link #componentDidUpdate()}, false if this is being invoked from {@link #shouldComponentUpdate(JsPropertyMap)}
+   * @return true if changes to observable props should be reported.
+   */
+  protected final boolean shouldReportPropChanges( final boolean inComponentDidUpdate )
+  {
+    if ( inComponentDidUpdate )
+    {
+      final boolean alreadyNotified = _propChangesNotified;
+      _propChangesNotified = false;
+      if ( alreadyNotified )
+      {
+        return false;
+      }
+    }
+    else
+    {
+      _propChangesNotified = true;
+    }
     return true;
   }
 
   /**
-   * Wrapper method that delegates to the {@link #shouldComponentUpdate(JsPropertyMap, JsPropertyMap)} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
+   * Detect changes in props that that do not require specific actions on change.
+   * This method may be overridden by the annotation processor. The method will return true if a prop has been updated
+   * and the prop has not set {@link Prop#shouldUpdateOnChange()} to false. Otherwise this method will return false.
    *
    * @param nextProps the new properties of the component.
-   * @param nextState the new state of the component.
    * @return true if the component should be updated.
    */
-  protected boolean performShouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps,
-                                                  @Nullable final JsPropertyMap<Object> nextState )
+  protected boolean shouldUpdateOnPropChanges( @Nonnull final JsPropertyMap<Object> nextProps )
+  {
+    return false;
+  }
+
+  /**
+   * This method let's React know if a component's output is not affected
+   * by the current change in props. The default behavior is to re-render on
+   * every state change, and in the vast majority of cases you should rely on the default behavior.
+   * See the <a href="https://reactjs.org/docs/react-component.html#shouldcomponentupdate">React Component documentation</a> for more details.
+   *
+   * <p>This method is invoked before rendering when new props or state are being received.
+   * This method is not called for the initial render or when {@link #scheduleRender()}.</p>
+   *
+   * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
+   *
+   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate()}
+   * will not be invoked. In the future React may treat this method  as a hint rather than a strict directive, and
+   * returning false may still result in a re-rendering of the component.</p>
+   *
+   * @param nextProps the new properties of the component.
+   * @return true if the component should be updated.
+   */
+  final boolean shouldComponentUpdate( @Nullable final JsPropertyMap<Object> nextProps )
   {
     if ( ReactConfig.shouldValidatePropValues() && null != nextProps )
     {
       validatePropValues( nextProps );
     }
-    return shouldComponentUpdate( nextProps, nextState );
+
+    final boolean result =
+      null != nextProps && ( reportPropChanges( props(), nextProps, false ) || shouldUpdateOnPropChanges( nextProps ) );
+    if ( !result )
+    {
+      _propChangesNotified = false;
+    }
+    return result;
   }
 
   /**
@@ -439,5 +410,81 @@ public abstract class Component
    */
   protected void validatePropValues( @Nonnull final JsPropertyMap<Object> props )
   {
+  }
+
+  /**
+   * Store debug data on the state object of the native component.
+   * This is only done if {@link ReactConfig#shouldStoreDebugDataAsState()} returns true and is primarily
+   * done to make it easy to debug the component from within React DevTools.
+   */
+  private void storeDebugDataAsState()
+  {
+    if ( ReactConfig.shouldStoreDebugDataAsState() )
+    {
+      if ( _scheduledDebugStateUpdate )
+      {
+        _scheduledDebugStateUpdate = false;
+      }
+      else
+      {
+        final JsPropertyMap<Object> newState = JsPropertyMap.of();
+        populateDebugData( newState );
+
+        final JsPropertyMap<Object> state = state();
+        final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
+        /*
+         * To determine whether we need to do a state update we do compare each key and value and make sure
+         * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
+         * updates in react are merges, we need to implement this by putting undefined values into the state.
+         */
+        if ( null == currentState )
+        {
+          scheduleDebugStateUpdate( newState );
+        }
+        else
+        {
+          for ( final String key : JsObject.keys( Js.uncheckedCast( currentState ) ) )
+          {
+            if ( !newState.has( key ) )
+            {
+              newState.set( key, Js.undefined() );
+            }
+          }
+
+          for ( final String key : JsObject.keys( Js.uncheckedCast( newState ) ) )
+          {
+            final Any newValue = currentState.getAny( key );
+            final Any existingValue = newState.getAny( key );
+            if ( !Objects.equals( newValue, existingValue ) )
+            {
+              scheduleDebugStateUpdate( newState );
+              return;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Populate the state parameter with any data that is useful when debugging the component.
+   *
+   * @param state the property map to populate with debug data.
+   */
+  protected void populateDebugData( @Nonnull final JsPropertyMap<Object> state )
+  {
+  }
+
+  /**
+   * Schedule state update the updates debug state.
+   */
+  private void scheduleDebugStateUpdate( @Nonnull final JsPropertyMap<Object> data )
+  {
+    scheduleStateUpdate( Js.cast( JsObject.freeze( data ) ) );
+    /*
+     * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
+     */
+    scheduleRender();
+    _scheduledDebugStateUpdate = true;
   }
 }

@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -13,7 +12,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
-import react4j.arez.ReactArezConfig;
 
 @ArezComponent(
     name = "NonDisposableDisposableProp"
@@ -26,7 +24,7 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "NonDisposableDisposableProp" );
     }
@@ -36,22 +34,18 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
   @Override
   protected NonDisposableDisposableProp.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
+      return props().has( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_model ) );
     }
   }
 
   @Override
-  @Action(
-      verifyRequired = false
-  )
-  protected boolean shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    boolean modified = false;
-    if ( !Js.isTripleEqual( props().get( PROP_model ), null == nextProps ? null : nextProps.get( PROP_model ) ) ) {
-      modified = true;
+  protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
+    if ( !Js.isTripleEqual( props().get( PROP_model ), nextProps.get( PROP_model ) ) ) {
+      return true;
     }
-    return modified;
+    return false;
   }
 
   @JsType(
@@ -61,9 +55,6 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
   )
   interface LiteLifecycle {
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
   }
 
   @JsType(
@@ -74,13 +65,9 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<NonDisposableDisposableProp> implements LiteLifecycle {
@@ -97,12 +84,6 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
     }
   }
 
@@ -123,20 +104,13 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
     }
   }
 }

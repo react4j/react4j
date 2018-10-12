@@ -13,9 +13,6 @@
     See that class for a better understanding of what these properties do.
   -->
 
-  <define-property name='react4j.environment' values='development,production'/>
-  <set-property name='react4j.environment' value='production'/>
-
   <define-property name='react4j.enable_component_names' values='true,false'/>
   <set-property name='react4j.enable_component_names' value='false'/>
 
@@ -30,4 +27,7 @@
 
   <define-property name='react4j.validate_prop_values' values='true,false'/>
   <set-property name='react4j.validate_prop_values' value='false'/>
+
+  <define-property name='react4j.store_debug_data_as_state' values='true,false'/>
+  <set-property name='react4j.store_debug_data_as_state' value='false'/>
 </module>

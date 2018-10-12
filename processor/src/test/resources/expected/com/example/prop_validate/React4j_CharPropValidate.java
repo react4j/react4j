@@ -20,7 +20,7 @@ class React4j_CharPropValidate extends CharPropValidate {
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ReactConfig.shouldValidatePropValues() ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "CharPropValidate" );
     }
@@ -46,12 +46,24 @@ class React4j_CharPropValidate extends CharPropValidate {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
-  interface Lifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+  interface LiteLifecycle {
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<CharPropValidate> {
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
+  interface Lifecycle {
+    void componentDidMount();
+
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
+
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
+  }
+
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<CharPropValidate> implements LiteLifecycle {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -60,6 +72,11 @@ class React4j_CharPropValidate extends CharPropValidate {
     @Override
     protected CharPropValidate createComponent() {
       return new React4j_CharPropValidate();
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
     }
   }
 
@@ -75,9 +92,18 @@ class React4j_CharPropValidate extends CharPropValidate {
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public void componentDidMount() {
+      performComponentDidMount();
+    }
+
+    @Override
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
+    }
+
+    @Override
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
     }
   }
 }

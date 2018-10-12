@@ -36,6 +36,7 @@ define 'react4j' do
                  :jsinterop_base,
                  :jsinterop_annotations,
                  :braincheck
+    compile.options[:other] = %w(-parameters)
 
     gwt_enhance(project)
 
@@ -61,6 +62,7 @@ define 'react4j' do
                  project('core').compile.dependencies,
                  :elemental2_dom,
                  :elemental2_promise
+    compile.options[:other] = %w(-parameters)
 
     generate_factory_source(project)
     gwt_enhance(project)
@@ -87,6 +89,7 @@ define 'react4j' do
                  project('dom').compile.dependencies,
                  :arez_core,
                  :jetbrains_annotations
+    compile.options[:other] = %w(-parameters)
 
     gwt_enhance(project)
 
@@ -164,6 +167,7 @@ define 'react4j' do
                  :javacsv,
                  :gwt_symbolmap,
                  :testng
+    compile.options[:other] = %w(-parameters)
 
     package(:jar)
     package(:sources)
@@ -275,7 +279,7 @@ define 'react4j' do
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
 
-  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes -Dreact4j.arez.compile_target=target/react4j_arez/idea/classes")
+  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes -Dreact4j.arez.compile_target=target/react4j_arez/idea/classes")
   ipr.add_component_from_artifact(:idea_codestyle)
 
   EXAMPLES.each_pair do |key, gwt_module|

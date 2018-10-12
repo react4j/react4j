@@ -4,6 +4,8 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -18,7 +20,7 @@ class React4j_PropTypeObject extends PropTypeObject {
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PropTypeObject" );
     }
@@ -28,13 +30,36 @@ class React4j_PropTypeObject extends PropTypeObject {
   @Override
   protected PropTypeObject.MyObject getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).cast() : null;
+      return props().has( PROP_myProp ) ? props().getAny( PROP_myProp ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeObject> {
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
+  interface Lifecycle {
+    void componentDidMount();
+
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
+  }
+
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<PropTypeObject> {
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+    }
+
+    @Override
+    protected PropTypeObject createComponent() {
+      return new React4j_PropTypeObject();
+    }
+  }
+
+  private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeObject> implements Lifecycle {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -43,6 +68,16 @@ class React4j_PropTypeObject extends PropTypeObject {
     @Override
     protected PropTypeObject createComponent() {
       return new React4j_PropTypeObject();
+    }
+
+    @Override
+    public void componentDidMount() {
+      performComponentDidMount();
+    }
+
+    @Override
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
   }
 }

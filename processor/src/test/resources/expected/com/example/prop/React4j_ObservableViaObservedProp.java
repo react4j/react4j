@@ -5,7 +5,6 @@ import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
-import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,7 +16,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
-import react4j.arez.ReactArezConfig;
 
 @ArezComponent(
     name = "ObservableViaObservedProp",
@@ -31,7 +29,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ReactArezConfig.shouldStoreArezDataAsState() ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ObservableViaObservedProp" );
     }
@@ -46,7 +44,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   )
   protected Object getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
+      return props().has( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
@@ -60,13 +58,17 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   @Action(
       verifyRequired = false
   )
-  protected boolean notifyOnObservablePropChanges(@Nullable final JsPropertyMap<Object> nextProps) {
+  protected boolean reportPropChanges(@Nonnull final JsPropertyMap<Object> props,
+      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentDidUpdate) {
     boolean modified = false;
-    if ( !Objects.equals( props().get( PROP_value ), null == nextProps ? null : nextProps.get( PROP_value ) ) ) {
-      getValueObservableValue().reportChanged();
+    final boolean reportChanges = shouldReportPropChanges( inComponentDidUpdate );
+    if ( !Js.isTripleEqual( props.get( PROP_value ), nextProps.get( PROP_value ) ) ) {
+      if ( reportChanges ) {
+        getValueObservableValue().reportChanged();
+      }
       modified = true;
     }
-    return modified;
+    return modified || hasRenderDepsChanged();
   }
 
   @Override
@@ -80,10 +82,11 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       name = "?"
   )
   interface LiteLifecycle {
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
+
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -94,13 +97,11 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0,
-        @Nonnull JsPropertyMap<Object> arg1);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements LiteLifecycle {
@@ -115,14 +116,18 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
 
     @Override
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
+    }
+
+    @Override
     public void componentWillUnmount() {
       performComponentWillUnmount();
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
     }
   }
 
@@ -143,9 +148,8 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      performComponentDidUpdate(arg0,arg1);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
@@ -154,9 +158,8 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0,
-        @Nonnull final JsPropertyMap<Object> arg1) {
-      return performShouldComponentUpdate(arg0,arg1);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
     }
   }
 }
