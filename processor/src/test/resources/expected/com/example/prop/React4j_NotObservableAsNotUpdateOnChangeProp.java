@@ -67,7 +67,7 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
   }
@@ -106,8 +106,8 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      performComponentDidUpdate(arg0);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

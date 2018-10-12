@@ -2,9 +2,6 @@
 
 ### Next Release
 
-* Remove `@State` and all related infrastructure.
-  - Also add hook method `componentDidUpdate()` with no parameters.
-
 * Add `@OnPropChanged` that is invoked for each prop whenever they change values. Change replicant to use this.
   Will probably need to adapt `notifyOnObservablePropChanges()` to handle this.
 

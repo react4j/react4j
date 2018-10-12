@@ -35,7 +35,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
 
@@ -59,8 +59,8 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      performComponentDidUpdate(nextProps);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
@@ -71,7 +71,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     @Override
     public void componentDidCatch(@Nonnull final JsError error,
         @Nonnull final ReactErrorInfo info) {
-      performComponentDidCatch(error,info);
+      performComponentDidCatch( error, info );
     }
   }
 }

@@ -78,7 +78,7 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<NestedCompleteComponent.BasicReactComponent> {
@@ -110,8 +110,8 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      performComponentDidUpdate(arg0);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
   }
 }

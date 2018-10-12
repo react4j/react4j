@@ -40,7 +40,7 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<CustomPropsReactComponent> {
@@ -72,8 +72,8 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      performComponentDidUpdate(arg0);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
   }
 }

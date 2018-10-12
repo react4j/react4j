@@ -2,8 +2,6 @@ package com.example.lifecycle;
 
 import elemental2.core.JsError;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import jsinterop.base.JsPropertyMap;
 import react4j.Component;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
@@ -26,7 +24,7 @@ abstract class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected final void componentDidUpdate( @Nullable final JsPropertyMap<Object> nextProps )
+  protected final void componentDidUpdate()
   {
   }
 

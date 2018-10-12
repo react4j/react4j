@@ -82,11 +82,11 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       name = "?"
   )
   interface LiteLifecycle {
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -97,11 +97,11 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements LiteLifecycle {
@@ -116,8 +116,8 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      performComponentDidUpdate(arg0);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
@@ -126,8 +126,8 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return shouldComponentUpdate(arg0);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
     }
   }
 
@@ -148,8 +148,8 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      performComponentDidUpdate(arg0);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
@@ -158,8 +158,8 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return shouldComponentUpdate(arg0);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
     }
   }
 }

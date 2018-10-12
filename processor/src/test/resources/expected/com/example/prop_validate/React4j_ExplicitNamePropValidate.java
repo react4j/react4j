@@ -51,7 +51,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -62,9 +62,9 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ExplicitNamePropValidate> implements LiteLifecycle {
@@ -79,8 +79,8 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return shouldComponentUpdate(arg0);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
     }
   }
 
@@ -101,13 +101,13 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      performComponentDidUpdate(arg0);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      return shouldComponentUpdate(arg0);
+    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
     }
   }
 }

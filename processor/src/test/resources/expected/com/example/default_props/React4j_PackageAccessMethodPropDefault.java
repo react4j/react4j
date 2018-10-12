@@ -47,7 +47,7 @@ class React4j_PackageAccessMethodPropDefault extends PackageAccessMethodPropDefa
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<PackageAccessMethodPropDefault> {
@@ -79,8 +79,8 @@ class React4j_PackageAccessMethodPropDefault extends PackageAccessMethodPropDefa
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      performComponentDidUpdate(arg0);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
   }
 }

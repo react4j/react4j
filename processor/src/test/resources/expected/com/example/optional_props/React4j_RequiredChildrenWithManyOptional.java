@@ -95,7 +95,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> arg0);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<RequiredChildrenWithManyOptional> {
@@ -127,8 +127,8 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> arg0) {
-      performComponentDidUpdate(arg0);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
   }
 }

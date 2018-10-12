@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.StringJoiner;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -58,6 +57,7 @@ final class Generator
     ClassName.get( "arez.annotations", "ArezComponent" );
   private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
+  private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
   private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
   private static final ClassName JS_PACKAGE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsPackage" );
@@ -68,6 +68,7 @@ final class Generator
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j", "ComponentConstructorFunction" );
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
+  private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
   private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
     ClassName.get( "react4j", "NativeAdapterComponent" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
@@ -1445,60 +1446,59 @@ final class Generator
     }
 
     // Lifecycle methods
+    for ( final MethodDescriptor lifecycleMethod : lifecycleMethods )
     {
-      for ( final MethodDescriptor lifecycleMethod : lifecycleMethods )
-      {
-        final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
-        final MethodSpec.Builder method =
-          MethodSpec.methodBuilder( methodName ).
-            addModifiers( Modifier.PUBLIC ).
-            addAnnotation( Override.class ).
-            returns( ClassName.get( lifecycleMethod.getMethodType().getReturnType() ) );
-
-        ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
-
-        final StringJoiner params = new StringJoiner( "," );
-        final List<? extends VariableElement> sourceParameters = lifecycleMethod.getMethod().getParameters();
-        final List<? extends TypeMirror> sourceParameterTypes = lifecycleMethod.getMethodType().getParameterTypes();
-        final int parameterCount = sourceParameters.size();
-        for ( int i = 0; i < parameterCount; i++ )
-        {
-          final VariableElement parameter = sourceParameters.get( i );
-          final TypeMirror parameterType = sourceParameterTypes.get( i );
-          final String parameterName = parameter.getSimpleName().toString();
-          final ParameterSpec.Builder parameterSpec =
-            ParameterSpec.builder( TypeName.get( parameterType ), parameterName, Modifier.FINAL ).
-              addAnnotation( NONNULL_CLASSNAME );
-          method.addParameter( parameterSpec.build() );
-          params.add( parameterName );
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        if ( TypeKind.VOID != lifecycleMethod.getMethodType().getReturnType().getKind() )
-        {
-          sb.append( "return " );
-        }
-
-        if ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) )
-        {
-          sb.append( methodName );
-        }
-        else
-        {
-          sb.append( "perform" );
-          sb.append( Character.toUpperCase( methodName.charAt( 0 ) ) );
-          sb.append( methodName.substring( 1 ) );
-        }
-        sb.append( "(" );
-        sb.append( params.toString() );
-        sb.append( ")" );
-
-        method.addStatement( sb.toString() );
-        builder.addMethod( method.build() );
-      }
+      builder.addMethod( buildLifecycleMethod( lifecycleMethod ).build() );
     }
 
     return builder.build();
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildLifecycleMethod( @Nonnull final MethodDescriptor descriptor )
+  {
+    final String methodName = descriptor.getMethod().getSimpleName().toString();
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( methodName ).
+        addModifiers( Modifier.PUBLIC ).
+        addAnnotation( Override.class ).
+        returns( ClassName.get( descriptor.getMethodType().getReturnType() ) );
+
+    ProcessorUtil.copyTypeParameters( descriptor.getMethodType(), method );
+
+    if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME ).build() );
+      method.addStatement( "performComponentDidUpdate( prevProps )" );
+    }
+    else if ( Constants.COMPONENT_DID_MOUNT.equals( methodName ) )
+    {
+      method.addStatement( "performComponentDidMount()" );
+    }
+    else if ( Constants.COMPONENT_WILL_UNMOUNT.equals( methodName ) )
+    {
+      method.addStatement( "performComponentWillUnmount()" );
+    }
+    else if ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
+        addAnnotation( NONNULL_CLASSNAME ).build() );
+      method.addStatement( "return performShouldComponentUpdate( nextProps )" );
+    }
+    else
+    {
+      assert Constants.COMPONENT_DID_CATCH.equals( methodName );
+
+      method.addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error", Modifier.FINAL )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info", Modifier.FINAL )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addStatement( "performComponentDidCatch( error, info )" );
+    }
+    return method;
   }
 
   private static String asTypeArgumentsInfix( final DeclaredType declaredType )
@@ -1559,17 +1559,24 @@ final class Generator
 
     ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
 
-    final List<? extends VariableElement> sourceParameters = lifecycleMethod.getMethod().getParameters();
-    final List<? extends TypeMirror> sourceParameterTypes = lifecycleMethod.getMethodType().getParameterTypes();
-    final int parameterCount = sourceParameters.size();
-    for ( int i = 0; i < parameterCount; i++ )
+    if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
     {
-      final VariableElement parameter = sourceParameters.get( i );
-      final TypeMirror parameterType = sourceParameterTypes.get( i );
-      final String parameterName = parameter.getSimpleName().toString();
-      final ParameterSpec.Builder parameterSpec =
-        ParameterSpec.builder( TypeName.get( parameterType ), parameterName ).addAnnotation( NONNULL_CLASSNAME );
-      method.addParameter( parameterSpec.build() );
+      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" ).
+        addAnnotation( NONNULL_CLASSNAME ).build() );
+    }
+    else if ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps" ).
+        addAnnotation( NONNULL_CLASSNAME ).build() );
+    }
+    else if ( Constants.COMPONENT_DID_CATCH.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error" )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info" )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
     }
 
     builder.addMethod( method.build() );

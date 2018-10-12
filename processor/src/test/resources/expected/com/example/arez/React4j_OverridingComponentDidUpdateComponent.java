@@ -35,7 +35,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
       name = "?"
   )
   interface LiteLifecycle {
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
   }
@@ -48,7 +48,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
   interface Lifecycle {
     void componentDidMount();
 
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> nextProps);
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
   }
@@ -65,8 +65,8 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      performComponentDidUpdate(nextProps);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override
@@ -92,8 +92,8 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      performComponentDidUpdate(nextProps);
+    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

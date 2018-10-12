@@ -185,7 +185,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    * delegates to this method to perform the work.
    *
    * @param nextProps the new properties of the component.
-   * @see Component#componentDidUpdate(JsPropertyMap)
+   * @see Component#componentDidUpdate()
    */
   protected final void performComponentDidUpdate( @Nonnull final JsPropertyMap<Object> nextProps )
   {

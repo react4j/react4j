@@ -29,7 +29,7 @@ final class Constants
   static final String COMPONENT_DID_UPDATE = "componentDidUpdate";
   static final String SHOULD_COMPONENT_UPDATE = "shouldComponentUpdate";
   static final String COMPONENT_WILL_UNMOUNT = "componentWillUnmount";
-  private static final String COMPONENT_DID_CATCH = "componentDidCatch";
+  static final String COMPONENT_DID_CATCH = "componentDidCatch";
   static final List<String> LIFECYCLE_METHODS =
     Arrays.asList( COMPONENT_DID_MOUNT,
                    COMPONENT_DID_UPDATE,
