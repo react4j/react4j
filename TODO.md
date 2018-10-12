@@ -4,6 +4,8 @@
 
 * Change all remaining lifecycle hooks so they have less name cruft. (i.e. `didUpdate()` rather than `componentDidUpdate()`)
 
+* Remove `Annotations.gwt.xml` and let normal module include files
+
 ### Next Next Release
 
 * Collections returned from props should be made immutable.
