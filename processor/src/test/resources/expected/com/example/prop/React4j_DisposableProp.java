@@ -44,7 +44,7 @@ abstract class React4j_DisposableProp extends DisposableProp {
   @Override
   protected Object getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return props().has( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
+      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }

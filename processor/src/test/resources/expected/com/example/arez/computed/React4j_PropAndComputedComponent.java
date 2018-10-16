@@ -45,7 +45,7 @@ abstract class React4j_PropAndComputedComponent extends PropAndComputedComponent
   )
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return props().has( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
+      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }

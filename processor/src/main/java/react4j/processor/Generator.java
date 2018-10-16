@@ -890,7 +890,7 @@ final class Generator
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
-      block.addStatement( "return props().has( $N ) ? props().getAny( $N ).$N() : null",
+      block.addStatement( "return null != props().getAny( $N ) ? props().getAny( $N ).$N() : null",
                           prop.getConstantName(),
                           prop.getConstantName(),
                           convertMethodName );

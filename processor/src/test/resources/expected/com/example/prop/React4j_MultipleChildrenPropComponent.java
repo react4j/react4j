@@ -31,7 +31,7 @@ class React4j_MultipleChildrenPropComponent extends MultipleChildrenPropComponen
   @Override
   protected ReactNode[] getChildren() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return props().has( PROP_children ) ? props().getAny( PROP_children ).cast() : null;
+      return null != props().getAny( PROP_children ) ? props().getAny( PROP_children ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_children ) );
     }

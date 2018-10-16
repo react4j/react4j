@@ -31,7 +31,7 @@ class React4j_SingleChildPropComponent extends SingleChildPropComponent {
   @Override
   protected ReactNode getChild() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return props().has( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
+      return null != props().getAny( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_child ) );
     }

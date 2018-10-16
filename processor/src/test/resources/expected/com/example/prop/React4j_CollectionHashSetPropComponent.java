@@ -31,7 +31,7 @@ class React4j_CollectionHashSetPropComponent extends CollectionHashSetPropCompon
   @Override
   protected HashSet<String> getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return props().has( PROP_myProp ) ? props().getAny( PROP_myProp ).cast() : null;
+      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }

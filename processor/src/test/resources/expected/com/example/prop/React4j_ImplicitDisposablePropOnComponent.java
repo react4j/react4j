@@ -30,7 +30,7 @@ class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposablePropOn
   @Override
   protected ImplicitDisposablePropOnComponent.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return props().has( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
+      return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_model ) );
     }

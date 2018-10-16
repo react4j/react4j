@@ -30,7 +30,7 @@ class React4j_CustomNameProp extends CustomNameProp {
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return props().has( PROP_foo ) ? props().getAny( PROP_foo ).asString() : null;
+      return null != props().getAny( PROP_foo ) ? props().getAny( PROP_foo ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_foo ) );
     }

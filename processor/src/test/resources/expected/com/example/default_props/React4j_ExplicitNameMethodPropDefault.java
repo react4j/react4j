@@ -33,7 +33,7 @@ class React4j_ExplicitNameMethodPropDefault extends ExplicitNameMethodPropDefaul
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return props().has( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
+      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }
