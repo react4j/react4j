@@ -8,6 +8,8 @@
 
 ### Next Next Release
 
+* Represent treelocal as synthetic prop passed by wrapped components 
+
 * Collections returned from props should be made immutable.
 
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component. `STATELESS` would be inlined into
