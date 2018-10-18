@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* **\[core\]** Remove the `Annotations.gwt.xml` gwt module and include source from `React.gwt.xml` gwt module.
+
 ### [v0.102](https://github.com/react4j/react4j/tree/v0.102) (2018-10-16)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.101...v0.102)
 

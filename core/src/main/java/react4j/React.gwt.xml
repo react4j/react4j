@@ -2,9 +2,9 @@
   <inherits name='org.realityforge.braincheck.BrainCheck'/>
   <inherits name='jsinterop.annotations.Annotations'/>
   <inherits name='elemental2.core.Core'/>
-  <inherits name='react4j.annotations.Annotations'/>
 
   <source path='' includes='*.java'/>
+  <source path='annotations' includes='*.java'/>
 
   <public path='public' includes='*'/>
 
