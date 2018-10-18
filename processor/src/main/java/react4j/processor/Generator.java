@@ -821,6 +821,17 @@ final class Generator
                             "$N",
                             observeLowerPriorityDependenciesValue.getValue().toString() );
     }
+    final AnnotationValue depTypeValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
+                                                 "depType" );
+    if ( null != depTypeValue )
+    {
+      annotation.addMember( "depType",
+                            "$T.$N",
+                            DEP_TYPE_CLASSNAME,
+                            depTypeValue.getValue().toString() );
+    }
     return annotation;
   }
 

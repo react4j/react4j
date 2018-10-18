@@ -1,5 +1,6 @@
 package com.example.arez.memoize;
 
+import arez.annotations.DepType;
 import arez.annotations.Memoize;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
@@ -17,7 +18,7 @@ abstract class ParameterizedMemoizeComponent
     return null;
   }
 
-  @Memoize( name = "foo", observeLowerPriorityDependencies = true, requireEnvironment = true )
+  @Memoize( name = "foo", observeLowerPriorityDependencies = true, requireEnvironment = true, depType = DepType.AREZ_OR_NONE )
   String getIcon( String key )
   {
     return null;

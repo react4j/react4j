@@ -1,6 +1,7 @@
 package com.example.arez.memoize;
 
 import arez.annotations.ArezComponent;
+import arez.annotations.DepType;
 import arez.annotations.Memoize;
 import arez.annotations.Priority;
 import javax.annotation.Generated;
@@ -36,7 +37,8 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
       priority = Priority.LOWEST,
       name = "foo",
       requireEnvironment = true,
-      observeLowerPriorityDependencies = true
+      observeLowerPriorityDependencies = true,
+      depType = DepType.AREZ_OR_NONE
   )
   String getIcon(final String key) {
     return super.getIcon(key);

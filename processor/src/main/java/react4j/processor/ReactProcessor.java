@@ -1306,11 +1306,12 @@ public final class ReactProcessor
             parameters.contains( "priority" ) &&
             parameters.contains( "observeLowerPriorityDependencies" ) &&
             parameters.contains( "requireEnvironment" ) &&
-            4 == parameters.size() ) )
+            parameters.contains( "depType" ) &&
+            5 == parameters.size() ) )
     {
       throw new ReactProcessorException( "The @" + Constants.MEMOIZE_ANNOTATION_CLASSNAME + " annotation was " +
-                                         "expected to have the parameters name, priority, requireEnvironment and " +
-                                         "observeLowerPriorityDependencies but has " + parameters + ". The " +
+                                         "expected to have the parameters name, priority, depType, requireEnvironment " +
+                                         "and observeLowerPriorityDependencies but has " + parameters + ". The " +
                                          "react4j annotation processor needs to be updated to handle " +
                                          "the change in parameters.", typeElement );
 
