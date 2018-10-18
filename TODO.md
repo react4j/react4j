@@ -6,8 +6,6 @@
 
 ### Next Next Release
 
-* Represent treelocal as synthetic prop passed by wrapped components 
-
 * Collections returned from props should be made immutable.
 
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component. `STATELESS` would be inlined into
@@ -31,7 +29,9 @@
 
 * Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
 
-* Introduce `TreeLocal` component which is effectively context
+* Introduce `TreeLocal` component which is react "context". A single `TreeLocal` can be represented using react 16.4's
+  static context field. Multiple `TreeLocal` instances on a component may need to be represented by a chain of
+  components the pass down context as props. This may be overly complex so perhaps we could just remove that possibility.
 
 * Consider marking callbacks with marker type `<T extends MouseEventHandler & Serializable>` and mandate the usage
   of such in pure components?
