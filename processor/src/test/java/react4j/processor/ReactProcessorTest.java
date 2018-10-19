@@ -178,16 +178,6 @@ public class ReactProcessorTest
   }
 
   @Test
-  public void componentAssembledFromMixin()
-    throws Exception
-  {
-    assertSuccessfulCompile( Arrays.asList( fixture( "input/com/example/mixins/AssembledComponent.java" ),
-                                            fixture( "input/com/example/mixins/MyMixin.java" ) ),
-                             Arrays.asList( "expected/com/example/mixins/AssembledComponentBuilder.java",
-                                            "expected/com/example/mixins/React4j_AssembledComponent.java" ) );
-  }
-
-  @Test
   public void nestedCompleteComponent()
     throws Exception
   {
