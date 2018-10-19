@@ -29,17 +29,7 @@ final class MethodChecks
     }
   }
 
-  static void mustNotBeAbstract( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
-  {
-    if ( method.getModifiers().contains( Modifier.ABSTRACT ) )
-    {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must not be abstract", method );
-    }
-  }
-
-  static void mustBeStatic( @Nonnull final String annotationName, @Nonnull final Element method )
+  private static void mustBeStatic( @Nonnull final String annotationName, @Nonnull final Element method )
     throws ReactProcessorException
   {
     if ( !method.getModifiers().contains( Modifier.STATIC ) )
@@ -69,7 +59,7 @@ final class MethodChecks
     }
   }
 
-  static void mustNotBePrivate( @Nonnull final String annotationName, @Nonnull final Element method )
+  private static void mustNotBePrivate( @Nonnull final String annotationName, @Nonnull final Element method )
     throws ReactProcessorException
   {
     if ( method.getModifiers().contains( Modifier.PRIVATE ) )
