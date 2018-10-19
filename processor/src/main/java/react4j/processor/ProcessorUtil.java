@@ -266,18 +266,6 @@ final class ProcessorUtil
   }
 
   @SuppressWarnings( "SameParameterValue" )
-  @Nullable
-  static DeclaredType getTypeMirrorAnnotationParameter( @Nonnull final Elements elements,
-                                                        @Nonnull final Element typeElement,
-                                                        @Nonnull final String annotationClassName,
-                                                        @Nonnull final String parameterName )
-  {
-    final AnnotationValue annotationValue =
-      findAnnotationValue( elements, typeElement, annotationClassName, parameterName );
-    return null == annotationValue ? null : (DeclaredType) annotationValue.getValue();
-  }
-
-  @SuppressWarnings( "SameParameterValue" )
   @Nonnull
   static AnnotationValue getAnnotationValue( @Nonnull final Elements elements,
                                              @Nonnull final Element typeElement,
