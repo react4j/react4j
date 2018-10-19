@@ -4,6 +4,8 @@
 
 * **\[core\]** Remove the `Annotations.gwt.xml` gwt module and include source from `React.gwt.xml` gwt module.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.111`.
+* **\[core\]** Remove the `@Callback` annotation. It encouraged poor practices such as using callbacks when not
+  needed and often led to over use of `@Action` annotation for arez based react components.
 
 ### [v0.102](https://github.com/react4j/react4j/tree/v0.102) (2018-10-16)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.101...v0.102)

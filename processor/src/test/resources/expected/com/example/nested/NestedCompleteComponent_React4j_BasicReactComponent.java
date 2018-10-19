@@ -1,6 +1,5 @@
 package com.example.nested;
 
-import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,7 +14,6 @@ import org.realityforge.braincheck.Guards;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
-import react4j.annotations.Callback;
 
 @Generated("react4j.processor.ReactProcessor")
 class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {
@@ -24,9 +22,6 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
 
   private static Provider<NestedCompleteComponent.BasicReactComponent> c_provider;
-
-  @Nonnull
-  final Callback.Procedure _myEventHandler = create_myEventHandler();
 
   @Inject
   NestedCompleteComponent_React4j_BasicReactComponent() {
@@ -59,15 +54,6 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }
-  }
-
-  @Nonnull
-  private Callback.Procedure create_myEventHandler() {
-    final Callback.Procedure handler = () -> this.myEventHandler();
-    if( ReactConfig.enableComponentNames() ) {
-      JsObject.defineProperty( Js.cast( handler ), "name", Js.cast( JsPropertyMap.of( "value", "BasicReactComponent.myEventHandler" ) ) );
-    }
-    return handler;
   }
 
   @JsType(

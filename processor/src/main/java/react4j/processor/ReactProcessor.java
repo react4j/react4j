@@ -171,10 +171,6 @@ public final class ReactProcessor
     throws IOException, ReactProcessorException
   {
     final ComponentDescriptor descriptor = parse( element );
-    if ( descriptor.needsHelper() )
-    {
-      emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentHelper( descriptor ) );
-    }
     emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( descriptor ) );
     if ( descriptor.needsDaggerIntegration() )
@@ -206,7 +202,6 @@ public final class ReactProcessor
 
     determineComponentType( descriptor, typeElement );
     determineRenderMethod( typeElement, descriptor );
-    determineCallbacks( descriptor );
     determineProps( descriptor );
     determinePropValidatesMethods( descriptor );
     determineOnPropChangedMethods( descriptor );
@@ -650,204 +645,6 @@ public final class ReactProcessor
       }
     }
     return sb.toString();
-  }
-
-  private void determineCallbacks( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final List<CallbackDescriptor> callbacks =
-      getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.CALLBACK_ANNOTATION_CLASSNAME ) )
-        .map( m -> createCallbackDescriptor( descriptor, m ) )
-        .collect( Collectors.toList() );
-    for ( final CallbackDescriptor callback : callbacks )
-    {
-      final ExecutableElement method = callback.getMethod();
-      final TypeElement callbackType = getCallbackType( method );
-      if ( ElementKind.INTERFACE != callbackType.getKind() )
-      {
-        throw new ReactProcessorException( "The @Callback specified an invalid type that is not an interface.",
-                                           callback.getMethod() );
-      }
-      final CallbackDescriptor matched = callbacks.stream()
-        .filter( h -> h != callback && h.getName().equals( callback.getName() ) )
-        .findAny().orElse( null );
-      if ( null != matched )
-      {
-        throw new ReactProcessorException( "The @Callback has the same name as the callback defined by " +
-                                           matched.getMethod() + ".", callback.getMethod() );
-      }
-      final CallbackDescriptor matched2 = callbacks.stream()
-        .filter( h -> h != callback &&
-                      h.getMethod().getSimpleName().equals( callback.getMethod().getSimpleName() ) )
-        .findAny().orElse( null );
-      if ( null != matched2 )
-      {
-        throw new ReactProcessorException( "The @Callback has the same method name as the callback defined " +
-                                           "by " + matched2.getMethod() + ".", callback.getMethod() );
-      }
-      final ExecutableType methodType = callback.getMethodType();
-      if ( !processingEnv.getTypeUtils().isAssignable( methodType.getReturnType(),
-                                                       callback.getCallbackMethod().getReturnType() ) )
-      {
-        throw new ReactProcessorException( "@Callback target has a return type that is not assignable to the return " +
-                                           "type defined in the callback type " + callbackType.getQualifiedName() + ".",
-                                           callback.getMethod() );
-      }
-
-      final List<? extends TypeMirror> parameters = methodType.getParameterTypes();
-      if ( !parameters.isEmpty() )
-      {
-        // Our annotated callback method has parameters so they should exactly align
-        // in count and type with the parameters in the callback method
-        final ExecutableElement target = callback.getCallbackMethod();
-        final List<? extends VariableElement> targetParameters = target.getParameters();
-        if ( targetParameters.size() != parameters.size() )
-        {
-          throw new ReactProcessorException( "The @Callback target has " + parameters.size() + " parameters " +
-                                             "but the type parameter specified a callback with method type " +
-                                             callback.getCallbackType().getQualifiedName() + " that has a " +
-                                             "callback method with " + targetParameters.size() + " parameters. The " +
-                                             "@Callback target should have zero parameters or match the number " +
-                                             "of parameter in the target method " + target.getSimpleName() + ".",
-                                             callback.getMethod() );
-        }
-        for ( int i = 0; i < parameters.size(); i++ )
-        {
-          final TypeMirror parameterType = parameters.get( i );
-          final VariableElement element = targetParameters.get( i );
-          final TypeMirror targetParameterType = element.asType();
-          final TypeMirror targetErased = processingEnv.getTypeUtils().erasure( targetParameterType );
-          final TypeMirror parameterErased = processingEnv.getTypeUtils().erasure( parameterType );
-          if ( !processingEnv.getTypeUtils().isAssignable( targetErased, parameterErased ) )
-          {
-            throw new ReactProcessorException( "The @Callback target parameter named " +
-                                               callback.getMethod().getParameters().get( i ).getSimpleName() +
-                                               " of type " + parameterType + " is not assignable from target type " +
-                                               targetParameterType + " of parameter " + element.getSimpleName() +
-                                               " in method " + callback.getCallbackType().getQualifiedName() +
-                                               "." + target.getSimpleName() + ".",
-                                               callback.getMethod() );
-          }
-        }
-      }
-    }
-
-    descriptor.setCallbacks( callbacks );
-  }
-
-  @Nonnull
-  private CallbackDescriptor createCallbackDescriptor( @Nonnull final ComponentDescriptor descriptor,
-                                                       @Nonnull final ExecutableElement method )
-  {
-    verifyNoDuplicateAnnotations( method );
-    final String name = deriveCallbackName( method );
-    final TypeElement callbackType = getCallbackType( method );
-    final ExecutableType methodType = resolveMethodType( descriptor, method );
-    final List<ExecutableElement> callbackMethods =
-      getMethods( callbackType ).stream().
-        filter( m11 -> m11.getModifiers().contains( Modifier.ABSTRACT ) ).
-        collect( Collectors.toList() );
-    if ( callbackMethods.isEmpty() )
-    {
-      throw new ReactProcessorException( "Method annotated with @Callback specified type " +
-                                         callbackType.getQualifiedName() + " that has no abstract method and " +
-                                         "thus is not a functional interface", method );
-    }
-    else if ( callbackMethods.size() > 1 )
-    {
-      throw new ReactProcessorException( "Method annotated with @Callback specified type " +
-                                         callbackType.getQualifiedName() + " that has more than 1 abstract " +
-                                         "method and thus is not a functional interface", method );
-    }
-
-    final boolean initCallbackContext = shouldInitCallbackContext( descriptor, method );
-
-    if ( initCallbackContext &&
-         descriptor.isArezComponent() &&
-         null != ProcessorUtil.findAnnotationByType( method, Constants.ACTION_ANNOTATION_CLASSNAME ) )
-    {
-      final String message =
-        "@Callback target is also annotated with @arez.annotations.Action but the @Callback parameter " +
-        "'initCallbackContext' is not set to Feature.DISABLE which would stop react4j from also " +
-        "annotating the method with @Action. Please remove @Action or change the 'initCallbackContext' to " +
-        "Feature.DISABLE.";
-      throw new ReactProcessorException( message, method );
-    }
-    MethodChecks.mustNotBeAbstract( Constants.CALLBACK_ANNOTATION_CLASSNAME, method );
-    final TypeElement element = (TypeElement) method.getEnclosingElement();
-    if ( ElementKind.CLASS == element.getKind() && method.getModifiers().contains( Modifier.PUBLIC ) )
-    {
-      throw new ReactProcessorException( "@Callback target must not be public unless it is a " +
-                                         "default method on an interface", method );
-    }
-    MethodChecks.mustBeSubclassCallable( descriptor.getElement(), Constants.CALLBACK_ANNOTATION_CLASSNAME, method );
-    return new CallbackDescriptor( name,
-                                   method,
-                                   methodType,
-                                   callbackType,
-                                   callbackMethods.get( 0 ),
-                                   initCallbackContext );
-  }
-
-  private boolean shouldInitCallbackContext( @Nonnull final ComponentDescriptor descriptor,
-                                             @Nonnull final ExecutableElement method )
-  {
-    final VariableElement injectParameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        method,
-                                        Constants.CALLBACK_ANNOTATION_CLASSNAME,
-                                        "initCallbackContext" ).getValue();
-    switch ( injectParameter.getSimpleName().toString() )
-    {
-      case "ENABLE":
-        return true;
-      case "DISABLE":
-        return false;
-      default:
-        return descriptor.isArezComponent();
-    }
-  }
-
-  @Nonnull
-  private TypeElement getCallbackType( @Nonnull final ExecutableElement method )
-  {
-    final DeclaredType typeMirror =
-      ProcessorUtil.getTypeMirrorAnnotationParameter( processingEnv.getElementUtils(),
-                                                      method,
-                                                      Constants.CALLBACK_ANNOTATION_CLASSNAME,
-                                                      "value" );
-    assert null != typeMirror;
-    return (TypeElement) processingEnv.getTypeUtils().asElement( typeMirror );
-  }
-
-  @Nonnull
-  private String deriveCallbackName( @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
-  {
-    final String name =
-      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                 method,
-                                                 Constants.CALLBACK_ANNOTATION_CLASSNAME,
-                                                 "name" ).getValue();
-
-    if ( ProcessorUtil.isSentinelName( name ) )
-    {
-      return method.getSimpleName().toString();
-    }
-    else
-    {
-      if ( !SourceVersion.isIdentifier( name ) )
-      {
-        throw new ReactProcessorException( "@Callback target specified an invalid name '" + name + "'. The " +
-                                           "name must be a valid java identifier.", method );
-      }
-      else if ( SourceVersion.isKeyword( name ) )
-      {
-        throw new ReactProcessorException( "@Callback target specified an invalid name '" + name + "'. The " +
-                                           "name must not be a java keyword.", method );
-      }
-      return name;
-    }
   }
 
   private void determineProps( @Nonnull final ComponentDescriptor descriptor )
@@ -1515,7 +1312,9 @@ public final class ReactProcessor
     throws ReactProcessorException
   {
     final String[] annotationTypes =
-      new String[]{ Constants.CALLBACK_ANNOTATION_CLASSNAME,
+      new String[]{ Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
+                    Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
+                    Constants.ON_PROP_CHANGED_ANNOTATION_CLASSNAME,
                     Constants.PROP_ANNOTATION_CLASSNAME };
     for ( int i = 0; i < annotationTypes.length; i++ )
     {

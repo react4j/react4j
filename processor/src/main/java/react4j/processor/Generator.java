@@ -55,7 +55,6 @@ final class Generator
     ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
-  private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
   private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
   private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
@@ -491,27 +490,6 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildComponentHelper( @Nonnull final ComponentDescriptor descriptor )
-  {
-    assert descriptor.needsHelper();
-
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getHelperClassName() );
-
-    addGeneratedAnnotation( descriptor, builder );
-    addOriginatingTypes( descriptor.getElement(), builder );
-
-    // Private constructor to block instantiation
-    builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
-
-    for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
-    {
-      builder.addMethod( buildStaticCallbackMethod( descriptor, callback ).build() );
-    }
-
-    return builder.build();
-  }
-
-  @Nonnull
   static TypeSpec buildEnhancedComponent( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getEnhancedClassName() );
@@ -557,11 +535,6 @@ final class Generator
     if ( descriptor.needsInjection() )
     {
       builder.addField( buildProviderField( descriptor ).build() );
-    }
-
-    for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
-    {
-      builder.addField( buildCallbackField( callback ).build() );
     }
 
     if ( descriptor.needsInjection() )
@@ -624,20 +597,6 @@ final class Generator
         build() );
     }
 
-    for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
-    {
-      builder.addMethod( buildCallbackBuilderMethod( descriptor, callback ).build() );
-    }
-    if ( descriptor.isArezComponent() )
-    {
-      for ( final CallbackDescriptor callback : descriptor.getCallbacks() )
-      {
-        if ( callback.shouldInitCallbackContext() )
-        {
-          builder.addMethod( buildCallbackActionMethod( callback ).build() );
-        }
-      }
-    }
     if ( descriptor.isArezComponent() )
     {
       for ( final MethodDescriptor method : descriptor.getComputedMethods() )
@@ -1170,144 +1129,6 @@ final class Generator
                               "c_provider",
                               Modifier.STATIC,
                               Modifier.PRIVATE );
-  }
-
-  @Nonnull
-  private static FieldSpec.Builder buildCallbackField( @Nonnull final CallbackDescriptor callback )
-  {
-    final TypeName handlerType = TypeName.get( callback.getCallbackType().asType() );
-    final String handlerName = "_" + callback.getMethod().getSimpleName().toString();
-    return FieldSpec.builder( handlerType, handlerName, Modifier.FINAL ).
-      addAnnotation( NONNULL_CLASSNAME ).
-      initializer( "create$N()", handlerName );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildStaticCallbackMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                               @Nonnull final CallbackDescriptor callback )
-  {
-    final TypeName handlerType = TypeName.get( callback.getCallbackType().asType() );
-    final String handlerName = "_" + callback.getMethod().getSimpleName();
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( handlerName ).
-        addAnnotation( NONNULL_CLASSNAME ).
-        returns( handlerType );
-
-    method.addModifiers( Modifier.STATIC );
-
-    final ParameterSpec.Builder parameter =
-      ParameterSpec.builder( TypeName.get( descriptor.getElement().asType() ), "component", Modifier.FINAL ).
-        addAnnotation( NONNULL_CLASSNAME );
-    method.addParameter( parameter.build() );
-
-    if ( !descriptor.getElement().getTypeParameters().isEmpty() )
-    {
-      method.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
-                              .addMember( "value", "$S", "unused" )
-                              .build() );
-      ProcessorUtil.copyTypeParameters( descriptor.getElement(), method );
-    }
-
-    method.addStatement( "return (($T) component).$N", descriptor.getEnhancedClassName(), handlerName );
-    return method;
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildCallbackBuilderMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                                @Nonnull final CallbackDescriptor callback )
-  {
-    final TypeName handlerType = TypeName.get( callback.getCallbackType().asType() );
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "create_" + callback.getMethod().getSimpleName() ).
-        addModifiers( Modifier.PRIVATE ).
-        addAnnotation( NONNULL_CLASSNAME ).
-        returns( handlerType );
-
-    final ExecutableElement target = callback.getCallbackMethod();
-    final int targetParameterCount = target.getParameters().size();
-    String args =
-      0 == targetParameterCount ?
-      "()" :
-      IntStream.range( 0, targetParameterCount )
-        .mapToObj( i -> target.getParameters().get( i ).getSimpleName().toString() )
-        .collect( Collectors.joining( "," ) );
-    if ( 1 < targetParameterCount )
-    {
-      args = "(" + args + ")";
-    }
-
-    final int paramCount = callback.getMethod().getParameters().size();
-    final String params =
-      0 == paramCount ?
-      "" :
-      IntStream.range( 0, paramCount )
-        .mapToObj( i -> target.getParameters().get( i ).getSimpleName().toString() )
-        .collect( Collectors.joining( "," ) );
-
-    if ( callback.isJsFunction() )
-    {
-      method.addStatement( "final $T handler = " + args + " -> this.$N(" + params + ")",
-                           handlerType,
-                           callback.getMethod().getSimpleName() );
-
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
-      final String code =
-        "$T.defineProperty( $T.cast( handler ), \"name\", $T.cast( $T.of( \"value\", $S ) ) )";
-      block.addStatement( code,
-                          JS_OBJECT_CLASSNAME,
-                          JS_CLASSNAME,
-                          JS_CLASSNAME,
-                          JS_PROPERTY_MAP_CLASSNAME,
-                          descriptor.getName() + "." + callback.getName() );
-      block.endControlFlow();
-      method.addCode( block.build() );
-      method.addStatement( "return handler" );
-    }
-    else
-    {
-      method.addStatement( "return " + args + " -> this.$N(" + params + ")", callback.getMethod().getSimpleName() );
-    }
-    return method;
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildCallbackActionMethod( @Nonnull final CallbackDescriptor callback )
-  {
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( callback.getMethod().getSimpleName().toString() ).
-        returns( TypeName.get( callback.getMethodType().getReturnType() ) );
-    ProcessorUtil.copyTypeParameters( callback.getMethodType(), method );
-    ProcessorUtil.copyAccessModifiers( callback.getMethod(), method );
-    ProcessorUtil.copyWhitelistedAnnotations( callback.getMethod(), method );
-
-    final AnnotationSpec.Builder annotation =
-      AnnotationSpec.builder( ACTION_CLASSNAME ).
-        addMember( "reportParameters", "false" );
-    method.addAnnotation( annotation.build() );
-
-    final int paramCount = callback.getMethod().getParameters().size();
-    for ( int i = 0; i < paramCount; i++ )
-    {
-      final TypeMirror paramType = callback.getMethodType().getParameterTypes().get( i );
-      final VariableElement param = callback.getMethod().getParameters().get( i );
-      final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( TypeName.get( paramType ), param.getSimpleName().toString(), Modifier.FINAL );
-      ProcessorUtil.copyWhitelistedAnnotations( param, parameter );
-      method.addParameter( parameter.build() );
-    }
-    final String params =
-      0 == paramCount ?
-      "" :
-      IntStream.range( 0, paramCount )
-        .mapToObj( i -> callback.getMethod().getParameters().get( i ).getSimpleName().toString() )
-        .collect( Collectors.joining( "," ) );
-
-    final boolean isVoid = callback.getMethodType().getReturnType().getKind() == TypeKind.VOID;
-
-    method.addStatement( ( isVoid ? "" : "return " ) + "super.$N(" + params + ")",
-                         callback.getMethod().getSimpleName() );
-    return method;
   }
 
   @Nonnull

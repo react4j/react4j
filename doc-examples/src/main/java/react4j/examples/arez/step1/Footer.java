@@ -2,28 +2,19 @@ package react4j.examples.arez.step1;
 
 import javax.annotation.Nullable;
 import react4j.ReactNode;
-import react4j.annotations.Callback;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
-import react4j.dom.events.MouseEventHandler;
 import react4j.dom.proptypes.html.AnchorProps;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.examples.arez.step1.model.AppData;
 import react4j.examples.arez.step1.model.FilterMode;
 import static react4j.dom.DOM.*;
-import static react4j.examples.arez.step1.Footer_.*;
 
 @ReactComponent
 abstract class Footer
   extends ReactArezComponent
 {
-  @Callback( MouseEventHandler.class )
-  void handleClearCompleted()
-  {
-    AppData.service.clearCompleted();
-  }
-
   @Nullable
   @Override
   protected ReactNode render()
@@ -52,7 +43,7 @@ abstract class Footer
                   )
               ),
               AppData.model.completedCount() > 0 ?
-              button( new BtnProps().className( "clear-completed" ).onClick( _handleClearCompleted( this ) ),
+              button( new BtnProps().className( "clear-completed" ).onClick( e -> AppData.service.clearCompleted() ),
                       "Clear Completed" ) :
               null
       );

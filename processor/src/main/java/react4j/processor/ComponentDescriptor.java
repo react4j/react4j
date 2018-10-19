@@ -40,12 +40,6 @@ final class ComponentDescriptor
   @Nullable
   private List<MethodDescriptor> _lifecycleMethods;
   /**
-   * Methods that are designated as callbacks. A wrapper method will be generated to simplify
-   * the use of the method in the React DevTools by naming callback.
-   */
-  @Nullable
-  private List<CallbackDescriptor> _callbacks;
-  /**
    * Methods that are props accessors.
    * These should be implemented as accesses to the underlying props value.
    */
@@ -157,12 +151,6 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  ClassName getHelperClassName()
-  {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "_" );
-  }
-
-  @Nonnull
   ClassName getBuilderClassName()
   {
     return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "Builder" );
@@ -195,11 +183,6 @@ final class ComponentDescriptor
     {
       return ClassName.get( getElement() );
     }
-  }
-
-  boolean needsHelper()
-  {
-    return !getCallbacks().isEmpty();
   }
 
   boolean needsInjection()
@@ -265,14 +248,6 @@ final class ComponentDescriptor
   void setLifecycleMethods( @Nonnull final List<MethodDescriptor> lifecycleMethods )
   {
     _lifecycleMethods = Objects.requireNonNull( lifecycleMethods );
-    for ( final MethodDescriptor method : _lifecycleMethods )
-    {
-      final ExecutableElement m = method.getMethod();
-      if ( null != ProcessorUtil.findAnnotationByType( m, Constants.CALLBACK_ANNOTATION_CLASSNAME ) )
-      {
-        throw new ReactProcessorException( "@Callback target must not be a lifecycle method", m );
-      }
-    }
   }
 
   @Nonnull
@@ -334,18 +309,6 @@ final class ComponentDescriptor
   {
     assert isArezComponent();
     _memoizeMethods = Objects.requireNonNull( memoizeMethods );
-  }
-
-  @Nonnull
-  List<CallbackDescriptor> getCallbacks()
-  {
-    assert null != _callbacks;
-    return _callbacks;
-  }
-
-  void setCallbacks( @Nonnull final List<CallbackDescriptor> callbacks )
-  {
-    _callbacks = Objects.requireNonNull( callbacks );
   }
 
   @Nonnull

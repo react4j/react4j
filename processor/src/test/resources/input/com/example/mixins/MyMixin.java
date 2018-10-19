@@ -1,11 +1,9 @@
 package com.example.mixins;
 
-import react4j.annotations.Callback;
+import react4j.annotations.Prop;
 
 public interface MyMixin
 {
-  @Callback
-  default void handleFoo()
-  {
-  }
+  @Prop
+  String myProp();
 }

@@ -23,10 +23,6 @@
 
 * Add `@DisposeOnUnmount` which is functionally equivalent to `@CascadeDispose` but available on normal react components
 
-* Generate an error if a cached `@Callback` field is passed to a DOM element. It is ultimately useless.
-
-* Generate an error if a cached `@Callback` field is passed to a `STATELESS` component. It is ultimately useless.
-
 * Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
 
 * Introduce `TreeLocal` component which is react "context". A single `TreeLocal` can be represented using react 16.4's
@@ -43,12 +39,10 @@
 * Make the name of the assets based off the version of the underlying react library. i.e. Name them `react-16.5.0.js`
   rather than `react.js` so cache is never in conflict.
 
-* Consider whether can turn off remove `@Callback` annotation altogether.
-- It seems we probably want to turn off `@Action` wrapping for `@Callback`? Unless (see next point)
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
-  schedule onceoff autorun that will be re-run when scheduler is enabled. (The autorun will need to dispose itself
-  and will need to be marked as runImmediately=false)
-_ EventHandlers should probably start scopes for profiler by default with the ability to optionally disable
+  schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
+  this lower down in the react stack.
+- EventHandlers should probably start profiler "interactions" by default with the ability to disable
 
 * Start to add javascript tests - starting with braincheck ala
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
