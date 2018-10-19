@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.103](https://github.com/react4j/react4j/tree/v0.103) (2018-10-19)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.102...v0.103)
 
 * **\[core\]** Remove the `Annotations.gwt.xml` gwt module and include source from `React.gwt.xml` gwt module.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.111`.
