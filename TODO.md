@@ -8,16 +8,19 @@
 
 * Collections returned from props should be made immutable.
 
-* Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component. `STATELESS` would be inlined into
-  caller without a component in production mode, `PURE` would have SCU automagically created assuming
-  `Object.equals()`, `STATEFUL` = can use fields, `@Callback` methods. `AREZ` = `STATELESS` + can use `@Observable`,
-  `@Computed`, `@Memoize`, `@Observed`. `AUTODETECT` will be `STATELESS` if no fields, `@Callback` methods,
-  lifecycle methods, `@State` methods or `@Observed`/`@Computed` annotated methods and no prop is an arez component.
-  `AUTODETECT` will be `PURE` if it satisfies `STATELESS` and all props are primitives or the processor knows shallow
-   comparison works. It will be `AREZ` if has an arez annotation and/or ant props are arez components. Otherwise it is
-   `STATEFUL`. For `STATELESS|PURE` components we would need to add an invariant check to ensure it is not invoked
-   out of turn. When inlining the `build()` method in builder will access static singleton instance of component, set
-   props and call render.
+* Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component.
+  - `STATELESS` => inlined into caller without a component in production mode.
+  - `PURE` => autogenerate SCU assuming `Js.isTripleEqual()` for props implies no re-render.
+  - `STATEFUL` => can use fields or lifecycle methods.
+  - `AREZ` => `STATEFUL` + can use `@Observable`, `@Computed`, `@Memoize`, `@Observed`.
+  - `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods or `@Observed`/`@Computed` annotated methods
+    and no prop is an arez component. `AUTODETECT` will be `PURE` if it satisfies `STATELESS` and all props are
+    primitives or the processor knows shallow comparison works. It will be `AREZ` if it has an arez annotation and/or
+    anty props are arez components. Otherwise it is `STATEFUL`.
+
+    For `STATELESS|PURE` components we could add an invariant check to ensure props are not invoked out of render.
+    When inlining the `build()` method in builder will access static singleton instance of component, set
+    props and call render. Alternatively we could require the users to write it as a static method somewhere.
 
 * Make it possible to specify an arez component that may not always read arez state ... somehow
 
