@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the javascript included within package to react version `16.6.0`.
+
 ### [v0.103](https://github.com/react4j/react4j/tree/v0.103) (2018-10-19)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.102...v0.103)
 

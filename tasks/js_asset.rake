@@ -1,20 +1,20 @@
 JS_ASSETS =
   {
-    'com.unpkg:react:js:16.5.2' => 'https://unpkg.com/react@16.5.2/umd/react.development.js',
-    'com.unpkg:react:js:min:16.5.2' => 'https://unpkg.com/react@16.5.2/umd/react.production.min.js',
-    'com.unpkg:react-dom:js:16.5.2' => 'https://unpkg.com/react-dom@16.5.2/umd/react-dom.development.js',
-    'com.unpkg:react-dom:js:min:16.5.2' => 'https://unpkg.com/react-dom@16.5.2/umd/react-dom.production.min.js',
+    'com.unpkg:react:js:16.6.0' => 'https://unpkg.com/react@16.6.0/umd/react.development.js',
+    'com.unpkg:react:js:min:16.6.0' => 'https://unpkg.com/react@16.6.0/umd/react.production.min.js',
+    'com.unpkg:react-dom:js:16.6.0' => 'https://unpkg.com/react-dom@16.6.0/umd/react-dom.development.js',
+    'com.unpkg:react-dom:js:min:16.6.0' => 'https://unpkg.com/react-dom@16.6.0/umd/react-dom.production.min.js',
   }
 
 JS_ASSET_GROUPS =
   {
     :core => {
-      'com.unpkg:react:js:16.5.2' => 'react4j/public/dev/react.js',
-      'com.unpkg:react:js:min:16.5.2' => 'react4j/public/react.js'
+      'com.unpkg:react:js:16.6.0' => 'react4j/public/dev/react.js',
+      'com.unpkg:react:js:min:16.6.0' => 'react4j/public/react.js'
     },
     :dom => {
-      'com.unpkg:react-dom:js:16.5.2' => 'react4j/dom/public/dev/react-dom.js',
-      'com.unpkg:react-dom:js:min:16.5.2' => 'react4j/dom/public/react-dom.js'
+      'com.unpkg:react-dom:js:16.6.0' => 'react4j/dom/public/dev/react-dom.js',
+      'com.unpkg:react-dom:js:min:16.6.0' => 'react4j/dom/public/react-dom.js'
     }
   }
 
