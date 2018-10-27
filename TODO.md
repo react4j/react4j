@@ -3,6 +3,7 @@
 ### Next Release
 
 * Change all remaining lifecycle hooks so they have less name cruft. (i.e. `didUpdate()` rather than `componentDidUpdate()`)
+  Or maybe we just add annotations to hook into various steps.
 
 ### Next Next Release
 
