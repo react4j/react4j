@@ -344,16 +344,13 @@ public abstract class Component
     {
       final boolean alreadyNotified = _propChangesNotified;
       _propChangesNotified = false;
-      if ( alreadyNotified )
-      {
-        return false;
-      }
+      return !alreadyNotified;
     }
     else
     {
       _propChangesNotified = true;
+      return true;
     }
-    return true;
   }
 
   /**
