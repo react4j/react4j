@@ -1,8 +1,8 @@
 package com.example.arez.computed;
 
-import arez.ComputedValue;
+import arez.ComputableValue;
+import arez.annotations.ComputableValueRef;
 import arez.annotations.Computed;
-import arez.annotations.ComputedValueRef;
 import arez.annotations.DepType;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
@@ -20,12 +20,12 @@ abstract class ParameterizedComputedComponent
     return null;
   }
 
-  @Computed( name = "foo", observeLowerPriorityDependencies = true, keepAlive = true, depType = DepType.AREZ_OR_EXTERNAL, requireEnvironment = true )
+  @Computed( name = "foo", observeLowerPriorityDependencies = true, keepAlive = true, depType = DepType.AREZ_OR_EXTERNAL, requireEnvironment = true, reportResult = false )
   boolean isActive()
   {
     return true;
   }
 
-  @ComputedValueRef
-  abstract ComputedValue getFooComputedValue();
+  @ComputableValueRef
+  abstract ComputableValue getFooComputableValue();
 }

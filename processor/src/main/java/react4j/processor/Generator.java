@@ -718,6 +718,15 @@ final class Generator
     {
       annotation.addMember( "keepAlive", "$N", keepAliveValue.getValue().toString() );
     }
+    final AnnotationValue reportResultValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
+                                                 "reportResult" );
+    if ( null != reportResultValue )
+    {
+      annotation.addMember( "reportResult", "$N", reportResultValue.getValue().toString() );
+    }
+
     final AnnotationValue requireEnvironmentValue =
       ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
                                                  Constants.COMPUTED_ANNOTATION_CLASSNAME,
