@@ -11,7 +11,7 @@ import arez.annotations.ContextRef;
 import arez.annotations.Executor;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
-import arez.annotations.OnDepsChanged;
+import arez.annotations.OnDepsChange;
 import arez.annotations.Priority;
 import arez.spy.ObservableValueInfo;
 import arez.spy.ObserverInfo;
@@ -84,8 +84,8 @@ public abstract class ReactArezComponent
   /**
    * Hook used by Arez to notify component that it needs to be re-rendered.
    */
-  @OnDepsChanged
-  protected final void onRenderDepsChanged()
+  @OnDepsChange
+  protected final void onRenderDepsChange()
   {
     if ( !_renderDepsChanged )
     {
