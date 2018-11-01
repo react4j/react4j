@@ -18,7 +18,6 @@ final class Constants
   static final String AREZ_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ArezComponent";
   static final String OBSERVE_ANNOTATION_CLASSNAME = "arez.annotations.Observe";
   static final String DEPENDENCY_ANNOTATION_CLASSNAME = "arez.annotations.Dependency";
-  static final String COMPUTED_ANNOTATION_CLASSNAME = "arez.annotations.Computed";
   static final String MEMOIZE_ANNOTATION_CLASSNAME = "arez.annotations.Memoize";
   static final String ACTION_ANNOTATION_CLASSNAME = "arez.annotations.Action";
   static final String NONNULL_ANNOTATION_CLASSNAME = "javax.annotation.Nonnull";

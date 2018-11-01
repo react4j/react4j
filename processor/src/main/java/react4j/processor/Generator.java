@@ -46,7 +46,6 @@ final class Generator
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
-  private static final ClassName COMPUTED_CLASSNAME = ClassName.get( "arez.annotations", "Computed" );
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
   private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
@@ -599,10 +598,6 @@ final class Generator
 
     if ( descriptor.isArezComponent() )
     {
-      for ( final MethodDescriptor method : descriptor.getComputedMethods() )
-      {
-        builder.addMethod( buildComputedWrapperMethod( method ).build() );
-      }
       for ( final MethodDescriptor method : descriptor.getMemoizeMethods() )
       {
         builder.addMethod( buildMemoizeWrapperMethod( method ).build() );
@@ -650,12 +645,6 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildComputedWrapperMethod( @Nonnull final MethodDescriptor descriptor )
-  {
-    return generateOverrideMethod( descriptor ).addAnnotation( buildComputedAnnotation( descriptor ).build() );
-  }
-
-  @Nonnull
   private static MethodSpec.Builder buildMemoizeWrapperMethod( @Nonnull final MethodDescriptor descriptor )
   {
     return generateOverrideMethod( descriptor ).addAnnotation( buildMemoizeAnnotation( descriptor ).build() );
@@ -697,67 +686,6 @@ final class Generator
   }
 
   @Nonnull
-  private static AnnotationSpec.Builder buildComputedAnnotation( @Nonnull final MethodDescriptor descriptor )
-  {
-    final AnnotationSpec.Builder annotation =
-      AnnotationSpec.builder( COMPUTED_CLASSNAME ).
-        addMember( "priority", "$T.LOWEST", PRIORITY_CLASSNAME );
-    final AnnotationValue nameValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
-                                                 "name" );
-    if ( null != nameValue )
-    {
-      annotation.addMember( "name", "$S", nameValue.getValue().toString() );
-    }
-    final AnnotationValue keepAliveValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
-                                                 "keepAlive" );
-    if ( null != keepAliveValue )
-    {
-      annotation.addMember( "keepAlive", "$N", keepAliveValue.getValue().toString() );
-    }
-    final AnnotationValue reportResultValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
-                                                 "reportResult" );
-    if ( null != reportResultValue )
-    {
-      annotation.addMember( "reportResult", "$N", reportResultValue.getValue().toString() );
-    }
-
-    final AnnotationValue requireEnvironmentValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
-                                                 "requireEnvironment" );
-    if ( null != requireEnvironmentValue )
-    {
-      annotation.addMember( "requireEnvironment", "$N", requireEnvironmentValue.getValue().toString() );
-    }
-    final AnnotationValue depTypeValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
-                                                 "depType" );
-    if ( null != depTypeValue )
-    {
-      annotation.addMember( "depType", "$T.$N", DEP_TYPE_CLASSNAME, depTypeValue.getValue().toString() );
-    }
-
-    final AnnotationValue observeLowerPriorityDependenciesValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.COMPUTED_ANNOTATION_CLASSNAME,
-                                                 "observeLowerPriorityDependencies" );
-    if ( null != observeLowerPriorityDependenciesValue )
-    {
-      annotation.addMember( "observeLowerPriorityDependencies",
-                            "$N",
-                            observeLowerPriorityDependenciesValue.getValue().toString() );
-    }
-    return annotation;
-  }
-
-  @Nonnull
   private static AnnotationSpec.Builder buildMemoizeAnnotation( @Nonnull final MethodDescriptor descriptor )
   {
     final AnnotationSpec.Builder annotation =
@@ -771,6 +699,23 @@ final class Generator
     {
       annotation.addMember( "name", "$S", nameValue.getValue().toString() );
     }
+    final AnnotationValue keepAliveValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
+                                                 "keepAlive" );
+    if ( null != keepAliveValue )
+    {
+      annotation.addMember( "keepAlive", "$N", keepAliveValue.getValue().toString() );
+    }
+    final AnnotationValue reportResultValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
+                                                 "reportResult" );
+    if ( null != reportResultValue )
+    {
+      annotation.addMember( "reportResult", "$N", reportResultValue.getValue().toString() );
+    }
+
     final AnnotationValue requireEnvironmentValue =
       ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
                                                  Constants.MEMOIZE_ANNOTATION_CLASSNAME,
@@ -779,6 +724,15 @@ final class Generator
     {
       annotation.addMember( "requireEnvironment", "$N", requireEnvironmentValue.getValue().toString() );
     }
+    final AnnotationValue depTypeValue =
+      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
+                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
+                                                 "depType" );
+    if ( null != depTypeValue )
+    {
+      annotation.addMember( "depType", "$T.$N", DEP_TYPE_CLASSNAME, depTypeValue.getValue().toString() );
+    }
+
     final AnnotationValue observeLowerPriorityDependenciesValue =
       ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
                                                  Constants.MEMOIZE_ANNOTATION_CLASSNAME,
@@ -788,17 +742,6 @@ final class Generator
       annotation.addMember( "observeLowerPriorityDependencies",
                             "$N",
                             observeLowerPriorityDependenciesValue.getValue().toString() );
-    }
-    final AnnotationValue depTypeValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                                 "depType" );
-    if ( null != depTypeValue )
-    {
-      annotation.addMember( "depType",
-                            "$T.$N",
-                            DEP_TYPE_CLASSNAME,
-                            depTypeValue.getValue().toString() );
     }
     return annotation;
   }

@@ -1,7 +1,7 @@
 package com.example.prop;
 
 import arez.annotations.ArezComponent;
-import arez.annotations.Computed;
+import arez.annotations.Memoize;
 import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -43,7 +43,7 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
   }
 
   @Override
-  @Computed(
+  @Memoize(
       priority = Priority.LOWEST
   )
   int someValue() {

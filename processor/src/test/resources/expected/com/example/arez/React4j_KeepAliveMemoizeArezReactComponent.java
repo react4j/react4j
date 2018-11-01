@@ -1,9 +1,8 @@
-package com.example.arez.computed;
+package com.example.arez;
 
 import arez.annotations.ArezComponent;
-import arez.annotations.Computed;
+import arez.annotations.Memoize;
 import arez.annotations.Priority;
-import java.util.function.Consumer;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,27 +16,34 @@ import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 
 @ArezComponent(
-    name = "ParameterizedReturnComputedComponent"
+    name = "KeepAliveMemoizeArezReactComponent",
+    deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class React4j_ParameterizedReturnComputedComponent extends ParameterizedReturnComputedComponent {
+abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoizeArezReactComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ParameterizedReturnComputedComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "KeepAliveMemoizeArezReactComponent" );
     }
     return componentConstructor;
   }
 
   @Override
-  @Computed(
-      priority = Priority.LOWEST
+  protected final void triggerScheduler() {
+    getContext().triggerScheduler();
+  }
+
+  @Override
+  @Memoize(
+      priority = Priority.LOWEST,
+      keepAlive = true
   )
-  <T> Consumer<T> isActive() {
-    return super.isActive();
+  int myAutorun() {
+    return super.myAutorun();
   }
 
   @JsType(
@@ -62,15 +68,15 @@ abstract class React4j_ParameterizedReturnComputedComponent extends Parameterize
     void componentWillUnmount();
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ParameterizedReturnComputedComponent> implements LiteLifecycle {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<KeepAliveMemoizeArezReactComponent> implements LiteLifecycle {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected ParameterizedReturnComputedComponent createComponent() {
-      return new Arez_React4j_ParameterizedReturnComputedComponent();
+    protected KeepAliveMemoizeArezReactComponent createComponent() {
+      return new Arez_React4j_KeepAliveMemoizeArezReactComponent();
     }
 
     @Override
@@ -79,15 +85,15 @@ abstract class React4j_ParameterizedReturnComputedComponent extends Parameterize
     }
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<ParameterizedReturnComputedComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<KeepAliveMemoizeArezReactComponent> implements Lifecycle {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected ParameterizedReturnComputedComponent createComponent() {
-      return new Arez_React4j_ParameterizedReturnComputedComponent();
+    protected KeepAliveMemoizeArezReactComponent createComponent() {
+      return new Arez_React4j_KeepAliveMemoizeArezReactComponent();
     }
 
     @Override

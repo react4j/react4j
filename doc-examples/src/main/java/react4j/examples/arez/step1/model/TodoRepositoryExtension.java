@@ -1,22 +1,22 @@
 package react4j.examples.arez.step1.model;
 
-import arez.annotations.Computed;
+import arez.annotations.Memoize;
 
 public interface TodoRepositoryExtension
 {
-  @Computed
+  @Memoize
   default int totalCount()
   {
     return self().findAll().size();
   }
 
-  @Computed
+  @Memoize
   default int activeCount()
   {
     return (int) self().findAll().stream().filter( todo -> !todo.isCompleted() ).count();
   }
 
-  @Computed
+  @Memoize
   default int completedCount()
   {
     return totalCount() - activeCount();

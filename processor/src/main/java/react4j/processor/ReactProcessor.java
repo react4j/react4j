@@ -1024,15 +1024,13 @@ public final class ReactProcessor
 
     if ( isArezComponent )
     {
-      ensureComputedMatchesExpectations( typeElement );
       ensureMemoizeMatchesExpectations( typeElement );
       final boolean runArezScheduler =
         hasAnyArezScheduledObserverMethods( typeElement ) ||
-        hasAnyKeepAliveComputedMethods( typeElement ) ||
+        hasAnyKeepAliveMemoizeMethods( typeElement ) ||
         hasAnyDependencyMethods( typeElement );
       descriptor.setRunArezScheduler( runArezScheduler );
 
-      descriptor.setComputedMethods( getComputedMethods( typeElement ) );
       descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
     }
     else
@@ -1066,10 +1064,10 @@ public final class ReactProcessor
     }
   }
 
-  private void ensureComputedMatchesExpectations( @Nonnull final TypeElement typeElement )
+  private void ensureMemoizeMatchesExpectations( @Nonnull final TypeElement typeElement )
   {
     final TypeElement computedElement =
-      processingEnv.getElementUtils().getTypeElement( Constants.COMPUTED_ANNOTATION_CLASSNAME );
+      processingEnv.getElementUtils().getTypeElement( Constants.MEMOIZE_ANNOTATION_CLASSNAME );
     final Set<String> parameters = computedElement.getEnclosedElements()
       .stream()
       .map( e -> e.getSimpleName().toString() )
@@ -1083,35 +1081,11 @@ public final class ReactProcessor
             parameters.contains( "requireEnvironment" ) &&
             7 == parameters.size() ) )
     {
-      throw new ReactProcessorException( "The @" + Constants.COMPUTED_ANNOTATION_CLASSNAME + " annotation was " +
+      throw new ReactProcessorException( "The @" + Constants.MEMOIZE_ANNOTATION_CLASSNAME + " annotation was " +
                                          "expected to have the parameters name, priority, keepAlive, reportResult, " +
                                          "depType, requireEnvironment and observeLowerPriorityDependencies but has " +
                                          parameters + ". The react4j annotation processor needs to be updated to " +
                                          "handle the change in parameters.", typeElement );
-
-    }
-  }
-
-  private void ensureMemoizeMatchesExpectations( @Nonnull final TypeElement typeElement )
-  {
-    final TypeElement computedElement =
-      processingEnv.getElementUtils().getTypeElement( Constants.MEMOIZE_ANNOTATION_CLASSNAME );
-    final Set<String> parameters = computedElement.getEnclosedElements()
-      .stream()
-      .map( e -> e.getSimpleName().toString() )
-      .collect( Collectors.toSet() );
-    if ( !( parameters.contains( "name" ) &&
-            parameters.contains( "priority" ) &&
-            parameters.contains( "observeLowerPriorityDependencies" ) &&
-            parameters.contains( "requireEnvironment" ) &&
-            parameters.contains( "depType" ) &&
-            5 == parameters.size() ) )
-    {
-      throw new ReactProcessorException( "The @" + Constants.MEMOIZE_ANNOTATION_CLASSNAME + " annotation was " +
-                                         "expected to have the parameters name, priority, depType, requireEnvironment " +
-                                         "and observeLowerPriorityDependencies but has " + parameters + ". The " +
-                                         "react4j annotation processor needs to be updated to handle " +
-                                         "the change in parameters.", typeElement );
 
     }
   }
@@ -1160,8 +1134,7 @@ public final class ReactProcessor
   {
     return getMethods( typeElement )
       .stream()
-      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.COMPUTED_ANNOTATION_CLASSNAME ) ||
-                      null != ProcessorUtil.findAnnotationByType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
+      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
                       ( null != ProcessorUtil.findAnnotationByType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
                         ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
   }
@@ -1248,7 +1221,7 @@ public final class ReactProcessor
       .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.DEPENDENCY_ANNOTATION_CLASSNAME ) );
   }
 
-  private boolean hasAnyKeepAliveComputedMethods( @Nonnull final TypeElement typeElement )
+  private boolean hasAnyKeepAliveMemoizeMethods( @Nonnull final TypeElement typeElement )
   {
     return getMethods( typeElement )
       .stream()
@@ -1256,7 +1229,7 @@ public final class ReactProcessor
         final AnnotationValue annotationValue =
           ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
                                              m,
-                                             Constants.COMPUTED_ANNOTATION_CLASSNAME,
+                                             Constants.MEMOIZE_ANNOTATION_CLASSNAME,
                                              "keepAlive" );
         return null != annotationValue && (boolean) annotationValue.getValue();
       } );
@@ -1265,27 +1238,6 @@ public final class ReactProcessor
   private boolean hasInjectAnnotation( final Element method )
   {
     return null != ProcessorUtil.findAnnotationByType( method, Constants.INJECT_ANNOTATION_CLASSNAME );
-  }
-
-  /**
-   * Return computed that have not had the priority parameter explicitly set.
-   */
-  @Nonnull
-  private List<MethodDescriptor> getComputedMethods( @Nonnull final TypeElement typeElement )
-  {
-    final DeclaredType type = (DeclaredType) typeElement.asType();
-    return getMethods( typeElement )
-      .stream()
-      .filter( method -> !method.getModifiers().contains( Modifier.PRIVATE ) )
-      .filter( method -> {
-        final AnnotationMirror mirror =
-          ProcessorUtil.findAnnotationByType( method, Constants.COMPUTED_ANNOTATION_CLASSNAME );
-        return null != mirror &&
-               mirror.getElementValues().keySet().stream()
-                 .noneMatch( v -> "priority".equals( v.getSimpleName().toString() ) );
-      } )
-      .map( m -> new MethodDescriptor( m, (ExecutableType) processingEnv.getTypeUtils().asMemberOf( type, m ) ) )
-      .collect( Collectors.toList() );
   }
 
   /**

@@ -1,4 +1,4 @@
-package com.example.arez.computed;
+package com.example.arez;
 
 import java.util.Objects;
 import javax.annotation.Generated;
@@ -10,8 +10,8 @@ import react4j.React;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class BasicComputedComponentBuilder {
-  private BasicComputedComponentBuilder() {
+class KeepAliveMemoizeArezReactComponentBuilder {
+  private KeepAliveMemoizeArezReactComponentBuilder() {
   }
 
   @Nonnull
@@ -75,7 +75,7 @@ class BasicComputedComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_BasicComputedComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_KeepAliveMemoizeArezReactComponent.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

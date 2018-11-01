@@ -47,19 +47,19 @@ case with a [TodoMVC](http://todomvc.com/) implementation.
 However let's assume that this component needs to be optimized and walk through the steps that would be required to
 optimize the component to reduce the scope and frequency of re-renders.
 
-### Use @Computed
+### Use @Memoize
 
 If you turn on "Highlight Updates" in React's DevTools you will notice that the whole component re-renders any time
 a Todo is toggled from "complete" to "not complete" or vice-versa. However the html output only changes if the
 number of completed Todos changes from 0 to not zero or from not zero to zero.
 
 To eliminate these unnecessary renders, the simplest approach is to extract the expression
-`AppData.model.completedCount() > 0` into a separate `@Computed` method. The `render()` method will only be scheduled
-to render if the value returned from the `@Computed` method changes.
+`AppData.model.completedCount() > 0` into a separate `@Memoize` method. The `render()` method will only be scheduled
+to render if the value returned from the `@Memoize` method changes.
 
 This method will look like:
 
-{@file_content: file=react4j/examples/arez/step2/Footer.java start_line=@Computed "end_line=^}" include_end_line=false strip_block=true}
+{@file_content: file=react4j/examples/arez/step2/Footer.java start_line=@Memoize "end_line=^}" include_end_line=false strip_block=true}
 
 Using computed properties is one of the easiest and least intrusive mechanisms for optimizing components.
 
@@ -67,7 +67,7 @@ Using computed properties is one of the easiest and least intrusive mechanisms f
 
 If we return to React's DevTools and turn "Highlight Updates" on again. The next thing you will notice is that the
 component is re-rendered any time a Todo is added or removed as the value for the expression
-`AppData.model.totalCount()` changes. Unfortunately `@Computed` will not help us here as the html output changes
+`AppData.model.totalCount()` changes. Unfortunately `@Memoize` will not help us here as the html output changes
 every time a re-render occurs. However we can decide to limit the scope of the rendering by extracting a component
 that encapsulates the html that changes.
 
@@ -157,7 +157,7 @@ verbose code constructs and can result in more abstraction and indirection. In a
 developer this can have a negative effect. Larger applications with larger teams may benefit from the higher
 level of abstraction.
 
-### Avoid arez annotations other than @Computed and @Action in React4j components
+### Avoid arez annotations other than @Memoize and @Action in React4j components
 
 Following the above best practices, you will find you rarely if ever need to annotate any methods in a
-`ReactArezComponent` subclass with any Arez annotations other than `@Computed` and `@Action`.
+`ReactArezComponent` subclass with any Arez annotations other than `@Memoize` and `@Action`.

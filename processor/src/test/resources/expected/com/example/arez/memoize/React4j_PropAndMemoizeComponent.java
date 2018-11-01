@@ -1,9 +1,9 @@
-package com.example.prop;
+package com.example.arez.memoize;
 
 import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
-import arez.annotations.Computed;
+import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
 import arez.annotations.Priority;
@@ -20,10 +20,10 @@ import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 
 @ArezComponent(
-    name = "ObservableViaComputedProp"
+    name = "PropAndMemoizeComponent"
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class React4j_ObservableViaComputedProp extends ObservableViaComputedProp {
+abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
   static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
@@ -32,7 +32,7 @@ abstract class React4j_ObservableViaComputedProp extends ObservableViaComputedPr
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ObservableViaComputedProp" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "PropAndMemoizeComponent" );
     }
     return componentConstructor;
   }
@@ -43,9 +43,9 @@ abstract class React4j_ObservableViaComputedProp extends ObservableViaComputedPr
       expectSetter = false,
       readOutsideTransaction = true
   )
-  protected Object getValue() {
+  protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
+      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
@@ -73,11 +73,11 @@ abstract class React4j_ObservableViaComputedProp extends ObservableViaComputedPr
   }
 
   @Override
-  @Computed(
+  @Memoize(
       priority = Priority.LOWEST
   )
-  int someValue() {
-    return super.someValue();
+  public boolean isActive() {
+    return super.isActive();
   }
 
   @JsType(
@@ -108,15 +108,15 @@ abstract class React4j_ObservableViaComputedProp extends ObservableViaComputedPr
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ObservableViaComputedProp> implements LiteLifecycle {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<PropAndMemoizeComponent> implements LiteLifecycle {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected ObservableViaComputedProp createComponent() {
-      return new Arez_React4j_ObservableViaComputedProp();
+    protected PropAndMemoizeComponent createComponent() {
+      return new Arez_React4j_PropAndMemoizeComponent();
     }
 
     @Override
@@ -135,15 +135,15 @@ abstract class React4j_ObservableViaComputedProp extends ObservableViaComputedPr
     }
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<ObservableViaComputedProp> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<PropAndMemoizeComponent> implements Lifecycle {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
     }
 
     @Override
-    protected ObservableViaComputedProp createComponent() {
-      return new Arez_React4j_ObservableViaComputedProp();
+    protected PropAndMemoizeComponent createComponent() {
+      return new Arez_React4j_PropAndMemoizeComponent();
     }
 
     @Override

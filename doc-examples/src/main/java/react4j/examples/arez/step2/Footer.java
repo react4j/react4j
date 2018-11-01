@@ -1,6 +1,6 @@
 package react4j.examples.arez.step2;
 
-import arez.annotations.Computed;
+import arez.annotations.Memoize;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
@@ -45,7 +45,7 @@ abstract class Footer
       );
   }
 
-  @Computed
+  @Memoize
   boolean hasCompletedItems()
   {
     return AppData.model.completedCount() > 0;

@@ -313,7 +313,7 @@ public abstract class Component
    * call then the call from {@link #componentDidUpdate()} will report any changes to
    * the observable props otherwise this will only occur in the invocation of the method from the
    * {@link #shouldComponentUpdate(JsPropertyMap)} method. This means that the props
-   * are marked as {@link Prop#observable()} and are used by a <code>@Computed</code>
+   * are marked as {@link Prop#observable()} and are used by a <code>@Memoize</code>
    * method from within the render call will only be reported as being changed once, normally before the
    * render call. Thus the computed will be marked as potentially stale and recomputed if used in the render.
    * Otherwise the computed will be marked as potentially stale after the render which could potentially

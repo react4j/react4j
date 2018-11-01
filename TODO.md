@@ -19,8 +19,8 @@
   - `STATELESS` => inlined into caller without a component in production mode.
   - `PURE` => autogenerate SCU assuming `Js.isTripleEqual()` for props implies no re-render.
   - `STATEFUL` => can use fields or lifecycle methods.
-  - `AREZ` => `STATEFUL` + can use `@Observable`, `@Computed`, `@Memoize`, `@Observed`.
-  - `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods or `@Observed`/`@Computed` annotated methods
+  - `AREZ` => `STATEFUL` + can use `@Observable`, `@Memoize`, `@Observed`.
+  - `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods or `@Observed`/`@Memoize` annotated methods
     and no prop is an arez component. `AUTODETECT` will be `PURE` if it satisfies `STATELESS` and all props are
     primitives or the processor knows shallow comparison works. It will be `AREZ` if it has an arez annotation and/or
     anty props are arez components. Otherwise it is `STATEFUL`.

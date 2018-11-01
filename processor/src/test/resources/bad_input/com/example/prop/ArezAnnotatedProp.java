@@ -1,6 +1,6 @@
 package com.example.prop;
 
-import arez.annotations.Computed;
+import arez.annotations.Memoize;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
@@ -11,7 +11,7 @@ import react4j.arez.ReactArezComponent;
 abstract class ArezAnnotatedProp
   extends ReactArezComponent
 {
-  @Computed
+  @Memoize
   @Prop
   protected abstract String getMyKey();
 

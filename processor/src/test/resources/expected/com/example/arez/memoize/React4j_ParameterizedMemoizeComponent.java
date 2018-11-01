@@ -17,7 +17,8 @@ import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
 
 @ArezComponent(
-    name = "ParameterizedMemoizeComponent"
+    name = "ParameterizedMemoizeComponent",
+    deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoizeComponent {
@@ -33,12 +34,19 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
   }
 
   @Override
+  protected final void triggerScheduler() {
+    getContext().triggerScheduler();
+  }
+
+  @Override
   @Memoize(
       priority = Priority.LOWEST,
       name = "foo",
+      keepAlive = true,
+      reportResult = false,
       requireEnvironment = true,
-      observeLowerPriorityDependencies = true,
-      depType = DepType.AREZ_OR_NONE
+      depType = DepType.AREZ_OR_NONE,
+      observeLowerPriorityDependencies = true
   )
   String getIcon(final String key) {
     return super.getIcon(key);

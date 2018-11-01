@@ -1,21 +1,17 @@
-package com.example.prop;
+package com.example.arez;
 
-import arez.annotations.Computed;
+import arez.annotations.Memoize;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
-import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 import react4j.arez.ReactArezComponent;
 
 @ReactComponent
-abstract class ObservableViaComputedProp
+abstract class KeepAliveMemoizeArezReactComponent
   extends ReactArezComponent
 {
-  @Prop
-  protected abstract Object getValue();
-
-  @Computed
-  int someValue()
+  @Memoize( keepAlive = true )
+  int myAutorun()
   {
     return 0;
   }

@@ -46,11 +46,6 @@ final class ComponentDescriptor
   @Nullable
   private List<PropDescriptor> _props;
   /**
-   * Methods annotated with arez's @Computed annotation. Should be null if not an arez component
-   */
-  @Nullable
-  private List<MethodDescriptor> _computedMethods;
-  /**
    * Methods annotated with arez's @Memoize annotation. Should be null if not an arez component
    */
   @Nullable
@@ -283,19 +278,6 @@ final class ComponentDescriptor
   private String getClassNameForMethod( @Nonnull final MethodDescriptor method )
   {
     return ( (TypeElement) method.getMethod().getEnclosingElement() ).getQualifiedName().toString();
-  }
-
-  @Nonnull
-  List<MethodDescriptor> getComputedMethods()
-  {
-    assert null != _computedMethods;
-    return _computedMethods;
-  }
-
-  void setComputedMethods( @Nonnull final List<MethodDescriptor> computedMethods )
-  {
-    assert isArezComponent();
-    _computedMethods = Objects.requireNonNull( computedMethods );
   }
 
   @Nonnull

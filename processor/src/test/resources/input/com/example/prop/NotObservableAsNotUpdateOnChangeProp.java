@@ -1,6 +1,6 @@
 package com.example.prop;
 
-import arez.annotations.Computed;
+import arez.annotations.Memoize;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Feature;
@@ -15,7 +15,7 @@ abstract class NotObservableAsNotUpdateOnChangeProp
   @Prop( shouldUpdateOnChange = Feature.DISABLE )
   protected abstract Object getValue();
 
-  @Computed
+  @Memoize
   int someValue()
   {
     return 0;
