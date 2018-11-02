@@ -18,7 +18,7 @@ public interface NestedCompleteComponent_BasicReactComponentDaggerFactory {
   @Module
   abstract class DaggerModule {
     @Binds
-    abstract Component bindComponent(final NestedCompleteComponent_React4j_BasicReactComponent component);
+    abstract Component bindComponent(NestedCompleteComponent_React4j_BasicReactComponent component);
   }
 
   @Subcomponent(

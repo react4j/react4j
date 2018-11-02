@@ -18,7 +18,7 @@ public interface MethodInjectReactComponentDaggerFactory {
   @Module
   abstract class DaggerModule {
     @Binds
-    abstract Component bindComponent(final React4j_MethodInjectReactComponent component);
+    abstract Component bindComponent(React4j_MethodInjectReactComponent component);
   }
 
   @Subcomponent(

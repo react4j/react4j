@@ -1451,7 +1451,7 @@ final class Generator
       MethodSpec.methodBuilder( "bindComponent" ).
         addAnnotation( ClassName.bestGuess( Constants.DAGGER_BINDS_CLASSNAME ) ).
         addModifiers( Modifier.ABSTRACT ).
-        addParameter( descriptor.getClassNameToConstruct(), "component", Modifier.FINAL ).
+        addParameter( descriptor.getClassNameToConstruct(), "component" ).
         returns( COMPONENT_CLASSNAME );
     builder.addMethod( method.build() );
 
