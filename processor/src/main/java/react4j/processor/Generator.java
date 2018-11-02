@@ -1444,16 +1444,15 @@ final class Generator
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "DaggerModule" );
 
-    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL );
+    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC, Modifier.ABSTRACT );
     builder.addAnnotation( ClassName.bestGuess( Constants.DAGGER_MODULE_CLASSNAME ) );
 
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "provideComponent" ).
-        addAnnotation( ClassName.bestGuess( Constants.DAGGER_PROVIDES_CLASSNAME ) ).
-        addModifiers( Modifier.STATIC ).
+      MethodSpec.methodBuilder( "bindComponent" ).
+        addAnnotation( ClassName.bestGuess( Constants.DAGGER_BINDS_CLASSNAME ) ).
+        addModifiers( Modifier.ABSTRACT ).
         addParameter( descriptor.getClassNameToConstruct(), "component", Modifier.FINAL ).
-        returns( COMPONENT_CLASSNAME ).
-        addStatement( "return component" );
+        returns( COMPONENT_CLASSNAME );
     builder.addMethod( method.build() );
 
     return builder.build();

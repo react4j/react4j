@@ -1,7 +1,7 @@
 package com.example.inject;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 import dagger.Subcomponent;
 import javax.annotation.Generated;
 import javax.inject.Provider;
@@ -16,11 +16,9 @@ public interface BasicReactComponentDaggerFactory {
   }
 
   @Module
-  final class DaggerModule {
-    @Provides
-    static Component provideComponent(final React4j_BasicReactComponent component) {
-      return component;
-    }
+  abstract class DaggerModule {
+    @Binds
+    abstract Component bindComponent(final React4j_BasicReactComponent component);
   }
 
   @Subcomponent(
