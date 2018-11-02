@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.105](https://github.com/react4j/react4j/tree/v0.105) (2018-11-02)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.104...v0.105)
 
 * Convert several of the `React.createElement(...)` methods to be native methods to avoid passing an explicit
   `undefined` parameter as the GWT2.x compile is unable to optimize this scenario.
