@@ -16,9 +16,9 @@ public interface BasicReactComponentDaggerFactory {
   }
 
   @Module
-  abstract class DaggerModule {
+  interface DaggerModule {
     @Binds
-    abstract Component bindComponent(React4j_BasicReactComponent component);
+    Component bindComponent(React4j_BasicReactComponent component);
   }
 
   @Subcomponent(

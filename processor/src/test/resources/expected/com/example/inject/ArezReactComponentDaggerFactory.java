@@ -16,9 +16,9 @@ public interface ArezReactComponentDaggerFactory {
   }
 
   @Module
-  abstract class DaggerModule {
+  interface DaggerModule {
     @Binds
-    abstract Component bindComponent(Arez_React4j_ArezReactComponent component);
+    Component bindComponent(Arez_React4j_ArezReactComponent component);
   }
 
   @Subcomponent(

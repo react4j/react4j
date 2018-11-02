@@ -16,9 +16,9 @@ public interface InjectTrueComponentDaggerFactory {
   }
 
   @Module
-  abstract class DaggerModule {
+  interface DaggerModule {
     @Binds
-    abstract Component bindComponent(React4j_InjectTrueComponent component);
+    Component bindComponent(React4j_InjectTrueComponent component);
   }
 
   @Subcomponent(
