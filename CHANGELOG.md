@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the version of javapoet to `1.11.1`.
+
 ### [v0.105](https://github.com/react4j/react4j/tree/v0.105) (2018-11-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.104...v0.105)
 
