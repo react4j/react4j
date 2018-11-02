@@ -5,8 +5,6 @@
 * Change all remaining lifecycle hooks so they have less name cruft. (i.e. `didUpdate()` rather than `componentDidUpdate()`)
   Or maybe we just add annotations to hook into various steps.
 
-* Generate `render()` methods with the `reportResults = false` arez parameter.
-
 * Add some way to define effects which is just method called after render that returns a disposable to stop action.
   Possibly look at observed props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
   method that calls dispose on previous return if any. (From react 17)

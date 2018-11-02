@@ -7,6 +7,9 @@
 * **\[processor\]** Change the way the Dagger2 factory is defined by switching from a static method using a
   `@Provide` annotation to using an abstract method using a `@Binds` annotation. This results in more optimized
   code being output by the dagger compiler.
+* **\[arez\]** Set the `@Observe.reportResults` parameter to `false` for the `ReactArezComponent.trackRender()`
+  method so that the result of rendering are not reported to the spy system. This eliminates a significant
+  performance degradation that occurs when naive spy listeners serialize the results.
 
 ### [v0.103](https://github.com/react4j/react4j/tree/v0.103) (2018-10-19)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.102...v0.103)

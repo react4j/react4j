@@ -192,7 +192,7 @@ public abstract class ReactArezComponent
    *
    * @return the result of rendering.
    */
-  @Observe( executor = Executor.APPLICATION, name = "render", priority = Priority.LOW, observeLowerPriorityDependencies = true )
+  @Observe( executor = Executor.APPLICATION, name = "render", priority = Priority.LOW, observeLowerPriorityDependencies = true, reportResult = false )
   @Nullable
   protected ReactNode trackRender()
   {
