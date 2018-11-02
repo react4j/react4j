@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Convert several of the `React.createElement(...)` methods to be native methods to avoid passing an explicit
+  `undefined` parameter as the GWT2.x compile is unable to optimize this scenario.
+
 ### [v0.104](https://github.com/react4j/react4j/tree/v0.104) (2018-11-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.103...v0.104)
 

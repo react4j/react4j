@@ -31,7 +31,6 @@ public final class React
   @SuppressWarnings( "unused" )
   @JsProperty( name = "Fragment" )
   private static ComponentConstructorFunction Fragment;
-
   /**
    * The magic component constructor function for StrictMode components.
    */
@@ -66,14 +65,8 @@ public final class React
    * @param props the props to pass to the component.
    * @return a new ReactElement.
    */
-  @JsOverlay
-  public static ReactNode createElement( @Nonnull final ComponentConstructorFunction type,
-                                         @Nullable final JsPropertyMap<Object> props )
-  {
-    // Need to pass through undefined to react otherwise the debugger tool displays
-    // children as null rather than omitting children
-    return createElement( type, props, Js.<ReactNode>uncheckedCast( Js.undefined() ) );
-  }
+  public static native ReactNode createElement( @Nonnull final ComponentConstructorFunction type,
+                                                @Nullable final JsPropertyMap<Object> props );
 
   /**
    * Create a ReactElement for the specified React component.
@@ -95,13 +88,9 @@ public final class React
    * @param children the children of the react component.
    * @return a new ReactElement.
    */
-  @JsOverlay
-  public static ReactNode createElement( @Nonnull final ComponentConstructorFunction type,
-                                         @Nullable final JsPropertyMap<Object> props,
-                                         @Nonnull final JsArray<ReactNode> children )
-  {
-    return createElement( type, props, Js.<ReactNode[]>cast( children ) );
-  }
+  public static native ReactNode createElement( @Nonnull final ComponentConstructorFunction type,
+                                                @Nullable final JsPropertyMap<Object> props,
+                                                @Nonnull final JsArray<ReactNode> children );
 
   /**
    * Create a ReactElement for the specified React component.
