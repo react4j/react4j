@@ -45,11 +45,11 @@ artifacts:
   compile_testing: com.google.testing.compile:compile-testing:jar:0.15
   truth: com.google.truth:truth:jar:0.39
 
-  dagger_core: com.google.dagger:dagger:jar:2.15
-  dagger_spi: com.google.dagger:dagger-spi:jar:2.15
-  dagger_producers: com.google.dagger:dagger-producers:jar:2.15
-  dagger_compiler: com.google.dagger:dagger-compiler:jar:2.15
-  googlejavaformat: com.google.googlejavaformat:google-java-format:jar:1.4
+  dagger_core: com.google.dagger:dagger:jar:2.19
+  dagger_producers: com.google.dagger:dagger-producers:jar:2.19
+  dagger_spi: com.google.dagger:dagger-spi:jar:2.19
+  dagger_compiler: com.google.dagger:dagger-compiler:jar:2.19
+  googlejavaformat: com.google.googlejavaformat:google-java-format:jar:1.5
   errorprone: com.google.errorprone:javac-shaded:jar:9-dev-r4023-3
 
   gir: org.realityforge.gir:gir-core:jar:0.05
