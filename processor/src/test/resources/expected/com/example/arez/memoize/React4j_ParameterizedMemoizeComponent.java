@@ -48,8 +48,8 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
       depType = DepType.AREZ_OR_NONE,
       observeLowerPriorityDependencies = true
   )
-  String getIcon(final String key) {
-    return super.getIcon(key);
+  String getIcon() {
+    return super.getIcon();
   }
 
   @JsType(
