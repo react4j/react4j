@@ -103,6 +103,7 @@ public final class React
   public static native ReactNode createElement( @Nonnull ComponentConstructorFunction type,
                                                 @Nullable JsPropertyMap<Object> props,
                                                 @Nonnull ReactNode... children );
+
   /**
    * Create and return a new ReactElement of the given type.
    *
@@ -123,7 +124,9 @@ public final class React
    */
   @Nonnull
   @JsMethod
-  public static native ReactNode createElement( @Nonnull String type, @Nullable Object props, @Nullable ReactNode... children );
+  public static native ReactNode createElement( @Nonnull String type,
+                                                @Nullable Object props,
+                                                @Nullable ReactNode... children );
 
   /**
    * Create a StrictMode component with the specified children.
