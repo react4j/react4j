@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.104](https://github.com/react4j/react4j/tree/v0.104) (2018-11-02)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.103...v0.104)
 
 * Update the javascript included within package to react version `16.6.0`.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.112`.
