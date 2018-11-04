@@ -111,6 +111,10 @@
 
 * Port React Material Web Components? - https://jamesmfriedman.github.io/rmwc/
 
+* If we were to ever re-implement the component model at a basic level, an interesting approach would be to
+  allow individual components to register actions to occur at each lifecucle stage. You could still implement
+  current lifecycle model by generating registration mechanisms.
+
 #### Compiler optimizations
 
 (Sourced from [ReactJS Changelog](https://reactjs.org/blog/2015/10/07/react-v0.14.html#compiler-optimizations))
