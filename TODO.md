@@ -11,6 +11,10 @@
 
 ### Next Next Release
 
+* Figure out a way to get the *Builders eliminated
+
+* Consider several `@DoNotInline` wrappers for `React.createElement(...)` to reduce code size - or alternatively just natively implement
+
 * Collections returned from props should be made immutable.
 
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component.
