@@ -9,12 +9,12 @@ JS_ASSETS =
 JS_ASSET_GROUPS =
   {
     :core => {
-      'com.unpkg:react:js:16.6.0' => 'react4j/public/dev/react.js',
-      'com.unpkg:react:js:min:16.6.0' => 'react4j/public/react.js'
+      'com.unpkg:react:js:16.6.0' => { :path => 'react4j/public/dev/react.js' },
+      'com.unpkg:react:js:min:16.6.0' => { :path => 'react4j/public/react.js' }
     },
     :dom => {
-      'com.unpkg:react-dom:js:16.6.0' => 'react4j/dom/public/dev/react-dom.js',
-      'com.unpkg:react-dom:js:min:16.6.0' => 'react4j/dom/public/react-dom.js'
+      'com.unpkg:react-dom:js:16.6.0' => { :path => 'react4j/dom/public/dev/react-dom.js' },
+      'com.unpkg:react-dom:js:min:16.6.0' => { :path => 'react4j/dom/public/react-dom.js' }
     }
   }
 
@@ -33,8 +33,17 @@ def js_assets(project, group_name)
   group = JS_ASSET_GROUPS[group_name] || (raise "Unable to locate group #{group_name}")
   desc 'Copy Javascript assets to generated dir'
   t = project.task('js_resources') do
-    group.each_pair do |spec, target|
-      copy_js_asset(spec, "#{base_js_resources_dir}/#{target}")
+    group.each_pair do |spec, config|
+      path = config[:path]
+      target_filename = "#{base_js_resources_dir}/#{path}"
+      copy_js_asset(spec, target_filename)
+      if config[:regex_patches]
+        content = IO.read(target_filename)
+        config[:regex_patches].each_pair do |pattern, replacement|
+          content.gsub!(pattern, replacement)
+        end
+        IO.write(target_filename, content)
+      end
     end
   end
   task = project.file(base_js_resources_dir => [t.name])
