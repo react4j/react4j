@@ -25,14 +25,14 @@ public final class React
   {
   }
 
-  /**
-   * The magic component constructor function for Fragments.
+ /**
+   * The Symbol type for Fragments.
    */
   @SuppressWarnings( "unused" )
   @JsProperty( name = "Fragment" )
   private static ComponentConstructorFunction Fragment;
   /**
-   * The magic component constructor function for StrictMode components.
+   * The Symbol type for StrictMode.
    */
   @SuppressWarnings( "unused" )
   @JsProperty( name = "StrictMode" )
