@@ -137,18 +137,6 @@ public final class React
    * @param children the children of the react component.
    * @return a new ReactElement.
    */
-  public static native ReactNode createElement( @Nonnull final ComponentConstructorFunction type,
-                                                @Nullable final JsPropertyMap<Object> props,
-                                                @Nonnull final JsArray<ReactNode> children );
-
-  /**
-   * Create a ReactElement for the specified React component.
-   *
-   * @param type     the constructor function for the native React component.
-   * @param props    the props to pass to the component.
-   * @param children the children of the react component.
-   * @return a new ReactElement.
-   */
   public static native ReactNode createElement( @Nonnull ComponentConstructorFunction type,
                                                 @Nullable JsPropertyMap<Object> props,
                                                 @Nonnull ReactNode... children );
@@ -199,19 +187,6 @@ public final class React
   public static ReactNode createFragment( @Nonnull final ReactNode... children )
   {
     return createElement( Fragment, null, children );
-  }
-
-  /**
-   * Create a Fragment with the specified children.
-   *
-   * @param children the child nodes.
-   * @return a new React.Fragment object.
-   * @see #createElement(ComponentConstructorFunction, JsPropertyMap, ReactNode...)
-   */
-  @JsOverlay
-  public static ReactNode createFragment( @Nonnull final JsArray<ReactNode> children )
-  {
-    return createFragment( Js.<ReactNode[]>cast( children ) );
   }
 
   /**

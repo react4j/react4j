@@ -4,6 +4,8 @@
 
 * Upgrade the version of javapoet to `1.11.1`.
 * Upgrade the Dagger2 support to version `2.19`.
+* **\[core\]** Remove the methods from the `React` class that accepted `JsArray` parameters. These methods
+  have never been used in downstream projects.
 * **\[dom\]** Remove the methods from the `DOM` factory class that accepted `JsArray` parameters. These
   methods have never been used in downstream projects.
 
