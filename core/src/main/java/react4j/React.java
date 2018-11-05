@@ -30,13 +30,62 @@ public final class React
    */
   @SuppressWarnings( "unused" )
   @JsProperty( name = "Fragment" )
-  private static ComponentConstructorFunction Fragment;
+  public static ComponentConstructorFunction Fragment;
   /**
    * The Symbol type for StrictMode.
    */
-  @SuppressWarnings( "unused" )
   @JsProperty( name = "StrictMode" )
-  private static ComponentConstructorFunction StrictMode;
+  public static ComponentConstructorFunction StrictMode;
+  /**
+   * The Symbol type for ConcurrentMode.
+   */
+  @JsProperty( name = "unstable_ConcurrentMode" )
+  public static ComponentConstructorFunction ConcurrentMode;
+  /**
+   * The Symbol type for Suspense.
+   */
+  @JsProperty( name = "Suspense" )
+  public static ComponentConstructorFunction Suspense;
+  /**
+   * The Symbol type for Profiler.
+   */
+  @JsProperty( name = "unstable_Profiler" )
+  public static ComponentConstructorFunction Profiler;
+  /**
+   * The Symbol type for Portal.
+   */
+  @JsProperty( name = "Portal" )
+  public static ComponentConstructorFunction Portal;
+  /**
+   * The Symbol type for Element.
+   */
+  @JsProperty( name = "Element" )
+  public static ComponentConstructorFunction Element;
+  /**
+   * The Symbol type for Provider.
+   */
+  @JsProperty( name = "Provider" )
+  public static ComponentConstructorFunction Provider;
+  /**
+   * The Symbol type for Consumer.
+   */
+  @JsProperty( name = "Consumer" )
+  public static ComponentConstructorFunction Consumer;
+  /**
+   * The Symbol type for ForwardRef.
+   */
+  @JsProperty( name = "ForwardRef" )
+  public static ComponentConstructorFunction ForwardRef;
+  /**
+   * The Symbol type for Memo.
+   */
+  @JsProperty( name = "Memo" )
+  public static ComponentConstructorFunction Memo;
+  /**
+   * The Symbol type for Lazy.
+   */
+  @JsProperty( name = "Lazy" )
+  public static ComponentConstructorFunction Lazy;
 
   /**
    * Return true if the specified node is a ReactElement.
