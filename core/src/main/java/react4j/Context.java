@@ -36,7 +36,7 @@ public class Context<T>
   @Nonnull
   public final ProviderBuilder<T> provider()
   {
-    return new ProviderBuilder<T>( _provider );
+    return new ProviderBuilder<>( _provider );
   }
 
   /**
@@ -48,7 +48,7 @@ public class Context<T>
   @Nonnull
   public final ConsumerBuilder<T> consumer()
   {
-    return new ConsumerBuilder<T>( _consumer );
+    return new ConsumerBuilder<>( _consumer );
   }
 
   /**
