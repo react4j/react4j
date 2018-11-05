@@ -50,7 +50,6 @@ def generate_factory
   content = <<HEADER
 package react4j.dom;
 
-import elemental2.core.JsArray;
 import java.util.List;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
@@ -89,12 +88,6 @@ public final class DOM
   }
 
   @Nonnull
-  public static ReactNode fragment( @Nonnull final JsArray<ReactNode> children )
-  {
-    return React.createFragment( children );
-  }
-
-  @Nonnull
   public static ReactNode fragment( @Nonnull final List<? extends ReactNode> children )
   {
     return React.createFragment( children );
@@ -108,18 +101,6 @@ public final class DOM
 HEADER
   factories.each_pair do |key, prop_type|
     content += <<HEADER
-
-  @Nonnull
-  public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nullable final JsArray<ReactNode> children )
-  {
-    return React.createElement( "#{key}", props, Js.cast( children ) );
-  }
-
-  @Nonnull
-  public static ReactNode #{key}( @Nullable final JsArray<ReactNode> children )
-  {
-    return React.createElement( "#{key}", null, Js.cast( children ) );
-  }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactNode... children )
