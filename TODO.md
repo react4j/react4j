@@ -117,7 +117,8 @@
 
 * If we were to ever re-implement the component model at a basic level, an interesting approach would be to
   allow individual components to register actions to occur at each lifecucle stage. You could still implement
-  current lifecycle model by generating registration mechanisms.
+  current lifecycle model by generating registration mechanisms. `@PreRender` and `@PostRender` could replace
+  `getSnapshotBeforeUpdate` and `componentDidUpdate`/`componentDidMount` for many cases.
 
 #### Compiler optimizations
 
