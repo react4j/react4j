@@ -28,8 +28,9 @@ class ReactElement
   private Object ref;
   @Nonnull
   private JsPropertyMap<Object> props;
-  @Nonnull
   // The component responsible for creating this element.
+  // can be null if create happens outside of a render method (i.e. at the top level).
+  @Nullable
   private Object _owner;
 
   @JsOverlay
@@ -38,7 +39,7 @@ class ReactElement
                               @Nullable final String key,
                               @Nullable final Object ref,
                               @Nonnull final JsPropertyMap<Object> props,
-                              @Nonnull final Object owner )
+                              @Nullable final Object owner )
   {
     final ReactElement element = new ReactElement();
     element.typeof = React.Element;
@@ -46,7 +47,7 @@ class ReactElement
     element.key = key;
     element.ref = ref;
     element.props = Objects.requireNonNull( props );
-    element._owner = Objects.requireNonNull( owner );
+    element._owner = owner;
 
     if ( ReactConfig.shouldFreezeProps() )
     {
