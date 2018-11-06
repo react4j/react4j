@@ -1,5 +1,6 @@
 package react4j;
 
+import elemental2.core.JsArray;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
@@ -119,14 +120,14 @@ public final class React
   /**
    * Create a ReactElement for the specified React component.
    *
-   * @param type  the constructor function for the native React component.
-   * @param props the props to pass to the component.
-   * @param child the child of the react component.
+   * @param type     the constructor function for the native React component.
+   * @param props    the props to pass to the component.
+   * @param children the children of the react component.
    * @return a new ReactElement.
    */
   public static native ReactNode createElement( @Nonnull ComponentConstructorFunction type,
                                                 @Nullable JsPropertyMap<Object> props,
-                                                @Nullable ReactNode child );
+                                                @Nullable JsArray<ReactNode> children );
 
   /**
    * Create a ReactElement for the specified React component.
@@ -163,6 +164,23 @@ public final class React
   public static native ReactNode createElement( @Nonnull String type,
                                                 @Nullable Object props,
                                                 @Nullable ReactNode... children );
+
+  /**
+   * Create and return a new ReactElement of the given type with specified children.
+   *
+   * @param type     A HTML tag name (eg. 'div', 'span', etc)
+   * @param props    The props to pass to the element.
+   * @param children The child elements.
+   * @return the created ReactElement
+   */
+  @JsOverlay
+  @Nonnull
+  public static ReactElement createElement( @Nonnull final String type,
+                                            @Nullable final JsPropertyMap<Object> props,
+                                            @Nullable final JsArray<ReactNode> children )
+  {
+    return createElement( type, props, (Object) children );
+  }
 
   /**
    * Create a StrictMode component with the specified children.
