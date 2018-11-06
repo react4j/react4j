@@ -30,4 +30,7 @@
 
   <define-property name='react4j.store_debug_data_as_state' values='true,false'/>
   <set-property name='react4j.store_debug_data_as_state' value='false'/>
+
+  <define-property name='react4j.freeze_props' values='true,false'/>
+  <set-property name='react4j.freeze_props' value='false'/>
 </module>

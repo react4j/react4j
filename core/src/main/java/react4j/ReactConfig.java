@@ -12,6 +12,7 @@ public final class ReactConfig
   private static final boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
   private static final boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
   private static final boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
+  private static final boolean SHOULD_FREEZE_PROPS = PROVIDER.shouldFreezeProps();
   private static final boolean CHECK_COMPONENT_STATE_INVARIANTS = PROVIDER.checkComponentStateInvariants();
   private static final boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
@@ -84,6 +85,16 @@ public final class ReactConfig
     return CHECK_INVARIANTS && BrainCheckConfig.checkInvariants();
   }
 
+  /**
+   * Return true if props should be frozen before being passed to react.
+   *
+   * @return true if props should be frozen before being passed to react.
+   */
+  public static boolean shouldFreezeProps()
+  {
+    return SHOULD_FREEZE_PROPS;
+  }
+
   private static final class ConfigProvider
     extends AbstractConfigProvider
   {
@@ -128,6 +139,13 @@ public final class ReactConfig
     {
       return "true".equals( System.getProperty( "react4j.check_invariants", "true" ) );
     }
+
+    @GwtIncompatible
+    @Override
+    boolean shouldFreezeProps()
+    {
+      return "true".equals( System.getProperty( "react4j.freeze_props", "false" ) );
+    }
   }
 
   @SuppressWarnings( { "unused", "StringEquality" } )
@@ -161,6 +179,11 @@ public final class ReactConfig
     boolean shouldCheckInvariants()
     {
       return "true" == System.getProperty( "react4j.check_invariants" );
+    }
+
+    boolean shouldFreezeProps()
+    {
+      return "true" == System.getProperty( "react4j.freeze_props" );
     }
   }
 }
