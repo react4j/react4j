@@ -1,6 +1,5 @@
 package react4j;
 
-import elemental2.core.JsArray;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
