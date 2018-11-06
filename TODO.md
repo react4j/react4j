@@ -11,6 +11,8 @@
 
 ### Next Next Release
 
+* Change the builders to generate `ReactElement` instances directly.
+
 * Figure out a way to get the *Builders eliminated
 
 * Consider several `@DoNotInline` wrappers for `React.createElement(...)` to reduce code size - or alternatively just natively implement
