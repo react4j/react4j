@@ -24,7 +24,7 @@ public final class React
   {
   }
 
- /**
+  /**
    * The Symbol type for Fragments.
    */
   @SuppressWarnings( "unused" )
