@@ -67,7 +67,7 @@ public class Context<T>
     @Nonnull
     public final ProviderBuilder<ST> key( @Nonnull final String key )
     {
-      _props.set( "key", Objects.requireNonNull( key ) );
+      _props.set( PropNames.KEY_PROP_NAME, Objects.requireNonNull( key ) );
       return this;
     }
 
@@ -142,7 +142,7 @@ public class Context<T>
     @Nonnull
     public final ConsumerBuilder<ST> key( @Nonnull final String key )
     {
-      _props.set( "key", Objects.requireNonNull( key ) );
+      _props.set( PropNames.KEY_PROP_NAME, Objects.requireNonNull( key ) );
       return this;
     }
 

@@ -116,7 +116,7 @@ public abstract class Component
   @Nullable
   protected final String getKey()
   {
-    return Js.asPropertyMap( props() ).getAny( "key" ).asString();
+    return Js.asPropertyMap( props() ).getAny( PropNames.KEY_PROP_NAME ).asString();
   }
 
   /**
