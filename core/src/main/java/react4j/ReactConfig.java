@@ -137,7 +137,7 @@ public final class ReactConfig
     @Override
     boolean shouldCheckInvariants()
     {
-      return "true".equals( System.getProperty( "react4j.check_invariants", "true" ) );
+      return "true".equals( System.getProperty( "react4j.check_invariants", "false" ) );
     }
 
     @GwtIncompatible
