@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -22,11 +21,6 @@ import jsinterop.base.JsPropertyMap;
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class Context<T>
 {
-  @JsProperty( name = "Provider" )
-  private ComponentConstructorFunction _provider;
-  @JsProperty( name = "Consumer" )
-  private ComponentConstructorFunction _consumer;
-
   /**
    * Create a builder for the Provider component.
    *
@@ -36,7 +30,7 @@ public class Context<T>
   @Nonnull
   public final ProviderBuilder<T> provider()
   {
-    return new ProviderBuilder<>( _provider );
+    return new ProviderBuilder<>();
   }
 
   /**
@@ -48,7 +42,7 @@ public class Context<T>
   @Nonnull
   public final ConsumerBuilder<T> consumer()
   {
-    return new ConsumerBuilder<>( _consumer );
+    return new ConsumerBuilder<>();
   }
 
   /**
@@ -57,13 +51,11 @@ public class Context<T>
    */
   public static final class ProviderBuilder<ST>
   {
-    private final ComponentConstructorFunction _provider;
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
     private final JsArray<ReactNode> _children = new JsArray<>();
 
-    private ProviderBuilder( @Nonnull final ComponentConstructorFunction provider )
+    private ProviderBuilder()
     {
-      _provider = provider;
     }
 
     /**
@@ -109,7 +101,7 @@ public class Context<T>
     @Nonnull
     public final ReactNode build()
     {
-      return React.createElement( _provider, Js.uncheckedCast( _props ), _children );
+      return React.createElement( React.Provider, _props, _children.slice() );
     }
   }
 
@@ -135,13 +127,10 @@ public class Context<T>
    */
   public static final class ConsumerBuilder<ST>
   {
-    @Nonnull
-    private final ComponentConstructorFunction _consumer;
     private final JsPropertyMap<Object> _props = JsPropertyMap.of();
 
-    private ConsumerBuilder( @Nonnull final ComponentConstructorFunction consumer )
+    private ConsumerBuilder()
     {
-      _consumer = consumer;
     }
 
     /**
@@ -166,7 +155,7 @@ public class Context<T>
     @Nonnull
     public final ReactNode render( @Nonnull final ConsumerRenderFunction<ST> render )
     {
-      return React.createElement( _consumer, Js.uncheckedCast( _props ), Js.<ReactNode>cast( render ) );
+      return React.createElement( React.Consumer, Js.uncheckedCast( _props ), Js.<ReactNode>cast( render ) );
     }
   }
 }
