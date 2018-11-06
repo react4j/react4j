@@ -15,8 +15,6 @@
 
 * Figure out a way to get the *Builders eliminated
 
-* Consider several `@DoNotInline` wrappers for `React.createElement(...)` to reduce code size - or alternatively just natively implement
-
 * Collections returned from props should be made immutable.
 
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component.
@@ -89,7 +87,9 @@
   `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
   compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
   Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
-  element factories can be built by looking at html spec and auto-generating?
+  element factories can be built by looking at html spec and auto-generating? The props classes should also be
+  converted into `JsPropertyMap<Object>` instances so that the externs for react.js need not include all the props
+  that can not be minimized under J2CL.
   - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts
   - https://www.w3schools.com/tags/ref_standardattributes.asp
   - Consider typed refs that bind to underlying Elemental2 element.
@@ -121,25 +121,6 @@
   allow individual components to register actions to occur at each lifecucle stage. You could still implement
   current lifecycle model by generating registration mechanisms. `@PreRender` and `@PostRender` could replace
   `getSnapshotBeforeUpdate` and `componentDidUpdate`/`componentDidMount` for many cases.
-
-#### Compiler optimizations
-
-(Sourced from [ReactJS Changelog](https://reactjs.org/blog/2015/10/07/react-v0.14.html#compiler-optimizations))
-Implement these compiler optimizations sourced from Babel 5.8.24 and newer. Both of these transforms should be enabled
-only in production (e.g., just before minifying your code) because although they improve runtime performance, they make
-warning messages more cryptic and skip important checks that happen in development mode, including propTypes.
-
-* Inlining React elements: The optimisation.react.inlineElements transform converts JSX elements to object literals
-  like {type: 'div', props: ...} instead of calls to React.createElement.
-* Constant hoisting for React elements: The optimisation.react.constantElements transform hoists element creation to
-  the top level for subtrees that are fully static, which reduces calls to React.createElement and the resulting
-  allocations. More importantly, it tells React that the subtree hasn’t changed so React can completely skip it
-  when reconciling.
-
-* Consider moving factories to creating elements directly ie.
-  https://github.com/kay-is/react-from-zero/blob/master/00-object-elements.html
-
-* Synthesize Fragments - https://github.com/kay-is/react-from-zero/blob/master/04-components.html
 
 #### Documentation
 

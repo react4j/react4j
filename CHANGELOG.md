@@ -6,6 +6,9 @@
 * Upgrade the Dagger2 support to version `2.19`.
 * **\[dom\]** Remove the methods from the `DOM` factory class that accepted `JsArray` parameters. These
   methods have never been used in downstream projects.
+* **\[core\]** Rewrite the javascript `React.createElement(...)` method in java. This allows the GWT2.x/J2CL
+  compilers to alias methods and optimize the code. This will will result in smaller code sizes as the number
+  of calls to that method increases but may increase the size of the code in smaller code bases.
 
 ### [v0.105](https://github.com/react4j/react4j/tree/v0.105) (2018-11-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.104...v0.105)
