@@ -17,21 +17,8 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_DaggerFalseComponent extends DaggerFalseComponent {
-  private static Provider<DaggerFalseComponent> c_provider;
-
   @Inject
   React4j_DaggerFalseComponent() {
-  }
-
-  static void setProvider(final Provider<DaggerFalseComponent> provider) {
-    c_provider = provider;
-  }
-
-  private static Provider<DaggerFalseComponent> getProvider() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'DaggerFalseComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
-    }
-    return c_provider;
   }
 
   @Nonnull
@@ -45,6 +32,21 @@ class React4j_DaggerFalseComponent extends DaggerFalseComponent {
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class InjectSupport {
+    private static Provider<DaggerFalseComponent> c_provider;
+
+    static void setProvider(final Provider<DaggerFalseComponent> provider) {
+      c_provider = provider;
+    }
+
+    private static Provider<DaggerFalseComponent> getProvider() {
+      if ( ReactConfig.shouldCheckInvariants() ) {
+        Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'DaggerFalseComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+      }
+      return c_provider;
+    }
   }
 
   static final class Props {
@@ -69,7 +71,7 @@ class React4j_DaggerFalseComponent extends DaggerFalseComponent {
 
     @Override
     protected DaggerFalseComponent createComponent() {
-      return getProvider().get();
+      return InjectSupport.getProvider().get();
     }
   }
 
@@ -81,7 +83,7 @@ class React4j_DaggerFalseComponent extends DaggerFalseComponent {
 
     @Override
     protected DaggerFalseComponent createComponent() {
-      return getProvider().get();
+      return InjectSupport.getProvider().get();
     }
 
     @Override

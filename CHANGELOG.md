@@ -19,6 +19,8 @@
 * **\[processor\]** Move the constant holding the `PROP_myKey` static constants to a separate class to avoid
   the creation of a `<clinit>` when not needed. Rename the constant to remove the `PROP_` prefix now that it is
   no longer needed.
+* **\[processor\]** Move the injection support into static inner class within generated component to avoid
+  the creation of a `<clinit>` when not needed. This results in small decrease in code size.
 
 ### [v0.105](https://github.com/react4j/react4j/tree/v0.105) (2018-11-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.104...v0.105)

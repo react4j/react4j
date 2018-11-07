@@ -517,18 +517,11 @@ final class Generator
     addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addType( buildFactory() );
+    if ( descriptor.needsInjection() )
+    {
+      builder.addType( buildInjectSupport( descriptor ) );
+    }
     builder.addType( buildPropsType( descriptor ) );
-
-    if ( descriptor.needsInjection() )
-    {
-      builder.addField( buildProviderField( descriptor ).build() );
-    }
-
-    if ( descriptor.needsInjection() )
-    {
-      builder.addMethod( buildSetProviderMethod( descriptor ).build() );
-      builder.addMethod( buildGetProviderMethod( descriptor ).build() );
-    }
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
@@ -1212,6 +1205,23 @@ final class Generator
   }
 
   @Nonnull
+  private static TypeSpec buildInjectSupport( @Nonnull final ComponentDescriptor descriptor )
+  {
+    assert descriptor.needsInjection();
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "InjectSupport" );
+
+    //Ensure it can not be subclassed
+    builder.addModifiers( Modifier.FINAL );
+    builder.addModifiers( Modifier.STATIC );
+
+    builder.addField( buildProviderField( descriptor ).build() );
+    builder.addMethod( buildSetProviderMethod( descriptor ).build() );
+    builder.addMethod( buildGetProviderMethod( descriptor ).build() );
+
+    return builder.build();
+  }
+
+  @Nonnull
   private static TypeSpec buildNativeComponent( @Nonnull final ComponentDescriptor descriptor, final boolean lite )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( ( lite ? "Lite" : "" ) + "NativeReactComponent" );
@@ -1256,7 +1266,7 @@ final class Generator
           returns( descriptor.getComponentType() );
       if ( descriptor.needsInjection() )
       {
-        method.addStatement( "return getProvider().get()" );
+        method.addStatement( "return InjectSupport.getProvider().get()" );
       }
       else
       {
@@ -1423,7 +1433,7 @@ final class Generator
       final MethodSpec.Builder method =
         MethodSpec.methodBuilder( "bind" + descriptor.getName() ).
           addModifiers( Modifier.PUBLIC, Modifier.DEFAULT ).
-          addStatement( "$T.setProvider( () -> $N().get() )",
+          addStatement( "$T.InjectSupport.setProvider( () -> $N().get() )",
                         descriptor.getEnhancedClassName(),
                         "get" + descriptor.getName() + "DaggerSubcomponent" );
       builder.addMethod( method.build() );

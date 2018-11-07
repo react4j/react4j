@@ -22,19 +22,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ArezReactComponent extends ArezReactComponent {
-  private static Provider<ArezReactComponent> c_provider;
-
-  static void setProvider(final Provider<ArezReactComponent> provider) {
-    c_provider = provider;
-  }
-
-  private static Provider<ArezReactComponent> getProvider() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
-      Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'ArezReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
-    }
-    return c_provider;
-  }
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -46,6 +33,21 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class InjectSupport {
+    private static Provider<ArezReactComponent> c_provider;
+
+    static void setProvider(final Provider<ArezReactComponent> provider) {
+      c_provider = provider;
+    }
+
+    private static Provider<ArezReactComponent> getProvider() {
+      if ( ReactConfig.shouldCheckInvariants() ) {
+        Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'ArezReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+      }
+      return c_provider;
+    }
   }
 
   static final class Props {
@@ -81,7 +83,7 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
 
     @Override
     protected ArezReactComponent createComponent() {
-      return getProvider().get();
+      return InjectSupport.getProvider().get();
     }
 
     @Override
@@ -98,7 +100,7 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
 
     @Override
     protected ArezReactComponent createComponent() {
-      return getProvider().get();
+      return InjectSupport.getProvider().get();
     }
 
     @Override

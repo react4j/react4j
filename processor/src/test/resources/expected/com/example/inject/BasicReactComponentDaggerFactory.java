@@ -12,7 +12,7 @@ public interface BasicReactComponentDaggerFactory {
   DaggerSubcomponent getBasicReactComponentDaggerSubcomponent();
 
   default void bindBasicReactComponent() {
-    React4j_BasicReactComponent.setProvider( () -> getBasicReactComponentDaggerSubcomponent().get() );
+    React4j_BasicReactComponent.InjectSupport.setProvider( () -> getBasicReactComponentDaggerSubcomponent().get() );
   }
 
   @Module
