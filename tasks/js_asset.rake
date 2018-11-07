@@ -12,12 +12,14 @@ JS_ASSET_GROUPS =
       'com.unpkg:react:js:16.6.0' => {
         :path => 'react4j/public/dev/react.js',
         :regex_patches => {
+          # See notes in React class why we need to do this
           /Fragment: REACT_FRAGMENT_TYPE,/ => "Fragment: REACT_FRAGMENT_TYPE,\n  Portal: REACT_PORTAL_TYPE,\n  Element: REACT_ELEMENT_TYPE,\n  Provider: REACT_PROVIDER_TYPE,\n  Consumer: REACT_CONTEXT_TYPE,\n  ForwardRef: REACT_FORWARD_REF_TYPE,\n  Memo: REACT_MEMO_TYPE,\n  Lazy: REACT_LAZY_TYPE,"
         }
       },
       'com.unpkg:react:js:min:16.6.0' => {
         :path => 'react4j/public/react.js',
         :regex_patches => {
+          # See notes in React class why we need to do this
           /Fragment:q,/ => "Fragment:q,Portal:xa,Element:y,Provider:Ba,Consumer:Ca,ForwardRef:Ea,Memo:Ga,Lazy:Ha,"
         } }
     },

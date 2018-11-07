@@ -25,6 +25,12 @@ public final class React
   {
   }
 
+  /*
+   * WARNING: The following symbols are all imported from react which involves manually patching the js files
+   * for each react release. We do this rather than trying to redefine them as Elemental2 does not correctly
+   * model Symbol and we would still have to use primitive integer abstraction for IE11 anyway.
+   */
+
   /**
    * The Symbol type for Fragments.
    */
