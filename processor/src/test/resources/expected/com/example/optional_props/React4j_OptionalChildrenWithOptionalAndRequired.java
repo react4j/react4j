@@ -15,13 +15,13 @@ import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalChildrenWithOptionalAndRequired {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   static final String PROP_myRequiredProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myRequiredProp";
 
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp";
 
   static final String PROP_children = "children";
+
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

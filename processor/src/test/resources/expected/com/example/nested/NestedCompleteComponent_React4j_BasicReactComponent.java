@@ -17,9 +17,9 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   private static Provider<NestedCompleteComponent.BasicReactComponent> c_provider;
 

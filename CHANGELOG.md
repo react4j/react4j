@@ -9,6 +9,9 @@
 * **\[core\]** Rewrite the javascript `React.createElement(...)` method in java. This allows the GWT2.x/J2CL
   compilers to alias methods and optimize the code. This will will result in smaller code sizes as the number
   of calls to that method increases but may increase the size of the code in smaller code bases.
+* **\[processor\]** Fix a bug in introduced when the annotation processor that started to optimize prop names
+  that resulted in the keys of the `defaultProps` value being `undefined` and thus no default prop values being
+  supplied.
 
 ### [v0.105](https://github.com/react4j/react4j/tree/v0.105) (2018-11-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.104...v0.105)

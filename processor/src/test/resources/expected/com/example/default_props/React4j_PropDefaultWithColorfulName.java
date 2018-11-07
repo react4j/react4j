@@ -14,9 +14,9 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   static final String PROP_myProp12$23 = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp12$23";
+
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

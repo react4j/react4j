@@ -516,6 +516,13 @@ final class Generator
     addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
+    final List<PropDescriptor> props = descriptor.getProps();
+    final int propCount = props.size();
+    for ( int i = 0; i < propCount; i++ )
+    {
+      builder.addField( buildPropKeyConstantField( props.get( i ), i ).build() );
+    }
+
     final FieldSpec.Builder field =
       FieldSpec.builder( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
                          "TYPE",
@@ -523,13 +530,6 @@ final class Generator
                          Modifier.FINAL ).
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
-
-    final List<PropDescriptor> props = descriptor.getProps();
-    final int propCount = props.size();
-    for ( int i = 0; i < propCount; i++ )
-    {
-      builder.addField( buildPropKeyConstantField( props.get( i ), i ).build() );
-    }
 
     if ( descriptor.needsInjection() )
     {

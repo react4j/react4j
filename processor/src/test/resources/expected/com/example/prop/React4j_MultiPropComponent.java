@@ -14,11 +14,11 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_MultiPropComponent extends MultiPropComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
 
   static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
+
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

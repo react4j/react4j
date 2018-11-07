@@ -14,13 +14,13 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_ExplicitOptional extends ExplicitOptional {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   static final String PROP_myRequiredProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myRequiredProp";
 
   static final String PROP_myOptionalProp = ReactConfig.shouldMinimizePropKeys() ? "b" : "myOptionalProp";
 
   static final String PROP_myOtherOptionalProp = ReactConfig.shouldMinimizePropKeys() ? "c" : "myOtherOptionalProp";
+
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

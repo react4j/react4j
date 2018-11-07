@@ -15,8 +15,6 @@ import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyRequired {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   static final String PROP_myRequiredProp1 = ReactConfig.shouldMinimizePropKeys() ? "a" : "myRequiredProp1";
 
   static final String PROP_myRequiredProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myRequiredProp2";
@@ -24,6 +22,8 @@ class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyR
   static final String PROP_myRequiredProp3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "myRequiredProp3";
 
   static final String PROP_children = "children";
+
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

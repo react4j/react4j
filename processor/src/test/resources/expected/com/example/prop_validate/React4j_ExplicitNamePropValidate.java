@@ -14,9 +14,9 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

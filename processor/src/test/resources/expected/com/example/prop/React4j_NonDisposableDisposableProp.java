@@ -18,9 +18,9 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposableProp {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
+
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {

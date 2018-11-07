@@ -24,9 +24,9 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
+  static final ComponentConstructorFunction TYPE = getConstructorFunction();
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
