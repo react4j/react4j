@@ -11,6 +11,16 @@
 
 ### Next Next Release
 
+* Fix following warnings in J2CL code
+
+jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React$$Overlay.impl.java.js:231:
+Originally at:
+jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React.java:399: WARNING - Property __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED never defined on Object
+
+jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React$$Overlay.impl.java.js:231:
+Originally at:
+jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React.java:399: WARNING - Property ReactCurrentOwner never defined on React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
+
 * Change the builders to generate `ReactElement` instances directly. If we do this we could create defaults
   inline and remove magic from `createElement`
 
