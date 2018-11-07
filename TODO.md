@@ -14,6 +14,8 @@
 * Change the builders to generate `ReactElement` instances directly. If we do this we could create defaults
   inline and remove magic from `createElement`
 
+* Default values are now showing up in DevTools - why?
+
 * Figure out a way to get the *Builders eliminated
 
 * Collections returned from props should be made immutable.
