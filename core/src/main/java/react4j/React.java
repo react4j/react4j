@@ -377,6 +377,19 @@ public final class React
         actual.set( PropNames.CHILDREN_PROP_NAME, children );
       }
     }
+    // Resolve default props
+    // In future if components are responsible for creating elements directly then this code can be removed
+    final JsPropertyMap<Object> t = Js.asPropertyMap( type );
+    final JsPropertyMap<Object> defaultProps = Js.asPropertyMap( t.get( "defaultProps" ) );
+    if ( null != defaultProps )
+    {
+      defaultProps.forEach( defaultKey -> {
+        if ( Js.isTripleEqual( actual.get( defaultKey ), Js.undefined() ) )
+        {
+          actual.set( defaultKey, defaultProps.get( defaultKey ) );
+        }
+      } );
+    }
     return ReactElement.create( type, key, ref, actual, currentOwner() );
   }
 }
