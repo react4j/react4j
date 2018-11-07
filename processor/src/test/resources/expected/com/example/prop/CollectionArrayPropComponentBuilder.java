@@ -82,7 +82,7 @@ class CollectionArrayPropComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_CollectionArrayPropComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CollectionArrayPropComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

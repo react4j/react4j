@@ -82,7 +82,7 @@ class BooleanPropValidateBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_BooleanPropValidate.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_BooleanPropValidate.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

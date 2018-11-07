@@ -18,8 +18,6 @@ class React4j_ComponentWithArezProp extends ComponentWithArezProp {
 
   static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -45,6 +43,10 @@ class React4j_ComponentWithArezProp extends ComponentWithArezProp {
     } else {
       return Js.uncheckedCast( props().getAny( PROP_model ) );
     }
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

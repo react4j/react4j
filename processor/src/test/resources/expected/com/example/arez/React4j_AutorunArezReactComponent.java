@@ -19,8 +19,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_AutorunArezReactComponent extends AutorunArezReactComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -33,6 +31,10 @@ abstract class React4j_AutorunArezReactComponent extends AutorunArezReactCompone
   @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

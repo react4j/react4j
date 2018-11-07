@@ -75,7 +75,7 @@ class ActionOnLifecycleComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ActionOnLifecycleComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ActionOnLifecycleComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -82,7 +82,7 @@ class LongPropValidateBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_LongPropValidate.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_LongPropValidate.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

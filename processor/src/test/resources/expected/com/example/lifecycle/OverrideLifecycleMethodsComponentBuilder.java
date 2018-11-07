@@ -75,7 +75,7 @@ class OverrideLifecycleMethodsComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_OverrideLifecycleMethodsComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_OverrideLifecycleMethodsComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

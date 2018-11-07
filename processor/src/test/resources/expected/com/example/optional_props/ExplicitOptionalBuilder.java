@@ -107,7 +107,7 @@ class ExplicitOptionalBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ExplicitOptional.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ExplicitOptional.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

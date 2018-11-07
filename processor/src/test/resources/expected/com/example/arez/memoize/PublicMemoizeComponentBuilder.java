@@ -75,7 +75,7 @@ class PublicMemoizeComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_PublicMemoizeComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PublicMemoizeComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

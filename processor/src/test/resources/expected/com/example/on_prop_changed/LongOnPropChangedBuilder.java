@@ -82,7 +82,7 @@ class LongOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_LongOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_LongOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

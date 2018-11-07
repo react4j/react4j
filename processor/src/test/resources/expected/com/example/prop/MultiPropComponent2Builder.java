@@ -138,7 +138,7 @@ class MultiPropComponent2Builder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_MultiPropComponent2.TYPE, Js.uncheckedCast( _props ), _children );
+      return React.createElement( React4j_MultiPropComponent2.Factory.TYPE, Js.uncheckedCast( _props ), _children );
     }
   }
 }

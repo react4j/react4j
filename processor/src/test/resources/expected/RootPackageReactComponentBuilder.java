@@ -73,7 +73,7 @@ class RootPackageReactComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_RootPackageReactComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_RootPackageReactComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -20,8 +20,6 @@ import react4j.ReactConfig;
 abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentShouldNotUpdateOnChangeProp {
   static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -38,6 +36,10 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value ) );
     }
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

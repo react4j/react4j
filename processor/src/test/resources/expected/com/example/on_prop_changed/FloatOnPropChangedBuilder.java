@@ -82,7 +82,7 @@ class FloatOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_FloatOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_FloatOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

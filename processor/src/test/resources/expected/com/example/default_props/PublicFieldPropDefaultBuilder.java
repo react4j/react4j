@@ -90,7 +90,7 @@ class PublicFieldPropDefaultBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_PublicFieldPropDefault.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PublicFieldPropDefault.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

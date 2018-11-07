@@ -17,8 +17,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_DaggerTrueComponent extends DaggerTrueComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   private static Provider<DaggerTrueComponent> c_provider;
 
   @Inject
@@ -43,6 +41,10 @@ class React4j_DaggerTrueComponent extends DaggerTrueComponent {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "DaggerTrueComponent" );
     }
     return componentConstructor;
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

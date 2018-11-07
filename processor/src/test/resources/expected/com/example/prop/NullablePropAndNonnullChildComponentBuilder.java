@@ -113,7 +113,7 @@ class NullablePropAndNonnullChildComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_NullablePropAndNonnullChildComponent.TYPE, Js.uncheckedCast( _props ), _child );
+      return React.createElement( React4j_NullablePropAndNonnullChildComponent.Factory.TYPE, Js.uncheckedCast( _props ), _child );
     }
   }
 }

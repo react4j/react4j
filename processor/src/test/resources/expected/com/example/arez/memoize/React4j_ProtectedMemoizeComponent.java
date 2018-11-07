@@ -20,8 +20,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ProtectedMemoizeComponent extends ProtectedMemoizeComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -37,6 +35,10 @@ abstract class React4j_ProtectedMemoizeComponent extends ProtectedMemoizeCompone
   )
   protected String getIcon(final String key) {
     return super.getIcon(key);
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

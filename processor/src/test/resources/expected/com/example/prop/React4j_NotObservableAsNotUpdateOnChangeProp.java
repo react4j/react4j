@@ -22,8 +22,6 @@ import react4j.ReactConfig;
 abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservableAsNotUpdateOnChangeProp {
   static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -48,6 +46,10 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
   )
   int someValue() {
     return super.someValue();
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

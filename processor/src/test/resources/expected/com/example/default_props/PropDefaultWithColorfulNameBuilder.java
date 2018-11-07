@@ -90,7 +90,7 @@ class PropDefaultWithColorfulNameBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_PropDefaultWithColorfulName.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PropDefaultWithColorfulName.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

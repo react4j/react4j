@@ -19,8 +19,6 @@ import react4j.ReactConfig;
 class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   private static Provider<NestedCompleteComponent.BasicReactComponent> c_provider;
 
   @Inject
@@ -54,6 +52,10 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp ) );
     }
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

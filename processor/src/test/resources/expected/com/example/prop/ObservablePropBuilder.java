@@ -82,7 +82,7 @@ class ObservablePropBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ObservableProp.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ObservableProp.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

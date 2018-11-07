@@ -82,7 +82,7 @@ class BytePropValidateBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_BytePropValidate.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_BytePropValidate.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

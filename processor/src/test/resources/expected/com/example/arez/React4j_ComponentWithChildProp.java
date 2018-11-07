@@ -21,8 +21,6 @@ import react4j.ReactNode;
 abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   static final String PROP_child = "children";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -47,6 +45,10 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
       return true;
     }
     return false;
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

@@ -75,7 +75,7 @@ class ParameterizedReturnMemoizeComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ParameterizedReturnMemoizeComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ParameterizedReturnMemoizeComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

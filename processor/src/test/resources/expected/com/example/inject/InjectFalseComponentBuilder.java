@@ -75,7 +75,7 @@ class InjectFalseComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_InjectFalseComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_InjectFalseComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -82,7 +82,7 @@ class PropTypeDoubleBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_PropTypeDouble.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PropTypeDouble.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

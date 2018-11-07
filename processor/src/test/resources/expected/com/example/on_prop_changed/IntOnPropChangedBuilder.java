@@ -82,7 +82,7 @@ class IntOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_IntOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_IntOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

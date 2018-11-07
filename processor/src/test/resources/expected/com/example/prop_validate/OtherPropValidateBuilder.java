@@ -83,7 +83,7 @@ class OtherPropValidateBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_OtherPropValidate.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_OtherPropValidate.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

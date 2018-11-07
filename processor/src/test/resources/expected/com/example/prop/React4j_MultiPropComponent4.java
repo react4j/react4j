@@ -25,8 +25,6 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
 
   static final String PROP_child = "children";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -83,6 +81,10 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     } else {
       return Js.uncheckedCast( props().getAny( PROP_child ) );
     }
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

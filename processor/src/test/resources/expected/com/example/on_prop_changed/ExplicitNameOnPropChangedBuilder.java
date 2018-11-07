@@ -82,7 +82,7 @@ class ExplicitNameOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ExplicitNameOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ExplicitNameOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

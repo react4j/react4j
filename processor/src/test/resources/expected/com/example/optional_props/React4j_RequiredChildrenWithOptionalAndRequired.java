@@ -21,8 +21,6 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
 
   static final String PROP_children = "children";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -60,6 +58,10 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
     } else {
       return Js.uncheckedCast( props().getAny( PROP_children ) );
     }
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

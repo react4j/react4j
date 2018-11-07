@@ -25,8 +25,6 @@ import react4j.ReactConfig;
 abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedProp {
   static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -74,6 +72,10 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

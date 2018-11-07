@@ -94,7 +94,7 @@ class ComponentWithArezPropBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ComponentWithArezProp.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ComponentWithArezProp.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

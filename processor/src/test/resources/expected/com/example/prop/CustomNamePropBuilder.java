@@ -82,7 +82,7 @@ class CustomNamePropBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_CustomNameProp.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CustomNameProp.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

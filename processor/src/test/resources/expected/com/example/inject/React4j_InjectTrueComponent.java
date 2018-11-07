@@ -17,8 +17,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_InjectTrueComponent extends InjectTrueComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   private static Provider<InjectTrueComponent> c_provider;
 
   @Inject
@@ -43,6 +41,10 @@ class React4j_InjectTrueComponent extends InjectTrueComponent {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "InjectTrueComponent" );
     }
     return componentConstructor;
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

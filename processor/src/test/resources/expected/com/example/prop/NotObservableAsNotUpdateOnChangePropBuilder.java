@@ -82,7 +82,7 @@ class NotObservableAsNotUpdateOnChangePropBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_NotObservableAsNotUpdateOnChangeProp.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_NotObservableAsNotUpdateOnChangeProp.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -83,7 +83,7 @@ class NonnullPropValidateBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_NonnullPropValidate.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_NonnullPropValidate.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

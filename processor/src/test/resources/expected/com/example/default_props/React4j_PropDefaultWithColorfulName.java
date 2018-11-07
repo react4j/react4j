@@ -16,8 +16,6 @@ import react4j.ReactConfig;
 class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
   static final String PROP_myProp12$23 = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp12$23";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -37,6 +35,10 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myProp12$23 ) );
     }
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

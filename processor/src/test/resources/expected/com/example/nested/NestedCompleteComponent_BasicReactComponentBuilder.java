@@ -82,7 +82,7 @@ class NestedCompleteComponent_BasicReactComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( NestedCompleteComponent_React4j_BasicReactComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( NestedCompleteComponent_React4j_BasicReactComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

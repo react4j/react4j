@@ -16,8 +16,6 @@ import react4j.ReactConfig;
 class React4j_PropTypeFloat extends PropTypeFloat {
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -30,6 +28,10 @@ class React4j_PropTypeFloat extends PropTypeFloat {
   @Override
   protected float getMyProp() {
     return props().getAny( PROP_myProp ).asFloat();
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

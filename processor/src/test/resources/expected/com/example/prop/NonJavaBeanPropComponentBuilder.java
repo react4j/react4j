@@ -82,7 +82,7 @@ class NonJavaBeanPropComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_NonJavaBeanPropComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_NonJavaBeanPropComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

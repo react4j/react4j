@@ -13,6 +13,9 @@
   that resulted in the keys of the `defaultProps` value being `undefined` and thus no default prop values being
   supplied.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.114`.
+* **\[processor\]** Move the constant holding the `ComponentConstructorFunction` instance field to a separate
+  inner class to avoid having to check `<clinit>` has been invoked prior to accessing methods on synthetic
+  subclass. This results in a modest decrease in size per react component.
 
 ### [v0.105](https://github.com/react4j/react4j/tree/v0.105) (2018-11-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.104...v0.105)

@@ -83,7 +83,7 @@ class OtherTypeOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_OtherTypeOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_OtherTypeOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

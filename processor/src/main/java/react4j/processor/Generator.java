@@ -396,21 +396,21 @@ final class Generator
     method.addAnnotation( NONNULL_CLASSNAME );
     if ( null != descriptor.findPropNamed( "children" ) )
     {
-      method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ), _children )",
+      method.addStatement( "return $T.createElement( $T.Factory.TYPE, $T.uncheckedCast( _props ), _children )",
                            REACT_CLASSNAME,
                            descriptor.getEnhancedClassName(),
                            JS_CLASSNAME );
     }
     else if ( null != descriptor.findPropNamed( "child" ) )
     {
-      method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ), _child )",
+      method.addStatement( "return $T.createElement( $T.Factory.TYPE, $T.uncheckedCast( _props ), _child )",
                            REACT_CLASSNAME,
                            descriptor.getEnhancedClassName(),
                            JS_CLASSNAME );
     }
     else
     {
-      method.addStatement( "return $T.createElement( $T.TYPE, $T.uncheckedCast( _props ) )",
+      method.addStatement( "return $T.createElement( $T.Factory.TYPE, $T.uncheckedCast( _props ) )",
                            REACT_CLASSNAME,
                            descriptor.getEnhancedClassName(),
                            JS_CLASSNAME );
@@ -523,13 +523,7 @@ final class Generator
       builder.addField( buildPropKeyConstantField( props.get( i ), i ).build() );
     }
 
-    final FieldSpec.Builder field =
-      FieldSpec.builder( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
-                         "TYPE",
-                         Modifier.STATIC,
-                         Modifier.FINAL ).
-        initializer( "getConstructorFunction()" );
-    builder.addField( field.build() );
+    builder.addType( buildFactory() );
 
     if ( descriptor.needsInjection() )
     {
@@ -1177,6 +1171,28 @@ final class Generator
     }
     method.addStatement( "return componentConstructor" );
     return method;
+  }
+
+  @Nonnull
+  private static TypeSpec buildFactory()
+  {
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "Factory" );
+
+    //Ensure it can not be subclassed
+    builder.addModifiers( Modifier.FINAL );
+    builder.addModifiers( Modifier.STATIC );
+
+    // This field has been moved to a separate class to avoid a <clinit> on containing class as that forces
+    // every call to React_MyComponent to first check <clinit> has been invoked.
+    final FieldSpec.Builder field =
+      FieldSpec.builder( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
+                         "TYPE",
+                         Modifier.STATIC,
+                         Modifier.FINAL ).
+        initializer( "getConstructorFunction()" );
+    builder.addField( field.build() );
+
+    return builder.build();
   }
 
   @Nonnull

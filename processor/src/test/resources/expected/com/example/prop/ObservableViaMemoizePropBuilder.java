@@ -82,7 +82,7 @@ class ObservableViaMemoizePropBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ObservableViaMemoizeProp.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ObservableViaMemoizeProp.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

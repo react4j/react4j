@@ -22,8 +22,6 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
 
   static final String PROP_value4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "value4";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -69,6 +67,10 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
     } else {
       return Js.uncheckedCast( props().getAny( PROP_value4 ) );
     }
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

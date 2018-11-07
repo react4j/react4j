@@ -16,8 +16,6 @@ import react4j.ReactConfig;
 class React4j_PackageAccessOnPropChanged extends PackageAccessOnPropChanged {
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -47,6 +45,10 @@ class React4j_PackageAccessOnPropChanged extends PackageAccessOnPropChanged {
       modified = true;
     }
     return modified;
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

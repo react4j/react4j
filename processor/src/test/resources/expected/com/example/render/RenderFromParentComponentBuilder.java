@@ -75,7 +75,7 @@ class RenderFromParentComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_RenderFromParentComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_RenderFromParentComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

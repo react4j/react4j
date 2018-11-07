@@ -82,7 +82,7 @@ class VoidOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_VoidOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_VoidOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -82,7 +82,7 @@ class ExplicitNamePropValidateBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ExplicitNamePropValidate.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ExplicitNamePropValidate.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

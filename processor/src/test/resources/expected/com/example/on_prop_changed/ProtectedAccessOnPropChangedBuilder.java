@@ -82,7 +82,7 @@ class ProtectedAccessOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ProtectedAccessOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ProtectedAccessOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -82,7 +82,7 @@ class ComponentWithPropBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ComponentWithProp.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ComponentWithProp.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

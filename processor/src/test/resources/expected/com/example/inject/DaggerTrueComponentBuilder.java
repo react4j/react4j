@@ -75,7 +75,7 @@ class DaggerTrueComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_DaggerTrueComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_DaggerTrueComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

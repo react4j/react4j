@@ -24,8 +24,6 @@ import react4j.ReactConfig;
 abstract class React4j_ObservableProp extends ObservableProp {
   static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -68,6 +66,10 @@ abstract class React4j_ObservableProp extends ObservableProp {
       modified = true;
     }
     return modified || hasRenderDepsChanged();
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

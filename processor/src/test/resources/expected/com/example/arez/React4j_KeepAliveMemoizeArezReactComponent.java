@@ -21,8 +21,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoizeArezReactComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -44,6 +42,10 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
   )
   int myAutorun() {
     return super.myAutorun();
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

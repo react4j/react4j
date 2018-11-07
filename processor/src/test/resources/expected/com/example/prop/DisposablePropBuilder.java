@@ -82,7 +82,7 @@ class DisposablePropBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_DisposableProp.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_DisposableProp.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -84,7 +84,7 @@ class NonnullChildPropComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_NonnullChildPropComponent.TYPE, Js.uncheckedCast( _props ), _child );
+      return React.createElement( React4j_NonnullChildPropComponent.Factory.TYPE, Js.uncheckedCast( _props ), _child );
     }
   }
 }

@@ -82,7 +82,7 @@ class CharOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_CharOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CharOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

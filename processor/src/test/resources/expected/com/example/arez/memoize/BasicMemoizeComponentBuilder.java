@@ -75,7 +75,7 @@ class BasicMemoizeComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_BasicMemoizeComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_BasicMemoizeComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

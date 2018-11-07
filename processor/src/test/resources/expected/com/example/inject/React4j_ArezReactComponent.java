@@ -22,8 +22,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ArezReactComponent extends ArezReactComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   private static Provider<ArezReactComponent> c_provider;
 
   static void setProvider(final Provider<ArezReactComponent> provider) {
@@ -44,6 +42,10 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ArezReactComponent" );
     }
     return componentConstructor;
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

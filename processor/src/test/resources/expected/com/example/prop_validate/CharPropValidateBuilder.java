@@ -82,7 +82,7 @@ class CharPropValidateBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_CharPropValidate.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CharPropValidate.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

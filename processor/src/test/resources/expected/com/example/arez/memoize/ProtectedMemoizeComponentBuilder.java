@@ -75,7 +75,7 @@ class ProtectedMemoizeComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ProtectedMemoizeComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ProtectedMemoizeComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

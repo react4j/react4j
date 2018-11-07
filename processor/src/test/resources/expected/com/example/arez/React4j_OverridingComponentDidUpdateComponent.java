@@ -18,8 +18,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingComponentDidUpdateComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -27,6 +25,10 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
       Js.asPropertyMap( componentConstructor ).set( "displayName", "OverridingComponentDidUpdateComponent" );
     }
     return componentConstructor;
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

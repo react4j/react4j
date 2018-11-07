@@ -16,8 +16,6 @@ import react4j.ReactConfig;
 class React4j_BooleanPropValidate extends BooleanPropValidate {
   static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -39,6 +37,10 @@ class React4j_BooleanPropValidate extends BooleanPropValidate {
       final boolean typed$myProp = Js.asBoolean( raw$myProp );
       validateMyProp( typed$myProp );
     }
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

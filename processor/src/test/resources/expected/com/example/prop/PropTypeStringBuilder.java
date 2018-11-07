@@ -82,7 +82,7 @@ class PropTypeStringBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_PropTypeString.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PropTypeString.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

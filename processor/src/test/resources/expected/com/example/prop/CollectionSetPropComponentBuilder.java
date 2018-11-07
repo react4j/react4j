@@ -83,7 +83,7 @@ class CollectionSetPropComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_CollectionSetPropComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_CollectionSetPropComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

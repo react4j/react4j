@@ -83,7 +83,7 @@ class ParameterizedOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ParameterizedOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ParameterizedOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

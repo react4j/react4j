@@ -20,8 +20,6 @@ import react4j.ReactConfig;
 abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposableProp {
   static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -46,6 +44,10 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
       return true;
     }
     return false;
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

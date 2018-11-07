@@ -82,7 +82,7 @@ class BoolJavaBeanPropComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_BoolJavaBeanPropComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_BoolJavaBeanPropComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

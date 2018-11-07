@@ -82,7 +82,7 @@ class ShortOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ShortOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ShortOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

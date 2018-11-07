@@ -82,7 +82,7 @@ class PackageAccessOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_PackageAccessOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_PackageAccessOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

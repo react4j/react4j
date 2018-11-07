@@ -20,8 +20,6 @@ class React4j_ExplicitOptional extends ExplicitOptional {
 
   static final String PROP_myOtherOptionalProp = ReactConfig.shouldMinimizePropKeys() ? "c" : "myOtherOptionalProp";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -56,6 +54,10 @@ class React4j_ExplicitOptional extends ExplicitOptional {
     } else {
       return Js.uncheckedCast( props().getAny( PROP_myOtherOptionalProp ) );
     }
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

@@ -82,7 +82,7 @@ class DoubleOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_DoubleOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_DoubleOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

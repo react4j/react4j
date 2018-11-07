@@ -82,7 +82,7 @@ class ComponentShouldUpdateOnChangePropBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ComponentShouldUpdateOnChangeProp.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ComponentShouldUpdateOnChangeProp.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -83,7 +83,7 @@ class NonnullOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_NonnullOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_NonnullOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

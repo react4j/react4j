@@ -23,8 +23,6 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
 
   static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
 
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -70,6 +68,10 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
       return true;
     }
     return false;
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

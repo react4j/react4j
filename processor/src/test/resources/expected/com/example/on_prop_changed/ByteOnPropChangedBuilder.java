@@ -82,7 +82,7 @@ class ByteOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ByteOnPropChanged.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ByteOnPropChanged.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

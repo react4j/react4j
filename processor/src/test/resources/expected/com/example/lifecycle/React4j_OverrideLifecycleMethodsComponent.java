@@ -16,8 +16,6 @@ import react4j.ReactErrorInfo;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethodsComponent {
-  static final ComponentConstructorFunction TYPE = getConstructorFunction();
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -25,6 +23,10 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
       Js.asPropertyMap( componentConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
     }
     return componentConstructor;
+  }
+
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   @JsType(

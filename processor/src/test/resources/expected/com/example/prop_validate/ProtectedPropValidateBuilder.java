@@ -82,7 +82,7 @@ class ProtectedPropValidateBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ProtectedPropValidate.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ProtectedPropValidate.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

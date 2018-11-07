@@ -82,7 +82,7 @@ class ImplicitDisposablePropOnComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ImplicitDisposablePropOnComponent.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ImplicitDisposablePropOnComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }

@@ -90,7 +90,7 @@ class ExplicitNameMethodPropDefaultBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_ExplicitNameMethodPropDefault.TYPE, Js.uncheckedCast( _props ) );
+      return React.createElement( React4j_ExplicitNameMethodPropDefault.Factory.TYPE, Js.uncheckedCast( _props ) );
     }
   }
 }
