@@ -110,8 +110,8 @@ public final class React
   /**
    * Create a ReactElement for the specified React component.
    *
-   * @param type     the constructor function for the native React component.
-   * @param props    the props to pass to the component.
+   * @param type  the constructor function for the native React component.
+   * @param props the props to pass to the component.
    * @return a new ReactElement.
    */
   @JsOverlay
@@ -159,8 +159,8 @@ public final class React
   /**
    * Create and return a new ReactElement of the given type with specified children.
    *
-   * @param type     A HTML tag name (eg. 'div', 'span', etc)
-   * @param props    The props to pass to the element.
+   * @param type  A HTML tag name (eg. 'div', 'span', etc)
+   * @param props The props to pass to the element.
    * @return the created ReactElement
    */
   @JsOverlay
