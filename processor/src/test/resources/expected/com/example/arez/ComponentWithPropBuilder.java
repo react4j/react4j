@@ -76,7 +76,7 @@ class ComponentWithPropBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final String value) {
-      _props.set( React4j_ComponentWithProp.PROP_value, value );
+      _props.set( React4j_ComponentWithProp.Props.value, value );
       return build();
     }
 

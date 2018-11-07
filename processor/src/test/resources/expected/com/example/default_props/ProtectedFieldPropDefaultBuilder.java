@@ -84,7 +84,7 @@ class ProtectedFieldPropDefaultBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( React4j_ProtectedFieldPropDefault.PROP_myProp, myProp );
+      _props.set( React4j_ProtectedFieldPropDefault.Props.myProp, myProp );
       return build();
     }
 

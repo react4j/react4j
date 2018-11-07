@@ -14,8 +14,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
-  static final String PROP_someField = ReactConfig.shouldMinimizePropKeys() ? "a" : "someField";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -27,11 +25,15 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
 
   @Override
   boolean isSomeField() {
-    return props().getAny( PROP_someField ).asBoolean();
+    return props().getAny( Props.someField ).asBoolean();
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String someField = ReactConfig.shouldMinimizePropKeys() ? "a" : "someField";
   }
 
   @JsType(

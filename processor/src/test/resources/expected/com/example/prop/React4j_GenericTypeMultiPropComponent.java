@@ -14,14 +14,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropComponent<T> {
-  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
-
-  static final String PROP_value2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "value2";
-
-  static final String PROP_value3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "value3";
-
-  static final String PROP_value4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "value4";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -34,18 +26,18 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
   @Override
   protected T getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
+      return null != props().getAny( Props.value ) ? props().getAny( Props.value ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_value ) );
+      return Js.uncheckedCast( props().getAny( Props.value ) );
     }
   }
 
   @Override
   protected String getValue2() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value2 ) ? props().getAny( PROP_value2 ).asString() : null;
+      return null != props().getAny( Props.value2 ) ? props().getAny( Props.value2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_value2 ) );
+      return Js.uncheckedCast( props().getAny( Props.value2 ) );
     }
   }
 
@@ -53,9 +45,9 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
   @Override
   protected String getValue3() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value3 ) ? props().getAny( PROP_value3 ).asString() : null;
+      return null != props().getAny( Props.value3 ) ? props().getAny( Props.value3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_value3 ) );
+      return Js.uncheckedCast( props().getAny( Props.value3 ) );
     }
   }
 
@@ -63,14 +55,24 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
   @Override
   protected String getValue4() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value4 ) ? props().getAny( PROP_value4 ).asString() : null;
+      return null != props().getAny( Props.value4 ) ? props().getAny( Props.value4 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_value4 ) );
+      return Js.uncheckedCast( props().getAny( Props.value4 ) );
     }
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
+    static final String value2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "value2";
+
+    static final String value3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "value3";
+
+    static final String value4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "value4";
   }
 
   @JsType(

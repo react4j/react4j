@@ -76,7 +76,7 @@ class CharPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final char myProp) {
-      _props.set( React4j_CharPropValidate.PROP_myProp, myProp );
+      _props.set( React4j_CharPropValidate.Props.myProp, myProp );
       return build();
     }
 

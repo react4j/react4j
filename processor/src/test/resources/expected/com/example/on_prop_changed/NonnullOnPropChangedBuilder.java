@@ -77,7 +77,7 @@ class NonnullOnPropChangedBuilder {
     @Nonnull
     public final ReactNode myProp(@Nonnull final String myProp) {
       Objects.requireNonNull( myProp );
-      _props.set( React4j_NonnullOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_NonnullOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

@@ -76,7 +76,7 @@ class DoublePropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final double myProp) {
-      _props.set( React4j_DoublePropValidate.PROP_myProp, myProp );
+      _props.set( React4j_DoublePropValidate.Props.myProp, myProp );
       return build();
     }
 

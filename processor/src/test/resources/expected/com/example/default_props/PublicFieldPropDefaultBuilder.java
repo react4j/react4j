@@ -84,7 +84,7 @@ class PublicFieldPropDefaultBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( React4j_PublicFieldPropDefault.PROP_myProp, myProp );
+      _props.set( React4j_PublicFieldPropDefault.Props.myProp, myProp );
       return build();
     }
 

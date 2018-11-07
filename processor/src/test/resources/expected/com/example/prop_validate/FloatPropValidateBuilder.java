@@ -76,7 +76,7 @@ class FloatPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final float myProp) {
-      _props.set( React4j_FloatPropValidate.PROP_myProp, myProp );
+      _props.set( React4j_FloatPropValidate.Props.myProp, myProp );
       return build();
     }
 

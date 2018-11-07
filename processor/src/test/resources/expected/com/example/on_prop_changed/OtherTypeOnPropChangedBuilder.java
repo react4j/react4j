@@ -77,7 +77,7 @@ class OtherTypeOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final ArrayList myProp) {
-      _props.set( React4j_OtherTypeOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_OtherTypeOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

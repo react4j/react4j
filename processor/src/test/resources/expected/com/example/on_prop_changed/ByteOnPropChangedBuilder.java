@@ -76,7 +76,7 @@ class ByteOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final byte myProp) {
-      _props.set( React4j_ByteOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_ByteOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

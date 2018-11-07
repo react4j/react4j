@@ -19,10 +19,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
-  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
-
-  static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -44,27 +40,27 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   @Override
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
+      return null != props().getAny( Props.value ) ? props().getAny( Props.value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_value ) );
+      return Js.uncheckedCast( props().getAny( Props.value ) );
     }
   }
 
   @Override
   protected ComponentWithDependency.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
+      return null != props().getAny( Props.model ) ? props().getAny( Props.model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_model ) );
+      return Js.uncheckedCast( props().getAny( Props.model ) );
     }
   }
 
   @Override
   protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( PROP_value ), nextProps.get( PROP_value ) ) ) {
+    if ( !Js.isTripleEqual( props().get( Props.value ), nextProps.get( Props.value ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props().get( PROP_model ), nextProps.get( PROP_model ) ) ) {
+    if ( !Js.isTripleEqual( props().get( Props.model ), nextProps.get( Props.model ) ) ) {
       return true;
     }
     return false;
@@ -72,6 +68,12 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
+    static final String model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
   }
 
   @JsType(

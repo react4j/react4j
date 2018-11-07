@@ -84,7 +84,7 @@ class PropDefaultWithColorfulNameBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp12$23(final String myProp12$23) {
-      _props.set( React4j_PropDefaultWithColorfulName.PROP_myProp12$23, myProp12$23 );
+      _props.set( React4j_PropDefaultWithColorfulName.Props.myProp12$23, myProp12$23 );
       return build();
     }
 

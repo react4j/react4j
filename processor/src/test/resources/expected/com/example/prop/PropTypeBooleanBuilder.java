@@ -76,7 +76,7 @@ class PropTypeBooleanBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final boolean myProp) {
-      _props.set( React4j_PropTypeBoolean.PROP_myProp, myProp );
+      _props.set( React4j_PropTypeBoolean.Props.myProp, myProp );
       return build();
     }
 

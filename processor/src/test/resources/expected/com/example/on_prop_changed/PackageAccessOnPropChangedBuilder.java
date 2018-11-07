@@ -76,7 +76,7 @@ class PackageAccessOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( React4j_PackageAccessOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_PackageAccessOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

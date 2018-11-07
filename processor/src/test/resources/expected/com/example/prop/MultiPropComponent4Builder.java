@@ -96,28 +96,28 @@ class MultiPropComponent4Builder {
     @Override
     @Nonnull
     public final Builder3 myProp(final String myProp) {
-      _props.set( React4j_MultiPropComponent4.PROP_myProp, myProp );
+      _props.set( React4j_MultiPropComponent4.Props.myProp, myProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder3 myProp2(@Nullable final String myProp2) {
-      _props.set( React4j_MultiPropComponent4.PROP_myProp2, myProp2 );
+      _props.set( React4j_MultiPropComponent4.Props.myProp2, myProp2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder3 myProp3(@Nullable final String myProp3) {
-      _props.set( React4j_MultiPropComponent4.PROP_myProp3, myProp3 );
+      _props.set( React4j_MultiPropComponent4.Props.myProp3, myProp3 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder3 myProp4(@Nullable final String myProp4) {
-      _props.set( React4j_MultiPropComponent4.PROP_myProp4, myProp4 );
+      _props.set( React4j_MultiPropComponent4.Props.myProp4, myProp4 );
       return this;
     }
 

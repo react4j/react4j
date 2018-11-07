@@ -14,8 +14,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
-  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -28,15 +26,15 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
+      return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_myProp ) );
+      return Js.uncheckedCast( props().getAny( Props.myProp ) );
     }
   }
 
   @Override
   protected final void validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
-    final Object raw$myProp = props.get( PROP_myProp );
+    final Object raw$myProp = props.get( Props.myProp );
     if ( null != raw$myProp ) {
       final String typed$myProp = Js.asString( raw$myProp );
       zapzap( typed$myProp );
@@ -45,6 +43,10 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   @JsType(

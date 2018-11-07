@@ -18,8 +18,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposableProp {
-  static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -32,15 +30,15 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
   @Override
   protected NonDisposableDisposableProp.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
+      return null != props().getAny( Props.model ) ? props().getAny( Props.model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_model ) );
+      return Js.uncheckedCast( props().getAny( Props.model ) );
     }
   }
 
   @Override
   protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( PROP_model ), nextProps.get( PROP_model ) ) ) {
+    if ( !Js.isTripleEqual( props().get( Props.model ), nextProps.get( Props.model ) ) ) {
       return true;
     }
     return false;
@@ -48,6 +46,10 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
   }
 
   @JsType(

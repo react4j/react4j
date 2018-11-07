@@ -98,14 +98,14 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
     @Override
     @Nonnull
     public final Builder3 myRequiredProp(final String myRequiredProp) {
-      _props.set( React4j_OptionalChildrenWithOptionalAndRequired.PROP_myRequiredProp, myRequiredProp );
+      _props.set( React4j_OptionalChildrenWithOptionalAndRequired.Props.myRequiredProp, myRequiredProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder3 myProp(final String myProp) {
-      _props.set( React4j_OptionalChildrenWithOptionalAndRequired.PROP_myProp, myProp );
+      _props.set( React4j_OptionalChildrenWithOptionalAndRequired.Props.myProp, myProp );
       return this;
     }
 

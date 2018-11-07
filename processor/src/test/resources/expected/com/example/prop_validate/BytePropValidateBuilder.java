@@ -76,7 +76,7 @@ class BytePropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final byte myProp) {
-      _props.set( React4j_BytePropValidate.PROP_myProp, myProp );
+      _props.set( React4j_BytePropValidate.Props.myProp, myProp );
       return build();
     }
 

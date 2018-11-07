@@ -15,8 +15,6 @@ import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_SingleChildPropComponent extends SingleChildPropComponent {
-  static final String PROP_child = "children";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -29,14 +27,18 @@ class React4j_SingleChildPropComponent extends SingleChildPropComponent {
   @Override
   protected ReactNode getChild() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
+      return null != props().getAny( Props.child ) ? props().getAny( Props.child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_child ) );
+      return Js.uncheckedCast( props().getAny( Props.child ) );
     }
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String child = "children";
   }
 
   @JsType(

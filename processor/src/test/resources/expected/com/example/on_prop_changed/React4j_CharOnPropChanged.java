@@ -14,8 +14,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_CharOnPropChanged extends CharOnPropChanged {
-  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -27,16 +25,16 @@ class React4j_CharOnPropChanged extends CharOnPropChanged {
 
   @Override
   protected char getMyProp() {
-    return props().getAny( PROP_myProp ).asChar();
+    return props().getAny( Props.myProp ).asChar();
   }
 
   @Override
   protected boolean reportPropChanges(@Nonnull final JsPropertyMap<Object> props,
       @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentDidUpdate) {
     boolean modified = false;
-    if ( !Js.isTripleEqual( props.get( PROP_myProp ), nextProps.get( PROP_myProp ) ) ) {
+    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       if ( inComponentDidUpdate ) {
-        onMyPropChanged( props.getAny( PROP_myProp ).asChar() );
+        onMyPropChanged( props.getAny( Props.myProp ).asChar() );
       }
       modified = true;
     }
@@ -45,6 +43,10 @@ class React4j_CharOnPropChanged extends CharOnPropChanged {
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   @JsType(

@@ -76,7 +76,7 @@ class FloatOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final float myProp) {
-      _props.set( React4j_FloatOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_FloatOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

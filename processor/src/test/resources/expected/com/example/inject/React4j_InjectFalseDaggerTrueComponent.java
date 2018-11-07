@@ -27,6 +27,9 @@ class React4j_InjectFalseDaggerTrueComponent extends InjectFalseDaggerTrueCompon
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
+  static final class Props {
+  }
+
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

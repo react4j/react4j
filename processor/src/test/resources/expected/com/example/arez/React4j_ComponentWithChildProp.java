@@ -19,8 +19,6 @@ import react4j.ReactNode;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
-  static final String PROP_child = "children";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -33,15 +31,15 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   @Override
   protected ReactNode getChild() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
+      return null != props().getAny( Props.child ) ? props().getAny( Props.child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_child ) );
+      return Js.uncheckedCast( props().getAny( Props.child ) );
     }
   }
 
   @Override
   protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( PROP_child ), nextProps.get( PROP_child ) ) ) {
+    if ( !Js.isTripleEqual( props().get( Props.child ), nextProps.get( Props.child ) ) ) {
       return true;
     }
     return false;
@@ -49,6 +47,10 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String child = "children";
   }
 
   @JsType(

@@ -76,7 +76,7 @@ class PropTypeShortBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final short myProp) {
-      _props.set( React4j_PropTypeShort.PROP_myProp, myProp );
+      _props.set( React4j_PropTypeShort.Props.myProp, myProp );
       return build();
     }
 

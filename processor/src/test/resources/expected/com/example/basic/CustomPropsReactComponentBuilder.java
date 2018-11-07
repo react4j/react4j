@@ -76,7 +76,7 @@ class CustomPropsReactComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode someField(final boolean someField) {
-      _props.set( React4j_CustomPropsReactComponent.PROP_someField, someField );
+      _props.set( React4j_CustomPropsReactComponent.Props.someField, someField );
       return build();
     }
 

@@ -27,6 +27,9 @@ class React4j_GenericTypeComponent<T> extends GenericTypeComponent<T> {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
+  static final class Props {
+  }
+
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

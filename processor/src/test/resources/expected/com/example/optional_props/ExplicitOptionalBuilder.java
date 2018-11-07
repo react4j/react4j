@@ -87,21 +87,21 @@ class ExplicitOptionalBuilder {
     @Override
     @Nonnull
     public final Builder3 myRequiredProp(final String myRequiredProp) {
-      _props.set( React4j_ExplicitOptional.PROP_myRequiredProp, myRequiredProp );
+      _props.set( React4j_ExplicitOptional.Props.myRequiredProp, myRequiredProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder3 myOptionalProp(final String myOptionalProp) {
-      _props.set( React4j_ExplicitOptional.PROP_myOptionalProp, myOptionalProp );
+      _props.set( React4j_ExplicitOptional.Props.myOptionalProp, myOptionalProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder3 myOtherOptionalProp(final String myOtherOptionalProp) {
-      _props.set( React4j_ExplicitOptional.PROP_myOtherOptionalProp, myOtherOptionalProp );
+      _props.set( React4j_ExplicitOptional.Props.myOtherOptionalProp, myOtherOptionalProp );
       return this;
     }
 

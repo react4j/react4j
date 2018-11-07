@@ -15,8 +15,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_NonnullPropValidate extends NonnullPropValidate {
-  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -29,12 +27,12 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
   @Nonnull
   @Override
   protected String getMyProp() {
-    return props().getAny( PROP_myProp ).asString();
+    return props().getAny( Props.myProp ).asString();
   }
 
   @Override
   protected final void validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
-    final Object raw$myProp = props.get( PROP_myProp );
+    final Object raw$myProp = props.get( Props.myProp );
     if ( ReactConfig.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Required prop named 'myProp' is missing from component named 'NonnullPropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
     }
@@ -46,6 +44,10 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   @JsType(

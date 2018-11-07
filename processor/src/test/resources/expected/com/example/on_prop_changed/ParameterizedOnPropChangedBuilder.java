@@ -77,7 +77,7 @@ class ParameterizedOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final ArrayList<String> myProp) {
-      _props.set( React4j_ParameterizedOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_ParameterizedOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

@@ -76,7 +76,7 @@ class PropTypeArrayBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String[] myProp) {
-      _props.set( React4j_PropTypeArray.PROP_myProp, myProp );
+      _props.set( React4j_PropTypeArray.Props.myProp, myProp );
       return build();
     }
 

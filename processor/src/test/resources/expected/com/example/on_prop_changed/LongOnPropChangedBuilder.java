@@ -76,7 +76,7 @@ class LongOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final long myProp) {
-      _props.set( React4j_LongOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_LongOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

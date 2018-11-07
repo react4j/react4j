@@ -47,6 +47,9 @@ class React4j_DaggerTrueComponent extends DaggerTrueComponent {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
+  static final class Props {
+  }
+
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

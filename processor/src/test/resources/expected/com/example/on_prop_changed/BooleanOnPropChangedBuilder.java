@@ -76,7 +76,7 @@ class BooleanOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final boolean myProp) {
-      _props.set( React4j_BooleanOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_BooleanOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

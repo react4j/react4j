@@ -76,7 +76,7 @@ class BooleanPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final boolean myProp) {
-      _props.set( React4j_BooleanPropValidate.PROP_myProp, myProp );
+      _props.set( React4j_BooleanPropValidate.Props.myProp, myProp );
       return build();
     }
 

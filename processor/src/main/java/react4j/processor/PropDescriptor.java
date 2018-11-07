@@ -266,7 +266,7 @@ final class PropDescriptor
   @Nonnull
   String getConstantName()
   {
-    return "PROP_" + getName();
+    return getName();
   }
 
   boolean isSpecialChildrenProp()

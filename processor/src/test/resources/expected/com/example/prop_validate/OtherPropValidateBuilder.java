@@ -77,7 +77,7 @@ class OtherPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final ArrayList myProp) {
-      _props.set( React4j_OtherPropValidate.PROP_myProp, myProp );
+      _props.set( React4j_OtherPropValidate.Props.myProp, myProp );
       return build();
     }
 

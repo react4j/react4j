@@ -76,7 +76,7 @@ class ComponentShouldNotUpdateOnChangePropBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final String value) {
-      _props.set( React4j_ComponentShouldNotUpdateOnChangeProp.PROP_value, value );
+      _props.set( React4j_ComponentShouldNotUpdateOnChangeProp.Props.value, value );
       return build();
     }
 

@@ -76,7 +76,7 @@ class ShortOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final short myProp) {
-      _props.set( React4j_ShortOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_ShortOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

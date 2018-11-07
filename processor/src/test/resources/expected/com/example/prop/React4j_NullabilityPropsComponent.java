@@ -14,10 +14,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_NullabilityPropsComponent extends NullabilityPropsComponent {
-  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
-
-  static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -30,21 +26,27 @@ class React4j_NullabilityPropsComponent extends NullabilityPropsComponent {
   @Nonnull
   @Override
   protected String getMyProp() {
-    return props().getAny( PROP_myProp ).asString();
+    return props().getAny( Props.myProp ).asString();
   }
 
   @Nullable
   @Override
   protected String getMyProp2() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp2 ) ? props().getAny( PROP_myProp2 ).asString() : null;
+      return null != props().getAny( Props.myProp2 ) ? props().getAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_myProp2 ) );
+      return Js.uncheckedCast( props().getAny( Props.myProp2 ) );
     }
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
+    static final String myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
   }
 
   @JsType(

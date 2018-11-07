@@ -23,8 +23,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedProp {
-  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -42,9 +40,9 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   )
   protected Object getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).cast() : null;
+      return null != props().getAny( Props.value ) ? props().getAny( Props.value ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_value ) );
+      return Js.uncheckedCast( props().getAny( Props.value ) );
     }
   }
 
@@ -60,7 +58,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentDidUpdate) {
     boolean modified = false;
     final boolean reportChanges = shouldReportPropChanges( inComponentDidUpdate );
-    if ( !Js.isTripleEqual( props.get( PROP_value ), nextProps.get( PROP_value ) ) ) {
+    if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
       if ( reportChanges ) {
         getValueObservableValue().reportChanged();
       }
@@ -76,6 +74,10 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
   }
 
   @JsType(

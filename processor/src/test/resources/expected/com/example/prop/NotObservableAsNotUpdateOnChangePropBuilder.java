@@ -76,7 +76,7 @@ class NotObservableAsNotUpdateOnChangePropBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final Object value) {
-      _props.set( React4j_NotObservableAsNotUpdateOnChangeProp.PROP_value, value );
+      _props.set( React4j_NotObservableAsNotUpdateOnChangeProp.Props.value, value );
       return build();
     }
 

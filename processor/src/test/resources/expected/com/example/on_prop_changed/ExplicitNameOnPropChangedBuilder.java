@@ -76,7 +76,7 @@ class ExplicitNameOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final double myProp) {
-      _props.set( React4j_ExplicitNameOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_ExplicitNameOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

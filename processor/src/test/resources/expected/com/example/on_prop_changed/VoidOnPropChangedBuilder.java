@@ -76,7 +76,7 @@ class VoidOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( React4j_VoidOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_VoidOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

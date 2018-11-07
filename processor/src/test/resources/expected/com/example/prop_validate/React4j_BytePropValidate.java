@@ -14,8 +14,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_BytePropValidate extends BytePropValidate {
-  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -27,12 +25,12 @@ class React4j_BytePropValidate extends BytePropValidate {
 
   @Override
   protected byte getMyProp() {
-    return props().getAny( PROP_myProp ).asByte();
+    return props().getAny( Props.myProp ).asByte();
   }
 
   @Override
   protected final void validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
-    final Object raw$myProp = props.get( PROP_myProp );
+    final Object raw$myProp = props.get( Props.myProp );
     if ( null != raw$myProp ) {
       final byte typed$myProp = Js.asByte( raw$myProp );
       validateMyProp( typed$myProp );
@@ -41,6 +39,10 @@ class React4j_BytePropValidate extends BytePropValidate {
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   @JsType(

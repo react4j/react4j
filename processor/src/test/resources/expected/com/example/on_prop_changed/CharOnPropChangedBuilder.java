@@ -76,7 +76,7 @@ class CharOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final char myProp) {
-      _props.set( React4j_CharOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_CharOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

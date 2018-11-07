@@ -77,7 +77,7 @@ class CollectionListPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final List<String> myProp) {
-      _props.set( React4j_CollectionListPropComponent.PROP_myProp, myProp );
+      _props.set( React4j_CollectionListPropComponent.Props.myProp, myProp );
       return build();
     }
 

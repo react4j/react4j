@@ -81,14 +81,14 @@ class ComponentWithArezPropBuilder {
     @Override
     @Nonnull
     public final Builder3 value(final String value) {
-      _props.set( React4j_ComponentWithArezProp.PROP_value, value );
+      _props.set( React4j_ComponentWithArezProp.Props.value, value );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode model(final ComponentWithArezProp.Model model) {
-      _props.set( React4j_ComponentWithArezProp.PROP_model, model );
+      _props.set( React4j_ComponentWithArezProp.Props.model, model );
       return build();
     }
 

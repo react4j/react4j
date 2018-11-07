@@ -41,6 +41,9 @@ abstract class React4j_ProtectedMemoizeComponent extends ProtectedMemoizeCompone
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
+  static final class Props {
+  }
+
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

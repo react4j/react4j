@@ -18,8 +18,6 @@ import react4j.ReactConfig;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShouldUpdateOnChangeProp {
-  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -32,15 +30,15 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
   @Override
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
+      return null != props().getAny( Props.value ) ? props().getAny( Props.value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_value ) );
+      return Js.uncheckedCast( props().getAny( Props.value ) );
     }
   }
 
   @Override
   protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( PROP_value ), nextProps.get( PROP_value ) ) ) {
+    if ( !Js.isTripleEqual( props().get( Props.value ), nextProps.get( Props.value ) ) ) {
       return true;
     }
     return false;
@@ -48,6 +46,10 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
   }
 
   @JsType(

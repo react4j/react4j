@@ -15,16 +15,6 @@ import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_MultiPropComponent4 extends MultiPropComponent4 {
-  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
-
-  static final String PROP_myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
-
-  static final String PROP_myProp3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "myProp3";
-
-  static final String PROP_myProp4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "myProp4";
-
-  static final String PROP_child = "children";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -37,9 +27,9 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
+      return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_myProp ) );
+      return Js.uncheckedCast( props().getAny( Props.myProp ) );
     }
   }
 
@@ -47,9 +37,9 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp2() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp2 ) ? props().getAny( PROP_myProp2 ).asString() : null;
+      return null != props().getAny( Props.myProp2 ) ? props().getAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_myProp2 ) );
+      return Js.uncheckedCast( props().getAny( Props.myProp2 ) );
     }
   }
 
@@ -57,9 +47,9 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp3() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp3 ) ? props().getAny( PROP_myProp3 ).asString() : null;
+      return null != props().getAny( Props.myProp3 ) ? props().getAny( Props.myProp3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_myProp3 ) );
+      return Js.uncheckedCast( props().getAny( Props.myProp3 ) );
     }
   }
 
@@ -67,9 +57,9 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp4() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp4 ) ? props().getAny( PROP_myProp4 ).asString() : null;
+      return null != props().getAny( Props.myProp4 ) ? props().getAny( Props.myProp4 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_myProp4 ) );
+      return Js.uncheckedCast( props().getAny( Props.myProp4 ) );
     }
   }
 
@@ -77,14 +67,26 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected ReactNode getChild() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_child ) ? props().getAny( PROP_child ).cast() : null;
+      return null != props().getAny( Props.child ) ? props().getAny( Props.child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_child ) );
+      return Js.uncheckedCast( props().getAny( Props.child ) );
     }
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+
+    static final String myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
+
+    static final String myProp3 = ReactConfig.shouldMinimizePropKeys() ? "c" : "myProp3";
+
+    static final String myProp4 = ReactConfig.shouldMinimizePropKeys() ? "d" : "myProp4";
+
+    static final String child = "children";
   }
 
   @JsType(

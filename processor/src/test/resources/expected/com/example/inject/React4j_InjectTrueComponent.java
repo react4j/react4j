@@ -47,6 +47,9 @@ class React4j_InjectTrueComponent extends InjectTrueComponent {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
+  static final class Props {
+  }
+
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

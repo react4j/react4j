@@ -84,7 +84,7 @@ class ExplicitNameFieldPropDefaultBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( React4j_ExplicitNameFieldPropDefault.PROP_myProp, myProp );
+      _props.set( React4j_ExplicitNameFieldPropDefault.Props.myProp, myProp );
       return build();
     }
 

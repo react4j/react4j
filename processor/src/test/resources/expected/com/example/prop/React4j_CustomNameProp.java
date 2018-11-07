@@ -14,8 +14,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_CustomNameProp extends CustomNameProp {
-  static final String PROP_foo = ReactConfig.shouldMinimizePropKeys() ? "a" : "foo";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -28,14 +26,18 @@ class React4j_CustomNameProp extends CustomNameProp {
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_foo ) ? props().getAny( PROP_foo ).asString() : null;
+      return null != props().getAny( Props.foo ) ? props().getAny( Props.foo ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_foo ) );
+      return Js.uncheckedCast( props().getAny( Props.foo ) );
     }
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String foo = ReactConfig.shouldMinimizePropKeys() ? "a" : "foo";
   }
 
   @JsType(

@@ -76,7 +76,7 @@ class PropTypeLongBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final long myProp) {
-      _props.set( React4j_PropTypeLong.PROP_myProp, myProp );
+      _props.set( React4j_PropTypeLong.Props.myProp, myProp );
       return build();
     }
 

@@ -77,7 +77,7 @@ class NonnullPropValidateBuilder {
     @Nonnull
     public final ReactNode myProp(@Nonnull final String myProp) {
       Objects.requireNonNull( myProp );
-      _props.set( React4j_NonnullPropValidate.PROP_myProp, myProp );
+      _props.set( React4j_NonnullPropValidate.Props.myProp, myProp );
       return build();
     }
 

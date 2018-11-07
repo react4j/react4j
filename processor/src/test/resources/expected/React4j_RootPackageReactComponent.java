@@ -25,6 +25,9 @@ class React4j_RootPackageReactComponent extends RootPackageReactComponent {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
+  static final class Props {
+  }
+
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

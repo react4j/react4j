@@ -361,7 +361,7 @@ final class Generator
       final PropDescriptor prop = stepMethod.getProp();
       if ( null != prop )
       {
-        method.addStatement( "_props.set( $T.$N, $N )",
+        method.addStatement( "_props.set( $T.Props.$N, $N )",
                              descriptor.getEnhancedClassName(),
                              prop.getConstantName(),
                              stepMethod.getName() );
@@ -516,14 +516,8 @@ final class Generator
     addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
-    final List<PropDescriptor> props = descriptor.getProps();
-    final int propCount = props.size();
-    for ( int i = 0; i < propCount; i++ )
-    {
-      builder.addField( buildPropKeyConstantField( props.get( i ), i ).build() );
-    }
-
     builder.addType( buildFactory() );
+    builder.addType( buildPropsType( descriptor ) );
 
     if ( descriptor.needsInjection() )
     {
@@ -538,6 +532,7 @@ final class Generator
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
+    final List<PropDescriptor> props = descriptor.getProps();
     if ( descriptor.isArezComponent() )
     {
       final List<PropDescriptor> disposableProps =
@@ -806,12 +801,12 @@ final class Generator
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
-      block.addStatement( "return null != props().getAny( $N ) ? props().getAny( $N ).$N() : null",
+      block.addStatement( "return null != props().getAny( Props.$N ) ? props().getAny( Props.$N ).$N() : null",
                           prop.getConstantName(),
                           prop.getConstantName(),
                           convertMethodName );
       block.nextControlFlow( "else" );
-      block.addStatement( "return $T.uncheckedCast( props().getAny( $N ) )",
+      block.addStatement( "return $T.uncheckedCast( props().getAny( Props.$N ) )",
                           JS_CLASSNAME,
                           prop.getConstantName() );
       block.endControlFlow();
@@ -819,7 +814,7 @@ final class Generator
     }
     else
     {
-      method.addStatement( "return props().getAny( $N ).$N()", prop.getConstantName(), convertMethodName );
+      method.addStatement( "return props().getAny( Props.$N ).$N()", prop.getConstantName(), convertMethodName );
     }
     return method;
   }
@@ -914,7 +909,7 @@ final class Generator
     for ( final PropDescriptor prop : props )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( $N ), nextProps.get( $N ) ) )",
+      block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( Props.$N ), nextProps.get( Props.$N ) ) )",
                               JS_CLASSNAME,
                               prop.getConstantName(),
                               prop.getConstantName() );
@@ -944,14 +939,14 @@ final class Generator
                null ==
                ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) )
           {
-            onChangeBlock.addStatement( "$N( $T.uncheckedCast( props.getAny( $N ) ) )",
+            onChangeBlock.addStatement( "$N( $T.uncheckedCast( props.getAny( Props.$N ) ) )",
                                         onPropChangedMethod.getSimpleName().toString(),
                                         JS_CLASSNAME,
                                         prop.getConstantName() );
           }
           else
           {
-            onChangeBlock.addStatement( "$N( props.getAny( $N ).$N() )",
+            onChangeBlock.addStatement( "$N( props.getAny( Props.$N ).$N() )",
                                         onPropChangedMethod.getSimpleName().toString(),
                                         prop.getConstantName(),
                                         convertMethodName );
@@ -993,7 +988,7 @@ final class Generator
       final String name = prop.getName();
       final String rawName = "raw$" + name;
       final String typedName = "typed$" + name;
-      method.addStatement( "final $T $N = props.get( $N )", Object.class, rawName, prop.getConstantName() );
+      method.addStatement( "final $T $N = props.get( Props.$N )", Object.class, rawName, prop.getConstantName() );
       final boolean isNonNull =
         null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME );
       if ( !prop.isOptional() && isNonNull )
@@ -1055,7 +1050,7 @@ final class Generator
       for ( final PropDescriptor prop : descriptor.getProps() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
-        block.beginControlFlow( "if ( !$T.isTripleEqual( props().get( $N ), nextProps.get( $N ) ) )",
+        block.beginControlFlow( "if ( !$T.isTripleEqual( props().get( Props.$N ), nextProps.get( Props.$N ) ) )",
                                 JS_CLASSNAME,
                                 prop.getConstantName(),
                                 prop.getConstantName() );
@@ -1157,7 +1152,7 @@ final class Generator
       for ( final PropDescriptor prop : propsWithDefaults )
       {
 
-        method.addStatement( "defaultProps.set( $N, $T.$N" + ( prop.hasDefaultField() ? "" : "()" ) + " )",
+        method.addStatement( "defaultProps.set( Props.$N, $T.$N" + ( prop.hasDefaultField() ? "" : "()" ) + " )",
                              prop.getConstantName(),
                              descriptor.getClassName(),
                              prop.hasDefaultField() ?
@@ -1171,6 +1166,27 @@ final class Generator
     }
     method.addStatement( "return componentConstructor" );
     return method;
+  }
+
+  @Nonnull
+  private static TypeSpec buildPropsType( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "Props" );
+
+    //Ensure it can not be subclassed
+    builder.addModifiers( Modifier.FINAL );
+    builder.addModifiers( Modifier.STATIC );
+
+    // These fields have been moved to a separate class to avoid a <clinit> on containing class
+
+    final List<PropDescriptor> props = descriptor.getProps();
+    final int propCount = props.size();
+    for ( int i = 0; i < propCount; i++ )
+    {
+      builder.addField( buildPropKeyConstantField( props.get( i ), i ).build() );
+    }
+
+    return builder.build();
   }
 
   @Nonnull

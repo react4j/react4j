@@ -84,7 +84,7 @@ class ExplicitNameMethodPropDefaultBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( React4j_ExplicitNameMethodPropDefault.PROP_myProp, myProp );
+      _props.set( React4j_ExplicitNameMethodPropDefault.Props.myProp, myProp );
       return build();
     }
 

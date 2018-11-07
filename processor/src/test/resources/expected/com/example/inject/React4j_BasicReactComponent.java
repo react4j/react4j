@@ -47,6 +47,9 @@ class React4j_BasicReactComponent extends BasicReactComponent {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
+  static final class Props {
+  }
+
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

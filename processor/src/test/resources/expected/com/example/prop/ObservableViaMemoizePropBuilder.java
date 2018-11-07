@@ -76,7 +76,7 @@ class ObservableViaMemoizePropBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final Object value) {
-      _props.set( React4j_ObservableViaMemoizeProp.PROP_value, value );
+      _props.set( React4j_ObservableViaMemoizeProp.Props.value, value );
       return build();
     }
 

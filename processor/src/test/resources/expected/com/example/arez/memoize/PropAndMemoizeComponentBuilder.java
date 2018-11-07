@@ -76,7 +76,7 @@ class PropAndMemoizeComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final String value) {
-      _props.set( React4j_PropAndMemoizeComponent.PROP_value, value );
+      _props.set( React4j_PropAndMemoizeComponent.Props.value, value );
       return build();
     }
 

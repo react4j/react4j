@@ -14,10 +14,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_ComponentWithArezProp extends ComponentWithArezProp {
-  static final String PROP_value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
-
-  static final String PROP_model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -30,23 +26,29 @@ class React4j_ComponentWithArezProp extends ComponentWithArezProp {
   @Override
   protected String getValue() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_value ) ? props().getAny( PROP_value ).asString() : null;
+      return null != props().getAny( Props.value ) ? props().getAny( Props.value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_value ) );
+      return Js.uncheckedCast( props().getAny( Props.value ) );
     }
   }
 
   @Override
   protected ComponentWithArezProp.Model getModel() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_model ) ? props().getAny( PROP_model ).cast() : null;
+      return null != props().getAny( Props.model ) ? props().getAny( Props.model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_model ) );
+      return Js.uncheckedCast( props().getAny( Props.model ) );
     }
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+
+    static final String model = ReactConfig.shouldMinimizePropKeys() ? "b" : "model";
   }
 
   @JsType(

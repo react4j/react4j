@@ -76,7 +76,7 @@ class ComponentJsFunctionPropBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final ComponentJsFunctionProp.TestFunction value) {
-      _props.set( React4j_ComponentJsFunctionProp.PROP_value, value );
+      _props.set( React4j_ComponentJsFunctionProp.Props.value, value );
       return build();
     }
 

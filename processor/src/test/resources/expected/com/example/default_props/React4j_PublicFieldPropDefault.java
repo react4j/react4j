@@ -14,8 +14,6 @@ import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_PublicFieldPropDefault extends PublicFieldPropDefault {
-  static final String PROP_myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -23,7 +21,7 @@ class React4j_PublicFieldPropDefault extends PublicFieldPropDefault {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PublicFieldPropDefault" );
     }
     final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( PROP_myProp, PublicFieldPropDefault.DEFAULT_MY_PROP );
+    defaultProps.set( Props.myProp, PublicFieldPropDefault.DEFAULT_MY_PROP );
     Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
@@ -31,14 +29,18 @@ class React4j_PublicFieldPropDefault extends PublicFieldPropDefault {
   @Override
   protected String getMyProp() {
     if ( ReactConfig.shouldCheckInvariants() ) {
-      return null != props().getAny( PROP_myProp ) ? props().getAny( PROP_myProp ).asString() : null;
+      return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( PROP_myProp ) );
+      return Js.uncheckedCast( props().getAny( Props.myProp ) );
     }
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   @JsType(

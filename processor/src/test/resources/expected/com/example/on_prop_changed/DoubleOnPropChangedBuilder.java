@@ -76,7 +76,7 @@ class DoubleOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final double myProp) {
-      _props.set( React4j_DoubleOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_DoubleOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

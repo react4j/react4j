@@ -76,7 +76,7 @@ class PackageAccessPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _props.set( React4j_PackageAccessPropValidate.PROP_myProp, myProp );
+      _props.set( React4j_PackageAccessPropValidate.Props.myProp, myProp );
       return build();
     }
 

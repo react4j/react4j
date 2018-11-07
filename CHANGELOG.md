@@ -16,6 +16,9 @@
 * **\[processor\]** Move the constant holding the `ComponentConstructorFunction` instance field to a separate
   inner class to avoid having to check `<clinit>` has been invoked prior to accessing methods on synthetic
   subclass. This results in a modest decrease in size per react component.
+* **\[processor\]** Move the constant holding the `PROP_myKey` static constants to a separate class to avoid
+  the creation of a `<clinit>` when not needed. Rename the constant to remove the `PROP_` prefix now that it is
+  no longer needed.
 
 ### [v0.105](https://github.com/react4j/react4j/tree/v0.105) (2018-11-02)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.104...v0.105)

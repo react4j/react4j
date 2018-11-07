@@ -15,8 +15,6 @@ import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_NonnullChildPropComponent extends NonnullChildPropComponent {
-  static final String PROP_child = "children";
-
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -29,11 +27,15 @@ class React4j_NonnullChildPropComponent extends NonnullChildPropComponent {
   @Nonnull
   @Override
   protected ReactNode getChild() {
-    return props().getAny( PROP_child ).cast();
+    return props().getAny( Props.child ).cast();
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  }
+
+  static final class Props {
+    static final String child = "children";
   }
 
   @JsType(

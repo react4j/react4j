@@ -76,7 +76,7 @@ class PropTypeCharBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final char myProp) {
-      _props.set( React4j_PropTypeChar.PROP_myProp, myProp );
+      _props.set( React4j_PropTypeChar.Props.myProp, myProp );
       return build();
     }
 

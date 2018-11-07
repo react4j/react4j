@@ -76,7 +76,7 @@ class IntOnPropChangedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final int myProp) {
-      _props.set( React4j_IntOnPropChanged.PROP_myProp, myProp );
+      _props.set( React4j_IntOnPropChanged.Props.myProp, myProp );
       return build();
     }
 

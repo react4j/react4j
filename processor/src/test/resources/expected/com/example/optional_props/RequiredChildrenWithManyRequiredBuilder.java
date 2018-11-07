@@ -105,21 +105,21 @@ class RequiredChildrenWithManyRequiredBuilder {
     @Override
     @Nonnull
     public final Builder3 myRequiredProp1(final String myRequiredProp1) {
-      _props.set( React4j_RequiredChildrenWithManyRequired.PROP_myRequiredProp1, myRequiredProp1 );
+      _props.set( React4j_RequiredChildrenWithManyRequired.Props.myRequiredProp1, myRequiredProp1 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder4 myRequiredProp2(final String myRequiredProp2) {
-      _props.set( React4j_RequiredChildrenWithManyRequired.PROP_myRequiredProp2, myRequiredProp2 );
+      _props.set( React4j_RequiredChildrenWithManyRequired.Props.myRequiredProp2, myRequiredProp2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder5 myRequiredProp3(final String myRequiredProp3) {
-      _props.set( React4j_RequiredChildrenWithManyRequired.PROP_myRequiredProp3, myRequiredProp3 );
+      _props.set( React4j_RequiredChildrenWithManyRequired.Props.myRequiredProp3, myRequiredProp3 );
       return this;
     }
 
