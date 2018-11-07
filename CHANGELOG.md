@@ -2,8 +2,8 @@
 
 ### Unreleased
 
-* Upgrade the version of javapoet to `1.11.1`.
-* Upgrade the Dagger2 support to version `2.19`.
+* **\[processor\]** Upgrade the version of javapoet to `1.11.1`.
+* **\[processor\]** Upgrade the Dagger2 support to version `2.19`.
 * **\[dom\]** Remove the methods from the `DOM` factory class that accepted `JsArray` parameters. These
   methods have never been used in downstream projects.
 * **\[core\]** Rewrite the javascript `React.createElement(...)` method in java. This allows the GWT2.x/J2CL
