@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.106](https://github.com/react4j/react4j/tree/v0.106) (2018-11-08)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.105...v0.106)
 
 * **\[processor\]** Upgrade the version of javapoet to `1.11.1`.
 * **\[processor\]** Upgrade the Dagger2 support to version `2.19`.
