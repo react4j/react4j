@@ -26,9 +26,19 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 
 * Default values are now showing up in DevTools - why?
 
+* Closure compiler has attribute. Can GWT2 also do same??? Can we use the annotation to propagate.
+  `@nosideeffects` indicates that a call to the declared function has no side effects. This annotation allows the
+  compiler to remove calls to the function if the return value is not used. This is not a signal that the function
+  is "pure", it may still read mutable global state. Maybe this should be on the underlying `props()` method.
+
 * Figure out a way to get the *Builders eliminated
 
 * Collections returned from props should be made immutable.
+
+* Change the binding rules for injectible components so that they are not cast to `Component` but are instead cast
+  to type defined by user - unless there is generics involved - is that possible anymore.
+  Essentially this means `Component bindComponent(Arez_React4j_ArezReactComponent component);` goes to
+  `ArezReactComponent bindComponent(Arez_React4j_ArezReactComponent component);` and remove cast in accessor.
 
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component.
   - `STATELESS` => inlined into caller without a component in production mode.
