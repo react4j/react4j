@@ -166,5 +166,7 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
   - http://jsbin.com/?html,css,js,console,output
 
 * Prepare a screencast for React4j+Arez.
+  - Probably use ScreenFLow software https://www.telestream.net/screenflow/
+  - Possibly with custom scripting - see https://wickstrom.tech/programming/2018/10/26/writing-a-screencast-video-editor-in-haskell.html
   - See egghead training videos as well.
   - https://www.youtube.com/playlist?list=PLV5CVI1eNcJhc9Lxu83Zp4uyqP2yKV4xl&app=desktop
