@@ -161,6 +161,9 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 
 * Or most excellent image from https://medium.freecodecamp.org/why-react16-is-a-blessing-to-react-developers-31433bfc210a
 
+* Add notes regarding fiber like - https://github.com/acdlite/react-fiber-architecture
+  Also useful to extract notes from https://www.youtube.com/watch?v=ZCuYPiUIONs&app=desktop
+
 * Create a jsbin-alike to display GWT code
   - https://github.com/jsbin/jsbin
   - http://jsbin.com/?html,css,js,console,output
