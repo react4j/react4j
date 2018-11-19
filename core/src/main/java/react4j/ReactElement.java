@@ -33,6 +33,22 @@ class ReactElement
   @Nullable
   private Object _owner;
 
+  /**
+   * Complete the element.
+   * If {@link ReactConfig#shouldFreezeProps()} returns true this method will freeze the props and the
+   * element, otherwise this method is a no-op. This method should be called before returning the element
+   * to thereact runtime.
+   */
+  @JsOverlay
+  private void complete()
+  {
+    if ( ReactConfig.shouldFreezeProps() )
+    {
+      JsObject.freeze( this );
+      JsObject.freeze( props );
+    }
+  }
+
   @JsOverlay
   @Nonnull
   static ReactElement create( @Nonnull final Object type,
@@ -49,11 +65,7 @@ class ReactElement
     element.props = Objects.requireNonNull( props );
     element._owner = owner;
 
-    if ( ReactConfig.shouldFreezeProps() )
-    {
-      JsObject.freeze( element );
-      JsObject.freeze( element.props );
-    }
+    element.complete();
     return element;
   }
 }
