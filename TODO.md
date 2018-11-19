@@ -2,6 +2,11 @@
 
 ### Next Release
 
+* Change builders so the object contained within builder is a `ReactElement`, thus eliminating the need to invoke
+  `createElement()` altogether. If we do this we could create defaults inline and remove magic from `createElement`.
+  We could also eliminate code for special handling of `ref` and `key`. DOM elements would still call createElement
+  however we may be able to eliminate this over time as well.
+
 * Change all remaining lifecycle hooks so they have less name cruft. (i.e. `didUpdate()` rather than `componentDidUpdate()`)
   Or maybe we just add annotations to hook into various steps.
 
@@ -18,9 +23,6 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React$$Overlay.impl.java.js:231:
 Originally at:
 jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React.java:399: WARNING - Property ReactCurrentOwner never defined on React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
-
-* Change the builders to generate `ReactElement` instances directly. If we do this we could create defaults
-  inline and remove magic from `createElement`
 
 * Closure compiler has attribute. Can GWT2 also do same??? Can we use the annotation to propagate.
   `@nosideeffects` indicates that a call to the declared function has no side effects. This annotation allows the
