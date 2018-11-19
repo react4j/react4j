@@ -8,6 +8,8 @@
   however we may be able to eliminate this over time as well. Update; The MyComponentBuilder.Builder class should
   actually extend `ReactElement` and all the build methods would be `@JsOverlay` methods.
 
+* Figure out a way to get the *Builders eliminated. Will the above do?
+
 * Change remaining lifecycle hooks to be annotation driven. i.e.
   `@PostMount` - componentDidMount
   `@PostRender` - componentDidUpdate + componentDidMount
@@ -32,8 +34,6 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
   `@nosideeffects` indicates that a call to the declared function has no side effects. This annotation allows the
   compiler to remove calls to the function if the return value is not used. This is not a signal that the function
   is "pure", it may still read mutable global state. Maybe this should be on the underlying `props()` method.
-
-* Figure out a way to get the *Builders eliminated
 
 * Collections returned from props should be made immutable.
 
