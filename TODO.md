@@ -130,9 +130,7 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 * Port React Material Web Components? - https://jamesmfriedman.github.io/rmwc/
 
 * If we were to ever re-implement the component model at a basic level, an interesting approach would be to
-  allow individual components to register actions to occur at each lifecycle stage. You could still implement
-  current lifecycle model by generating registration mechanisms. `@PreRender` and `@PostRender` could replace
-  `getSnapshotBeforeUpdate` and `componentDidUpdate`/`componentDidMount` for many cases.
+  allow individual components to register actions to occur at each lifecycle stage.
 
 * Investigate feasibility of https://github.com/sokra/rawact which compiles react components into native
   browser interactions in attempt to eliminate overhead of library. A similar framework is imba @ http://imba.io/
