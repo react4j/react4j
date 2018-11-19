@@ -30,7 +30,6 @@ public final class React
    * for each react release. We do this rather than trying to redefine them as Elemental2 does not correctly
    * model Symbol and we would still have to use primitive integer abstraction for IE11 anyway.
    */
-
   /**
    * The Symbol type for Fragments.
    */
