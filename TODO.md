@@ -81,16 +81,8 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 * Migrate to React 16.5.0 features
   - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
   - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
-  - https://elijahmanor.com/react-devtools-profiler/
   - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
     production js produced. - https://github.com/facebook/react/issues/13634
-
-* Migrate to React 16.4.0 features - See https://reactjs.org/blog/2018/05/23/react-v-16-4.html
-  - Pointer Events
-
-* Move to React 16.3.0 - See https://reactjs.org/blog/2018/03/29/react-v-16-3.html
-  - Implement `getSnapshotBeforeUpdate` lifecycle method.
-  - Add `snapshot` parameter to `componentDidUpdate`
 
 ### High Priorities
 
