@@ -12,7 +12,7 @@ public interface NestedCompleteComponent_BasicReactComponentDaggerFactory {
   DaggerSubcomponent getBasicReactComponentDaggerSubcomponent();
 
   default void bindBasicReactComponent() {
-    NestedCompleteComponent_React4j_BasicReactComponent.InjectSupport.setProvider( () -> getBasicReactComponentDaggerSubcomponent().get() );
+    NestedCompleteComponent_React4j_BasicReactComponent.InjectSupport.setProvider( () -> (NestedCompleteComponent.BasicReactComponent) getBasicReactComponentDaggerSubcomponent().createProvider().get() );
   }
 
   @Module
@@ -26,9 +26,5 @@ public interface NestedCompleteComponent_BasicReactComponentDaggerFactory {
   )
   interface DaggerSubcomponent {
     Provider<Component> createProvider();
-
-    default NestedCompleteComponent.BasicReactComponent get() {
-      return (NestedCompleteComponent.BasicReactComponent) createProvider().get();
-    }
   }
 }

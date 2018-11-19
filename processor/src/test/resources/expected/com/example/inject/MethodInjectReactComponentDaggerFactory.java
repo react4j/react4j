@@ -12,7 +12,7 @@ public interface MethodInjectReactComponentDaggerFactory {
   DaggerSubcomponent getMethodInjectReactComponentDaggerSubcomponent();
 
   default void bindMethodInjectReactComponent() {
-    React4j_MethodInjectReactComponent.InjectSupport.setProvider( () -> getMethodInjectReactComponentDaggerSubcomponent().get() );
+    React4j_MethodInjectReactComponent.InjectSupport.setProvider( () -> (MethodInjectReactComponent) getMethodInjectReactComponentDaggerSubcomponent().createProvider().get() );
   }
 
   @Module
@@ -26,9 +26,5 @@ public interface MethodInjectReactComponentDaggerFactory {
   )
   interface DaggerSubcomponent {
     Provider<Component> createProvider();
-
-    default MethodInjectReactComponent get() {
-      return (MethodInjectReactComponent) createProvider().get();
-    }
   }
 }

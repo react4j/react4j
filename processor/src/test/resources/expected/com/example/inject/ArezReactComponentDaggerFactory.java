@@ -12,7 +12,7 @@ public interface ArezReactComponentDaggerFactory {
   DaggerSubcomponent getArezReactComponentDaggerSubcomponent();
 
   default void bindArezReactComponent() {
-    React4j_ArezReactComponent.InjectSupport.setProvider( () -> getArezReactComponentDaggerSubcomponent().get() );
+    React4j_ArezReactComponent.InjectSupport.setProvider( () -> (ArezReactComponent) getArezReactComponentDaggerSubcomponent().createProvider().get() );
   }
 
   @Module
@@ -26,9 +26,5 @@ public interface ArezReactComponentDaggerFactory {
   )
   interface DaggerSubcomponent {
     Provider<Component> createProvider();
-
-    default ArezReactComponent get() {
-      return (ArezReactComponent) createProvider().get();
-    }
   }
 }

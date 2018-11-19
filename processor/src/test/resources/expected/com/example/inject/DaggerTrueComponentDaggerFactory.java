@@ -12,7 +12,7 @@ public interface DaggerTrueComponentDaggerFactory {
   DaggerSubcomponent getDaggerTrueComponentDaggerSubcomponent();
 
   default void bindDaggerTrueComponent() {
-    React4j_DaggerTrueComponent.InjectSupport.setProvider( () -> getDaggerTrueComponentDaggerSubcomponent().get() );
+    React4j_DaggerTrueComponent.InjectSupport.setProvider( () -> (DaggerTrueComponent) getDaggerTrueComponentDaggerSubcomponent().createProvider().get() );
   }
 
   @Module
@@ -26,9 +26,5 @@ public interface DaggerTrueComponentDaggerFactory {
   )
   interface DaggerSubcomponent {
     Provider<Component> createProvider();
-
-    default DaggerTrueComponent get() {
-      return (DaggerTrueComponent) createProvider().get();
-    }
   }
 }

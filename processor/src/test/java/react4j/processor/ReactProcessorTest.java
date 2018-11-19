@@ -58,6 +58,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.inject.InjectFalseDaggerTrueComponent", false, false },
         new Object[]{ "com.example.inject.InjectTrueComponent", false, true },
         new Object[]{ "com.example.inject.MethodInjectReactComponent", false, true },
+        new Object[]{ "com.example.inject.PublicReactComponent", false, true },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent", false, false },
         new Object[]{ "com.example.on_prop_changed.BooleanOnPropChanged", false, false },
         new Object[]{ "com.example.on_prop_changed.ByteOnPropChanged", false, false },

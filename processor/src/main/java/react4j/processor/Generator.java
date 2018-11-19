@@ -1432,10 +1432,20 @@ final class Generator
     {
       final MethodSpec.Builder method =
         MethodSpec.methodBuilder( "bind" + descriptor.getName() ).
-          addModifiers( Modifier.PUBLIC, Modifier.DEFAULT ).
-          addStatement( "$T.InjectSupport.setProvider( () -> $N().get() )",
-                        descriptor.getEnhancedClassName(),
-                        "get" + descriptor.getName() + "DaggerSubcomponent" );
+          addModifiers( Modifier.PUBLIC, Modifier.DEFAULT );
+      if ( descriptor.getElement().getModifiers().contains( Modifier.PUBLIC ) )
+      {
+        method.addStatement( "$T.InjectSupport.setProvider( $N().createProvider() )",
+                             descriptor.getEnhancedClassName(),
+                             "get" + descriptor.getName() + "DaggerSubcomponent" );
+      }
+      else
+      {
+        method.addStatement( "$T.InjectSupport.setProvider( () -> ($T) $N().createProvider().get() )",
+                             descriptor.getEnhancedClassName(),
+                             descriptor.getClassName(),
+                             "get" + descriptor.getName() + "DaggerSubcomponent" );
+      }
       builder.addMethod( method.build() );
     }
 
@@ -1459,22 +1469,20 @@ final class Generator
     subcomponent.addMember( "modules", "DaggerModule.class" );
     builder.addAnnotation( subcomponent.build() );
 
+    if ( descriptor.getElement().getModifiers().contains( Modifier.PUBLIC ) )
     {
-      final ParameterizedTypeName typeName =
-        ParameterizedTypeName.get( PROVIDER_CLASSNAME, COMPONENT_CLASSNAME );
       final MethodSpec.Builder method =
         MethodSpec.methodBuilder( "createProvider" ).
           addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
-          returns( typeName );
+          returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, descriptor.getClassName() ) );
       builder.addMethod( method.build() );
     }
-
+    else
     {
       final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "get" ).
-          addModifiers( Modifier.DEFAULT, Modifier.PUBLIC ).
-          returns( descriptor.getClassName() ).
-          addStatement( "return ($T) createProvider().get()", descriptor.getClassName() );
+        MethodSpec.methodBuilder( "createProvider" ).
+          addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
+          returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, COMPONENT_CLASSNAME ) );
       builder.addMethod( method.build() );
     }
 
@@ -1494,7 +1502,16 @@ final class Generator
         addAnnotation( ClassName.bestGuess( Constants.DAGGER_BINDS_CLASSNAME ) ).
         addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
         addParameter( descriptor.getClassNameToConstruct(), "component" ).
-        returns( COMPONENT_CLASSNAME );
+        returns( descriptor.getClassName() );
+    if ( descriptor.getElement().getModifiers().contains( Modifier.PUBLIC ) )
+    {
+      method.returns( descriptor.getClassName() );
+    }
+    else
+    {
+      method.returns( COMPONENT_CLASSNAME );
+    }
+
     builder.addMethod( method.build() );
 
     return builder.build();

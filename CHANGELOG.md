@@ -3,6 +3,11 @@
 ### Unreleased
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.115`.
+* **\[processor\]** Simplify the way that the provider is generated for dagger injection enabled components.
+  This goal was to eliminate a level of indirection that was previously required due to the type parameters on the
+  `react4j.Component` class. The indirection is still required if the component class is not public but can be
+  eliminated when the component class is public and thus guaranteed to be accessible from the associated
+  `DaggerComponent`.
 
 ### [v0.106](https://github.com/react4j/react4j/tree/v0.106) (2018-11-08)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.105...v0.106)
