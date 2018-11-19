@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.107](https://github.com/react4j/react4j/tree/v0.107) (2018-11-19)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.106...v0.107)
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.115`.
 * **\[processor\]** Simplify the way that the provider is generated for dagger injection enabled components.
