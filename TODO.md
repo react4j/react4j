@@ -5,7 +5,8 @@
 * Change builders so the object contained within builder is a `ReactElement`, thus eliminating the need to invoke
   `createElement()` altogether. If we do this we could create defaults inline and remove magic from `createElement`.
   We could also eliminate code for special handling of `ref` and `key`. DOM elements would still call createElement
-  however we may be able to eliminate this over time as well.
+  however we may be able to eliminate this over time as well. Update; The MyComponentBuilder.Builder class should
+  actually extend `ReactElement` and all the build methods would be `@JsOverlay` methods.
 
 * Change all remaining lifecycle hooks so they have less name cruft. (i.e. `didUpdate()` rather than `componentDidUpdate()`)
   Or maybe we just add annotations to hook into various steps.
