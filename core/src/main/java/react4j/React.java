@@ -343,7 +343,7 @@ public final class React
    */
   @JsProperty( name = "React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner.current", namespace = JsPackage.GLOBAL )
   @Nullable
-  private static native Object currentOwner();
+  static native Object currentOwner();
 
   /**
    * Create a ReactElement of either component or host type.
@@ -396,6 +396,6 @@ public final class React
         }
       } );
     }
-    return ReactElement.create( type, key, ref, actual, currentOwner() );
+    return ReactElement.create( type, key, ref, actual );
   }
 }

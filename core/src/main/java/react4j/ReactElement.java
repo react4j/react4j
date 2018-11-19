@@ -51,19 +51,26 @@ class ReactElement
 
   @JsOverlay
   @Nonnull
-  static ReactElement create( @Nonnull final Object type,
-                              @Nullable final String key,
-                              @Nullable final Object ref,
-                              @Nonnull final JsPropertyMap<Object> props,
-                              @Nullable final Object owner )
+  static ReactElement create( @Nonnull final Object type )
   {
     final ReactElement element = new ReactElement();
     element.typeof = React.Element;
     element.type = Objects.requireNonNull( type );
+    element._owner = React.currentOwner();
+    return element;
+  }
+
+  @JsOverlay
+  @Nonnull
+  static ReactElement create( @Nonnull final Object type,
+                              @Nullable final String key,
+                              @Nullable final Object ref,
+                              @Nonnull final JsPropertyMap<Object> props )
+  {
+    final ReactElement element = create( type );
     element.key = key;
     element.ref = ref;
     element.props = Objects.requireNonNull( props );
-    element._owner = owner;
 
     element.complete();
     return element;
