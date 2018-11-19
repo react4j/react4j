@@ -8,8 +8,11 @@
   however we may be able to eliminate this over time as well. Update; The MyComponentBuilder.Builder class should
   actually extend `ReactElement` and all the build methods would be `@JsOverlay` methods.
 
-* Change all remaining lifecycle hooks so they have less name cruft. (i.e. `didUpdate()` rather than `componentDidUpdate()`)
-  Or maybe we just add annotations to hook into various steps.
+* Change remaining lifecycle hooks to be annotation driven. i.e.
+  `@PostMount` - componentDidMount
+  `@PostRender` - componentDidUpdate + componentDidMount
+  `@PreUpdate` - getSnapshotBeforeUpdate
+  `@PostUpdate` - componentDidUpdate
 
 * Add some way to define effects which is just method called after render that returns a disposable to stop action.
   Possibly look at observed props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
