@@ -146,7 +146,8 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
   `getSnapshotBeforeUpdate` and `componentDidUpdate`/`componentDidMount` for many cases.
 
 * Investigate feasibility of https://github.com/sokra/rawact which compiles react components into native
-  browser interactions in attempt to eliminate overhead of library
+  browser interactions in attempt to eliminate overhead of library. A similar framework is imba @ http://imba.io/
+  which can learn about in https://scrimba.com/p/c6B9rAM
 
 #### Documentation
 
