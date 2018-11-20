@@ -2,6 +2,8 @@
 
 ### Next Release
 
+* Remove `Key` as it no longer seems to be of value. Just convert numbers to strings when setting key.
+
 * Change builders so the object contained within builder is a `ReactElement`, thus eliminating the need to invoke
   `createElement()` altogether. If we do this we could create defaults inline and remove magic from `createElement`.
   We could also eliminate code for special handling of `ref` and `key`. DOM elements would still call createElement
