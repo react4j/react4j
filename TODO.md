@@ -8,7 +8,8 @@
   `createElement()` altogether. If we do this we could create defaults inline and remove magic from `createElement`.
   We could also eliminate code for special handling of `ref` and `key`. DOM elements would still call createElement
   however we may be able to eliminate this over time as well. Update; The MyComponentBuilder.Builder class should
-  actually extend `ReactElement` and all the build methods would be `@JsOverlay` methods.
+  actually extend `ReactElement` and all the build methods would be `@JsOverlay` methods. Actually this would only
+  work when the framework is j2cl only as this stops the methods being renamed or inlined in GWT.
 
 * Figure out a way to get the *Builders eliminated. Will the above do?
 
