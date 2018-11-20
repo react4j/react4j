@@ -15,7 +15,7 @@ import jsinterop.base.JsPropertyMap;
  */
 @SuppressWarnings( "unused" )
 @JsType( isNative = true, name = "Object", namespace = JsPackage.GLOBAL )
-class ReactElement
+public class ReactElement
   implements ReactNode
 {
   @JsProperty( name = "$$typeof" )
@@ -74,5 +74,31 @@ class ReactElement
 
     element.complete();
     return element;
+  }
+
+  @JsOverlay
+  @Nullable
+  public final String key()
+  {
+    return key;
+  }
+
+  @JsOverlay
+  protected final void setKey( @Nullable final String key )
+  {
+    this.key = key;
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final JsPropertyMap<Object> props()
+  {
+    return props;
+  }
+
+  @JsOverlay
+  protected final void setProps( @Nonnull final JsPropertyMap<Object> props )
+  {
+    this.props = props;
   }
 }
