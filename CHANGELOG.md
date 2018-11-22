@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)
 
 * **\[processor\]** The generated builder previously supported a `child(ReactNode)` method on components that
   supported multiple children. The `child(ReactNode)` supported accumulation of children over multiple
