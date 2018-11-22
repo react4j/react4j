@@ -41,7 +41,7 @@ public class ReactElement
    * to the react runtime.
    */
   @JsOverlay
-  private void complete()
+  public final void complete()
   {
     if ( ReactConfig.shouldFreezeProps() )
     {

@@ -410,6 +410,7 @@ final class Generator
     return MethodSpec.methodBuilder( "build" )
       .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
       .addAnnotation( NONNULL_CLASSNAME )
+      .addStatement( "_element.complete()" )
       .addStatement( "return _element" )
       .returns( REACT_NODE_CLASSNAME )
       .build();

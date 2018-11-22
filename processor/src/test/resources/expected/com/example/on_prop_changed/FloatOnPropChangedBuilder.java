@@ -64,6 +64,7 @@ class FloatOnPropChangedBuilder {
 
     @Nonnull
     public final ReactNode build() {
+      _element.complete();
       return _element;
     }
   }

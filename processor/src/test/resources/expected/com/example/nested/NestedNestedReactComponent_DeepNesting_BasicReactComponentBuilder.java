@@ -57,6 +57,7 @@ class NestedNestedReactComponent_DeepNesting_BasicReactComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
+      _element.complete();
       return _element;
     }
   }

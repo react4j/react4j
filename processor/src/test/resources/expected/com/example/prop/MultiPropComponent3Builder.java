@@ -89,6 +89,7 @@ class MultiPropComponent3Builder {
 
     @Nonnull
     public final ReactNode build() {
+      _element.complete();
       return _element;
     }
   }
