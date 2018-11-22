@@ -5,7 +5,8 @@
 * **\[processor\]** The generated builder previously supported a `child(ReactNode)` method on components that
   supported multiple children. The `child(ReactNode)` supported accumulation of children over multiple
   invocations. This feature was not used in any downstream project and made certain optimizations difficult.
-  This method is no longer generated.
+  This method is no longer generated. A method with the same function in `Context.Provider` class was also
+  removed for the same reason.
 * **\[core\]** Remove `react4j.Key` as the values is always converted to a string so convert at API layer.
 * **\[processor\]** Refactor the annotation processor to directly create `ReactElement` instances. This
   reduces some memory overhead by:
