@@ -1,6 +1,5 @@
 package react4j;
 
-import elemental2.core.JsArray;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -8,8 +7,6 @@ import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 
 /**
  * Context is designed to share data that can be considered "global" for a tree of React components.
@@ -51,8 +48,7 @@ public class Context<T>
    */
   public static final class ProviderBuilder<ST>
   {
-    private final JsPropertyMap<Object> _props = JsPropertyMap.of();
-    private final JsArray<ReactNode> _children = new JsArray<>();
+    private final ReactElement _element = ReactElement.createComponentElement( React.Provider );
 
     private ProviderBuilder()
     {
@@ -67,41 +63,29 @@ public class Context<T>
     @Nonnull
     public final ProviderBuilder<ST> key( @Nonnull final String key )
     {
-      _props.set( PropNames.KEY_PROP_NAME, Objects.requireNonNull( key ) );
+      _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
     @Nonnull
     public final ProviderBuilder<ST> value( @Nullable final ST value )
     {
-      _props.set( "value", value );
+      _element.props().set( PropNames.VALUE_PROP_NAME, value );
       return this;
     }
 
     @Nonnull
     public final ReactNode children( final ReactNode... children )
     {
-      for ( final ReactNode child : children )
-      {
-        child( child );
-      }
+      _element.props().set( PropNames.CHILDREN_PROP_NAME, children );
       return build();
-    }
-
-    @Nonnull
-    public final ProviderBuilder<ST> child( @Nullable final ReactNode child )
-    {
-      if ( null != child )
-      {
-        _children.push( child );
-      }
-      return this;
     }
 
     @Nonnull
     public final ReactNode build()
     {
-      return React.createElement( React.Provider, _props, _children.slice() );
+      _element.complete();
+      return _element;
     }
   }
 
@@ -127,7 +111,7 @@ public class Context<T>
    */
   public static final class ConsumerBuilder<ST>
   {
-    private final JsPropertyMap<Object> _props = JsPropertyMap.of();
+    private final ReactElement _element = ReactElement.createComponentElement( React.Provider );
 
     private ConsumerBuilder()
     {
@@ -142,7 +126,7 @@ public class Context<T>
     @Nonnull
     public final ConsumerBuilder<ST> key( @Nonnull final String key )
     {
-      _props.set( PropNames.KEY_PROP_NAME, Objects.requireNonNull( key ) );
+      _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
@@ -155,7 +139,9 @@ public class Context<T>
     @Nonnull
     public final ReactNode render( @Nonnull final ConsumerRenderFunction<ST> render )
     {
-      return React.createElement( React.Consumer, Js.uncheckedCast( _props ), Js.<ReactNode>cast( render ) );
+      _element.complete();
+      _element.props().set( PropNames.CHILDREN_PROP_NAME, render );
+      return _element;
     }
   }
 }
