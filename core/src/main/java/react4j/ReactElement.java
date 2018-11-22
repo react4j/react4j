@@ -37,7 +37,7 @@ public class ReactElement
    * Complete the element.
    * If {@link ReactConfig#shouldFreezeProps()} returns true this method will freeze the props and the
    * element, otherwise this method is a no-op. This method should be called before returning the element
-   * to thereact runtime.
+   * to the react runtime.
    */
   @JsOverlay
   private void complete()
