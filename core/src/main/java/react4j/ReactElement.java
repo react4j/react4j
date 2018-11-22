@@ -9,6 +9,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+import static org.realityforge.braincheck.Guards.*;
 
 /**
  * Element represents either a component or a host component.
@@ -106,6 +107,11 @@ public class ReactElement
   @JsOverlay
   public final void setKey( @Nullable final String key )
   {
+    if ( ReactConfig.shouldCheckInvariants() && ReactConfig.shouldFreezeProps() )
+    {
+      invariant( () -> !JsObject.isFrozen( this ),
+                 () -> "Attempting to modify key of ReactElement after it has been frozen" );
+    }
     this.key = key;
   }
 
