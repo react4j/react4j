@@ -139,8 +139,8 @@ public class Context<T>
     @Nonnull
     public final ReactNode render( @Nonnull final ConsumerRenderFunction<ST> render )
     {
-      _element.complete();
       _element.props().set( PropNames.CHILDREN_PROP_NAME, render );
+      _element.complete();
       return _element;
     }
   }
