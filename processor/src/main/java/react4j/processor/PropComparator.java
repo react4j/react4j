@@ -40,5 +40,4 @@ final class PropComparator
       return 0;
     }
   }
-
 }
