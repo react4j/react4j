@@ -188,7 +188,10 @@ public final class React
   @JsOverlay
   public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
   {
-    return _createElement( StrictMode, null, children );
+    return ReactElement.createRawElement( StrictMode,
+                                          null,
+                                          null,
+                                          JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children ) );
   }
 
   /**
@@ -200,7 +203,10 @@ public final class React
   @JsOverlay
   public static ReactNode createFragment( @Nonnull final ReactNode... children )
   {
-    return _createElement( Fragment, null, children );
+    return ReactElement.createRawElement( Fragment,
+                                          null,
+                                          null,
+                                          JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children ) );
   }
 
   /**
@@ -286,7 +292,7 @@ public final class React
    */
   @JsOverlay
   @Nonnull
-  private static ReactElement _createElement( @Nonnull final Object type,
+  private static ReactElement _createElement( @Nonnull final String type,
                                               @Nullable final JsPropertyMap<Object> props,
                                               @Nullable final ReactNode[] children )
   {
@@ -319,6 +325,6 @@ public final class React
         actual.set( PropNames.CHILDREN_PROP_NAME, children );
       }
     }
-    return ReactElement.create( type, key, ref, actual );
+    return ReactElement.createHostElement( type, key, ref, actual );
   }
 }

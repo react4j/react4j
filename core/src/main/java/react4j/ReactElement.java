@@ -72,10 +72,10 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
-  public static ReactElement create( @Nonnull final Object type,
-                                     @Nullable final String key,
-                                     @Nullable final Object ref,
-                                     @Nonnull final JsPropertyMap<Object> props )
+  public static ReactElement createRawElement( @Nonnull final Object type,
+                                               @Nullable final String key,
+                                               @Nullable final Object ref,
+                                               @Nonnull final JsPropertyMap<Object> props )
   {
     final ReactElement element = create( type );
     element.key = key;
@@ -84,6 +84,16 @@ public class ReactElement
 
     element.complete();
     return element;
+  }
+
+  @JsOverlay
+  @Nonnull
+  public static ReactElement createHostElement( @Nonnull final String type,
+                                                @Nullable final String key,
+                                                @Nullable final Object ref,
+                                                @Nonnull final JsPropertyMap<Object> props )
+  {
+    return createRawElement( type, key, ref, props );
   }
 
   @JsOverlay
