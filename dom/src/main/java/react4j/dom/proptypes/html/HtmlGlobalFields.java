@@ -9,7 +9,6 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.Key;
 import react4j.ReactConfig;
 import react4j.ReactNode;
 import react4j.dom.events.ClipboardEventHandler;
@@ -32,7 +31,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   @Nullable
   public ReactNode children;
   @Nullable
-  public Key key;
+  public String key;
   @Nullable
   public RefConsumer ref;
 
@@ -46,17 +45,11 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   @JsOverlay
   public final T key( final int value )
   {
-    return key( Key.of( value ) );
+    return key( String.valueOf( value ) );
   }
 
   @JsOverlay
   public final T key( @Nonnull final String value )
-  {
-    return key( Key.of( value ) );
-  }
-
-  @JsOverlay
-  public final T key( @Nonnull final Key value )
   {
     key = value;
     return self();

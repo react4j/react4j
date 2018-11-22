@@ -20,9 +20,6 @@ class React4j_PackageAccessFieldPropDefault extends PackageAccessFieldPropDefaul
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PackageAccessFieldPropDefault" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myProp, PackageAccessFieldPropDefault.DEFAULT_MY_PROP );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 

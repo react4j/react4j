@@ -20,9 +20,6 @@ class React4j_ProtectedFieldPropDefault extends ProtectedFieldPropDefault {
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedFieldPropDefault" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myProp, ProtectedFieldPropDefault.DEFAULT_MY_PROP );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 

@@ -21,9 +21,6 @@ class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalChildrenWi
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "OptionalChildrenWithOptionalAndRequired" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myProp, OptionalChildrenWithOptionalAndRequired.DEFAULT_MY_PROP );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 

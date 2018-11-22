@@ -101,67 +101,6 @@ public final class React
   public static native boolean isValidElement( @Nonnull ReactNode node );
 
   /**
-   * Create a ReactElement for the specified React component with no props or children.
-   *
-   * @param type the constructor function for the native React component.
-   * @return a new ReactElement.
-   */
-  @JsOverlay
-  public static ReactNode createElement( @Nonnull final ComponentConstructorFunction type )
-  {
-    return createElement( type, null );
-  }
-
-  /**
-   * Create a ReactElement for the specified React component.
-   *
-   * @param type  the constructor function for the native React component.
-   * @param props the props to pass to the component.
-   * @return a new ReactElement.
-   */
-  @JsOverlay
-  @Nonnull
-  public static ReactElement createElement( @Nonnull final ComponentConstructorFunction type,
-                                            @Nullable final JsPropertyMap<Object> props )
-  {
-    return _createElement( type, props, null );
-  }
-
-  /**
-   * Create a ReactElement for the specified React component.
-   *
-   * @param type     the constructor function for the native React component.
-   * @param props    the props to pass to the component.
-   * @param children the children of the react component.
-   * @return a new ReactElement.
-   */
-  @JsOverlay
-  @Nonnull
-  public static ReactElement createElement( @Nonnull final ComponentConstructorFunction type,
-                                            @Nullable final JsPropertyMap<Object> props,
-                                            @Nullable final JsArray<ReactNode> children )
-  {
-    return _createElement( type, props, Js.cast( children ) );
-  }
-
-  /**
-   * Create a ReactElement for the specified React component.
-   *
-   * @param type     the constructor function for the native React component.
-   * @param props    the props to pass to the component.
-   * @param children the children of the react component.
-   * @return a new ReactElement.
-   */
-  @JsOverlay
-  @Nonnull
-  public static ReactNode createElement( @Nonnull final ComponentConstructorFunction type,
-                                         @Nullable final JsPropertyMap<Object> props,
-                                         @Nonnull final ReactNode... children )
-  {
-    return _createElement( type, props, children );
-  }
-
-  /**
    * Create and return a new ReactElement of the given type with specified children.
    *
    * @param type  A HTML tag name (eg. 'div', 'span', etc)
@@ -249,7 +188,7 @@ public final class React
   @JsOverlay
   public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
   {
-    return createElement( StrictMode, null, children );
+    return _createElement( StrictMode, null, children );
   }
 
   /**
@@ -261,7 +200,7 @@ public final class React
   @JsOverlay
   public static ReactNode createFragment( @Nonnull final ReactNode... children )
   {
-    return createElement( Fragment, null, children );
+    return _createElement( Fragment, null, children );
   }
 
   /**
@@ -269,7 +208,6 @@ public final class React
    *
    * @param children the child nodes.
    * @return a new React.Fragment object.
-   * @see #createElement(ComponentConstructorFunction, JsPropertyMap, ReactNode...)
    */
   @JsOverlay
   public static ReactNode createFragment( @Nonnull final List<? extends ReactNode> children )
@@ -282,7 +220,6 @@ public final class React
    *
    * @param children the child nodes.
    * @return a new React.Fragment object.
-   * @see #createElement(ComponentConstructorFunction, JsPropertyMap, ReactNode...)
    */
   @JsOverlay
   public static ReactNode createFragment( @Nonnull final Stream<? extends ReactNode> children )
@@ -381,19 +318,6 @@ public final class React
       {
         actual.set( PropNames.CHILDREN_PROP_NAME, children );
       }
-    }
-    // Resolve default props
-    // In future if components are responsible for creating elements directly then this code can be removed
-    final JsPropertyMap<Object> t = Js.asPropertyMap( type );
-    final JsPropertyMap<Object> defaultProps = Js.asPropertyMap( t.get( "defaultProps" ) );
-    if ( null != defaultProps )
-    {
-      defaultProps.forEach( defaultKey -> {
-        if ( Js.isTripleEqual( actual.get( defaultKey ), Js.undefined() ) )
-        {
-          actual.set( defaultKey, defaultProps.get( defaultKey ) );
-        }
-      } );
     }
     return ReactElement.create( type, key, ref, actual );
   }

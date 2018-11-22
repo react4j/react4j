@@ -118,11 +118,6 @@ final class StepMethod
     return getName().equals( "key" );
   }
 
-  boolean isChildOfChildrenIntrinsic()
-  {
-    return getName().equals( "child" ) && getKey().equals( "*children_child*" );
-  }
-
   boolean isChildIntrinsic()
   {
     return getName().equals( "child" ) && getKey().equals( "child" );

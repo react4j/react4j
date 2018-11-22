@@ -20,9 +20,6 @@ class React4j_PackageAccessMethodPropDefault extends PackageAccessMethodPropDefa
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PackageAccessMethodPropDefault" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myProp, PackageAccessMethodPropDefault.getMyPropDefault() );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 

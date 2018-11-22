@@ -5,11 +5,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
-import react4j.Key;
-import react4j.React;
+import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
@@ -18,17 +14,12 @@ class RequiredChildrenWithManyOptionalBuilder {
   }
 
   @Nonnull
-  static Builder2 key(@Nonnull final Key key) {
+  static Builder2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
   @Nonnull
   static Builder2 key(final int key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Builder2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
@@ -58,24 +49,16 @@ class RequiredChildrenWithManyOptionalBuilder {
   }
 
   @Nonnull
-  static Builder3 child(@Nullable final ReactNode child) {
-    return new Builder().child( child );
-  }
-
-  @Nonnull
   static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
     return new Builder().children( children );
   }
 
   public interface Builder1 {
     @Nonnull
-    Builder2 key(@Nonnull Key key);
+    Builder2 key(@Nonnull String key);
 
     @Nonnull
     Builder2 key(@Nonnull int key);
-
-    @Nonnull
-    Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
@@ -95,18 +78,12 @@ class RequiredChildrenWithManyOptionalBuilder {
     ReactNode children(ReactNode... children);
 
     @Nonnull
-    Builder3 child(@Nullable ReactNode child);
-
-    @Nonnull
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
   }
 
   public interface Builder3 {
     @Nonnull
     ReactNode children(ReactNode... children);
-
-    @Nonnull
-    Builder3 child(@Nullable ReactNode child);
 
     @Nonnull
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
@@ -116,74 +93,62 @@ class RequiredChildrenWithManyOptionalBuilder {
   }
 
   private static class Builder implements Builder1, Builder2, Builder3 {
-    private final JsPropertyMap<Object> _props = JsPropertyMap.of();
+    private final ReactElement _element;
 
-    private final JsArray<ReactNode> _children = new JsArray<>();
+    Builder() {
+      _element = ReactElement.createComponentElement( React4j_RequiredChildrenWithManyOptional.Factory.TYPE );
+      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropA, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_A );
+      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropB, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_B );
+      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropC, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_C );
+      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropD, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_D );
+    }
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final Key key) {
-      Objects.requireNonNull( key );
-      _props.set( "key", key );
+    public final Builder2 key(@Nonnull final String key) {
+      _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder2 key(@Nonnull final int key) {
-      return key( Key.of( key ) );
-    }
-
-    @Override
-    @Nonnull
-    public final Builder2 key(@Nonnull final String key) {
-      return key( Key.of( key ) );
+      return key( String.valueOf( key ) );
     }
 
     @Override
     @Nonnull
     public final Builder2 myPropA(final String myPropA) {
-      _props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropA, myPropA );
+      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropA, myPropA );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder2 myPropB(final String myPropB) {
-      _props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropB, myPropB );
+      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropB, myPropB );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder2 myPropC(final String myPropC) {
-      _props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropC, myPropC );
+      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropC, myPropC );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder2 myPropD(final String myPropD) {
-      _props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropD, myPropD );
+      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropD, myPropD );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode... children) {
-      for ( final ReactNode child : children ) {
-        child( child );
-      }
+      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.children, JsArray.of( children ) );
       return build();
-    }
-
-    @Override
-    @Nonnull
-    public final Builder3 child(@Nullable final ReactNode child) {
-      if ( null != child ) {
-        _children.push( child );
-      }
-      return this;
     }
 
     @Override
@@ -195,7 +160,7 @@ class RequiredChildrenWithManyOptionalBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_RequiredChildrenWithManyOptional.Factory.TYPE, Js.uncheckedCast( _props ), _children );
+      return _element;
     }
   }
 }

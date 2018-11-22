@@ -20,9 +20,6 @@ class React4j_PublicMethodPropDefault extends PublicMethodPropDefault {
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PublicMethodPropDefault" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myProp, PublicMethodPropDefault.getMyPropDefault() );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 

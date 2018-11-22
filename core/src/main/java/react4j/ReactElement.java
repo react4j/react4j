@@ -51,7 +51,17 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
-  static ReactElement create( @Nonnull final Object type )
+  public static ReactElement createComponentElement( @Nonnull final ComponentConstructorFunction type )
+  {
+    final ReactElement element = create( type );
+    element.props = JsPropertyMap.of();
+    element.ref = null;
+    return element;
+  }
+
+  @JsOverlay
+  @Nonnull
+  private static ReactElement create( @Nonnull final Object type )
   {
     final ReactElement element = new ReactElement();
     element.typeof = React.Element;
@@ -62,10 +72,10 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
-  static ReactElement create( @Nonnull final Object type,
-                              @Nullable final String key,
-                              @Nullable final Object ref,
-                              @Nonnull final JsPropertyMap<Object> props )
+  public static ReactElement create( @Nonnull final Object type,
+                                     @Nullable final String key,
+                                     @Nullable final Object ref,
+                                     @Nonnull final JsPropertyMap<Object> props )
   {
     final ReactElement element = create( type );
     element.key = key;
@@ -84,7 +94,7 @@ public class ReactElement
   }
 
   @JsOverlay
-  protected final void setKey( @Nullable final String key )
+  public final void setKey( @Nullable final String key )
   {
     this.key = key;
   }

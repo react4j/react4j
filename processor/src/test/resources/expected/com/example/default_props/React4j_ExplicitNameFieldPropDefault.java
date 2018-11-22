@@ -20,9 +20,6 @@ class React4j_ExplicitNameFieldPropDefault extends ExplicitNameFieldPropDefault 
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ExplicitNameFieldPropDefault" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myProp, ExplicitNameFieldPropDefault.MY_PROP );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 

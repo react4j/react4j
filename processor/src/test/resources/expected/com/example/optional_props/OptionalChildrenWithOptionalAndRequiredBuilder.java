@@ -5,11 +5,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
-import react4j.Key;
-import react4j.React;
+import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
@@ -18,17 +14,12 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
   }
 
   @Nonnull
-  static Builder2 key(@Nonnull final Key key) {
+  static Builder2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
   @Nonnull
   static Builder2 key(final int key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Builder2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
@@ -39,13 +30,10 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
 
   public interface Builder1 {
     @Nonnull
-    Builder2 key(@Nonnull Key key);
+    Builder2 key(@Nonnull String key);
 
     @Nonnull
     Builder2 key(@Nonnull int key);
-
-    @Nonnull
-    Builder2 key(@Nonnull String key);
   }
 
   public interface Builder2 {
@@ -58,9 +46,6 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
     Builder3 myProp(String myProp);
 
     @Nonnull
-    Builder3 child(@Nullable ReactNode child);
-
-    @Nonnull
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
@@ -71,50 +56,37 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
   }
 
   private static class Builder implements Builder1, Builder2, Builder3 {
-    private final JsPropertyMap<Object> _props = JsPropertyMap.of();
+    private final ReactElement _element;
 
-    private final JsArray<ReactNode> _children = new JsArray<>();
+    Builder() {
+      _element = ReactElement.createComponentElement( React4j_OptionalChildrenWithOptionalAndRequired.Factory.TYPE );
+      _element.props().set( React4j_OptionalChildrenWithOptionalAndRequired.Props.myProp, OptionalChildrenWithOptionalAndRequired.DEFAULT_MY_PROP );
+    }
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final Key key) {
-      Objects.requireNonNull( key );
-      _props.set( "key", key );
+    public final Builder2 key(@Nonnull final String key) {
+      _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder2 key(@Nonnull final int key) {
-      return key( Key.of( key ) );
-    }
-
-    @Override
-    @Nonnull
-    public final Builder2 key(@Nonnull final String key) {
-      return key( Key.of( key ) );
+      return key( String.valueOf( key ) );
     }
 
     @Override
     @Nonnull
     public final Builder3 myRequiredProp(final String myRequiredProp) {
-      _props.set( React4j_OptionalChildrenWithOptionalAndRequired.Props.myRequiredProp, myRequiredProp );
+      _element.props().set( React4j_OptionalChildrenWithOptionalAndRequired.Props.myRequiredProp, myRequiredProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder3 myProp(final String myProp) {
-      _props.set( React4j_OptionalChildrenWithOptionalAndRequired.Props.myProp, myProp );
-      return this;
-    }
-
-    @Override
-    @Nonnull
-    public final Builder3 child(@Nullable final ReactNode child) {
-      if ( null != child ) {
-        _children.push( child );
-      }
+      _element.props().set( React4j_OptionalChildrenWithOptionalAndRequired.Props.myProp, myProp );
       return this;
     }
 
@@ -128,15 +100,13 @@ class OptionalChildrenWithOptionalAndRequiredBuilder {
     @Override
     @Nonnull
     public final Builder3 children(final ReactNode... children) {
-      for ( final ReactNode child : children ) {
-        child( child );
-      }
+      _element.props().set( React4j_OptionalChildrenWithOptionalAndRequired.Props.children, JsArray.of( children ) );
       return this;
     }
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_OptionalChildrenWithOptionalAndRequired.Factory.TYPE, Js.uncheckedCast( _props ), _children );
+      return _element;
     }
   }
 }

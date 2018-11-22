@@ -22,6 +22,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -66,13 +67,12 @@ final class Generator
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j", "ComponentConstructorFunction" );
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
+  private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
   private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
   private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
     ClassName.get( "react4j", "NativeAdapterComponent" );
-  private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
-  private static final ClassName KEY_CLASSNAME = ClassName.get( "react4j", "Key" );
 
   private Generator()
   {
@@ -161,10 +161,6 @@ final class Generator
       else if ( stepMethod.isKeyIntrinsic() && !stepMethod.getKey().equals( "*key_int*" ) )
       {
         parameter.addAnnotation( NONNULL_CLASSNAME );
-      }
-      else if ( stepMethod.isChildOfChildrenIntrinsic() )
-      {
-        parameter.addAnnotation( NULLABLE_CLASSNAME );
       }
       method.addParameter( parameter.build() );
       final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
@@ -265,10 +261,6 @@ final class Generator
           {
             parameter.addAnnotation( NONNULL_CLASSNAME );
           }
-          else if ( stepMethod.isChildOfChildrenIntrinsic() )
-          {
-            parameter.addAnnotation( NULLABLE_CLASSNAME );
-          }
           m.addParameter( parameter.build() );
         } ).build() );
       }
@@ -303,10 +295,6 @@ final class Generator
     {
       parameter.addAnnotation( NONNULL_CLASSNAME );
     }
-    else if ( stepMethod.isChildOfChildrenIntrinsic() )
-    {
-      parameter.addAnnotation( NULLABLE_CLASSNAME );
-    }
     method.addParameter( parameter.build() );
 
     boolean returnHandled = false;
@@ -314,19 +302,13 @@ final class Generator
     if ( stepMethod.isChildrenIntrinsic() )
     {
       method.varargs();
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "for ( final $T child : $N )", REACT_NODE_CLASSNAME, stepMethod.getName() );
-      block.addStatement( "child( child )" );
-      block.endControlFlow();
-      method.addCode( block.build() );
-    }
-    else if ( stepMethod.isChildOfChildrenIntrinsic() )
-    {
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( null != $N )", stepMethod.getName() );
-      block.addStatement( "_children.push( $N )", stepMethod.getName() );
-      block.endControlFlow();
-      method.addCode( block.build() );
+      final PropDescriptor prop = stepMethod.getProp();
+      assert null != prop;
+      method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $N ) )",
+                           descriptor.getEnhancedClassName(),
+                           prop.getConstantName(),
+                           JS_ARRAY_CLASSNAME,
+                           stepMethod.getName() );
     }
     else if ( stepMethod.isChildrenStreamIntrinsic() )
     {
@@ -335,40 +317,69 @@ final class Generator
     else if ( stepMethod.isChildIntrinsic() )
     {
       assert null != propMethod;
-      if ( null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
-      {
-        method.addStatement( "_child = $T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
-      }
-      else
-      {
-        method.addStatement( "_child = $N", stepMethod.getName() );
-      }
-    }
-    else if ( stepMethod.getKey().equals( "*key_int*" ) || stepMethod.getKey().equals( "*key_string*" ) )
-    {
-      returnHandled = true;
-      method.addStatement( "return key( $T.of( $N ) )", KEY_CLASSNAME, stepMethod.getName() );
-    }
-    else
-    {
-      if ( ( stepMethod.isKeyIntrinsic() ||
-             ( null != propMethod &&
-               null != ProcessorUtil.findAnnotationByType( propMethod, Constants.NONNULL_ANNOTATION_CLASSNAME ) ) ) &&
-           !stepMethod.getType().isPrimitive() )
-      {
-        method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
-      }
       final PropDescriptor prop = stepMethod.getProp();
-      if ( null != prop )
+      assert null != prop;
+      if ( null != isNonnull( propMethod ) )
       {
-        method.addStatement( "_props.set( $T.Props.$N, $N )",
+        method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $T.requireNonNull( $N ) ) )",
                              descriptor.getEnhancedClassName(),
                              prop.getConstantName(),
+                             JS_ARRAY_CLASSNAME,
+                             Objects.class,
                              stepMethod.getName() );
       }
       else
       {
-        method.addStatement( "_props.set( $S, $N )", stepMethod.getName(), stepMethod.getName() );
+        method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $N ) )",
+                             descriptor.getEnhancedClassName(),
+                             prop.getConstantName(),
+                             JS_ARRAY_CLASSNAME,
+                             stepMethod.getName() );
+      }
+    }
+    else if ( stepMethod.getKey().equals( "*key_int*" ) )
+    {
+      returnHandled = true;
+      // TODO: Handle this by prop enhancer ?
+      method.addStatement( "return key( $T.valueOf( $N ) )", TypeName.get( String.class ), stepMethod.getName() );
+    }
+    else
+    {
+      if ( stepMethod.isKeyIntrinsic() )
+      {
+        method.addStatement( "_element.setKey( $T.requireNonNull( $N ) )",
+                             TypeName.get( Objects.class ),
+                             stepMethod.getName() );
+      }
+      else
+      {
+        if ( ( null != propMethod && null != isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
+        {
+          method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
+        }
+        final PropDescriptor prop = stepMethod.getProp();
+        if ( null != prop )
+        {
+          if ( prop.isSpecialChildrenProp() )
+          {
+            method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $N ) )",
+                                 descriptor.getEnhancedClassName(),
+                                 prop.getConstantName(),
+                                 JS_ARRAY_CLASSNAME,
+                                 stepMethod.getName() );
+          }
+          else
+          {
+            method.addStatement( "_element.props().set( $T.Props.$N, $N )",
+                                 descriptor.getEnhancedClassName(),
+                                 prop.getConstantName(),
+                                 stepMethod.getName() );
+          }
+        }
+        else
+        {
+          method.addStatement( "_element.props().set( $S, $N )", stepMethod.getName(), stepMethod.getName() );
+        }
       }
     }
 
@@ -388,35 +399,20 @@ final class Generator
     return method.build();
   }
 
-  @Nonnull
-  private static MethodSpec buildBuildStepImpl( @Nonnull final ComponentDescriptor descriptor )
+  private static AnnotationMirror isNonnull( @Nonnull final ExecutableElement method )
   {
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( "build" );
-    method.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
-    method.addAnnotation( NONNULL_CLASSNAME );
-    if ( null != descriptor.findPropNamed( "children" ) )
-    {
-      method.addStatement( "return $T.createElement( $T.Factory.TYPE, $T.uncheckedCast( _props ), _children )",
-                           REACT_CLASSNAME,
-                           descriptor.getEnhancedClassName(),
-                           JS_CLASSNAME );
-    }
-    else if ( null != descriptor.findPropNamed( "child" ) )
-    {
-      method.addStatement( "return $T.createElement( $T.Factory.TYPE, $T.uncheckedCast( _props ), _child )",
-                           REACT_CLASSNAME,
-                           descriptor.getEnhancedClassName(),
-                           JS_CLASSNAME );
-    }
-    else
-    {
-      method.addStatement( "return $T.createElement( $T.Factory.TYPE, $T.uncheckedCast( _props ) )",
-                           REACT_CLASSNAME,
-                           descriptor.getEnhancedClassName(),
-                           JS_CLASSNAME );
-    }
-    method.returns( REACT_NODE_CLASSNAME );
-    return method.build();
+    return ProcessorUtil.findAnnotationByType( method, Constants.NONNULL_ANNOTATION_CLASSNAME );
+  }
+
+  @Nonnull
+  private static MethodSpec buildBuildStepImpl()
+  {
+    return MethodSpec.methodBuilder( "build" )
+      .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
+      .addAnnotation( NONNULL_CLASSNAME )
+      .addStatement( "return _element" )
+      .returns( REACT_NODE_CLASSNAME )
+      .build();
   }
 
   @Nonnull
@@ -432,12 +428,31 @@ final class Generator
       builder.addSuperinterface( getParameterizedTypeName( descriptor, ClassName.bestGuess( "Builder" + ( i + 1 ) ) ) );
     }
 
+    final List<PropDescriptor> propsWithDefaults = descriptor.getProps()
+      .stream()
+      .filter( p -> p.hasDefaultField() || p.hasDefaultMethod() )
+      .collect( Collectors.toList() );
+    if ( !propsWithDefaults.isEmpty() )
     {
-      final ParameterizedTypeName type =
-        ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.get( Object.class ) );
-      final FieldSpec.Builder field = FieldSpec.builder( type, "_props", Modifier.PRIVATE, Modifier.FINAL );
-      field.initializer( "$T.of()", JS_PROPERTY_MAP_CLASSNAME );
-      builder.addField( field.build() );
+      final MethodSpec.Builder method = MethodSpec.constructorBuilder();
+      //TODO: Should we enforce the non-presence of _element field so we guarantee the wrapper class is eliminated?
+      method.addStatement( "_element = $T.createComponentElement( $T.Factory.TYPE )",
+                           REACT_ELEMENT_CLASSNAME,
+                           descriptor.getEnhancedClassName() );
+      for ( final PropDescriptor prop : propsWithDefaults )
+      {
+
+        method.addStatement( "_element.props().set( $T.Props.$N, $T.$N" +
+                             ( prop.hasDefaultField() ? "" : "()" ) + " )",
+                             descriptor.getEnhancedClassName(),
+                             prop.getConstantName(),
+                             descriptor.getClassName(),
+                             prop.hasDefaultField() ?
+                             prop.getDefaultField().getSimpleName() :
+                             prop.getDefaultMethod().getSimpleName() );
+      }
+
+      builder.addMethod( method.build() );
     }
 
     final HashSet<String> stepMethodsAdded = new HashSet<>();
@@ -450,25 +465,22 @@ final class Generator
           if ( !stepMethod.isBuildIntrinsic() )
           {
             builder.addMethod( buildBuilderStepImpl( descriptor, step, stepMethod ) );
-            if ( stepMethod.isChildrenIntrinsic() )
-            {
-              final ParameterizedTypeName type =
-                ParameterizedTypeName.get( JS_ARRAY_CLASSNAME, REACT_NODE_CLASSNAME );
-              final FieldSpec.Builder field = FieldSpec.builder( type, "_children", Modifier.PRIVATE, Modifier.FINAL );
-              field.initializer( "new $T<>()", JS_ARRAY_CLASSNAME );
-              builder.addField( field.build() );
-            }
-            else if ( stepMethod.isChildIntrinsic() )
-            {
-              final FieldSpec.Builder field =
-                FieldSpec.builder( REACT_NODE_CLASSNAME, "_child", Modifier.PRIVATE );
-              builder.addField( field.build() );
-            }
           }
         }
       }
     }
-    builder.addMethod( buildBuildStepImpl( descriptor ) );
+
+    final FieldSpec.Builder field =
+      FieldSpec.builder( REACT_ELEMENT_CLASSNAME, "_element", Modifier.PRIVATE, Modifier.FINAL );
+    if ( propsWithDefaults.isEmpty() )
+    {
+      field.initializer( "$T.createComponentElement( $T.Factory.TYPE )",
+                         REACT_ELEMENT_CLASSNAME,
+                         descriptor.getEnhancedClassName() );
+    }
+    builder.addField( field.build() );
+
+    builder.addMethod( buildBuildStepImpl() );
 
     return builder.build();
   }
@@ -790,7 +802,7 @@ final class Generator
     final String convertMethodName = getConverter( returnType, methodElement );
     final TypeKind resultKind = methodElement.getReturnType().getKind();
     if ( !resultKind.isPrimitive() &&
-         null == ProcessorUtil.findAnnotationByType( methodElement, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+         null == isNonnull( methodElement ) )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
@@ -930,7 +942,7 @@ final class Generator
           final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
           if ( !resultKind.isPrimitive() &&
                null ==
-               ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+               isNonnull( prop.getMethod() ) )
           {
             onChangeBlock.addStatement( "$N( $T.uncheckedCast( props.getAny( Props.$N ) ) )",
                                         onPropChangedMethod.getSimpleName().toString(),
@@ -982,8 +994,7 @@ final class Generator
       final String rawName = "raw$" + name;
       final String typedName = "typed$" + name;
       method.addStatement( "final $T $N = props.get( Props.$N )", Object.class, rawName, prop.getConstantName() );
-      final boolean isNonNull =
-        null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME );
+      final boolean isNonNull = null != isNonnull( prop.getMethod() );
       if ( !prop.isOptional() && isNonNull )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
@@ -1132,31 +1143,6 @@ final class Generator
 
     method.addCode( codeBlock.build() );
 
-    final List<PropDescriptor> propsWithDefaults = descriptor.getProps()
-      .stream()
-      .filter( p -> p.hasDefaultField() || p.hasDefaultMethod() )
-      .collect( Collectors.toList() );
-    if ( !propsWithDefaults.isEmpty() )
-    {
-      method.addStatement( "final $T<$T> defaultProps = $T.of()",
-                           JS_PROPERTY_MAP_CLASSNAME,
-                           Object.class,
-                           JS_PROPERTY_MAP_CLASSNAME );
-      for ( final PropDescriptor prop : propsWithDefaults )
-      {
-
-        method.addStatement( "defaultProps.set( Props.$N, $T.$N" + ( prop.hasDefaultField() ? "" : "()" ) + " )",
-                             prop.getConstantName(),
-                             descriptor.getClassName(),
-                             prop.hasDefaultField() ?
-                             prop.getDefaultField().getSimpleName() :
-                             prop.getDefaultMethod().getSimpleName()
-        );
-      }
-
-      method.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"defaultProps\", defaultProps )",
-                           JS_CLASSNAME );
-    }
     method.addStatement( "return componentConstructor" );
     return method;
   }
@@ -1530,9 +1516,8 @@ final class Generator
     // Key step
     final Step keyStep = builder.addStep();
     final StepMethodType keyStepMethodType = 0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE;
-    keyStep.addMethod( "key", "key", KEY_CLASSNAME, keyStepMethodType );
+    keyStep.addMethod( "key", "key", TypeName.get( String.class ), keyStepMethodType );
     keyStep.addMethod( "key", "*key_int*", TypeName.INT, keyStepMethodType );
-    keyStep.addMethod( "key", "*key_string*", TypeName.get( String.class ), keyStepMethodType );
 
     final boolean hasSingleOptional = props.stream().filter( PropDescriptor::isOptional ).count() == 1;
     boolean hasRequiredAfterOptional = false;
@@ -1548,7 +1533,6 @@ final class Generator
         }
         if ( prop.getName().equals( "children" ) )
         {
-          addChildPropStepMethod( optionalPropStep, StepMethodType.STAY );
           addChildrenStreamPropStepMethod( optionalPropStep );
         }
         addPropStepMethod( optionalPropStep, prop, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY );
@@ -1562,7 +1546,6 @@ final class Generator
           // This is when children are built up using child steps
           if ( prop.getName().equals( "children" ) )
           {
-            addChildPropStepMethod( optionalPropStep, StepMethodType.ADVANCE );
             addChildrenStreamPropStepMethod( optionalPropStep );
           }
           hasRequiredAfterOptional = true;
@@ -1572,7 +1555,6 @@ final class Generator
         addPropStepMethod( step, prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
         if ( prop.getName().equals( "children" ) )
         {
-          addChildPropStepMethod( step, StepMethodType.STAY );
           addChildrenStreamPropStepMethod( step );
           addBuildStep( step );
         }
@@ -1599,23 +1581,14 @@ final class Generator
   }
 
   /**
-   * The assumption is that a chain of "child(...)" methods will write to the array that will eventually generate children array.
-   */
-  private static void addChildPropStepMethod( @Nonnull final Step step, @Nonnull final StepMethodType stepMethodType )
-  {
-    step.addMethod( "child",
-                    "*children_child*",
-                    REACT_NODE_CLASSNAME,
-                    stepMethodType );
-  }
-
-  /**
    * A helper intrinsic that converts children streams.
    */
   private static void addChildrenStreamPropStepMethod( @Nonnull final Step step )
   {
     final ParameterizedTypeName typeName =
       ParameterizedTypeName.get( ClassName.get( Stream.class ), WildcardTypeName.subtypeOf( REACT_NODE_CLASSNAME ) );
+
+    //TODO: Replace this with prop enhancer
     step.addMethod( "children",
                     "*children_stream*",
                     typeName,

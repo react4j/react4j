@@ -20,9 +20,6 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PropDefaultWithColorfulName" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myProp12$23, PropDefaultWithColorfulName.DEFAULT_MY_PROP12$23 );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 

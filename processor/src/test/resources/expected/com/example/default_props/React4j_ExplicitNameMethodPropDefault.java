@@ -20,9 +20,6 @@ class React4j_ExplicitNameMethodPropDefault extends ExplicitNameMethodPropDefaul
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ExplicitNameMethodPropDefault" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myProp, ExplicitNameMethodPropDefault.zoooooooooooooom() );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 

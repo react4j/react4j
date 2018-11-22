@@ -21,12 +21,6 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "RequiredChildrenWithManyOptional" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myPropA, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_A );
-    defaultProps.set( Props.myPropB, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_B );
-    defaultProps.set( Props.myPropC, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_C );
-    defaultProps.set( Props.myPropD, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_D );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 

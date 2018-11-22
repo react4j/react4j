@@ -4,10 +4,7 @@ import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
-import react4j.Key;
-import react4j.React;
+import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
@@ -16,17 +13,12 @@ class GenericTypeMultiPropComponentBuilder {
   }
 
   @Nonnull
-  static <T> Builder2<T> key(@Nonnull final Key key) {
+  static <T> Builder2<T> key(@Nonnull final String key) {
     return new Builder<T>().key( key );
   }
 
   @Nonnull
   static <T> Builder2<T> key(final int key) {
-    return new Builder<T>().key( key );
-  }
-
-  @Nonnull
-  static <T> Builder2<T> key(@Nonnull final String key) {
     return new Builder<T>().key( key );
   }
 
@@ -38,13 +30,10 @@ class GenericTypeMultiPropComponentBuilder {
   @SuppressWarnings("unused")
   public interface Builder1<T> {
     @Nonnull
-    Builder2<T> key(@Nonnull Key key);
+    Builder2<T> key(@Nonnull String key);
 
     @Nonnull
     Builder2<T> key(@Nonnull int key);
-
-    @Nonnull
-    Builder2<T> key(@Nonnull String key);
   }
 
   @SuppressWarnings("unused")
@@ -72,59 +61,52 @@ class GenericTypeMultiPropComponentBuilder {
   }
 
   private static class Builder<T> implements Builder1<T>, Builder2<T>, Builder3<T>, Builder4<T> {
-    private final JsPropertyMap<Object> _props = JsPropertyMap.of();
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_GenericTypeMultiPropComponent.Factory.TYPE );
 
     @Override
     @Nonnull
-    public final Builder2<T> key(@Nonnull final Key key) {
-      Objects.requireNonNull( key );
-      _props.set( "key", key );
+    public final Builder2<T> key(@Nonnull final String key) {
+      _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder2<T> key(@Nonnull final int key) {
-      return key( Key.of( key ) );
-    }
-
-    @Override
-    @Nonnull
-    public final Builder2<T> key(@Nonnull final String key) {
-      return key( Key.of( key ) );
+      return key( String.valueOf( key ) );
     }
 
     @Override
     @Nonnull
     public final Builder3<T> value(final T value) {
-      _props.set( React4j_GenericTypeMultiPropComponent.Props.value, value );
+      _element.props().set( React4j_GenericTypeMultiPropComponent.Props.value, value );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder4<T> value2(final String value2) {
-      _props.set( React4j_GenericTypeMultiPropComponent.Props.value2, value2 );
+      _element.props().set( React4j_GenericTypeMultiPropComponent.Props.value2, value2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder4<T> value3(@Nullable final String value3) {
-      _props.set( React4j_GenericTypeMultiPropComponent.Props.value3, value3 );
+      _element.props().set( React4j_GenericTypeMultiPropComponent.Props.value3, value3 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Builder4<T> value4(@Nullable final String value4) {
-      _props.set( React4j_GenericTypeMultiPropComponent.Props.value4, value4 );
+      _element.props().set( React4j_GenericTypeMultiPropComponent.Props.value4, value4 );
       return this;
     }
 
     @Nonnull
     public final ReactNode build() {
-      return React.createElement( React4j_GenericTypeMultiPropComponent.Factory.TYPE, Js.uncheckedCast( _props ) );
+      return _element;
     }
   }
 }

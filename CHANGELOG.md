@@ -2,6 +2,20 @@
 
 ### Unreleased
 
+* **\[processor\]** The generated builder previously supported a `child(ReactNode)` method on components that
+  supported multiple children. The `child(ReactNode)` supported accumulation of children over multiple
+  invocations. This feature was not used in any downstream project and made certain optimizations difficult.
+  This method is no longer generated.
+* **\[core\]** Remove `react4j.Key` as the values is always converted to a string so convert at API layer.
+* **\[processor\]** Refactor the annotation processor to directly create `ReactElement` instances. This
+  reduces some memory overhead by:
+  - eliminating the need to handle `key` as a prop for components.
+  - eliminating the duplication of the props object.
+  - inlining the setting of default props into component builder. This eliminated the need to set the static
+    property `defaultProps` onto the component constructor function.
+* **\[core\]** Remove the `React.createElement(...)` methods used for creating component `ReactElement`
+  instances as they are no longer used anymore.
+
 ### [v0.107](https://github.com/react4j/react4j/tree/v0.107) (2018-11-19)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.106...v0.107)
 

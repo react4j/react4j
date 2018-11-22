@@ -2,14 +2,8 @@
 
 ### Next Release
 
-* Remove `Key` as it no longer seems to be of value. Just convert numbers to strings when setting key.
-
-* Change builders so the object contained within builder is a `ReactElement`, thus eliminating the need to invoke
-  `createElement()` altogether. If we do this we could create defaults inline and remove magic from `createElement`.
-  We could also eliminate code for special handling of `ref` and `key`. DOM elements would still call createElement
-  however we may be able to eliminate this over time as well. Update; The MyComponentBuilder.Builder class should
-  actually extend `ReactElement` and all the build methods would be `@JsOverlay` methods. Actually this would only
-  work when the framework is j2cl only as this stops the methods being renamed or inlined in GWT.
+* Host `ReactElement` instances should be created within the `dom` library and we could create the instances
+  directly rather than copying props and adding special handling for `ref`, `key` and `children`.
 
 * Figure out a way to get the *Builders eliminated. Will the above do?
 

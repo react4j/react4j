@@ -20,9 +20,6 @@ class React4j_ProtectedMethodPropDefault extends ProtectedMethodPropDefault {
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedMethodPropDefault" );
     }
-    final JsPropertyMap<Object> defaultProps = JsPropertyMap.of();
-    defaultProps.set( Props.myProp, ProtectedMethodPropDefault.getMyPropDefault() );
-    Js.asPropertyMap( componentConstructor ).set( "defaultProps", defaultProps );
     return componentConstructor;
   }
 
