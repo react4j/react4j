@@ -116,6 +116,8 @@ define 'react4j' do
                  :javax_annotation
 
     test.with :compile_testing,
+              :junit,
+              :hamcrest_core,
               Java.tools_jar,
               :truth,
               project('arez').package(:jar),
