@@ -77,7 +77,7 @@ class React4j_PropTypeDouble extends PropTypeDouble {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

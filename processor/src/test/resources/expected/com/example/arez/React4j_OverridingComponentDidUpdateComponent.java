@@ -71,7 +71,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override
@@ -98,7 +98,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override

@@ -81,7 +81,7 @@ class React4j_ExplicitNameFieldPropDefault extends ExplicitNameFieldPropDefault 
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

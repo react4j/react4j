@@ -102,7 +102,7 @@ class React4j_ShortPropValidate extends ShortPropValidate {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override

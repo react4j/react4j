@@ -133,7 +133,7 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override

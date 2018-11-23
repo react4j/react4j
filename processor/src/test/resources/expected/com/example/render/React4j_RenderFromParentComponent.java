@@ -71,7 +71,7 @@ class React4j_RenderFromParentComponent extends RenderFromParentComponent {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

@@ -269,6 +269,11 @@ final class ComponentDescriptor
       ) ||
       (
         Constants.COMPONENT_CLASSNAME.equals( classname ) &&
+        Constants.COMPONENT_PRE_UPDATE.equals( methodName ) &&
+        !generateComponentPreUpdate()
+      ) ||
+      (
+        Constants.COMPONENT_CLASSNAME.equals( classname ) &&
         Constants.COMPONENT_DID_UPDATE.equals( methodName ) &&
         !generateComponentDidUpdate()
       );
@@ -334,9 +339,14 @@ final class ComponentDescriptor
     return hasObservableProps() || hasValidatedProps();
   }
 
-  boolean generateComponentDidUpdate()
+  boolean generateComponentPreUpdate()
   {
-    return hasObservableProps() || hasOnPropChangedProps();
+    return hasObservableProps();
+  }
+
+  private boolean generateComponentDidUpdate()
+  {
+    return hasOnPropChangedProps();
   }
 
   boolean hasOnPropChangedProps()

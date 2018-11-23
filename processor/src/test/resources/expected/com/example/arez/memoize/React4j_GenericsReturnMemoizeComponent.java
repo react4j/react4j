@@ -102,7 +102,7 @@ abstract class React4j_GenericsReturnMemoizeComponent extends GenericsReturnMemo
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override

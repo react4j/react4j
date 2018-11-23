@@ -840,7 +840,7 @@ public final class ReactProcessor
     {
       final String methodName = method.getSimpleName().toString();
       return ( descriptor.generateShouldComponentUpdate() && Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) ) ||
-             ( descriptor.generateComponentDidUpdate() && Constants.COMPONENT_DID_UPDATE.equals( methodName ) ) ||
+             ( descriptor.generateComponentPreUpdate() && Constants.COMPONENT_PRE_UPDATE.equals( methodName ) ) ||
              ( descriptor.isArezComponent() && Constants.COMPONENT_WILL_UNMOUNT.equals( methodName ) ) ||
              // Always include next two as will emit debug information as
              // state, they will be optimized out in Lite lifecycle

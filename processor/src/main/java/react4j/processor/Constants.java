@@ -24,16 +24,18 @@ final class Constants
   static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
   static final String DEPRECATED_ANNOTATION_CLASSNAME = "java.lang.Deprecated";
   static final String COMPONENT_DID_MOUNT = "componentDidMount";
-  static final String COMPONENT_DID_UPDATE = "componentDidUpdate";
   static final String SHOULD_COMPONENT_UPDATE = "shouldComponentUpdate";
+  static final String COMPONENT_DID_UPDATE = "componentDidUpdate";
+  static final String COMPONENT_PRE_UPDATE = "componentPreUpdate";
   static final String COMPONENT_WILL_UNMOUNT = "componentWillUnmount";
   static final String COMPONENT_DID_CATCH = "componentDidCatch";
   static final List<String> LIFECYCLE_METHODS =
     Arrays.asList( COMPONENT_DID_MOUNT,
+                   SHOULD_COMPONENT_UPDATE,
+                   COMPONENT_PRE_UPDATE,
                    COMPONENT_DID_UPDATE,
-                   COMPONENT_WILL_UNMOUNT,
                    COMPONENT_DID_CATCH,
-                   SHOULD_COMPONENT_UPDATE );
+                   COMPONENT_WILL_UNMOUNT );
 
   private Constants()
   {

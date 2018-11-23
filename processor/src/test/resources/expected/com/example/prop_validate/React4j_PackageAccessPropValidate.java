@@ -106,7 +106,7 @@ class React4j_PackageAccessPropValidate extends PackageAccessPropValidate {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override

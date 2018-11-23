@@ -98,7 +98,7 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override

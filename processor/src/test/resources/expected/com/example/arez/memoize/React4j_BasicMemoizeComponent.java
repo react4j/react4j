@@ -101,7 +101,7 @@ abstract class React4j_BasicMemoizeComponent extends BasicMemoizeComponent {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override

@@ -103,7 +103,7 @@ class React4j_ExplicitOptional extends ExplicitOptional {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

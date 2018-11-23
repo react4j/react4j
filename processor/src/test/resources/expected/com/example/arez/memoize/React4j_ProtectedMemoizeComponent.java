@@ -101,7 +101,7 @@ abstract class React4j_ProtectedMemoizeComponent extends ProtectedMemoizeCompone
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override

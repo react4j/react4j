@@ -103,7 +103,7 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

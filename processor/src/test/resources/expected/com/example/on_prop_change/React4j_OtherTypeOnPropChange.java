@@ -35,10 +35,10 @@ class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
 
   @Override
   protected boolean reportPropChanges(@Nonnull final JsPropertyMap<Object> props,
-      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentDidUpdate) {
+      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentPreUpdate) {
     boolean modified = false;
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
-      if ( inComponentDidUpdate ) {
+      if ( inComponentPreUpdate ) {
         onMyPropChange( Js.uncheckedCast( props.getAny( Props.myProp ) ) );
       }
       modified = true;
@@ -87,7 +87,7 @@ class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 
@@ -109,7 +109,7 @@ class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

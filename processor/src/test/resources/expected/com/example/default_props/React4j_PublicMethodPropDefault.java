@@ -81,7 +81,7 @@ class React4j_PublicMethodPropDefault extends PublicMethodPropDefault {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

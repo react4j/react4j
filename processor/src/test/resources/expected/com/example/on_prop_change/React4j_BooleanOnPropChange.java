@@ -30,10 +30,10 @@ class React4j_BooleanOnPropChange extends BooleanOnPropChange {
 
   @Override
   protected boolean reportPropChanges(@Nonnull final JsPropertyMap<Object> props,
-      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentDidUpdate) {
+      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentPreUpdate) {
     boolean modified = false;
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
-      if ( inComponentDidUpdate ) {
+      if ( inComponentPreUpdate ) {
         onMyPropChange( props.getAny( Props.myProp ).asBoolean() );
       }
       modified = true;
@@ -82,7 +82,7 @@ class React4j_BooleanOnPropChange extends BooleanOnPropChange {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 
@@ -104,7 +104,7 @@ class React4j_BooleanOnPropChange extends BooleanOnPropChange {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

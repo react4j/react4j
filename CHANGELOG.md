@@ -3,6 +3,15 @@
 ### Unreleased
 
 * **\[core\]** Rename the `@OnPropChanged` annotation to `@OnPropChange`.
+* **\[core\]** Add support for the `Component.componentPreUpdate(...)` lifecycle method that is invoked prior
+  to updating a.k.a. re-rendering a component. This is mapped to the native `getSnapshotBeforeUpdate`
+  lifecycle method except that the application developer can not return a value from the method.
+* **\[processor\]** Change the way observable props are generated so that the change detection for the props
+  occurs in the `shouldComponentUpdate(...)` and `componentPreUpdate(...)` lifecycle steps rather than the
+  `shouldComponentUpdate(...)` and `componentDidUpdate(...)` lifecycle steps. This means that the `@Memoize`
+  annotated methods that have a return value derived from observable props will be marked as possibly stale
+  before a call to `render()` occurs and the component will not need to be re-rendered to reflect a changed
+  value returned from the `@Memoized` method.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

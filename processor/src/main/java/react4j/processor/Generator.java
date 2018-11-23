@@ -891,15 +891,17 @@ final class Generator
         .filter( p -> p.isObservable() || p.hasOnPropChangeMethod() )
         .collect( Collectors.toList() );
     assert !props.isEmpty();
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropChanges" ).
-      addModifiers( Modifier.PROTECTED ).
-      addAnnotation( Override.class ).
-      addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
-        addAnnotation( NONNULL_CLASSNAME ).build() ).
-      addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
-        addAnnotation( NONNULL_CLASSNAME ).build() ).
-      addParameter( ParameterSpec.builder( TypeName.BOOLEAN, "inComponentDidUpdate", Modifier.FINAL ).build() ).
-      returns( TypeName.BOOLEAN );
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( "reportPropChanges" ).
+        addModifiers( Modifier.PROTECTED ).
+        addAnnotation( Override.class ).
+        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
+          addAnnotation( NONNULL_CLASSNAME ).build() ).
+        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
+          addAnnotation( NONNULL_CLASSNAME ).build() ).
+        addParameter( ParameterSpec.builder( TypeName.BOOLEAN, "inComponentPreUpdate", Modifier.FINAL ).build() ).
+        returns( TypeName.BOOLEAN );
     if ( descriptor.isArezComponent() )
     {
       final AnnotationSpec.Builder annotation =
@@ -909,7 +911,7 @@ final class Generator
     method.addStatement( "boolean modified = false" );
     if ( props.stream().anyMatch( PropDescriptor::isObservable ) )
     {
-      method.addStatement( "final boolean reportChanges = shouldReportPropChanges( inComponentDidUpdate )" );
+      method.addStatement( "final boolean reportChanges = shouldReportPropChanges( inComponentPreUpdate )" );
     }
 
     for ( final PropDescriptor prop : props )
@@ -930,7 +932,7 @@ final class Generator
       if ( prop.hasOnPropChangeMethod() )
       {
         final CodeBlock.Builder onChangeBlock = CodeBlock.builder();
-        onChangeBlock.beginControlFlow( "if ( inComponentDidUpdate )" );
+        onChangeBlock.beginControlFlow( "if ( inComponentPreUpdate )" );
 
         final ExecutableElement onPropChangedMethod = prop.getPropChangeMethod();
         if ( onPropChangedMethod.getParameters().isEmpty() )
@@ -1276,19 +1278,39 @@ final class Generator
   private static MethodSpec.Builder buildLifecycleMethod( @Nonnull final MethodDescriptor descriptor )
   {
     final String methodName = descriptor.getMethod().getSimpleName().toString();
+    final boolean isPreUpdate = Constants.COMPONENT_PRE_UPDATE.equals( methodName );
+    final TypeName returnType =
+      isPreUpdate ? TypeName.get( Object.class ) : ClassName.get( descriptor.getMethodType().getReturnType() );
+    final String actualMethodName = isPreUpdate ? "getSnapshotBeforeUpdate" : methodName;
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( methodName ).
-        addModifiers( Modifier.PUBLIC ).
-        addAnnotation( Override.class ).
-        returns( ClassName.get( descriptor.getMethodType().getReturnType() ) );
+      MethodSpec
+        .methodBuilder( actualMethodName )
+        .addModifiers( Modifier.PUBLIC )
+        .addAnnotation( Override.class )
+        .returns( returnType );
 
     ProcessorUtil.copyTypeParameters( descriptor.getMethodType(), method );
 
-    if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
+    if ( Constants.COMPONENT_PRE_UPDATE.equals( methodName ) )
     {
-      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL ).
-        addAnnotation( NONNULL_CLASSNAME ).build() );
-      method.addStatement( "performComponentDidUpdate( prevProps )" );
+      method.addParameter( ParameterSpec
+                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addParameter( ParameterSpec
+                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addStatement( "performComponentPreUpdate( prevProps )" );
+      method.addStatement( "return null" );
+    }
+    else if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec
+                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addStatement( "performComponentDidUpdate()" );
     }
     else if ( Constants.COMPONENT_DID_MOUNT.equals( methodName ) )
     {
@@ -1342,7 +1364,7 @@ final class Generator
 
     for ( final MethodDescriptor method : descriptor.getLiteLifecycleMethods() )
     {
-      buildLfecycleMethod( builder, method );
+      builder.addMethod( buildLifecycleMethodInterface( method ).build() );
     }
 
     return builder.build();
@@ -1361,31 +1383,53 @@ final class Generator
 
     builder.addModifiers( Modifier.STATIC );
 
-    descriptor.getLifecycleMethods().forEach( method -> buildLfecycleMethod( builder, method ) );
+    descriptor
+      .getLifecycleMethods()
+      .forEach( method -> builder.addMethod( buildLifecycleMethodInterface( method ).build() ) );
 
     return builder.build();
   }
 
-  private static void buildLfecycleMethod( @Nonnull final TypeSpec.Builder builder,
-                                           @Nonnull final MethodDescriptor lifecycleMethod )
+  @Nonnull
+  private static MethodSpec.Builder buildLifecycleMethodInterface( @Nonnull final MethodDescriptor lifecycleMethod )
   {
     final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
+    final boolean isPreUpdate = Constants.COMPONENT_PRE_UPDATE.equals( methodName );
+    final TypeName returnType =
+      isPreUpdate ? TypeName.get( Object.class ) : ClassName.get( lifecycleMethod.getMethodType().getReturnType() );
+    final String actualMethodName = isPreUpdate ? "getSnapshotBeforeUpdate" : methodName;
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( methodName ).
-        addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
-        returns( ClassName.get( lifecycleMethod.getMethodType().getReturnType() ) );
+      MethodSpec
+        .methodBuilder( actualMethodName )
+        .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
+        .returns( returnType );
 
     ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
 
-    if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
+    if ( isPreUpdate )
     {
-      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" ).
-        addAnnotation( NONNULL_CLASSNAME ).build() );
+      method.addParameter( ParameterSpec
+                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+      method.addParameter( ParameterSpec
+                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState" )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
+    }
+    else if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
+    {
+      method.addParameter( ParameterSpec
+                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
     }
     else if ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) )
     {
-      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps" ).
-        addAnnotation( NONNULL_CLASSNAME ).build() );
+      method.addParameter( ParameterSpec
+                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps" )
+                             .addAnnotation( NONNULL_CLASSNAME )
+                             .build() );
     }
     else if ( Constants.COMPONENT_DID_CATCH.equals( methodName ) )
     {
@@ -1396,8 +1440,7 @@ final class Generator
                              .addAnnotation( NONNULL_CLASSNAME )
                              .build() );
     }
-
-    builder.addMethod( method.build() );
+    return method;
   }
 
   @Nonnull

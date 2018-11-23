@@ -72,6 +72,31 @@ public abstract class NativeAdapterComponent<I extends Component>
   }
 
   /**
+   * Call componentPreUpdate on the target component.
+   *
+   * @see Component#componentPreUpdate()
+   */
+  @Nullable
+  protected final void performComponentPreUpdate( @Nonnull final JsPropertyMap<Object> prevProps )
+  {
+    if ( ReactConfig.checkComponentStateInvariants() )
+    {
+      _component.setLifecycleMethod( LifecycleMethod.PRE_UPDATE );
+    }
+    try
+    {
+      _component.performComponentPreUpdate( prevProps );
+    }
+    finally
+    {
+      if ( ReactConfig.checkComponentStateInvariants() )
+      {
+        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
+      }
+    }
+  }
+
+  /**
    * Call render on the target component.
    *
    * @return the output of rendering.
@@ -184,10 +209,9 @@ public abstract class NativeAdapterComponent<I extends Component>
    * It is expected that the subclass will implement a public method componentDidUpdate() that
    * delegates to this method to perform the work.
    *
-   * @param nextProps the new properties of the component.
    * @see Component#componentDidUpdate()
    */
-  protected final void performComponentDidUpdate( @Nonnull final JsPropertyMap<Object> nextProps )
+  protected final void performComponentDidUpdate()
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -195,7 +219,7 @@ public abstract class NativeAdapterComponent<I extends Component>
     }
     try
     {
-      _component.performComponentDidUpdate( nextProps );
+      _component.performComponentDidUpdate();
     }
     finally
     {

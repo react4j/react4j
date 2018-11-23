@@ -81,7 +81,7 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

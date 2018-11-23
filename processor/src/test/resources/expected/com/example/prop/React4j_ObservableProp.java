@@ -54,9 +54,9 @@ abstract class React4j_ObservableProp extends ObservableProp {
       verifyRequired = false
   )
   protected boolean reportPropChanges(@Nonnull final JsPropertyMap<Object> props,
-      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentDidUpdate) {
+      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentPreUpdate) {
     boolean modified = false;
-    final boolean reportChanges = shouldReportPropChanges( inComponentDidUpdate );
+    final boolean reportChanges = shouldReportPropChanges( inComponentPreUpdate );
     if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
       if ( reportChanges ) {
         getValueObservableValue().reportChanged();
@@ -80,7 +80,8 @@ abstract class React4j_ObservableProp extends ObservableProp {
       name = "?"
   )
   interface LiteLifecycle {
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
+    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState);
 
     void componentWillUnmount();
 
@@ -94,6 +95,9 @@ abstract class React4j_ObservableProp extends ObservableProp {
   )
   interface Lifecycle {
     void componentDidMount();
+
+    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -114,8 +118,10 @@ abstract class React4j_ObservableProp extends ObservableProp {
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+        @Nonnull final JsPropertyMap<Object> prevState) {
+      performComponentPreUpdate( prevProps );
+      return null;
     }
 
     @Override
@@ -146,8 +152,15 @@ abstract class React4j_ObservableProp extends ObservableProp {
     }
 
     @Override
+    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+        @Nonnull final JsPropertyMap<Object> prevState) {
+      performComponentPreUpdate( prevProps );
+      return null;
+    }
+
+    @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override

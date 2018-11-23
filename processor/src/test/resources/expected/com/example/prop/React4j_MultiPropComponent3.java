@@ -104,7 +104,7 @@ class React4j_MultiPropComponent3 extends MultiPropComponent3 {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

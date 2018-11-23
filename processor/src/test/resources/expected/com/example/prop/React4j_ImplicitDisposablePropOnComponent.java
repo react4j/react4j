@@ -81,7 +81,7 @@ class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposablePropOn
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
   }
 }

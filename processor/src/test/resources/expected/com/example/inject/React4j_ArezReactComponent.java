@@ -110,7 +110,7 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      performComponentDidUpdate();
     }
 
     @Override
