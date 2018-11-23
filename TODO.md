@@ -7,6 +7,13 @@
 
 * Figure out a way to get the *Builders eliminated. Will the above do?
 
+* Change the `@OnPropChange` annotation to accept a list of prop values as parameters. These are the previous
+  values of the props. The props can be guessed by names and types (with a possible prefix such as `prev` or `last`
+  on name). The annotation can also accept a parameter `phase=(PRE|POST)` that will indicate whether the method will
+  be invoked before the update (iin the `getSnapshotBeforeUpdate` lifecycle method) or after the update (in the
+  `componentDidUpdate` lifecycle method). As part of this change it is likely that the optional invocation of
+  `reportPropChanges` from `shouldComponentUpdate` will need to be removed.
+
 * Change remaining lifecycle hooks to be annotation driven. i.e.
   `@PostMount` - componentDidMount
   `@PostRender` - componentDidUpdate + componentDidMount
