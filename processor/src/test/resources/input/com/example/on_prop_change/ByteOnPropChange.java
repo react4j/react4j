@@ -11,7 +11,7 @@ abstract class ByteOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( byte oldValue )
+  void onMyPropChange( byte myProp )
   {
   }
 

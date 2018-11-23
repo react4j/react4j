@@ -11,7 +11,7 @@ abstract class PublicOnPropChange
   extends Component
 {
   @OnPropChange
-  public void onMyPropChange( String oldValue )
+  public void onMyPropChange( String myProp )
   {
   }
 

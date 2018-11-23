@@ -11,7 +11,7 @@ abstract class PackageAccessOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( String oldValue )
+  void onMyPropChange( String myProp )
   {
   }
 

@@ -34,7 +34,7 @@ class React4j_ExplicitNameOnPropChange extends ExplicitNameOnPropChange {
     boolean modified = false;
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       if ( inComponentDidUpdate ) {
-        zzzz();
+        onMyPropChange( props.getAny( Props.myProp ).asDouble() );
       }
       modified = true;
     }

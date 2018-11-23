@@ -12,7 +12,7 @@ abstract class ThrowsOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( String oldValue )
+  void onMyPropChange( String myProp )
     throws IOException
   {
   }

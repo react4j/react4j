@@ -12,7 +12,7 @@ abstract class ParameterizedOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( ArrayList<String> oldValue )
+  void onMyPropChange( ArrayList<String> myProp )
   {
   }
 

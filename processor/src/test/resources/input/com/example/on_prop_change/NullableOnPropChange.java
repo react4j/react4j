@@ -12,7 +12,7 @@ abstract class NullableOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( @Nullable String oldValue )
+  void onMyPropChange( @Nullable String myProp )
   {
   }
 

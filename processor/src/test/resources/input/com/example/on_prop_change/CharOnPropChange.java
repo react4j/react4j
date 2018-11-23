@@ -11,7 +11,7 @@ abstract class CharOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( char oldValue )
+  void onMyPropChange( char myProp )
   {
   }
 

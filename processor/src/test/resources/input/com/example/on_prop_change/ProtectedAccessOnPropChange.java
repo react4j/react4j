@@ -11,7 +11,7 @@ abstract class ProtectedAccessOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( String oldValue )
+  void onMyPropChange( String myProp )
   {
   }
 

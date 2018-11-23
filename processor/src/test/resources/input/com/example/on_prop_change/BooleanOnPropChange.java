@@ -11,7 +11,7 @@ abstract class BooleanOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( boolean oldValue )
+  void onMyPropChange( boolean myProp )
   {
   }
 

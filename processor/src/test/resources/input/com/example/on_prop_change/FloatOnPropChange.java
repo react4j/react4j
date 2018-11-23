@@ -11,7 +11,7 @@ abstract class FloatOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( float oldValue )
+  void onMyPropChange( float myProp )
   {
   }
 

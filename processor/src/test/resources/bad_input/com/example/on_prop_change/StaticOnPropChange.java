@@ -11,7 +11,7 @@ abstract class StaticOnPropChange
   extends Component
 {
   @OnPropChange
-  static void onMyPropChange( String oldValue )
+  static void onMyPropChange( String myProp )
   {
   }
 

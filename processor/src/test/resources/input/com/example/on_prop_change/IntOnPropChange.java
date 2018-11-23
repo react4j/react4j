@@ -11,7 +11,7 @@ abstract class IntOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( int oldValue )
+  void onMyPropChange( int myProp )
   {
   }
 

@@ -11,7 +11,7 @@ abstract class ShortOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( short oldValue )
+  void onMyPropChange( short myProp )
   {
   }
 

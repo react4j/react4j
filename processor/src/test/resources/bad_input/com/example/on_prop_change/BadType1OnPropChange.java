@@ -11,7 +11,7 @@ abstract class BadType1OnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( int oldValue )
+  void onMyPropChange( int myProp )
   {
   }
 

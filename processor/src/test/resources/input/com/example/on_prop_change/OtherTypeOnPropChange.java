@@ -12,7 +12,7 @@ abstract class OtherTypeOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( ArrayList oldValue )
+  void onMyPropChange( ArrayList myProp )
   {
   }
 

@@ -11,7 +11,7 @@ abstract class PrivateOnPropChange
   extends Component
 {
   @OnPropChange
-  private void onMyPropChange( String oldValue )
+  private void onMyPropChange( String myProp )
   {
   }
 

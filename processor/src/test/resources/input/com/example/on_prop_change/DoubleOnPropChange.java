@@ -11,7 +11,7 @@ abstract class DoubleOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( double oldValue )
+  void onMyPropChange( double myProp )
   {
   }
 

@@ -11,7 +11,7 @@ abstract class ReturnOnPropChange
   extends Component
 {
   @OnPropChange
-  int onMyPropChange( String oldValue )
+  int onMyPropChange( String myProp )
   {
     return 0;
   }

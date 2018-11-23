@@ -13,7 +13,7 @@ abstract class BadNullability2OnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( @Nullable String oldValue )
+  void onMyPropChange( @Nullable String myProp )
   {
   }
 

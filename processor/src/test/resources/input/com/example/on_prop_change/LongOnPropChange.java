@@ -11,7 +11,7 @@ abstract class LongOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( long oldValue )
+  void onMyPropChange( long myProp )
   {
   }
 

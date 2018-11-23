@@ -4,14 +4,15 @@ import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
 import react4j.annotations.Prop;
+import react4j.annotations.PropRef;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
 abstract class ExplicitNameOnPropChange
   extends Component
 {
-  @OnPropChange( name = "myProp" )
-  void zzzz()
+  @OnPropChange
+  void onMyPropChange( @PropRef( "myProp" ) double zzzz )
   {
   }
 
