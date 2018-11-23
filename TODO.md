@@ -105,12 +105,6 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 
 ### Low Priorities
 
-* Port transition code ala
-  - https://github.com/reactjs/react-transition-group
-  - https://reactcommunity.org/react-transition-group/
-  or maybe https://react-move.js.org/
-  Actually the best options seems to be https://github.com/drcmda/react-spring
-
 * In base class have configuration that warns on re-renders that produced duplicate values.
 
 * build in https://github.com/maicki/why-did-you-update
