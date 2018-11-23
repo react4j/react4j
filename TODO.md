@@ -111,13 +111,6 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 
 * Consider adopting variable arguments ala https://fblitho.com/docs/props#variable-arguments
 
-* HackerNews clone
-  - https://hnpwa.com/
-  - https://github.com/rwieruch/react-mobx-hackernews
-  - https://github.com/clintonwoo/hackernews-react-graphql
-  - https://github.com/prabirshrestha/hn-react-mobx
-  - https://github.com/kristoferbaxter/react-hn
-
 * Port React Material Web Components? - https://jamesmfriedman.github.io/rmwc/
 
 * If we were to ever re-implement the component model at a basic level, an interesting approach would be to
