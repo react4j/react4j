@@ -343,7 +343,7 @@ final class ComponentDescriptor
   {
     if ( null == _hasOnPropChangedProps )
     {
-      _hasOnPropChangedProps = getProps().stream().anyMatch( PropDescriptor::hasOnPropChangedMethod );
+      _hasOnPropChangedProps = getProps().stream().anyMatch( PropDescriptor::hasOnPropChangeMethod );
     }
     return _hasOnPropChangedProps;
   }

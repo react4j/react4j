@@ -204,7 +204,7 @@ public final class ReactProcessor
     determineRenderMethod( typeElement, descriptor );
     determineProps( descriptor );
     determinePropValidatesMethods( descriptor );
-    determineOnPropChangedMethods( descriptor );
+    determineOnPropChangeMethods( descriptor );
     determineDefaultPropsMethods( descriptor );
     determineDefaultPropsFields( descriptor );
     determineLifecycleMethods( typeElement, descriptor );
@@ -347,20 +347,20 @@ public final class ReactProcessor
     }
   }
 
-  private void determineOnPropChangedMethods( @Nonnull final ComponentDescriptor descriptor )
+  private void determineOnPropChangeMethods( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.ON_PROP_CHANGED_ANNOTATION_CLASSNAME ) )
+        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final ExecutableElement method : methods )
     {
-      final String name = deriveOnPropChangedName( method );
+      final String name = deriveOnPropChangeName( method );
       final PropDescriptor prop = descriptor.findPropNamed( name );
       if ( null == prop )
       {
-        throw new ReactProcessorException( "@OnPropChanged target for prop named '" + name + "' has no " +
+        throw new ReactProcessorException( "@OnPropChange target for prop named '" + name + "' has no " +
                                            "corresponding @Prop annotated method.", method );
       }
       final List<? extends VariableElement> parameters = method.getParameters();
@@ -372,35 +372,35 @@ public final class ReactProcessor
         final Types typeUtils = processingEnv.getTypeUtils();
         if ( !typeUtils.isAssignable( parameterTypes.get( 0 ), returnType ) )
         {
-          throw new ReactProcessorException( "@OnPropChanged target has a parameter type that is not assignable to " +
+          throw new ReactProcessorException( "@OnPropChange target has a parameter type that is not assignable to " +
                                              "the return type of the associated @Prop annotated method.", method );
         }
       }
       else if ( 0 != parameters.size() )
       {
-        throw new ReactProcessorException( "@OnPropChanged target must have either 1 or 2 parameters", method );
+        throw new ReactProcessorException( "@OnPropChange target must have either 1 or 2 parameters", method );
       }
 
-      prop.setOnPropChangedMethod( method );
+      prop.setOnPropChangeMethod( method );
     }
   }
 
   @Nonnull
-  private String deriveOnPropChangedName( @Nonnull final Element element )
+  private String deriveOnPropChangeName( @Nonnull final Element element )
     throws ReactProcessorException
   {
     final String name =
       (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                                  element,
-                                                 Constants.ON_PROP_CHANGED_ANNOTATION_CLASSNAME,
+                                                 Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
     if ( ProcessorUtil.isSentinelName( name ) )
     {
-      final String deriveName = ProcessorUtil.deriveName( element, ProcessorUtil.ON_PROP_CHANGED_PATTERN, name );
+      final String deriveName = ProcessorUtil.deriveName( element, ProcessorUtil.ON_PROP_CHANGE_PATTERN, name );
       if ( null == deriveName )
       {
-        throw new ReactProcessorException( "@OnPropChanged target has not specified name nor is it named according " +
+        throw new ReactProcessorException( "@OnPropChange target has not specified name nor is it named according " +
                                            "to the convention 'on[Name]Changed'.", element );
       }
       return deriveName;
@@ -409,12 +409,12 @@ public final class ReactProcessor
     {
       if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ReactProcessorException( "@OnPropChanged target specified an invalid name '" + name + "'. The " +
+        throw new ReactProcessorException( "@OnPropChange target specified an invalid name '" + name + "'. The " +
                                            "name must be a valid java identifier.", element );
       }
       else if ( SourceVersion.isKeyword( name ) )
       {
-        throw new ReactProcessorException( "@OnPropChanged target specified an invalid name '" + name + "'. The " +
+        throw new ReactProcessorException( "@OnPropChange target specified an invalid name '" + name + "'. The " +
                                            "name must not be a java keyword.", element );
       }
       return name;
@@ -1267,7 +1267,7 @@ public final class ReactProcessor
     final String[] annotationTypes =
       new String[]{ Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                     Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
-                    Constants.ON_PROP_CHANGED_ANNOTATION_CLASSNAME,
+                    Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
                     Constants.PROP_ANNOTATION_CLASSNAME };
     for ( int i = 0; i < annotationTypes.length; i++ )
     {

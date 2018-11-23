@@ -29,7 +29,7 @@ final class PropDescriptor
   @Nullable
   private ExecutableElement _validateMethod;
   @Nullable
-  private ExecutableElement _onPropChanged;
+  private ExecutableElement _onPropChange;
   /**
    * Flag set to true if prop is optional.
    */
@@ -107,26 +107,26 @@ final class PropDescriptor
     }
   }
 
-  boolean hasOnPropChangedMethod()
+  boolean hasOnPropChangeMethod()
   {
-    return null != _onPropChanged;
+    return null != _onPropChange;
   }
 
   @Nonnull
-  ExecutableElement getPropChangedMethod()
+  ExecutableElement getPropChangeMethod()
   {
-    assert null != _onPropChanged;
-    return _onPropChanged;
+    assert null != _onPropChange;
+    return _onPropChange;
   }
 
-  void setOnPropChangedMethod( @Nonnull final ExecutableElement method )
+  void setOnPropChangeMethod( @Nonnull final ExecutableElement method )
   {
     MethodChecks.mustBeSubclassCallable( _descriptor.getElement(),
-                                         Constants.ON_PROP_CHANGED_ANNOTATION_CLASSNAME,
+                                         Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
                                          method );
-    MethodChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGED_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotReturnAValue( Constants.ON_PROP_CHANGED_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotBePublic( Constants.ON_PROP_CHANGED_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotReturnAValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+    MethodChecks.mustNotBePublic( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
 
     final List<? extends VariableElement> parameters = method.getParameters();
     if ( !parameters.isEmpty() )
@@ -143,20 +143,20 @@ final class PropDescriptor
 
       if ( mismatchedNullability )
       {
-        throw new ReactProcessorException( "@OnPropChanged target has a parameter that has a nullability annotation " +
+        throw new ReactProcessorException( "@OnPropChange target has a parameter that has a nullability annotation " +
                                            "incompatible with the associated @Prop method named " +
                                            _method.getSimpleName(), method );
       }
     }
 
-    if ( null != _onPropChanged )
+    if ( null != _onPropChange )
     {
-      throw new ReactProcessorException( "@OnPropChanged target duplicates existing method named " +
-                                         _onPropChanged.getSimpleName(), method );
+      throw new ReactProcessorException( "@OnPropChange target duplicates existing method named " +
+                                         _onPropChange.getSimpleName(), method );
     }
     else
     {
-      _onPropChanged = Objects.requireNonNull( method );
+      _onPropChange = Objects.requireNonNull( method );
     }
   }
 

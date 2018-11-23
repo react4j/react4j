@@ -888,7 +888,7 @@ final class Generator
     final List<PropDescriptor> props =
       descriptor.getProps()
         .stream()
-        .filter( p -> p.isObservable() || p.hasOnPropChangedMethod() )
+        .filter( p -> p.isObservable() || p.hasOnPropChangeMethod() )
         .collect( Collectors.toList() );
     assert !props.isEmpty();
     final MethodSpec.Builder method = MethodSpec.methodBuilder( "reportPropChanges" ).
@@ -927,12 +927,12 @@ final class Generator
         reportBlock.endControlFlow();
         block.add( reportBlock.build() );
       }
-      if ( prop.hasOnPropChangedMethod() )
+      if ( prop.hasOnPropChangeMethod() )
       {
         final CodeBlock.Builder onChangeBlock = CodeBlock.builder();
         onChangeBlock.beginControlFlow( "if ( inComponentDidUpdate )" );
 
-        final ExecutableElement onPropChangedMethod = prop.getPropChangedMethod();
+        final ExecutableElement onPropChangedMethod = prop.getPropChangeMethod();
         if ( onPropChangedMethod.getParameters().isEmpty() )
         {
           onChangeBlock.addStatement( "$N()", onPropChangedMethod.getSimpleName().toString() );

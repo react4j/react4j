@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* **\[core\]** Rename the `@OnPropChanged` annotation to `@OnPropChange`.
+
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)
 

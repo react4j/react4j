@@ -1,0 +1,26 @@
+package com.example.on_prop_change;
+
+import react4j.Component;
+import react4j.ReactNode;
+import react4j.annotations.OnPropChange;
+import react4j.annotations.Prop;
+import react4j.annotations.ReactComponent;
+
+@ReactComponent
+abstract class BadName1OnPropChange
+  extends Component
+{
+  @OnPropChange( name = "long" )
+  void onMyPropChange( String oldValue )
+  {
+  }
+
+  @Prop
+  protected abstract String getMyProp();
+
+  @Override
+  protected ReactNode render()
+  {
+    return null;
+  }
+}
