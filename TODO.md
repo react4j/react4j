@@ -5,7 +5,7 @@
 * Host `ReactElement` instances should be created within the `dom` library and we could create the instances
   directly rather than copying props and adding special handling for `ref`, `key` and `children`.
 
-* Figure out a way to get the *Builders eliminated. Will the above do?
+* Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
 * Change the `@OnPropChange` annotation to accept a list of prop values as parameters. These are the previous
   values of the props. The props can be guessed by names and types (with a possible prefix such as `prev` or `last`
