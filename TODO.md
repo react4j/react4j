@@ -111,8 +111,6 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 
 * Consider adopting variable arguments ala https://fblitho.com/docs/props#variable-arguments
 
-* Port React Material Web Components? - https://jamesmfriedman.github.io/rmwc/
-
 * If we were to ever re-implement the component model at a basic level, an interesting approach would be to
   allow individual components to register actions to occur at each lifecycle stage.
 
