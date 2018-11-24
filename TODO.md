@@ -40,6 +40,8 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
   `@nosideeffects` indicates that a call to the declared function has no side effects. This annotation allows the
   compiler to remove calls to the function if the return value is not used. This is not a signal that the function
   is "pure", it may still read mutable global state. Maybe this should be on the underlying `props()` method.
+  Turns out that closure compiler only allows this in externs files. What we could do is pull in react externs into
+  this project and mark it ourselves.
 
 * Collections returned from props should be made immutable.
 
