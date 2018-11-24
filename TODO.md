@@ -69,9 +69,6 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
   static context field. Multiple `TreeLocal` instances on a component may need to be represented by a chain of
   components the pass down context as props. This may be overly complex so perhaps we could just remove that possibility.
 
-* Consider marking callbacks with marker type `<T extends MouseEventHandler & Serializable>` and mandate the usage
-  of such in pure components?
-
 ### Very High Priority
 
 * Add helper to autoload js assets
