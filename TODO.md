@@ -19,6 +19,8 @@
   `@PostRender` - componentDidUpdate + componentDidMount
   `@PreUpdate` - getSnapshotBeforeUpdate
   `@PostUpdate` - componentDidUpdate
+  If we do this then the annotation processor could completely take over responsibility for implementing lifecycle
+  steps rather than part of it being in `react4j.Component`.
 
 * Add some way to define effects which is just method called after render that returns a disposable to stop action.
   Possibly look at observed props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
