@@ -94,7 +94,8 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 
 ### High Priorities
 
-* Add ability to `@Prop` to add enhancers to builder.
+* Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
+  (See TODOs in Generator.java) with the enhancers.
 
 * Consider separating Arez react component infrastructure into a mixin with default methods.
 
