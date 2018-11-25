@@ -81,7 +81,7 @@ class React4j_PackageAccessFieldPropDefault extends PackageAccessFieldPropDefaul
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

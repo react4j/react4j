@@ -82,7 +82,7 @@ class React4j_CollectionHashSetPropComponent extends CollectionHashSetPropCompon
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

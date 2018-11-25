@@ -126,7 +126,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

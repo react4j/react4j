@@ -81,7 +81,7 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

@@ -104,7 +104,7 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

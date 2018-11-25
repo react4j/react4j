@@ -46,13 +46,18 @@ final class ComponentDescriptor
   @Nullable
   private List<PropDescriptor> _props;
   /**
+   * Methods that are props accessors.
+   * These should be implemented as accesses to the underlying props value.
+   */
+  @Nullable
+  private List<OnPropChangeDescriptor> _onPropChangeDescriptors;
+  /**
    * Methods annotated with arez's @Memoize annotation. Should be null if not an arez component
    */
   @Nullable
   private List<MethodDescriptor> _memoizeMethods;
   private Boolean _hasObservableProps;
   private Boolean _hasValidatedProps;
-  private Boolean _hasOnPropChangedProps;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
@@ -325,6 +330,33 @@ final class ComponentDescriptor
     _props.sort( PropComparator.COMPARATOR );
   }
 
+  @Nonnull
+  List<OnPropChangeDescriptor> getPreUpdateOnPropChangeDescriptors()
+  {
+    return getOnPropChangeDescriptors()
+      .stream()
+      .filter( OnPropChangeDescriptor::isPreUpdate )
+      .collect( Collectors.toList() );
+  }
+
+  @Nonnull
+  List<OnPropChangeDescriptor> getPostUpdateOnPropChangeDescriptors()
+  {
+    return getOnPropChangeDescriptors().stream().filter( o -> !o.isPreUpdate() ).collect( Collectors.toList() );
+  }
+
+  @Nonnull
+  List<OnPropChangeDescriptor> getOnPropChangeDescriptors()
+  {
+    assert null != _onPropChangeDescriptors;
+    return _onPropChangeDescriptors;
+  }
+
+  void setOnPropChangeDescriptors( @Nonnull List<OnPropChangeDescriptor> onPropChangeDescriptors )
+  {
+    _onPropChangeDescriptors = Objects.requireNonNull( onPropChangeDescriptors );
+  }
+
   boolean hasObservableProps()
   {
     if ( null == _hasObservableProps )
@@ -341,21 +373,22 @@ final class ComponentDescriptor
 
   boolean generateComponentPreUpdate()
   {
-    return hasObservableProps();
+    return hasObservableProps() || hasPreUpdateOnPropChange();
+  }
+
+  boolean hasPreUpdateOnPropChange()
+  {
+    return !getPreUpdateOnPropChangeDescriptors().isEmpty();
+  }
+
+  boolean hasPostUpdateOnPropChange()
+  {
+    return !getPostUpdateOnPropChangeDescriptors().isEmpty();
   }
 
   private boolean generateComponentDidUpdate()
   {
-    return hasOnPropChangedProps();
-  }
-
-  boolean hasOnPropChangedProps()
-  {
-    if ( null == _hasOnPropChangedProps )
-    {
-      _hasOnPropChangedProps = getProps().stream().anyMatch( PropDescriptor::hasOnPropChangeMethod );
-    }
-    return _hasOnPropChangedProps;
+    return hasPostUpdateOnPropChange();
   }
 
   boolean hasValidatedProps()

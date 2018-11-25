@@ -354,70 +354,109 @@ public final class ReactProcessor
         .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
+    final ArrayList<OnPropChangeDescriptor> onPropChangeDescriptors = new ArrayList<>();
     for ( final ExecutableElement method : methods )
     {
-      final String name = deriveOnPropChangeName( method );
-      final PropDescriptor prop = descriptor.findPropNamed( name );
-      if ( null == prop )
-      {
-        throw new ReactProcessorException( "@OnPropChange target for prop named '" + name + "' has no " +
-                                           "corresponding @Prop annotated method.", method );
-      }
-      final List<? extends VariableElement> parameters = method.getParameters();
-      if ( 1 == parameters.size() )
-      {
-        final ExecutableType methodType = resolveMethodType( descriptor, method );
-        final List<? extends TypeMirror> parameterTypes = methodType.getParameterTypes();
-        final TypeMirror returnType = prop.getMethodType().getReturnType();
-        final Types typeUtils = processingEnv.getTypeUtils();
-        if ( !typeUtils.isAssignable( parameterTypes.get( 0 ), returnType ) )
-        {
-          throw new ReactProcessorException( "@OnPropChange target has a parameter type that is not assignable to " +
-                                             "the return type of the associated @Prop annotated method.", method );
-        }
-      }
-      else if ( 0 != parameters.size() )
-      {
-        throw new ReactProcessorException( "@OnPropChange target must have either 1 or 2 parameters", method );
-      }
+      final VariableElement injectParameter = (VariableElement)
+        ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                          method,
+                                          Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
+                                          "phase" ).getValue();
+      final boolean preUpdate = injectParameter.getSimpleName().toString().equals( "PRE" );
 
-      prop.setOnPropChangeMethod( method );
+      final List<? extends VariableElement> parameters = method.getParameters();
+      final ExecutableType methodType = resolveMethodType( descriptor, method );
+      final List<? extends TypeMirror> parameterTypes = methodType.getParameterTypes();
+
+      MethodChecks.mustBeSubclassCallable( descriptor.getElement(),
+                                           Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
+                                           method );
+      MethodChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+      MethodChecks.mustNotReturnAValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+      MethodChecks.mustNotBePublic( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+
+      final int parameterCount = parameters.size();
+      if ( 0 == parameterCount )
+      {
+        throw new ReactProcessorException( "@OnPropChange target must have at least 1 parameter.", method );
+      }
+      final ArrayList<PropDescriptor> propDescriptors = new ArrayList<>( parameterCount );
+      for ( int i = 0; i < parameterCount; i++ )
+      {
+        final VariableElement parameter = parameters.get( i );
+        final String name = deriveOnPropChangeName( descriptor, parameter );
+        final PropDescriptor prop = descriptor.findPropNamed( name );
+        if ( null == prop )
+        {
+          throw new ReactProcessorException( "@OnPropChange target has a parameter named '" +
+                                             parameter.getSimpleName() + "' and the parameter is associated with a " +
+                                             "@Prop named '" + name + "' but there is no corresponding @Prop " +
+                                             "annotated method.", parameter );
+        }
+        final Types typeUtils = processingEnv.getTypeUtils();
+        if ( !typeUtils.isAssignable( parameterTypes.get( i ), prop.getMethodType().getReturnType() ) )
+        {
+          throw new ReactProcessorException( "@OnPropChange target has a parameter named '" +
+                                             parameter.getSimpleName() + "' and the parameter type is not " +
+                                             "assignable to the return type of the associated @Prop annotated method.",
+                                             method );
+        }
+        final boolean mismatchedNullability =
+          (
+            null != ProcessorUtil.findAnnotationByType( parameter, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
+            null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
+          ) ||
+          (
+            null != ProcessorUtil.findAnnotationByType( parameter, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
+            null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+
+        if ( mismatchedNullability )
+        {
+          throw new ReactProcessorException( "@OnPropChange target has a parameter named '" +
+                                             parameter.getSimpleName() + "' that has a nullability annotation " +
+                                             "incompatible with the associated @Prop method named " +
+                                             method.getSimpleName(), method );
+        }
+        propDescriptors.add( prop );
+      }
+      onPropChangeDescriptors.add( new OnPropChangeDescriptor( method, propDescriptors, preUpdate ) );
     }
+    descriptor.setOnPropChangeDescriptors( onPropChangeDescriptors );
   }
 
   @Nonnull
-  private String deriveOnPropChangeName( @Nonnull final Element element )
-    throws ReactProcessorException
+  private String deriveOnPropChangeName( @Nonnull final ComponentDescriptor descriptor,
+                                         @Nonnull final VariableElement parameter )
   {
-    final String name =
-      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                 element,
-                                                 Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
-                                                 "name" ).getValue();
+    final AnnotationValue value =
+      ProcessorUtil.findAnnotationValue( descriptor.getElements(),
+                                         parameter,
+                                         Constants.PROP_REF_ANNOTATION_CLASSNAME,
+                                         "value" );
 
-    if ( ProcessorUtil.isSentinelName( name ) )
+    if ( null != value )
     {
-      final String deriveName = ProcessorUtil.deriveName( element, ProcessorUtil.ON_PROP_CHANGE_PATTERN, name );
-      if ( null == deriveName )
-      {
-        throw new ReactProcessorException( "@OnPropChange target has not specified name nor is it named according " +
-                                           "to the convention 'on[Name]Changed'.", element );
-      }
-      return deriveName;
+      return (String) value.getValue();
     }
     else
     {
-      if ( !SourceVersion.isIdentifier( name ) )
+      final String parameterName = parameter.getSimpleName().toString();
+      if ( ProcessorUtil.LAST_PROP_PATTERN.matcher( parameterName ).matches() ||
+           ProcessorUtil.PREV_PROP_PATTERN.matcher( parameterName ).matches() )
       {
-        throw new ReactProcessorException( "@OnPropChange target specified an invalid name '" + name + "'. The " +
-                                           "name must be a valid java identifier.", element );
+        return Character.toLowerCase( parameterName.charAt( 4 ) ) + parameterName.substring( 5 );
       }
-      else if ( SourceVersion.isKeyword( name ) )
+      else if ( ProcessorUtil.PROP_PATTERN.matcher( parameterName ).matches() )
       {
-        throw new ReactProcessorException( "@OnPropChange target specified an invalid name '" + name + "'. The " +
-                                           "name must not be a java keyword.", element );
+        return parameterName;
       }
-      return name;
+      else
+      {
+        throw new ReactProcessorException( "@OnPropChange target has a parameter named '" + parameterName +
+                                           "' is not explicitly associated with a prop using @PropRef nor does it " +
+                                           "follow required naming conventions 'prev[MyProp]', 'last[MyProp]' or " +
+                                           "'[myProp]'.", parameter );
+      }
     }
   }
 

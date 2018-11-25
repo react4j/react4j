@@ -235,22 +235,29 @@ public abstract class Component
    * If you need to interact with the DOM before the component has been updated.
    * See the <a href="https://reactjs.org/docs/react-component.html#getsnapshotbeforeupdate">React Component documentation</a> for more details.
    */
-  protected void componentPreUpdate()
+  protected void componentPreUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
   }
 
   /**
-   * Wrapper method that delegates to the {@link #componentPreUpdate()} method.
+   * Wrapper method that delegates to the {@link #componentPreUpdate(JsPropertyMap)} method.
    *
    * @param prevProps the props before the component was updated.
    */
   final void performComponentPreUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
-    if ( null != prevProps )
-    {
-      reportPropChanges( prevProps, props(), true );
-    }
-    componentPreUpdate();
+    componentPreUpdate( prevProps );
+  }
+
+  /**
+   * Template method called when onPropChange in PRE phase declared.
+   *
+   * @param prevProps the props before the component was updated.
+   * @param props     the current props.
+   */
+  protected void preUpdateOnPropChange( @Nonnull final JsPropertyMap<Object> prevProps,
+                                        @Nonnull final JsPropertyMap<Object> props )
+  {
   }
 
   /**
@@ -265,10 +272,26 @@ public abstract class Component
   /**
    * Wrapper method that delegates to the {@link #componentDidUpdate()} method.
    */
-  final void performComponentDidUpdate()
+  final void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
+    if ( null != prevProps )
+    {
+      final JsPropertyMap<Object> props = props();
+      postUpdateOnPropChange( prevProps, props );
+    }
     componentDidUpdate();
     storeDebugDataAsState();
+  }
+
+  /**
+   * Template method called when onPropChange in POST phase declared.
+   *
+   * @param prevProps the props before the component was updated.
+   * @param props     the current props.
+   */
+  protected void postUpdateOnPropChange( @Nonnull final JsPropertyMap<Object> prevProps,
+                                         @Nonnull final JsPropertyMap<Object> props )
+  {
   }
 
   /**
@@ -325,9 +348,9 @@ public abstract class Component
    * by the annotation processor based on configuration of props.
    *
    * <p>This method can be invoked from either the {@link #shouldComponentUpdate(JsPropertyMap)} method
-   * or the {@link #componentPreUpdate()} method. If the method is not invoked from the
+   * or the {@link #componentPreUpdate(JsPropertyMap)} method. If the method is not invoked from the
    * {@link #shouldComponentUpdate(JsPropertyMap)} method first due to a {@link Component#scheduleRender()}
-   * call then the call from {@link #componentPreUpdate()} will report any changes to
+   * call then the call from {@link #componentPreUpdate(JsPropertyMap)} will report any changes to
    * the observable props otherwise this will only occur in the invocation of the method from the
    * {@link #shouldComponentUpdate(JsPropertyMap)} method. This means that the props
    * are marked as {@link Prop#observable()} and are used by a <code>@Memoize</code>
@@ -338,7 +361,7 @@ public abstract class Component
    *
    * @param props                the old properties of the component.
    * @param nextProps            the new properties of the component.
-   * @param inComponentPreUpdate true if this is being invoked from {@link #componentPreUpdate()}, false if this is being invoked from {@link #shouldComponentUpdate(JsPropertyMap)}
+   * @param inComponentPreUpdate true if this is being invoked from {@link #componentPreUpdate(JsPropertyMap)}, false if this is being invoked from {@link #shouldComponentUpdate(JsPropertyMap)}
    * @return true if the component should be re-rendered. This is true if a prop marked with {@link Prop#shouldUpdateOnChange()} has changed or framework can detect an update is required.
    */
   protected boolean reportPropChanges( @Nonnull final JsPropertyMap<Object> props,
@@ -354,7 +377,7 @@ public abstract class Component
    * This is required because a {@link #scheduleRender()} may cause the component to render but will
    * skip {@link #shouldComponentUpdate(JsPropertyMap)} so it is necessary to reportPropChanges
    *
-   * @param inComponentPreUpdate true if this is being invoked from {@link #componentPreUpdate()}, false if this is being invoked from {@link #shouldComponentUpdate(JsPropertyMap)}
+   * @param inComponentPreUpdate true if this is being invoked from {@link #componentPreUpdate(JsPropertyMap)}, false if this is being invoked from {@link #shouldComponentUpdate(JsPropertyMap)}
    * @return true if changes to observable props should be reported.
    */
   protected final boolean shouldReportPropChanges( final boolean inComponentPreUpdate )

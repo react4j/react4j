@@ -1,24 +1,21 @@
-package com.example.prop_validate;
+package com.example.on_prop_change;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.ReactNode;
+import react4j.annotations.OnPropChange;
 import react4j.annotations.Prop;
-import react4j.annotations.PropValidate;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class BadNullabilityPropValidate
+abstract class PostUpdateOnPropChange
   extends Component
 {
-  @PropValidate
-  void validateMyProp( @Nonnull String prop )
+  @OnPropChange( phase = OnPropChange.Phase.POST )
+  void onMyPropChange( String myProp )
   {
   }
 
   @Prop
-  @Nullable
   protected abstract String getMyProp();
 
   @Override

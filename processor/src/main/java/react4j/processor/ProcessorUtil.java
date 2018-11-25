@@ -37,7 +37,9 @@ final class ProcessorUtil
   private static final Pattern GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)$" );
   static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
   static final Pattern VALIDATE_PROP_PATTERN = Pattern.compile( "^validate([A-Z].*)$" );
-  static final Pattern ON_PROP_CHANGE_PATTERN = Pattern.compile( "^on([A-Z].*)Change$" );
+  static final Pattern LAST_PROP_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
+  static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
+  static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
   private static final String SENTINEL_NAME = "<default>";
 
@@ -298,23 +300,18 @@ final class ProcessorUtil
     }
   }
 
+  @SuppressWarnings( "SameParameterValue" )
   @Nullable
   static AnnotationValue findDeclaredAnnotationValue( @Nonnull final Element typeElement,
                                                       @Nonnull final String annotationClassName,
                                                       @Nonnull final String parameterName )
   {
     final AnnotationMirror mirror = findAnnotationByType( typeElement, annotationClassName );
-    if ( null == mirror )
-    {
-      return null;
-    }
-    else
-    {
-      final Map<? extends ExecutableElement, ? extends AnnotationValue> values = mirror.getElementValues();
-      final ExecutableElement annotationKey = values.keySet().stream().
-        filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
-      return values.get( annotationKey );
-    }
+    assert null != mirror;
+    final Map<? extends ExecutableElement, ? extends AnnotationValue> values = mirror.getElementValues();
+    final ExecutableElement annotationKey = values.keySet().stream().
+      filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
+    return values.get( annotationKey );
   }
 
   @Nullable

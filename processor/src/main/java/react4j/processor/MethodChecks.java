@@ -3,11 +3,9 @@ package react4j.processor;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
@@ -158,9 +156,7 @@ final class MethodChecks
     {
       final PackageElement packageElement = getPackageElement( component );
       final PackageElement methodPackageElement = getPackageElement( (TypeElement) method.getEnclosingElement() );
-      final Name componentPackageName = null == packageElement ? null : packageElement.getQualifiedName();
-      final Name methodPackageName = null == methodPackageElement ? null : methodPackageElement.getQualifiedName();
-      if ( !Objects.equals( componentPackageName, methodPackageName ) )
+      if ( !Objects.equals( packageElement.getQualifiedName(), methodPackageElement.getQualifiedName() ) )
       {
         throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
                                            " target must not be package access if the method is in a different " +
@@ -169,7 +165,7 @@ final class MethodChecks
     }
   }
 
-  @Nullable
+  @Nonnull
   private static PackageElement getPackageElement( @Nonnull final TypeElement element )
   {
     Element enclosingElement = element.getEnclosingElement();
@@ -181,6 +177,6 @@ final class MethodChecks
       }
       enclosingElement = enclosingElement.getEnclosingElement();
     }
-    return null;
+    throw new IllegalStateException();
   }
 }

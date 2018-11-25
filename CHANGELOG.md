@@ -12,6 +12,12 @@
   annotated methods that have a return value derived from observable props will be marked as possibly stale
   before a call to `render()` occurs and the component will not need to be re-rendered to reflect a changed
   value returned from the `@Memoized` method.
+* **\[core\]** Change the `@OnPropChange` annotation so that it accepts one or more parameters. Each parameter
+  represents a prop that is tracked for changes. Any time a change occurs in any prop then the annotated method
+  is invoked. The parameters are mapped to props based on a naming pattern or via an explicit `@PropRef`
+  annotation if the naming convention is insufficient.
+* **\[core\]** Change the `@OnPropChange` annotation so that it accepts a `phase` parameter that controls
+  whether the method is invoked before the component is updated/rendered or after the component is updated.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

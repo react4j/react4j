@@ -82,7 +82,7 @@ class React4j_CollectionPropComponent extends CollectionPropComponent {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

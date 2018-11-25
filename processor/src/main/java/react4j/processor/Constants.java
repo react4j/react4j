@@ -10,6 +10,7 @@ final class Constants
   static final String DAGGER_MODULE_CLASSNAME = "dagger.Module";
   static final String COMPONENT_CLASSNAME = "react4j.Component";
   static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";
+  static final String PROP_REF_ANNOTATION_CLASSNAME = "react4j.annotations.PropRef";
   static final String PROP_DEFAULT_ANNOTATION_CLASSNAME = "react4j.annotations.PropDefault";
   static final String PROP_VALIDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PropValidate";
   static final String ON_PROP_CHANGE_ANNOTATION_CLASSNAME = "react4j.annotations.OnPropChange";

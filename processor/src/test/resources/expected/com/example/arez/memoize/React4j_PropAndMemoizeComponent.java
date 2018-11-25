@@ -69,6 +69,17 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
   }
 
   @Override
+  @Action(
+      verifyRequired = false
+  )
+  protected void componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    if ( null != prevProps ) {
+      final JsPropertyMap<Object> props = props();
+      reportPropChanges( prevProps, props, true );
+    }
+  }
+
+  @Override
   @Memoize(
       priority = Priority.LOWEST
   )
@@ -170,7 +181,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

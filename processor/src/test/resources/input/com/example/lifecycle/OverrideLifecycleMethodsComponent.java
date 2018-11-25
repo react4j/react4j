@@ -24,11 +24,6 @@ abstract class OverrideLifecycleMethodsComponent
   }
 
   @Override
-  protected void componentPreUpdate()
-  {
-  }
-
-  @Override
   protected final void componentDidUpdate()
   {
   }

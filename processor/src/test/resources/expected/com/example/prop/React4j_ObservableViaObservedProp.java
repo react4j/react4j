@@ -68,6 +68,17 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   }
 
   @Override
+  @Action(
+      verifyRequired = false
+  )
+  protected void componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    if ( null != prevProps ) {
+      final JsPropertyMap<Object> props = props();
+      reportPropChanges( prevProps, props, true );
+    }
+  }
+
+  @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
   }
@@ -166,7 +177,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

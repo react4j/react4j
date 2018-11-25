@@ -3,19 +3,21 @@ package react4j.annotations;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import javax.annotation.Nonnull;
-import jsinterop.base.JsPropertyMap;
 
 /**
- * Identifies a method that is called when the prop value is changed and after the component has rendered.
- * This method is invoked from the {@link react4j.Component#shouldComponentUpdate(JsPropertyMap)} lifecycle
- * method. The method may be defined with one parameter which is the old value of the prop. The method can
- * also have zero parameters if the component author just wants to be notified when the prop is changed.
+ * Identifies a method that is called when the value of one of the specified props is changed.
+ * Each parameter of the method is mapped to a prop that is tracked. The method will be called
+ * before or after the update has occurred and will be passed the previous values of the props
+ * as parameters.
+ *
+ * <p>Each parameter is expected to be named according to the pattern "last[MyProp]", "prev[MyProp]"
+ * or "[myProp]". If name of the parameter does not follow the pattern then the name can be explicitly
+ * mapped via the {@link PropRef} annotation on a parameter.</p>
  *
  * <p>The method must also conform to the following constraints:</p>
  * <ul>
  * <li>Must not be annotated with any other react4j annotation</li>
- * <li>Must have either 0 or 1 parameters. If present the parameter must match the type of the prop</li>
+ * <li>Must have 1 or more parameters. Each parameter must map to a prop as described above.</li>
  * <li>Must not return a value</li>
  * <li>Must not be private</li>
  * <li>Must not be public</li>
@@ -30,11 +32,22 @@ import jsinterop.base.JsPropertyMap;
 public @interface OnPropChange
 {
   /**
-   * Return the name of the associated prop. If the value is not specified then the name
-   * will be derived assuming that the method name matches the pattern "on[Name]Change"
-   *
-   * @return the name of the prop.
+   * Phase in which method should be invoked.
    */
-  @Nonnull
-  String name() default "<default>";
+  enum Phase
+  {
+    /**
+     * Method should be invoked before update.
+     */
+    PRE,
+    /**
+     * Method should be invoked after update.
+     */
+    POST
+  }
+
+  /**
+   * The phase in which the method should be invoked.
+   */
+  Phase phase() default Phase.PRE;
 }

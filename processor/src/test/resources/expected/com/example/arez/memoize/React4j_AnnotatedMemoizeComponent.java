@@ -102,7 +102,7 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

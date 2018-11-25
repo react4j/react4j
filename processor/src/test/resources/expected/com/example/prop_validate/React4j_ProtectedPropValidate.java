@@ -106,7 +106,7 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

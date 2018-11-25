@@ -106,7 +106,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

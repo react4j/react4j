@@ -109,7 +109,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

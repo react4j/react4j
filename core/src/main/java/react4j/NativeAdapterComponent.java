@@ -74,7 +74,7 @@ public abstract class NativeAdapterComponent<I extends Component>
   /**
    * Call componentPreUpdate on the target component.
    *
-   * @see Component#componentPreUpdate()
+   * @see Component#componentPreUpdate(JsPropertyMap)
    */
   @Nullable
   protected final void performComponentPreUpdate( @Nonnull final JsPropertyMap<Object> prevProps )
@@ -211,7 +211,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    *
    * @see Component#componentDidUpdate()
    */
-  protected final void performComponentDidUpdate()
+  protected final void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
     if ( ReactConfig.checkComponentStateInvariants() )
     {
@@ -219,7 +219,7 @@ public abstract class NativeAdapterComponent<I extends Component>
     }
     try
     {
-      _component.performComponentDidUpdate();
+      _component.performComponentDidUpdate( prevProps );
     }
     finally
     {

@@ -116,7 +116,7 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

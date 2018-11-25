@@ -110,7 +110,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

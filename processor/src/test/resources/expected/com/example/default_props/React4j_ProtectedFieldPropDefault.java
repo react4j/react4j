@@ -81,7 +81,7 @@ class React4j_ProtectedFieldPropDefault extends ProtectedFieldPropDefault {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

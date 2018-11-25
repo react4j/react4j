@@ -107,7 +107,7 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

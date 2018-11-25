@@ -77,7 +77,7 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

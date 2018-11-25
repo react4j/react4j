@@ -71,7 +71,7 @@ class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

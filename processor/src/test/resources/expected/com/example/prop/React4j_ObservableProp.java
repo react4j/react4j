@@ -66,6 +66,17 @@ abstract class React4j_ObservableProp extends ObservableProp {
     return modified || hasRenderDepsChanged();
   }
 
+  @Override
+  @Action(
+      verifyRequired = false
+  )
+  protected void componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    if ( null != prevProps ) {
+      final JsPropertyMap<Object> props = props();
+      reportPropChanges( prevProps, props, true );
+    }
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -160,7 +171,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
 
     @Override

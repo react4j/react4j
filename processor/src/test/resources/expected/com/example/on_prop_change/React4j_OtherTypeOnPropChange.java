@@ -34,16 +34,20 @@ class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
   }
 
   @Override
-  protected boolean reportPropChanges(@Nonnull final JsPropertyMap<Object> props,
-      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentPreUpdate) {
-    boolean modified = false;
-    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
-      if ( inComponentPreUpdate ) {
-        onMyPropChange( Js.uncheckedCast( props.getAny( Props.myProp ) ) );
-      }
-      modified = true;
+  protected void preUpdateOnPropChange(@Nonnull final JsPropertyMap<Object> prevProps,
+      @Nonnull final JsPropertyMap<Object> props) {
+    final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
+    if ( myProp ) {
+      onMyPropChange( Js.uncheckedCast( props.getAny( Props.myProp ) ) );
     }
-    return modified;
+  }
+
+  @Override
+  protected void componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    if ( null != prevProps ) {
+      final JsPropertyMap<Object> props = props();
+      preUpdateOnPropChange( prevProps, props );
+    }
   }
 
   static final class Factory {
@@ -60,7 +64,8 @@ class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
       name = "?"
   )
   interface LiteLifecycle {
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
+    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState);
   }
 
   @JsType(
@@ -70,6 +75,9 @@ class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
   )
   interface Lifecycle {
     void componentDidMount();
+
+    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
@@ -86,8 +94,10 @@ class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+        @Nonnull final JsPropertyMap<Object> prevState) {
+      performComponentPreUpdate( prevProps );
+      return null;
     }
   }
 
@@ -108,8 +118,15 @@ class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
     }
 
     @Override
+    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+        @Nonnull final JsPropertyMap<Object> prevState) {
+      performComponentPreUpdate( prevProps );
+      return null;
+    }
+
+    @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate();
+      performComponentDidUpdate( prevProps );
     }
   }
 }

@@ -1,6 +1,5 @@
 package react4j.processor;
 
-import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,8 +27,6 @@ final class PropDescriptor
   private ExecutableElement _defaultMethod;
   @Nullable
   private ExecutableElement _validateMethod;
-  @Nullable
-  private ExecutableElement _onPropChange;
   /**
    * Flag set to true if prop is optional.
    */
@@ -104,59 +101,6 @@ final class PropDescriptor
        */
       assert null == _defaultField;
       _defaultMethod = Objects.requireNonNull( method );
-    }
-  }
-
-  boolean hasOnPropChangeMethod()
-  {
-    return null != _onPropChange;
-  }
-
-  @Nonnull
-  ExecutableElement getPropChangeMethod()
-  {
-    assert null != _onPropChange;
-    return _onPropChange;
-  }
-
-  void setOnPropChangeMethod( @Nonnull final ExecutableElement method )
-  {
-    MethodChecks.mustBeSubclassCallable( _descriptor.getElement(),
-                                         Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
-                                         method );
-    MethodChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotReturnAValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotBePublic( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-
-    final List<? extends VariableElement> parameters = method.getParameters();
-    if ( !parameters.isEmpty() )
-    {
-      final VariableElement param1 = parameters.get( 0 );
-      final boolean mismatchedNullability =
-        (
-          null != ProcessorUtil.findAnnotationByType( param1, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-          null != ProcessorUtil.findAnnotationByType( _method, Constants.NULLABLE_ANNOTATION_CLASSNAME )
-        ) ||
-        (
-          null != ProcessorUtil.findAnnotationByType( param1, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-          null != ProcessorUtil.findAnnotationByType( _method, Constants.NONNULL_ANNOTATION_CLASSNAME ) );
-
-      if ( mismatchedNullability )
-      {
-        throw new ReactProcessorException( "@OnPropChange target has a parameter that has a nullability annotation " +
-                                           "incompatible with the associated @Prop method named " +
-                                           _method.getSimpleName(), method );
-      }
-    }
-
-    if ( null != _onPropChange )
-    {
-      throw new ReactProcessorException( "@OnPropChange target duplicates existing method named " +
-                                         _onPropChange.getSimpleName(), method );
-    }
-    else
-    {
-      _onPropChange = Objects.requireNonNull( method );
     }
   }
 
