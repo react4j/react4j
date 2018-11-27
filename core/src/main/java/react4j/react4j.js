@@ -7,8 +7,6 @@ goog.provide('react4j');
 /** @define {string} */
 goog.define('react4j.enable_component_names', 'false');
 /** @define {string} */
-goog.define('react4j.check_component_state_invariants', 'false');
-/** @define {string} */
 goog.define('react4j.check_invariants', 'false');
 /** @define {string} */
 goog.define('react4j.minimize_prop_keys', 'true');

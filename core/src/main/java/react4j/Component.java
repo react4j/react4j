@@ -16,10 +16,6 @@ import static org.realityforge.braincheck.Guards.*;
  */
 public abstract class Component
 {
-  @Nonnull
-  private ComponentPhase _phase = ComponentPhase.INITIALIZING;
-  @Nonnull
-  private LifecycleMethod _lifecycleMethod = LifecycleMethod.UNKNOWN;
   @Nullable
   private NativeComponent _nativeComponent;
   /**
@@ -33,34 +29,6 @@ public abstract class Component
    * Flag that is set to true if the observable props had changes reported prior to render.
    */
   private boolean _propChangesNotified;
-
-  /**
-   * Set the phase of the component. Only used for invariant checking.
-   */
-  final void setPhase( @Nonnull final ComponentPhase phase )
-  {
-    if ( ReactConfig.shouldCheckInvariants() )
-    {
-      invariant( ReactConfig::checkComponentStateInvariants,
-                 () -> "Component.setComponentPhase() invoked on " + this +
-                       " when ReactConfig.checkComponentStateInvariants() is false" );
-    }
-    _phase = Objects.requireNonNull( phase );
-  }
-
-  /**
-   * Set the current lifecycle method of the component. Only used for invariant checking.
-   */
-  final void setLifecycleMethod( @Nonnull final LifecycleMethod lifecycleMethod )
-  {
-    if ( ReactConfig.shouldCheckInvariants() )
-    {
-      invariant( ReactConfig::checkComponentStateInvariants,
-                 () -> "Component.setLifecycleMethod() invoked on " + this +
-                       " when ReactConfig.checkComponentStateInvariants() is false" );
-    }
-    _lifecycleMethod = Objects.requireNonNull( lifecycleMethod );
-  }
 
   final void bindComponent( @Nonnull final NativeComponent nativeComponent )
   {
@@ -109,21 +77,6 @@ public abstract class Component
   }
 
   /**
-   * Check invariants that should be true when invoking setState()
-   */
-  private void invariantsSetState()
-  {
-    if ( ReactConfig.shouldCheckInvariants() && ReactConfig.checkComponentStateInvariants() )
-    {
-      apiInvariant( () -> LifecycleMethod.RENDER != _lifecycleMethod,
-                    () -> "Incorrectly invoked scheduleStateUpdate() on " + this + " in scope of render()." );
-      apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
-                    () -> "Incorrectly invoked scheduleStateUpdate() on " + this + " when component is " +
-                          "unmounting or has unmounted." );
-    }
-  }
-
-  /**
    * Schedule this component for re-rendering.
    * The component re-renders when props change but calling this method is another way to schedule the
    * component to be re-rendered. When this method is called the {@link #shouldComponentUpdate(JsPropertyMap)}
@@ -133,12 +86,6 @@ public abstract class Component
    */
   protected final void scheduleRender()
   {
-    if ( ReactConfig.shouldCheckInvariants() && ReactConfig.checkComponentStateInvariants() )
-    {
-      apiInvariant( () -> ComponentPhase.UNMOUNTING != _phase,
-                    () -> "Incorrectly invoked scheduleRender() on " + this + " when component is " +
-                          "unmounting or has unmounted." );
-    }
     component().forceUpdate();
   }
 
@@ -491,7 +438,6 @@ public abstract class Component
    */
   private void scheduleDebugStateUpdate( @Nonnull final JsPropertyMap<Object> data )
   {
-    invariantsSetState();
     component().setState( Js.cast( JsObject.freeze( data ) ) );
     /*
      * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.

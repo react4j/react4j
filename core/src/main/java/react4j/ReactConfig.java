@@ -13,7 +13,6 @@ public final class ReactConfig
   private static final boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
   private static final boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
   private static final boolean SHOULD_FREEZE_PROPS = PROVIDER.shouldFreezeProps();
-  private static final boolean CHECK_COMPONENT_STATE_INVARIANTS = PROVIDER.checkComponentStateInvariants();
   private static final boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
   private ReactConfig()
@@ -63,16 +62,6 @@ public final class ReactConfig
   public static boolean shouldStoreDebugDataAsState()
   {
     return SHOULD_STORE_DEBUG_DATA_AS_STATE;
-  }
-
-  /**
-   * Return true if we should check that the user interacts with React component in a way compatible with the state.
-   *
-   * @return true to enable invariant checking about how we interact with native react component.
-   */
-  static boolean checkComponentStateInvariants()
-  {
-    return CHECK_COMPONENT_STATE_INVARIANTS;
   }
 
   /**
@@ -128,13 +117,6 @@ public final class ReactConfig
 
     @GwtIncompatible
     @Override
-    boolean checkComponentStateInvariants()
-    {
-      return "true".equals( System.getProperty( "react4j.check_component_state_invariants", "false" ) );
-    }
-
-    @GwtIncompatible
-    @Override
     boolean shouldCheckInvariants()
     {
       return "true".equals( System.getProperty( "react4j.check_invariants", "false" ) );
@@ -169,11 +151,6 @@ public final class ReactConfig
     boolean shouldStoreDebugDataAsState()
     {
       return "true" == System.getProperty( "react4j.store_debug_data_as_state" );
-    }
-
-    boolean checkComponentStateInvariants()
-    {
-      return "true" == System.getProperty( "react4j.check_component_state_invariants" );
     }
 
     boolean shouldCheckInvariants()

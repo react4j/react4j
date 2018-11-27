@@ -12,6 +12,6 @@ public class BuildOutputTest
     throws Exception
   {
     final SymbolEntryIndex index = getSymbolMapIndex( getArchiveDir(), "raw.after" );
-    React4jBuildAsserts.assertReact4jOutputs( index, false );
+    React4jBuildAsserts.assertReact4jOutputs( index );
   }
 }

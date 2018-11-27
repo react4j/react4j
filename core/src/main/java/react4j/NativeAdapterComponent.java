@@ -8,12 +8,7 @@ import jsinterop.base.JsPropertyMap;
 
 /**
  * This class provides a base class that designed to forward all lifecycle methods to a target component.
- * The target component is of type {@link Component}. This class is also responsible for calling
- * {@link Component#setLifecycleMethod(LifecycleMethod)} before and after each call to the target component
- * if {@link ReactConfig#checkComponentStateInvariants()} returns true. This will make it possible for the
- * target component to check that the application code is correctly interacting with the React component
- * framework. In production builds it is expected that the method calls will be inlined and the checks will
- * be optimized away, having no significant performance impact.
+ * The target component is of type {@link Component}.
  *
  * @param <I> the type of the native component.
  */
@@ -52,23 +47,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   private void performPostConstruct()
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_POST_CONSTRUCT );
-      _component.setPhase( ComponentPhase.INITIALIZING );
-    }
-    try
-    {
-      _component.performPostConstruct();
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-        _component.setPhase( ComponentPhase.MOUNTING );
-      }
-    }
+    _component.performPostConstruct();
   }
 
   /**
@@ -79,21 +58,7 @@ public abstract class NativeAdapterComponent<I extends Component>
   @Nullable
   protected final void performComponentPreUpdate( @Nonnull final JsPropertyMap<Object> prevProps )
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.PRE_UPDATE );
-    }
-    try
-    {
-      _component.performComponentPreUpdate( prevProps );
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-      }
-    }
+    _component.performComponentPreUpdate( prevProps );
   }
 
   /**
@@ -105,21 +70,7 @@ public abstract class NativeAdapterComponent<I extends Component>
   @Nullable
   public final ReactNode render()
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.RENDER );
-    }
-    try
-    {
-      return _component.performRender();
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-      }
-    }
+    return _component.performRender();
   }
 
   /**
@@ -131,22 +82,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final void performComponentDidMount()
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_DID_MOUNT );
-    }
-    try
-    {
-      _component.performComponentDidMount();
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-        _component.setPhase( ComponentPhase.UPDATING );
-      }
-    }
+    _component.performComponentDidMount();
   }
 
   /**
@@ -158,22 +94,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final void performComponentWillUnmount()
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setPhase( ComponentPhase.UNMOUNTING );
-      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_WILL_UNMOUNT );
-    }
-    try
-    {
-      _component.performComponentWillUnmount();
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-      }
-    }
+    _component.performComponentWillUnmount();
   }
 
   /**
@@ -187,21 +108,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final boolean performShouldComponentUpdate( @Nonnull final JsPropertyMap<Object> nextProps )
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.SHOULD_COMPONENT_UPDATE );
-    }
-    try
-    {
-      return _component.shouldComponentUpdate( nextProps );
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-      }
-    }
+    return _component.shouldComponentUpdate( nextProps );
   }
 
   /**
@@ -213,21 +120,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_DID_UPDATE );
-    }
-    try
-    {
-      _component.performComponentDidUpdate( prevProps );
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-      }
-    }
+    _component.performComponentDidUpdate( prevProps );
   }
 
   /**
@@ -241,20 +134,6 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final void performComponentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
-    if ( ReactConfig.checkComponentStateInvariants() )
-    {
-      _component.setLifecycleMethod( LifecycleMethod.COMPONENT_DID_CATCH );
-    }
-    try
-    {
-      _component.performComponentDidCatch( error, info );
-    }
-    finally
-    {
-      if ( ReactConfig.checkComponentStateInvariants() )
-      {
-        _component.setLifecycleMethod( LifecycleMethod.UNKNOWN );
-      }
-    }
+    _component.performComponentDidCatch( error, info );
   }
 }

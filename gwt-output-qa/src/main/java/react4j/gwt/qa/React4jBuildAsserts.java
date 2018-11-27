@@ -28,30 +28,12 @@ public final class React4jBuildAsserts
   }
 
   /**
-   * This assertion verifies that the symbols that are conditional on the `react4j.check_component_state_invariants`
-   * setting are present if enabled and not present if not enabled.
-   *
-   * @param index   the index that contains all symbols for output target.
-   * @param enabled true if setting is enabled, false otherwise.
-   */
-  public static void assertCheckComponentStateInvariants( @Nonnull final SymbolEntryIndex index, final boolean enabled )
-  {
-    index.assertSymbol( "react4j\\.core\\.ComponentPhase", enabled );
-    index.assertSymbol( "react4j\\.core\\.LifecycleMethod", enabled );
-    index.assertSymbol( "react4j\\.core\\.Component", "_phase", enabled );
-    index.assertSymbol( "react4j\\.core\\.Component", "_lifecycleMethod", enabled );
-  }
-
-  /**
    * Assert normal react4j outputs based on specified compile time settings.
    *
-   * @param index                         the index that contains all symbols for output target.
-   * @param checkComponentStateInvariants the value of the `react4j.check_component_state_invariants` setting.
+   * @param index the index that contains all symbols for output target.
    */
-  public static void assertReact4jOutputs( @Nonnull final SymbolEntryIndex index,
-                                           final boolean checkComponentStateInvariants )
+  public static void assertReact4jOutputs( @Nonnull final SymbolEntryIndex index )
   {
     assertStandardOutputs( index );
-    assertCheckComponentStateInvariants( index, checkComponentStateInvariants );
   }
 }
