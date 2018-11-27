@@ -6,7 +6,7 @@ import java.lang.annotation.Target;
 
 /**
  * Identifies a method that is called before a component is updated or re-rendered.
- * There must only be one PreUpdate annotated method per-component.
+ * There must only be one method annotated with this annotation in a single component.
  * This method is invoked in the "commit" phase using reacts <code>getSnapshotBeforeUpdate()</code>
  * lifecycle method.
  *
