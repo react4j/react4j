@@ -83,17 +83,6 @@ public abstract class Component
   }
 
   /**
-   * Return the component state from the native component.
-   * This may be null if initial state was never set.
-   *
-   * @return the component state.
-   */
-  final JsPropertyMap<Object> state()
-  {
-    return component().state();
-  }
-
-  /**
    * Return the component props from the native component.
    * This may be null if no props were supplied.
    *
@@ -117,17 +106,6 @@ public abstract class Component
   protected final String getKey()
   {
     return Js.asPropertyMap( props() ).getAny( PropNames.KEY_PROP_NAME ).asString();
-  }
-
-  /**
-   * Schedule a shallow merge of supplied state into current state.
-   *
-   * @param state the state to merge.
-   */
-  private void scheduleStateUpdate( @Nonnull JsPropertyMap<Object> state )
-  {
-    invariantsSetState();
-    component().setState( state );
   }
 
   /**
@@ -463,7 +441,7 @@ public abstract class Component
         final JsPropertyMap<Object> newState = JsPropertyMap.of();
         populateDebugData( newState );
 
-        final JsPropertyMap<Object> state = state();
+        final JsPropertyMap<Object> state = component().state();
         final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
         /*
          * To determine whether we need to do a state update we do compare each key and value and make sure
@@ -513,7 +491,8 @@ public abstract class Component
    */
   private void scheduleDebugStateUpdate( @Nonnull final JsPropertyMap<Object> data )
   {
-    scheduleStateUpdate( Js.cast( JsObject.freeze( data ) ) );
+    invariantsSetState();
+    component().setState( Js.cast( JsObject.freeze( data ) ) );
     /*
      * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
      */
