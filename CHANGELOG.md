@@ -18,7 +18,7 @@
   annotation if the naming convention is insufficient.
 * **\[core\]** Change the `@OnPropChange` annotation so that it accepts a `phase` parameter that controls
   whether the method is invoked before the component is updated/rendered or after the component is updated.
-* **\[core\]** Introduce the `@PreUpdate` annotation that can be used to annotated a method that is invoked
+* **\[core\]** Introduce the `@PreUpdate` annotation that can be used to annotate a method that is invoked
   when a component is about to be updated or re-rendered.
 * **\[core\]** Introduce the `@PostUpdate` annotation that can be used to annotated a method that is invoked
   when a component has been updated or re-rendered. This replaces the ability to override the
