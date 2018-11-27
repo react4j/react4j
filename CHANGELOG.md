@@ -26,6 +26,8 @@
 * **\[core\]** Reduce the access level of `Component.start()` method so that it is package access and
   no longer accessible by subclasses. It has not been modifiable since version `0.102` of React4j and there is
   no reason to read it when writing components.
+* **\[arez\]** Fix invariant failure that occurred when generating debug state for a component that extends
+  `ReactArezComponent` that has observed an Arez observable that has no accessor defined.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

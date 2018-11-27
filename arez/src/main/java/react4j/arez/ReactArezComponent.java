@@ -266,7 +266,7 @@ public abstract class ReactArezComponent
   {
     try
     {
-      if ( Arez.arePropertyIntrospectorsEnabled() )
+      if ( Arez.arePropertyIntrospectorsEnabled() && observableInfo.hasAccessor() )
       {
         // Consider unwrapping collections and potentially serializing Arez entities so they are presented correctly in DevTools
         final Object value = observableInfo.getValue();
