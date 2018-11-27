@@ -1039,20 +1039,32 @@ final class Generator
                          .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                          .addAnnotation( NULLABLE_CLASSNAME )
                          .build() );
-    final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if ( null != prevProps )" );
-    block.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
-    if ( descriptor.hasObservableProps() )
+    final boolean hasObservableProps = descriptor.hasObservableProps();
+    final boolean hasPreUpdateOnPropChange = descriptor.hasPreUpdateOnPropChange();
+    if ( hasObservableProps || hasPreUpdateOnPropChange )
     {
-      method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
-      block.addStatement( "reportPropChanges( prevProps, props, true )" );
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( null != prevProps )" );
+      block.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      if ( hasObservableProps )
+      {
+        method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME )
+                                .addMember( "verifyRequired", "false" )
+                                .build() );
+        block.addStatement( "reportPropChanges( prevProps, props, true )" );
+      }
+      if ( hasPreUpdateOnPropChange )
+      {
+        block.addStatement( "preUpdateOnPropChange( prevProps, props )" );
+      }
+      block.endControlFlow();
+      method.addCode( block.build() );
     }
-    if ( descriptor.hasPreUpdateOnPropChange() )
+    final ExecutableElement preUpdate = descriptor.getPreUpdate();
+    if ( null != preUpdate )
     {
-      block.addStatement( "preUpdateOnPropChange( prevProps, props )" );
+      method.addStatement( "$N()", preUpdate.getSimpleName().toString() );
     }
-    block.endControlFlow();
-    method.addCode( block.build() );
     return method;
   }
 

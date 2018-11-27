@@ -30,6 +30,8 @@ final class ComponentDescriptor
   private final PackageElement _packageElement;
   @Nonnull
   private final TypeElement _element;
+  @Nullable
+  private ExecutableElement _preUpdate;
   private boolean _arezComponent;
   private boolean _needsInjection;
   private boolean _needsDaggerIntegration;
@@ -366,6 +368,28 @@ final class ComponentDescriptor
     return _hasObservableProps;
   }
 
+  @Nullable
+  ExecutableElement getPreUpdate()
+  {
+    return _preUpdate;
+  }
+
+  void setPreUpdate( @Nonnull final ExecutableElement preUpdate )
+    throws ReactProcessorException
+  {
+    MethodChecks.mustBeLifecycleHook( getElement(), Constants.PRE_UPDATE_ANNOTATION_CLASSNAME, preUpdate );
+
+    if ( null != _preUpdate )
+    {
+      throw new ReactProcessorException( "@PreUpdate target duplicates existing method named " +
+                                         _preUpdate.getSimpleName(), preUpdate );
+    }
+    else
+    {
+      _preUpdate = preUpdate;
+    }
+  }
+
   boolean generateShouldComponentUpdate()
   {
     return hasObservableProps() || hasValidatedProps();
@@ -373,7 +397,7 @@ final class ComponentDescriptor
 
   boolean generateComponentPreUpdate()
   {
-    return hasObservableProps() || hasPreUpdateOnPropChange();
+    return hasObservableProps() || hasPreUpdateOnPropChange() || null != _preUpdate;
   }
 
   boolean hasPreUpdateOnPropChange()

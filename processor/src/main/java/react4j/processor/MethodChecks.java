@@ -117,6 +117,16 @@ final class MethodChecks
     }
   }
 
+  private static void mustNotBeAbstract( @Nonnull final String annotationName, @Nonnull final Element element )
+    throws ReactProcessorException
+  {
+    if ( element.getModifiers().contains( Modifier.ABSTRACT ) )
+    {
+      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                         " target must not be abstract", element );
+    }
+  }
+
   /**
    * Verifies that the method is not static, abstract or private.
    * The intent is to verify that it can be instance called by sub-class in same package.
@@ -178,5 +188,24 @@ final class MethodChecks
       enclosingElement = enclosingElement.getEnclosingElement();
     }
     throw new IllegalStateException();
+  }
+
+  /**
+   * Verifies that the method follows conventions of a lifecycle hook.
+   * The intent is to verify that it can be instance called by sub-class in same
+   * package at a lifecycle stage. It should not raise errors, return values or accept
+   * parameters.
+   */
+  static void mustBeLifecycleHook( @Nonnull final TypeElement targetType,
+                                   @Nonnull final String annotationName,
+                                   @Nonnull final ExecutableElement method )
+    throws ReactProcessorException
+  {
+    mustNotBeAbstract( annotationName, method );
+    mustNotBePublic( annotationName, method );
+    mustBeSubclassCallable( targetType, annotationName, method );
+    mustNotHaveAnyParameters( annotationName, method );
+    mustNotReturnAValue( annotationName, method );
+    mustNotThrowAnyExceptions( annotationName, method );
   }
 }
