@@ -88,7 +88,7 @@ public abstract class Component
    *
    * @return the component state.
    */
-  protected final JsPropertyMap<Object> state()
+  final JsPropertyMap<Object> state()
   {
     return component().state();
   }

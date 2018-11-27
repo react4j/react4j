@@ -23,6 +23,9 @@
 * **\[core\]** Introduce the `@PostUpdate` annotation that can be used to annotated a method that is invoked
   when a component has been updated or re-rendered. This replaces the ability to override the
   `componentDidUpdate()` lifecycle method.
+* **\[core\]** Reduce the access level of `Component.start()` method so that it is package access and
+  no longer accessible by subclasses. It has not been modifiable since version `0.102` of React4j and there is
+  no reason to read it when writing components.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)
