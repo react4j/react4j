@@ -5,6 +5,8 @@ import javax.annotation.Nonnull;
 import react4j.Component;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
+import react4j.annotations.PostUpdate;
+import react4j.annotations.PreUpdate;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
@@ -23,8 +25,13 @@ abstract class OverrideLifecycleMethodsComponent
     return null;
   }
 
-  @Override
-  protected final void componentDidUpdate()
+  @PreUpdate
+  final void preUpdate()
+  {
+  }
+
+  @PostUpdate
+  final void postUpdate()
   {
   }
 

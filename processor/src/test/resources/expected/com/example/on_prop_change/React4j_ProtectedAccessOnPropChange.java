@@ -49,6 +49,11 @@ class React4j_ProtectedAccessOnPropChange extends ProtectedAccessOnPropChange {
     }
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

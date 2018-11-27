@@ -33,6 +33,11 @@ class React4j_CollectionListPropComponent extends CollectionListPropComponent {
     }
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

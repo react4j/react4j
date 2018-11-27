@@ -208,6 +208,7 @@ public final class ReactProcessor
     determineDefaultPropsMethods( descriptor );
     determineDefaultPropsFields( descriptor );
     determinePreUpdateMethod( typeElement, descriptor );
+    determinePostUpdateMethod( typeElement, descriptor );
     determineLifecycleMethods( typeElement, descriptor );
 
     for ( final PropDescriptor prop : descriptor.getProps() )
@@ -841,6 +842,18 @@ public final class ReactProcessor
       if ( null != ProcessorUtil.findAnnotationByType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPreUpdate( method );
+      }
+    }
+  }
+
+  private void determinePostUpdateMethod( @Nonnull final TypeElement typeElement,
+                                          @Nonnull final ComponentDescriptor descriptor )
+  {
+    for ( final ExecutableElement method : getMethods( typeElement ) )
+    {
+      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
+      {
+        descriptor.setPostUpdate( method );
       }
     }
   }

@@ -28,6 +28,11 @@ class React4j_PropTypeDouble extends PropTypeDouble {
     return props().getAny( Props.myProp ).asDouble();
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

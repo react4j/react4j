@@ -32,6 +32,8 @@ final class ComponentDescriptor
   private final TypeElement _element;
   @Nullable
   private ExecutableElement _preUpdate;
+  @Nullable
+  private ExecutableElement _postUpdate;
   private boolean _arezComponent;
   private boolean _needsInjection;
   private boolean _needsDaggerIntegration;
@@ -390,6 +392,28 @@ final class ComponentDescriptor
     }
   }
 
+  @Nullable
+  ExecutableElement getPostUpdate()
+  {
+    return _postUpdate;
+  }
+
+  void setPostUpdate( @Nonnull final ExecutableElement postUpdate )
+    throws ReactProcessorException
+  {
+    MethodChecks.mustBeLifecycleHook( getElement(), Constants.POST_UPDATE_ANNOTATION_CLASSNAME, postUpdate );
+
+    if ( null != _postUpdate )
+    {
+      throw new ReactProcessorException( "@PostUpdate target duplicates existing method named " +
+                                         _postUpdate.getSimpleName(), postUpdate );
+    }
+    else
+    {
+      _postUpdate = postUpdate;
+    }
+  }
+
   boolean generateShouldComponentUpdate()
   {
     return hasObservableProps() || hasValidatedProps();
@@ -410,9 +434,9 @@ final class ComponentDescriptor
     return !getPostUpdateOnPropChangeDescriptors().isEmpty();
   }
 
-  private boolean generateComponentDidUpdate()
+  boolean generateComponentDidUpdate()
   {
-    return hasPostUpdateOnPropChange();
+    return hasPostUpdateOnPropChange() || null != _postUpdate;
   }
 
   boolean hasValidatedProps()

@@ -28,6 +28,11 @@ class React4j_PropTypeChar extends PropTypeChar {
     return props().getAny( Props.myProp ).asChar();
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

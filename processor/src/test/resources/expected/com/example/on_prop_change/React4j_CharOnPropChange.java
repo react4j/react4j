@@ -45,6 +45,11 @@ class React4j_CharOnPropChange extends CharOnPropChange {
     }
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

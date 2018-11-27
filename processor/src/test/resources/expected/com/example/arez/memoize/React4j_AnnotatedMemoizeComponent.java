@@ -30,6 +30,11 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   @Nullable
   @Memoize(
       priority = Priority.LOWEST

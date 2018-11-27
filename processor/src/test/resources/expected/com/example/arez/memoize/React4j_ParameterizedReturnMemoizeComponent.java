@@ -31,6 +31,11 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   @Memoize(
       priority = Priority.LOWEST
   )

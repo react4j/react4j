@@ -31,6 +31,11 @@ abstract class React4j_GenericsReturnMemoizeComponent extends GenericsReturnMemo
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   @Memoize(
       priority = Priority.LOWEST
   )

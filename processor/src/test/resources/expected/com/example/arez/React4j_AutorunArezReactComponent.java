@@ -29,6 +29,11 @@ abstract class React4j_AutorunArezReactComponent extends AutorunArezReactCompone
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
   }

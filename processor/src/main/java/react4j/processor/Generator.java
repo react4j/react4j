@@ -561,6 +561,7 @@ final class Generator
     {
       builder.addMethod( buildComponentPreUpdate( descriptor ).build() );
     }
+    builder.addMethod( buildComponentDidUpdate( descriptor ).build() );
 
     if ( descriptor.isArezComponent() )
     {
@@ -1065,6 +1066,38 @@ final class Generator
     {
       method.addStatement( "$N()", preUpdate.getSimpleName().toString() );
     }
+    return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildComponentDidUpdate( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( "componentDidUpdate" )
+        .addModifiers( Modifier.PROTECTED )
+        .addAnnotation( Override.class )
+        .addParameter( ParameterSpec
+                         .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
+                         .addAnnotation( NULLABLE_CLASSNAME )
+                         .build() );
+
+    final boolean hasPostUpdateOnPropChange = descriptor.hasPostUpdateOnPropChange();
+    if ( hasPostUpdateOnPropChange )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( null != prevProps )" );
+      block.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      block.addStatement( "postUpdateOnPropChange( prevProps, props )" );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    final ExecutableElement postUpdate = descriptor.getPostUpdate();
+    if ( null != postUpdate )
+    {
+      method.addStatement( "$N()", postUpdate.getSimpleName().toString() );
+    }
+    method.addStatement( "storeDebugDataAsState()" );
     return method;
   }
 

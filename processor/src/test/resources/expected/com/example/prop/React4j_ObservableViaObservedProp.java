@@ -79,6 +79,11 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
   }

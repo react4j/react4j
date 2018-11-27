@@ -32,6 +32,11 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
   }

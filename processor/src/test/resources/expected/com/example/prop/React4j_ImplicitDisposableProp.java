@@ -47,6 +47,11 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
     if ( !Js.isTripleEqual( props().get( Props.model ), nextProps.get( Props.model ) ) ) {
       return true;

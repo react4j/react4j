@@ -28,6 +28,11 @@ class React4j_PropTypeFloat extends PropTypeFloat {
     return props().getAny( Props.myProp ).asFloat();
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

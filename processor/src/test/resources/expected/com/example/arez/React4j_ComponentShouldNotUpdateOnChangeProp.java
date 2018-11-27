@@ -36,6 +36,11 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
     }
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

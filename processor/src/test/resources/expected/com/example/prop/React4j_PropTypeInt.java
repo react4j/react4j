@@ -28,6 +28,11 @@ class React4j_PropTypeInt extends PropTypeInt {
     return props().getAny( Props.myProp ).asInt();
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

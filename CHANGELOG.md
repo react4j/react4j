@@ -20,6 +20,9 @@
   whether the method is invoked before the component is updated/rendered or after the component is updated.
 * **\[core\]** Introduce the `@PreUpdate` annotation that can be used to annotated a method that is invoked
   when a component is about to be updated or re-rendered.
+* **\[core\]** Introduce the `@PostUpdate` annotation that can be used to annotated a method that is invoked
+  when a component has been updated or re-rendered. This replaces the ability to override the
+  `componentDidUpdate()` lifecycle method.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

@@ -280,6 +280,15 @@ public class ReactProcessorTest
         new Object[]{ "com.example.on_prop_change.StaticOnPropChange", "@OnPropChange target must not be static" },
         new Object[]{ "com.example.on_prop_change.ThrowsOnPropChange",
                       "@OnPropChange target must not throw any exceptions" },
+        new Object[]{ "com.example.post_update.AbstractModel", "@PostUpdate target must not be abstract" },
+        new Object[]{ "com.example.post_update.DuplicateModel",
+                      "@PostUpdate target duplicates existing method named postUpdate" },
+        new Object[]{ "com.example.post_update.ParametersModel", "@PostUpdate target must not have any parameters" },
+        new Object[]{ "com.example.post_update.PrivateModel", "@PostUpdate target must not be private" },
+        new Object[]{ "com.example.post_update.PublicModel", "@PostUpdate target must not be public" },
+        new Object[]{ "com.example.post_update.ReturnsValueModel", "@PostUpdate target must not return a value" },
+        new Object[]{ "com.example.post_update.StaticModel", "@PostUpdate target must not be static" },
+        new Object[]{ "com.example.post_update.ThrowsModel", "@PostUpdate target must not throw any exceptions" },
         new Object[]{ "com.example.pre_update.AbstractModel", "@PreUpdate target must not be abstract" },
         new Object[]{ "com.example.pre_update.DuplicateModel",
                       "@PreUpdate target duplicates existing method named preUpdate" },
@@ -375,6 +384,7 @@ public class ReactProcessorTest
         new Object[]{ "Prop", "Prop" },
         new Object[]{ "PropDefault", "PropDefault" },
         new Object[]{ "PropDefault", "PropDefaultField" },
+        new Object[]{ "PostUpdate", "PostUpdate" },
         new Object[]{ "PreUpdate", "PreUpdate" },
         new Object[]{ "PropValidate", "PropValidate" }
       };

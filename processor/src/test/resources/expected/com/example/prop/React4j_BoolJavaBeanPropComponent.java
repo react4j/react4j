@@ -28,6 +28,11 @@ class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
     return props().getAny( Props.foo ).asBoolean();
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

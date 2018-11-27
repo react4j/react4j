@@ -27,6 +27,12 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     return componentConstructor;
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    postUpdate();
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

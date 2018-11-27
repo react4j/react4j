@@ -265,22 +265,16 @@ public abstract class Component
    * If you need to interact with the DOM after the component has been updated.
    * See the <a href="https://reactjs.org/docs/react-component.html#componentdidupdate">React Component documentation</a> for more details.
    */
-  protected void componentDidUpdate()
+  protected void componentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
   }
 
   /**
-   * Wrapper method that delegates to the {@link #componentDidUpdate()} method.
+   * Wrapper method that delegates to the {@link #componentDidUpdate(JsPropertyMap)}  method.
    */
   final void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
-    if ( null != prevProps )
-    {
-      final JsPropertyMap<Object> props = props();
-      postUpdateOnPropChange( prevProps, props );
-    }
-    componentDidUpdate();
-    storeDebugDataAsState();
+    componentDidUpdate( prevProps );
   }
 
   /**
@@ -419,7 +413,7 @@ public abstract class Component
    *
    * <p>Returning false does not prevent child components from re-rendering when their state changes.</p>
    *
-   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate()}
+   * <p>If this method returns false, then {@link #render()}, and {@link #componentDidUpdate(JsPropertyMap)}
    * will not be invoked. In the future React may treat this method  as a hint rather than a strict directive, and
    * returning false may still result in a re-rendering of the component.</p>
    *
@@ -456,7 +450,7 @@ public abstract class Component
    * This is only done if {@link ReactConfig#shouldStoreDebugDataAsState()} returns true and is primarily
    * done to make it easy to debug the component from within React DevTools.
    */
-  private void storeDebugDataAsState()
+  protected final void storeDebugDataAsState()
   {
     if ( ReactConfig.shouldStoreDebugDataAsState() )
     {

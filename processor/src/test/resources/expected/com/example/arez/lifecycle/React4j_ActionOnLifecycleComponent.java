@@ -27,6 +27,11 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
     return componentConstructor;
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

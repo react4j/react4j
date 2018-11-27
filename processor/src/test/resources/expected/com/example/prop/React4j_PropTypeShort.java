@@ -28,6 +28,11 @@ class React4j_PropTypeShort extends PropTypeShort {
     return props().getAny( Props.myProp ).asShort();
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

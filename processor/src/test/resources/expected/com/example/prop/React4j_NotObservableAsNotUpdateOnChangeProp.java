@@ -39,6 +39,11 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   @Memoize(
       priority = Priority.LOWEST
   )

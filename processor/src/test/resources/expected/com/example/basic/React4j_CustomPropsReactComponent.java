@@ -28,6 +28,11 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
     return props().getAny( Props.someField ).asBoolean();
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

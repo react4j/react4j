@@ -28,6 +28,11 @@ class React4j_PropTypeByte extends PropTypeByte {
     return props().getAny( Props.myProp ).asByte();
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

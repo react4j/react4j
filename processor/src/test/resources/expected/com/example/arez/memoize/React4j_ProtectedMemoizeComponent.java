@@ -30,6 +30,11 @@ abstract class React4j_ProtectedMemoizeComponent extends ProtectedMemoizeCompone
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   @Memoize(
       priority = Priority.LOWEST
   )

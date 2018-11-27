@@ -209,7 +209,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    * It is expected that the subclass will implement a public method componentDidUpdate() that
    * delegates to this method to perform the work.
    *
-   * @see Component#componentDidUpdate()
+   * @see Component#componentDidUpdate(JsPropertyMap)
    */
   protected final void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {

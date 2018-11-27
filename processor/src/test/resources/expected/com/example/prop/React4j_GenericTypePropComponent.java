@@ -32,6 +32,11 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
     }
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

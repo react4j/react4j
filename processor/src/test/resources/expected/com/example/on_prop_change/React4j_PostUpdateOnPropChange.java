@@ -41,6 +41,15 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
     }
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    if ( null != prevProps ) {
+      final JsPropertyMap<Object> props = props();
+      postUpdateOnPropChange( prevProps, props );
+    }
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

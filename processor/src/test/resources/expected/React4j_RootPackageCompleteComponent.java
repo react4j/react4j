@@ -22,7 +22,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
   }
 
   @Override
-  protected int getMyProp() {
+  int getMyProp() {
     return props().getAny( Props.myProp ).asInt();
   }
 
@@ -41,6 +41,13 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
       final JsPropertyMap<Object> props = props();
       preUpdateOnPropChange( prevProps, props );
     }
+    preUpdate();
+  }
+
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    postUpdate();
+    storeDebugDataAsState();
   }
 
   static final class Factory {

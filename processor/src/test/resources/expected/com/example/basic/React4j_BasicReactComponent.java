@@ -23,6 +23,11 @@ class React4j_BasicReactComponent extends BasicReactComponent {
     return componentConstructor;
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }

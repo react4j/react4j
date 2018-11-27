@@ -56,6 +56,11 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   }
 
   @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
+  @Override
   protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
     if ( !Js.isTripleEqual( props().get( Props.value ), nextProps.get( Props.value ) ) ) {
       return true;

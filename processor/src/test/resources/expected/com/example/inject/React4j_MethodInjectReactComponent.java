@@ -30,6 +30,11 @@ class React4j_MethodInjectReactComponent extends MethodInjectReactComponent {
     return componentConstructor;
   }
 
+  @Override
+  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+    storeDebugDataAsState();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
