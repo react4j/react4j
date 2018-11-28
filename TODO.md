@@ -27,6 +27,8 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 Originally at:
 jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React.java:399: WARNING - Property ReactCurrentOwner never defined on React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
 
+* Should `@PreRender` and `@PostRender` be `@PreCommit` and `@PostCommit` ? or `@PrePaint` and `@PostPaint`?
+
 * Closure compiler has attribute. Can GWT2 also do same??? Can we use the annotation to propagate.
   `@nosideeffects` indicates that a call to the declared function has no side effects. This annotation allows the
   compiler to remove calls to the function if the return value is not used. This is not a signal that the function
