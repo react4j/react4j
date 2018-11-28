@@ -6,6 +6,8 @@ import java.lang.annotation.Target;
 
 /**
  * Identifies a method that is called after a component is updated or re-rendered.
+ * Re-render in this circumstance means that a component has been mounted on the DOM
+ * and changes to the component are being applied to the dom.
  * There must only be one method annotated with this annotation in a single component.
  * This method is invoked in the "commit" phase using reacts <code>componentDidUpdate()</code>
  * lifecycle method.
