@@ -10,7 +10,6 @@
 * Change remaining lifecycle hooks to be annotation driven. i.e.
   `@PostMount` - componentDidMount
   `@PostRender` - componentDidUpdate + componentDidMount
-  `@PostUpdate` - componentDidUpdate
   If we do this then the annotation processor could completely take over responsibility for implementing lifecycle
   steps rather than part of it being in `react4j.Component`.
 
