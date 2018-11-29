@@ -137,16 +137,6 @@ public abstract class Component
   }
 
   /**
-   * This method is invoked after a component is attached to the DOM.
-   * Initialization that requires DOM nodes should go here.
-   * Setting state in this method will trigger a re-rendering.
-   * See the <a href="https://reactjs.org/docs/react-component.html#componentdidmount">React Component documentation</a> for more details.
-   */
-  protected void componentDidMount()
-  {
-  }
-
-  /**
    * Template method called when onPropChange in PRE phase declared.
    *
    * @param prevProps the props before the component was updated.
