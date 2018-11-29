@@ -47,7 +47,17 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   private void performPostConstruct()
   {
-    _component.performPostConstruct();
+    component().performPostConstruct();
+  }
+
+  /**
+   * Return the non-native component associated with this component.
+   *
+   * @return the component.
+   */
+  protected final I component()
+  {
+    return _component;
   }
 
   /**
@@ -58,7 +68,7 @@ public abstract class NativeAdapterComponent<I extends Component>
   @Nullable
   protected final void performComponentPreUpdate( @Nonnull final JsPropertyMap<Object> prevProps )
   {
-    _component.performComponentPreUpdate( prevProps );
+    component().performComponentPreUpdate( prevProps );
   }
 
   /**
@@ -70,7 +80,7 @@ public abstract class NativeAdapterComponent<I extends Component>
   @Nullable
   public final ReactNode render()
   {
-    return _component.performRender();
+    return component().performRender();
   }
 
   /**
@@ -82,7 +92,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final void performComponentDidMount()
   {
-    _component.performComponentDidMount();
+    component().performComponentDidMount();
   }
 
   /**
@@ -94,7 +104,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final void performComponentWillUnmount()
   {
-    _component.performComponentWillUnmount();
+    component().performComponentWillUnmount();
   }
 
   /**
@@ -108,7 +118,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final boolean performShouldComponentUpdate( @Nonnull final JsPropertyMap<Object> nextProps )
   {
-    return _component.shouldComponentUpdate( nextProps );
+    return component().shouldComponentUpdate( nextProps );
   }
 
   /**
@@ -120,7 +130,7 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final void performComponentDidUpdate( @Nullable final JsPropertyMap<Object> prevProps )
   {
-    _component.performComponentDidUpdate( prevProps );
+    component().performComponentDidUpdate( prevProps );
   }
 
   /**
@@ -134,6 +144,6 @@ public abstract class NativeAdapterComponent<I extends Component>
    */
   protected final void performComponentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
-    _component.performComponentDidCatch( error, info );
+    component().performComponentDidCatch( error, info );
   }
 }
