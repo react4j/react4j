@@ -72,6 +72,8 @@ final class Generator
     ClassName.get( "react4j", "NativeAdapterComponent" );
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
+  private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
+  private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
 
   private Generator()
   {
@@ -1033,9 +1035,7 @@ final class Generator
   {
     final MethodSpec.Builder method =
       MethodSpec
-        .methodBuilder( "componentPreUpdate" )
-        .addModifiers( Modifier.PROTECTED )
-        .addAnnotation( Override.class )
+        .methodBuilder( COMPONENT_PRE_UPDATE_METHOD )
         .addParameter( ParameterSpec
                          .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                          .addAnnotation( NULLABLE_CLASSNAME )
@@ -1052,7 +1052,13 @@ final class Generator
         method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME )
                                 .addMember( "verifyRequired", "false" )
                                 .build() );
+        method.addModifiers( Modifier.PROTECTED );
+
         block.addStatement( "reportPropChanges( prevProps, props, true )" );
+      }
+      else
+      {
+        method.addModifiers( Modifier.PRIVATE );
       }
       if ( hasPreUpdateOnPropChange )
       {
@@ -1388,14 +1394,15 @@ final class Generator
     // Lifecycle methods
     for ( final MethodDescriptor lifecycleMethod : lifecycleMethods )
     {
-      builder.addMethod( buildLifecycleMethod( lifecycleMethod ).build() );
+      builder.addMethod( buildLifecycleMethod( descriptor, lifecycleMethod ).build() );
     }
 
     return builder.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildLifecycleMethod( @Nonnull final MethodDescriptor descriptor )
+  private static MethodSpec.Builder buildLifecycleMethod( @Nonnull final ComponentDescriptor componentDescriptor,
+                                                          @Nonnull final MethodDescriptor descriptor )
   {
     final String methodName = descriptor.getMethod().getSimpleName().toString();
     final boolean isPreUpdate = Constants.COMPONENT_PRE_UPDATE.equals( methodName );
@@ -1421,7 +1428,9 @@ final class Generator
                              .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
                              .addAnnotation( NONNULL_CLASSNAME )
                              .build() );
-      method.addStatement( "performComponentPreUpdate( prevProps )" );
+      method.addStatement( "(($T) component() ).$N( prevProps )",
+                           componentDescriptor.getClassNameToConstruct(),
+                           COMPONENT_PRE_UPDATE_METHOD );
       method.addStatement( "return null" );
     }
     else if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )

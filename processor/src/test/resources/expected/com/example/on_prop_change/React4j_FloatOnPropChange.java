@@ -37,8 +37,7 @@ class React4j_FloatOnPropChange extends FloatOnPropChange {
     }
   }
 
-  @Override
-  protected void componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
       preUpdateOnPropChange( prevProps, props );
@@ -96,7 +95,7 @@ class React4j_FloatOnPropChange extends FloatOnPropChange {
     @Override
     public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      performComponentPreUpdate( prevProps );
+      ((React4j_FloatOnPropChange) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
   }
@@ -120,7 +119,7 @@ class React4j_FloatOnPropChange extends FloatOnPropChange {
     @Override
     public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      performComponentPreUpdate( prevProps );
+      ((React4j_FloatOnPropChange) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 

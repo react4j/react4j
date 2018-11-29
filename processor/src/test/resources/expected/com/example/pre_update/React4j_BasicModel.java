@@ -23,8 +23,7 @@ class React4j_BasicModel extends BasicModel {
     return componentConstructor;
   }
 
-  @Override
-  protected void componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     preUpdate();
   }
 
@@ -78,7 +77,7 @@ class React4j_BasicModel extends BasicModel {
     @Override
     public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      performComponentPreUpdate( prevProps );
+      ((React4j_BasicModel) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
   }
@@ -102,7 +101,7 @@ class React4j_BasicModel extends BasicModel {
     @Override
     public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      performComponentPreUpdate( prevProps );
+      ((React4j_BasicModel) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 

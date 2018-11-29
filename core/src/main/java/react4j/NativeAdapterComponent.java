@@ -61,17 +61,6 @@ public abstract class NativeAdapterComponent<I extends Component>
   }
 
   /**
-   * Call componentPreUpdate on the target component.
-   *
-   * @see Component#componentPreUpdate(JsPropertyMap)
-   */
-  @Nullable
-  protected final void performComponentPreUpdate( @Nonnull final JsPropertyMap<Object> prevProps )
-  {
-    component().performComponentPreUpdate( prevProps );
-  }
-
-  /**
    * Call render on the target component.
    *
    * @return the output of rendering.

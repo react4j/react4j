@@ -67,11 +67,10 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     return modified || hasRenderDepsChanged();
   }
 
-  @Override
   @Action(
       verifyRequired = false
   )
-  protected void componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  protected void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
       reportPropChanges( prevProps, props, true );
@@ -142,7 +141,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     @Override
     public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      performComponentPreUpdate( prevProps );
+      ((Arez_React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 
@@ -176,7 +175,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     @Override
     public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      performComponentPreUpdate( prevProps );
+      ((Arez_React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 
