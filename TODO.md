@@ -32,7 +32,8 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 * BUG: A component has had a `Component.forceUpdate()` called on it but the re-render did not trigger any changes
   that would cause a re-commit and thus will not go through `preRender` phase. Thus any props that were changed at
   the same time will not be detected by `OnPropChange` annotated methods. A possible fix is to schedule a task to
-  execute later to detect changes? If task is disposed then we can ignore change detection.
+  execute later to detect changes? If task is disposed then we can ignore change detection. It is possible that
+  we need to change `scheduleRender()` to use non-force method if `OnPropChange` is present on class.
 
 * Closure compiler has attribute. Can GWT2 also do same??? Can we use the annotation to propagate.
   `@nosideeffects` indicates that a call to the declared function has no side effects. This annotation allows the
