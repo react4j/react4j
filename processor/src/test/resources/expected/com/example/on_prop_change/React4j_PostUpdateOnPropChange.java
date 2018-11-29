@@ -45,8 +45,7 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
       postUpdateOnPropChange( prevProps, props );
@@ -95,7 +94,7 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((React4j_PostUpdateOnPropChange) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 
@@ -117,7 +116,7 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((React4j_PostUpdateOnPropChange) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

@@ -55,8 +55,7 @@ class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalChildrenWi
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -113,7 +112,7 @@ class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalChildrenWi
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((React4j_OptionalChildrenWithOptionalAndRequired) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

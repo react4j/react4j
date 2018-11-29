@@ -27,8 +27,7 @@ class NestedReactComponent_React4j_BasicReactComponent extends NestedReactCompon
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -80,7 +79,7 @@ class NestedReactComponent_React4j_BasicReactComponent extends NestedReactCompon
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((NestedReactComponent_React4j_BasicReactComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

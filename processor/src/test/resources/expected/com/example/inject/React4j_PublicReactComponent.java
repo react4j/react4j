@@ -34,8 +34,7 @@ class React4j_PublicReactComponent extends PublicReactComponent {
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -102,7 +101,7 @@ class React4j_PublicReactComponent extends PublicReactComponent {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((React4j_PublicReactComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

@@ -45,8 +45,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -115,7 +114,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((React4j_ExplicitNamePropValidate) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override

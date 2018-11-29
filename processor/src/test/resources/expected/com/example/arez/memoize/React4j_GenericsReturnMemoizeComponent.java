@@ -34,8 +34,7 @@ abstract class React4j_GenericsReturnMemoizeComponent extends GenericsReturnMemo
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -111,7 +110,7 @@ abstract class React4j_GenericsReturnMemoizeComponent extends GenericsReturnMemo
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((Arez_React4j_GenericsReturnMemoizeComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override

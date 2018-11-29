@@ -53,8 +53,7 @@ class React4j_NullableOnPropChange extends NullableOnPropChange {
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -134,7 +133,7 @@ class React4j_NullableOnPropChange extends NullableOnPropChange {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((React4j_NullableOnPropChange) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

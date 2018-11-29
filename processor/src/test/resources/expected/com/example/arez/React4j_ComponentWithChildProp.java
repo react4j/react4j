@@ -41,8 +41,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -119,7 +118,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((Arez_React4j_ComponentWithChildProp) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override

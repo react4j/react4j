@@ -33,8 +33,7 @@ abstract class React4j_ProtectedMemoizeComponent extends ProtectedMemoizeCompone
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -110,7 +109,7 @@ abstract class React4j_ProtectedMemoizeComponent extends ProtectedMemoizeCompone
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((Arez_React4j_ProtectedMemoizeComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override

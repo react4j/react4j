@@ -74,6 +74,7 @@ final class Generator
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
   private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
   private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
+  private static final String COMPONENT_DID_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentDidUpdate";
   private static final String COMPONENT_DID_MOUNT_METHOD = INTERNAL_METHOD_PREFIX + "componentDidMount";
 
   private Generator()
@@ -1096,9 +1097,8 @@ final class Generator
   {
     final MethodSpec.Builder method =
       MethodSpec
-        .methodBuilder( "componentDidUpdate" )
-        .addModifiers( Modifier.PROTECTED )
-        .addAnnotation( Override.class )
+        .methodBuilder( COMPONENT_DID_UPDATE_METHOD )
+        .addModifiers( Modifier.FINAL )
         .addParameter( ParameterSpec
                          .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                          .addAnnotation( NULLABLE_CLASSNAME )
@@ -1455,7 +1455,9 @@ final class Generator
                              .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                              .addAnnotation( NONNULL_CLASSNAME )
                              .build() );
-      method.addStatement( "performComponentDidUpdate( prevProps )" );
+      method.addStatement( "(($T) component() ).$N( prevProps )",
+                           componentDescriptor.getClassNameToConstruct(),
+                           COMPONENT_DID_UPDATE_METHOD );
     }
     else if ( Constants.COMPONENT_DID_MOUNT.equals( methodName ) )
     {

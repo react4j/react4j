@@ -45,8 +45,7 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -115,7 +114,7 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((React4j_ProtectedPropValidate) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override

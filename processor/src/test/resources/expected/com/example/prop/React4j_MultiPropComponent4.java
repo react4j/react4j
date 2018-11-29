@@ -77,8 +77,7 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     storeDebugDataAsState();
   }
 
-  @Override
-  protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
@@ -139,7 +138,7 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
 
     @Override
     public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      performComponentDidUpdate( prevProps );
+      ((React4j_MultiPropComponent4) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }
