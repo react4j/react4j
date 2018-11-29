@@ -61,6 +61,10 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -116,7 +120,7 @@ class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMultiPropCompo
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_GenericTypeMultiPropComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

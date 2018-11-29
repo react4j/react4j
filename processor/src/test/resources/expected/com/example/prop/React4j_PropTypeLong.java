@@ -28,6 +28,10 @@ class React4j_PropTypeLong extends PropTypeLong {
     return props().getAny( Props.myProp ).asLong();
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -77,7 +81,7 @@ class React4j_PropTypeLong extends PropTypeLong {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_PropTypeLong) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

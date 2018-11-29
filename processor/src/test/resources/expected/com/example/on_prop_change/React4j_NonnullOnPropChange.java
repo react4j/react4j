@@ -45,6 +45,10 @@ class React4j_NonnullOnPropChange extends NonnullOnPropChange {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -114,7 +118,7 @@ class React4j_NonnullOnPropChange extends NonnullOnPropChange {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_NonnullOnPropChange) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

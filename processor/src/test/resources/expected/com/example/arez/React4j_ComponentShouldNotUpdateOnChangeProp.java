@@ -36,6 +36,10 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -101,7 +105,7 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((Arez_React4j_ComponentShouldNotUpdateOnChangeProp) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

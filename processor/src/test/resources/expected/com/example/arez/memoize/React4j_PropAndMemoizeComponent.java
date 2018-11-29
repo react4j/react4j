@@ -78,6 +78,10 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -173,7 +177,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((Arez_React4j_PropAndMemoizeComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

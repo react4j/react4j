@@ -29,6 +29,10 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
     return componentConstructor;
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -102,7 +106,7 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((Arez_React4j_AnnotatedMemoizeComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

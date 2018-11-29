@@ -37,6 +37,10 @@ class React4j_ShortPropValidate extends ShortPropValidate {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -102,7 +106,7 @@ class React4j_ShortPropValidate extends ShortPropValidate {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_ShortPropValidate) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

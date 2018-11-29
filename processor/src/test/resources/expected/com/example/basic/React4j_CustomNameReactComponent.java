@@ -23,6 +23,10 @@ class React4j_CustomNameReactComponent extends CustomNameReactComponent {
     return componentConstructor;
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -71,7 +75,7 @@ class React4j_CustomNameReactComponent extends CustomNameReactComponent {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_CustomNameReactComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

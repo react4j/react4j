@@ -28,6 +28,10 @@ class React4j_PropTypeDouble extends PropTypeDouble {
     return props().getAny( Props.myProp ).asDouble();
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -77,7 +81,7 @@ class React4j_PropTypeDouble extends PropTypeDouble {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_PropTypeDouble) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

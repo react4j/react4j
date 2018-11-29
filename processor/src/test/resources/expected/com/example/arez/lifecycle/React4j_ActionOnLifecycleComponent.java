@@ -27,6 +27,11 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
     return componentConstructor;
   }
 
+  void $$react4j$$_componentDidMount() {
+    postMount();
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -76,7 +81,7 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((Arez_React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override
@@ -98,7 +103,7 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((Arez_React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

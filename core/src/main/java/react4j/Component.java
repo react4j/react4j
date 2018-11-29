@@ -147,15 +147,6 @@ public abstract class Component
   }
 
   /**
-   * Wrapper method that delegates to the {@link #componentDidMount()} method.
-   */
-  final void performComponentDidMount()
-  {
-    componentDidMount();
-    storeDebugDataAsState();
-  }
-
-  /**
    * This method is invoked immediately before updating occurs.
    * If you need to interact with the DOM before the component has been updated.
    * See the <a href="https://reactjs.org/docs/react-component.html#getsnapshotbeforeupdate">React Component documentation</a> for more details.
@@ -216,7 +207,7 @@ public abstract class Component
   /**
    * This method is invoked immediately before a component is unmounted and destroyed.
    * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
-   * any DOM elements that were created in {@link #componentDidMount()}
+   * any DOM elements that were created in {@link react4j.annotations.PostMount} annotated methods.
    * See the <a href="https://reactjs.org/docs/react-component.html#componentwillunmount">React Component documentation</a> for more details.
    */
   protected void componentWillUnmount()

@@ -77,6 +77,10 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -169,7 +173,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((Arez_React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

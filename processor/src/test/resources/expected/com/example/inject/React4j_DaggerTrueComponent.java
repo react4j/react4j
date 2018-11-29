@@ -30,6 +30,10 @@ class React4j_DaggerTrueComponent extends DaggerTrueComponent {
     return componentConstructor;
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -93,7 +97,7 @@ class React4j_DaggerTrueComponent extends DaggerTrueComponent {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_DaggerTrueComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

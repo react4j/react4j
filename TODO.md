@@ -8,7 +8,6 @@
 * Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
 * Change remaining lifecycle hooks to be annotation driven. i.e.
-  `@PostMount` - componentDidMount
   `@PostRender` - componentDidUpdate + componentDidMount
   If we do this then the annotation processor could completely take over responsibility for implementing lifecycle
   steps rather than part of it being in `react4j.Component`.

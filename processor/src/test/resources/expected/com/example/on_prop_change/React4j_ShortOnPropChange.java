@@ -44,6 +44,10 @@ class React4j_ShortOnPropChange extends ShortOnPropChange {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -113,7 +117,7 @@ class React4j_ShortOnPropChange extends ShortOnPropChange {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_ShortOnPropChange) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

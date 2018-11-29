@@ -28,6 +28,10 @@ class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
     return props().getAny( Props.foo ).asBoolean();
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -77,7 +81,7 @@ class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_BoolJavaBeanPropComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

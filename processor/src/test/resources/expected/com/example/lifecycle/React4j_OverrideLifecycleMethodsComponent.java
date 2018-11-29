@@ -29,6 +29,11 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     preUpdate();
   }
 
+  void $$react4j$$_componentDidMount() {
+    postMount();
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postUpdate();
@@ -73,7 +78,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_OverrideLifecycleMethodsComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

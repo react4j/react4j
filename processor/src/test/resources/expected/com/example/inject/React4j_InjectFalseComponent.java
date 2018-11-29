@@ -23,6 +23,10 @@ class React4j_InjectFalseComponent extends InjectFalseComponent {
     return componentConstructor;
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -71,7 +75,7 @@ class React4j_InjectFalseComponent extends InjectFalseComponent {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_InjectFalseComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

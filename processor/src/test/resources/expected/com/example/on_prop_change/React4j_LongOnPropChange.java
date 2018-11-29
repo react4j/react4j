@@ -44,6 +44,10 @@ class React4j_LongOnPropChange extends LongOnPropChange {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -113,7 +117,7 @@ class React4j_LongOnPropChange extends LongOnPropChange {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_LongOnPropChange) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

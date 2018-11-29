@@ -28,6 +28,10 @@ class React4j_PropTypeByte extends PropTypeByte {
     return props().getAny( Props.myProp ).asByte();
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -77,7 +81,7 @@ class React4j_PropTypeByte extends PropTypeByte {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_PropTypeByte) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

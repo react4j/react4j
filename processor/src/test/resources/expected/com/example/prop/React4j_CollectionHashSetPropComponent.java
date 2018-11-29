@@ -33,6 +33,10 @@ class React4j_CollectionHashSetPropComponent extends CollectionHashSetPropCompon
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -82,7 +86,7 @@ class React4j_CollectionHashSetPropComponent extends CollectionHashSetPropCompon
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_CollectionHashSetPropComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

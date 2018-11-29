@@ -39,6 +39,10 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -103,7 +107,7 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((NestedCompleteComponent_React4j_BasicReactComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

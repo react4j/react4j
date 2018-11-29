@@ -74,6 +74,7 @@ final class Generator
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
   private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
   private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
+  private static final String COMPONENT_DID_MOUNT_METHOD = INTERNAL_METHOD_PREFIX + "componentDidMount";
 
   private Generator()
   {
@@ -563,6 +564,7 @@ final class Generator
     {
       builder.addMethod( buildComponentPreUpdate( descriptor ).build() );
     }
+    builder.addMethod( buildComponentDidMount( descriptor ).build() );
     builder.addMethod( buildComponentDidUpdate( descriptor ).build() );
 
     if ( descriptor.isArezComponent() )
@@ -1031,6 +1033,20 @@ final class Generator
   }
 
   @Nonnull
+  private static MethodSpec.Builder buildComponentDidMount( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( COMPONENT_DID_MOUNT_METHOD );
+    final ExecutableElement postMount = descriptor.getPostMount();
+    if ( null != postMount )
+    {
+      method.addStatement( "$N()", postMount.getSimpleName().toString() );
+    }
+    method.addStatement( "storeDebugDataAsState()" );
+
+    return method;
+  }
+
+  @Nonnull
   private static MethodSpec.Builder buildComponentPreUpdate( @Nonnull final ComponentDescriptor descriptor )
   {
     final MethodSpec.Builder method =
@@ -1443,7 +1459,9 @@ final class Generator
     }
     else if ( Constants.COMPONENT_DID_MOUNT.equals( methodName ) )
     {
-      method.addStatement( "performComponentDidMount()" );
+      method.addStatement( "(($T) component() ).$N()",
+                           componentDescriptor.getClassNameToConstruct(),
+                           COMPONENT_DID_MOUNT_METHOD );
     }
     else if ( Constants.COMPONENT_WILL_UNMOUNT.equals( methodName ) )
     {

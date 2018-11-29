@@ -30,6 +30,10 @@ class React4j_NonnullChildPropComponent extends NonnullChildPropComponent {
     return props().getAny( Props.child ).cast();
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -79,7 +83,7 @@ class React4j_NonnullChildPropComponent extends NonnullChildPropComponent {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_NonnullChildPropComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

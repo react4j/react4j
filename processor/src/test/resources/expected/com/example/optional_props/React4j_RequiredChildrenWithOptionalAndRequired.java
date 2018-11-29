@@ -51,6 +51,10 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -104,7 +108,7 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_RequiredChildrenWithOptionalAndRequired) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

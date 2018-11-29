@@ -39,6 +39,10 @@ class React4j_NullabilityPropsComponent extends NullabilityPropsComponent {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -90,7 +94,7 @@ class React4j_NullabilityPropsComponent extends NullabilityPropsComponent {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_NullabilityPropsComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

@@ -48,6 +48,10 @@ class React4j_ProtectedAccessOnPropChange extends ProtectedAccessOnPropChange {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -117,7 +121,7 @@ class React4j_ProtectedAccessOnPropChange extends ProtectedAccessOnPropChange {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_ProtectedAccessOnPropChange) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

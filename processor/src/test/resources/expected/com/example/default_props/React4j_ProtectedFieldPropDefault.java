@@ -32,6 +32,10 @@ class React4j_ProtectedFieldPropDefault extends ProtectedFieldPropDefault {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -81,7 +85,7 @@ class React4j_ProtectedFieldPropDefault extends ProtectedFieldPropDefault {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_ProtectedFieldPropDefault) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

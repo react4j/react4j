@@ -44,6 +44,10 @@ class React4j_IntOnPropChange extends IntOnPropChange {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -113,7 +117,7 @@ class React4j_IntOnPropChange extends IntOnPropChange {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_IntOnPropChange) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

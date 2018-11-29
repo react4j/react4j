@@ -32,6 +32,10 @@ class React4j_PublicMethodPropDefault extends PublicMethodPropDefault {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -81,7 +85,7 @@ class React4j_PublicMethodPropDefault extends PublicMethodPropDefault {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_PublicMethodPropDefault) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

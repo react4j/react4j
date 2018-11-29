@@ -33,6 +33,10 @@ class React4j_MultipleChildrenPropComponent extends MultipleChildrenPropComponen
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -82,7 +86,7 @@ class React4j_MultipleChildrenPropComponent extends MultipleChildrenPropComponen
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_MultipleChildrenPropComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

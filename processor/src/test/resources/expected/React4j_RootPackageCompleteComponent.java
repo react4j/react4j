@@ -43,6 +43,11 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
     preUpdate();
   }
 
+  void $$react4j$$_componentDidMount() {
+    postMount();
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postUpdate();
@@ -84,7 +89,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

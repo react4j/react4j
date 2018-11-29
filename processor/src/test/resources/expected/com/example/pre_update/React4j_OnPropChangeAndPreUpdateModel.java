@@ -45,6 +45,10 @@ class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateMode
     preUpdate();
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -114,7 +118,7 @@ class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateMode
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_OnPropChangeAndPreUpdateModel) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

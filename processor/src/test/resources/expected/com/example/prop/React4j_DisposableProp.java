@@ -46,6 +46,10 @@ abstract class React4j_DisposableProp extends DisposableProp {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -119,7 +123,7 @@ abstract class React4j_DisposableProp extends DisposableProp {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((Arez_React4j_DisposableProp) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

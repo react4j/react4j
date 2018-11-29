@@ -41,6 +41,10 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
@@ -108,7 +112,7 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_PostUpdateOnPropChange) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

@@ -1,6 +1,7 @@
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
+import react4j.annotations.PostMount;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.Prop;
@@ -28,8 +29,8 @@ abstract class RootPackageCompleteComponent
     return null;
   }
 
-  @Override
-  protected void componentDidMount()
+  @PostMount
+  protected void postMount()
   {
   }
 

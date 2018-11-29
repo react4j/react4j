@@ -36,6 +36,10 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -109,7 +113,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((Arez_React4j_ComponentShouldUpdateOnChangeProp) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

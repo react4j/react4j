@@ -34,6 +34,8 @@ final class ComponentDescriptor
   private ExecutableElement _preUpdate;
   @Nullable
   private ExecutableElement _postUpdate;
+  @Nullable
+  private ExecutableElement _postMount;
   private boolean _arezComponent;
   private boolean _needsInjection;
   private boolean _needsDaggerIntegration;
@@ -273,9 +275,7 @@ final class ComponentDescriptor
     final String classname = getClassNameForMethod( method );
     return
       ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) && !generateShouldComponentUpdate() ) ||
-      (
-        Constants.COMPONENT_CLASSNAME.equals( classname ) && Constants.COMPONENT_DID_MOUNT.equals( methodName )
-      ) ||
+      ( Constants.COMPONENT_DID_MOUNT.equals( methodName ) && !generateComponentDidMount() ) ||
       (
         Constants.COMPONENT_CLASSNAME.equals( classname ) &&
         Constants.COMPONENT_PRE_UPDATE.equals( methodName ) &&
@@ -414,6 +414,28 @@ final class ComponentDescriptor
     }
   }
 
+  @Nullable
+  ExecutableElement getPostMount()
+  {
+    return _postMount;
+  }
+
+  void setPostMount( @Nonnull final ExecutableElement postMount )
+    throws ReactProcessorException
+  {
+    MethodChecks.mustBeLifecycleHook( getElement(), Constants.POST_MOUNT_ANNOTATION_CLASSNAME, postMount );
+
+    if ( null != _postMount )
+    {
+      throw new ReactProcessorException( "@PostMount target duplicates existing method named " +
+                                         _postMount.getSimpleName(), postMount );
+    }
+    else
+    {
+      _postMount = postMount;
+    }
+  }
+
   boolean generateShouldComponentUpdate()
   {
     return hasObservableProps() || hasValidatedProps();
@@ -422,6 +444,11 @@ final class ComponentDescriptor
   boolean generateComponentPreUpdate()
   {
     return hasObservableProps() || hasPreUpdateOnPropChange() || null != _preUpdate;
+  }
+
+  boolean generateComponentDidMount()
+  {
+    return null != _postMount;
   }
 
   boolean hasPreUpdateOnPropChange()

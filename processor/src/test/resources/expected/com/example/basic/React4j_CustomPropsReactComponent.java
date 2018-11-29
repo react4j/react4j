@@ -28,6 +28,10 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
     return props().getAny( Props.someField ).asBoolean();
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -77,7 +81,7 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_CustomPropsReactComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

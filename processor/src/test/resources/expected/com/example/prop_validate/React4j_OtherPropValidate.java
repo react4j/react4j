@@ -42,6 +42,10 @@ class React4j_OtherPropValidate extends OtherPropValidate {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -107,7 +111,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_OtherPropValidate) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

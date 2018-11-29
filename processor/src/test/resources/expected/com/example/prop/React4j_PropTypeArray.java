@@ -32,6 +32,10 @@ class React4j_PropTypeArray extends PropTypeArray {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -81,7 +85,7 @@ class React4j_PropTypeArray extends PropTypeArray {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_PropTypeArray) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

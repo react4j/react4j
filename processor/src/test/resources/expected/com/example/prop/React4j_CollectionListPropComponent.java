@@ -33,6 +33,10 @@ class React4j_CollectionListPropComponent extends CollectionListPropComponent {
     }
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -82,7 +86,7 @@ class React4j_CollectionListPropComponent extends CollectionListPropComponent {
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((React4j_CollectionListPropComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override

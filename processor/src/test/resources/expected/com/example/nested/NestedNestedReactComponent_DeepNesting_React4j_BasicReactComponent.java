@@ -23,6 +23,10 @@ class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends
     return componentConstructor;
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Override
   protected void componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
@@ -71,7 +75,7 @@ class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends
 
     @Override
     public void componentDidMount() {
-      performComponentDidMount();
+      ((NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override
