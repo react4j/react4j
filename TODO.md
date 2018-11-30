@@ -28,6 +28,8 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 
 * Should `@PreRender` and `@PostRender` be `@PreCommit` and `@PostCommit` ? or `@PrePaint` and `@PostPaint`?
 
+* Should generate an error when any method or field has an Arez annotation when not an arez component
+
 * BUG: A component has had a `Component.forceUpdate()` called on it but the re-render did not trigger any changes
   that would cause a re-commit and thus will not go through `preRender` phase. Thus any props that were changed at
   the same time will not be detected by `OnPropChange` annotated methods. A possible fix is to schedule a task to
