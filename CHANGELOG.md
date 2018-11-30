@@ -34,6 +34,7 @@
   was duplicating functionality already implemented by the underlying `ReactJS` library. This also involved
   removing the compile time setting `react4j.check_component_state_invariants` and the accessor
   `ReactConfig.checkComponentStateInvariants()`.
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.117`.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)
