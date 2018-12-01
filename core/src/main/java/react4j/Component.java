@@ -63,7 +63,7 @@ public abstract class Component
 
   /**
    * Return the key associated with the component if any.
-   * The key is used by the react reconcilliation process as a means to identify components so that they
+   * The key is used by the react reconciliation process as a means to identify components so that they
    * can be moved rather than recreated or reconfigured. Typically, it should not be used by the component
    * itself except for generating keys of sub-components. This value may not be specified in which case null
    * will be returned.
