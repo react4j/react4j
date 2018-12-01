@@ -4,7 +4,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import javax.annotation.Nonnull;
-import jsinterop.base.JsPropertyMap;
 
 /**
  * Annotation used to specify an abstract method that returns a prop.
