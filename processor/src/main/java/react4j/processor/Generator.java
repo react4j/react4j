@@ -76,6 +76,7 @@ final class Generator
   private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
   private static final String COMPONENT_DID_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentDidUpdate";
   private static final String COMPONENT_DID_MOUNT_METHOD = INTERNAL_METHOD_PREFIX + "componentDidMount";
+  private static final String COMPONENT_WILL_UNMOUNT_METHOD = INTERNAL_METHOD_PREFIX + "componentWillUnmount";
 
   private Generator()
   {
@@ -553,20 +554,26 @@ final class Generator
     {
       builder.addMethod( buildReportPropChangesMethod( descriptor ).build() );
     }
-    if ( descriptor.hasPreUpdateOnPropChange() )
-    {
-      builder.addMethod( buildPreUpdateOnPropChangeMethod( descriptor ).build() );
-    }
     if ( descriptor.hasPostUpdateOnPropChange() )
     {
       builder.addMethod( buildPostUpdateOnPropChangeMethod( descriptor ).build() );
+    }
+    if ( descriptor.isArezComponent() || descriptor.generateComponentDidMount() )
+    {
+      builder.addMethod( buildComponentDidMount( descriptor ).build() );
     }
     if ( descriptor.generateComponentPreUpdate() )
     {
       builder.addMethod( buildComponentPreUpdate( descriptor ).build() );
     }
-    builder.addMethod( buildComponentDidMount( descriptor ).build() );
-    builder.addMethod( buildComponentDidUpdate( descriptor ).build() );
+    if ( descriptor.isArezComponent() || descriptor.generateComponentDidUpdate() )
+    {
+      builder.addMethod( buildComponentDidUpdate( descriptor ).build() );
+    }
+    if ( descriptor.generateComponentWillUnmount() )
+    {
+      builder.addMethod( buildComponentWillUnmount( descriptor ).build() );
+    }
 
     if ( descriptor.isArezComponent() )
     {
@@ -599,9 +606,9 @@ final class Generator
       }
     }
 
-    if ( !descriptor.getLifecycleMethods().isEmpty() )
+    if ( descriptor.shouldGenerateLifecycle() )
     {
-      if ( descriptor.shouldGenerateLiteLifecycle() && !descriptor.getLiteLifecycleMethods().isEmpty() )
+      if ( descriptor.shouldGenerateLiteLifecycle() )
       {
         builder.addType( buildNativeLiteLifecycleInterface( descriptor ) );
       }
@@ -932,28 +939,6 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildPreUpdateOnPropChangeMethod( @Nonnull final ComponentDescriptor descriptor )
-  {
-    assert descriptor.hasPreUpdateOnPropChange();
-    final MethodSpec.Builder method =
-      MethodSpec
-        .methodBuilder( "preUpdateOnPropChange" ).
-        addModifiers( Modifier.PROTECTED ).
-        addAnnotation( Override.class ).
-        addParameter( ParameterSpec
-                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
-                        .addAnnotation( NONNULL_CLASSNAME )
-                        .build() ).
-        addParameter( ParameterSpec
-                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL )
-                        .addAnnotation( NONNULL_CLASSNAME )
-                        .build() );
-
-    buildOnPropChangeInvocations( method, descriptor.getPreUpdateOnPropChangeDescriptors() );
-    return method;
-  }
-
-  @Nonnull
   private static MethodSpec.Builder buildPostUpdateOnPropChangeMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     assert descriptor.hasPostUpdateOnPropChange();
@@ -975,8 +960,8 @@ final class Generator
     return method;
   }
 
-  private static void buildOnPropChangeInvocations( final MethodSpec.Builder method,
-                                                    final List<OnPropChangeDescriptor> onPropChanges )
+  private static void buildOnPropChangeInvocations( @Nonnull final MethodSpec.Builder method,
+                                                    @Nonnull final List<OnPropChangeDescriptor> onPropChanges )
   {
     // The list of props we need to check for changes
     final List<PropDescriptor> props =
@@ -1033,10 +1018,73 @@ final class Generator
     }
   }
 
+  private static void buildOnPropChangeInvocations( @Nonnull final CodeBlock.Builder code,
+                                                    @Nonnull final List<OnPropChangeDescriptor> onPropChanges )
+  {
+    // The list of props we need to check for changes
+    final List<PropDescriptor> props =
+      onPropChanges.stream().flatMap( d -> d.getProps().stream() ).distinct().collect( Collectors.toList() );
+
+    for ( final PropDescriptor prop : props )
+    {
+      code.addStatement( "final boolean $N = !$T.isTripleEqual( props.get( Props.$N ), prevProps.get( Props.$N ) )",
+                         prop.getName(),
+                         JS_CLASSNAME,
+                         prop.getConstantName(),
+                         prop.getConstantName() );
+    }
+    for ( final OnPropChangeDescriptor onPropChange : onPropChanges )
+    {
+      final CodeBlock.Builder onChangeBlock = CodeBlock.builder();
+      onChangeBlock.beginControlFlow( "if ( " +
+                                      onPropChange.getProps()
+                                        .stream()
+                                        .map( PropDescriptor::getName )
+                                        .collect( Collectors.joining( " && " ) ) + " )" );
+      final StringBuilder sb = new StringBuilder();
+      final ArrayList<Object> params = new ArrayList<>();
+      sb.append( "$N( " );
+      params.add( onPropChange.getMethod().getSimpleName().toString() );
+      boolean requireComma = false;
+      for ( final PropDescriptor prop : onPropChange.getProps() )
+      {
+        if ( requireComma )
+        {
+          sb.append( ", " );
+        }
+        requireComma = true;
+        final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
+        final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
+        if ( !resultKind.isPrimitive() && !isNonnull( prop.getMethod() ) )
+        {
+          sb.append( "$T.uncheckedCast( props.getAny( Props.$N ) )" );
+          params.add( JS_CLASSNAME );
+          params.add( prop.getConstantName() );
+        }
+        else
+        {
+          sb.append( "props.getAny( Props.$N ).$N()" );
+          params.add( prop.getConstantName() );
+          params.add( convertMethodName );
+        }
+      }
+
+      sb.append( " )" );
+      onChangeBlock.addStatement( sb.toString(), params.toArray() );
+      onChangeBlock.endControlFlow();
+      code.add( onChangeBlock.build() );
+    }
+  }
+
   @Nonnull
   private static MethodSpec.Builder buildComponentDidMount( @Nonnull final ComponentDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec.methodBuilder( COMPONENT_DID_MOUNT_METHOD );
+    final ExecutableElement postRender = descriptor.getPostRender();
+    if ( null != postRender )
+    {
+      method.addStatement( "$N()", postRender.getSimpleName().toString() );
+    }
     final ExecutableElement postMount = descriptor.getPostMount();
     if ( null != postMount )
     {
@@ -1079,7 +1127,7 @@ final class Generator
       }
       if ( hasPreUpdateOnPropChange )
       {
-        block.addStatement( "preUpdateOnPropChange( prevProps, props )" );
+        buildOnPropChangeInvocations( block, descriptor.getPreUpdateOnPropChangeDescriptors() );
       }
       block.endControlFlow();
       method.addCode( block.build() );
@@ -1114,12 +1162,31 @@ final class Generator
       block.endControlFlow();
       method.addCode( block.build() );
     }
+    final ExecutableElement postRender = descriptor.getPostRender();
+    if ( null != postRender )
+    {
+      method.addStatement( "$N()", postRender.getSimpleName().toString() );
+    }
     final ExecutableElement postUpdate = descriptor.getPostUpdate();
     if ( null != postUpdate )
     {
       method.addStatement( "$N()", postUpdate.getSimpleName().toString() );
     }
     method.addStatement( "storeDebugDataAsState()" );
+    return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildComponentWillUnmount( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( COMPONENT_WILL_UNMOUNT_METHOD ).addModifiers( Modifier.FINAL );
+
+    if ( descriptor.isArezComponent() )
+    {
+      method.addStatement( "$T.dispose( this )", DISPOSABLE_CLASSNAME );
+    }
+    // TODO
     return method;
   }
 
@@ -1368,9 +1435,9 @@ final class Generator
     builder.superclass( superType );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
-    final List<MethodDescriptor> lifecycleMethods =
-      lite ? descriptor.getLiteLifecycleMethods() : descriptor.getLifecycleMethods();
-    if ( !lifecycleMethods.isEmpty() )
+    final boolean hasLifecycleInterface =
+      lite ? descriptor.shouldGenerateLiteLifecycle() : descriptor.shouldGenerateLifecycle();
+    if ( hasLifecycleInterface )
     {
       builder.addSuperinterface( ClassName.bestGuess( ( lite ? "Lite" : "" ) + "Lifecycle" ) );
     }
@@ -1407,87 +1474,128 @@ final class Generator
       builder.addMethod( method.build() );
     }
 
-    // Lifecycle methods
-    for ( final MethodDescriptor lifecycleMethod : lifecycleMethods )
+    if ( ( !lite && descriptor.isArezComponent() ) || descriptor.generateComponentDidMount() )
     {
-      builder.addMethod( buildLifecycleMethod( descriptor, lifecycleMethod ).build() );
+      // We add this so the DevTool sees any debug data saved
+      builder.addMethod( buildNativeComponentDidMount( descriptor ).build() );
+    }
+    if ( descriptor.generateShouldComponentUpdate() )
+    {
+      builder.addMethod( buildNativeShouldComponentUpdate().build() );
+    }
+    if ( descriptor.generateComponentPreUpdate() )
+    {
+      builder.addMethod( buildNativeComponentPreUpdate( descriptor ).build() );
+    }
+    if ( ( !lite && descriptor.isArezComponent() ) || descriptor.generateComponentDidUpdate() )
+    {
+      // We add this for Arez components so the DevTool sees any debug data saved
+      builder.addMethod( buildNativeComponentDidUpdate( descriptor ).build() );
+    }
+    if ( descriptor.generateComponentWillUnmount() )
+    {
+      builder.addMethod( buildNativeComponentWillUnmount( descriptor ).build() );
+    }
+    if ( descriptor.generateComponentDidCatch() )
+    {
+      builder.addMethod( buildNativeComponentDidCatch().build() );
     }
 
     return builder.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildLifecycleMethod( @Nonnull final ComponentDescriptor componentDescriptor,
-                                                          @Nonnull final MethodDescriptor descriptor )
+  private static MethodSpec.Builder buildNativeComponentDidMount( @Nonnull final ComponentDescriptor componentDescriptor )
   {
-    final String methodName = descriptor.getMethod().getSimpleName().toString();
-    final boolean isPreUpdate = Constants.COMPONENT_PRE_UPDATE.equals( methodName );
-    final TypeName returnType =
-      isPreUpdate ? TypeName.get( Object.class ) : ClassName.get( descriptor.getMethodType().getReturnType() );
-    final String actualMethodName = isPreUpdate ? "getSnapshotBeforeUpdate" : methodName;
-    final MethodSpec.Builder method =
-      MethodSpec
-        .methodBuilder( actualMethodName )
-        .addModifiers( Modifier.PUBLIC )
-        .addAnnotation( Override.class )
-        .returns( returnType );
+    return MethodSpec
+      .methodBuilder( "componentDidMount" )
+      .addAnnotation( Override.class )
+      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addStatement( "(($T) component() ).$N()",
+                     componentDescriptor.getClassNameToConstruct(),
+                     COMPONENT_DID_MOUNT_METHOD );
+  }
 
-    ProcessorUtil.copyTypeParameters( descriptor.getMethodType(), method );
+  @Nonnull
+  private static MethodSpec.Builder buildNativeShouldComponentUpdate()
+  {
+    return MethodSpec
+      .methodBuilder( "shouldComponentUpdate" )
+      .addAnnotation( Override.class )
+      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .returns( TypeName.BOOLEAN )
+      .addParameter( ParameterSpec
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() )
+      .addStatement( "return performShouldComponentUpdate( nextProps )" );
+  }
 
-    if ( Constants.COMPONENT_PRE_UPDATE.equals( methodName ) )
-    {
-      method.addParameter( ParameterSpec
-                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-      method.addParameter( ParameterSpec
-                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-      method.addStatement( "(($T) component() ).$N( prevProps )",
-                           componentDescriptor.getClassNameToConstruct(),
-                           COMPONENT_PRE_UPDATE_METHOD );
-      method.addStatement( "return null" );
-    }
-    else if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
-    {
-      method.addParameter( ParameterSpec
-                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-      method.addStatement( "(($T) component() ).$N( prevProps )",
-                           componentDescriptor.getClassNameToConstruct(),
-                           COMPONENT_DID_UPDATE_METHOD );
-    }
-    else if ( Constants.COMPONENT_DID_MOUNT.equals( methodName ) )
-    {
-      method.addStatement( "(($T) component() ).$N()",
-                           componentDescriptor.getClassNameToConstruct(),
-                           COMPONENT_DID_MOUNT_METHOD );
-    }
-    else if ( Constants.COMPONENT_WILL_UNMOUNT.equals( methodName ) )
-    {
-      method.addStatement( "performComponentWillUnmount()" );
-    }
-    else if ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) )
-    {
-      method.addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL ).
-        addAnnotation( NONNULL_CLASSNAME ).build() );
-      method.addStatement( "return performShouldComponentUpdate( nextProps )" );
-    }
-    else
-    {
-      assert Constants.COMPONENT_DID_CATCH.equals( methodName );
+  @Nonnull
+  private static MethodSpec.Builder buildNativeComponentPreUpdate( @Nonnull final ComponentDescriptor componentDescriptor )
+  {
+    return MethodSpec
+      .methodBuilder( "getSnapshotBeforeUpdate" )
+      .addAnnotation( Override.class )
+      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .returns( TypeName.get( Object.class ) )
+      .addParameter( ParameterSpec
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() )
+      .addParameter( ParameterSpec
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() )
+      .addStatement( "(($T) component() ).$N( prevProps )",
+                     componentDescriptor.getClassNameToConstruct(),
+                     COMPONENT_PRE_UPDATE_METHOD )
+      .addStatement( "return null" );
+  }
 
-      method.addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error", Modifier.FINAL )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-      method.addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info", Modifier.FINAL )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-      method.addStatement( "performComponentDidCatch( error, info )" );
-    }
-    return method;
+  @Nonnull
+  private static MethodSpec.Builder buildNativeComponentDidUpdate( @Nonnull final ComponentDescriptor componentDescriptor )
+  {
+    return MethodSpec
+      .methodBuilder( "componentDidUpdate" )
+      .addAnnotation( Override.class )
+      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addParameter( ParameterSpec
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() )
+      .addStatement( "(($T) component() ).$N( prevProps )",
+                     componentDescriptor.getClassNameToConstruct(),
+                     COMPONENT_DID_UPDATE_METHOD );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildNativeComponentWillUnmount( @Nonnull final ComponentDescriptor componentDescriptor )
+  {
+    return MethodSpec
+      .methodBuilder( "componentWillUnmount" )
+      .addAnnotation( Override.class )
+      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addStatement( "(($T) component() ).$N()",
+                     componentDescriptor.getClassNameToConstruct(),
+                     COMPONENT_WILL_UNMOUNT_METHOD );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildNativeComponentDidCatch()
+  {
+    return MethodSpec
+      .methodBuilder( "componentDidCatch" )
+      .addAnnotation( Override.class )
+      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .returns( TypeName.get( Object.class ) )
+      .addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() )
+      .addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() )
+      .addStatement( "performComponentDidCatch( error, info )" );
   }
 
   private static String asTypeArgumentsInfix( final DeclaredType declaredType )
@@ -1511,9 +1619,31 @@ final class Generator
 
     builder.addModifiers( Modifier.STATIC );
 
-    for ( final MethodDescriptor method : descriptor.getLiteLifecycleMethods() )
+    if ( descriptor.generateComponentDidMount() )
     {
-      builder.addMethod( buildLifecycleMethodInterface( method ).build() );
+      // We add this so the DevTool sees any debug data saved
+      builder.addMethod( buildAbstractComponentDidMount().build() );
+    }
+    if ( descriptor.generateShouldComponentUpdate() )
+    {
+      builder.addMethod( buildAbstractShouldComponentUpdate().build() );
+    }
+    if ( descriptor.generateComponentPreUpdate() )
+    {
+      builder.addMethod( buildAbstractComponentPreUpdate().build() );
+    }
+    if ( descriptor.generateComponentDidUpdate() )
+    {
+      // We add this for Arez components so the DevTool sees any debug data saved
+      builder.addMethod( buildAbstractComponentDidUpdate().build() );
+    }
+    if ( descriptor.generateComponentWillUnmount() )
+    {
+      builder.addMethod( buildAbstractComponentWillUnmount().build() );
+    }
+    if ( descriptor.generateComponentDidCatch() )
+    {
+      builder.addMethod( buildAbstractComponentDidCatch().build() );
     }
 
     return builder.build();
@@ -1532,64 +1662,103 @@ final class Generator
 
     builder.addModifiers( Modifier.STATIC );
 
-    descriptor
-      .getLifecycleMethods()
-      .forEach( method -> builder.addMethod( buildLifecycleMethodInterface( method ).build() ) );
+    if ( descriptor.isArezComponent() || descriptor.generateComponentDidMount() )
+    {
+      // We add this so the DevTool sees any debug data saved
+      builder.addMethod( buildAbstractComponentDidMount().build() );
+    }
+    if ( descriptor.generateShouldComponentUpdate() )
+    {
+      builder.addMethod( buildAbstractShouldComponentUpdate().build() );
+    }
+    if ( descriptor.generateComponentPreUpdate() )
+    {
+      builder.addMethod( buildAbstractComponentPreUpdate().build() );
+    }
+    if ( descriptor.isArezComponent() || descriptor.generateComponentDidUpdate() )
+    {
+      // We add this for Arez components so the DevTool sees any debug data saved
+      builder.addMethod( buildAbstractComponentDidUpdate().build() );
+    }
+    if ( descriptor.generateComponentWillUnmount() )
+    {
+      builder.addMethod( buildAbstractComponentWillUnmount().build() );
+    }
+    if ( descriptor.generateComponentDidCatch() )
+    {
+      builder.addMethod( buildAbstractComponentDidCatch().build() );
+    }
 
     return builder.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildLifecycleMethodInterface( @Nonnull final MethodDescriptor lifecycleMethod )
+  private static MethodSpec.Builder buildAbstractComponentPreUpdate()
   {
-    final String methodName = lifecycleMethod.getMethod().getSimpleName().toString();
-    final boolean isPreUpdate = Constants.COMPONENT_PRE_UPDATE.equals( methodName );
-    final TypeName returnType =
-      isPreUpdate ? TypeName.get( Object.class ) : ClassName.get( lifecycleMethod.getMethodType().getReturnType() );
-    final String actualMethodName = isPreUpdate ? "getSnapshotBeforeUpdate" : methodName;
-    final MethodSpec.Builder method =
-      MethodSpec
-        .methodBuilder( actualMethodName )
-        .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
-        .returns( returnType );
+    return MethodSpec
+      .methodBuilder( "getSnapshotBeforeUpdate" )
+      .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
+      .returns( TypeName.get( Object.class ) )
+      .addParameter( ParameterSpec
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() )
+      .addParameter( ParameterSpec
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() );
+  }
 
-    ProcessorUtil.copyTypeParameters( lifecycleMethod.getMethodType(), method );
+  @Nonnull
+  private static MethodSpec.Builder buildAbstractComponentDidUpdate()
+  {
+    return MethodSpec
+      .methodBuilder( "componentDidUpdate" )
+      .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
+      .addParameter( ParameterSpec
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() );
+  }
 
-    if ( isPreUpdate )
-    {
-      method.addParameter( ParameterSpec
-                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-      method.addParameter( ParameterSpec
-                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState" )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-    }
-    else if ( Constants.COMPONENT_DID_UPDATE.equals( methodName ) )
-    {
-      method.addParameter( ParameterSpec
-                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-    }
-    else if ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) )
-    {
-      method.addParameter( ParameterSpec
-                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps" )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-    }
-    else if ( Constants.COMPONENT_DID_CATCH.equals( methodName ) )
-    {
-      method.addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error" )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-      method.addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info" )
-                             .addAnnotation( NONNULL_CLASSNAME )
-                             .build() );
-    }
-    return method;
+  @Nonnull
+  private static MethodSpec.Builder buildAbstractComponentDidMount()
+  {
+    return MethodSpec.methodBuilder( "componentDidMount" ).addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildAbstractShouldComponentUpdate()
+  {
+    return MethodSpec
+      .methodBuilder( "shouldComponentUpdate" )
+      .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
+      .returns( TypeName.BOOLEAN )
+      .addParameter( ParameterSpec
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildAbstractComponentWillUnmount()
+  {
+    return MethodSpec.methodBuilder( "componentWillUnmount" ).addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildAbstractComponentDidCatch()
+  {
+    return MethodSpec
+      .methodBuilder( "componentDidCatch" )
+      .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
+      .returns( TypeName.get( Object.class ) )
+      .addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() )
+      .addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info" )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() );
   }
 
   @Nonnull

@@ -2,6 +2,7 @@ package com.example.post_update;
 
 import react4j.Component;
 import react4j.ReactNode;
+import react4j.annotations.PostUpdate;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.ReactComponent;
 
@@ -9,8 +10,8 @@ import react4j.annotations.ReactComponent;
 abstract class BasicModel
   extends Component
 {
-  @PreUpdate
-  void preUpdate()
+  @PostUpdate
+  void postUpdate()
   {
   }
 

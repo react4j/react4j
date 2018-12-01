@@ -6,8 +6,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
@@ -23,7 +21,7 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicReactComponent" );
     }
@@ -37,14 +35,6 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
     } else {
       return Js.uncheckedCast( props().getAny( Props.myProp ) );
     }
-  }
-
-  void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
-  }
-
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
   }
 
   static final class Factory {
@@ -70,30 +60,7 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
     static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface Lifecycle {
-    void componentDidMount();
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<NestedCompleteComponent.BasicReactComponent> {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
-
-    @Override
-    protected NestedCompleteComponent.BasicReactComponent createComponent() {
-      return InjectSupport.getProvider().get();
-    }
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<NestedCompleteComponent.BasicReactComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<NestedCompleteComponent.BasicReactComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -102,16 +69,6 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
     @Override
     protected NestedCompleteComponent.BasicReactComponent createComponent() {
       return InjectSupport.getProvider().get();
-    }
-
-    @Override
-    public void componentDidMount() {
-      ((NestedCompleteComponent_React4j_BasicReactComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((NestedCompleteComponent_React4j_BasicReactComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

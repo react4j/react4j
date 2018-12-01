@@ -35,6 +35,19 @@
   removing the compile time setting `react4j.check_component_state_invariants` and the accessor
   `ReactConfig.checkComponentStateInvariants()`.
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.117`.
+* **\[processor\]** Optimize the processor so that `shouldComponentUpdate(...)` methods are not generated on
+  `Lite` native components if the component has `@PropValidate` annotated props but has no observable props
+  and is not an Arez component. This reduces the code size and eliminates a noop lifecycle method.
+* **\[processor\]** Optimize the processor so that the `componentDidUpdate(...)` and `componentDidMount(...)`
+  methods are not generated on a non-arez component unless those features are required to implement other
+  capabilities. This reduces code size and eliminates unnecessary work for React during rendering.
+* **\[arez\]** Update the `ReactArezComponent` class to change the strategy via which resources are released
+  to use the `@PreDispose` annotation from Arez to mark the component as unmounted. This avoids the overhead
+  associated with pausing and resuming the scheduler and reduces code size by using builtin Arez mechanisms.
+* **\[core\]** Introduce the `@PostRender` annotation that can be used to annotated a method that is invoked
+  when a component has been rendered. This can be after the component has been mounted or after it has been
+  updated. This method is invoked before the `@PostUpdate` annotated method in the `componentDidUpdate(...)`
+  method and before the `@PostMount` annotated method in the `componentDidMount(...)` method.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

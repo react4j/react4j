@@ -4,8 +4,6 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -16,7 +14,7 @@ import react4j.ReactConfig;
 class React4j_ExplicitOptional extends ExplicitOptional {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ExplicitOptional" );
     }
@@ -50,14 +48,6 @@ class React4j_ExplicitOptional extends ExplicitOptional {
     }
   }
 
-  void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
-  }
-
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
-  }
-
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -70,30 +60,7 @@ class React4j_ExplicitOptional extends ExplicitOptional {
     static final String myOtherOptionalProp = ReactConfig.shouldMinimizePropKeys() ? "c" : "myOtherOptionalProp";
   }
 
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface Lifecycle {
-    void componentDidMount();
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ExplicitOptional> {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
-
-    @Override
-    protected ExplicitOptional createComponent() {
-      return new React4j_ExplicitOptional();
-    }
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<ExplicitOptional> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<ExplicitOptional> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -102,16 +69,6 @@ class React4j_ExplicitOptional extends ExplicitOptional {
     @Override
     protected ExplicitOptional createComponent() {
       return new React4j_ExplicitOptional();
-    }
-
-    @Override
-    public void componentDidMount() {
-      ((React4j_ExplicitOptional) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_ExplicitOptional) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

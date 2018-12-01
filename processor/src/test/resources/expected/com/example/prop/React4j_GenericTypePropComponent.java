@@ -4,8 +4,6 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -16,7 +14,7 @@ import react4j.ReactConfig;
 class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "GenericTypePropComponent" );
     }
@@ -32,14 +30,6 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
     }
   }
 
-  void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
-  }
-
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
-  }
-
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -48,30 +38,7 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
     static final String value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
   }
 
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface Lifecycle {
-    void componentDidMount();
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-  }
-
-  private static final class LiteNativeReactComponent<T> extends NativeAdapterComponent<GenericTypePropComponent<T>> {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
-
-    @Override
-    protected GenericTypePropComponent<T> createComponent() {
-      return new React4j_GenericTypePropComponent<T>();
-    }
-  }
-
-  private static final class NativeReactComponent<T> extends NativeAdapterComponent<GenericTypePropComponent<T>> implements Lifecycle {
+  private static final class NativeReactComponent<T> extends NativeAdapterComponent<GenericTypePropComponent<T>> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -80,16 +47,6 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
     @Override
     protected GenericTypePropComponent<T> createComponent() {
       return new React4j_GenericTypePropComponent<T>();
-    }
-
-    @Override
-    public void componentDidMount() {
-      ((React4j_GenericTypePropComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_GenericTypePropComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

@@ -41,10 +41,6 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
     }
   }
 
-  void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
-  }
-
   final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
@@ -76,8 +72,6 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
       name = "?"
   )
   interface Lifecycle {
-    void componentDidMount();
-
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
 
@@ -93,7 +87,7 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
       ((React4j_PostUpdateOnPropChange) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
@@ -110,12 +104,7 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
     }
 
     @Override
-    public void componentDidMount() {
-      ((React4j_PostUpdateOnPropChange) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
       ((React4j_PostUpdateOnPropChange) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }

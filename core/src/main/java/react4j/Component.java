@@ -137,17 +137,6 @@ public abstract class Component
   }
 
   /**
-   * Template method called when onPropChange in PRE phase declared.
-   *
-   * @param prevProps the props before the component was updated.
-   * @param props     the current props.
-   */
-  protected void preUpdateOnPropChange( @Nonnull final JsPropertyMap<Object> prevProps,
-                                        @Nonnull final JsPropertyMap<Object> props )
-  {
-  }
-
-  /**
    * Template method called when onPropChange in POST phase declared.
    *
    * @param prevProps the props before the component was updated.
@@ -166,15 +155,6 @@ public abstract class Component
    */
   protected void componentWillUnmount()
   {
-  }
-
-  /**
-   * Wrapper method that delegates to the {@link #componentWillUnmount()} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
-   */
-  protected void performComponentWillUnmount()
-  {
-    componentWillUnmount();
   }
 
   /**

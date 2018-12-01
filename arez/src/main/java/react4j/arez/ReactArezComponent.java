@@ -12,6 +12,7 @@ import arez.annotations.Executor;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.OnDepsChange;
+import arez.annotations.PreDispose;
 import arez.annotations.Priority;
 import arez.spy.ObservableValueInfo;
 import arez.spy.ObserverInfo;
@@ -216,26 +217,10 @@ public abstract class ReactArezComponent
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  protected final void performComponentWillUnmount()
+  @PreDispose
+  protected void preDispose()
   {
-    final Disposable schedulerLock = getContext().pauseScheduler();
-    try
-    {
-      _unmounted = true;
-      super.performComponentWillUnmount();
-      /*
-       * Dispose of all the arez resources. Necessary particularly for the render tracker that should
-       * not receive notifications of updates after the component has been unmounted.
-       */
-      Disposable.dispose( this );
-    }
-    finally
-    {
-      schedulerLock.dispose();
-    }
+    _unmounted = true;
   }
 
   /**

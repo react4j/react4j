@@ -28,29 +28,15 @@ class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateMode
     return props().getAny( Props.myProp ).asInt();
   }
 
-  @Override
-  protected void preUpdateOnPropChange(@Nonnull final JsPropertyMap<Object> prevProps,
-      @Nonnull final JsPropertyMap<Object> props) {
-    final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
-    if ( myProp ) {
-      onMyPropChange( props.getAny( Props.myProp ).asInt() );
-    }
-  }
-
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
-      preUpdateOnPropChange( prevProps, props );
+      final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
+      if ( myProp ) {
+        onMyPropChange( props.getAny( Props.myProp ).asInt() );
+      }
     }
     preUpdate();
-  }
-
-  void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
-  }
-
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
   }
 
   static final class Factory {
@@ -77,12 +63,8 @@ class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateMode
       name = "?"
   )
   interface Lifecycle {
-    void componentDidMount();
-
     Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
         @Nonnull JsPropertyMap<Object> prevState);
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<OnPropChangeAndPreUpdateModel> implements LiteLifecycle {
@@ -97,8 +79,8 @@ class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateMode
     }
 
     @Override
-    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
       ((React4j_OnPropChangeAndPreUpdateModel) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
@@ -116,20 +98,10 @@ class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateMode
     }
 
     @Override
-    public void componentDidMount() {
-      ((React4j_OnPropChangeAndPreUpdateModel) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
       ((React4j_OnPropChangeAndPreUpdateModel) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
-    }
-
-    @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_OnPropChangeAndPreUpdateModel) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

@@ -41,14 +41,6 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
     }
   }
 
-  void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
-  }
-
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
-  }
-
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -72,10 +64,6 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
       name = "?"
   )
   interface Lifecycle {
-    void componentDidMount();
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
@@ -91,7 +79,7 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
     }
 
     @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
       return performShouldComponentUpdate( nextProps );
     }
   }
@@ -108,17 +96,7 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
     }
 
     @Override
-    public void componentDidMount() {
-      ((React4j_ProtectedPropValidate) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_ProtectedPropValidate) component() ).$$react4j$$_componentDidUpdate( prevProps );
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
       return performShouldComponentUpdate( nextProps );
     }
   }

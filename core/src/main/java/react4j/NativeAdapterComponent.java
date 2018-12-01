@@ -73,18 +73,6 @@ public abstract class NativeAdapterComponent<I extends Component>
   }
 
   /**
-   * Call componentWillUnmount on the target component.
-   * It is expected that the subclass will implement a public method componentWillUnmount() that
-   * delegates to this method to perform the work.
-   *
-   * @see Component#componentWillUnmount()
-   */
-  protected final void performComponentWillUnmount()
-  {
-    component().performComponentWillUnmount();
-  }
-
-  /**
    * Call shouldComponentUpdate on the target component.
    * It is expected that the subclass will implement a public method shouldComponentUpdate() that
    * delegates to this method to perform the work.

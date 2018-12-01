@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
@@ -67,6 +68,10 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     return modified || hasRenderDepsChanged();
   }
 
+  void $$react4j$$_componentDidMount() {
+    storeDebugDataAsState();
+  }
+
   @Action(
       verifyRequired = false
   )
@@ -77,12 +82,12 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
   }
 
-  void $$react4j$$_componentDidMount() {
+  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
+  final void $$react4j$$_componentWillUnmount() {
+    Disposable.dispose( this );
   }
 
   @Override
@@ -104,12 +109,12 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       name = "?"
   )
   interface LiteLifecycle {
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
+
     Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
         @Nonnull JsPropertyMap<Object> prevState);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -120,14 +125,14 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   interface Lifecycle {
     void componentDidMount();
 
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
+
     Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
         @Nonnull JsPropertyMap<Object> prevState);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements LiteLifecycle {
@@ -142,20 +147,20 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
 
     @Override
-    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
+    }
+
+    @Override
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
       ((Arez_React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 
     @Override
-    public void componentWillUnmount() {
-      performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
+    public final void componentWillUnmount() {
+      ((Arez_React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentWillUnmount();
     }
   }
 
@@ -171,30 +176,30 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
 
     @Override
-    public void componentDidMount() {
+    public final void componentDidMount() {
       ((Arez_React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override
-    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
+    }
+
+    @Override
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
       ((Arez_React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
       ((Arez_React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override
-    public void componentWillUnmount() {
-      performComponentWillUnmount();
-    }
-
-    @Override
-    public boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
+    public final void componentWillUnmount() {
+      ((Arez_React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentWillUnmount();
     }
   }
 }

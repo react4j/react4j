@@ -27,14 +27,6 @@ class React4j_BasicModel extends BasicModel {
     preUpdate();
   }
 
-  void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
-  }
-
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
-  }
-
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -58,12 +50,8 @@ class React4j_BasicModel extends BasicModel {
       name = "?"
   )
   interface Lifecycle {
-    void componentDidMount();
-
     Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
         @Nonnull JsPropertyMap<Object> prevState);
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<BasicModel> implements LiteLifecycle {
@@ -78,8 +66,8 @@ class React4j_BasicModel extends BasicModel {
     }
 
     @Override
-    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
       ((React4j_BasicModel) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
@@ -97,20 +85,10 @@ class React4j_BasicModel extends BasicModel {
     }
 
     @Override
-    public void componentDidMount() {
-      ((React4j_BasicModel) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
       ((React4j_BasicModel) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
-    }
-
-    @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_BasicModel) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

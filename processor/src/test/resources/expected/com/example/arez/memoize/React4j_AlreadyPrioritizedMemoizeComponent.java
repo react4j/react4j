@@ -1,5 +1,6 @@
 package com.example.arez.memoize;
 
+import arez.Disposable;
 import arez.annotations.ArezComponent;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -35,6 +36,10 @@ abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPriorit
     storeDebugDataAsState();
   }
 
+  final void $$react4j$$_componentWillUnmount() {
+    Disposable.dispose( this );
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -48,6 +53,8 @@ abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPriorit
       name = "?"
   )
   interface LiteLifecycle {
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
+
     void componentWillUnmount();
   }
 
@@ -58,6 +65,8 @@ abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPriorit
   )
   interface Lifecycle {
     void componentDidMount();
+
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -76,8 +85,13 @@ abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPriorit
     }
 
     @Override
-    public void componentWillUnmount() {
-      performComponentWillUnmount();
+    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      ((Arez_React4j_AlreadyPrioritizedMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
     }
   }
 
@@ -93,18 +107,23 @@ abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPriorit
     }
 
     @Override
-    public void componentDidMount() {
+    public final void componentDidMount() {
       ((Arez_React4j_AlreadyPrioritizedMemoizeComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+      return performShouldComponentUpdate( nextProps );
+    }
+
+    @Override
+    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
       ((Arez_React4j_AlreadyPrioritizedMemoizeComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override
-    public void componentWillUnmount() {
-      performComponentWillUnmount();
+    public final void componentWillUnmount() {
+      ((Arez_React4j_AlreadyPrioritizedMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
     }
   }
 }

@@ -14,7 +14,7 @@ import react4j.ReactConfig;
 class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "RootPackageCompleteComponent" );
     }
@@ -26,26 +26,20 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
     return props().getAny( Props.myProp ).asInt();
   }
 
-  @Override
-  protected void preUpdateOnPropChange(@Nonnull final JsPropertyMap<Object> prevProps,
-      @Nonnull final JsPropertyMap<Object> props) {
-    final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
-    if ( myProp ) {
-      onMyPropChange( props.getAny( Props.myProp ).asInt() );
-    }
+  void $$react4j$$_componentDidMount() {
+    postMount();
+    storeDebugDataAsState();
   }
 
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
-      preUpdateOnPropChange( prevProps, props );
+      final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
+      if ( myProp ) {
+        onMyPropChange( props.getAny( Props.myProp ).asInt() );
+      }
     }
     preUpdate();
-  }
-
-  void $$react4j$$_componentDidMount() {
-    postMount();
-    storeDebugDataAsState();
   }
 
   final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
@@ -66,6 +60,20 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
+  interface LiteLifecycle {
+    void componentDidMount();
+
+    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState);
+
+    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
+  }
+
+  @JsType(
+      isNative = true,
+      namespace = JsPackage.GLOBAL,
+      name = "?"
+  )
   interface Lifecycle {
     void componentDidMount();
 
@@ -73,6 +81,35 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
         @Nonnull JsPropertyMap<Object> prevState);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
+  }
+
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<RootPackageCompleteComponent> implements LiteLifecycle {
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+    }
+
+    @Override
+    protected RootPackageCompleteComponent createComponent() {
+      return new React4j_RootPackageCompleteComponent();
+    }
+
+    @Override
+    public final void componentDidMount() {
+      ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
+      ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentPreUpdate( prevProps );
+      return null;
+    }
+
+    @Override
+    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
+      ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<RootPackageCompleteComponent> implements Lifecycle {
@@ -87,19 +124,19 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
     }
 
     @Override
-    public void componentDidMount() {
+    public final void componentDidMount() {
       ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override
-    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
       ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 
     @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
       ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }

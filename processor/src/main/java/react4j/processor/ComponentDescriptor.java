@@ -33,6 +33,8 @@ final class ComponentDescriptor
   @Nullable
   private ExecutableElement _preUpdate;
   @Nullable
+  private ExecutableElement _postRender;
+  @Nullable
   private ExecutableElement _postUpdate;
   @Nullable
   private ExecutableElement _postMount;
@@ -40,11 +42,6 @@ final class ComponentDescriptor
   private boolean _needsInjection;
   private boolean _needsDaggerIntegration;
   private boolean _runArezScheduler;
-  /**
-   * Lifecycle methods that are overridden by the user and need to be proxied from the native object.
-   */
-  @Nullable
-  private List<MethodDescriptor> _lifecycleMethods;
   /**
    * Methods that are props accessors.
    * These should be implemented as accesses to the underlying props value.
@@ -245,56 +242,6 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  List<MethodDescriptor> getLifecycleMethods()
-  {
-    assert null != _lifecycleMethods;
-    return _lifecycleMethods;
-  }
-
-  void setLifecycleMethods( @Nonnull final List<MethodDescriptor> lifecycleMethods )
-  {
-    _lifecycleMethods = Objects.requireNonNull( lifecycleMethods );
-  }
-
-  @Nonnull
-  List<MethodDescriptor> getLiteLifecycleMethods()
-  {
-    assert null != _lifecycleMethods;
-    return _lifecycleMethods.stream().filter( m -> !canOmitFromLiteLifecycle( m ) ).collect( Collectors.toList() );
-  }
-
-  boolean shouldGenerateLiteLifecycle()
-  {
-    assert null != _lifecycleMethods;
-    return _lifecycleMethods.stream().anyMatch( this::canOmitFromLiteLifecycle );
-  }
-
-  private boolean canOmitFromLiteLifecycle( @Nonnull final MethodDescriptor method )
-  {
-    final String methodName = method.getMethod().getSimpleName().toString();
-    final String classname = getClassNameForMethod( method );
-    return
-      ( Constants.SHOULD_COMPONENT_UPDATE.equals( methodName ) && !generateShouldComponentUpdate() ) ||
-      ( Constants.COMPONENT_DID_MOUNT.equals( methodName ) && !generateComponentDidMount() ) ||
-      (
-        Constants.COMPONENT_CLASSNAME.equals( classname ) &&
-        Constants.COMPONENT_PRE_UPDATE.equals( methodName ) &&
-        !generateComponentPreUpdate()
-      ) ||
-      (
-        Constants.COMPONENT_CLASSNAME.equals( classname ) &&
-        Constants.COMPONENT_DID_UPDATE.equals( methodName ) &&
-        !generateComponentDidUpdate()
-      );
-  }
-
-  @Nonnull
-  private String getClassNameForMethod( @Nonnull final MethodDescriptor method )
-  {
-    return ( (TypeElement) method.getMethod().getEnclosingElement() ).getQualifiedName().toString();
-  }
-
-  @Nonnull
   List<MethodDescriptor> getMemoizeMethods()
   {
     assert null != _memoizeMethods;
@@ -350,7 +297,7 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  List<OnPropChangeDescriptor> getOnPropChangeDescriptors()
+  private List<OnPropChangeDescriptor> getOnPropChangeDescriptors()
   {
     assert null != _onPropChangeDescriptors;
     return _onPropChangeDescriptors;
@@ -389,6 +336,28 @@ final class ComponentDescriptor
     else
     {
       _preUpdate = preUpdate;
+    }
+  }
+
+  @Nullable
+  ExecutableElement getPostRender()
+  {
+    return _postRender;
+  }
+
+  void setPostRender( @Nonnull final ExecutableElement postRender )
+    throws ReactProcessorException
+  {
+    MethodChecks.mustBeLifecycleHook( getElement(), Constants.POST_RENDER_ANNOTATION_CLASSNAME, postRender );
+
+    if ( null != _postRender )
+    {
+      throw new ReactProcessorException( "@PostRender target duplicates existing method named " +
+                                         _postRender.getSimpleName(), postRender );
+    }
+    else
+    {
+      _postRender = postRender;
     }
   }
 
@@ -436,9 +405,44 @@ final class ComponentDescriptor
     }
   }
 
+  boolean shouldGenerateLifecycle()
+  {
+    return generateComponentDidMount() ||
+           generateShouldComponentUpdate() ||
+           generateComponentPreUpdate() ||
+           generateComponentDidUpdate() ||
+           generateComponentWillUnmount() ||
+           generateComponentDidCatch();
+  }
+
+  boolean shouldGenerateLiteLifecycle()
+  {
+    return ( !generateComponentDidMount() ||
+             !generateComponentDidUpdate() ||
+             !generateShouldComponentUpdateInLiteLifecycle() ) &&
+           shouldGenerateLifecycle();
+  }
+
   boolean generateShouldComponentUpdate()
   {
-    return hasObservableProps() || hasValidatedProps();
+    return generateShouldComponentUpdateInLiteLifecycle() || hasValidatedProps();
+  }
+
+  private boolean generateShouldComponentUpdateInLiteLifecycle()
+  {
+    return isArezComponent() || hasObservableProps();
+  }
+
+  boolean generateComponentDidCatch()
+  {
+    //TODO: Implement this
+    return false;
+  }
+
+  boolean generateComponentWillUnmount()
+  {
+    //TODO: Implement this
+    return isArezComponent();
   }
 
   boolean generateComponentPreUpdate()
@@ -448,7 +452,7 @@ final class ComponentDescriptor
 
   boolean generateComponentDidMount()
   {
-    return null != _postMount;
+    return null != _postMount || null != _postRender;
   }
 
   boolean hasPreUpdateOnPropChange()
@@ -463,7 +467,7 @@ final class ComponentDescriptor
 
   boolean generateComponentDidUpdate()
   {
-    return hasPostUpdateOnPropChange() || null != _postUpdate;
+    return hasPostUpdateOnPropChange() || null != _postUpdate || null != _postRender;
   }
 
   boolean hasValidatedProps()

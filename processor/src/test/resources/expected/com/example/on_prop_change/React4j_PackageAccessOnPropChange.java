@@ -32,28 +32,14 @@ class React4j_PackageAccessOnPropChange extends PackageAccessOnPropChange {
     }
   }
 
-  @Override
-  protected void preUpdateOnPropChange(@Nonnull final JsPropertyMap<Object> prevProps,
-      @Nonnull final JsPropertyMap<Object> props) {
-    final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
-    if ( myProp ) {
-      onMyPropChange( Js.uncheckedCast( props.getAny( Props.myProp ) ) );
-    }
-  }
-
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
-      preUpdateOnPropChange( prevProps, props );
+      final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
+      if ( myProp ) {
+        onMyPropChange( Js.uncheckedCast( props.getAny( Props.myProp ) ) );
+      }
     }
-  }
-
-  void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
-  }
-
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
   }
 
   static final class Factory {
@@ -80,12 +66,8 @@ class React4j_PackageAccessOnPropChange extends PackageAccessOnPropChange {
       name = "?"
   )
   interface Lifecycle {
-    void componentDidMount();
-
     Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
         @Nonnull JsPropertyMap<Object> prevState);
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<PackageAccessOnPropChange> implements LiteLifecycle {
@@ -100,8 +82,8 @@ class React4j_PackageAccessOnPropChange extends PackageAccessOnPropChange {
     }
 
     @Override
-    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
       ((React4j_PackageAccessOnPropChange) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
@@ -119,20 +101,10 @@ class React4j_PackageAccessOnPropChange extends PackageAccessOnPropChange {
     }
 
     @Override
-    public void componentDidMount() {
-      ((React4j_PackageAccessOnPropChange) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
+        @Nonnull JsPropertyMap<Object> prevState) {
       ((React4j_PackageAccessOnPropChange) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
-    }
-
-    @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_PackageAccessOnPropChange) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }

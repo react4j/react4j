@@ -4,8 +4,6 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
@@ -16,19 +14,11 @@ import react4j.ReactConfig;
 class React4j_InjectFalseComponent extends InjectFalseComponent {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "InjectFalseComponent" );
     }
     return componentConstructor;
-  }
-
-  void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
-  }
-
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
   }
 
   static final class Factory {
@@ -38,30 +28,7 @@ class React4j_InjectFalseComponent extends InjectFalseComponent {
   static final class Props {
   }
 
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface Lifecycle {
-    void componentDidMount();
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<InjectFalseComponent> {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
-
-    @Override
-    protected InjectFalseComponent createComponent() {
-      return new React4j_InjectFalseComponent();
-    }
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<InjectFalseComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<InjectFalseComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -70,16 +37,6 @@ class React4j_InjectFalseComponent extends InjectFalseComponent {
     @Override
     protected InjectFalseComponent createComponent() {
       return new React4j_InjectFalseComponent();
-    }
-
-    @Override
-    public void componentDidMount() {
-      ((React4j_InjectFalseComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_InjectFalseComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }
 }
