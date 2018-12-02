@@ -64,7 +64,6 @@ class React4j_LongPropValidate extends LongPropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -85,11 +84,6 @@ class React4j_LongPropValidate extends LongPropValidate {
     @Override
     protected LongPropValidate createComponent() {
       return new React4j_LongPropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_LongPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

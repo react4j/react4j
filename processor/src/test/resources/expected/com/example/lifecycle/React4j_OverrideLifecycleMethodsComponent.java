@@ -16,7 +16,7 @@ import react4j.ReactConfig;
 class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethodsComponent {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
     }
@@ -39,25 +39,15 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     storeDebugDataAsState();
   }
 
+  final void $$react4j$$_componentWillUnmount() {
+    preUnmount();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   static final class Props {
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface LiteLifecycle {
-    void componentDidMount();
-
-    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState);
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
   }
 
   @JsType(
@@ -72,35 +62,8 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
         @Nonnull JsPropertyMap<Object> prevState);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-  }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<OverrideLifecycleMethodsComponent> implements LiteLifecycle {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
-
-    @Override
-    protected OverrideLifecycleMethodsComponent createComponent() {
-      return new React4j_OverrideLifecycleMethodsComponent();
-    }
-
-    @Override
-    public final void componentDidMount() {
-      ((React4j_OverrideLifecycleMethodsComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState) {
-      ((React4j_OverrideLifecycleMethodsComponent) component() ).$$react4j$$_componentPreUpdate( prevProps );
-      return null;
-    }
-
-    @Override
-    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
-      ((React4j_OverrideLifecycleMethodsComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
-    }
+    void componentWillUnmount();
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<OverrideLifecycleMethodsComponent> implements Lifecycle {
@@ -129,6 +92,11 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     @Override
     public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
       ((React4j_OverrideLifecycleMethodsComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      ((React4j_OverrideLifecycleMethodsComponent) component() ).$$react4j$$_componentWillUnmount();
     }
   }
 }

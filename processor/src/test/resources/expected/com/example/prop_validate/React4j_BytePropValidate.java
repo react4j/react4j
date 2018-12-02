@@ -64,7 +64,6 @@ class React4j_BytePropValidate extends BytePropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -85,11 +84,6 @@ class React4j_BytePropValidate extends BytePropValidate {
     @Override
     protected BytePropValidate createComponent() {
       return new React4j_BytePropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_BytePropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

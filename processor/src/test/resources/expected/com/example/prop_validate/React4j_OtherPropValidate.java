@@ -69,7 +69,6 @@ class React4j_OtherPropValidate extends OtherPropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -90,11 +89,6 @@ class React4j_OtherPropValidate extends OtherPropValidate {
     @Override
     protected OtherPropValidate createComponent() {
       return new React4j_OtherPropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_OtherPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

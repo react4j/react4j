@@ -57,6 +57,9 @@
   lifecycle method.
 * **\[processor\]** Avoid generating the `shouldComponentUpdate` lifecycle method if changes to any prop will
   cause the component to be re-rendered and there are no observable methods for component.
+* **\[core\]** Introduce the `@PreUnmount` annotation that can be used to annotate a method that is invoked
+  before a component is unmounted or detatched. This replaces the ability to override the
+  `componentWillUnmount()` lifecycle method.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

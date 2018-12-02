@@ -16,7 +16,7 @@ import react4j.ReactConfig;
 class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PostRenderAndPostMount" );
     }
@@ -46,43 +46,10 @@ class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
-  interface LiteLifecycle {
-    void componentDidMount();
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
   interface Lifecycle {
     void componentDidMount();
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<PostRenderAndPostMount> implements LiteLifecycle {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
-
-    @Override
-    protected PostRenderAndPostMount createComponent() {
-      return new React4j_PostRenderAndPostMount();
-    }
-
-    @Override
-    public final void componentDidMount() {
-      ((React4j_PostRenderAndPostMount) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
-      ((React4j_PostRenderAndPostMount) component() ).$$react4j$$_componentDidUpdate( prevProps );
-    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PostRenderAndPostMount> implements Lifecycle {

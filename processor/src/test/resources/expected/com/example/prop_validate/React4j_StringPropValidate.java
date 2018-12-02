@@ -68,7 +68,6 @@ class React4j_StringPropValidate extends StringPropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -89,11 +88,6 @@ class React4j_StringPropValidate extends StringPropValidate {
     @Override
     protected StringPropValidate createComponent() {
       return new React4j_StringPropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_StringPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

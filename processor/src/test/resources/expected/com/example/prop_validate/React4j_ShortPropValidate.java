@@ -64,7 +64,6 @@ class React4j_ShortPropValidate extends ShortPropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -85,11 +84,6 @@ class React4j_ShortPropValidate extends ShortPropValidate {
     @Override
     protected ShortPropValidate createComponent() {
       return new React4j_ShortPropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_ShortPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

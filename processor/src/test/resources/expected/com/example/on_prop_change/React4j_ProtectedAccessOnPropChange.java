@@ -16,7 +16,7 @@ import react4j.ReactConfig;
 class React4j_ProtectedAccessOnPropChange extends ProtectedAccessOnPropChange {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedAccessOnPropChange" );
     }
@@ -55,38 +55,9 @@ class React4j_ProtectedAccessOnPropChange extends ProtectedAccessOnPropChange {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
-  interface LiteLifecycle {
-    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState);
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
   interface Lifecycle {
     Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
         @Nonnull JsPropertyMap<Object> prevState);
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ProtectedAccessOnPropChange> implements LiteLifecycle {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
-
-    @Override
-    protected ProtectedAccessOnPropChange createComponent() {
-      return new React4j_ProtectedAccessOnPropChange();
-    }
-
-    @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState) {
-      ((React4j_ProtectedAccessOnPropChange) component() ).$$react4j$$_componentPreUpdate( prevProps );
-      return null;
-    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ProtectedAccessOnPropChange> implements Lifecycle {

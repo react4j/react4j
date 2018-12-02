@@ -12,6 +12,7 @@ final class Constants
   static final String PROP_VALIDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PropValidate";
   static final String ON_PROP_CHANGE_ANNOTATION_CLASSNAME = "react4j.annotations.OnPropChange";
   static final String REACT_COMPONENT_ANNOTATION_CLASSNAME = "react4j.annotations.ReactComponent";
+  static final String PRE_UNMOUNT_ANNOTATION_CLASSNAME = "react4j.annotations.PreUnmount";
   static final String PRE_UPDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PreUpdate";
   static final String POST_RENDER_ANNOTATION_CLASSNAME = "react4j.annotations.PostRender";
   static final String POST_UPDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PostUpdate";

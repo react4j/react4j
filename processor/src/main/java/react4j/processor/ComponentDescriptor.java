@@ -38,6 +38,8 @@ final class ComponentDescriptor
   private ExecutableElement _postUpdate;
   @Nullable
   private ExecutableElement _postMount;
+  @Nullable
+  private ExecutableElement _preUnmount;
   private boolean _arezComponent;
   private boolean _needsInjection;
   private boolean _needsDaggerIntegration;
@@ -340,6 +342,28 @@ final class ComponentDescriptor
   }
 
   @Nullable
+  ExecutableElement getPreUnmount()
+  {
+    return _preUnmount;
+  }
+
+  void setPreUnmount( @Nonnull final ExecutableElement preUnmount )
+    throws ReactProcessorException
+  {
+    MethodChecks.mustBeLifecycleHook( getElement(), Constants.PRE_UNMOUNT_ANNOTATION_CLASSNAME, preUnmount );
+
+    if ( null != _preUnmount )
+    {
+      throw new ReactProcessorException( "@PreUnmount target duplicates existing method named " +
+                                         _preUnmount.getSimpleName(), preUnmount );
+    }
+    else
+    {
+      _preUnmount = preUnmount;
+    }
+  }
+
+  @Nullable
   ExecutableElement getPostRender()
   {
     return _postRender;
@@ -407,7 +431,8 @@ final class ComponentDescriptor
 
   boolean shouldGenerateLifecycle()
   {
-    return generateComponentDidMount() ||
+    return isArezComponent() ||
+           generateComponentDidMount() ||
            generateShouldComponentUpdate() ||
            generateComponentPreUpdate() ||
            generateComponentDidUpdate() ||
@@ -417,9 +442,9 @@ final class ComponentDescriptor
 
   boolean shouldGenerateLiteLifecycle()
   {
-    return ( !generateComponentDidMount() ||
-             !generateComponentDidUpdate() ||
-             !generateShouldComponentUpdateInLiteLifecycle() ) &&
+    return ( generateComponentDidUpdateInLiteLifecycle() != generateComponentDidUpdate() ||
+             generateShouldComponentUpdateInLiteLifecycle() != generateShouldComponentUpdate() ||
+             generateComponentDidMountInLiteLifecycle() != generateComponentDidMount() ) &&
            shouldGenerateLifecycle();
   }
 
@@ -428,7 +453,7 @@ final class ComponentDescriptor
     return generateShouldComponentUpdateInLiteLifecycle() || hasValidatedProps();
   }
 
-  private boolean generateShouldComponentUpdateInLiteLifecycle()
+  boolean generateShouldComponentUpdateInLiteLifecycle()
   {
     /*
      * We do not need to implement this when we are an arez component with no observable props
@@ -450,8 +475,7 @@ final class ComponentDescriptor
 
   boolean generateComponentWillUnmount()
   {
-    //TODO: Implement this
-    return isArezComponent();
+    return isArezComponent() || null != _preUnmount;
   }
 
   boolean generateComponentPreUpdate()
@@ -460,6 +484,11 @@ final class ComponentDescriptor
   }
 
   boolean generateComponentDidMount()
+  {
+    return generateComponentDidMountInLiteLifecycle() || isArezComponent();
+  }
+
+  boolean generateComponentDidMountInLiteLifecycle()
   {
     return null != _postMount || null != _postRender;
   }
@@ -475,6 +504,11 @@ final class ComponentDescriptor
   }
 
   boolean generateComponentDidUpdate()
+  {
+    return generateComponentDidUpdateInLiteLifecycle() || isArezComponent();
+  }
+
+  boolean generateComponentDidUpdateInLiteLifecycle()
   {
     return hasPostUpdateOnPropChange() || null != _postUpdate || null != _postRender;
   }

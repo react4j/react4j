@@ -554,7 +554,7 @@ final class Generator
     {
       builder.addMethod( buildShouldComponentUpdate( descriptor ).build() );
     }
-    if ( descriptor.isArezComponent() || descriptor.generateComponentDidMount() )
+    if ( descriptor.generateComponentDidMount() )
     {
       builder.addMethod( buildComponentDidMount( descriptor ).build() );
     }
@@ -562,7 +562,7 @@ final class Generator
     {
       builder.addMethod( buildComponentPreUpdate( descriptor ).build() );
     }
-    if ( descriptor.isArezComponent() || descriptor.generateComponentDidUpdate() )
+    if ( descriptor.generateComponentDidUpdate() )
     {
       builder.addMethod( buildComponentDidUpdate( descriptor ).build() );
     }
@@ -1112,11 +1112,15 @@ final class Generator
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( COMPONENT_WILL_UNMOUNT_METHOD ).addModifiers( Modifier.FINAL );
 
+    final ExecutableElement preUnmount = descriptor.getPreUnmount();
+    if ( null != preUnmount )
+    {
+      method.addStatement( "$N()", preUnmount.getSimpleName().toString() );
+    }
     if ( descriptor.isArezComponent() )
     {
       method.addStatement( "$T.dispose( this )", DISPOSABLE_CLASSNAME );
     }
-    // TODO
     return method;
   }
 
@@ -1375,12 +1379,12 @@ final class Generator
       builder.addMethod( method.build() );
     }
 
-    if ( ( !lite && descriptor.isArezComponent() ) || descriptor.generateComponentDidMount() )
+    if ( lite ? descriptor.generateComponentDidMountInLiteLifecycle() : descriptor.generateComponentDidMount() )
     {
       // We add this so the DevTool sees any debug data saved
       builder.addMethod( buildNativeComponentDidMount( descriptor ).build() );
     }
-    if ( descriptor.generateShouldComponentUpdate() )
+    if ( lite ? descriptor.generateShouldComponentUpdateInLiteLifecycle() : descriptor.generateShouldComponentUpdate() )
     {
       builder.addMethod( buildNativeShouldComponentUpdate( descriptor ).build() );
     }
@@ -1388,7 +1392,7 @@ final class Generator
     {
       builder.addMethod( buildNativeComponentPreUpdate( descriptor ).build() );
     }
-    if ( ( !lite && descriptor.isArezComponent() ) || descriptor.generateComponentDidUpdate() )
+    if ( lite ? descriptor.generateComponentDidUpdateInLiteLifecycle() : descriptor.generateComponentDidUpdate() )
     {
       // We add this for Arez components so the DevTool sees any debug data saved
       builder.addMethod( buildNativeComponentDidUpdate( descriptor ).build() );
@@ -1522,12 +1526,12 @@ final class Generator
 
     builder.addModifiers( Modifier.STATIC );
 
-    if ( descriptor.generateComponentDidMount() )
+    if ( descriptor.generateComponentDidMountInLiteLifecycle() )
     {
       // We add this so the DevTool sees any debug data saved
       builder.addMethod( buildAbstractComponentDidMount().build() );
     }
-    if ( descriptor.generateShouldComponentUpdate() )
+    if ( descriptor.generateShouldComponentUpdateInLiteLifecycle() )
     {
       builder.addMethod( buildAbstractShouldComponentUpdate().build() );
     }
@@ -1535,7 +1539,7 @@ final class Generator
     {
       builder.addMethod( buildAbstractComponentPreUpdate().build() );
     }
-    if ( descriptor.generateComponentDidUpdate() )
+    if ( descriptor.generateComponentDidUpdateInLiteLifecycle() )
     {
       // We add this for Arez components so the DevTool sees any debug data saved
       builder.addMethod( buildAbstractComponentDidUpdate().build() );
@@ -1565,7 +1569,7 @@ final class Generator
 
     builder.addModifiers( Modifier.STATIC );
 
-    if ( descriptor.isArezComponent() || descriptor.generateComponentDidMount() )
+    if ( descriptor.generateComponentDidMount() )
     {
       // We add this so the DevTool sees any debug data saved
       builder.addMethod( buildAbstractComponentDidMount().build() );
@@ -1578,7 +1582,7 @@ final class Generator
     {
       builder.addMethod( buildAbstractComponentPreUpdate().build() );
     }
-    if ( descriptor.isArezComponent() || descriptor.generateComponentDidUpdate() )
+    if ( descriptor.generateComponentDidUpdate() )
     {
       // We add this for Arez components so the DevTool sees any debug data saved
       builder.addMethod( buildAbstractComponentDidUpdate().build() );

@@ -64,7 +64,6 @@ class React4j_DoublePropValidate extends DoublePropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -85,11 +84,6 @@ class React4j_DoublePropValidate extends DoublePropValidate {
     @Override
     protected DoublePropValidate createComponent() {
       return new React4j_DoublePropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_DoublePropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

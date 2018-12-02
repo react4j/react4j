@@ -139,16 +139,6 @@ public abstract class Component
   }
 
   /**
-   * This method is invoked immediately before a component is unmounted and destroyed.
-   * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
-   * any DOM elements that were created in {@link react4j.annotations.PostMount} annotated methods.
-   * See the <a href="https://reactjs.org/docs/react-component.html#componentwillunmount">React Component documentation</a> for more details.
-   */
-  protected void componentWillUnmount()
-  {
-  }
-
-  /**
    * The componentDidCatch() method works like a JavaScript catch {} block, but for components.
    * Only class components can be error boundaries. In practice, most of the time you’ll want to
    * declare an error boundary component once and use it throughout your application.

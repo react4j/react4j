@@ -16,7 +16,7 @@ import react4j.ReactConfig;
 class React4j_ProtectedModel extends ProtectedModel {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedModel" );
     }
@@ -40,34 +40,8 @@ class React4j_ProtectedModel extends ProtectedModel {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
-  interface LiteLifecycle {
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
   interface Lifecycle {
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ProtectedModel> implements LiteLifecycle {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
-
-    @Override
-    protected ProtectedModel createComponent() {
-      return new React4j_ProtectedModel();
-    }
-
-    @Override
-    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
-      ((React4j_ProtectedModel) component() ).$$react4j$$_componentDidUpdate( prevProps );
-    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ProtectedModel> implements Lifecycle {

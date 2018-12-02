@@ -16,7 +16,7 @@ import react4j.ReactConfig;
 class React4j_NonnullOnPropChange extends NonnullOnPropChange {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( ReactConfig.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "NonnullOnPropChange" );
     }
@@ -52,38 +52,9 @@ class React4j_NonnullOnPropChange extends NonnullOnPropChange {
       namespace = JsPackage.GLOBAL,
       name = "?"
   )
-  interface LiteLifecycle {
-    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState);
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
   interface Lifecycle {
     Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
         @Nonnull JsPropertyMap<Object> prevState);
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<NonnullOnPropChange> implements LiteLifecycle {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
-
-    @Override
-    protected NonnullOnPropChange createComponent() {
-      return new React4j_NonnullOnPropChange();
-    }
-
-    @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState) {
-      ((React4j_NonnullOnPropChange) component() ).$$react4j$$_componentPreUpdate( prevProps );
-      return null;
-    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NonnullOnPropChange> implements Lifecycle {

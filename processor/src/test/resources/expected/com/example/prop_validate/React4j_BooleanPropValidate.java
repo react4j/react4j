@@ -64,7 +64,6 @@ class React4j_BooleanPropValidate extends BooleanPropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -85,11 +84,6 @@ class React4j_BooleanPropValidate extends BooleanPropValidate {
     @Override
     protected BooleanPropValidate createComponent() {
       return new React4j_BooleanPropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_BooleanPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

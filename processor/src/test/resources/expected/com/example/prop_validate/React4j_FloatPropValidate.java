@@ -64,7 +64,6 @@ class React4j_FloatPropValidate extends FloatPropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -85,11 +84,6 @@ class React4j_FloatPropValidate extends FloatPropValidate {
     @Override
     protected FloatPropValidate createComponent() {
       return new React4j_FloatPropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_FloatPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

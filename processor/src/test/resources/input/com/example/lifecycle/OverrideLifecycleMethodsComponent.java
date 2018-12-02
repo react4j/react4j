@@ -8,6 +8,7 @@ import react4j.ReactNode;
 import react4j.annotations.PostMount;
 import react4j.annotations.PostRender;
 import react4j.annotations.PostUpdate;
+import react4j.annotations.PreUnmount;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.ReactComponent;
 
@@ -42,8 +43,8 @@ abstract class OverrideLifecycleMethodsComponent
   {
   }
 
-  @Override
-  protected void componentWillUnmount()
+  @PreUnmount
+  protected void preUnmount()
   {
   }
 

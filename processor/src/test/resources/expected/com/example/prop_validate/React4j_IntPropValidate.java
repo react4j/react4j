@@ -64,7 +64,6 @@ class React4j_IntPropValidate extends IntPropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -85,11 +84,6 @@ class React4j_IntPropValidate extends IntPropValidate {
     @Override
     protected IntPropValidate createComponent() {
       return new React4j_IntPropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_IntPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

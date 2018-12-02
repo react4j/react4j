@@ -68,7 +68,6 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -89,11 +88,6 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
     @Override
     protected ExplicitNamePropValidate createComponent() {
       return new React4j_ExplicitNamePropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_ExplicitNamePropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

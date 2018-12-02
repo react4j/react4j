@@ -68,7 +68,6 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -89,11 +88,6 @@ class React4j_ProtectedPropValidate extends ProtectedPropValidate {
     @Override
     protected ProtectedPropValidate createComponent() {
       return new React4j_ProtectedPropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_ProtectedPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 

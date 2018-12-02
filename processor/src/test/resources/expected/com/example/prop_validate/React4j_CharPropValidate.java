@@ -64,7 +64,6 @@ class React4j_CharPropValidate extends CharPropValidate {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
   }
 
   @JsType(
@@ -85,11 +84,6 @@ class React4j_CharPropValidate extends CharPropValidate {
     @Override
     protected CharPropValidate createComponent() {
       return new React4j_CharPropValidate();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return ((React4j_CharPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 
