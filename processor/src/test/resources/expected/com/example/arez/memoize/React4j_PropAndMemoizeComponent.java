@@ -58,6 +58,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
   boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
     final JsPropertyMap<Object> props = props();
     boolean modified = false;
+    assert null != nextProps;
     if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
       getValueObservableValue().reportChanged();
       modified = true;

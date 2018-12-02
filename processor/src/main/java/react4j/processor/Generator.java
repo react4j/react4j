@@ -1066,6 +1066,16 @@ final class Generator
 
     method.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
     method.addStatement( "boolean modified = false" );
+    method.addStatement( "assert null != nextProps" );
+
+    if ( descriptor.hasValidatedProps() )
+    {
+      final CodeBlock.Builder validateBlock = CodeBlock.builder();
+      validateBlock.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CONFIG_CLASSNAME );
+      validateBlock.addStatement( "validatePropValues( nextProps )" );
+      validateBlock.endControlFlow();
+      method.addCode( validateBlock.build() );
+    }
 
     for ( final PropDescriptor prop : observableProps )
     {

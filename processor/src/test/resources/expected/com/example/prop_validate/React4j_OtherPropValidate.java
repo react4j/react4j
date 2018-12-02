@@ -45,6 +45,10 @@ class React4j_OtherPropValidate extends OtherPropValidate {
   boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
     final JsPropertyMap<Object> props = props();
     boolean modified = false;
+    assert null != nextProps;
+    if ( ReactConfig.shouldValidatePropValues() ) {
+      validatePropValues( nextProps );
+    }
     if ( !Js.isTripleEqual( props().get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }
