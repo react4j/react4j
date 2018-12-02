@@ -139,17 +139,6 @@ public abstract class Component
   }
 
   /**
-   * Template method called when onPropChange in POST phase declared.
-   *
-   * @param prevProps the props before the component was updated.
-   * @param props     the current props.
-   */
-  protected void postUpdateOnPropChange( @Nonnull final JsPropertyMap<Object> prevProps,
-                                         @Nonnull final JsPropertyMap<Object> props )
-  {
-  }
-
-  /**
    * This method is invoked immediately before a component is unmounted and destroyed.
    * Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up
    * any DOM elements that were created in {@link react4j.annotations.PostMount} annotated methods.

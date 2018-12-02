@@ -554,10 +554,6 @@ final class Generator
     {
       builder.addMethod( buildShouldComponentUpdate( descriptor ).build() );
     }
-    if ( descriptor.hasPostUpdateOnPropChange() )
-    {
-      builder.addMethod( buildPostUpdateOnPropChangeMethod( descriptor ).build() );
-    }
     if ( descriptor.isArezComponent() || descriptor.generateComponentDidMount() )
     {
       builder.addMethod( buildComponentDidMount( descriptor ).build() );
@@ -884,86 +880,6 @@ final class Generator
     return "get" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 ) + "ObservableValue";
   }
 
-  @Nonnull
-  private static MethodSpec.Builder buildPostUpdateOnPropChangeMethod( @Nonnull final ComponentDescriptor descriptor )
-  {
-    assert descriptor.hasPostUpdateOnPropChange();
-    final MethodSpec.Builder method =
-      MethodSpec
-        .methodBuilder( "postUpdateOnPropChange" ).
-        addModifiers( Modifier.PROTECTED ).
-        addAnnotation( Override.class ).
-        addParameter( ParameterSpec
-                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
-                        .addAnnotation( NONNULL_CLASSNAME )
-                        .build() ).
-        addParameter( ParameterSpec
-                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL )
-                        .addAnnotation( NONNULL_CLASSNAME )
-                        .build() );
-
-    buildOnPropChangeInvocations( method, descriptor.getPostUpdateOnPropChangeDescriptors() );
-    return method;
-  }
-
-  private static void buildOnPropChangeInvocations( @Nonnull final MethodSpec.Builder method,
-                                                    @Nonnull final List<OnPropChangeDescriptor> onPropChanges )
-  {
-    // The list of props we need to check for changes
-    final List<PropDescriptor> props =
-      onPropChanges.stream().flatMap( d -> d.getProps().stream() ).distinct().collect( Collectors.toList() );
-
-    for ( final PropDescriptor prop : props )
-    {
-      method.addStatement( "final boolean $N = !$T.isTripleEqual( props.get( Props.$N ), prevProps.get( Props.$N ) )",
-                           prop.getName(),
-                           JS_CLASSNAME,
-                           prop.getConstantName(),
-                           prop.getConstantName() );
-    }
-    for ( final OnPropChangeDescriptor onPropChange : onPropChanges )
-    {
-      final CodeBlock.Builder onChangeBlock = CodeBlock.builder();
-      onChangeBlock.beginControlFlow( "if ( " +
-                                      onPropChange.getProps()
-                                        .stream()
-                                        .map( PropDescriptor::getName )
-                                        .collect( Collectors.joining( " && " ) ) + " )" );
-      final StringBuilder sb = new StringBuilder();
-      final ArrayList<Object> params = new ArrayList<>();
-      sb.append( "$N( " );
-      params.add( onPropChange.getMethod().getSimpleName().toString() );
-      boolean requireComma = false;
-      for ( final PropDescriptor prop : onPropChange.getProps() )
-      {
-        if ( requireComma )
-        {
-          sb.append( ", " );
-        }
-        requireComma = true;
-        final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
-        final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
-        if ( !resultKind.isPrimitive() && !isNonnull( prop.getMethod() ) )
-        {
-          sb.append( "$T.uncheckedCast( props.getAny( Props.$N ) )" );
-          params.add( JS_CLASSNAME );
-          params.add( prop.getConstantName() );
-        }
-        else
-        {
-          sb.append( "props.getAny( Props.$N ).$N()" );
-          params.add( prop.getConstantName() );
-          params.add( convertMethodName );
-        }
-      }
-
-      sb.append( " )" );
-      onChangeBlock.addStatement( sb.toString(), params.toArray() );
-      onChangeBlock.endControlFlow();
-      method.addCode( onChangeBlock.build() );
-    }
-  }
-
   private static void buildOnPropChangeInvocations( @Nonnull final CodeBlock.Builder code,
                                                     @Nonnull final List<OnPropChangeDescriptor> onPropChanges )
   {
@@ -1172,7 +1088,7 @@ final class Generator
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != prevProps )" );
       block.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
-      block.addStatement( "postUpdateOnPropChange( prevProps, props )" );
+      buildOnPropChangeInvocations( block, descriptor.getPostUpdateOnPropChangeDescriptors() );
       block.endControlFlow();
       method.addCode( block.build() );
     }

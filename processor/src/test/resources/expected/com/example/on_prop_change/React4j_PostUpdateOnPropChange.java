@@ -32,19 +32,13 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
     }
   }
 
-  @Override
-  protected void postUpdateOnPropChange(@Nonnull final JsPropertyMap<Object> prevProps,
-      @Nonnull final JsPropertyMap<Object> props) {
-    final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
-    if ( myProp ) {
-      onMyPropChange( Js.uncheckedCast( props.getAny( Props.myProp ) ) );
-    }
-  }
-
   final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
-      postUpdateOnPropChange( prevProps, props );
+      final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
+      if ( myProp ) {
+        onMyPropChange( Js.uncheckedCast( props.getAny( Props.myProp ) ) );
+      }
     }
     storeDebugDataAsState();
   }
