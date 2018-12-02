@@ -59,7 +59,6 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<MethodDescriptor> _memoizeMethods;
-  private Boolean _hasObservableProps;
   private Boolean _hasValidatedProps;
 
   ComponentDescriptor( @Nonnull final Elements elements,
@@ -310,11 +309,12 @@ final class ComponentDescriptor
 
   boolean hasObservableProps()
   {
-    if ( null == _hasObservableProps )
-    {
-      _hasObservableProps = getProps().stream().anyMatch( PropDescriptor::isObservable );
-    }
-    return _hasObservableProps;
+    return getProps().stream().anyMatch( PropDescriptor::isObservable );
+  }
+
+  private boolean hasUpdateOnChangeProps()
+  {
+    return getProps().stream().anyMatch( PropDescriptor::shouldUpdateOnChange );
   }
 
   @Nullable
@@ -430,7 +430,16 @@ final class ComponentDescriptor
 
   private boolean generateShouldComponentUpdateInLiteLifecycle()
   {
-    return isArezComponent() || hasObservableProps();
+    /*
+     * We do not need to implement this when we are an arez component with no observable props
+     * and all "update on change" props as any prop change will cause a re-render which is effectively
+     * the same behaviour. Hence why isArezComponent() has been removed from this list.
+     */
+    return hasObservableProps() ||
+           // If any prop change requires a re-render then there is no need for SCU but if then
+           // there is at least one that need not cause a re-render then we need to implement SCU so we
+           // can skip that scenario
+           ( hasUpdateOnChangeProps() && !getProps().stream().allMatch( PropDescriptor::shouldUpdateOnChange ) );
   }
 
   boolean generateComponentDidCatch()
@@ -447,7 +456,7 @@ final class ComponentDescriptor
 
   boolean generateComponentPreUpdate()
   {
-    return hasObservableProps() || hasPreUpdateOnPropChange() || null != _preUpdate;
+    return hasPreUpdateOnPropChange() || null != _preUpdate;
   }
 
   boolean generateComponentDidMount()

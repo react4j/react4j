@@ -42,6 +42,10 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
     Disposable.dispose( this );
   }
 
+  final void onRenderDepsChange() {
+    onRenderDepsChange( false );
+  }
+
   @Override
   @Nullable
   @Memoize(
@@ -64,8 +68,6 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentWillUnmount();
   }
 
@@ -76,8 +78,6 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
   )
   interface Lifecycle {
     void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -93,11 +93,6 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
     @Override
     protected AnnotatedMemoizeComponent createComponent() {
       return new Arez_React4j_AnnotatedMemoizeComponent();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -120,11 +115,6 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
     @Override
     public final void componentDidMount() {
       ((Arez_React4j_AnnotatedMemoizeComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override

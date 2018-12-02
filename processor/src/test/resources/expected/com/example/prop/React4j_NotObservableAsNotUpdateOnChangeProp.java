@@ -51,6 +51,10 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     Disposable.dispose( this );
   }
 
+  final void onRenderDepsChange() {
+    onRenderDepsChange( false );
+  }
+
   @Override
   @Memoize(
       priority = Priority.LOWEST
@@ -73,8 +77,6 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentWillUnmount();
   }
 
@@ -85,8 +87,6 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
   )
   interface Lifecycle {
     void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -102,11 +102,6 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     @Override
     protected NotObservableAsNotUpdateOnChangeProp createComponent() {
       return new Arez_React4j_NotObservableAsNotUpdateOnChangeProp();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -129,11 +124,6 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     @Override
     public final void componentDidMount() {
       ((Arez_React4j_NotObservableAsNotUpdateOnChangeProp) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override

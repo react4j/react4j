@@ -1,7 +1,5 @@
 package react4j;
 
-import elemental2.core.JsError;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.JsPropertyMap;
@@ -70,33 +68,5 @@ public abstract class NativeAdapterComponent<I extends Component>
   public final ReactNode render()
   {
     return component().performRender();
-  }
-
-  /**
-   * Call shouldComponentUpdate on the target component.
-   * It is expected that the subclass will implement a public method shouldComponentUpdate() that
-   * delegates to this method to perform the work.
-   *
-   * @param nextProps the new properties of the component.
-   * @return true if the component should be updated.
-   * @see Component#shouldComponentUpdate(JsPropertyMap)
-   */
-  protected final boolean performShouldComponentUpdate( @Nonnull final JsPropertyMap<Object> nextProps )
-  {
-    return component().shouldComponentUpdate( nextProps );
-  }
-
-  /**
-   * Call componentDidCatch on the target component.
-   * It is expected that the subclass will implement a public method componentDidCatch() that
-   * delegates to this method to perform the work.
-   *
-   * @param error the error that has been thrown.
-   * @param info  information about component stack during thrown error.
-   * @see Component#componentDidCatch(JsError, ReactErrorInfo)
-   */
-  protected final void performComponentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
-  {
-    component().performComponentDidCatch( error, info );
   }
 }

@@ -43,6 +43,10 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
     Disposable.dispose( this );
   }
 
+  final void onRenderDepsChange() {
+    onRenderDepsChange( false );
+  }
+
   @Override
   protected final void triggerScheduler() {
     getContext().triggerScheduler();
@@ -70,8 +74,6 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentWillUnmount();
   }
 
@@ -82,8 +84,6 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
   )
   interface Lifecycle {
     void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -99,11 +99,6 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
     @Override
     protected KeepAliveMemoizeArezReactComponent createComponent() {
       return new Arez_React4j_KeepAliveMemoizeArezReactComponent();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -126,11 +121,6 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
     @Override
     public final void componentDidMount() {
       ((Arez_React4j_KeepAliveMemoizeArezReactComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override

@@ -52,18 +52,14 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
   @ObservableValueRef
   protected abstract ObservableValue getValueObservableValue();
 
-  @Override
   @Action(
       verifyRequired = false
   )
-  protected boolean reportPropChanges(@Nonnull final JsPropertyMap<Object> props,
-      @Nonnull final JsPropertyMap<Object> nextProps, final boolean inComponentPreUpdate) {
+  boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    final JsPropertyMap<Object> props = props();
     boolean modified = false;
-    final boolean reportChanges = shouldReportPropChanges( inComponentPreUpdate );
     if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
-      if ( reportChanges ) {
-        getValueObservableValue().reportChanged();
-      }
+      getValueObservableValue().reportChanged();
       modified = true;
     }
     return modified || hasRenderDepsChanged();
@@ -73,22 +69,16 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
     storeDebugDataAsState();
   }
 
-  @Action(
-      verifyRequired = false
-  )
-  protected void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    if ( null != prevProps ) {
-      final JsPropertyMap<Object> props = props();
-      reportPropChanges( prevProps, props, true );
-    }
-  }
-
   final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     storeDebugDataAsState();
   }
 
   final void $$react4j$$_componentWillUnmount() {
     Disposable.dispose( this );
+  }
+
+  final void onRenderDepsChange() {
+    onRenderDepsChange( true );
   }
 
   @Override
@@ -115,9 +105,6 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
   interface LiteLifecycle {
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
-    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState);
-
     void componentWillUnmount();
   }
 
@@ -130,9 +117,6 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
     void componentDidMount();
 
     boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
-    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -152,14 +136,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
-    }
-
-    @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState) {
-      ((Arez_React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_componentPreUpdate( prevProps );
-      return null;
+      return ((Arez_React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -186,14 +163,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
-    }
-
-    @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState) {
-      ((Arez_React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_componentPreUpdate( prevProps );
-      return null;
+      return ((Arez_React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

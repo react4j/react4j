@@ -40,6 +40,10 @@ abstract class React4j_BasicArezReactComponent extends BasicArezReactComponent {
     Disposable.dispose( this );
   }
 
+  final void onRenderDepsChange() {
+    onRenderDepsChange( false );
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -53,8 +57,6 @@ abstract class React4j_BasicArezReactComponent extends BasicArezReactComponent {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentWillUnmount();
   }
 
@@ -65,8 +67,6 @@ abstract class React4j_BasicArezReactComponent extends BasicArezReactComponent {
   )
   interface Lifecycle {
     void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -82,11 +82,6 @@ abstract class React4j_BasicArezReactComponent extends BasicArezReactComponent {
     @Override
     protected BasicArezReactComponent createComponent() {
       return new Arez_React4j_BasicArezReactComponent();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -109,11 +104,6 @@ abstract class React4j_BasicArezReactComponent extends BasicArezReactComponent {
     @Override
     public final void componentDidMount() {
       ((Arez_React4j_BasicArezReactComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override

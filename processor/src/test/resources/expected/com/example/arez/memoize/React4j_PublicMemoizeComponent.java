@@ -42,6 +42,10 @@ abstract class React4j_PublicMemoizeComponent extends PublicMemoizeComponent {
     Disposable.dispose( this );
   }
 
+  final void onRenderDepsChange() {
+    onRenderDepsChange( false );
+  }
+
   @Override
   @Memoize(
       priority = Priority.LOWEST
@@ -63,8 +67,6 @@ abstract class React4j_PublicMemoizeComponent extends PublicMemoizeComponent {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentWillUnmount();
   }
 
@@ -75,8 +77,6 @@ abstract class React4j_PublicMemoizeComponent extends PublicMemoizeComponent {
   )
   interface Lifecycle {
     void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -92,11 +92,6 @@ abstract class React4j_PublicMemoizeComponent extends PublicMemoizeComponent {
     @Override
     protected PublicMemoizeComponent createComponent() {
       return new Arez_React4j_PublicMemoizeComponent();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -119,11 +114,6 @@ abstract class React4j_PublicMemoizeComponent extends PublicMemoizeComponent {
     @Override
     public final void componentDidMount() {
       ((Arez_React4j_PublicMemoizeComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override

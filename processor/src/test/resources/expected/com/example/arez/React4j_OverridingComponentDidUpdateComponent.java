@@ -41,6 +41,10 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     Disposable.dispose( this );
   }
 
+  final void onRenderDepsChange() {
+    onRenderDepsChange( false );
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -54,8 +58,6 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
     void componentWillUnmount();
@@ -68,8 +70,6 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
   )
   interface Lifecycle {
     void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -85,11 +85,6 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     @Override
     protected OverridingComponentDidUpdateComponent createComponent() {
       return new Arez_React4j_OverridingComponentDidUpdateComponent();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -117,11 +112,6 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     @Override
     public final void componentDidMount() {
       ((Arez_React4j_OverridingComponentDidUpdateComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override

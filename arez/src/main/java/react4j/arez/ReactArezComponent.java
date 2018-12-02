@@ -11,7 +11,6 @@ import arez.annotations.ContextRef;
 import arez.annotations.Executor;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
-import arez.annotations.OnDepsChange;
 import arez.annotations.PreDispose;
 import arez.annotations.Priority;
 import arez.spy.ObservableValueInfo;
@@ -83,17 +82,18 @@ public abstract class ReactArezComponent
   }
 
   /**
-   * Hook used by Arez to notify component that it needs to be re-rendered.
+   * Helper method invoked when it has detected a dependency of the render method has changed.
+   *
+   * @param componentHasObservableProps flag indicating whether the component has any observable props.
    */
-  @OnDepsChange
-  protected final void onRenderDepsChange()
+  protected final void onRenderDepsChange( final boolean componentHasObservableProps )
   {
     if ( !_renderDepsChanged )
     {
       _renderDepsChanged = true;
       if ( !_unmounted )
       {
-        scheduleRender();
+        scheduleRender( !componentHasObservableProps );
       }
     }
   }

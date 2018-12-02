@@ -58,12 +58,8 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
     Disposable.dispose( this );
   }
 
-  @Override
-  protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( Props.value ), nextProps.get( Props.value ) ) ) {
-      return true;
-    }
-    return false;
+  final void onRenderDepsChange() {
+    onRenderDepsChange( false );
   }
 
   static final class Factory {
@@ -80,8 +76,6 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentWillUnmount();
   }
 
@@ -92,8 +86,6 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
   )
   interface Lifecycle {
     void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -109,11 +101,6 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
     @Override
     protected DisposableOptionalProp createComponent() {
       return new Arez_React4j_DisposableOptionalProp();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -136,11 +123,6 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
     @Override
     public final void componentDidMount() {
       ((Arez_React4j_DisposableOptionalProp) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override

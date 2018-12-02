@@ -50,12 +50,8 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
     Disposable.dispose( this );
   }
 
-  @Override
-  protected boolean shouldUpdateOnPropChanges(@Nonnull final JsPropertyMap<Object> nextProps) {
-    if ( !Js.isTripleEqual( props().get( Props.child ), nextProps.get( Props.child ) ) ) {
-      return true;
-    }
-    return false;
+  final void onRenderDepsChange() {
+    onRenderDepsChange( false );
   }
 
   static final class Factory {
@@ -72,8 +68,6 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
       name = "?"
   )
   interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentWillUnmount();
   }
 
@@ -84,8 +78,6 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   )
   interface Lifecycle {
     void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -101,11 +93,6 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
     @Override
     protected ComponentWithChildProp createComponent() {
       return new Arez_React4j_ComponentWithChildProp();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -128,11 +115,6 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
     @Override
     public final void componentDidMount() {
       ((Arez_React4j_ComponentWithChildProp) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override

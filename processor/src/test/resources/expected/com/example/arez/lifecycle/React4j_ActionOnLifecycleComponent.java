@@ -41,6 +41,10 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
     Disposable.dispose( this );
   }
 
+  final void onRenderDepsChange() {
+    onRenderDepsChange( false );
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -56,8 +60,6 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
   interface LiteLifecycle {
     void componentDidMount();
 
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
     void componentWillUnmount();
   }
 
@@ -68,8 +70,6 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
   )
   interface Lifecycle {
     void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 
     void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
 
@@ -93,11 +93,6 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
-    }
-
-    @Override
     public final void componentWillUnmount() {
       ((Arez_React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentWillUnmount();
     }
@@ -117,11 +112,6 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
     @Override
     public final void componentDidMount() {
       ((Arez_React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentDidMount();
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
     }
 
     @Override

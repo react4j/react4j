@@ -42,6 +42,15 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
     }
   }
 
+  boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    final JsPropertyMap<Object> props = props();
+    boolean modified = false;
+    if ( !Js.isTripleEqual( props().get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+      return true;
+    }
+    return modified;
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -81,7 +90,7 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
+      return ((React4j_NonnullPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 
@@ -98,7 +107,7 @@ class React4j_NonnullPropValidate extends NonnullPropValidate {
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
-      return performShouldComponentUpdate( nextProps );
+      return ((React4j_NonnullPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }
 }

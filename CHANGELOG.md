@@ -48,6 +48,15 @@
   when a component has been rendered. This can be after the component has been mounted or after it has been
   updated. This method is invoked before the `@PostUpdate` annotated method in the `componentDidUpdate(...)`
   method and before the `@PostMount` annotated method in the `componentDidMount(...)` method.
+* **\[core\]** Re-introduce the boolean parameter `force` to `Component.scheduleRender()` method so that it
+  is possible to trigger a re-render but still pass through the `shouldComponentUpdate()` lifecycle stage if
+  present.
+* **\[processor\]** Avoid generating `componentPreUpdate` lifecycle method for components that have have
+  observable props and no `@PreUpdate` or `@OnPropChange(phase=PRE)` annotated methods. This was achieved by
+  migrating all observable prop monitoring into `shouldComponentUpdate` and out of the `componentPreUpdate`
+  lifecycle method.
+* **\[processor\]** Avoid generating the `shouldComponentUpdate` lifecycle method if changes to any prop will
+  cause the component to be re-rendered and there are no observable methods for component.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)
