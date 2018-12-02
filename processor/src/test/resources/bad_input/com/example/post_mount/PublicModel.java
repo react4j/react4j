@@ -1,16 +1,16 @@
-package com.example.post_update;
+package com.example.post_mount;
 
 import react4j.Component;
 import react4j.ReactNode;
-import react4j.annotations.PostUpdate;
+import react4j.annotations.PostMount;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class ProtectedModel
+abstract class PublicModel
   extends Component
 {
-  @PostUpdate
-  protected void postUpdate()
+  @PostMount
+  public void postMount()
   {
   }
 

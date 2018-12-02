@@ -1,16 +1,18 @@
-package com.example.post_update;
+package com.example.post_mount;
 
+import java.io.IOException;
 import react4j.Component;
 import react4j.ReactNode;
-import react4j.annotations.PostUpdate;
+import react4j.annotations.PostMount;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class ProtectedModel
+abstract class ThrowsModel
   extends Component
 {
-  @PostUpdate
-  protected void postUpdate()
+  @PostMount
+  void postMount()
+    throws IOException
   {
   }
 
