@@ -80,7 +80,7 @@ public class ReactDOM
    * @return a reference to the created React Component, DOM Node, Portal or null (stateless components).
    */
   @Nullable
-  @JsMethod( name = "render" )
+  @JsMethod
   public static native Object render( @Nonnull ReactNode node,
                                       @Nonnull Element container,
                                       @Nullable RenderCallbackFn onUpdate );
