@@ -69,6 +69,7 @@
 * **\[core\]** Remove the unused `React.isReactElement(...)` method.
 * **\[core\]** Import Closure Compiler annotated externs for react. This is needed to support the closure
   compiler compilation stage that is part of J2CL compilation.
+* **\[core\]** Remove the `Component.getKey()` as it is not expected to work as keys are not stored on props.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

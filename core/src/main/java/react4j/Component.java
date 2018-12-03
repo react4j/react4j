@@ -57,21 +57,6 @@ public abstract class Component
   }
 
   /**
-   * Return the key associated with the component if any.
-   * The key is used by the react reconciliation process as a means to identify components so that they
-   * can be moved rather than recreated or reconfigured. Typically, it should not be used by the component
-   * itself except for generating keys of sub-components. This value may not be specified in which case null
-   * will be returned.
-   *
-   * @return the key if specified.
-   */
-  @Nullable
-  protected final String getKey()
-  {
-    return Js.asPropertyMap( props() ).getAny( PropNames.KEY_PROP_NAME ).asString();
-  }
-
-  /**
    * Schedule this component for re-rendering.
    * The component re-renders when props change but calling this method is another way to schedule the
    * component to be re-rendered. When this method is called the <code>shouldComponentUpdate()</code>
