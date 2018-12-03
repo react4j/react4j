@@ -245,7 +245,7 @@ public abstract class ReactArezComponent
         }
         else
         {
-          return renderValueAsState( observableInfo, value );
+          return value;
         }
       }
       else
@@ -257,12 +257,5 @@ public abstract class ReactArezComponent
     {
       return throwable;
     }
-  }
-
-  @Nullable
-  protected Object renderValueAsState( @Nonnull final ObservableValueInfo observableInfo,
-                                       @Nonnull final Object value )
-  {
-    return value;
   }
 }
