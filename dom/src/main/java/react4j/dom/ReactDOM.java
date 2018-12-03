@@ -8,10 +8,7 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import react4j.React;
-import react4j.ReactConfig;
 import react4j.ReactNode;
-import static org.realityforge.braincheck.Guards.*;
 
 /**
  * Core interface into React DOM library.
@@ -83,30 +80,10 @@ public class ReactDOM
    * @return a reference to the created React Component, DOM Node, Portal or null (stateless components).
    */
   @Nullable
-  @JsOverlay
-  public static Object render( @Nonnull final ReactNode node,
-                               @Nonnull final Element container,
-                               @Nullable final RenderCallbackFn onUpdate )
-  {
-    if ( ReactConfig.shouldCheckInvariants() )
-    {
-      invariant( () -> React.isValidElement( node ), () -> "ReactDOM.render passed a non ReactElement" );
-    }
-    return render0( node, container, onUpdate );
-  }
-
-  /**
-   * Internal native method for rendering component./
-   *
-   * @param node      the react node to render.
-   * @param container the DOM element to render into.
-   * @param onUpdate  the callback invoked when rendering is complete.
-   * @return a reference to the created React Component, DOM Node, Portal or null (stateless components).
-   */
   @JsMethod( name = "render" )
-  private static native Object render0( @Nonnull ReactNode node,
-                                        @Nonnull Element container,
-                                        @Nullable RenderCallbackFn onUpdate );
+  public static native Object render( @Nonnull ReactNode node,
+                                      @Nonnull Element container,
+                                      @Nullable RenderCallbackFn onUpdate );
 
   /**
    * Render a React element into the DOM in the supplied container.
