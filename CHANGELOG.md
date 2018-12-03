@@ -66,6 +66,7 @@
   and if it was used it could be reimplemented in java rather than relying on javascript extern.
 * **\[dom\]** Remove the invariant check in `ReactDOM.render(...)` that duplicates check already present in
   native react.js code.
+* **\[core\]** Remove the unused `React.isReactElement(...)` method.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

@@ -91,14 +91,6 @@ public final class React
   public static ComponentConstructorFunction Lazy;
 
   /**
-   * Return true if the specified node is a ReactElement.
-   *
-   * @param node the node to test.
-   * @return true if the specified node is a ReactElement.
-   */
-  public static native boolean isValidElement( @Nonnull ReactNode node );
-
-  /**
    * Create and return a new ReactElement of the given type with specified children.
    *
    * @param type  A HTML tag name (eg. 'div', 'span', etc)
