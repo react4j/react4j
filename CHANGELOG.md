@@ -67,6 +67,8 @@
 * **\[dom\]** Remove the invariant check in `ReactDOM.render(...)` that duplicates check already present in
   native react.js code.
 * **\[core\]** Remove the unused `React.isReactElement(...)` method.
+* **\[core\]** Import Closure Compiler annotated externs for react. This is needed to support the closure
+  compiler compilation stage that is part of J2CL compilation.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)
