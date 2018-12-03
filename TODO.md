@@ -15,6 +15,9 @@
   Possibly look at observed props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
   method that calls dispose on previous return if any. (From react 17)
 
+* Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
+  will push the call into a task that is invoked at a later time.
+
 * Rather than creating `Lifecycle` and `LiteLifecycle` could just define an interface per lifecycle and define them
   statically in internal package somewhere.
 
