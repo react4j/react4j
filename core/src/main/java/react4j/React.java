@@ -6,14 +6,12 @@ import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import static org.realityforge.braincheck.Guards.*;
 
 /**
  * Native interface to native runtime for creating component.
@@ -247,37 +245,6 @@ public final class React
    */
   @Nonnull
   public static native <T> Context<T> createContext( T defaultValue );
-
-  /**
-   * Clone and return a new ReactElement using element as the starting point. The resulting
-   * element will have the original element's props with the new props merged in shallowly.
-   * New children will replace existing children. Unlike React.addons.cloneWithProps, key and
-   * ref from the original element will be preserved. There is no special behavior for merging
-   * any props (unlike cloneWithProps).
-   *
-   * @param element the element to clone
-   * @param props   the props to merge
-   * @return the cloned element
-   */
-  @JsOverlay
-  public static ReactNode cloneElement( @Nonnull final ReactNode element, @Nullable JsPropertyMap<Object> props )
-  {
-    if ( ReactConfig.shouldCheckInvariants() )
-    {
-      invariant( () -> isValidElement( element ), () -> "React.cloneElement() passed a non ReactElement" );
-    }
-    return cloneElement0( element, props );
-  }
-
-  /**
-   * Internal method that delegates to reacts cloneElement method.
-   *
-   * @param element the element to clone
-   * @param props   the props to merge
-   * @return the cloned element
-   */
-  @JsMethod( name = "cloneElement" )
-  private static native ReactNode cloneElement0( @Nonnull ReactNode element, @Nullable JsPropertyMap<Object> props );
 
   /**
    * Return the fiber for current component.
