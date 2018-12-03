@@ -15,6 +15,9 @@
   Possibly look at observed props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
   method that calls dispose on previous return if any. (From react 17)
 
+* Rather than creating `Lifecycle` and `LiteLifecycle` could just define an interface per lifecycle and define them
+  statically in internal package somewhere.
+
 * Fix following warnings in J2CL code
 
 jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React$$Overlay.impl.java.js:231:
