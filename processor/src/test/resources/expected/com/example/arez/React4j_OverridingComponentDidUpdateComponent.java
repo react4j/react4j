@@ -66,10 +66,10 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
   )
   protected ReactNode render() {
     clearRenderDepsChanged();
+    pauseArezSchedulerUntilRenderLoopComplete();
     if ( Disposable.isDisposed( this ) ) {
       return null;
     }
-    pauseArezSchedulerUntilRenderLoopComplete();
     final ReactNode result = super.render();
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
       Guards.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );

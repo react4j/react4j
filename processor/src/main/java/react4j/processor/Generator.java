@@ -1112,6 +1112,7 @@ final class Generator
     method.addAnnotation( observe.build() );
 
     method.addStatement( "clearRenderDepsChanged()" );
+    method.addStatement( "pauseArezSchedulerUntilRenderLoopComplete()" );
     final CodeBlock.Builder disposedBlock = CodeBlock.builder();
     disposedBlock.beginControlFlow( "if ( $T.isDisposed( this ) )", DISPOSABLE_CLASSNAME );
     disposedBlock.addStatement( "return null" );
@@ -1142,7 +1143,6 @@ final class Generator
       method.addCode( block.build() );
     }
 
-    method.addStatement( "pauseArezSchedulerUntilRenderLoopComplete()" );
     method.addStatement( "final $T result = super.render()", REACT_NODE_CLASSNAME );
     final CodeBlock.Builder depCheckBlock = CodeBlock.builder();
     depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
