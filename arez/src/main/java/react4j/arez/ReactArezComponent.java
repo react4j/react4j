@@ -8,23 +8,17 @@ import arez.annotations.Action;
 import arez.annotations.ComponentId;
 import arez.annotations.ComponentNameRef;
 import arez.annotations.ContextRef;
-import arez.annotations.Executor;
-import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.PreDispose;
-import arez.annotations.Priority;
 import arez.spy.ObservableValueInfo;
 import arez.spy.ObserverInfo;
 import elemental2.promise.Promise;
-import java.util.List;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.Component;
-import react4j.ReactNode;
-import static org.realityforge.braincheck.Guards.*;
 
 /**
  * A base class for all Arez enabled components. This class makes the component
@@ -98,6 +92,11 @@ public abstract class ReactArezComponent
     }
   }
 
+  protected final void clearRenderDepsChanged()
+  {
+    _renderDepsChanged = false;
+  }
+
   /**
    * Return the arez context that this component is associated with.
    * The component is associated with the context that was active when it was created
@@ -138,16 +137,6 @@ public abstract class ReactArezComponent
   protected abstract Observer getRenderObserver();
 
   /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected final ReactNode performRender()
-  {
-    pauseArezSchedulerUntilRenderLoopComplete();
-    return Disposable.isDisposed( this ) ? null : trackRender();
-  }
-
-  /**
    * The first time an arez component is rendered it will lock the Arez scheduler and release
    * the lock in the micro-task immediately following the task that prompted the render. If this
    * is not done it is possible that Arez can re-trigger a component render when the scheduler is
@@ -160,7 +149,7 @@ public abstract class ReactArezComponent
    * triggering an update that would mark particular React Components/Observers as STALE and trigger
    * a re-render of that component.</p>
    */
-  private void pauseArezSchedulerUntilRenderLoopComplete()
+  protected final void pauseArezSchedulerUntilRenderLoopComplete()
   {
     if ( null == c_schedulerLock )
     {
@@ -172,48 +161,6 @@ public abstract class ReactArezComponent
         c_schedulerLock = null;
         return null;
       } );
-    }
-  }
-
-  /**
-   * Return true if any prop is an ArezComponent that has been disposed.
-   * This is used to guard against rendering a react component that has invalid props.
-   *
-   * @return true if any prop is an ArezComponent that has been disposed.
-   */
-  protected boolean anyPropsDisposed()
-  {
-    return false;
-  }
-
-  /**
-   * This method is the method enhanced by arez that performs render and tracks dependencies.
-   * This SHOULD NOT be merged with {@link #performRender()} as then the isDisposed check will be present
-   * in every instance of render method which can result in unnecessary code bloat.
-   *
-   * @return the result of rendering.
-   */
-  @Observe( executor = Executor.APPLICATION, name = "render", priority = Priority.LOW, observeLowerPriorityDependencies = true, reportResult = false )
-  @Nullable
-  protected ReactNode trackRender()
-  {
-    _renderDepsChanged = false;
-    if ( anyPropsDisposed() )
-    {
-      return null;
-    }
-    else
-    {
-      final ReactNode result = super.performRender();
-      if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() )
-      {
-        final List<ObservableValueInfo> dependencies =
-          getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies();
-        invariant( () -> !dependencies.isEmpty(),
-                   () -> "ReactArezComponent render completed on '" + this + "' but the component does not " +
-                         "have any Arez dependencies. This component should extend react4j.Component instead." );
-      }
-      return result;
     }
   }
 

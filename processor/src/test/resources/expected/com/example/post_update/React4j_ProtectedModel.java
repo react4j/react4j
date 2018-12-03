@@ -25,7 +25,9 @@ class React4j_ProtectedModel extends ProtectedModel {
 
   final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postUpdate();
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   static final class Factory {

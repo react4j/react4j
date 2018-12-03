@@ -28,7 +28,9 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
 
   void $$react4j$$_componentDidMount() {
     postMount();
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
@@ -44,7 +46,9 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
 
   final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postUpdate();
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   static final class Factory {

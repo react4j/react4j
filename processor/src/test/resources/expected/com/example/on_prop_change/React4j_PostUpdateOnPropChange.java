@@ -40,7 +40,9 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
         onMyPropChange( Js.uncheckedCast( props.getAny( Props.myProp ) ) );
       }
     }
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   static final class Factory {

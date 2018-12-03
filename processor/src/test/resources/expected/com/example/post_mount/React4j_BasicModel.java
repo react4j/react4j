@@ -25,7 +25,9 @@ class React4j_BasicModel extends BasicModel {
 
   void $$react4j$$_componentDidMount() {
     postMount();
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   static final class Factory {

@@ -40,6 +40,7 @@ final class Generator
   private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
+  private static final ClassName AREZ_CLASSNAME = ClassName.get( "arez", "Arez" );
   private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "ObservableValue" );
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
@@ -48,7 +49,9 @@ final class Generator
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
   private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
+  private static final ClassName EXECUTOR_CLASSNAME = ClassName.get( "arez.annotations", "Executor" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
+  private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
   private static final ClassName OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
@@ -525,18 +528,7 @@ final class Generator
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
-    final List<PropDescriptor> props = descriptor.getProps();
-    if ( descriptor.isArezComponent() )
-    {
-      final List<PropDescriptor> disposableProps =
-        props.stream().filter( PropDescriptor::isDisposable ).collect( Collectors.toList() );
-      if ( !disposableProps.isEmpty() )
-      {
-        builder.addMethod( buildAnyPropsDisposedMethod( disposableProps ).build() );
-      }
-    }
-
-    for ( final PropDescriptor prop : props )
+    for ( final PropDescriptor prop : descriptor.getProps() )
     {
       builder.addMethod( buildPropMethod( descriptor, prop ).build() );
       if ( descriptor.isArezComponent() && prop.isObservable() )
@@ -574,6 +566,7 @@ final class Generator
     if ( descriptor.isArezComponent() )
     {
       builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
+      builder.addMethod( buildRender( descriptor ).build() );
     }
 
     if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
@@ -738,41 +731,6 @@ final class Generator
                             observeLowerPriorityDependenciesValue.getValue().toString() );
     }
     return annotation;
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildAnyPropsDisposedMethod( @Nonnull final List<PropDescriptor> props )
-  {
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "anyPropsDisposed" )
-        .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
-        .addAnnotation( Override.class )
-        .returns( TypeName.BOOLEAN );
-
-    for ( final PropDescriptor prop : props )
-    {
-      final String varName = "$$react4jv$$_" + prop.getMethod().getSimpleName();
-      method.addStatement( "final $T $N = $N()",
-                           prop.getMethodType().getReturnType(),
-                           varName,
-                           prop.getMethod().getSimpleName().toString() );
-      final CodeBlock.Builder block = CodeBlock.builder();
-      if ( prop.isOptional() )
-      {
-        block.beginControlFlow( "if ( null != $N && $T.isDisposed( $N ) )", varName, DISPOSABLE_CLASSNAME, varName );
-      }
-      else
-      {
-        block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
-      }
-      block.addStatement( "return true" );
-      block.endControlFlow();
-      method.addCode( block.build() );
-
-    }
-    method.addStatement( "return false" );
-
-    return method;
   }
 
   private static MethodSpec.Builder buildPropMethod( @Nonnull final ComponentDescriptor descriptor,
@@ -952,7 +910,11 @@ final class Generator
     {
       method.addStatement( "$N()", postMount.getSimpleName().toString() );
     }
-    method.addStatement( "storeDebugDataAsState()" );
+    final CodeBlock.Builder block = CodeBlock.builder();
+    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() )", REACT_CONFIG_CLASSNAME );
+    block.addStatement( "storeDebugDataAsState()" );
+    block.endControlFlow();
+    method.addCode( block.build() );
 
     return method;
   }
@@ -1102,7 +1064,11 @@ final class Generator
     {
       method.addStatement( "$N()", postUpdate.getSimpleName().toString() );
     }
-    method.addStatement( "storeDebugDataAsState()" );
+    final CodeBlock.Builder block = CodeBlock.builder();
+    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() )", REACT_CONFIG_CLASSNAME );
+    block.addStatement( "storeDebugDataAsState()" );
+    block.endControlFlow();
+    method.addCode( block.build() );
     return method;
   }
 
@@ -1121,6 +1087,73 @@ final class Generator
     {
       method.addStatement( "$T.dispose( this )", DISPOSABLE_CLASSNAME );
     }
+    return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildRender( @Nonnull final ComponentDescriptor descriptor )
+  {
+    assert descriptor.isArezComponent();
+    final MethodSpec.Builder method = MethodSpec
+      .methodBuilder( "render" )
+      .addAnnotation( Override.class )
+      .addAnnotation( NULLABLE_CLASSNAME )
+      .addModifiers( Modifier.PROTECTED )
+      .returns( REACT_NODE_CLASSNAME );
+
+    final AnnotationSpec.Builder observe =
+      AnnotationSpec
+        .builder( OBSERVE_ANNOTATION_CLASSNAME )
+        .addMember( "name", "$S", "render" )
+        .addMember( "priority", "$T.LOW", PRIORITY_CLASSNAME )
+        .addMember( "executor", "$T.APPLICATION", EXECUTOR_CLASSNAME )
+        .addMember( "observeLowerPriorityDependencies", "true" )
+        .addMember( "reportResult", "false" );
+    method.addAnnotation( observe.build() );
+
+    method.addStatement( "clearRenderDepsChanged()" );
+    final CodeBlock.Builder disposedBlock = CodeBlock.builder();
+    disposedBlock.beginControlFlow( "if ( $T.isDisposed( this ) )", DISPOSABLE_CLASSNAME );
+    disposedBlock.addStatement( "return null" );
+    disposedBlock.endControlFlow();
+    method.addCode( disposedBlock.build() );
+
+    final List<PropDescriptor> disposableProps =
+      descriptor.getProps().stream().filter( PropDescriptor::isDisposable ).collect( Collectors.toList() );
+
+    for ( final PropDescriptor prop : disposableProps )
+    {
+      final String varName = "$$react4jv$$_" + prop.getMethod().getSimpleName();
+      method.addStatement( "final $T $N = $N()",
+                           prop.getMethodType().getReturnType(),
+                           varName,
+                           prop.getMethod().getSimpleName().toString() );
+      final CodeBlock.Builder block = CodeBlock.builder();
+      if ( prop.isOptional() )
+      {
+        block.beginControlFlow( "if ( null != $N && $T.isDisposed( $N ) )", varName, DISPOSABLE_CLASSNAME, varName );
+      }
+      else
+      {
+        block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
+      }
+      block.addStatement( "return null" );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+
+    method.addStatement( "pauseArezSchedulerUntilRenderLoopComplete()" );
+    method.addStatement( "final $T result = super.render()", REACT_NODE_CLASSNAME );
+    final CodeBlock.Builder depCheckBlock = CodeBlock.builder();
+    depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
+                                    AREZ_CLASSNAME,
+                                    AREZ_CLASSNAME );
+    depCheckBlock.addStatement(
+      "$T.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> \"ReactArezComponent render completed on '\" + this + \"' but the component does not have any Arez dependencies. This component should extend react4j.Component instead.\" )",
+      GUARDS_CLASSNAME );
+    depCheckBlock.endControlFlow();
+    method.addCode( depCheckBlock.build() );
+    method.addStatement( "return result" );
     return method;
   }
 

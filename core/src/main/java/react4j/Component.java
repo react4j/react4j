@@ -101,18 +101,6 @@ public abstract class Component
   protected abstract ReactNode render();
 
   /**
-   * Wrapper method that delegates to the {@link #render()} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
-   *
-   * @return the result of rendering.
-   */
-  @Nullable
-  protected ReactNode performRender()
-  {
-    return render();
-  }
-
-  /**
    * Wrapper method that delegates to the {@link #postConstruct()} method.
    * This method exists to give middleware a mechanism to hook into component lifecycle step.
    */

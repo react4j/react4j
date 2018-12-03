@@ -1,8 +1,11 @@
 package com.example.prop;
 
+import arez.Arez;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
+import arez.annotations.Executor;
 import arez.annotations.Memoize;
+import arez.annotations.Observe;
 import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -12,9 +15,11 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.realityforge.braincheck.Guards;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
+import react4j.ReactNode;
 
 @ArezComponent(
     name = "NotObservableAsNotUpdateOnChangeProp"
@@ -40,11 +45,15 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
   }
 
   void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   final void $$react4j$$_componentWillUnmount() {
@@ -53,6 +62,28 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
 
   final void onRenderDepsChange() {
     onRenderDepsChange( false );
+  }
+
+  @Override
+  @Nullable
+  @Observe(
+      name = "render",
+      priority = Priority.LOW,
+      executor = Executor.APPLICATION,
+      observeLowerPriorityDependencies = true,
+      reportResult = false
+  )
+  protected ReactNode render() {
+    clearRenderDepsChanged();
+    if ( Disposable.isDisposed( this ) ) {
+      return null;
+    }
+    pauseArezSchedulerUntilRenderLoopComplete();
+    final ReactNode result = super.render();
+    if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
+      Guards.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
+    }
+    return result;
   }
 
   @Override

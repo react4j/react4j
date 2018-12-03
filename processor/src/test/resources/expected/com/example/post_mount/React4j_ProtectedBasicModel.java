@@ -25,7 +25,9 @@ class React4j_ProtectedBasicModel extends ProtectedBasicModel {
 
   void $$react4j$$_componentDidMount() {
     postMount();
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   static final class Factory {

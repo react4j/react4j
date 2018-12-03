@@ -26,7 +26,9 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
   void $$react4j$$_componentDidMount() {
     postRender();
     postMount();
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
@@ -36,7 +38,9 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
   final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postRender();
     postUpdate();
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   final void $$react4j$$_componentWillUnmount() {

@@ -1,7 +1,11 @@
 package com.example.prop;
 
+import arez.Arez;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
+import arez.annotations.Executor;
+import arez.annotations.Observe;
+import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -10,9 +14,11 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.realityforge.braincheck.Guards;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
+import react4j.ReactNode;
 
 @ArezComponent(
     name = "ComponentWithArezProp"
@@ -26,15 +32,6 @@ abstract class React4j_ComponentWithArezProp extends ComponentWithArezProp {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentWithArezProp" );
     }
     return componentConstructor;
-  }
-
-  @Override
-  protected final boolean anyPropsDisposed() {
-    final ComponentWithArezProp.Model $$react4jv$$_getModel = getModel();
-    if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {
-      return true;
-    }
-    return false;
   }
 
   @Override
@@ -56,11 +53,15 @@ abstract class React4j_ComponentWithArezProp extends ComponentWithArezProp {
   }
 
   void $$react4j$$_componentDidMount() {
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    storeDebugDataAsState();
+    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+      storeDebugDataAsState();
+    }
   }
 
   final void $$react4j$$_componentWillUnmount() {
@@ -69,6 +70,32 @@ abstract class React4j_ComponentWithArezProp extends ComponentWithArezProp {
 
   final void onRenderDepsChange() {
     onRenderDepsChange( false );
+  }
+
+  @Override
+  @Nullable
+  @Observe(
+      name = "render",
+      priority = Priority.LOW,
+      executor = Executor.APPLICATION,
+      observeLowerPriorityDependencies = true,
+      reportResult = false
+  )
+  protected ReactNode render() {
+    clearRenderDepsChanged();
+    if ( Disposable.isDisposed( this ) ) {
+      return null;
+    }
+    final ComponentWithArezProp.Model $$react4jv$$_getModel = getModel();
+    if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {
+      return null;
+    }
+    pauseArezSchedulerUntilRenderLoopComplete();
+    final ReactNode result = super.render();
+    if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
+      Guards.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
+    }
+    return result;
   }
 
   static final class Factory {

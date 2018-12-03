@@ -67,6 +67,6 @@ public abstract class NativeAdapterComponent<I extends Component>
   @Nullable
   public final ReactNode render()
   {
-    return component().performRender();
+    return component().render();
   }
 }
