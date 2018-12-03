@@ -38,6 +38,12 @@ jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react
 
 * Collections returned from props should be made immutable.
 
+* Generate documentation for components from annotations. This documentation could use the prop types to give
+  basic documentation overview and then use special annotations to give extended documentation and/or reference
+  examples that will be both output as documentation and fed into basic test infrastructure. This ensures that the
+  examples will continue to work as the library is evolved. There is a few examples like this in react world ...
+  stylguidist??
+
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component.
   - `STATELESS` => inlined into caller without a component in production mode.
   - `PURE` => autogenerate SCU assuming `Js.isTripleEqual()` for props implies no re-render.
