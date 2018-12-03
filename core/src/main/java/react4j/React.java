@@ -82,11 +82,13 @@ public final class React
   /**
    * The Symbol type for Memo.
    */
+  @SuppressWarnings( "unused" )
   @JsProperty( name = "Memo" )
   public static ComponentConstructorFunction Memo;
   /**
    * The Symbol type for Lazy.
    */
+  @SuppressWarnings( "unused" )
   @JsProperty( name = "Lazy" )
   public static ComponentConstructorFunction Lazy;
 
