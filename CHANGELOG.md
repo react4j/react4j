@@ -57,6 +57,8 @@
   lifecycle method.
 * **\[processor\]** Avoid generating the `shouldComponentUpdate` lifecycle method if changes to any prop will
   cause the component to be re-rendered and there are no observable methods for component.
+* **\[core\]** Remove the `ReactArezEnvironment` class as it no longer provides any value given that the Arez
+  scheduler is paused until a subsequent microtask.
 * **\[core\]** Introduce the `@PreUnmount` annotation that can be used to annotate a method that is invoked
   before a component is unmounted or detatched. This replaces the ability to override the
   `componentWillUnmount()` lifecycle method.
