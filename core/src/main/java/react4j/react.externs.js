@@ -531,10 +531,6 @@ var topVolumeChange;
 var topWaiting;
 var topWheel;
 
-React.Fragment = function() {};
-
-/* 16.3.0 new API */
-
 React.createContext = function() {};
 
 React.Context = function() {};
