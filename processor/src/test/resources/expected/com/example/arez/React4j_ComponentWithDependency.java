@@ -77,7 +77,7 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   @Observe(
       name = "render",
       priority = Priority.LOW,
-      executor = Executor.APPLICATION,
+      executor = Executor.EXTERNAL,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )

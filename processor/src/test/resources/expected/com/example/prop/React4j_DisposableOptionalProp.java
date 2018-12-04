@@ -68,7 +68,7 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
   @Observe(
       name = "render",
       priority = Priority.LOW,
-      executor = Executor.APPLICATION,
+      executor = Executor.EXTERNAL,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )

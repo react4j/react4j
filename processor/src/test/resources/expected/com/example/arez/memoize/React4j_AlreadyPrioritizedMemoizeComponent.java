@@ -59,7 +59,7 @@ abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPriorit
   @Observe(
       name = "render",
       priority = Priority.LOW,
-      executor = Executor.APPLICATION,
+      executor = Executor.EXTERNAL,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )

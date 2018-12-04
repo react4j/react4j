@@ -60,7 +60,7 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
   @Observe(
       name = "render",
       priority = Priority.LOW,
-      executor = Executor.APPLICATION,
+      executor = Executor.EXTERNAL,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )

@@ -62,7 +62,7 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
   @Observe(
       name = "render",
       priority = Priority.LOW,
-      executor = Executor.APPLICATION,
+      executor = Executor.EXTERNAL,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )
@@ -90,7 +90,6 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
       name = "foo",
       keepAlive = true,
       reportResult = false,
-      requireEnvironment = true,
       depType = DepType.AREZ_OR_NONE,
       observeLowerPriorityDependencies = true
   )

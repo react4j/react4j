@@ -96,7 +96,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   @Observe(
       name = "render",
       priority = Priority.LOW,
-      executor = Executor.APPLICATION,
+      executor = Executor.EXTERNAL,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )

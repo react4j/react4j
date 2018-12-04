@@ -1089,13 +1089,12 @@ public final class ReactProcessor
             parameters.contains( "reportResult" ) &&
             parameters.contains( "observeLowerPriorityDependencies" ) &&
             parameters.contains( "depType" ) &&
-            parameters.contains( "requireEnvironment" ) &&
-            7 == parameters.size() ) )
+            6 == parameters.size() ) )
     {
       throw new ReactProcessorException( "The @" + Constants.MEMOIZE_ANNOTATION_CLASSNAME + " annotation was " +
                                          "expected to have the parameters name, priority, keepAlive, reportResult, " +
-                                         "depType, requireEnvironment and observeLowerPriorityDependencies but has " +
-                                         parameters + ". The react4j annotation processor needs to be updated to " +
+                                         "depType and observeLowerPriorityDependencies but has " + parameters +
+                                         ". The react4j annotation processor needs to be updated to " +
                                          "handle the change in parameters.", typeElement );
 
     }
@@ -1221,7 +1220,7 @@ public final class ReactProcessor
                                              Constants.OBSERVE_ANNOTATION_CLASSNAME,
                                              "executor" );
         return null != annotationValue &&
-               ( (VariableElement) annotationValue.getValue() ).getSimpleName().toString().equals( "AREZ" );
+               ( (VariableElement) annotationValue.getValue() ).getSimpleName().toString().equals( "INTERNAL" );
       } );
   }
 

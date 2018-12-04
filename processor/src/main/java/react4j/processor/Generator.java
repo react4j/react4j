@@ -703,14 +703,6 @@ final class Generator
       annotation.addMember( "reportResult", "$N", reportResultValue.getValue().toString() );
     }
 
-    final AnnotationValue requireEnvironmentValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                                 "requireEnvironment" );
-    if ( null != requireEnvironmentValue )
-    {
-      annotation.addMember( "requireEnvironment", "$N", requireEnvironmentValue.getValue().toString() );
-    }
     final AnnotationValue depTypeValue =
       ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
                                                  Constants.MEMOIZE_ANNOTATION_CLASSNAME,
@@ -1106,7 +1098,7 @@ final class Generator
         .builder( OBSERVE_ANNOTATION_CLASSNAME )
         .addMember( "name", "$S", "render" )
         .addMember( "priority", "$T.LOW", PRIORITY_CLASSNAME )
-        .addMember( "executor", "$T.APPLICATION", EXECUTOR_CLASSNAME )
+        .addMember( "executor", "$T.EXTERNAL", EXECUTOR_CLASSNAME )
         .addMember( "observeLowerPriorityDependencies", "true" )
         .addMember( "reportResult", "false" );
     method.addAnnotation( observe.build() );

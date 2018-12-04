@@ -60,7 +60,7 @@ abstract class React4j_ProtectedMemoizeComponent extends ProtectedMemoizeCompone
   @Observe(
       name = "render",
       priority = Priority.LOW,
-      executor = Executor.APPLICATION,
+      executor = Executor.EXTERNAL,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )

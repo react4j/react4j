@@ -18,7 +18,7 @@ abstract class ParameterizedMemoizeComponent
     return null;
   }
 
-  @Memoize( name = "foo", observeLowerPriorityDependencies = true, keepAlive = true, depType = DepType.AREZ_OR_NONE, requireEnvironment = true, reportResult = false )
+  @Memoize( name = "foo", observeLowerPriorityDependencies = true, keepAlive = true, depType = DepType.AREZ_OR_NONE, reportResult = false )
   String getIcon()
   {
     return null;

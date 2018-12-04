@@ -59,7 +59,7 @@ abstract class React4j_BasicArezReactComponent extends BasicArezReactComponent {
   @Observe(
       name = "render",
       priority = Priority.LOW,
-      executor = Executor.APPLICATION,
+      executor = Executor.EXTERNAL,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )

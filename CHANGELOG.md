@@ -34,7 +34,7 @@
   was duplicating functionality already implemented by the underlying `ReactJS` library. This also involved
   removing the compile time setting `react4j.check_component_state_invariants` and the accessor
   `ReactConfig.checkComponentStateInvariants()`.
-* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.117`.
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.119`.
 * **\[processor\]** Optimize the processor so that `shouldComponentUpdate(...)` methods are not generated on
   `Lite` native components if the component has `@PropValidate` annotated props but has no observable props
   and is not an Arez component. This reduces the code size and eliminates a noop lifecycle method.
