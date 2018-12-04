@@ -213,8 +213,6 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "com.example.arez.ArezComponentAnnotated",
-                      "@ReactComponent target extends react4j.arez.ReactArezComponent and should not be annotated with arez.annotations.ArezComponent as React4j will add annotation" },
         new Object[]{ "com.example.arez.MemoizeOnPrivateComponent", "@Memoize target must not be private" },
         new Object[]{ "com.example.arez.NonArezHasArezAnnotation",
                       "@ReactComponent target has a method 'handleFoo' with an arez annotation 'arez.annotations.Action' but is not an arez component." },
