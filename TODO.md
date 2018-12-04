@@ -22,6 +22,7 @@
   statically in internal package somewhere.
 
 * Should `@PreRender` and `@PostRender` be `@PreCommit` and `@PostCommit` ? or `@PrePaint` and `@PostPaint`?
+  or better yet `@PreMutation` and `@PostMutation`?
 
 * Should generate an error when any method or field has an Arez annotation when not an arez component
 
