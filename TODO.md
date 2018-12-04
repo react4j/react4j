@@ -25,13 +25,6 @@
 
 * Should generate an error when any method or field has an Arez annotation when not an arez component
 
-* Closure compiler has attribute. Can GWT2 also do same??? Can we use the annotation to propagate.
-  `@nosideeffects` indicates that a call to the declared function has no side effects. This annotation allows the
-  compiler to remove calls to the function if the return value is not used. This is not a signal that the function
-  is "pure", it may still read mutable global state. Maybe this should be on the underlying `props()` method.
-  Turns out that closure compiler only allows this in externs files. What we could do is pull in react externs into
-  this project and mark it ourselves.
-
 * Collections returned from props should be made immutable.
 
 * Generate documentation for components from annotations. This documentation could use the prop types to give
