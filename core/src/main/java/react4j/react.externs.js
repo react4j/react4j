@@ -19,11 +19,13 @@ React.Component = function(props) {};
 
 /**
  * @type {Object}
+ * @nosideeffects
  */
 React.Component.prototype.props;
 
 /**
  * @type {Object}
+ * @nosideeffects
  */
 React.Component.prototype.state;
 
