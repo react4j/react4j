@@ -77,6 +77,9 @@
   produces slightly more optimized code.
 * **\[processor\]** Ensure that components that extend `ReactArezComponent` never implement `DisposeTrackable`
   as this feature does not make sense for a react component.
+* **\[processor\]** Remove `isDisposed( this )` check inside `render()` method for components that extend
+  `ReactArezComponent` as there should be no scenario where the component is disposed without going through
+  `componentWIllUnmount()` lifecycle stage. ELiminating this check reduces the size of code.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

@@ -77,9 +77,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   protected ReactNode render() {
     clearRenderDepsChanged();
     pauseArezSchedulerUntilRenderLoopComplete();
-    if ( Disposable.isDisposed( this ) ) {
-      return null;
-    }
+    assert Disposable.isNotDisposed( this );
     final ImplicitDisposableProp.Model $$react4jv$$_getModel = getModel();
     if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {
       return null;

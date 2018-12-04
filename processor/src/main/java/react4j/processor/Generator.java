@@ -1106,11 +1106,7 @@ final class Generator
 
     method.addStatement( "clearRenderDepsChanged()" );
     method.addStatement( "pauseArezSchedulerUntilRenderLoopComplete()" );
-    final CodeBlock.Builder disposedBlock = CodeBlock.builder();
-    disposedBlock.beginControlFlow( "if ( $T.isDisposed( this ) )", DISPOSABLE_CLASSNAME );
-    disposedBlock.addStatement( "return null" );
-    disposedBlock.endControlFlow();
-    method.addCode( disposedBlock.build() );
+    method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
     final List<PropDescriptor> disposableProps =
       descriptor.getProps().stream().filter( PropDescriptor::isDisposable ).collect( Collectors.toList() );

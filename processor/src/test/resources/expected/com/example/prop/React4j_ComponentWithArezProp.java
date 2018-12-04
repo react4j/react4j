@@ -86,9 +86,7 @@ abstract class React4j_ComponentWithArezProp extends ComponentWithArezProp {
   protected ReactNode render() {
     clearRenderDepsChanged();
     pauseArezSchedulerUntilRenderLoopComplete();
-    if ( Disposable.isDisposed( this ) ) {
-      return null;
-    }
+    assert Disposable.isNotDisposed( this );
     final ComponentWithArezProp.Model $$react4jv$$_getModel = getModel();
     if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {
       return null;

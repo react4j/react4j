@@ -77,9 +77,7 @@ abstract class React4j_DisposableProp extends DisposableProp {
   protected ReactNode render() {
     clearRenderDepsChanged();
     pauseArezSchedulerUntilRenderLoopComplete();
-    if ( Disposable.isDisposed( this ) ) {
-      return null;
-    }
+    assert Disposable.isNotDisposed( this );
     final Object $$react4jv$$_getValue = getValue();
     if ( Disposable.isDisposed( $$react4jv$$_getValue ) ) {
       return null;
