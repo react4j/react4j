@@ -4,6 +4,7 @@ import arez.Arez;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
+import arez.annotations.Feature;
 import arez.annotations.Memoize;
 import arez.annotations.Observe;
 import arez.annotations.Priority;
@@ -23,7 +24,8 @@ import react4j.ReactConfig;
 import react4j.ReactNode;
 
 @ArezComponent(
-    name = "ParameterizedReturnMemoizeComponent"
+    name = "ParameterizedReturnMemoizeComponent",
+    disposeTrackable = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ParameterizedReturnMemoizeComponent extends ParameterizedReturnMemoizeComponent {

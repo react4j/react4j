@@ -4,6 +4,7 @@ import arez.Arez;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
+import arez.annotations.Feature;
 import arez.annotations.Observe;
 import arez.annotations.Priority;
 import javax.annotation.Generated;
@@ -21,7 +22,8 @@ import react4j.ReactConfig;
 import react4j.ReactNode;
 
 @ArezComponent(
-    name = "DisposableOptionalProp"
+    name = "DisposableOptionalProp",
+    disposeTrackable = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {

@@ -6,6 +6,7 @@ import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
+import arez.annotations.Feature;
 import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
@@ -26,7 +27,8 @@ import react4j.ReactConfig;
 import react4j.ReactNode;
 
 @ArezComponent(
-    name = "PropAndMemoizeComponent"
+    name = "PropAndMemoizeComponent",
+    disposeTrackable = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {

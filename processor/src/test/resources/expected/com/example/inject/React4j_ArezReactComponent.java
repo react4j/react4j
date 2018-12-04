@@ -24,6 +24,7 @@ import react4j.ReactNode;
 
 @ArezComponent(
     name = "ArezReactComponent",
+    disposeTrackable = Feature.DISABLE,
     inject = Feature.ENABLE
 )
 @Generated("react4j.processor.ReactProcessor")

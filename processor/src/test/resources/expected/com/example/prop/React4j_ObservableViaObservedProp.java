@@ -6,6 +6,7 @@ import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
+import arez.annotations.Feature;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
 import arez.annotations.Observe;
@@ -26,6 +27,7 @@ import react4j.ReactNode;
 
 @ArezComponent(
     name = "ObservableViaObservedProp",
+    disposeTrackable = Feature.DISABLE,
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")

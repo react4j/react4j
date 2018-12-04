@@ -4,6 +4,7 @@ import arez.Arez;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
+import arez.annotations.Feature;
 import arez.annotations.Observe;
 import arez.annotations.Priority;
 import javax.annotation.Generated;
@@ -22,6 +23,7 @@ import react4j.ReactNode;
 
 @ArezComponent(
     name = "AutorunArezReactComponent",
+    disposeTrackable = Feature.DISABLE,
     deferSchedule = true
 )
 @Generated("react4j.processor.ReactProcessor")

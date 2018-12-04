@@ -75,6 +75,8 @@
 * **\[core\]** Use the builtin mechanisms for defining Arez component ids. The React4j previously shared a
   single generator across every component while the new version has a per-type generator. Thew builtin variant
   produces slightly more optimized code.
+* **\[processor\]** Ensure that components that extend `ReactArezComponent` never implement `DisposeTrackable`
+  as this feature does not make sense for a react component.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

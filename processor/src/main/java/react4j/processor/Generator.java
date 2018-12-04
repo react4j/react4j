@@ -503,7 +503,8 @@ final class Generator
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
-          addMember( "name", "$S", descriptor.getName() );
+          addMember( "name", "$S", descriptor.getName() ).
+          addMember( "disposeTrackable" ,"$T.DISABLE", AREZ_FEATURE_CLASSNAME );
       if ( descriptor.shouldRunArezScheduler() )
       {
         annotation.addMember( "deferSchedule", "true" );
