@@ -72,6 +72,9 @@
 * **\[core\]** Remove the `Component.getKey()` as it is not expected to work as keys are not stored on props.
 * **\[core\]** Mark the `Component.props` and the `Component.state` externs as `@nosideeffects` so closure
   compiler will remove accesses if results are unused.
+* **\[core\]** Use the builtin mechanisms for defining Arez component ids. The React4j previously shared a
+  single generator across every component while the new version has a per-type generator. Thew builtin variant
+  produces slightly more optimized code.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

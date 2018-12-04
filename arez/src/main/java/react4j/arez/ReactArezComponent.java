@@ -5,7 +5,7 @@ import arez.ArezContext;
 import arez.Disposable;
 import arez.Observer;
 import arez.annotations.Action;
-import arez.annotations.ComponentId;
+import arez.annotations.ComponentIdRef;
 import arez.annotations.ComponentNameRef;
 import arez.annotations.ContextRef;
 import arez.annotations.ObserverRef;
@@ -38,14 +38,11 @@ public abstract class ReactArezComponent
    */
   @Nullable
   private static Disposable c_schedulerLock;
-  private static int c_nextComponentId = 1;
-  private final int _arezComponentId;
   private boolean _renderDepsChanged;
   private boolean _unmounted;
 
   protected ReactArezComponent()
   {
-    _arezComponentId = c_nextComponentId++;
   }
 
   /**
@@ -113,11 +110,8 @@ public abstract class ReactArezComponent
    *
    * @return the unique identifier of component according to Arez.
    */
-  @ComponentId
-  protected final int getArezComponentId()
-  {
-    return _arezComponentId;
-  }
+  @ComponentIdRef
+  protected abstract int getArezComponentId();
 
   /**
    * Return the name of the component according to Arez.
