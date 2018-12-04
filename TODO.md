@@ -21,16 +21,6 @@
 * Rather than creating `Lifecycle` and `LiteLifecycle` could just define an interface per lifecycle and define them
   statically in internal package somewhere.
 
-* Fix following warnings in J2CL code
-
-jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React$$Overlay.impl.java.js:231:
-Originally at:
-jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React.java:399: WARNING - Property __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED never defined on Object
-
-jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React$$Overlay.impl.java.js:231:
-Originally at:
-jsZipCache/3a58dfb54e0ac4f66460fc127b4b9f4f-react4j-core-0.106.jar.js.zip!/react4j/React.java:399: WARNING - Property ReactCurrentOwner never defined on React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
-
 * Should `@PreRender` and `@PostRender` be `@PreCommit` and `@PostCommit` ? or `@PrePaint` and `@PostPaint`?
 
 * Should generate an error when any method or field has an Arez annotation when not an arez component
