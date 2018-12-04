@@ -30,11 +30,6 @@ React.Component.prototype.props;
 React.Component.prototype.state;
 
 /**
- * @type {Object}
- */
-React.Component.prototype.context;
-
-/**
  * @param {Function=} callback
  */
 React.Component.prototype.forceUpdate = function(callback) {};
