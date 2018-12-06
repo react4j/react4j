@@ -100,6 +100,9 @@
 
 * Consider separating Arez react component infrastructure into a mixin with default methods.
 
+* Consider a reactive event streaming API integration. [Yolk](https://github.com/garbles/yolk) is a good example
+  of how something like this could work. I wonder how hard it would be to make it so?
+
 ### Medium Priorities
 
 * Figure out a way to define dom factories in java that are optimized away in production such that
