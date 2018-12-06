@@ -25,6 +25,8 @@
 * Should `@PreRender` and `@PostRender` be `@PreCommit` and `@PostCommit` ? or `@PrePaint` and `@PostPaint`?
   or better yet `@PreMutation` and `@PostMutation`?
 
+* An alternative approach to the above is to rename `Component.render()` to `Component.view()` and thus `render` == `updateDom`
+
 * Should generate an error when any method or field has an Arez annotation when not an arez component
 
 * Collections returned from props should be made immutable.
