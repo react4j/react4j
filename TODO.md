@@ -27,6 +27,10 @@
 
 * An alternative approach to the above is to rename `Component.render()` to `Component.view()` and thus `render` == `updateDom`
 
+* Consider making non-arez components into Arez components that do not track state. This would make it possible
+  to use `@CascadeDispose`, `@PostConstruct`, `@PreDispose` and `@PostDispose` annotations as well as better
+  `@Inject` support without bloating `react4j` with similar code generation and annotations.
+
 * Should generate an error when any method or field has an Arez annotation when not an arez component
 
 * Collections returned from props should be made immutable.
