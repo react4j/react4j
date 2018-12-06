@@ -29,6 +29,13 @@
 
 * Collections returned from props should be made immutable.
 
+* Should be possible to mark a prop as immutable and if it changes it is a new component. This is essentially
+  deriving the key from the props. Maybe we should have a mechanisms for generating a key from immutable props.
+  Props would be marked as immutable and if they change it would result in a new key? The key would be synthesized
+  at construction time. Primitive types and known wrapper types could be handled explicitly while other types would
+  be expected to implement a set of of interfaces to get key component (i.e. `arez.component.Identifiable`,
+  `react4j.KeyPart`)
+
 * Generate documentation for components from annotations. This documentation could use the prop types to give
   basic documentation overview and then use special annotations to give extended documentation and/or reference
   examples that will be both output as documentation and fed into basic test infrastructure. This ensures that the
