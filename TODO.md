@@ -38,6 +38,8 @@
   be expected to implement a set of of interfaces to get key component (i.e. `arez.component.Identifiable`,
   `react4j.KeyPart`)
 
+* Howto: Offscreen rendering?
+
 * Generate documentation for components from annotations. This documentation could use the prop types to give
   basic documentation overview and then use special annotations to give extended documentation and/or reference
   examples that will be both output as documentation and fed into basic test infrastructure. This ensures that the
