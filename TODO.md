@@ -129,7 +129,9 @@
 * Consider adopting variable arguments ala https://fblitho.com/docs/props#variable-arguments
 
 * If we were to ever re-implement the component model at a basic level, an interesting approach would be to
-  allow individual components to register actions to occur at each lifecycle stage.
+  allow individual components to register actions to occur at each lifecycle stage. We could also use the
+  strategies in [ivi](https://github.com/localvoid/ivi) or whatever is winning the
+  [uibench](https://localvoid.github.io/uibench/) benchmark at the time.
 
 * Investigate feasibility of https://github.com/sokra/rawact which compiles react components into native
   browser interactions in attempt to eliminate overhead of library. A similar framework is imba @ http://imba.io/
