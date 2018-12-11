@@ -16,7 +16,7 @@ import jsinterop.base.JsPropertyMap;
 /**
  * Native interface to native runtime for creating component.
  */
-@JsType( isNative = true, namespace = JsPackage.GLOBAL )
+@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "React" )
 public final class React
 {
   private React()
