@@ -48,6 +48,8 @@ public @interface OnPropChange
 
   /**
    * The phase in which the method should be invoked.
+   *
+   * @return the phase in which the method should be invoked.
    */
   Phase phase() default Phase.PRE;
 }
