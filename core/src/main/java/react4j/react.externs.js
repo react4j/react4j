@@ -540,51 +540,52 @@ React.Context.prototype.Consumer = function() {};
 /**
  * @type {symbol}
  */
-React.Fragment;
+React.Fragment = undefined;
+
 /**
  * @type {symbol}
  */
-React.StrictMode;
+React.StrictMode = undefined;
 /**
  * @type {symbol}
  */
-React.unstable_ConcurrentMode;
+React.unstable_ConcurrentMode = undefined;
 /**
  * @type {symbol}
  */
-React.Suspense;
+React.Suspense = undefined;
 /**
  * @type {symbol}
  */
-React.unstable_Profiler;
+React.unstable_Profiler = undefined;
 /**
  * @type {symbol}
  */
-React.Portal;
+React.Portal = undefined;
 /**
  * @type {symbol}
  */
-React.Element;
+React.Element = undefined;
 /**
  * @type {symbol}
  */
-React.Provider;
+React.Provider = undefined;
 /**
  * @type {symbol}
  */
-React.Consumer;
+React.Consumer = undefined;
 /**
  * @type {symbol}
  */
-React.ForwardRef;
+React.ForwardRef = undefined;
 /**
  * @type {symbol}
  */
-React.Memo;
+React.Memo = undefined;
 /**
  * @type {symbol}
  */
-React.Lazy;
+React.Lazy = undefined;
 
 // https://github.com/facebook/react/blob/master/packages/shared/isTextInputElement.js#L13-L29
 // Closure will rename these properties during optimization
