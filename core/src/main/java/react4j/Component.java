@@ -63,6 +63,8 @@ public abstract class Component
    * lifecycle method will be skipped if the force parameter is true as calling this method is equivalent to
    * calling forceUpdate() on the native react component. See the <a href="https://reactjs.org/docs/react-component.html#forceupdate">React Component
    * documentation</a> for more details.
+   *
+   * @param force if true then the component will skip the <code>shouldComponentUpdate()</code> lifecycle method.
    */
   protected final void scheduleRender( final boolean force )
   {
