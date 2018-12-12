@@ -47,6 +47,10 @@ task 'perform_release' do
       raise 'Uncommitted changes in git repository. Please commit them prior to release.' if 0 != status_output.size
     end
 
+    stage('TodoScan', 'Verify that there are no TODO notes in codebase') do
+      task('todos:scan').invoke
+    end
+
     stage('StagingCleanup', 'Remove artifacts from staging repository') do
       task('staging:cleanup').invoke
     end
