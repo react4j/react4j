@@ -10,5 +10,5 @@ task 'ci' do
     previous_version = contents[contents.index(version)...100000][/^### \[v(\d+\.\d+)\]/, 1]
   end
 
-  sh "bundle exec buildr package jacoco:report site:deploy mcrt:publish_if_tagged PRODUCT_VERSION=#{version} PREVIOUS_PRODUCT_VERSION=#{previous_version}"
+  sh "bundle exec buildr package jacoco:report site:deploy PRODUCT_VERSION=#{version} PREVIOUS_PRODUCT_VERSION=#{previous_version}"
 end

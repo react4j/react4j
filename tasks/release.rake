@@ -120,6 +120,10 @@ CONTENT
       sh "git tag v#{ENV['PRODUCT_VERSION']}"
     end
 
+    stage('MavenCentralPublish', 'Publish artifacts to Maven Central') do
+      sh 'buildr clean mcrt:publish_if_tagged site:deploy TEST=no GWT=no'
+    end
+
     stage('PatchChangelogPostRelease', 'Patch the changelog post release to prepare for next development iteration') do
       changelog = IO.read('CHANGELOG.md')
       changelog = changelog.gsub("# Change Log\n", <<HEADER)

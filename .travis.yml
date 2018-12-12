@@ -9,8 +9,6 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_dca3c32be0a4_key -iv $encrypted_dca3c32be0a4_iv
   -in etc/secrets -out ../secrets.tar -d
 - "(cd ../ && tar xvf secrets.tar)"
-- chmod 600 ../release.asc
-- gpg --import ../release.asc
 - chmod 600 ../deploy
 - eval `ssh-agent -s` && ssh-add ../deploy
 - cp etc/settings.xml $HOME/.m2/settings.xml
