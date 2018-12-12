@@ -55,6 +55,12 @@ task 'perform_release' do
       sh "bundle exec buildr clean package PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} STAGE_RELEASE=true#{ENV['TEST'].nil? ? '' : " TEST=#{ENV['TEST']}"}#{Buildr.application.options.trace ? ' --trace' : ''}"
     end
 
+    stage('ArchiveDownstream', 'Archive downstream projects that may need changes pushed') do
+      FileUtils.rm_rf 'archive'
+      FileUtils.mkdir_p 'archive'
+      mv 'target/react4j_downstream-test/deploy_test/workdir', 'archive/downstream'
+    end
+
     stage('PatchChangelog', 'Patch the changelog to update from previous release') do
       changelog = IO.read('CHANGELOG.md')
       changelog = changelog.gsub("### Unreleased\n", <<HEADER)
@@ -134,21 +140,23 @@ HEADER
       # Push the changes that have been made locally in downstream projects.
       # Artifacts have been pushed to staging repository by this time so they should build
       # even if it has not made it through the Maven release process
-      sh 'cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push --all'
+      sh 'cd archive/downstream/react4j-todomvc && git push --all'
       %w(raw raw_maven arez arez_maven dagger dagger_maven raw_maven_j2cl arez_maven_j2cl dagger_maven_j2cl).each do |branch|
-        full_branch = "#{branch}-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
-        `cd target/react4j_downstream-test/deploy_test/workdir/react4j-todomvc && git push origin :#{full_branch} 2>&1`
+        full_branch = "#{branch}-ArezUpgrade-#{ENV['PRODUCT_VERSION']}"
+        `cd archive/downstream/react4j-todomvc && git push origin :#{full_branch} 2>&1`
         puts "Completed remote branch #{full_branch}. Removed." if 0 == $?.exitstatus
       end
 
       DOWNSTREAM_PROJECTS.each do |downstream|
         # Need to extract the version from that project
-        downstream_version = IO.read("target/react4j_downstream-test/deploy_test/workdir/#{downstream}/CHANGELOG.md")[/^### \[v(\d+\.\d+)\]/, 1]
-        sh "cd target/react4j_downstream-test/deploy_test/workdir/#{downstream} && bundle exec buildr perform_release STAGE=PushChanges PREVIOUS_PRODUCT_VERSION= PRODUCT_VERSION=#{downstream_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
+        downstream_version = IO.read("archive/downstream/#{downstream}/CHANGELOG.md")[/^### \[v(\d+\.\d+)\]/, 1]
+        sh "cd archive/downstream/#{downstream} && bundle exec buildr perform_release STAGE=StageRelease PREVIOUS_PRODUCT_VERSION= PRODUCT_VERSION=#{downstream_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
         full_branch = "master-ArezUpgrade-#{ENV['PRODUCT_VERSION']}"
-        `cd target/react4j_downstream-test/deploy_test/workdir/#{downstream} && git push origin :#{full_branch} 2>&1`
+        `cd archive/downstream/#{downstream} && git push origin :#{full_branch} 2>&1`
         puts "Completed remote branch #{full_branch}. Removed." if 0 == $?.exitstatus
       end
+
+      FileUtils.rm_rf 'archive'
     end
 
     stage('GithubRelease', 'Create a Release on GitHub') do
