@@ -504,7 +504,7 @@ final class Generator
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
           addMember( "name", "$S", descriptor.getName() ).
-          addMember( "disposeTrackable" ,"$T.DISABLE", AREZ_FEATURE_CLASSNAME );
+          addMember( "disposeTrackable", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
       if ( descriptor.shouldRunArezScheduler() )
       {
         annotation.addMember( "deferSchedule", "true" );
@@ -1726,11 +1726,8 @@ final class Generator
       builder.addMethod( method.build() );
     }
 
-    if ( descriptor.needsDaggerIntegration() )
-    {
-      builder.addType( buildDaggerModule( descriptor ) );
-      builder.addType( buildDaggerComponent( descriptor ) );
-    }
+    builder.addType( buildDaggerModule( descriptor ) );
+    builder.addType( buildDaggerComponent( descriptor ) );
 
     return builder.build();
   }
