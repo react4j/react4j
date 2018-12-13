@@ -1,6 +1,7 @@
 <module>
   <inherits name='react4j.React'/>
   <inherits name='arez.component.Component'/>
+  <inherits name='elemental2.promise.Promise'/>
 
   <source path='' includes='*.java'/>
 </module>
