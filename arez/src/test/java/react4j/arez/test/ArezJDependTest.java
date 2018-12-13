@@ -25,9 +25,7 @@ public class ArezJDependTest
     final DependencyConstraint constraint = new DependencyConstraint();
 
     final JavaPackage react4j = constraint.addPackage( "react4j" );
-    final JavaPackage react4jDom = constraint.addPackage( "react4j.dom" );
     final JavaPackage react4jArez = constraint.addPackage( "react4j.arez" );
-    final JavaPackage braincheck = constraint.addPackage( "org.realityforge.braincheck" );
     final JavaPackage jsinteropBase = constraint.addPackage( "jsinterop.base" );
     final JavaPackage elemental2Promise = constraint.addPackage( "elemental2.promise" );
     final JavaPackage arez = constraint.addPackage( "arez" );
