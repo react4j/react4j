@@ -93,6 +93,28 @@ public class DomJDependTest
           .append( expected.getName() )
           .append( "\n" )
         );
+
+        final ArrayList<JavaPackage> oldEfferents = new ArrayList<>( expected.getEfferents() );
+        oldEfferents.removeAll( actual.getEfferents() );
+
+        oldEfferents.forEach( p -> sb
+          .append( "Package " )
+          .append( expected.getName() )
+          .append( " no longer depends depends upon " )
+          .append( p.getName() )
+          .append( "\n" )
+        );
+
+        final ArrayList<JavaPackage> newEfferents = new ArrayList<>( actual.getEfferents() );
+        newEfferents.removeAll( expected.getEfferents() );
+
+        newEfferents.forEach( p -> sb
+          .append( "Package " )
+          .append( expected.getName() )
+          .append( " now upon " )
+          .append( p.getName() )
+          .append( "\n" )
+        );
       }
       fail( sb.toString() );
     }
