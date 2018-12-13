@@ -119,6 +119,10 @@ public final class BuildDownstream
 
             try
             {
+              /*
+               * The process will run through the steps required for a release right up to tagging the source repository.
+               * A subsequent call from within release.rake will complete the release process.
+               */
               Ruby.buildr( "perform_release",
                            "LAST_STAGE=TagProject",
                            "PRODUCT_VERSION=",
