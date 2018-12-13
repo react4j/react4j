@@ -80,6 +80,8 @@
 * **\[processor\]** Remove `isDisposed( this )` check inside `render()` method for components that extend
   `ReactArezComponent` as there should be no scenario where the component is disposed without going through
   `componentWillUnmount()` lifecycle stage. Eliminating this check reduces the size of code.
+* **\[arez\]** Refactor the `react4j.arez.Arez` module to remove the inherit from `react4j.dom.Dom` as it is
+  no longer used.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)
