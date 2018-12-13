@@ -35,11 +35,9 @@ public class ArezJDependTest
 
     react4jArez.dependsUpon( react4j );
     react4jArez.dependsUpon( jsinteropBase );
-    react4jArez.dependsUpon( braincheck );
     react4jArez.dependsUpon( arez );
     react4jArez.dependsUpon( arezSpy );
     react4jArez.dependsUpon( elemental2Promise );
-    react4jArez.dependsUpon( react4jDom );
 
     final DependencyConstraint.MatchResult result = jdepend.analyzeDependencies( constraint );
 
