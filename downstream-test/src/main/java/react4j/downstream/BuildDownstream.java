@@ -120,7 +120,7 @@ public final class BuildDownstream
             try
             {
               Ruby.buildr( "perform_release",
-                           "LAST_STAGE=PatchChangelogPostRelease",
+                           "LAST_STAGE=TagProject",
                            "PRODUCT_VERSION=",
                            "PREVIOUS_PRODUCT_VERSION=" );
               Git.checkout( "master" );
