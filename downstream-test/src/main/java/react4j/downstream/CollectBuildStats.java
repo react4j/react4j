@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 public final class CollectBuildStats
 {
   public static void main( final String[] args )
-    throws Exception
   {
     try
     {
@@ -186,9 +185,9 @@ public final class CollectBuildStats
                 Gir.messenger().error( "Failed to build branch '" + branch + "' after modifications.", e );
               }
               FileUtil.deleteDir( archiveDir );
-                /*
-                 * If the build has failed for one of the downstream projects then make sure the command fails.
-                 */
+              /*
+               * If the build has failed for one of the downstream projects then make sure the command fails.
+               */
               if ( e instanceof GirException )
               {
                 //noinspection RedundantCast
