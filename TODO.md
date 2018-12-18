@@ -12,7 +12,7 @@
   steps rather than part of it being in `react4j.Component`.
 
 * Add some way to define effects which is just method called after render that returns a disposable to stop action.
-  Possibly look at observed props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
+  Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
   method that calls dispose on previous return if any. (From react 17)
 
 * Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
@@ -56,8 +56,8 @@
   - `STATELESS` => inlined into caller without a component in production mode.
   - `PURE` => autogenerate SCU assuming `Js.isTripleEqual()` for props implies no re-render.
   - `STATEFUL` => can use fields or lifecycle methods. Can also use `scheduleRender()`
-  - `AREZ` => `STATEFUL` + can use `@Observable`, `@Memoize`, `@Observed`.
-  - `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods or `@Observed`/`@Memoize` annotated methods
+  - `AREZ` => `STATEFUL` + can use `@Observable`, `@Memoize`, `@Observe`.
+  - `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods or `@Observe`/`@Memoize` annotated methods
     and no prop is an arez component. `AUTODETECT` will be `PURE` if it satisfies `STATELESS` and all props are
     primitives or the processor knows shallow comparison works. It will be `AREZ` if it has an arez annotation and/or
     anty props are arez components. Otherwise it is `STATEFUL`.
