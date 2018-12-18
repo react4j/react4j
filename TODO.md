@@ -55,7 +55,7 @@
 * Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component.
   - `STATELESS` => inlined into caller without a component in production mode.
   - `PURE` => autogenerate SCU assuming `Js.isTripleEqual()` for props implies no re-render.
-  - `STATEFUL` => can use fields or lifecycle methods.
+  - `STATEFUL` => can use fields or lifecycle methods. Can also use `scheduleRender()`
   - `AREZ` => `STATEFUL` + can use `@Observable`, `@Memoize`, `@Observed`.
   - `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods or `@Observed`/`@Memoize` annotated methods
     and no prop is an arez component. `AUTODETECT` will be `PURE` if it satisfies `STATELESS` and all props are
