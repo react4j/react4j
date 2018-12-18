@@ -42,7 +42,7 @@
   Props would be marked as immutable and if they change it would result in a new key? The key would be synthesized
   at construction time. Primitive types and known wrapper types could be handled explicitly while other types would
   be expected to implement a set of of interfaces to get key component (i.e. `arez.component.Identifiable`,
-  `react4j.KeyPart`)
+  `react4j.KeyPart`). If any Key contributing props exist then it would not be possible to explicitly set key.
 
 * Howto: Offscreen rendering?
 
