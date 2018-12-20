@@ -12,12 +12,12 @@ class ExplicitNameFieldPropDefaultBuilder {
   }
 
   @Nonnull
-  static Builder2 key(@Nonnull final String key) {
+  static Step2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static Builder2 key(final int key) {
+  static Step2 key(final int key) {
     return new Builder().key( key );
   }
 
@@ -31,15 +31,15 @@ class ExplicitNameFieldPropDefaultBuilder {
     return new Builder().build();
   }
 
-  public interface Builder1 {
+  public interface Step1 {
     @Nonnull
-    Builder2 key(@Nonnull String key);
+    Step2 key(@Nonnull String key);
 
     @Nonnull
-    Builder2 key(@Nonnull int key);
+    Step2 key(@Nonnull int key);
   }
 
-  public interface Builder2 {
+  public interface Step2 {
     @Nonnull
     ReactNode myProp(String myProp);
 
@@ -47,7 +47,7 @@ class ExplicitNameFieldPropDefaultBuilder {
     ReactNode build();
   }
 
-  private static class Builder implements Builder1, Builder2 {
+  private static class Builder implements Step1, Step2 {
     private final ReactElement _element;
 
     Builder() {
@@ -57,14 +57,14 @@ class ExplicitNameFieldPropDefaultBuilder {
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final String key) {
+    public final Step2 key(@Nonnull final String key) {
       _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final int key) {
+    public final Step2 key(@Nonnull final int key) {
       return key( String.valueOf( key ) );
     }
 

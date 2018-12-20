@@ -12,57 +12,57 @@ class ComponentWithArezPropBuilder {
   }
 
   @Nonnull
-  static Builder2 key(@Nonnull final String key) {
+  static Step2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static Builder2 key(final int key) {
+  static Step2 key(final int key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static Builder3 value(final String value) {
+  static Step3 value(final String value) {
     return new Builder().value( value );
   }
 
-  public interface Builder1 {
+  public interface Step1 {
     @Nonnull
-    Builder2 key(@Nonnull String key);
+    Step2 key(@Nonnull String key);
 
     @Nonnull
-    Builder2 key(@Nonnull int key);
+    Step2 key(@Nonnull int key);
   }
 
-  public interface Builder2 {
+  public interface Step2 {
     @Nonnull
-    Builder3 value(String value);
+    Step3 value(String value);
   }
 
-  public interface Builder3 {
+  public interface Step3 {
     @Nonnull
     ReactNode model(ComponentWithArezProp.Model model);
   }
 
-  private static class Builder implements Builder1, Builder2, Builder3 {
+  private static class Builder implements Step1, Step2, Step3 {
     private final ReactElement _element = ReactElement.createComponentElement( React4j_ComponentWithArezProp.Factory.TYPE );
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final String key) {
+    public final Step2 key(@Nonnull final String key) {
       _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final int key) {
+    public final Step2 key(@Nonnull final int key) {
       return key( String.valueOf( key ) );
     }
 
     @Override
     @Nonnull
-    public final Builder3 value(final String value) {
+    public final Step3 value(final String value) {
       _element.props().set( React4j_ComponentWithArezProp.Props.value, value );
       return this;
     }

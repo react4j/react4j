@@ -14,34 +14,34 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
   }
 
   @Nonnull
-  static Builder2 key(@Nonnull final String key) {
+  static Step2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static Builder2 key(final int key) {
+  static Step2 key(final int key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static Builder3 myRequiredProp(final String myRequiredProp) {
+  static Step3 myRequiredProp(final String myRequiredProp) {
     return new Builder().myRequiredProp( myRequiredProp );
   }
 
-  public interface Builder1 {
+  public interface Step1 {
     @Nonnull
-    Builder2 key(@Nonnull String key);
+    Step2 key(@Nonnull String key);
 
     @Nonnull
-    Builder2 key(@Nonnull int key);
+    Step2 key(@Nonnull int key);
   }
 
-  public interface Builder2 {
+  public interface Step2 {
     @Nonnull
-    Builder3 myRequiredProp(String myRequiredProp);
+    Step3 myRequiredProp(String myRequiredProp);
   }
 
-  public interface Builder3 {
+  public interface Step3 {
     @Nonnull
     ReactNode myProp(String myProp);
 
@@ -52,7 +52,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
   }
 
-  public interface Builder4 {
+  public interface Step4 {
     @Nonnull
     ReactNode children(ReactNode... children);
 
@@ -63,7 +63,7 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
     ReactNode build();
   }
 
-  private static class Builder implements Builder1, Builder2, Builder3, Builder4 {
+  private static class Builder implements Step1, Step2, Step3, Step4 {
     private final ReactElement _element;
 
     Builder() {
@@ -73,20 +73,20 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final String key) {
+    public final Step2 key(@Nonnull final String key) {
       _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final int key) {
+    public final Step2 key(@Nonnull final int key) {
       return key( String.valueOf( key ) );
     }
 
     @Override
     @Nonnull
-    public final Builder3 myRequiredProp(final String myRequiredProp) {
+    public final Step3 myRequiredProp(final String myRequiredProp) {
       _element.props().set( React4j_RequiredChildrenWithOptionalAndRequired.Props.myRequiredProp, myRequiredProp );
       return this;
     }

@@ -82,6 +82,8 @@
   `componentWillUnmount()` lifecycle stage. Eliminating this check reduces the size of code.
 * **\[arez\]** Refactor the `react4j.arez.Arez` module to remove the inherit from `react4j.dom.Dom` as it is
   no longer used.
+* **\[processor\]** Change the name of the interfaces used to construct the components from `BuilderN` to
+  `StepN` to improve clarity as the `"Builder"` nomenclature is over-used in that class.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

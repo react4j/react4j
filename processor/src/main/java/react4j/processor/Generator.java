@@ -207,7 +207,7 @@ final class Generator
     else
     {
       final int returnIndex = step.getIndex() + ( StepMethodType.STAY == stepMethodType ? 0 : 1 );
-      final ClassName className = ClassName.bestGuess( "Builder" + returnIndex );
+      final ClassName className = ClassName.bestGuess( "Step" + returnIndex );
       final List<TypeVariableName> variableNames =
         ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() );
       if ( variableNames.isEmpty() )
@@ -226,7 +226,7 @@ final class Generator
                                                      @Nonnull final Step step )
   {
     final int stepIndex = step.getIndex();
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Builder" + stepIndex );
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Step" + stepIndex );
     builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
@@ -416,7 +416,7 @@ final class Generator
     final ArrayList<Step> steps = builderDescriptor.getSteps();
     for ( int i = 0; i < steps.size(); i++ )
     {
-      builder.addSuperinterface( getParameterizedTypeName( descriptor, ClassName.bestGuess( "Builder" + ( i + 1 ) ) ) );
+      builder.addSuperinterface( getParameterizedTypeName( descriptor, ClassName.bestGuess( "Step" + ( i + 1 ) ) ) );
     }
 
     final List<PropDescriptor> propsWithDefaults = descriptor.getProps()

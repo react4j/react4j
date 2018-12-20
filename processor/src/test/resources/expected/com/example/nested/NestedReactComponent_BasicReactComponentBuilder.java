@@ -26,7 +26,7 @@ class NestedReactComponent_BasicReactComponentBuilder {
     return new Builder().build();
   }
 
-  public interface Builder1 {
+  public interface Step1 {
     @Nonnull
     ReactNode key(@Nonnull String key);
 
@@ -34,12 +34,12 @@ class NestedReactComponent_BasicReactComponentBuilder {
     ReactNode key(@Nonnull int key);
   }
 
-  public interface Builder2 {
+  public interface Step2 {
     @Nonnull
     ReactNode build();
   }
 
-  private static class Builder implements Builder1, Builder2 {
+  private static class Builder implements Step1, Step2 {
     private final ReactElement _element = ReactElement.createComponentElement( NestedReactComponent_React4j_BasicReactComponent.Factory.TYPE );
 
     @Override

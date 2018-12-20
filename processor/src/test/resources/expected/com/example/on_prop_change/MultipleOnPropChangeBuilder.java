@@ -12,69 +12,69 @@ class MultipleOnPropChangeBuilder {
   }
 
   @Nonnull
-  static Builder2 key(@Nonnull final String key) {
+  static Step2 key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static Builder2 key(final int key) {
+  static Step2 key(final int key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static Builder3 myProp1(final boolean myProp1) {
+  static Step3 myProp1(final boolean myProp1) {
     return new Builder().myProp1( myProp1 );
   }
 
-  public interface Builder1 {
+  public interface Step1 {
     @Nonnull
-    Builder2 key(@Nonnull String key);
+    Step2 key(@Nonnull String key);
 
     @Nonnull
-    Builder2 key(@Nonnull int key);
+    Step2 key(@Nonnull int key);
   }
 
-  public interface Builder2 {
+  public interface Step2 {
     @Nonnull
-    Builder3 myProp1(boolean myProp1);
+    Step3 myProp1(boolean myProp1);
   }
 
-  public interface Builder3 {
+  public interface Step3 {
     @Nonnull
-    Builder4 myProp2(String myProp2);
+    Step4 myProp2(String myProp2);
   }
 
-  public interface Builder4 {
+  public interface Step4 {
     @Nonnull
     ReactNode myProp3(int myProp3);
   }
 
-  private static class Builder implements Builder1, Builder2, Builder3, Builder4 {
+  private static class Builder implements Step1, Step2, Step3, Step4 {
     private final ReactElement _element = ReactElement.createComponentElement( React4j_MultipleOnPropChange.Factory.TYPE );
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final String key) {
+    public final Step2 key(@Nonnull final String key) {
       _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder2 key(@Nonnull final int key) {
+    public final Step2 key(@Nonnull final int key) {
       return key( String.valueOf( key ) );
     }
 
     @Override
     @Nonnull
-    public final Builder3 myProp1(final boolean myProp1) {
+    public final Step3 myProp1(final boolean myProp1) {
       _element.props().set( React4j_MultipleOnPropChange.Props.myProp1, myProp1 );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Builder4 myProp2(final String myProp2) {
+    public final Step4 myProp2(final String myProp2) {
       _element.props().set( React4j_MultipleOnPropChange.Props.myProp2, myProp2 );
       return this;
     }

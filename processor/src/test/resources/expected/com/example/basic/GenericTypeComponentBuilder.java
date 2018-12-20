@@ -27,7 +27,7 @@ class GenericTypeComponentBuilder {
   }
 
   @SuppressWarnings("unused")
-  public interface Builder1<T> {
+  public interface Step1<T> {
     @Nonnull
     ReactNode key(@Nonnull String key);
 
@@ -36,12 +36,12 @@ class GenericTypeComponentBuilder {
   }
 
   @SuppressWarnings("unused")
-  public interface Builder2<T> {
+  public interface Step2<T> {
     @Nonnull
     ReactNode build();
   }
 
-  private static class Builder<T> implements Builder1<T>, Builder2<T> {
+  private static class Builder<T> implements Step1<T>, Step2<T> {
     private final ReactElement _element = ReactElement.createComponentElement( React4j_GenericTypeComponent.Factory.TYPE );
 
     @Override
