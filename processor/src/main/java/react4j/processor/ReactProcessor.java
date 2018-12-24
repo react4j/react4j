@@ -357,12 +357,12 @@ public final class ReactProcessor
     final ArrayList<OnPropChangeDescriptor> onPropChangeDescriptors = new ArrayList<>();
     for ( final ExecutableElement method : methods )
     {
-      final VariableElement injectParameter = (VariableElement)
+      final VariableElement phase = (VariableElement)
         ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                           method,
                                           Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
                                           "phase" ).getValue();
-      final boolean preUpdate = injectParameter.getSimpleName().toString().equals( "PRE" );
+      final boolean preUpdate = phase.getSimpleName().toString().equals( "PRE" );
 
       final List<? extends VariableElement> parameters = method.getParameters();
       final ExecutableType methodType = resolveMethodType( descriptor, method );
