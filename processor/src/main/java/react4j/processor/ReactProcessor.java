@@ -711,12 +711,12 @@ public final class ReactProcessor
 
   private boolean isPropRequired( @Nonnull final PropDescriptor prop )
   {
-    final VariableElement injectParameter = (VariableElement)
+    final VariableElement parameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                         prop.getMethod(),
                                         Constants.PROP_ANNOTATION_CLASSNAME,
                                         "require" ).getValue();
-    switch ( injectParameter.getSimpleName().toString() )
+    switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
         return true;
@@ -1102,12 +1102,12 @@ public final class ReactProcessor
 
   private boolean shouldUpdateOnChange( @Nonnull final ExecutableElement method )
   {
-    final VariableElement injectParameter = (VariableElement)
+    final VariableElement parameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                         method,
                                         Constants.PROP_ANNOTATION_CLASSNAME,
                                         "shouldUpdateOnChange" ).getValue();
-    switch ( injectParameter.getSimpleName().toString() )
+    switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
         return true;
@@ -1122,12 +1122,12 @@ public final class ReactProcessor
                                     @Nonnull final ExecutableElement method,
                                     final boolean shouldUpdateOnChange )
   {
-    final VariableElement injectParameter = (VariableElement)
+    final VariableElement parameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                         method,
                                         Constants.PROP_ANNOTATION_CLASSNAME,
                                         "observable" ).getValue();
-    switch ( injectParameter.getSimpleName().toString() )
+    switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
         return true;
@@ -1153,12 +1153,12 @@ public final class ReactProcessor
                                     @Nonnull final ExecutableElement method,
                                     @Nonnull final Element propType )
   {
-    final VariableElement injectParameter = (VariableElement)
+    final VariableElement parameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                         method,
                                         Constants.PROP_ANNOTATION_CLASSNAME,
                                         "disposable" ).getValue();
-    switch ( injectParameter.getSimpleName().toString() )
+    switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
         return true;
@@ -1173,12 +1173,12 @@ public final class ReactProcessor
 
   private boolean isInjectionRequired( @Nonnull final TypeElement typeElement )
   {
-    final VariableElement injectParameter = (VariableElement)
+    final VariableElement parameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                         typeElement,
                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                         "inject" ).getValue();
-    switch ( injectParameter.getSimpleName().toString() )
+    switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
         return true;
@@ -1193,12 +1193,12 @@ public final class ReactProcessor
 
   private boolean isDaggerRequired( @Nonnull final TypeElement typeElement )
   {
-    final VariableElement injectParameter = (VariableElement)
+    final VariableElement parameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                         typeElement,
                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                         "dagger" ).getValue();
-    switch ( injectParameter.getSimpleName().toString() )
+    switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
         return true;
