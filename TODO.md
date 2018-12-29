@@ -2,6 +2,8 @@
 
 ### Next Release
 
+* `key` is valid on fragments elements.
+
 * Host `ReactElement` instances should be created within the `dom` library and we could create the instances
   directly rather than copying props and adding special handling for `ref`, `key` and `children`.
 
