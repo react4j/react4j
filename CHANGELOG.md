@@ -92,6 +92,10 @@
 * **\[core\]** Change the `$$typeof` property on fragments from `Symbol(react.element)` to `Symbol(react.fragment)`.
   The change seems to have no behavioural difference as the reconciler uses `type` field to control behaviour
   but it makes it easier for humans visually inspecting data.
+* **\[core\]** Remove addition of empty string to `key` element when supplied as a prop and instead just
+  cast the key to a string. The supporting infrastructure no longer supplies non-string keys and adding an
+  empty string will stop the GWT compiler from removing `toString()` on any subclass of `Object` (i.e. no
+  `toString()` methods are candidates for dead code elimination).
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

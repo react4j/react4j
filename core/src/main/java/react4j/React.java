@@ -259,7 +259,7 @@ public final class React
     Object ref = null;
     if ( null != props )
     {
-      key = props.has( PropNames.KEY_PROP_NAME ) ? "" + props.get( PropNames.KEY_PROP_NAME ) : null;
+      key = props.has( PropNames.KEY_PROP_NAME ) ? Js.asString( props.get( PropNames.KEY_PROP_NAME ) ) : null;
       ref = props.has( PropNames.REF_PROP_NAME ) ? props.get( PropNames.REF_PROP_NAME ) : null;
       props.forEach( p -> {
         // In future we can probably remove this check when/if components are creating elements directly
