@@ -845,7 +845,7 @@ public final class ReactProcessor
   }
 
   private void determinePreUnmountMethod( @Nonnull final TypeElement typeElement,
-                                         @Nonnull final ComponentDescriptor descriptor )
+                                          @Nonnull final ComponentDescriptor descriptor )
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
