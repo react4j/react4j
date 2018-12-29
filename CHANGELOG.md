@@ -89,6 +89,9 @@
   source of deoptimization that can occur in V8. This also eliminates a correctness bug that can occur in
   fragments that contain a list of keyed and unkeyed elements which resulted in incorrect behaviour during
   reconciliation.
+* **\[core\]** Change the `$$typeof` property on fragments from `Symbol(react.element)` to `Symbol(react.fragment)`.
+  The change seems to have no behavioural difference as the reconciler uses `type` field to control behaviour
+  but it makes it easier for humans visually inspecting data.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)

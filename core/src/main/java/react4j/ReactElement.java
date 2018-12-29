@@ -65,8 +65,15 @@ public class ReactElement
   @Nonnull
   private static ReactElement create( @Nonnull final Object type )
   {
+    return createRawNode( React.Element, type );
+  }
+
+  @JsOverlay
+  @Nonnull
+  private static ReactElement createRawNode( @Nonnull final Object typeof, @Nonnull final Object type )
+  {
     final ReactElement element = new ReactElement();
-    element.typeof = React.Element;
+    element.typeof = typeof;
     element.type = Objects.requireNonNull( type );
     element._owner = React.currentOwner();
     return element;
@@ -83,6 +90,19 @@ public class ReactElement
     element.key = key;
     element.ref = ref;
     element.props = Objects.requireNonNull( props );
+
+    element.complete();
+    return element;
+  }
+
+  @JsOverlay
+  @Nonnull
+  public static ReactElement createFragment( @Nonnull final ReactNode... children )
+  {
+    final ReactElement element = ReactElement.createRawNode( React.Fragment, React.Fragment );
+    element.key = null;
+    element.ref = null;
+    element.props = JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children );
 
     element.complete();
     return element;

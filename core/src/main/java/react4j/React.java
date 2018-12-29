@@ -195,10 +195,7 @@ public final class React
   @JsOverlay
   public static ReactNode createFragment( @Nonnull final ReactNode... children )
   {
-    return ReactElement.createRawElement( Fragment,
-                                          null,
-                                          null,
-                                          JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children ) );
+    return ReactElement.createFragment( children );
   }
 
   /**
