@@ -56,6 +56,7 @@ public class ReactElement
   {
     final ReactElement element = create( type );
     element.props = JsPropertyMap.of();
+    element.key = null;
     element.ref = null;
     return element;
   }

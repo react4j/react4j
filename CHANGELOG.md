@@ -84,6 +84,11 @@
   no longer used.
 * **\[processor\]** Change the name of the interfaces used to construct the components from `BuilderN` to
   `StepN` to improve clarity as the `"Builder"` nomenclature is over-used in that class.
+* **\[core\]** Ensure that component elements have their key initialized to `null` rather than leaving it
+  `undefined`. This results in monomorphic code when processing these type of elements and eliminates a
+  source of deoptimization that can occur in V8. This also eliminates a correctness bug that can occur in
+  fragments that contain a list of keyed and unkeyed elements which resulted in incorrect behaviour during
+  reconciliation.
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)
