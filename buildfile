@@ -211,9 +211,7 @@ define 'react4j' do
           repositories.release_to =
             { :url => 'https://stocksoftware.jfrog.io/stocksoftware/staging', :username => ENV['STAGING_USERNAME'], :password => ENV['STAGING_PASSWORD'] }
           projects_to_upload.each do |prj|
-            prj.packages.each do |pkg|
-              pkg.upload
-            end
+            prj.packages.each(&:upload)
           end
         end
       ensure
