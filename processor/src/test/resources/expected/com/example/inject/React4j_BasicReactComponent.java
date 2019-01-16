@@ -47,9 +47,6 @@ class React4j_BasicReactComponent extends BasicReactComponent {
     }
   }
 
-  static final class Props {
-  }
-
   private static final class NativeReactComponent extends NativeAdapterComponent<BasicReactComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

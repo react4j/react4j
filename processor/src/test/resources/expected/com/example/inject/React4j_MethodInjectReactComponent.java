@@ -47,9 +47,6 @@ class React4j_MethodInjectReactComponent extends MethodInjectReactComponent {
     }
   }
 
-  static final class Props {
-  }
-
   private static final class NativeReactComponent extends NativeAdapterComponent<MethodInjectReactComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

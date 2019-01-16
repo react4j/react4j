@@ -47,9 +47,6 @@ class React4j_InjectTrueComponent extends InjectTrueComponent {
     }
   }
 
-  static final class Props {
-  }
-
   private static final class NativeReactComponent extends NativeAdapterComponent<InjectTrueComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

@@ -47,9 +47,6 @@ class React4j_DaggerFalseComponent extends DaggerFalseComponent {
     }
   }
 
-  static final class Props {
-  }
-
   private static final class NativeReactComponent extends NativeAdapterComponent<DaggerFalseComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
