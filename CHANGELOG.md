@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.109](https://github.com/react4j/react4j/tree/v0.109) (2019-01-16)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.108...v0.109)
 
 * **\[core\]** Rename the `@OnPropChanged` annotation to `@OnPropChange`.
 * **\[core\]** Add support for the `Component.componentPreUpdate(...)` lifecycle method that is invoked prior
