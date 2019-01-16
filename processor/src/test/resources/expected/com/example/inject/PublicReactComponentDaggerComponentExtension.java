@@ -7,7 +7,7 @@ import javax.annotation.Generated;
 import javax.inject.Provider;
 
 @Generated("react4j.processor.ReactProcessor")
-public interface PublicReactComponentDaggerFactory {
+public interface PublicReactComponentDaggerComponentExtension {
   DaggerSubcomponent getPublicReactComponentDaggerSubcomponent();
 
   default void bindPublicReactComponent() {

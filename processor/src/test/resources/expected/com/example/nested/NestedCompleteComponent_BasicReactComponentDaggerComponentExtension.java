@@ -1,4 +1,4 @@
-package com.example.inject;
+package com.example.nested;
 
 import dagger.Binds;
 import dagger.Module;
@@ -8,17 +8,17 @@ import javax.inject.Provider;
 import react4j.Component;
 
 @Generated("react4j.processor.ReactProcessor")
-public interface BasicReactComponentDaggerFactory {
+public interface NestedCompleteComponent_BasicReactComponentDaggerComponentExtension {
   DaggerSubcomponent getBasicReactComponentDaggerSubcomponent();
 
   default void bindBasicReactComponent() {
-    React4j_BasicReactComponent.InjectSupport.setProvider( () -> (BasicReactComponent) getBasicReactComponentDaggerSubcomponent().createProvider().get() );
+    NestedCompleteComponent_React4j_BasicReactComponent.InjectSupport.setProvider( () -> (NestedCompleteComponent.BasicReactComponent) getBasicReactComponentDaggerSubcomponent().createProvider().get() );
   }
 
   @Module
   interface DaggerModule {
     @Binds
-    Component bindComponent(React4j_BasicReactComponent component);
+    Component bindComponent(NestedCompleteComponent_React4j_BasicReactComponent component);
   }
 
   @Subcomponent(

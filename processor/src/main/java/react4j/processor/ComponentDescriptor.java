@@ -161,9 +161,9 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  ClassName getDaggerFactoryClassName()
+  ClassName getDaggerComponentExtensionClassName()
   {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "DaggerFactory" );
+    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "DaggerComponentExtension" );
   }
 
   @Nonnull

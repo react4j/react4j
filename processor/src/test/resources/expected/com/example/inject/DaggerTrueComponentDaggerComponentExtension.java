@@ -8,7 +8,7 @@ import javax.inject.Provider;
 import react4j.Component;
 
 @Generated("react4j.processor.ReactProcessor")
-public interface DaggerTrueComponentDaggerFactory {
+public interface DaggerTrueComponentDaggerComponentExtension {
   DaggerSubcomponent getDaggerTrueComponentDaggerSubcomponent();
 
   default void bindDaggerTrueComponent() {

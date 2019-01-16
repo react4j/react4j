@@ -8,17 +8,17 @@ import javax.inject.Provider;
 import react4j.Component;
 
 @Generated("react4j.processor.ReactProcessor")
-public interface InjectTrueComponentDaggerFactory {
-  DaggerSubcomponent getInjectTrueComponentDaggerSubcomponent();
+public interface BasicReactComponentDaggerComponentExtension {
+  DaggerSubcomponent getBasicReactComponentDaggerSubcomponent();
 
-  default void bindInjectTrueComponent() {
-    React4j_InjectTrueComponent.InjectSupport.setProvider( () -> (InjectTrueComponent) getInjectTrueComponentDaggerSubcomponent().createProvider().get() );
+  default void bindBasicReactComponent() {
+    React4j_BasicReactComponent.InjectSupport.setProvider( () -> (BasicReactComponent) getBasicReactComponentDaggerSubcomponent().createProvider().get() );
   }
 
   @Module
   interface DaggerModule {
     @Binds
-    Component bindComponent(React4j_InjectTrueComponent component);
+    Component bindComponent(React4j_BasicReactComponent component);
   }
 
   @Subcomponent(

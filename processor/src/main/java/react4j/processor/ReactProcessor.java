@@ -172,11 +172,11 @@ public final class ReactProcessor
     {
       if ( descriptor.isArezComponent() )
       {
-        emitTypeSpec( descriptor.getPackageName(), Generator.buildArezDaggerFactory( descriptor ) );
+        emitTypeSpec( descriptor.getPackageName(), Generator.buildArezDaggerComponentExtension( descriptor ) );
       }
       else
       {
-        emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerFactory( descriptor ) );
+        emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerComponentExtension( descriptor ) );
       }
     }
   }

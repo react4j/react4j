@@ -1697,9 +1697,9 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildArezDaggerFactory( @Nonnull final ComponentDescriptor descriptor )
+  static TypeSpec buildArezDaggerComponentExtension( @Nonnull final ComponentDescriptor descriptor )
   {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerFactoryClassName() );
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerComponentExtensionClassName() );
     final ClassName superClassName = descriptor.getArezDaggerExtensionClassName();
     builder.addSuperinterface( superClassName );
     addGeneratedAnnotation( descriptor, builder );
@@ -1733,9 +1733,9 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildDaggerFactory( @Nonnull final ComponentDescriptor descriptor )
+  static TypeSpec buildDaggerComponentExtension( @Nonnull final ComponentDescriptor descriptor )
   {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerFactoryClassName() );
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerComponentExtensionClassName() );
     addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
