@@ -9,6 +9,8 @@
 
 * Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
+* Support `@OnChildError` annotation that stands in for `componentDidCatch` lifecycle method.
+
 * Change remaining lifecycle hooks to be annotation driven. i.e.
   If we do this then the annotation processor could completely take over responsibility for implementing lifecycle
   steps rather than part of it being in `react4j.Component`.
