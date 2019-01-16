@@ -96,7 +96,7 @@
   cast the key to a string. The supporting infrastructure no longer supplies non-string keys and adding an
   empty string will stop the GWT compiler from removing `toString()` on any subclass of `Object` (i.e. no
   `toString()` methods are candidates for dead code elimination).
-* **\[processor\]** ELiminate the static inner class named `Prop` from the enhanced react component if it is empty. 
+* **\[processor\]** Eliminate the static inner class named `Prop` from the enhanced react component if it is empty. 
 
 ### [v0.108](https://github.com/react4j/react4j/tree/v0.108) (2018-11-22)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.107...v0.108)
