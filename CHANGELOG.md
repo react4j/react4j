@@ -96,7 +96,7 @@
   cast the key to a string. The supporting infrastructure no longer supplies non-string keys and adding an
   empty string will stop the GWT compiler from removing `toString()` on any subclass of `Object` (i.e. no
   `toString()` methods are candidates for dead code elimination).
-* **\[processor\]** Eliminate the static inner class named `Prop` from the enhanced react component if it is empty. 
+* **\[processor\]** Eliminate the static inner class named `Prop` from the enhanced react component if it is empty.
 * **\[processor\]** Rename the generated dagger helper class from `[MyComponent]DaggerFactory` to
   `[MyComponent]DaggerComponentExtension` to align with the same pattern in Arez.
 
