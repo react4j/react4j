@@ -521,10 +521,6 @@ final class Generator
     addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addType( buildFactory() );
-    if ( descriptor.needsInjection() )
-    {
-      builder.addType( buildInjectSupport( descriptor ) );
-    }
     builder.addType( buildPropsType( descriptor ) );
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
@@ -1206,47 +1202,6 @@ final class Generator
     return method;
   }
 
-  private static FieldSpec.Builder buildProviderField( @Nonnull final ComponentDescriptor descriptor )
-  {
-    return FieldSpec.builder( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
-                                                         TypeName.get( descriptor.getDeclaredType() ) ),
-                              "c_provider",
-                              Modifier.STATIC,
-                              Modifier.PRIVATE );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildSetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
-  {
-    return MethodSpec.methodBuilder( "setProvider" ).
-      addModifiers( Modifier.STATIC ).
-      addParameter( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
-                                               TypeName.get( descriptor.getDeclaredType() ) ),
-                    "provider",
-                    Modifier.FINAL ).
-      addStatement( "c_provider = provider" );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildGetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( "getProvider" ).
-      addModifiers( Modifier.PRIVATE, Modifier.STATIC ).
-      returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, TypeName.get( descriptor.getDeclaredType() ) ) );
-    final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
-    block.addStatement(
-      "$T.invariant( () -> null != c_provider, () -> \"Attempted to create an instance of the React4j " +
-      "component named '$N' before the dependency injection provider has been initialized. Please see " +
-      "the documentation at https://react4j.github.io/dependency_injection for directions how to " +
-      "configure dependency injection.\" )",
-      GUARDS_CLASSNAME,
-      descriptor.getName() );
-    block.endControlFlow();
-    method.addCode( block.build() );
-    return method.addStatement( "return c_provider" );
-  }
-
   @Nonnull
   private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ComponentDescriptor descriptor )
   {
@@ -1325,23 +1280,6 @@ final class Generator
                          Modifier.FINAL ).
         initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
-
-    return builder.build();
-  }
-
-  @Nonnull
-  private static TypeSpec buildInjectSupport( @Nonnull final ComponentDescriptor descriptor )
-  {
-    assert descriptor.needsInjection();
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( "InjectSupport" );
-
-    //Ensure it can not be subclassed
-    builder.addModifiers( Modifier.FINAL );
-    builder.addModifiers( Modifier.STATIC );
-
-    builder.addField( buildProviderField( descriptor ).build() );
-    builder.addMethod( buildSetProviderMethod( descriptor ).build() );
-    builder.addMethod( buildGetProviderMethod( descriptor ).build() );
 
     return builder.build();
   }
