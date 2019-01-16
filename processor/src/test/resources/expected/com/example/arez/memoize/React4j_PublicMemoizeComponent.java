@@ -89,9 +89,6 @@ abstract class React4j_PublicMemoizeComponent extends PublicMemoizeComponent {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-  }
-
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

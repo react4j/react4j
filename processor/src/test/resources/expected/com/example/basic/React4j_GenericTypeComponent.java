@@ -25,9 +25,6 @@ class React4j_GenericTypeComponent<T> extends GenericTypeComponent<T> {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-  }
-
   private static final class NativeReactComponent<T> extends NativeAdapterComponent<GenericTypeComponent<T>> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

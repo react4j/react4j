@@ -25,9 +25,6 @@ class React4j_InjectFalseDaggerTrueComponent extends InjectFalseDaggerTrueCompon
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-  }
-
   private static final class NativeReactComponent extends NativeAdapterComponent<InjectFalseDaggerTrueComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

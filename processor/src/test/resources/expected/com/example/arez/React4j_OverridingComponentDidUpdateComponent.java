@@ -81,9 +81,6 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-  }
-
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

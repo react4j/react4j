@@ -34,9 +34,6 @@ class React4j_ProtectedModel extends ProtectedModel {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-  }
-
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

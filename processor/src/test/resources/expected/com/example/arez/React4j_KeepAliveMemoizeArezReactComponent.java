@@ -96,9 +96,6 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-  }
-
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

@@ -42,9 +42,6 @@ class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-  }
-
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

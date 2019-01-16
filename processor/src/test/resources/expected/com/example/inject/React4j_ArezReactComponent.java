@@ -97,9 +97,6 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     }
   }
 
-  static final class Props {
-  }
-
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,

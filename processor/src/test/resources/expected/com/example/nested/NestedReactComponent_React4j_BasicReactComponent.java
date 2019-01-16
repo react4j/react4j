@@ -25,9 +25,6 @@ class NestedReactComponent_React4j_BasicReactComponent extends NestedReactCompon
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-  }
-
   private static final class NativeReactComponent extends NativeAdapterComponent<NestedReactComponent.BasicReactComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

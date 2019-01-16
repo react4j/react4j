@@ -90,9 +90,6 @@ abstract class React4j_GenericsReturnMemoizeComponent extends GenericsReturnMemo
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-  }
-
   @JsType(
       isNative = true,
       namespace = JsPackage.GLOBAL,
