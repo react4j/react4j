@@ -158,7 +158,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return ((Arez_React4j_ObservableProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
@@ -185,12 +185,12 @@ abstract class React4j_ObservableProp extends ObservableProp {
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return ((Arez_React4j_ObservableProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       ((Arez_React4j_ObservableProp) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 

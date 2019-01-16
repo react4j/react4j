@@ -99,7 +99,7 @@ class React4j_DoublePropValidate extends DoublePropValidate {
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return ((React4j_DoublePropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }

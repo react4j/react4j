@@ -153,7 +153,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       ((Arez_React4j_ImplicitDisposableProp) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 

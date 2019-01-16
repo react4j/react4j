@@ -99,7 +99,7 @@ class React4j_BooleanPropValidate extends BooleanPropValidate {
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return ((React4j_BooleanPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }

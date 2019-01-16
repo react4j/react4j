@@ -56,8 +56,8 @@ class React4j_ProtectedModel extends ProtectedModel {
     }
 
     @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+        @Nonnull final JsPropertyMap<Object> prevState) {
       ((React4j_ProtectedModel) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }

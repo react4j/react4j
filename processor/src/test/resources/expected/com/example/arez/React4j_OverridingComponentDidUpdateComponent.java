@@ -120,7 +120,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       ((Arez_React4j_OverridingComponentDidUpdateComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
@@ -147,7 +147,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       ((Arez_React4j_OverridingComponentDidUpdateComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 

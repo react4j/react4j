@@ -103,7 +103,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return ((React4j_ExplicitNamePropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }

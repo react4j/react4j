@@ -90,14 +90,14 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
     }
 
     @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+        @Nonnull final JsPropertyMap<Object> prevState) {
       ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }

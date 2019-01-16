@@ -104,7 +104,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return ((React4j_OtherPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }

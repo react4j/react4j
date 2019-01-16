@@ -99,7 +99,7 @@ class React4j_LongPropValidate extends LongPropValidate {
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps) {
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return ((React4j_LongPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
   }

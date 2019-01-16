@@ -73,7 +73,7 @@ class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       ((React4j_PostRenderAndPostUpdate) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
   }

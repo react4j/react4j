@@ -68,8 +68,8 @@ class React4j_ShortOnPropChange extends ShortOnPropChange {
     }
 
     @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState) {
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+        @Nonnull final JsPropertyMap<Object> prevState) {
       ((React4j_ShortOnPropChange) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
