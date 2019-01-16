@@ -6,7 +6,7 @@ import java.lang.annotation.Target;
 import javax.annotation.Nonnull;
 
 /**
- * Annotation used to associate a parameter with a prop.
+ * Annotation used to associate a parameter with a prop on a method annotated with {@link OnPropChange} .
  * The type of the parameter must be the same as the return type of the prop method.
  */
 @Documented
