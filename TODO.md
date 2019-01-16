@@ -126,6 +126,11 @@
 
 ### Low Priorities
 
+* Animation/Transition capabilities are getting more urgent.
+  - https://github.com/reactjs/react-transition-group/blob/master/src/Transition.js
+  - https://popmotion.io/pose/
+  - Source transition components from VueJS. See https://www.udemy.com/vuejs-2-the-complete-guide for good example
+
 * In base class have configuration that warns on re-renders that produced duplicate values.
 
 * build in https://github.com/maicki/why-did-you-update
