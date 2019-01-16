@@ -9,7 +9,6 @@ import jsinterop.base.Js;
 /**
  * Union type representing possible output of render method.
  */
-@SuppressWarnings( "Contract" )
 @JsType( isNative = true, name = "?", namespace = JsPackage.GLOBAL )
 public interface ReactNode
 {
