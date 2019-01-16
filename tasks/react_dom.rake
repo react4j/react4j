@@ -208,7 +208,6 @@ FOOTER
 end
 
 def generate_factory_source(project)
-
   base_source_dir = project._(:generated, :reactgen, :main, :java)
   desc 'Generate the dom factories'
   t = project.task('reactgen') do
