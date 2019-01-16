@@ -524,7 +524,10 @@ final class Generator
     addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addType( buildFactory() );
-    builder.addType( buildPropsType( descriptor ) );
+    if ( !descriptor.getProps().isEmpty() )
+    {
+      builder.addType( buildPropsType( descriptor ) );
+    }
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
