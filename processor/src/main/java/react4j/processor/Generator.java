@@ -45,6 +45,8 @@ final class Generator
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
+  private static final ClassName AREZ_INJECT_MODE_CLASSNAME =
+    ClassName.get( "arez.annotations", "InjectMode" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
   private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
@@ -511,7 +513,8 @@ final class Generator
       }
       if ( descriptor.needsInjection() )
       {
-        annotation.addMember( "inject", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
+        annotation.addMember( "inject", "$T.CONSUME", AREZ_INJECT_MODE_CLASSNAME );
+        annotation.addMember( "dagger", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
       }
       builder.addAnnotation( annotation.build() );
       builder.addModifiers( Modifier.ABSTRACT );
