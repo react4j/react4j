@@ -5,6 +5,7 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import arez.annotations.Observe;
 import arez.annotations.Priority;
 import javax.annotation.Generated;
@@ -25,7 +26,8 @@ import react4j.ReactNode;
 @ArezComponent(
     name = "ArezReactComponent",
     disposeTrackable = Feature.DISABLE,
-    inject = Feature.ENABLE
+    inject = InjectMode.CONSUME,
+    dagger = Feature.ENABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ArezReactComponent extends ArezReactComponent {
