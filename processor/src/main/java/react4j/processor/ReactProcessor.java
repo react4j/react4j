@@ -168,9 +168,16 @@ public final class ReactProcessor
     final ComponentDescriptor descriptor = parse( element );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( descriptor ) );
-    if ( descriptor.needsDaggerIntegration() && !descriptor.isArezComponent() )
+    if ( descriptor.needsDaggerIntegration()  )
     {
-      emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerFactory( descriptor ) );
+      if ( descriptor.isArezComponent() )
+      {
+        emitTypeSpec( descriptor.getPackageName(), Generator.buildArezDaggerFactory( descriptor ) );
+      }
+      else
+      {
+        emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerFactory( descriptor ) );
+      }
     }
   }
 

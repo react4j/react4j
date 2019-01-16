@@ -167,6 +167,14 @@ final class ComponentDescriptor
   }
 
   @Nonnull
+  ClassName getArezDaggerExtensionClassName()
+  {
+    assert isArezComponent();
+    return ClassName.get( getPackageName(),
+                          getNestedClassPrefix() + "React4j_" + _element.getSimpleName() + "DaggerComponentExtension" );
+  }
+
+  @Nonnull
   ClassName getClassNameToConstruct()
   {
     final String simpleName =

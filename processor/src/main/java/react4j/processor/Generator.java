@@ -524,6 +524,10 @@ final class Generator
     addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addType( buildFactory() );
+    if ( descriptor.needsInjection() )
+    {
+      builder.addType( buildInjectSupport( descriptor ) );
+    }
     if ( !descriptor.getProps().isEmpty() )
     {
       builder.addType( buildPropsType( descriptor ) );
@@ -1209,6 +1213,64 @@ final class Generator
   }
 
   @Nonnull
+  private static TypeSpec buildInjectSupport( @Nonnull final ComponentDescriptor descriptor )
+  {
+    assert descriptor.needsInjection();
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "InjectSupport" );
+
+    //Ensure it can not be subclassed
+    builder.addModifiers( Modifier.FINAL );
+    builder.addModifiers( Modifier.STATIC );
+
+    builder.addField( buildProviderField( descriptor ).build() );
+    builder.addMethod( buildSetProviderMethod( descriptor ).build() );
+    builder.addMethod( buildGetProviderMethod( descriptor ).build() );
+
+    return builder.build();
+  }
+
+  private static FieldSpec.Builder buildProviderField( @Nonnull final ComponentDescriptor descriptor )
+  {
+    return FieldSpec.builder( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
+                                                         TypeName.get( descriptor.getDeclaredType() ) ),
+                              "c_provider",
+                              Modifier.STATIC,
+                              Modifier.PRIVATE );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildSetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    return MethodSpec.methodBuilder( "setProvider" ).
+      addModifiers( Modifier.STATIC ).
+      addParameter( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
+                                               TypeName.get( descriptor.getDeclaredType() ) ),
+                    "provider",
+                    Modifier.FINAL ).
+      addStatement( "c_provider = provider" );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildGetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( "getProvider" ).
+      addModifiers( Modifier.PRIVATE, Modifier.STATIC ).
+      returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, TypeName.get( descriptor.getDeclaredType() ) ) );
+    final CodeBlock.Builder block = CodeBlock.builder();
+    block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
+    block.addStatement(
+      "$T.invariant( () -> null != c_provider, () -> \"Attempted to create an instance of the React4j " +
+      "component named '$N' before the dependency injection provider has been initialized. Please see " +
+      "the documentation at https://react4j.github.io/dependency_injection for directions how to " +
+      "configure dependency injection.\" )",
+      GUARDS_CLASSNAME,
+      descriptor.getName() );
+    block.endControlFlow();
+    method.addCode( block.build() );
+    return method.addStatement( "return c_provider" );
+  }
+
+  @Nonnull
   private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final MethodSpec.Builder method =
@@ -1632,6 +1694,42 @@ final class Generator
       .addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info" )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() );
+  }
+
+  @Nonnull
+  static TypeSpec buildArezDaggerFactory( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerFactoryClassName() );
+    final ClassName superClassName = descriptor.getArezDaggerExtensionClassName();
+    builder.addSuperinterface( superClassName );
+    addGeneratedAnnotation( descriptor, builder );
+    addOriginatingTypes( descriptor.getElement(), builder );
+
+    builder.addModifiers( Modifier.PUBLIC );
+
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( "bind" + descriptor.getName() )
+        .addModifiers( Modifier.PUBLIC, Modifier.DEFAULT )
+        .addStatement( "$T.super.$N()", superClassName, "bind" + descriptor.getName() )
+        .addStatement( "$T.InjectSupport.setProvider( () -> ($T) $N().createProvider().get() )",
+                       descriptor.getEnhancedClassName(),
+                       descriptor.getClassName(),
+                       "get" + descriptor.getName() + "DaggerSubcomponent" );
+
+    builder.addMethod( method.build() );
+
+    /*
+     * This overridden method is required as Dagger is unable to see subcomponent methods from superclass
+     */
+    builder.addMethod( MethodSpec
+                         .methodBuilder( "get" + descriptor.getName() + "DaggerSubcomponent" )
+                         .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
+                         .addAnnotation( Override.class )
+                         .returns( ClassName.bestGuess( "DaggerSubcomponent" ) )
+                         .build() );
+
+    return builder.build();
   }
 
   @Nonnull
