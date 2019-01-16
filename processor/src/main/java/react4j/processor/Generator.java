@@ -1390,7 +1390,7 @@ final class Generator
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .returns( TypeName.BOOLEAN )
       .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps" )
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addStatement( "return (($T) component() ).$N( nextProps )",
@@ -1407,11 +1407,11 @@ final class Generator
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .returns( TypeName.get( Object.class ) )
       .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState" )
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addStatement( "(($T) component() ).$N( prevProps )",
@@ -1428,7 +1428,7 @@ final class Generator
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addStatement( "(($T) component() ).$N( prevProps )",
@@ -1456,10 +1456,10 @@ final class Generator
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .returns( TypeName.get( Object.class ) )
-      .addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error" )
+      .addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
-      .addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info" )
+      .addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addStatement( "performComponentDidCatch( error, info )" );
