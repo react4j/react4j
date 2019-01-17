@@ -136,8 +136,6 @@
 
 * Consider renaming `@Prop` to `@Input`
 
-* Consider adopting variable arguments ala https://fblitho.com/docs/props#variable-arguments
-
 * If we were to ever re-implement the component model at a basic level, an interesting approach would be to
   allow individual components to register actions to occur at each lifecycle stage. We could also use the
   strategies in [ivi](https://github.com/localvoid/ivi) or whatever is winning the
