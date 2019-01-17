@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+* **\[processor\]** Ensure that the synthesized lifecycle methods are private unless they are annotated by the
+  `@arez.annotations.Action` annotation. Prior to this change different methods had different policies, some
+  were optionally private, some were final and some were package access.
+
 ### [v0.110](https://github.com/react4j/react4j/tree/v0.110) (2019-01-16)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.109...v0.110)
 

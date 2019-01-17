@@ -38,7 +38,7 @@ class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateMode
     }
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postUpdate();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();

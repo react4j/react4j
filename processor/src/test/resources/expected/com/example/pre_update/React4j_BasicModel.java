@@ -23,7 +23,7 @@ class React4j_BasicModel extends BasicModel {
     return componentConstructor;
   }
 
-  void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     preUpdate();
   }
 

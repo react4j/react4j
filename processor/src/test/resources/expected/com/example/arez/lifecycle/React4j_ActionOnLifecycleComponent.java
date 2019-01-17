@@ -36,20 +36,20 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
     return componentConstructor;
   }
 
-  void $$react4j$$_componentDidMount() {
+  private void $$react4j$$_componentDidMount() {
     postMount();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
 
-  final void $$react4j$$_componentWillUnmount() {
+  private void $$react4j$$_componentWillUnmount() {
     Disposable.dispose( this );
   }
 
@@ -118,12 +118,12 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
 
     @Override
     public final void componentDidMount() {
-      ((Arez_React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentDidMount();
+      ((React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((Arez_React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentWillUnmount();
+      ((React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentWillUnmount();
     }
   }
 
@@ -140,17 +140,17 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
 
     @Override
     public final void componentDidMount() {
-      ((Arez_React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentDidMount();
+      ((React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((Arez_React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      ((React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((Arez_React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentWillUnmount();
+      ((React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentWillUnmount();
     }
   }
 }

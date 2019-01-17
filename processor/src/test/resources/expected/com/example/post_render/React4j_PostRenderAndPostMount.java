@@ -23,7 +23,7 @@ class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
     return componentConstructor;
   }
 
-  void $$react4j$$_componentDidMount() {
+  private void $$react4j$$_componentDidMount() {
     postRender();
     postMount();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
@@ -31,7 +31,7 @@ class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
     }
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postRender();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();

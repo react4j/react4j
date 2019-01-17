@@ -23,7 +23,7 @@ class React4j_ProtectedModel extends ProtectedModel {
     return componentConstructor;
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postUpdate();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();

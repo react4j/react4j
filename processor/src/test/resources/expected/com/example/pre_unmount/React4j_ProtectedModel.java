@@ -23,7 +23,7 @@ class React4j_ProtectedModel extends ProtectedModel {
     return componentConstructor;
   }
 
-  final void $$react4j$$_componentWillUnmount() {
+  private void $$react4j$$_componentWillUnmount() {
     preUnmount();
   }
 

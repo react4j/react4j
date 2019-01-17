@@ -72,19 +72,19 @@ abstract class React4j_ObservableProp extends ObservableProp {
     return modified || hasRenderDepsChanged();
   }
 
-  void $$react4j$$_componentDidMount() {
+  private void $$react4j$$_componentDidMount() {
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
 
-  final void $$react4j$$_componentWillUnmount() {
+  private void $$react4j$$_componentWillUnmount() {
     Disposable.dispose( this );
   }
 
@@ -159,12 +159,12 @@ abstract class React4j_ObservableProp extends ObservableProp {
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return ((Arez_React4j_ObservableProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
+      return ((React4j_ObservableProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((Arez_React4j_ObservableProp) component() ).$$react4j$$_componentWillUnmount();
+      ((React4j_ObservableProp) component() ).$$react4j$$_componentWillUnmount();
     }
   }
 
@@ -181,22 +181,22 @@ abstract class React4j_ObservableProp extends ObservableProp {
 
     @Override
     public final void componentDidMount() {
-      ((Arez_React4j_ObservableProp) component() ).$$react4j$$_componentDidMount();
+      ((React4j_ObservableProp) component() ).$$react4j$$_componentDidMount();
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return ((Arez_React4j_ObservableProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
+      return ((React4j_ObservableProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((Arez_React4j_ObservableProp) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      ((React4j_ObservableProp) component() ).$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((Arez_React4j_ObservableProp) component() ).$$react4j$$_componentWillUnmount();
+      ((React4j_ObservableProp) component() ).$$react4j$$_componentWillUnmount();
     }
   }
 }

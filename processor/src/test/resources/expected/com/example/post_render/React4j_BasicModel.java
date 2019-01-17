@@ -23,14 +23,14 @@ class React4j_BasicModel extends BasicModel {
     return componentConstructor;
   }
 
-  void $$react4j$$_componentDidMount() {
+  private void $$react4j$$_componentDidMount() {
     postRender();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postRender();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();

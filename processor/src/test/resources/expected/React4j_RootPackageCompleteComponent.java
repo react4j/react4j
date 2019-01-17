@@ -26,7 +26,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
     return props().getAny( Props.myProp ).asInt();
   }
 
-  void $$react4j$$_componentDidMount() {
+  private void $$react4j$$_componentDidMount() {
     postMount();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
@@ -44,7 +44,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
     preUpdate();
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postUpdate();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();

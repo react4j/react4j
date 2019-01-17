@@ -23,7 +23,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     return componentConstructor;
   }
 
-  void $$react4j$$_componentDidMount() {
+  private void $$react4j$$_componentDidMount() {
     postRender();
     postMount();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
@@ -31,11 +31,11 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     }
   }
 
-  void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     preUpdate();
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postRender();
     postUpdate();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
@@ -43,7 +43,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     }
   }
 
-  final void $$react4j$$_componentWillUnmount() {
+  private void $$react4j$$_componentWillUnmount() {
     preUnmount();
   }
 

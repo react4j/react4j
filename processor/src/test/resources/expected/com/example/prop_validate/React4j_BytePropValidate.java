@@ -37,7 +37,8 @@ class React4j_BytePropValidate extends BytePropValidate {
     }
   }
 
-  boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
     final JsPropertyMap<Object> props = props();
     boolean modified = false;
     assert null != nextProps;

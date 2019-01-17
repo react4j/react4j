@@ -23,7 +23,7 @@ class React4j_ProtectedBasicModel extends ProtectedBasicModel {
     return componentConstructor;
   }
 
-  void $$react4j$$_componentDidMount() {
+  private void $$react4j$$_componentDidMount() {
     postMount();
     if ( ReactConfig.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();

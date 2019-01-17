@@ -898,7 +898,10 @@ final class Generator
   @Nonnull
   private static MethodSpec.Builder buildComponentDidMount( @Nonnull final ComponentDescriptor descriptor )
   {
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( COMPONENT_DID_MOUNT_METHOD );
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( COMPONENT_DID_MOUNT_METHOD )
+        .addModifiers( Modifier.PRIVATE );
     final ExecutableElement postRender = descriptor.getPostRender();
     if ( null != postRender )
     {
@@ -939,6 +942,10 @@ final class Generator
     if ( !observableProps.isEmpty() )
     {
       method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
+    }
+    else
+    {
+      method.addModifiers( Modifier.PRIVATE );
     }
 
     method.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
@@ -1008,6 +1015,7 @@ final class Generator
     final MethodSpec.Builder method =
       MethodSpec
         .methodBuilder( COMPONENT_PRE_UPDATE_METHOD )
+        .addModifiers( Modifier.PRIVATE )
         .addParameter( ParameterSpec
                          .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                          .addAnnotation( NULLABLE_CLASSNAME )
@@ -1018,7 +1026,6 @@ final class Generator
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != prevProps )" );
       block.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
-      method.addModifiers( Modifier.PRIVATE );
       buildOnPropChangeInvocations( block, descriptor.getPreUpdateOnPropChangeDescriptors() );
       block.endControlFlow();
       method.addCode( block.build() );
@@ -1037,7 +1044,7 @@ final class Generator
     final MethodSpec.Builder method =
       MethodSpec
         .methodBuilder( COMPONENT_DID_UPDATE_METHOD )
-        .addModifiers( Modifier.FINAL )
+        .addModifiers( Modifier.PRIVATE )
         .addParameter( ParameterSpec
                          .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                          .addAnnotation( NULLABLE_CLASSNAME )
@@ -1075,7 +1082,9 @@ final class Generator
   private static MethodSpec.Builder buildComponentWillUnmount( @Nonnull final ComponentDescriptor descriptor )
   {
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( COMPONENT_WILL_UNMOUNT_METHOD ).addModifiers( Modifier.FINAL );
+      MethodSpec
+        .methodBuilder( COMPONENT_WILL_UNMOUNT_METHOD )
+        .addModifiers( Modifier.PRIVATE );
 
     final ExecutableElement preUnmount = descriptor.getPreUnmount();
     if ( null != preUnmount )
@@ -1445,7 +1454,7 @@ final class Generator
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .addStatement( "(($T) component() ).$N()",
-                     componentDescriptor.getClassNameToConstruct(),
+                     componentDescriptor.getEnhancedClassName(),
                      COMPONENT_DID_MOUNT_METHOD );
   }
 
@@ -1462,7 +1471,7 @@ final class Generator
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addStatement( "return (($T) component() ).$N( nextProps )",
-                     componentDescriptor.getClassNameToConstruct(),
+                     componentDescriptor.getEnhancedClassName(),
                      SHOULD_COMPONENT_UPDATE_METHOD );
   }
 
@@ -1483,7 +1492,7 @@ final class Generator
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addStatement( "(($T) component() ).$N( prevProps )",
-                     componentDescriptor.getClassNameToConstruct(),
+                     componentDescriptor.getEnhancedClassName(),
                      COMPONENT_PRE_UPDATE_METHOD )
       .addStatement( "return null" );
   }
@@ -1500,7 +1509,7 @@ final class Generator
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addStatement( "(($T) component() ).$N( prevProps )",
-                     componentDescriptor.getClassNameToConstruct(),
+                     componentDescriptor.getEnhancedClassName(),
                      COMPONENT_DID_UPDATE_METHOD );
   }
 
@@ -1512,7 +1521,7 @@ final class Generator
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .addStatement( "(($T) component() ).$N()",
-                     componentDescriptor.getClassNameToConstruct(),
+                     componentDescriptor.getEnhancedClassName(),
                      COMPONENT_WILL_UNMOUNT_METHOD );
   }
 

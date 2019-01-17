@@ -32,7 +32,7 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
     }
   }
 
-  final void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
