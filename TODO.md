@@ -28,10 +28,7 @@
 * Rather than creating `Lifecycle` and `LiteLifecycle` could just define an interface per lifecycle and define them
   statically in internal package somewhere.
 
-* Should `@PreRender` and `@PostRender` be `@PreCommit` and `@PostCommit` ? or `@PrePaint` and `@PostPaint`?
-  or better yet `@PreMutation` and `@PostMutation`?
-
-* An alternative approach to the above is to rename `Component.render()` to `Component.view()` and thus `render` == `updateDom`
+* Should we rename `@PostRender` to `@PostMountOrUpdate`
 
 * Consider making non-arez components into Arez components that do not track state. This would make it possible
   to use `@CascadeDispose`, `@PostConstruct`, `@PreDispose` and `@PostDispose` annotations as well as better
