@@ -5,6 +5,8 @@
 * **\[processor\]** Ensure that the synthesized lifecycle methods are private unless they are annotated by the
   `@arez.annotations.Action` annotation. Prior to this change different methods had different policies, some
   were optionally private, some were final and some were package access.
+* **\[core\]** Fix bug introduced into `React.createFragment(...)` in `0.109` as a result of setting the
+  `$typeof` key to `React.Fragment` rather than `React.Element`.
 
 ### [v0.110](https://github.com/react4j/react4j/tree/v0.110) (2019-01-16)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.109...v0.110)
