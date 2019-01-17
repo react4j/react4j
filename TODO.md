@@ -28,8 +28,6 @@
 * Rather than creating `Lifecycle` and `LiteLifecycle` could just define an interface per lifecycle and define them
   statically in internal package somewhere.
 
-* Should we rename `@PostRender` to `@PostMountOrUpdate`
-
 * Consider making non-arez components into Arez components that do not track state. This would make it possible
   to use `@CascadeDispose`, `@PostConstruct`, `@PreDispose` and `@PostDispose` annotations as well as better
   `@Inject` support without bloating `react4j` with similar code generation and annotations.
@@ -37,8 +35,6 @@
 * Should generate an error when any method or field has an Arez annotation when not an arez component
 
 * Collections returned from props should be made immutable.
-
-* Consider renaming `@Prop` to `@Input`
 
 * Should be possible to mark a prop as immutable and if it changes it is a new component. This is essentially
   deriving the key from the props. Maybe we should have a mechanisms for generating a key from immutable props.
@@ -135,6 +131,10 @@
 * In base class have configuration that warns on re-renders that produced duplicate values.
 
 * build in https://github.com/maicki/why-did-you-update
+
+* Consider renaming `@PostRender` to `@PostMountOrUpdate`
+
+* Consider renaming `@Prop` to `@Input`
 
 * Consider adopting variable arguments ala https://fblitho.com/docs/props#variable-arguments
 
