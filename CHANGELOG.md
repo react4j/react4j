@@ -13,8 +13,8 @@
   classes move include the classes named `react4j.On*`, `react4j.Native*` and `react4j.ComponentConstructorFunction`.
 * **\[core\]** Move the method used used to access compile time configuration from the `ReactConfig` class to the
   `React` class and change the access level of `ReactConfig` to package access.
-* **\[processor\]** Remove the `prevProps` parameter from the synthetic `componentDidUpdate()` on the java
-  component if it is unused.
+* **\[processor\]** Remove the `prevProps` parameter from the synthetic `componentDidUpdate()` lifecycle method
+  on the java component if it is unused.
 * **\[processor\]** Improve the code generated for the synthetic `shouldComponentUpdate()` lifecycle method on
   the java component by eliminating unused local variables if unused.
 
