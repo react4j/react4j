@@ -21,10 +21,8 @@ public final class React4jBuildAsserts
   {
     // This should never appear as it is not meant to be GWT compiled
     index.assertNoClassNameMatches( "react4j\\.annotations\\..*" );
-    index.assertNoClassNameMatches( "react4j\\.core\\.ReactConfig" );
 
-    // This should be eliminated as it will improve the ability for GWT compiler to dead-code-eliminate
-    index.assertNoMemberMatches( "react4j\\.core\\.ReactConfig", "$clinit" );
+    index.assertNoClassNameMatches( "react4j\\.ReactConfig" );
   }
 
   /**
