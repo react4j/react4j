@@ -4,12 +4,11 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
+import react4j.OnShouldComponentUpdate;
 import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
@@ -59,24 +58,7 @@ class React4j_IntPropValidate extends IntPropValidate {
     static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface LiteLifecycle {
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface Lifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<IntPropValidate> implements LiteLifecycle {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<IntPropValidate> {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -88,7 +70,7 @@ class React4j_IntPropValidate extends IntPropValidate {
     }
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<IntPropValidate> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<IntPropValidate> implements OnShouldComponentUpdate {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );

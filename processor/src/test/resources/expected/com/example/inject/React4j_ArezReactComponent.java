@@ -13,13 +13,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Provider;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
+import react4j.OnComponentDidMount;
+import react4j.OnComponentDidUpdate;
+import react4j.OnComponentWillUnmount;
 import react4j.ReactConfig;
 import react4j.ReactNode;
 
@@ -99,29 +100,7 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     }
   }
 
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface LiteLifecycle {
-    void componentWillUnmount();
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface Lifecycle {
-    void componentDidMount();
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-
-    void componentWillUnmount();
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ArezReactComponent> implements LiteLifecycle {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ArezReactComponent> implements OnComponentWillUnmount {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -138,7 +117,7 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     }
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<ArezReactComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<ArezReactComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );

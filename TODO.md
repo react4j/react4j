@@ -2,6 +2,9 @@
 
 ### Next Release
 
+* Move the `react4j.On*` and `react4j.Native*` classes to a package `react4j.internal` to reflect that they
+  are internal implementation details and should not be relied upon.
+
 * `key` is valid on fragments elements.
 
 * Host `ReactElement` instances should be created within the `dom` library and we could create the instances
@@ -24,9 +27,6 @@
 * Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
   will push the call into a task that is invoked at a later time. Roughly we want to be able to take an effect and
   push it outside the commit phase of react rendering and have it run later
-
-* Rather than creating `Lifecycle` and `LiteLifecycle` could just define an interface per lifecycle and define them
-  statically in internal package somewhere.
 
 * Consider making non-arez components into Arez components that do not track state. This would make it possible
   to use `@CascadeDispose`, `@PostConstruct`, `@PreDispose` and `@PostDispose` annotations as well as better

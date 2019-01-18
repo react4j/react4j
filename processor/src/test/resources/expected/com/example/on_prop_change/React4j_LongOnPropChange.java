@@ -4,12 +4,11 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
+import react4j.OnGetSnapshotBeforeUpdate;
 import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
@@ -46,17 +45,7 @@ class React4j_LongOnPropChange extends LongOnPropChange {
     static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface Lifecycle {
-    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState);
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<LongOnPropChange> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<LongOnPropChange> implements OnGetSnapshotBeforeUpdate {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );

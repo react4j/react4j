@@ -4,12 +4,14 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
+import react4j.OnComponentDidMount;
+import react4j.OnComponentDidUpdate;
+import react4j.OnComponentWillUnmount;
+import react4j.OnGetSnapshotBeforeUpdate;
 import react4j.ReactConfig;
 
 @Generated("react4j.processor.ReactProcessor")
@@ -51,23 +53,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface Lifecycle {
-    void componentDidMount();
-
-    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps,
-        @Nonnull JsPropertyMap<Object> prevState);
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-
-    void componentWillUnmount();
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<OverrideLifecycleMethodsComponent> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<OverrideLifecycleMethodsComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnGetSnapshotBeforeUpdate, OnComponentWillUnmount {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );

@@ -437,7 +437,7 @@ final class ComponentDescriptor
     }
   }
 
-  boolean shouldGenerateLifecycle()
+  private boolean shouldGenerateLifecycle()
   {
     return isArezComponent() ||
            generateComponentDidMount() ||

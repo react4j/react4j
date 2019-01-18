@@ -76,6 +76,15 @@ final class Generator
     ClassName.get( "react4j", "NativeAdapterComponent" );
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
+  private static final ClassName ON_COMPONENT_DID_MOUNT_CLASSNAME = ClassName.get( "react4j", "OnComponentDidMount" );
+  private static final ClassName ON_COMPONENT_DID_UPDATE_CLASSNAME = ClassName.get( "react4j", "OnComponentDidUpdate" );
+  private static final ClassName ON_COMPONENT_WILL_UNMOUNT_CLASSNAME =
+    ClassName.get( "react4j", "OnComponentWillUnmount" );
+  private static final ClassName ON_GET_SNAPSHOT_BEFORE_UPDATE_CLASSNAME =
+    ClassName.get( "react4j", "OnGetSnapshotBeforeUpdate" );
+  private static final ClassName ON_COMPONENT_SHOULD_UPDATE_CLASSNAME =
+    ClassName.get( "react4j", "OnShouldComponentUpdate" );
+  private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME = ClassName.get( "react4j", "componentDidCatch" );
   private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
   private static final String SHOULD_COMPONENT_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "shouldComponentUpdate";
   private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
@@ -598,14 +607,6 @@ final class Generator
       }
     }
 
-    if ( descriptor.shouldGenerateLifecycle() )
-    {
-      if ( descriptor.shouldGenerateLiteLifecycle() )
-      {
-        builder.addType( buildNativeLiteLifecycleInterface( descriptor ) );
-      }
-      builder.addType( buildNativeLifecycleInterface( descriptor ) );
-    }
     if ( descriptor.shouldGenerateLiteLifecycle() )
     {
       builder.addType( buildNativeComponent( descriptor, true ) );
@@ -1377,11 +1378,47 @@ final class Generator
     builder.superclass( superType );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
-    final boolean hasLifecycleInterface =
-      lite ? descriptor.shouldGenerateLiteLifecycle() : descriptor.shouldGenerateLifecycle();
-    if ( hasLifecycleInterface )
+    if ( lite )
     {
-      builder.addSuperinterface( ClassName.bestGuess( ( lite ? "Lite" : "" ) + "Lifecycle" ) );
+      if ( descriptor.generateComponentDidMountInLiteLifecycle() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_DID_MOUNT_CLASSNAME );
+      }
+      if ( descriptor.generateComponentDidUpdateInLiteLifecycle() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_DID_UPDATE_CLASSNAME );
+      }
+      if ( descriptor.generateShouldComponentUpdateInLiteLifecycle() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
+      }
+    }
+    else
+    {
+      if ( descriptor.generateComponentDidMount() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_DID_MOUNT_CLASSNAME );
+      }
+      if ( descriptor.generateComponentDidUpdate() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_DID_UPDATE_CLASSNAME );
+      }
+      if ( descriptor.generateShouldComponentUpdate() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
+      }
+    }
+    if ( descriptor.generateComponentPreUpdate() )
+    {
+      builder.addSuperinterface( ON_GET_SNAPSHOT_BEFORE_UPDATE_CLASSNAME );
+    }
+    if ( descriptor.generateComponentWillUnmount() )
+    {
+      builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
+    }
+    if ( descriptor.generateComponentDidCatch() )
+    {
+      builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
     }
 
     // build the constructor
@@ -1548,161 +1585,6 @@ final class Generator
     return typeArguments.isEmpty() ?
            "" :
            "<" + typeArguments.stream().map( TypeMirror::toString ).collect( Collectors.joining( ", " ) ) + ">";
-  }
-
-  @Nonnull
-  private static TypeSpec buildNativeLiteLifecycleInterface( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "LiteLifecycle" );
-
-    builder.addAnnotation( AnnotationSpec.builder( JS_TYPE_CLASSNAME ).
-      addMember( "isNative", "true" ).
-      addMember( "namespace", "$T.GLOBAL", JS_PACKAGE_CLASSNAME ).
-      addMember( "name", "$S", "?" ).
-      build() );
-
-    builder.addModifiers( Modifier.STATIC );
-
-    if ( descriptor.generateComponentDidMountInLiteLifecycle() )
-    {
-      // We add this so the DevTool sees any debug data saved
-      builder.addMethod( buildAbstractComponentDidMount().build() );
-    }
-    if ( descriptor.generateShouldComponentUpdateInLiteLifecycle() )
-    {
-      builder.addMethod( buildAbstractShouldComponentUpdate().build() );
-    }
-    if ( descriptor.generateComponentPreUpdate() )
-    {
-      builder.addMethod( buildAbstractComponentPreUpdate().build() );
-    }
-    if ( descriptor.generateComponentDidUpdateInLiteLifecycle() )
-    {
-      // We add this for Arez components so the DevTool sees any debug data saved
-      builder.addMethod( buildAbstractComponentDidUpdate().build() );
-    }
-    if ( descriptor.generateComponentWillUnmount() )
-    {
-      builder.addMethod( buildAbstractComponentWillUnmount().build() );
-    }
-    if ( descriptor.generateComponentDidCatch() )
-    {
-      builder.addMethod( buildAbstractComponentDidCatch().build() );
-    }
-
-    return builder.build();
-  }
-
-  @Nonnull
-  private static TypeSpec buildNativeLifecycleInterface( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Lifecycle" );
-
-    builder.addAnnotation( AnnotationSpec.builder( JS_TYPE_CLASSNAME ).
-      addMember( "isNative", "true" ).
-      addMember( "namespace", "$T.GLOBAL", JS_PACKAGE_CLASSNAME ).
-      addMember( "name", "$S", "?" ).
-      build() );
-
-    builder.addModifiers( Modifier.STATIC );
-
-    if ( descriptor.generateComponentDidMount() )
-    {
-      // We add this so the DevTool sees any debug data saved
-      builder.addMethod( buildAbstractComponentDidMount().build() );
-    }
-    if ( descriptor.generateShouldComponentUpdate() )
-    {
-      builder.addMethod( buildAbstractShouldComponentUpdate().build() );
-    }
-    if ( descriptor.generateComponentPreUpdate() )
-    {
-      builder.addMethod( buildAbstractComponentPreUpdate().build() );
-    }
-    if ( descriptor.generateComponentDidUpdate() )
-    {
-      // We add this for Arez components so the DevTool sees any debug data saved
-      builder.addMethod( buildAbstractComponentDidUpdate().build() );
-    }
-    if ( descriptor.generateComponentWillUnmount() )
-    {
-      builder.addMethod( buildAbstractComponentWillUnmount().build() );
-    }
-    if ( descriptor.generateComponentDidCatch() )
-    {
-      builder.addMethod( buildAbstractComponentDidCatch().build() );
-    }
-
-    return builder.build();
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildAbstractComponentPreUpdate()
-  {
-    return MethodSpec
-      .methodBuilder( "getSnapshotBeforeUpdate" )
-      .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
-      .returns( TypeName.get( Object.class ) )
-      .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
-                       .addAnnotation( NONNULL_CLASSNAME )
-                       .build() )
-      .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState" )
-                       .addAnnotation( NONNULL_CLASSNAME )
-                       .build() );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildAbstractComponentDidUpdate()
-  {
-    return MethodSpec
-      .methodBuilder( "componentDidUpdate" )
-      .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
-      .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps" )
-                       .addAnnotation( NONNULL_CLASSNAME )
-                       .build() );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildAbstractComponentDidMount()
-  {
-    return MethodSpec.methodBuilder( "componentDidMount" ).addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildAbstractShouldComponentUpdate()
-  {
-    return MethodSpec
-      .methodBuilder( "shouldComponentUpdate" )
-      .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
-      .returns( TypeName.BOOLEAN )
-      .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps" )
-                       .addAnnotation( NONNULL_CLASSNAME )
-                       .build() );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildAbstractComponentWillUnmount()
-  {
-    return MethodSpec.methodBuilder( "componentWillUnmount" ).addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildAbstractComponentDidCatch()
-  {
-    return MethodSpec
-      .methodBuilder( "componentDidCatch" )
-      .addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC )
-      .returns( TypeName.get( Object.class ) )
-      .addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error" )
-                       .addAnnotation( NONNULL_CLASSNAME )
-                       .build() )
-      .addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info" )
-                       .addAnnotation( NONNULL_CLASSNAME )
-                       .build() );
   }
 
   @Nonnull

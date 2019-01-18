@@ -15,13 +15,15 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react4j.ComponentConstructorFunction;
 import react4j.NativeAdapterComponent;
+import react4j.OnComponentDidMount;
+import react4j.OnComponentDidUpdate;
+import react4j.OnComponentWillUnmount;
+import react4j.OnShouldComponentUpdate;
 import react4j.ReactConfig;
 import react4j.ReactNode;
 
@@ -126,33 +128,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     static final String value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
   }
 
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface LiteLifecycle {
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
-    void componentWillUnmount();
-  }
-
-  @JsType(
-      isNative = true,
-      namespace = JsPackage.GLOBAL,
-      name = "?"
-  )
-  interface Lifecycle {
-    void componentDidMount();
-
-    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
-
-    void componentDidUpdate(@Nonnull JsPropertyMap<Object> prevProps);
-
-    void componentWillUnmount();
-  }
-
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements LiteLifecycle {
+  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
@@ -174,7 +150,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     }
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements Lifecycle {
+  private static final class NativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
