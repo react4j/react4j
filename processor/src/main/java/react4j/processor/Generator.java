@@ -950,8 +950,6 @@ final class Generator
       method.addModifiers( Modifier.PRIVATE );
     }
 
-    method.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
-    method.addStatement( "boolean modified = false" );
     method.addStatement( "assert null != nextProps" );
 
     if ( descriptor.hasValidatedProps() )
@@ -963,22 +961,6 @@ final class Generator
       method.addCode( validateBlock.build() );
     }
 
-    for ( final PropDescriptor prop : observableProps )
-    {
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( Props.$N ), nextProps.get( Props.$N ) ) )",
-                              JS_CLASSNAME,
-                              prop.getConstantName(),
-                              prop.getConstantName() );
-      block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
-      if ( prop.shouldUpdateOnChange() )
-      {
-        block.addStatement( "modified = true" );
-      }
-      block.endControlFlow();
-      method.addCode( block.build() );
-    }
-
     final List<PropDescriptor> updateOnChangeProps =
       descriptor
         .getProps()
@@ -987,25 +969,79 @@ final class Generator
         // Observable properties already checked above
         .filter( p -> !p.isObservable() )
         .collect( Collectors.toList() );
-    for ( final PropDescriptor prop : updateOnChangeProps )
-    {
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( !$T.isTripleEqual( props().get( Props.$N ), nextProps.get( Props.$N ) ) )",
-                              JS_CLASSNAME,
-                              prop.getConstantName(),
-                              prop.getConstantName() );
-      block.addStatement( "return true" );
-      block.endControlFlow();
-      method.addCode( block.build() );
-    }
 
-    if ( descriptor.isArezComponent() )
+    if ( observableProps.isEmpty() && updateOnChangeProps.isEmpty() )
     {
-      method.addStatement( "return modified || hasRenderDepsChanged()" );
+      if ( descriptor.isArezComponent() )
+      {
+        method.addStatement( "return hasRenderDepsChanged()" );
+      }
+      else
+      {
+        method.addStatement( "return false" );
+      }
     }
     else
     {
-      method.addStatement( "return modified" );
+      method.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+
+      final boolean hasObservablePropsToUpdateOnChange =
+        observableProps.stream().anyMatch( PropDescriptor::shouldUpdateOnChange );
+
+      if ( hasObservablePropsToUpdateOnChange )
+      {
+        method.addStatement( "boolean modified = false" );
+      }
+
+      for ( final PropDescriptor prop : observableProps )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( Props.$N ), nextProps.get( Props.$N ) ) )",
+                                JS_CLASSNAME,
+                                prop.getConstantName(),
+                                prop.getConstantName() );
+        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
+        if ( prop.shouldUpdateOnChange() )
+        {
+          block.addStatement( "modified = true" );
+        }
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
+
+      for ( final PropDescriptor prop : updateOnChangeProps )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( Props.$N ), nextProps.get( Props.$N ) ) )",
+                                JS_CLASSNAME,
+                                prop.getConstantName(),
+                                prop.getConstantName() );
+        block.addStatement( "return true" );
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
+      if ( hasObservablePropsToUpdateOnChange )
+      {
+        if ( descriptor.isArezComponent() )
+        {
+          method.addStatement( "return modified || hasRenderDepsChanged()" );
+        }
+        else
+        {
+          method.addStatement( "return modified" );
+        }
+      }
+      else
+      {
+        if ( descriptor.isArezComponent() )
+        {
+          method.addStatement( "return hasRenderDepsChanged()" );
+        }
+        else
+        {
+          method.addStatement( "return false" );
+        }
+      }
     }
 
     return method;

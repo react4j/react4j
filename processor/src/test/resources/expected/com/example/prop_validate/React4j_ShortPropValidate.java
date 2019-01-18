@@ -38,16 +38,15 @@ class React4j_ShortPropValidate extends ShortPropValidate {
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
-    final JsPropertyMap<Object> props = props();
-    boolean modified = false;
     assert null != nextProps;
     if ( React.shouldValidatePropValues() ) {
       validatePropValues( nextProps );
     }
-    if ( !Js.isTripleEqual( props().get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+    final JsPropertyMap<Object> props = props();
+    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }
-    return modified;
+    return false;
   }
 
   static final class Factory {

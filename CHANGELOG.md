@@ -15,6 +15,8 @@
   `React` class and change the access level of `ReactConfig` to package access.
 * **\[processor\]** Remove the `prevProps` parameter from the synthetic `componentDidUpdate()` on the java
   component if it is unused.
+* **\[processor\]** Improve the code generated for the synthetic `shouldComponentUpdate()` lifecycle method on
+  the java component by eliminating unused local variables if unused.
 
 ### [v0.111](https://github.com/react4j/react4j/tree/v0.111) (2019-01-17)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.110...v0.111)

@@ -65,9 +65,9 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
       verifyRequired = false
   )
   boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
     final JsPropertyMap<Object> props = props();
     boolean modified = false;
-    assert null != nextProps;
     if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
       getValueObservableValue().reportChanged();
       modified = true;
