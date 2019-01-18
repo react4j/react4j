@@ -25,6 +25,7 @@ public class JDependTest
     final DependencyConstraint constraint = new DependencyConstraint();
 
     final JavaPackage react4j = constraint.addPackage( "react4j" );
+    final JavaPackage react4jInternal = constraint.addPackage( "react4j.internal" );
     constraint.addPackage( "react4j.annotations" );
     final JavaPackage braincheck = constraint.addPackage( "org.realityforge.braincheck" );
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
@@ -35,6 +36,12 @@ public class JDependTest
     react4j.dependsUpon( jsinteropBase );
     react4j.dependsUpon( braincheck );
     react4j.dependsUpon( elemental2Core );
+    react4j.dependsUpon( react4jInternal );
+
+    react4jInternal.dependsUpon( jsinteropAnnotations );
+    react4jInternal.dependsUpon( jsinteropBase );
+    react4jInternal.dependsUpon( elemental2Core );
+    react4jInternal.dependsUpon( react4j );
 
     final DependencyConstraint.MatchResult result = jdepend.analyzeDependencies( constraint );
 
@@ -94,7 +101,7 @@ public class JDependTest
         newEfferents.forEach( p -> sb
           .append( "Package " )
           .append( expected.getName() )
-          .append( " now upon " )
+          .append( " now depends upon " )
           .append( p.getName() )
           .append( "\n" )
         );
