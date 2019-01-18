@@ -164,11 +164,7 @@ public abstract class Component
          * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
          * updates in react are merges, we need to implement this by putting undefined values into the state.
          */
-        if ( null == currentState )
-        {
-          scheduleDebugStateUpdate( newState );
-        }
-        else
+        if ( null != currentState )
         {
           for ( final String key : JsObject.keys( Js.uncheckedCast( currentState ) ) )
           {
@@ -178,17 +174,28 @@ public abstract class Component
             }
           }
 
+          boolean newStateHasChanges = false;
           for ( final String key : JsObject.keys( Js.uncheckedCast( newState ) ) )
           {
             final Any newValue = currentState.getAny( key );
             final Any existingValue = newState.getAny( key );
             if ( !Objects.equals( newValue, existingValue ) )
             {
-              scheduleDebugStateUpdate( newState );
-              return;
+              newStateHasChanges = true;
+              break;
             }
           }
+          if ( !newStateHasChanges )
+          {
+            return;
+          }
         }
+        component().setState( Js.cast( JsObject.freeze( newState ) ) );
+        /*
+         * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
+         */
+        component().forceUpdate();
+        _scheduledDebugStateUpdate = true;
       }
     }
   }
@@ -200,18 +207,5 @@ public abstract class Component
    */
   protected void populateDebugData( @Nonnull final JsPropertyMap<Object> state )
   {
-  }
-
-  /**
-   * Schedule state update the updates debug state.
-   */
-  private void scheduleDebugStateUpdate( @Nonnull final JsPropertyMap<Object> data )
-  {
-    component().setState( Js.cast( JsObject.freeze( data ) ) );
-    /*
-     * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
-     */
-    component().forceUpdate();
-    _scheduledDebugStateUpdate = true;
   }
 }

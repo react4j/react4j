@@ -6,6 +6,8 @@
   component subclasses into interfaces such as `react4j.OnComponentDidMount`, `react4j.OnComponentDidUpdate`
   etc. The native implementations then implement each lifecycle interface as required rather than synthesizing
   a aggregate lifecycle definition custom to that component.
+* **\[core\]** Simplify the `Component.storeDebugDataAsState()` to make it easier to identify when the debug
+  state is updated.
 
 ### [v0.111](https://github.com/react4j/react4j/tree/v0.111) (2019-01-17)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.110...v0.111)
