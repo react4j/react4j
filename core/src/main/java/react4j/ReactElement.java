@@ -9,6 +9,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+import react4j.internal.ComponentConstructorFunction;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -53,6 +54,17 @@ public class ReactElement
   @JsOverlay
   @Nonnull
   public static ReactElement createComponentElement( @Nonnull final ComponentConstructorFunction type )
+  {
+    final ReactElement element = create( type );
+    element.props = JsPropertyMap.of();
+    element.key = null;
+    element.ref = null;
+    return element;
+  }
+
+  @JsOverlay
+  @Nonnull
+  static ReactElement createContextElement( @Nonnull final Object type )
   {
     final ReactElement element = create( type );
     element.props = JsPropertyMap.of();

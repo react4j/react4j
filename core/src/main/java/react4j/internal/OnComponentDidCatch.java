@@ -1,9 +1,10 @@
-package react4j;
+package react4j.internal;
 
 import elemental2.core.JsError;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import react4j.ReactErrorInfo;
 
 /**
  * Native support infrastructure for componentDidCatch react lifecycle.

@@ -9,9 +9,9 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.ComponentConstructorFunction;
-import react4j.NativeAdapterComponent;
 import react4j.ReactConfig;
+import react4j.internal.ComponentConstructorFunction;
+import react4j.internal.NativeAdapterComponent;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_BasicReactComponent extends BasicReactComponent {

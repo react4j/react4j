@@ -1,4 +1,4 @@
-package react4j;
+package react4j.internal;
 
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;

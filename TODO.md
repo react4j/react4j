@@ -2,9 +2,6 @@
 
 ### Next Release
 
-* Move the `react4j.On*` and `react4j.Native*` classes to a package `react4j.internal` to reflect that they
-  are internal implementation details and should not be relied upon.
-
 * `key` is valid on fragments elements.
 
 * Host `ReactElement` instances should be created within the `dom` library and we could create the instances

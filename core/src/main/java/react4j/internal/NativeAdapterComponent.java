@@ -1,8 +1,10 @@
-package react4j;
+package react4j.internal;
 
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.JsPropertyMap;
+import react4j.Component;
+import react4j.ReactNode;
 
 /**
  * This class provides a base class that designed to forward all lifecycle methods to a target component.
@@ -62,11 +64,11 @@ public abstract class NativeAdapterComponent<I extends Component>
    * Call render on the target component.
    *
    * @return the output of rendering.
-   * @see Component#render()
+   * @see Component#performRender()
    */
   @Nullable
   public final ReactNode render()
   {
-    return component().render();
+    return component().performRender();
   }
 }

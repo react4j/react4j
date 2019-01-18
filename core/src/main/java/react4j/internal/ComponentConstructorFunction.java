@@ -1,7 +1,8 @@
-package react4j;
+package react4j.internal;
 
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.JsPropertyMap;
+import react4j.internal.NativeComponent;
 
 /**
  * A function interface to create component instances.

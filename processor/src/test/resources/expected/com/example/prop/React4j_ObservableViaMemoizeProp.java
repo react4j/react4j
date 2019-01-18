@@ -19,14 +19,14 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.ComponentConstructorFunction;
-import react4j.NativeAdapterComponent;
-import react4j.OnComponentDidMount;
-import react4j.OnComponentDidUpdate;
-import react4j.OnComponentWillUnmount;
-import react4j.OnShouldComponentUpdate;
 import react4j.ReactConfig;
 import react4j.ReactNode;
+import react4j.internal.ComponentConstructorFunction;
+import react4j.internal.NativeAdapterComponent;
+import react4j.internal.OnComponentDidMount;
+import react4j.internal.OnComponentDidUpdate;
+import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "ObservableViaMemoizeProp",

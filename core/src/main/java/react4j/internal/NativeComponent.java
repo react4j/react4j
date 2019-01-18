@@ -1,4 +1,4 @@
-package react4j;
+package react4j.internal;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,6 +9,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+import react4j.ReactNode;
 
 /**
  * The react native component.
@@ -33,19 +34,19 @@ public abstract class NativeComponent
 
   @JsOverlay
   @Nullable
-  final JsPropertyMap<Object> props()
+  public final JsPropertyMap<Object> props()
   {
     return props;
   }
 
   @JsOverlay
   @Nullable
-  final JsPropertyMap<Object> state()
+  public final JsPropertyMap<Object> state()
   {
     return state;
   }
 
-  final native void setState( @Nonnull JsPropertyMap<Object> state );
+  public final native void setState( @Nonnull JsPropertyMap<Object> state );
 
-  final native void forceUpdate();
+  public final native void forceUpdate();
 }

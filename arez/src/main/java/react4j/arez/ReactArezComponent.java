@@ -49,7 +49,7 @@ public abstract class ReactArezComponent
    * After construction of the object. Schedule any autoruns attached to component.
    */
   @Override
-  protected final void performPostConstruct()
+  public final void performPostConstruct()
   {
     super.performPostConstruct();
     triggerScheduler();

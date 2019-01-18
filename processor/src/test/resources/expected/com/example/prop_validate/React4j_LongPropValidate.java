@@ -6,10 +6,10 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ComponentConstructorFunction;
-import react4j.NativeAdapterComponent;
-import react4j.OnShouldComponentUpdate;
 import react4j.ReactConfig;
+import react4j.internal.ComponentConstructorFunction;
+import react4j.internal.NativeAdapterComponent;
+import react4j.internal.OnShouldComponentUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_LongPropValidate extends LongPropValidate {

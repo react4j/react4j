@@ -33,64 +33,64 @@ public final class React
    */
   @SuppressWarnings( "unused" )
   @JsProperty( name = "Fragment" )
-  public static ComponentConstructorFunction Fragment;
+  public static Object Fragment;
   /**
    * The Symbol type for StrictMode.
    */
   @JsProperty( name = "StrictMode" )
-  public static ComponentConstructorFunction StrictMode;
+  public static Object StrictMode;
   /**
    * The Symbol type for ConcurrentMode.
    */
   @JsProperty( name = "unstable_ConcurrentMode" )
-  public static ComponentConstructorFunction ConcurrentMode;
+  public static Object ConcurrentMode;
   /**
    * The Symbol type for Suspense.
    */
   @JsProperty( name = "Suspense" )
-  public static ComponentConstructorFunction Suspense;
+  public static Object Suspense;
   /**
    * The Symbol type for Profiler.
    */
   @JsProperty( name = "unstable_Profiler" )
-  public static ComponentConstructorFunction Profiler;
+  public static Object Profiler;
   /**
    * The Symbol type for Portal.
    */
   @JsProperty( name = "Portal" )
-  public static ComponentConstructorFunction Portal;
+  public static Object Portal;
   /**
    * The Symbol type for Element.
    */
   @JsProperty( name = "Element" )
-  public static ComponentConstructorFunction Element;
+  public static Object Element;
   /**
    * The Symbol type for Provider.
    */
   @JsProperty( name = "Provider" )
-  public static ComponentConstructorFunction Provider;
+  public static Object Provider;
   /**
    * The Symbol type for Consumer.
    */
   @JsProperty( name = "Consumer" )
-  public static ComponentConstructorFunction Consumer;
+  public static Object Consumer;
   /**
    * The Symbol type for ForwardRef.
    */
   @JsProperty( name = "ForwardRef" )
-  public static ComponentConstructorFunction ForwardRef;
+  public static Object ForwardRef;
   /**
    * The Symbol type for Memo.
    */
   @SuppressWarnings( "unused" )
   @JsProperty( name = "Memo" )
-  public static ComponentConstructorFunction Memo;
+  public static Object Memo;
   /**
    * The Symbol type for Lazy.
    */
   @SuppressWarnings( "unused" )
   @JsProperty( name = "Lazy" )
-  public static ComponentConstructorFunction Lazy;
+  public static Object Lazy;
 
   /**
    * Create and return a new ReactElement of the given type with specified children.

@@ -60,31 +60,32 @@ final class Generator
     ClassName.get( "arez.annotations", "ArezComponent" );
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
   private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
-  private static final ClassName JS_TYPE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsType" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
-  private static final ClassName JS_PACKAGE_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsPackage" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
-  private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
-    ClassName.get( "react4j", "ComponentConstructorFunction" );
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
   private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
-  private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
-    ClassName.get( "react4j", "NativeAdapterComponent" );
   private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
-  private static final ClassName ON_COMPONENT_DID_MOUNT_CLASSNAME = ClassName.get( "react4j", "OnComponentDidMount" );
-  private static final ClassName ON_COMPONENT_DID_UPDATE_CLASSNAME = ClassName.get( "react4j", "OnComponentDidUpdate" );
+  private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
+    ClassName.get( "react4j.internal", "ComponentConstructorFunction" );
+  private static final ClassName ON_COMPONENT_DID_MOUNT_CLASSNAME =
+    ClassName.get( "react4j.internal", "OnComponentDidMount" );
+  private static final ClassName ON_COMPONENT_DID_UPDATE_CLASSNAME =
+    ClassName.get( "react4j.internal", "OnComponentDidUpdate" );
   private static final ClassName ON_COMPONENT_WILL_UNMOUNT_CLASSNAME =
-    ClassName.get( "react4j", "OnComponentWillUnmount" );
+    ClassName.get( "react4j.internal", "OnComponentWillUnmount" );
   private static final ClassName ON_GET_SNAPSHOT_BEFORE_UPDATE_CLASSNAME =
-    ClassName.get( "react4j", "OnGetSnapshotBeforeUpdate" );
+    ClassName.get( "react4j.internal", "OnGetSnapshotBeforeUpdate" );
   private static final ClassName ON_COMPONENT_SHOULD_UPDATE_CLASSNAME =
-    ClassName.get( "react4j", "OnShouldComponentUpdate" );
-  private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME = ClassName.get( "react4j", "componentDidCatch" );
+    ClassName.get( "react4j.internal", "OnShouldComponentUpdate" );
+  private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
+    ClassName.get( "react4j.internal", "componentDidCatch" );
+  private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
+    ClassName.get( "react4j.internal", "NativeAdapterComponent" );
   private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
   private static final String SHOULD_COMPONENT_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "shouldComponentUpdate";
   private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";

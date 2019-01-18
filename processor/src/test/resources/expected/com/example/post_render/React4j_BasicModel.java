@@ -6,11 +6,11 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ComponentConstructorFunction;
-import react4j.NativeAdapterComponent;
-import react4j.OnComponentDidMount;
-import react4j.OnComponentDidUpdate;
 import react4j.ReactConfig;
+import react4j.internal.ComponentConstructorFunction;
+import react4j.internal.NativeAdapterComponent;
+import react4j.internal.OnComponentDidMount;
+import react4j.internal.OnComponentDidUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_BasicModel extends BasicModel {

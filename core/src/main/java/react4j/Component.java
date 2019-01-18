@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.internal.NativeComponent;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -25,7 +26,7 @@ public abstract class Component
    */
   private boolean _scheduledDebugStateUpdate;
 
-  final void bindComponent( @Nonnull final NativeComponent nativeComponent )
+  public final void bindComponent( @Nonnull final NativeComponent nativeComponent )
   {
     _nativeComponent = Objects.requireNonNull( nativeComponent );
   }
@@ -87,11 +88,17 @@ public abstract class Component
   @Nullable
   protected abstract ReactNode render();
 
+  @Nullable
+  public final ReactNode performRender()
+  {
+    return render();
+  }
+
   /**
    * Wrapper method that delegates to the {@link #postConstruct()} method.
    * This method exists to give middleware a mechanism to hook into component lifecycle step.
    */
-  protected void performPostConstruct()
+  public void performPostConstruct()
   {
     final JsPropertyMap<Object> props = props();
     if ( ReactConfig.shouldValidatePropValues() && null != props )
