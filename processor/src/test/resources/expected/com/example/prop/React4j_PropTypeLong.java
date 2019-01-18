@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -15,7 +15,7 @@ class React4j_PropTypeLong extends PropTypeLong {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PropTypeLong" );
     }
     return componentConstructor;
@@ -31,7 +31,7 @@ class React4j_PropTypeLong extends PropTypeLong {
   }
 
   static final class Props {
-    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropTypeLong> {

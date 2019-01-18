@@ -21,7 +21,7 @@ public abstract class Component
   /**
    * If the last render resulted in state update to record new debug state then this will be true.
    * It guards against multiple renders of a single component where rendering is just updating
-   * react state to expose debug data. This should only be true if {@link ReactConfig#shouldStoreDebugDataAsState()}
+   * react state to expose debug data. This should only be true if {@link React#shouldStoreDebugDataAsState()}
    * returns true.
    */
   private boolean _scheduledDebugStateUpdate;
@@ -37,7 +37,7 @@ public abstract class Component
   @Nonnull
   private NativeComponent component()
   {
-    if ( ReactConfig.shouldCheckInvariants() )
+    if ( React.shouldCheckInvariants() )
     {
       invariant( () -> null != _nativeComponent,
                  () -> "Invoked component() on " + this + " before a component has been bound." );
@@ -101,7 +101,7 @@ public abstract class Component
   public void performPostConstruct()
   {
     final JsPropertyMap<Object> props = props();
-    if ( ReactConfig.shouldValidatePropValues() && null != props )
+    if ( React.shouldValidatePropValues() && null != props )
     {
       validatePropValues( props );
     }
@@ -148,12 +148,12 @@ public abstract class Component
 
   /**
    * Store debug data on the state object of the native component.
-   * This is only done if {@link ReactConfig#shouldStoreDebugDataAsState()} returns true and is primarily
+   * This is only done if {@link React#shouldStoreDebugDataAsState()} returns true and is primarily
    * done to make it easy to debug the component from within React DevTools.
    */
   protected final void storeDebugDataAsState()
   {
-    if ( ReactConfig.shouldStoreDebugDataAsState() )
+    if ( React.shouldStoreDebugDataAsState() )
     {
       if ( _scheduledDebugStateUpdate )
       {

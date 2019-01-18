@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
@@ -16,7 +16,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "RequiredChildrenWithManyOptional" );
     }
     return componentConstructor;
@@ -24,7 +24,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
 
   @Override
   protected String getMyPropA() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myPropA ) ? props().getAny( Props.myPropA ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myPropA ) );
@@ -33,7 +33,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
 
   @Override
   protected String getMyPropB() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myPropB ) ? props().getAny( Props.myPropB ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myPropB ) );
@@ -42,7 +42,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
 
   @Override
   protected String getMyPropC() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myPropC ) ? props().getAny( Props.myPropC ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myPropC ) );
@@ -51,7 +51,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
 
   @Override
   protected String getMyPropD() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myPropD ) ? props().getAny( Props.myPropD ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myPropD ) );
@@ -60,7 +60,7 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
 
   @Override
   protected ReactNode[] getChildren() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.children ) ? props().getAny( Props.children ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.children ) );
@@ -72,13 +72,13 @@ class React4j_RequiredChildrenWithManyOptional extends RequiredChildrenWithManyO
   }
 
   static final class Props {
-    static final String myPropA = ReactConfig.shouldMinimizePropKeys() ? "a" : "myPropA";
+    static final String myPropA = React.shouldMinimizePropKeys() ? "a" : "myPropA";
 
-    static final String myPropB = ReactConfig.shouldMinimizePropKeys() ? "b" : "myPropB";
+    static final String myPropB = React.shouldMinimizePropKeys() ? "b" : "myPropB";
 
-    static final String myPropC = ReactConfig.shouldMinimizePropKeys() ? "c" : "myPropC";
+    static final String myPropC = React.shouldMinimizePropKeys() ? "c" : "myPropC";
 
-    static final String myPropD = ReactConfig.shouldMinimizePropKeys() ? "d" : "myPropD";
+    static final String myPropD = React.shouldMinimizePropKeys() ? "d" : "myPropD";
 
     static final String children = "children";
   }

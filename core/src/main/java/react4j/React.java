@@ -23,6 +23,77 @@ public final class React
   {
   }
 
+  /**
+   * Return true if components should have human readable names specified.
+   * Useful if you want to interact via DevTools or other tool chains.
+   *
+   * @return true to enable human readable names for components.
+   */
+  @JsOverlay
+  public static boolean enableComponentNames()
+  {
+    return ReactConfig.enableComponentNames();
+  }
+
+  /**
+   * Return true if the prop keys should be minimized.
+   * This will significantly reduce the size of the compiled output but will make inspecting the props
+   * in DevTools difficult if not impossible.
+   *
+   * @return true to minimize prop keys.
+   */
+  @JsOverlay
+  public static boolean shouldMinimizePropKeys()
+  {
+    return ReactConfig.shouldMinimizePropKeys();
+  }
+
+  /**
+   * Return true if the prop value should be validated when initially set or when changed.
+   *
+   * @return true to validate prop values.
+   */
+  @JsOverlay
+  public static boolean shouldValidatePropValues()
+  {
+    return ReactConfig.shouldValidatePropValues();
+  }
+
+  /**
+   * Return true if react state should be used to store debug data.
+   * Useful if you want to inspect the debug data via DevTools. This feature is resource intensive
+   * and should not be enabled in production.
+   *
+   * @return true if react state should be used to store debug data.
+   */
+  @JsOverlay
+  public static boolean shouldStoreDebugDataAsState()
+  {
+    return ReactConfig.shouldStoreDebugDataAsState();
+  }
+
+  /**
+   * Return true if invariants will be checked.
+   *
+   * @return true if invariants will be checked.
+   */
+  @JsOverlay
+  public static boolean shouldCheckInvariants()
+  {
+    return ReactConfig.shouldCheckInvariants();
+  }
+
+  /**
+   * Return true if props should be frozen before being passed to react.
+   *
+   * @return true if props should be frozen before being passed to react.
+   */
+  @JsOverlay
+  public static boolean shouldFreezeProps()
+  {
+    return ReactConfig.shouldFreezeProps();
+  }
+
   /*
    * WARNING: The following symbols are all imported from react which involves manually patching the js files
    * for each react release. We do this rather than trying to redefine them as Elemental2 does not correctly

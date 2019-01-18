@@ -14,7 +14,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
@@ -30,8 +30,8 @@ import react4j.internal.OnComponentWillUnmount;
 abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctionalInterfaceProp {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ComponentFunctionalInterfaceProp" );
     }
     return componentConstructor;
@@ -39,7 +39,7 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
 
   @Override
   protected ComponentFunctionalInterfaceProp.TestFunction getValue() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.value ) ? props().getAny( Props.value ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.value ) );
@@ -47,13 +47,13 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
   }
 
   private void $$react4j$$_componentDidMount() {
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
 
   private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
@@ -91,7 +91,7 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
   }
 
   static final class Props {
-    static final String value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+    static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ComponentFunctionalInterfaceProp> implements OnComponentWillUnmount {

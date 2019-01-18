@@ -68,7 +68,7 @@ final class Generator
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
   private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
-  private static final ClassName REACT_CONFIG_CLASSNAME = ClassName.get( "react4j", "ReactConfig" );
+  private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
   private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j.internal", "ComponentConstructorFunction" );
@@ -634,7 +634,7 @@ final class Generator
     else
     {
       return field.initializer( "$T.shouldMinimizePropKeys() ? $S : $S",
-                                REACT_CONFIG_CLASSNAME,
+                                REACT_CLASSNAME,
                                 Character.toString( (char) ( 'a' + index ) ),
                                 name );
     }
@@ -763,7 +763,7 @@ final class Generator
     if ( !resultKind.isPrimitive() && !isNonnull( methodElement ) )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
+      block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
       block.addStatement( "return null != props().getAny( Props.$N ) ? props().getAny( Props.$N ).$N() : null",
                           prop.getConstantName(),
                           prop.getConstantName(),
@@ -915,7 +915,7 @@ final class Generator
       method.addStatement( "$N()", postMount.getSimpleName().toString() );
     }
     final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() )", REACT_CONFIG_CLASSNAME );
+    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() )", REACT_CLASSNAME );
     block.addStatement( "storeDebugDataAsState()" );
     block.endControlFlow();
     method.addCode( block.build() );
@@ -957,7 +957,7 @@ final class Generator
     if ( descriptor.hasValidatedProps() )
     {
       final CodeBlock.Builder validateBlock = CodeBlock.builder();
-      validateBlock.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CONFIG_CLASSNAME );
+      validateBlock.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CLASSNAME );
       validateBlock.addStatement( "validatePropValues( nextProps )" );
       validateBlock.endControlFlow();
       method.addCode( validateBlock.build() );
@@ -1073,7 +1073,7 @@ final class Generator
       method.addStatement( "$N()", postUpdate.getSimpleName().toString() );
     }
     final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() )", REACT_CONFIG_CLASSNAME );
+    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() )", REACT_CLASSNAME );
     block.addStatement( "storeDebugDataAsState()" );
     block.endControlFlow();
     method.addCode( block.build() );
@@ -1193,7 +1193,7 @@ final class Generator
       if ( !prop.isOptional() && isNonNull )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
-        block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
+        block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
         block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required prop named '$N' is missing from " +
                             "component named '$N' so it was either incorrectly omitted or a null value has been " +
                             "incorrectly specified.\" ) ",
@@ -1268,7 +1268,7 @@ final class Generator
       addModifiers( Modifier.PRIVATE, Modifier.STATIC ).
       returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, TypeName.get( descriptor.getDeclaredType() ) ) );
     final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CONFIG_CLASSNAME );
+    block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
     block.addStatement(
       "$T.invariant( () -> null != c_provider, () -> \"Attempted to create an instance of the React4j " +
       "component named '$N' before the dependency injection provider has been initialized. Please see " +
@@ -1296,8 +1296,8 @@ final class Generator
       method.addStatement( "final $T componentConstructor = ( $T.shouldStoreDebugDataAsState() || " +
                            "$T.shouldValidatePropValues() ) ? $T::new : $T::new",
                            COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
-                           REACT_CONFIG_CLASSNAME,
-                           REACT_CONFIG_CLASSNAME,
+                           REACT_CLASSNAME,
+                           REACT_CLASSNAME,
                            ClassName.bestGuess( "NativeReactComponent" ),
                            ClassName.bestGuess( "LiteNativeReactComponent" ) );
     }
@@ -1308,7 +1308,7 @@ final class Generator
                            ClassName.bestGuess( "NativeReactComponent" ) );
     }
     final CodeBlock.Builder codeBlock = CodeBlock.builder();
-    codeBlock.beginControlFlow( "if ( $T.enableComponentNames() )", REACT_CONFIG_CLASSNAME );
+    codeBlock.beginControlFlow( "if ( $T.enableComponentNames() )", REACT_CLASSNAME );
     codeBlock.addStatement( "$T.asPropertyMap( componentConstructor ).set( \"displayName\", $S )",
                             JS_CLASSNAME,
                             descriptor.getName() );

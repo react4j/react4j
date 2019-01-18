@@ -14,7 +14,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
@@ -30,8 +30,8 @@ import react4j.internal.OnComponentWillUnmount;
 abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ImplicitDisposableProp" );
     }
     return componentConstructor;
@@ -39,7 +39,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
 
   @Override
   protected ImplicitDisposableProp.Model getModel() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.model ) ? props().getAny( Props.model ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.model ) );
@@ -47,13 +47,13 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   }
 
   private void $$react4j$$_componentDidMount() {
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
 
   private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
@@ -95,7 +95,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   }
 
   static final class Props {
-    static final String model = ReactConfig.shouldMinimizePropKeys() ? "a" : "model";
+    static final String model = React.shouldMinimizePropKeys() ? "a" : "model";
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ImplicitDisposableProp> implements OnComponentWillUnmount {

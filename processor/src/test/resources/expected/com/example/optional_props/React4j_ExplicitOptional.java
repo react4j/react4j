@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -15,7 +15,7 @@ class React4j_ExplicitOptional extends ExplicitOptional {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ExplicitOptional" );
     }
     return componentConstructor;
@@ -23,7 +23,7 @@ class React4j_ExplicitOptional extends ExplicitOptional {
 
   @Override
   protected String getMyRequiredProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myRequiredProp ) ? props().getAny( Props.myRequiredProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myRequiredProp ) );
@@ -32,7 +32,7 @@ class React4j_ExplicitOptional extends ExplicitOptional {
 
   @Override
   protected String getMyOptionalProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myOptionalProp ) ? props().getAny( Props.myOptionalProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myOptionalProp ) );
@@ -41,7 +41,7 @@ class React4j_ExplicitOptional extends ExplicitOptional {
 
   @Override
   protected String getMyOtherOptionalProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myOtherOptionalProp ) ? props().getAny( Props.myOtherOptionalProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myOtherOptionalProp ) );
@@ -53,11 +53,11 @@ class React4j_ExplicitOptional extends ExplicitOptional {
   }
 
   static final class Props {
-    static final String myRequiredProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myRequiredProp";
+    static final String myRequiredProp = React.shouldMinimizePropKeys() ? "a" : "myRequiredProp";
 
-    static final String myOptionalProp = ReactConfig.shouldMinimizePropKeys() ? "b" : "myOptionalProp";
+    static final String myOptionalProp = React.shouldMinimizePropKeys() ? "b" : "myOptionalProp";
 
-    static final String myOtherOptionalProp = ReactConfig.shouldMinimizePropKeys() ? "c" : "myOtherOptionalProp";
+    static final String myOtherOptionalProp = React.shouldMinimizePropKeys() ? "c" : "myOtherOptionalProp";
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ExplicitOptional> {

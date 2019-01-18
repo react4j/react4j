@@ -16,7 +16,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
@@ -34,21 +34,21 @@ import react4j.internal.OnComponentWillUnmount;
 abstract class React4j_ArezReactComponent extends ArezReactComponent {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ArezReactComponent" );
     }
     return componentConstructor;
   }
 
   private void $$react4j$$_componentDidMount() {
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
 
   private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
@@ -93,7 +93,7 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
     }
 
     private static Provider<ArezReactComponent> getProvider() {
-      if ( ReactConfig.shouldCheckInvariants() ) {
+      if ( React.shouldCheckInvariants() ) {
         Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'ArezReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
       }
       return c_provider;

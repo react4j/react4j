@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -15,7 +15,7 @@ class React4j_MultiPropComponent extends MultiPropComponent {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "MultiPropComponent" );
     }
     return componentConstructor;
@@ -23,7 +23,7 @@ class React4j_MultiPropComponent extends MultiPropComponent {
 
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myProp ) );
@@ -32,7 +32,7 @@ class React4j_MultiPropComponent extends MultiPropComponent {
 
   @Override
   protected String getMyProp2() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myProp2 ) ? props().getAny( Props.myProp2 ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myProp2 ) );
@@ -44,9 +44,9 @@ class React4j_MultiPropComponent extends MultiPropComponent {
   }
 
   static final class Props {
-    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
 
-    static final String myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
+    static final String myProp2 = React.shouldMinimizePropKeys() ? "b" : "myProp2";
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<MultiPropComponent> {

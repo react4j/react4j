@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -15,7 +15,7 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomPropsReactComponent" );
     }
     return componentConstructor;
@@ -31,7 +31,7 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
   }
 
   static final class Props {
-    static final String someField = ReactConfig.shouldMinimizePropKeys() ? "a" : "someField";
+    static final String someField = React.shouldMinimizePropKeys() ? "a" : "someField";
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<CustomPropsReactComponent> {

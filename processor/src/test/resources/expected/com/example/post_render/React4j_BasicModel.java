@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.OnComponentDidMount;
@@ -17,7 +17,7 @@ class React4j_BasicModel extends BasicModel {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicModel" );
     }
     return componentConstructor;
@@ -25,14 +25,14 @@ class React4j_BasicModel extends BasicModel {
 
   private void $$react4j$$_componentDidMount() {
     postRender();
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
 
   private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postRender();
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }

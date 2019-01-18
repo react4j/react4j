@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -15,7 +15,7 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "GenericTypePropComponent" );
     }
     return componentConstructor;
@@ -23,7 +23,7 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
 
   @Override
   protected T getValue() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.value ) ? props().getAny( Props.value ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.value ) );
@@ -35,7 +35,7 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
   }
 
   static final class Props {
-    static final String value = ReactConfig.shouldMinimizePropKeys() ? "a" : "value";
+    static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
   }
 
   private static final class NativeReactComponent<T> extends NativeAdapterComponent<GenericTypePropComponent<T>> {

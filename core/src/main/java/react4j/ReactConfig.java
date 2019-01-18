@@ -5,7 +5,7 @@ import org.realityforge.braincheck.BrainCheckConfig;
 /**
  * Location of all compile time configuration settings for framework.
  */
-public final class ReactConfig
+final class ReactConfig
 {
   private static final ConfigProvider PROVIDER = new ConfigProvider();
   private static final boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
@@ -25,7 +25,7 @@ public final class ReactConfig
    *
    * @return true to enable human readable names for components.
    */
-  public static boolean enableComponentNames()
+  static boolean enableComponentNames()
   {
     return ENABLE_NAMES;
   }
@@ -37,7 +37,7 @@ public final class ReactConfig
    *
    * @return true to minimize prop keys.
    */
-  public static boolean shouldMinimizePropKeys()
+  static boolean shouldMinimizePropKeys()
   {
     return SHOULD_MINIMIZE_PROP_KEYS;
   }
@@ -47,7 +47,7 @@ public final class ReactConfig
    *
    * @return true to validate prop values.
    */
-  public static boolean shouldValidatePropValues()
+  static boolean shouldValidatePropValues()
   {
     return SHOULD_VALIDATE_PROP_VALUES;
   }
@@ -59,7 +59,7 @@ public final class ReactConfig
    *
    * @return true if react state should be used to store debug data.
    */
-  public static boolean shouldStoreDebugDataAsState()
+  static boolean shouldStoreDebugDataAsState()
   {
     return SHOULD_STORE_DEBUG_DATA_AS_STATE;
   }
@@ -69,7 +69,7 @@ public final class ReactConfig
    *
    * @return true if invariants will be checked.
    */
-  public static boolean shouldCheckInvariants()
+  static boolean shouldCheckInvariants()
   {
     return CHECK_INVARIANTS && BrainCheckConfig.checkInvariants();
   }
@@ -79,7 +79,7 @@ public final class ReactConfig
    *
    * @return true if props should be frozen before being passed to react.
    */
-  public static boolean shouldFreezeProps()
+  static boolean shouldFreezeProps()
   {
     return SHOULD_FREEZE_PROPS;
   }

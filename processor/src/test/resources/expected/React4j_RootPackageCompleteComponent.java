@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.OnComponentDidMount;
@@ -16,7 +16,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "RootPackageCompleteComponent" );
     }
     return componentConstructor;
@@ -29,7 +29,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
 
   private void $$react4j$$_componentDidMount() {
     postMount();
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
@@ -47,7 +47,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
 
   private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     postUpdate();
-    if ( ReactConfig.shouldStoreDebugDataAsState() ) {
+    if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
   }
@@ -57,7 +57,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
   }
 
   static final class Props {
-    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<RootPackageCompleteComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnGetSnapshotBeforeUpdate {

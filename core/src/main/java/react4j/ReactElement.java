@@ -37,14 +37,14 @@ public class ReactElement
 
   /**
    * Complete the element.
-   * If {@link ReactConfig#shouldFreezeProps()} returns true this method will freeze the props and the
+   * If {@link React#shouldFreezeProps()} returns true this method will freeze the props and the
    * element, otherwise this method is a no-op. This method should be called before returning the element
    * to the react runtime.
    */
   @JsOverlay
   public final void complete()
   {
-    if ( ReactConfig.shouldFreezeProps() )
+    if ( React.shouldFreezeProps() )
     {
       JsObject.freeze( this );
       JsObject.freeze( props );
@@ -140,7 +140,7 @@ public class ReactElement
   @JsOverlay
   public final void setKey( @Nullable final String key )
   {
-    if ( ReactConfig.shouldCheckInvariants() && ReactConfig.shouldFreezeProps() )
+    if ( React.shouldCheckInvariants() && React.shouldFreezeProps() )
     {
       invariant( () -> !JsObject.isFrozen( this ),
                  () -> "Attempting to modify key of ReactElement after it has been frozen" );

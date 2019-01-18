@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -15,7 +15,7 @@ class React4j_CustomNameProp extends CustomNameProp {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "CustomNameProp" );
     }
     return componentConstructor;
@@ -23,7 +23,7 @@ class React4j_CustomNameProp extends CustomNameProp {
 
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.foo ) ? props().getAny( Props.foo ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.foo ) );
@@ -35,7 +35,7 @@ class React4j_CustomNameProp extends CustomNameProp {
   }
 
   static final class Props {
-    static final String foo = ReactConfig.shouldMinimizePropKeys() ? "a" : "foo";
+    static final String foo = React.shouldMinimizePropKeys() ? "a" : "foo";
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<CustomNameProp> {

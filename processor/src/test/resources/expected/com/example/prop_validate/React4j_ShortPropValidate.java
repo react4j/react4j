@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.OnShouldComponentUpdate;
@@ -15,8 +15,8 @@ import react4j.internal.OnShouldComponentUpdate;
 class React4j_ShortPropValidate extends ShortPropValidate {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ShortPropValidate" );
     }
     return componentConstructor;
@@ -41,7 +41,7 @@ class React4j_ShortPropValidate extends ShortPropValidate {
     final JsPropertyMap<Object> props = props();
     boolean modified = false;
     assert null != nextProps;
-    if ( ReactConfig.shouldValidatePropValues() ) {
+    if ( React.shouldValidatePropValues() ) {
       validatePropValues( nextProps );
     }
     if ( !Js.isTripleEqual( props().get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
@@ -55,7 +55,7 @@ class React4j_ShortPropValidate extends ShortPropValidate {
   }
 
   static final class Props {
-    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<ShortPropValidate> {

@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -15,7 +15,7 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "PropDefaultWithColorfulName" );
     }
     return componentConstructor;
@@ -23,7 +23,7 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
 
   @Override
   protected String getMyProp12$23() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myProp12$23 ) ? props().getAny( Props.myProp12$23 ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myProp12$23 ) );
@@ -35,7 +35,7 @@ class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorfulName {
   }
 
   static final class Props {
-    static final String myProp12$23 = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp12$23";
+    static final String myProp12$23 = React.shouldMinimizePropKeys() ? "a" : "myProp12$23";
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropDefaultWithColorfulName> {

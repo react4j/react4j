@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
@@ -16,7 +16,7 @@ class React4j_SingleChildPropComponent extends SingleChildPropComponent {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "SingleChildPropComponent" );
     }
     return componentConstructor;
@@ -24,7 +24,7 @@ class React4j_SingleChildPropComponent extends SingleChildPropComponent {
 
   @Override
   protected ReactNode getChild() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.child ) ? props().getAny( Props.child ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.child ) );

@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -15,7 +15,7 @@ class React4j_ExplicitNameMethodPropDefault extends ExplicitNameMethodPropDefaul
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ExplicitNameMethodPropDefault" );
     }
     return componentConstructor;
@@ -23,7 +23,7 @@ class React4j_ExplicitNameMethodPropDefault extends ExplicitNameMethodPropDefaul
 
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myProp ) );
@@ -35,7 +35,7 @@ class React4j_ExplicitNameMethodPropDefault extends ExplicitNameMethodPropDefaul
   }
 
   static final class Props {
-    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ExplicitNameMethodPropDefault> {

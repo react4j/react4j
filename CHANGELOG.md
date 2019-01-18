@@ -11,6 +11,8 @@
 * **\[core\]** Move internal classes used by the code generator to the `react4j.internal` package so that it
   is clear that they are not intended to be referenced by external code and may change between releases. The
   classes move include the classes named `react4j.On*`, `react4j.Native*` and `react4j.ComponentConstructorFunction`.
+* **\[core\]** Move the method used used to access compile time configuration from the `ReactConfig` class to the
+  `React` class and change the access level of `ReactConfig` to package access.
 
 ### [v0.111](https://github.com/react4j/react4j/tree/v0.111) (2019-01-17)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.110...v0.111)

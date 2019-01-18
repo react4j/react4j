@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
@@ -16,7 +16,7 @@ class React4j_MultiPropComponent3 extends MultiPropComponent3 {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "MultiPropComponent3" );
     }
     return componentConstructor;
@@ -24,7 +24,7 @@ class React4j_MultiPropComponent3 extends MultiPropComponent3 {
 
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myProp ) );
@@ -33,7 +33,7 @@ class React4j_MultiPropComponent3 extends MultiPropComponent3 {
 
   @Override
   protected String getMyProp2() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myProp2 ) ? props().getAny( Props.myProp2 ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myProp2 ) );
@@ -42,7 +42,7 @@ class React4j_MultiPropComponent3 extends MultiPropComponent3 {
 
   @Override
   protected ReactNode getChild() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.child ) ? props().getAny( Props.child ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.child ) );
@@ -54,9 +54,9 @@ class React4j_MultiPropComponent3 extends MultiPropComponent3 {
   }
 
   static final class Props {
-    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
 
-    static final String myProp2 = ReactConfig.shouldMinimizePropKeys() ? "b" : "myProp2";
+    static final String myProp2 = React.shouldMinimizePropKeys() ? "b" : "myProp2";
 
     static final String child = "children";
   }

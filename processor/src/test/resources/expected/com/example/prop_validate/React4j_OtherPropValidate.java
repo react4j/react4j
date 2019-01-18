@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.OnShouldComponentUpdate;
@@ -16,8 +16,8 @@ import react4j.internal.OnShouldComponentUpdate;
 class React4j_OtherPropValidate extends OtherPropValidate {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( ReactConfig.shouldStoreDebugDataAsState() || ReactConfig.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "OtherPropValidate" );
     }
     return componentConstructor;
@@ -25,7 +25,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
 
   @Override
   protected ArrayList getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).cast() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myProp ) );
@@ -46,7 +46,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
     final JsPropertyMap<Object> props = props();
     boolean modified = false;
     assert null != nextProps;
-    if ( ReactConfig.shouldValidatePropValues() ) {
+    if ( React.shouldValidatePropValues() ) {
       validatePropValues( nextProps );
     }
     if ( !Js.isTripleEqual( props().get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
@@ -60,7 +60,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
   }
 
   static final class Props {
-    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   private static final class LiteNativeReactComponent extends NativeAdapterComponent<OtherPropValidate> {

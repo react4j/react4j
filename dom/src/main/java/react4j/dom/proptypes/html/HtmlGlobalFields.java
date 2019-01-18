@@ -9,7 +9,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.ReactNode;
 import react4j.dom.events.ClipboardEventHandler;
 import react4j.dom.events.CompositionEventHandler;
@@ -219,7 +219,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
     {
       if ( null != element )
       {
-        if ( ReactConfig.shouldCheckInvariants() )
+        if ( React.shouldCheckInvariants() )
         {
           invariant( () -> !element.equals( "" ) && !element.matches( "^\\s+$" ),
                      () -> "Empty classname element supplied. Remove the element." );

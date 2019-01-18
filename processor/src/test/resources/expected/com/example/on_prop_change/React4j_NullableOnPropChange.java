@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.ReactConfig;
+import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
@@ -16,7 +16,7 @@ class React4j_NullableOnPropChange extends NullableOnPropChange {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
-    if ( ReactConfig.enableComponentNames() ) {
+    if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "NullableOnPropChange" );
     }
     return componentConstructor;
@@ -25,7 +25,7 @@ class React4j_NullableOnPropChange extends NullableOnPropChange {
   @Nullable
   @Override
   protected String getMyProp() {
-    if ( ReactConfig.shouldCheckInvariants() ) {
+    if ( React.shouldCheckInvariants() ) {
       return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).asString() : null;
     } else {
       return Js.uncheckedCast( props().getAny( Props.myProp ) );
@@ -47,7 +47,7 @@ class React4j_NullableOnPropChange extends NullableOnPropChange {
   }
 
   static final class Props {
-    static final String myProp = ReactConfig.shouldMinimizePropKeys() ? "a" : "myProp";
+    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NullableOnPropChange> implements OnGetSnapshotBeforeUpdate {
