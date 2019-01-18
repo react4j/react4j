@@ -43,7 +43,7 @@ abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPriorit
     }
   }
 
-  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate() {
     if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
@@ -116,7 +116,7 @@ abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPriorit
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_AlreadyPrioritizedMemoizeComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      ((React4j_AlreadyPrioritizedMemoizeComponent) component() ).$$react4j$$_componentDidUpdate();
     }
 
     @Override

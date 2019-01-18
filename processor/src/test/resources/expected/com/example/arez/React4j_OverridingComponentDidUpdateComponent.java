@@ -43,7 +43,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     }
   }
 
-  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate() {
     postUpdate();
     if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
@@ -95,7 +95,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_OverridingComponentDidUpdateComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      ((React4j_OverridingComponentDidUpdateComponent) component() ).$$react4j$$_componentDidUpdate();
     }
 
     @Override
@@ -122,7 +122,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_OverridingComponentDidUpdateComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      ((React4j_OverridingComponentDidUpdateComponent) component() ).$$react4j$$_componentDidUpdate();
     }
 
     @Override

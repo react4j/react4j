@@ -30,7 +30,7 @@ class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
     }
   }
 
-  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate() {
     postRender();
     postUpdate();
     if ( React.shouldStoreDebugDataAsState() ) {
@@ -60,7 +60,7 @@ class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_PostRenderAndPostUpdate) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      ((React4j_PostRenderAndPostUpdate) component() ).$$react4j$$_componentDidUpdate();
     }
   }
 }

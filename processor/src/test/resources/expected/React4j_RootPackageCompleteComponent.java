@@ -45,7 +45,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
     preUpdate();
   }
 
-  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate() {
     postUpdate();
     if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
@@ -85,7 +85,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentDidUpdate();
     }
   }
 }

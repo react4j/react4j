@@ -22,7 +22,7 @@ class React4j_ProtectedModel extends ProtectedModel {
     return componentConstructor;
   }
 
-  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate() {
     postUpdate();
     if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
@@ -46,7 +46,7 @@ class React4j_ProtectedModel extends ProtectedModel {
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_ProtectedModel) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      ((React4j_ProtectedModel) component() ).$$react4j$$_componentDidUpdate();
     }
   }
 }

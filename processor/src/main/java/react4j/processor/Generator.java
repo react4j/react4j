@@ -1046,15 +1046,14 @@ final class Generator
     final MethodSpec.Builder method =
       MethodSpec
         .methodBuilder( COMPONENT_DID_UPDATE_METHOD )
-        .addModifiers( Modifier.PRIVATE )
-        .addParameter( ParameterSpec
-                         .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
-                         .addAnnotation( NULLABLE_CLASSNAME )
-                         .build() );
+        .addModifiers( Modifier.PRIVATE );
 
-    final boolean hasPostUpdateOnPropChange = descriptor.hasPostUpdateOnPropChange();
-    if ( hasPostUpdateOnPropChange )
+    if ( descriptor.hasPostUpdateOnPropChange() )
     {
+      method.addParameter( ParameterSpec
+                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
+                             .addAnnotation( NULLABLE_CLASSNAME )
+                             .build() );
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != prevProps )" );
       block.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
@@ -1536,19 +1535,28 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeComponentDidUpdate( @Nonnull final ComponentDescriptor componentDescriptor )
+  private static MethodSpec.Builder buildNativeComponentDidUpdate( @Nonnull final ComponentDescriptor descriptor )
   {
-    return MethodSpec
+    final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "componentDidUpdate" )
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
-                       .build() )
-      .addStatement( "(($T) component() ).$N( prevProps )",
-                     componentDescriptor.getEnhancedClassName(),
-                     COMPONENT_DID_UPDATE_METHOD );
+                       .build() );
+    if ( descriptor.hasPostUpdateOnPropChange() )
+    {
+      return method.addStatement( "(($T) component() ).$N( prevProps )",
+                                  descriptor.getEnhancedClassName(),
+                                  COMPONENT_DID_UPDATE_METHOD );
+    }
+    else
+    {
+      return method.addStatement( "(($T) component() ).$N()",
+                                  descriptor.getEnhancedClassName(),
+                                  COMPONENT_DID_UPDATE_METHOD );
+    }
   }
 
   @Nonnull

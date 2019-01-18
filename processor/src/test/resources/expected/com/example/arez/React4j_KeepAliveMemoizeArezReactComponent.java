@@ -45,7 +45,7 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
     }
   }
 
-  private void $$react4j$$_componentDidUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentDidUpdate() {
     if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
@@ -132,7 +132,7 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_KeepAliveMemoizeArezReactComponent) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      ((React4j_KeepAliveMemoizeArezReactComponent) component() ).$$react4j$$_componentDidUpdate();
     }
 
     @Override
