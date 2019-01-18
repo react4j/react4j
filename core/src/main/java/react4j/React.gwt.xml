@@ -5,6 +5,7 @@
 
   <source path='' includes='*.java'/>
   <source path='annotations' includes='*.java'/>
+  <source path='internal' includes='*.java'/>
 
   <public path='public' includes='*'/>
 
