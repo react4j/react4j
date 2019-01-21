@@ -2,6 +2,8 @@
 
 ### Next Release
 
+* Fix todos in `react4j-sithtracker` and add it to compile tests.
+
 * `key` is valid on fragments elements.
 
 * Host `ReactElement` instances should be created within the `dom` library and we could create the instances
