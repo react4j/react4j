@@ -172,3 +172,7 @@
 
 * Consider using the React4j component model (a.k.a. annotations) and seeing if it can be used to generate
   a custom-element based component such as via Stencil.js.
+
+* Port https://github.com/realityforge/Piano-Trainer across to react4j
+
+* Port https://github.com/kenwheeler/hooks-drum-machine across to react4j
