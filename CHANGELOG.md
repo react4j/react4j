@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* **\[core\]** Add the parameter `allowNoArezDeps` to the `ReactComponent` component to support scenario
+  where an Arez/React4j component may render without any arez dependencies. This may be acceptable.
+
 ### [v0.112](https://github.com/react4j/react4j/tree/v0.112) (2019-01-18)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.111...v0.112)
 

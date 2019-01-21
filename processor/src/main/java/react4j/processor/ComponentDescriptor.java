@@ -62,6 +62,7 @@ final class ComponentDescriptor
   @Nullable
   private List<MethodDescriptor> _memoizeMethods;
   private Boolean _hasValidatedProps;
+  private boolean _allowNoArezDeps;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
@@ -222,9 +223,15 @@ final class ComponentDescriptor
     return _arezComponent;
   }
 
-  void setArezComponent( final boolean arezComponent )
+  boolean allowNoArezDeps()
+  {
+    return _allowNoArezDeps;
+  }
+
+  void setArezComponent( final boolean arezComponent, final boolean allowNoArezDeps )
   {
     _arezComponent = arezComponent;
+    _allowNoArezDeps = allowNoArezDeps;
   }
 
   boolean shouldRunArezScheduler()

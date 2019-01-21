@@ -43,4 +43,11 @@ public @interface ReactComponent
    * @return enum controlling whether dagger artifacts are generated.
    */
   Feature dagger() default Feature.AUTODETECT;
+
+  /**
+   * React components that are arez enabled will generate an error if they observe no arez dependencies and this parameter is false.
+   *
+   * @return true to avoid arez components generating invariant failures if they observe no reactive components.
+   */
+  boolean allowNoArezDeps() default false;
 }

@@ -168,7 +168,7 @@ public final class ReactProcessor
     final ComponentDescriptor descriptor = parse( element );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( descriptor ) );
-    if ( descriptor.needsDaggerIntegration()  )
+    if ( descriptor.needsDaggerIntegration() )
     {
       if ( descriptor.isArezComponent() )
       {
@@ -1025,6 +1025,18 @@ public final class ReactProcessor
                                            "React4j will add annotation", typeElement );
       }
     }
+    else
+    {
+      assert !isArezComponent;
+      if ( null != ProcessorUtil.findDeclaredAnnotationValue( typeElement,
+                                                              Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                              "allowNoArezDeps" ) )
+      {
+        throw new ReactProcessorException( "@ReactComponent target does not extend react4j.arez.ReactArezComponent " +
+                                           "but has incorrectly specified the parameter allowNoArezDeps.",
+                                           typeElement );
+      }
+    }
 
     final boolean needsInjection = isInjectionRequired( typeElement );
     final boolean isDaggerPresent = needsInjection && isDaggerRequired( typeElement );
@@ -1038,7 +1050,12 @@ public final class ReactProcessor
 
     descriptor.setNeedsInjection( needsInjection );
     descriptor.setNeedsDaggerIntegration( isDaggerPresent );
-    descriptor.setArezComponent( isArezComponent );
+    final boolean allowNoArezDeps = (Boolean)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        typeElement,
+                                        Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                        "allowNoArezDeps" ).getValue();
+    descriptor.setArezComponent( isArezComponent, allowNoArezDeps );
 
     if ( isArezComponent )
     {

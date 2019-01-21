@@ -1154,6 +1154,10 @@ final class Generator
         .addMember( "executor", "$T.EXTERNAL", EXECUTOR_CLASSNAME )
         .addMember( "observeLowerPriorityDependencies", "true" )
         .addMember( "reportResult", "false" );
+    if ( descriptor.allowNoArezDeps() )
+    {
+      observe.addMember( "depType", "$T.AREZ_OR_NONE", DEP_TYPE_CLASSNAME );
+    }
     method.addAnnotation( observe.build() );
 
     method.addStatement( "clearRenderDepsChanged()" );
@@ -1184,17 +1188,25 @@ final class Generator
       method.addCode( block.build() );
     }
 
-    method.addStatement( "final $T result = super.render()", REACT_NODE_CLASSNAME );
-    final CodeBlock.Builder depCheckBlock = CodeBlock.builder();
-    depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
-                                    AREZ_CLASSNAME,
-                                    AREZ_CLASSNAME );
-    depCheckBlock.addStatement(
-      "$T.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> \"ReactArezComponent render completed on '\" + this + \"' but the component does not have any Arez dependencies. This component should extend react4j.Component instead.\" )",
-      GUARDS_CLASSNAME );
-    depCheckBlock.endControlFlow();
-    method.addCode( depCheckBlock.build() );
-    method.addStatement( "return result" );
+    if ( !descriptor.allowNoArezDeps() )
+    {
+      method.addStatement( "final $T result = super.render()", REACT_NODE_CLASSNAME );
+
+      final CodeBlock.Builder depCheckBlock = CodeBlock.builder();
+      depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
+                                      AREZ_CLASSNAME,
+                                      AREZ_CLASSNAME );
+      depCheckBlock.addStatement(
+        "$T.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> \"ReactArezComponent render completed on '\" + this + \"' but the component does not have any Arez dependencies. This component should extend react4j.Component instead.\" )",
+        GUARDS_CLASSNAME );
+      depCheckBlock.endControlFlow();
+      method.addCode( depCheckBlock.build() );
+      method.addStatement( "return result" );
+    }
+    else
+    {
+      method.addStatement( "return super.render()" );
+    }
     return method;
   }
 
