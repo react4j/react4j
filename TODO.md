@@ -64,8 +64,6 @@
     When inlining the `build()` method in builder will access static singleton instance of component, set
     props and call render. Alternatively we could require the users to write it as a static method somewhere.
 
-* Make it possible to specify an arez component that may not always read arez state ... somehow
-
 * Add `@DisposeOnUnmount` which is functionally equivalent to `@CascadeDispose` but available on normal react components
 
 * Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
