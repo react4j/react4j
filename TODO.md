@@ -178,3 +178,14 @@
 * Port https://github.com/kenwheeler/hooks-drum-machine across to react4j
 
 * Port https://github.com/benawad/slack-clone-client/tree/53_code_splitting across to react4j. Good way to experiment with GraphQL and few other interesting elements.
+
+### Spritz Integration
+
+Could we enhance the component source so handlers could be converted into stream sources. Props could also be passed
+to components as streams and then the component would subscribe and expose the values from stream to user code (ala angular).
+This could be done by either generating a wrapper component or preferrably by updating code generator.
+Vue integration that uses a similar thing inside template language is described in [course](https://egghead.io/courses/build-async-vue-js-apps-with-rxjs)
+[Yolk](https://github.com/garbles/yolk) is an interesting framework that died but tackled these approaches in a react-like way.
+
+Another integration approach is to add a "<Stream/>" component that takes a stream as a prop and has a render prop
+that has output of stream as parameter. See [react-streams](https://github.com/johnlindquist/react-streams/) for inspiration.
