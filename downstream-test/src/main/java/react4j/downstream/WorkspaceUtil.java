@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -26,7 +27,7 @@ final class WorkspaceUtil
   {
   }
 
-  static boolean storeStatistics()
+  private static boolean storeStatistics()
   {
     return System.getProperty( "react4j.deploy_test.store_statistics", "false" ).equals( "true" );
   }
@@ -43,7 +44,7 @@ final class WorkspaceUtil
   }
 
   @Nonnull
-  static Path getFixtureDirectory()
+  private static Path getFixtureDirectory()
   {
     return Paths.get( SystemProperty.get( "react4j.deploy_test.fixture_dir" ) ).toAbsolutePath().normalize();
   }
@@ -55,7 +56,7 @@ final class WorkspaceUtil
   }
 
   @Nonnull
-  static Path setupWorkingDirectory()
+  private static Path setupWorkingDirectory()
   {
     final Path workingDirectory =
       Paths.get( SystemProperty.get( "react4j.deploy_test.work_dir" ) ).toAbsolutePath().normalize();
@@ -129,14 +130,13 @@ final class WorkspaceUtil
     }
   }
 
-  static void loadStatistics( @Nonnull final OrderedProperties statistics,
-                              @Nonnull final Path archiveDir,
-                              @Nonnull final String keyPrefix )
+  @Nonnull
+  private static Properties loadStatistics( @Nonnull final Path path )
     throws IOException
   {
     final Properties properties = new Properties();
-    properties.load( Files.newBufferedReader( archiveDir.resolve( "statistics.properties" ) ) );
-    properties.forEach( ( key, value ) -> statistics.put( keyPrefix + "." + key, value ) );
+    properties.load( Files.newBufferedReader( path.resolve( "statistics.properties" ) ) );
+    return properties;
   }
 
   @Nonnull
@@ -271,6 +271,72 @@ final class WorkspaceUtil
       {
         throw new GirException( e );
       }
+    }
+  }
+
+  @Nonnull
+  private static Path getFixtureStatisticsPath()
+  {
+    return getFixtureDirectory().resolve( "statistics.properties" );
+  }
+
+  static void collectStatistics( @Nonnull final List<String> branches,
+                                 @Nonnull final Predicate<String> includeBranch,
+                                 final boolean includeBranchInFixtureKey )
+    throws IOException
+  {
+    final String version = getVersion();
+    final OrderedProperties overallStatistics = new OrderedProperties();
+    final OrderedProperties displayStatistics = new OrderedProperties();
+    final OrderedProperties fixtureStatistics = OrderedProperties.load( getFixtureStatisticsPath() );
+    for ( final String branch : branches )
+    {
+      final Path workingDirectory = setupWorkingDirectory();
+
+      final String beforePrefix = branch + ".before";
+      final Path beforeArchiveDir = getArchiveDir( workingDirectory, beforePrefix );
+      if ( beforeArchiveDir.resolve( "statistics.properties" ).toFile().exists() )
+      {
+        final Properties properties = loadStatistics( beforeArchiveDir );
+        overallStatistics.mergeWithPrefix( properties, beforePrefix + "." );
+      }
+
+      final String afterPrefix = branch + ".after";
+      final Path afterArchiveDir = getArchiveDir( workingDirectory, afterPrefix );
+      if ( afterArchiveDir.resolve( "statistics.properties" ).toFile().exists() )
+      {
+        final Properties properties = loadStatistics( afterArchiveDir );
+        overallStatistics.mergeWithPrefix( properties, afterPrefix + "." );
+
+        if ( includeBranch.test( branch ) )
+        {
+          final String prefix = version + "." + ( includeBranchInFixtureKey ? branch + "." : "" );
+          fixtureStatistics.mergeWithPrefix( properties, prefix );
+          displayStatistics.mergeWithPrefix( properties, prefix );
+        }
+      }
+    }
+
+    System.out.println();
+    System.out.println();
+    System.out.println( "Complete Build Statistics" );
+    overallStatistics.keySet().forEach( k -> System.out.println( k + ": " + overallStatistics.get( k ) ) );
+    System.out.println();
+    System.out.println();
+    System.out.println( "Statistics for Fixture" );
+    displayStatistics.keySet().forEach( k -> System.out.println( k + "=" + displayStatistics.get( k ) ) );
+    System.out.println();
+    System.out.println();
+
+    final Path statisticsFile = setupWorkingDirectory().resolve( "statistics.properties" );
+    Gir.messenger().info( "Writing overall build statistics to " + statisticsFile + "." );
+    writeProperties( statisticsFile, overallStatistics );
+
+    if ( storeStatistics() )
+    {
+      final Path path = getFixtureStatisticsPath();
+      Gir.messenger().info( "Updating fixture build statistics at" + path + "." );
+      writeProperties( path, fixtureStatistics );
     }
   }
 

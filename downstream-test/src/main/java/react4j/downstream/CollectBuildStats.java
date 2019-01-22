@@ -32,12 +32,6 @@ public final class CollectBuildStats
     throws Exception
   {
     Gir.go( () -> {
-      final String version = WorkspaceUtil.getVersion();
-
-      final Path path = WorkspaceUtil.getFixtureDirectory().resolve( "statistics.properties" );
-      final OrderedProperties fixtureStatistics = OrderedProperties.load( path );
-
-      final OrderedProperties overallStatistics = new OrderedProperties();
       final List<String> branches =
         Arrays.asList( "raw",
                        "arez",
@@ -51,26 +45,12 @@ public final class CollectBuildStats
       WorkspaceUtil.forEachBranch( "react4j-todomvc",
                                    "https://github.com/react4j/react4j-todomvc.git",
                                    branches,
-                                   context -> buildBranch( context, version, overallStatistics, fixtureStatistics ) );
-
-      overallStatistics.keySet().forEach( k -> System.out.println( k + ": " + overallStatistics.get( k ) ) );
-
-      final Path statisticsFile = WorkspaceUtil.setupWorkingDirectory().resolve( "statistics.properties" );
-      Gir.messenger().info( "Writing overall build statistics to " + statisticsFile + "." );
-      WorkspaceUtil.writeProperties( statisticsFile, overallStatistics );
-
-      if ( WorkspaceUtil.storeStatistics() )
-      {
-        Gir.messenger().info( "Updating fixture build statistics at" + path + "." );
-        WorkspaceUtil.writeProperties( path, fixtureStatistics );
-      }
+                                   context -> buildBranch( context, WorkspaceUtil.getVersion() ) );
+      WorkspaceUtil.collectStatistics( branches, branch -> !branch.endsWith( "_maven" ), true );
     } );
   }
 
-  private static void buildBranch( @Nonnull final WorkspaceUtil.BuildContext context,
-                                   @Nonnull final String version,
-                                   @Nonnull final OrderedProperties overallStatistics,
-                                   @Nonnull final OrderedProperties fixtureStatistics )
+  private static void buildBranch( @Nonnull final WorkspaceUtil.BuildContext context, @Nonnull final String version )
   {
     final boolean isMaven = context.branch.contains( "_maven" );
     final boolean isj2cl = context.branch.contains( "_j2cl" );
@@ -79,8 +59,6 @@ public final class CollectBuildStats
       final String prefix = context.branch + ".before";
       final Path archiveDir = WorkspaceUtil.getArchiveDir( context.workingDirectory, prefix );
       buildAndRecordStatistics( context.appDirectory, archiveDir, !isMaven, isj2cl );
-
-      WorkspaceUtil.loadStatistics( overallStatistics, archiveDir, prefix );
     } );
 
     WorkspaceUtil.runAfterBuild( context, initialBuildSuccess, () -> {
@@ -99,11 +77,6 @@ public final class CollectBuildStats
       final String prefix = context.branch + ".after";
       final Path archiveDir = WorkspaceUtil.getArchiveDir( context.workingDirectory, prefix );
       buildAndRecordStatistics( context.appDirectory, archiveDir, !isMaven, isj2cl );
-      WorkspaceUtil.loadStatistics( overallStatistics, archiveDir, prefix );
-      if ( !isMaven || isj2cl )
-      {
-        WorkspaceUtil.loadStatistics( fixtureStatistics, archiveDir, version + "." + context.branch );
-      }
       if ( isMaven )
       {
         // Reset is required to remove changes that were made to the pom to add local repository
