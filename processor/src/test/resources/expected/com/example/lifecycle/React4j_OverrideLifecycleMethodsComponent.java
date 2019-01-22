@@ -9,6 +9,7 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
@@ -16,6 +17,10 @@ import react4j.internal.OnGetSnapshotBeforeUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethodsComponent {
+  React4j_OverrideLifecycleMethodsComponent(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -61,7 +66,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
 
     @Override
     protected OverrideLifecycleMethodsComponent createComponent() {
-      return new React4j_OverrideLifecycleMethodsComponent();
+      return new React4j_OverrideLifecycleMethodsComponent( this );
     }
 
     @Override

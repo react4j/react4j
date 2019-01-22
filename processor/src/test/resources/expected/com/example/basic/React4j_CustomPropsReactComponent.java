@@ -9,9 +9,14 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
+  React4j_CustomPropsReactComponent(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -42,7 +47,7 @@ class React4j_CustomPropsReactComponent extends CustomPropsReactComponent {
 
     @Override
     protected CustomPropsReactComponent createComponent() {
-      return new React4j_CustomPropsReactComponent();
+      return new React4j_CustomPropsReactComponent( this );
     }
   }
 }

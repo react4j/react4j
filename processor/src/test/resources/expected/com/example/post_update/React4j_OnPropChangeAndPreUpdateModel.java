@@ -9,11 +9,16 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateModel {
+  React4j_OnPropChangeAndPreUpdateModel(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -61,7 +66,7 @@ class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateMode
 
     @Override
     protected OnPropChangeAndPreUpdateModel createComponent() {
-      return new React4j_OnPropChangeAndPreUpdateModel();
+      return new React4j_OnPropChangeAndPreUpdateModel( this );
     }
 
     @Override

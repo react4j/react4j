@@ -9,9 +9,14 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_CollectionArrayPropComponent extends CollectionArrayPropComponent {
+  React4j_CollectionArrayPropComponent(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -46,7 +51,7 @@ class React4j_CollectionArrayPropComponent extends CollectionArrayPropComponent 
 
     @Override
     protected CollectionArrayPropComponent createComponent() {
-      return new React4j_CollectionArrayPropComponent();
+      return new React4j_CollectionArrayPropComponent( this );
     }
   }
 }

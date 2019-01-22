@@ -9,9 +9,14 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_PropTypeShort extends PropTypeShort {
+  React4j_PropTypeShort(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -42,7 +47,7 @@ class React4j_PropTypeShort extends PropTypeShort {
 
     @Override
     protected PropTypeShort createComponent() {
-      return new React4j_PropTypeShort();
+      return new React4j_PropTypeShort( this );
     }
   }
 }

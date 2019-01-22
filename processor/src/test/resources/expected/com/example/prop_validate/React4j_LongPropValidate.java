@@ -9,10 +9,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnShouldComponentUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_LongPropValidate extends LongPropValidate {
+  React4j_LongPropValidate(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -65,7 +70,7 @@ class React4j_LongPropValidate extends LongPropValidate {
 
     @Override
     protected LongPropValidate createComponent() {
-      return new React4j_LongPropValidate();
+      return new React4j_LongPropValidate( this );
     }
   }
 
@@ -77,7 +82,7 @@ class React4j_LongPropValidate extends LongPropValidate {
 
     @Override
     protected LongPropValidate createComponent() {
-      return new React4j_LongPropValidate();
+      return new React4j_LongPropValidate( this );
     }
 
     @Override

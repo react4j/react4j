@@ -9,9 +9,14 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_MultiPropComponent extends MultiPropComponent {
+  React4j_MultiPropComponent(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -57,7 +62,7 @@ class React4j_MultiPropComponent extends MultiPropComponent {
 
     @Override
     protected MultiPropComponent createComponent() {
-      return new React4j_MultiPropComponent();
+      return new React4j_MultiPropComponent( this );
     }
   }
 }

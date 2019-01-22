@@ -9,10 +9,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_CharOnPropChange extends CharOnPropChange {
+  React4j_CharOnPropChange(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -53,7 +58,7 @@ class React4j_CharOnPropChange extends CharOnPropChange {
 
     @Override
     protected CharOnPropChange createComponent() {
-      return new React4j_CharOnPropChange();
+      return new React4j_CharOnPropChange( this );
     }
 
     @Override

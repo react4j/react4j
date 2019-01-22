@@ -22,6 +22,7 @@ import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
@@ -33,6 +34,10 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ObservableProp extends ObservableProp {
+  React4j_ObservableProp(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -130,7 +135,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
 
     @Override
     protected ObservableProp createComponent() {
-      return new Arez_React4j_ObservableProp();
+      return new Arez_React4j_ObservableProp( this );
     }
 
     @Override
@@ -152,7 +157,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
 
     @Override
     protected ObservableProp createComponent() {
-      return new Arez_React4j_ObservableProp();
+      return new Arez_React4j_ObservableProp( this );
     }
 
     @Override

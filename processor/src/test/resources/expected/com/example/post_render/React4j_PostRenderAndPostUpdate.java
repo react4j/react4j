@@ -9,11 +9,16 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
+  React4j_PostRenderAndPostUpdate(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -50,7 +55,7 @@ class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
 
     @Override
     protected PostRenderAndPostUpdate createComponent() {
-      return new React4j_PostRenderAndPostUpdate();
+      return new React4j_PostRenderAndPostUpdate( this );
     }
 
     @Override

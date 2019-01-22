@@ -10,9 +10,14 @@ import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_MultipleChildrenPropComponent extends MultipleChildrenPropComponent {
+  React4j_MultipleChildrenPropComponent(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -47,7 +52,7 @@ class React4j_MultipleChildrenPropComponent extends MultipleChildrenPropComponen
 
     @Override
     protected MultipleChildrenPropComponent createComponent() {
-      return new React4j_MultipleChildrenPropComponent();
+      return new React4j_MultipleChildrenPropComponent( this );
     }
   }
 }

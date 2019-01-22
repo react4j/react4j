@@ -86,6 +86,8 @@ final class Generator
     ClassName.get( "react4j.internal", "componentDidCatch" );
   private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeAdapterComponent" );
+  private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
+    ClassName.get( "react4j.internal", "NativeComponent" );
   private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
   private static final String SHOULD_COMPONENT_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "shouldComponentUpdate";
   private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
@@ -532,6 +534,16 @@ final class Generator
 
     addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
+
+    if ( !descriptor.needsInjection() )
+    {
+      final MethodSpec.Builder ctor = MethodSpec.constructorBuilder();
+      ctor.addParameter( ParameterSpec.builder( REACT_NATIVE_COMPONENT_CLASSNAME, "nativeComponent", Modifier.FINAL )
+                           .addAnnotation( NONNULL_CLASSNAME )
+                           .build() );
+      ctor.addStatement( "bindComponent( nativeComponent )" );
+      builder.addMethod( ctor.build() );
+    }
 
     builder.addType( buildFactory() );
     if ( descriptor.needsInjection() )
@@ -1496,7 +1508,7 @@ final class Generator
       else
       {
         final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
-        method.addStatement( "return new $T" + infix + "()", descriptor.getClassNameToConstruct() );
+        method.addStatement( "return new $T" + infix + "( this )", descriptor.getClassNameToConstruct() );
       }
       builder.addMethod( method.build() );
     }

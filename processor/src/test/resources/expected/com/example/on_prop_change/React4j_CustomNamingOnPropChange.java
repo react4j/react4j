@@ -9,10 +9,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange {
+  React4j_CustomNamingOnPropChange(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -79,7 +84,7 @@ class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange {
 
     @Override
     protected CustomNamingOnPropChange createComponent() {
-      return new React4j_CustomNamingOnPropChange();
+      return new React4j_CustomNamingOnPropChange( this );
     }
 
     @Override

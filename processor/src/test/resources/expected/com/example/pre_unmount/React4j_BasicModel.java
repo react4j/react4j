@@ -9,10 +9,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentWillUnmount;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_BasicModel extends BasicModel {
+  React4j_BasicModel(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -38,7 +43,7 @@ class React4j_BasicModel extends BasicModel {
 
     @Override
     protected BasicModel createComponent() {
-      return new React4j_BasicModel();
+      return new React4j_BasicModel( this );
     }
 
     @Override

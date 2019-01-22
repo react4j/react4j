@@ -9,9 +9,14 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
+  React4j_BoolJavaBeanPropComponent(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -42,7 +47,7 @@ class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropComponent {
 
     @Override
     protected BoolJavaBeanPropComponent createComponent() {
-      return new React4j_BoolJavaBeanPropComponent();
+      return new React4j_BoolJavaBeanPropComponent( this );
     }
   }
 }

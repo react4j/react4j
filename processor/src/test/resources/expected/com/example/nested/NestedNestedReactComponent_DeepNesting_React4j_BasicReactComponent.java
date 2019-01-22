@@ -9,9 +9,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
 class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends NestedNestedReactComponent.DeepNesting.BasicReactComponent {
+  NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent(
+      @Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -33,7 +39,7 @@ class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends
 
     @Override
     protected NestedNestedReactComponent.DeepNesting.BasicReactComponent createComponent() {
-      return new NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent();
+      return new NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent( this );
     }
   }
 }

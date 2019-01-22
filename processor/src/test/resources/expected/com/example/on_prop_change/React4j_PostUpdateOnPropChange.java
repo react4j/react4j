@@ -9,10 +9,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
+  React4j_PostUpdateOnPropChange(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -60,7 +65,7 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
 
     @Override
     protected PostUpdateOnPropChange createComponent() {
-      return new React4j_PostUpdateOnPropChange();
+      return new React4j_PostUpdateOnPropChange( this );
     }
 
     @Override

@@ -9,9 +9,14 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
+  React4j_GenericTypePropComponent(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -46,7 +51,7 @@ class React4j_GenericTypePropComponent<T> extends GenericTypePropComponent<T> {
 
     @Override
     protected GenericTypePropComponent<T> createComponent() {
-      return new React4j_GenericTypePropComponent<T>();
+      return new React4j_GenericTypePropComponent<T>( this );
     }
   }
 }

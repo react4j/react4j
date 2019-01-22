@@ -9,10 +9,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnShouldComponentUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
+  React4j_ExplicitNamePropValidate(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -69,7 +74,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
 
     @Override
     protected ExplicitNamePropValidate createComponent() {
-      return new React4j_ExplicitNamePropValidate();
+      return new React4j_ExplicitNamePropValidate( this );
     }
   }
 
@@ -81,7 +86,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
 
     @Override
     protected ExplicitNamePropValidate createComponent() {
-      return new React4j_ExplicitNamePropValidate();
+      return new React4j_ExplicitNamePropValidate( this );
     }
 
     @Override

@@ -10,10 +10,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnShouldComponentUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_OtherPropValidate extends OtherPropValidate {
+  React4j_OtherPropValidate(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -70,7 +75,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
 
     @Override
     protected OtherPropValidate createComponent() {
-      return new React4j_OtherPropValidate();
+      return new React4j_OtherPropValidate( this );
     }
   }
 
@@ -82,7 +87,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
 
     @Override
     protected OtherPropValidate createComponent() {
-      return new React4j_OtherPropValidate();
+      return new React4j_OtherPropValidate( this );
     }
 
     @Override

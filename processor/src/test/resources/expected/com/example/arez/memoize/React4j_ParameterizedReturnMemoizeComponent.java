@@ -20,6 +20,7 @@ import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
@@ -30,6 +31,10 @@ import react4j.internal.OnComponentWillUnmount;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ParameterizedReturnMemoizeComponent extends ParameterizedReturnMemoizeComponent {
+  React4j_ParameterizedReturnMemoizeComponent(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -99,7 +104,7 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
 
     @Override
     protected ParameterizedReturnMemoizeComponent createComponent() {
-      return new Arez_React4j_ParameterizedReturnMemoizeComponent();
+      return new Arez_React4j_ParameterizedReturnMemoizeComponent( this );
     }
 
     @Override
@@ -116,7 +121,7 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
 
     @Override
     protected ParameterizedReturnMemoizeComponent createComponent() {
-      return new Arez_React4j_ParameterizedReturnMemoizeComponent();
+      return new Arez_React4j_ParameterizedReturnMemoizeComponent( this );
     }
 
     @Override

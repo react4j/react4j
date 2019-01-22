@@ -9,10 +9,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnShouldComponentUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_BytePropValidate extends BytePropValidate {
+  React4j_BytePropValidate(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -65,7 +70,7 @@ class React4j_BytePropValidate extends BytePropValidate {
 
     @Override
     protected BytePropValidate createComponent() {
-      return new React4j_BytePropValidate();
+      return new React4j_BytePropValidate( this );
     }
   }
 
@@ -77,7 +82,7 @@ class React4j_BytePropValidate extends BytePropValidate {
 
     @Override
     protected BytePropValidate createComponent() {
-      return new React4j_BytePropValidate();
+      return new React4j_BytePropValidate( this );
     }
 
     @Override

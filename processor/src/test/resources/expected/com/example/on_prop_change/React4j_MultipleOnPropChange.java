@@ -9,10 +9,15 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
 @Generated("react4j.processor.ReactProcessor")
 class React4j_MultipleOnPropChange extends MultipleOnPropChange {
+  React4j_MultipleOnPropChange(@Nonnull final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -73,7 +78,7 @@ class React4j_MultipleOnPropChange extends MultipleOnPropChange {
 
     @Override
     protected MultipleOnPropChange createComponent() {
-      return new React4j_MultipleOnPropChange();
+      return new React4j_MultipleOnPropChange( this );
     }
 
     @Override
