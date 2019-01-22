@@ -1,4 +1,4 @@
-package react4j.downstream;
+package arez.downstream;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -41,5 +41,10 @@ public final class OrderedProperties
   public Set<Object> keySet()
   {
     return new TreeSet<>( super.keySet() );
+  }
+
+  void mergeWithPrefix( @Nonnull final Properties properties, @Nonnull final String prefix )
+  {
+    properties.forEach( ( key, value ) -> put( prefix + key, value ) );
   }
 }
