@@ -210,7 +210,7 @@ define 'react4j' do
       properties['react4j.deploy_test.fixture_dir'] = _('src/test/resources/fixtures').to_s
       properties['react4j.deploy_test.local_repository_url'] = local_test_repository_url
       properties['react4j.deploy_test.store_statistics'] = ENV['STORE_BUILD_STATISTICS'] == 'true'
-      properties['react4j.deploy_test.build_before'] = ENV['STORE_BUILD_STATISTICS'] != 'true'
+      properties['react4j.deploy_test.build_before'] = (ENV['STORE_BUILD_STATISTICS'] != 'true' && ENV['BUILD_BEFORE'] != 'no')
 
       Java::Commands.java 'react4j.downstream.BuildDownstream', { :classpath => cp, :properties => properties } unless ENV['DOWNSTREAM'] == 'no'
       Java::Commands.java 'react4j.downstream.CollectBuildStats', { :classpath => cp, :properties => properties } unless ENV['BUILD_STATS'] == 'no'
