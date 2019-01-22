@@ -42,6 +42,7 @@ public class JDependTest
     react4j.dependsUpon( braincheck );
     react4j.dependsUpon( elemental2Core );
     react4j.dependsUpon( react4jInternal );
+    react4j.dependsUpon( arez );
 
     react4jArez.dependsUpon( react4j );
     react4jArez.dependsUpon( jsinteropBase );
