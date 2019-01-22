@@ -2,7 +2,7 @@
 
 ### Next Release
 
-* Fix todos in `react4j-sithtracker` and add it to compile tests.
+* Add `react4j-sithtracker` to `downstream-test` tests and record stats.
 
 * `key` is valid on fragments elements.
 
