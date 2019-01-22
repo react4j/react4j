@@ -111,10 +111,10 @@ public abstract class ReactArezComponent
    * {@inheritDoc}
    */
   @Override
-  protected final void populateDebugData( @Nonnull final JsPropertyMap<Object> newState )
+  protected final void populateDebugData( @Nonnull final JsPropertyMap<Object> data )
   {
-    // Collect existing dependencies as state
-    final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );
-    observerInfo.getDependencies().forEach( d -> newState.set( d.getName(), IntrospectUtil.getValue( d ) ) );
+      // Collect existing dependencies as state
+      final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );
+      observerInfo.getDependencies().forEach( d -> data.set( d.getName(), IntrospectUtil.getValue( d ) ) );
   }
 }

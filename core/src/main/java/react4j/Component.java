@@ -231,9 +231,9 @@ public abstract class Component
   /**
    * Populate the state parameter with any data that is useful when debugging the component.
    *
-   * @param state the property map to populate with debug data.
+   * @param data the property map to populate with debug data.
    */
-  protected void populateDebugData( @Nonnull final JsPropertyMap<Object> state )
+  protected void populateDebugData( @Nonnull final JsPropertyMap<Object> data )
   {
   }
 }
