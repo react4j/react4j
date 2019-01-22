@@ -64,8 +64,8 @@ public class BuildStatsTest
       extractSize( fixtureStatistics, getNextVersion() + "." + branch );
     final long currentVersionFixtureSize =
       extractSize( fixtureStatistics, getCurrentVersion() + "." + branch );
-    final String beforeBuild = branch + ".before";
-    final String afterBuild = branch + ".after";
+    final String beforeBuild = branch + "." + "before";
+    final String afterBuild = branch + "." + "after";
     final long beforeSize = extractSize( buildStatistics, beforeBuild );
     final long afterSize = extractSize( buildStatistics, afterBuild );
     final boolean j2cl = branch.endsWith( "_j2cl" );
