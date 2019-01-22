@@ -1,8 +1,6 @@
 package react4j.arez;
 
-import arez.Arez;
 import arez.ArezContext;
-import arez.Disposable;
 import arez.Observer;
 import arez.annotations.Action;
 import arez.annotations.ComponentIdRef;
@@ -11,9 +9,7 @@ import arez.annotations.ContextRef;
 import arez.annotations.ObserverRef;
 import arez.annotations.PreDispose;
 import arez.spy.ObserverInfo;
-import elemental2.promise.Promise;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import jsinterop.base.JsPropertyMap;
 import react4j.Component;
 import react4j.internal.arez.IntrospectUtil;
