@@ -26,16 +26,20 @@ define 'react4j' do
     pom.include_transitive_dependencies << artifact(:javax_annotation)
     pom.include_transitive_dependencies << artifact(:jsinterop_base)
     pom.include_transitive_dependencies << artifact(:elemental2_core)
-    pom.include_transitive_dependencies << artifact(:braincheck)
-    pom.dependency_filter = Proc.new {|dep| dep[:id].to_s != 'jsinterop-annotations' && dep[:scope].to_s != 'test'}
+    pom.include_transitive_dependencies << artifact(:elemental2_promise)
+    pom.include_transitive_dependencies << artifact(:arez_core)
+    pom.dependency_filter = Proc.new {|dep| dep[:id].to_s != 'jsinterop-annotations' && dep[:scope].to_s != 'test' && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-component') && dep[:group].to_s != 'org.jetbrains' && dep[:scope].to_s != 'test'}
 
     js_assets(project, :core)
 
     compile.with :javax_annotation,
                  :elemental2_core,
+                 :elemental2_promise,
                  :jsinterop_base,
                  :jsinterop_annotations,
-                 :braincheck
+                 :braincheck,
+                 :arez_core,
+                 :jetbrains_annotations
     compile.options[:other] = %w(-parameters)
 
     gwt_enhance(project)
@@ -79,30 +83,6 @@ define 'react4j' do
     package(:javadoc)
   end
 
-  desc 'React4j-Arez Integration'
-  define 'arez' do
-    pom.include_transitive_dependencies << project('dom').package(:jar)
-    pom.include_transitive_dependencies << artifact(:arez_core)
-    pom.dependency_filter = Proc.new {|dep| !project('dom').compile.dependencies.include?(dep[:artifact]) && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-component') && dep[:group].to_s != 'org.jetbrains' && dep[:scope].to_s != 'test'}
-
-    compile.with project('dom').package(:jar),
-                 project('dom').compile.dependencies,
-                 :arez_core,
-                 :jetbrains_annotations
-    compile.options[:other] = %w(-parameters)
-
-    gwt_enhance(project)
-
-    test.using :testng
-    test.options[:properties] = { 'react4j.arez.compile_target' => compile.target.to_s }
-    test.options[:java_args] = ['-ea']
-    test.compile.with :jdepend
-
-    package(:jar)
-    package(:sources)
-    package(:javadoc)
-  end
-
   desc 'The Annotation processor'
   define 'processor' do
     pom.dependency_filter = Proc.new {|_| false}
@@ -120,8 +100,8 @@ define 'react4j' do
               :hamcrest_core,
               Java.tools_jar,
               :truth,
-              project('arez').package(:jar),
-              project('arez').compile.dependencies,
+              project('core').package(:jar),
+              project('core').compile.dependencies,
               :javax_inject,
               DAGGER_PROCESSOR_DEPS,
               :arez_processor,
@@ -192,7 +172,7 @@ define 'react4j' do
 
     local_test_repository_url = URI.join('file:///', project._(:target, :local_test_repository)).to_s
     compile.enhance do
-      projects_to_upload = projects(%w(core processor arez dom))
+      projects_to_upload = projects(%w(core processor dom))
       old_release_to = repositories.release_to
       begin
         # First we install them in a local repository so we don't have to access the network during local builds
@@ -251,8 +231,6 @@ define 'react4j' do
 
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
-                 project('arez').package(:jar),
-                 project('arez').compile.dependencies,
                  project('processor').package(:jar),
                  project('processor').compile.dependencies,
                  DAGGER_PROCESSOR_DEPS,
@@ -262,7 +240,7 @@ define 'react4j' do
     gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
   end
 
-  doc.from(projects(%w(core dom arez processor))).
+  doc.from(projects(%w(core dom processor))).
     using(:javadoc,
           :windowtitle => 'React4j API Documentation',
           :linksource => true,
@@ -271,15 +249,14 @@ define 'react4j' do
           :group => {
             'Core Packages' => 'react4j*',
             'DOM Packages' => 'react4j.dom*',
-            'Annotation Packages' => 'react4j.annotations*:react4j.processor*',
-            'Arez Packages' => 'react4j.arez*'
+            'Annotation Packages' => 'react4j.annotations*:react4j.processor*'
           }
     )
 
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
 
-  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes -Dreact4j.arez.compile_target=target/react4j_arez/idea/classes")
+  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes")
   ipr.add_component_from_artifact(:idea_codestyle)
 
   EXAMPLES.each_pair do |key, gwt_module|

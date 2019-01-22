@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* **\[core\]** Merge the `react4j-arez` artifact into `react4j-core` as the `react4j-core` artifact has never
+  been used without also using `react4j-arez` in any production application.
+
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)
 
