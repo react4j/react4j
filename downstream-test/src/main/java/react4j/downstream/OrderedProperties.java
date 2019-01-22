@@ -1,17 +1,30 @@
 package react4j.downstream;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.Nonnull;
 
 /**
- * A simple customization of Properties that has a stable output order basi on alphabetic ordering of keys.
+ * A simple customization of Properties that has a stable output order based on alphabetic ordering of keys.
  */
 public final class OrderedProperties
   extends Properties
 {
+  @Nonnull
+  static OrderedProperties load( @Nonnull final Path path )
+    throws IOException
+  {
+    final OrderedProperties properties = new OrderedProperties();
+    properties.load( Files.newBufferedReader( path ) );
+    return properties;
+  }
+
   /**
    * {@inheritDoc}
    */
