@@ -1,23 +1,15 @@
 package react4j.downstream;
 
 import gir.Gir;
-import gir.GirException;
 import gir.delta.Patch;
 import gir.git.Git;
-import gir.io.Exec;
-import gir.io.FileUtil;
 import gir.ruby.Buildr;
 import gir.ruby.Ruby;
-import gir.sys.SystemProperty;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
-@SuppressWarnings( "Duplicates" )
 public final class BuildDownstream
 {
   public static void main( final String[] args )
@@ -37,128 +29,52 @@ public final class BuildDownstream
   private static void run()
     throws Exception
   {
-    Gir.go( () -> {
-      final String version = SystemProperty.get( "react4j.next.version" );
-      final Path workingDirectory =
-        Paths.get( SystemProperty.get( "react4j.deploy_test.work_dir" ) ).toAbsolutePath().normalize();
-
-      final String localRepositoryUrl = SystemProperty.get( "react4j.deploy_test.local_repository_url" );
-
-      if ( !workingDirectory.toFile().exists() )
-      {
-        Gir.messenger().info( "Working directory does not exist." );
-        Gir.messenger().info( "Creating directory: " + workingDirectory );
-        if ( !workingDirectory.toFile().mkdirs() )
-        {
-          Gir.messenger().error( "Failed to create working directory: " + workingDirectory );
-        }
-      }
-      Stream.of( "react4j-widget", "react4j-windowportal" )
-        .forEach( project -> FileUtil.inDirectory( workingDirectory, () -> {
-          Gir.messenger().info( "Cloning " + project + " into " + workingDirectory );
-          Git.clone( "https://github.com/react4j/" + project + ".git", project );
-          final Path appDirectory = workingDirectory.resolve( project );
-          FileUtil.inDirectory( appDirectory, () -> {
-            Git.fetch();
-            Git.resetBranch();
-            Git.checkout();
-            Git.pull();
-            Git.deleteLocalBranches();
-            Gir.messenger().info( "Processing branch master." );
-
-            Git.checkout( "master" );
-            Git.clean();
-            final String newBranch = "master-React4jUpgrade-" + version;
-
-            Git.checkout( newBranch, true );
-            if ( Git.remoteTrackingBranches().contains( "origin/" + newBranch ) )
-            {
-              Git.pull();
-            }
-            Git.clean();
-
-            Gir.messenger().info( "Building branch master prior to modifications." );
-            boolean initialBuildSuccess = false;
-            try
-            {
-              customizeBuildr( appDirectory, localRepositoryUrl );
-              Ruby.buildr( "clean", "package", "PRODUCT_VERSION=", "PREVIOUS_PRODUCT_VERSION=" );
-              initialBuildSuccess = true;
-            }
-            catch ( final GirException e )
-            {
-              Gir.messenger().info( "Failed to build branch 'master' before modifications.", e );
-            }
-
-            Git.resetBranch();
-            Git.clean();
-
-            final String group = "org.realityforge.react4j";
-            final Function<String, String> patchFunction1 = c -> Buildr.patchMavenCoordinates( c, group, version );
-            final boolean patched =
-              Patch.patchAndAddFile( appDirectory, appDirectory.resolve( "build.yaml" ), patchFunction1 );
-
-            if ( patched )
-            {
-              final String message = "Update the '" + group + "' dependencies to version '" + version + "'";
-              final Function<String, String> patchFunction = c -> {
-                if ( c.contains( "### Unreleased\n\n#" ) )
-                {
-                  return c.replace( "### Unreleased\n\n", "### Unreleased\n\n* " + message + "\n\n" );
-                }
-                else
-                {
-                  return c.replace( "### Unreleased\n\n", "### Unreleased\n\n* " + message + "\n" );
-                }
-              };
-              Patch.patchAndAddFile( appDirectory, appDirectory.resolve( "CHANGELOG.md" ), patchFunction );
-              Git.commit( message );
-            }
-            Gir.messenger().info( "Building branch master after modifications." );
-            customizeBuildr( appDirectory, localRepositoryUrl );
-
-            try
-            {
-              /*
-               * The process will run through the steps required for a release right up to tagging the source repository.
-               * A subsequent call from within release.rake will complete the release process.
-               */
-              Ruby.buildr( "perform_release",
-                           "LAST_STAGE=TagProject",
-                           "PRODUCT_VERSION=",
-                           "PREVIOUS_PRODUCT_VERSION=" );
-              Git.checkout( "master" );
-              Exec.system( "git", "merge", newBranch );
-              Git.deleteBranch( newBranch );
-            }
-            catch ( final GirException e )
-            {
-              if ( !initialBuildSuccess )
-              {
-                Gir.messenger().error( "Failed to build branch 'master' before modifications " +
-                                       "but branch also failed prior to modifications.", e );
-              }
-              else
-              {
-                Gir.messenger().error( "Failed to build branch 'master' after modifications.", e );
-              }
-              throw e;
-            }
-          } );
-        } ) );
-    } );
+    Gir.go( () -> Stream.of( "react4j-widget", "react4j-windowportal" )
+      .forEach( name -> WorkspaceUtil.forEachBranch( name,
+                                                     "https://github.com/react4j/" + name + ".git",
+                                                     Collections.singletonList( "master" ),
+                                                     BuildDownstream::buildBranch ) ) );
   }
 
-  private static void customizeBuildr( @Nonnull final Path appDirectory, @Nonnull final String localRepositoryUrl )
+  private static void buildBranch( @Nonnull final WorkspaceUtil.BuildContext context )
   {
-    try
-    {
-      final String content = "repositories.remote.unshift('" + localRepositoryUrl + "')\n";
-      Files.write( appDirectory.resolve( "_buildr.rb" ), content.getBytes() );
-    }
-    catch ( final IOException ioe )
-    {
-      Gir.messenger().error( "Failed to emit _buildr.rb configuration file.", ioe );
-    }
+    final boolean initialBuildSuccess = WorkspaceUtil.runBeforeBuild( context, () -> {
+      WorkspaceUtil.customizeBuildr( context.appDirectory );
+      Ruby.buildr( "clean", "package", "PRODUCT_VERSION=", "PREVIOUS_PRODUCT_VERSION=" );
+    } );
+
+    WorkspaceUtil.runAfterBuild( context, initialBuildSuccess, () -> {
+      final String version = WorkspaceUtil.getVersion();
+      final String group = "org.realityforge.react4j";
+      final boolean patched =
+        Patch.patchAndAddFile( context.appDirectory,
+                               context.appDirectory.resolve( "build.yaml" ),
+                               c -> Buildr.patchMavenCoordinates( c, group, version ) );
+      if ( patched )
+      {
+        final String message = "Update the '" + group + "' dependencies to version '" + version + "'";
+        final Function<String, String> patchFunction = c -> {
+          if ( c.contains( "### Unreleased\n\n#" ) )
+          {
+            return c.replace( "### Unreleased\n\n", "### Unreleased\n\n* " + message + "\n\n" );
+          }
+          else
+          {
+            return c.replace( "### Unreleased\n\n", "### Unreleased\n\n* " + message + "\n" );
+          }
+        };
+        Patch.patchAndAddFile( context.appDirectory,
+                               context.appDirectory.resolve( "CHANGELOG.md" ),
+                               patchFunction );
+        Git.commit( message );
+      }
+
+      WorkspaceUtil.customizeBuildr( context.appDirectory );
+      /*
+       * The process will run through the steps required for a release right up to tagging the source repository.
+       * A subsequent call from within release.rake will complete the release process.
+       */
+      Ruby.buildr( "perform_release", "LAST_STAGE=TagProject", "PRODUCT_VERSION=", "PREVIOUS_PRODUCT_VERSION=" );
+    }, null );
   }
 }
