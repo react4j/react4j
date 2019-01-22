@@ -3,8 +3,6 @@ package react4j.arez;
 import arez.ArezContext;
 import arez.Observer;
 import arez.annotations.Action;
-import arez.annotations.ComponentIdRef;
-import arez.annotations.ComponentNameRef;
 import arez.annotations.ContextRef;
 import arez.annotations.ObserverRef;
 import arez.annotations.PreDispose;
@@ -95,22 +93,6 @@ public abstract class ReactArezComponent
   protected abstract ArezContext getContext();
 
   /**
-   * Return the unique identifier of component according to Arez.
-   *
-   * @return the unique identifier of component according to Arez.
-   */
-  @ComponentIdRef
-  protected abstract int getArezComponentId();
-
-  /**
-   * Return the name of the component according to Arez.
-   *
-   * @return the name of the component according to Arez.
-   */
-  @ComponentNameRef
-  protected abstract String getArezComponentName();
-
-  /**
    * Return the Observer associated with the render tracker method.
    *
    * @return the Observer associated with the render tracker method.
@@ -131,10 +113,6 @@ public abstract class ReactArezComponent
   @Override
   protected final void populateDebugData( @Nonnull final JsPropertyMap<Object> newState )
   {
-    // Present component id as state. Useful to track when instance ids change.
-    newState.set( "Arez.id", getArezComponentId() );
-    newState.set( "Arez.name", getArezComponentName() );
-
     // Collect existing dependencies as state
     final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );
     observerInfo.getDependencies().forEach( d -> newState.set( d.getName(), IntrospectUtil.getValue( d ) ) );

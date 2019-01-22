@@ -1,5 +1,7 @@
 package react4j;
 
+import arez.annotations.ComponentIdRef;
+import arez.annotations.ComponentNameRef;
 import elemental2.core.JsError;
 import elemental2.core.JsObject;
 import java.util.Objects;
@@ -162,6 +164,9 @@ public abstract class Component
       else
       {
         final JsPropertyMap<Object> newState = JsPropertyMap.of();
+        // Present component id as state. Useful to track when instance ids change.
+        newState.set( "Arez.id", getComponentId() );
+        newState.set( "Arez.name", getComponentName() );
         populateDebugData( newState );
 
         final JsPropertyMap<Object> state = component().state();
@@ -206,6 +211,22 @@ public abstract class Component
       }
     }
   }
+
+  /**
+   * Return the unique identifier of component according to Arez.
+   *
+   * @return the unique identifier of component according to Arez.
+   */
+  @ComponentIdRef
+  protected abstract int getComponentId();
+
+  /**
+   * Return the name of the component according to Arez.
+   *
+   * @return the name of the component according to Arez.
+   */
+  @ComponentNameRef
+  protected abstract String getComponentName();
 
   /**
    * Populate the state parameter with any data that is useful when debugging the component.

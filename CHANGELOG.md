@@ -14,6 +14,9 @@
   react4j components as are helper annotations such as `@CascadeDispose`. This removes the need to implement
   parallel capabilities into the react4j annotation processor and significantly simplifies integration with
   the injection framework.
+* **\[core\]** Move `ReactArezComponent.getArezComponentId()` to `Component.getComponentId()` and
+  `ReactArezComponent.getArezComponentName()` to `Component.getComponentName()` so that the methods are available
+  to all react components.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)
