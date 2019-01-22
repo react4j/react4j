@@ -1,5 +1,7 @@
 package com.example.optional_props;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
+@ArezComponent(
+    name = "RequiredChildrenWithOptionalAndRequired",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWithOptionalAndRequired {
+abstract class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWithOptionalAndRequired {
   React4j_RequiredChildrenWithOptionalAndRequired(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -74,7 +81,7 @@ class React4j_RequiredChildrenWithOptionalAndRequired extends RequiredChildrenWi
 
     @Override
     protected RequiredChildrenWithOptionalAndRequired createComponent() {
-      return new React4j_RequiredChildrenWithOptionalAndRequired( this );
+      return new Arez_React4j_RequiredChildrenWithOptionalAndRequired( this );
     }
   }
 }

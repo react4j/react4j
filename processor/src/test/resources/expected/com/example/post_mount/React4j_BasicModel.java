@@ -1,5 +1,7 @@
 package com.example.post_mount;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 
+@ArezComponent(
+    name = "BasicModel",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_BasicModel extends BasicModel {
+abstract class React4j_BasicModel extends BasicModel {
   React4j_BasicModel(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -46,7 +53,7 @@ class React4j_BasicModel extends BasicModel {
 
     @Override
     protected BasicModel createComponent() {
-      return new React4j_BasicModel( this );
+      return new Arez_React4j_BasicModel( this );
     }
 
     @Override

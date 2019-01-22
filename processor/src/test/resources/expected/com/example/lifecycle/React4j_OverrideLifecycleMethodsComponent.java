@@ -1,5 +1,7 @@
 package com.example.lifecycle;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,8 +17,13 @@ import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
+@ArezComponent(
+    name = "OverrideLifecycleMethodsComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethodsComponent {
+abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethodsComponent {
   React4j_OverrideLifecycleMethodsComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -66,7 +73,7 @@ class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethods
 
     @Override
     protected OverrideLifecycleMethodsComponent createComponent() {
-      return new React4j_OverrideLifecycleMethodsComponent( this );
+      return new Arez_React4j_OverrideLifecycleMethodsComponent( this );
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.example.on_prop_change;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
+@ArezComponent(
+    name = "CharOnPropChange",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_CharOnPropChange extends CharOnPropChange {
+abstract class React4j_CharOnPropChange extends CharOnPropChange {
   React4j_CharOnPropChange(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -58,7 +65,7 @@ class React4j_CharOnPropChange extends CharOnPropChange {
 
     @Override
     protected CharOnPropChange createComponent() {
-      return new React4j_CharOnPropChange( this );
+      return new Arez_React4j_CharOnPropChange( this );
     }
 
     @Override

@@ -1,3 +1,5 @@
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
+@ArezComponent(
+    name = "RootPackageCompleteComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent {
+abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent {
   React4j_RootPackageCompleteComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -73,7 +80,7 @@ class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent 
 
     @Override
     protected RootPackageCompleteComponent createComponent() {
-      return new React4j_RootPackageCompleteComponent( this );
+      return new Arez_React4j_RootPackageCompleteComponent( this );
     }
 
     @Override

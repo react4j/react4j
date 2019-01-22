@@ -1,5 +1,7 @@
 package com.example.pre_unmount;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentWillUnmount;
 
+@ArezComponent(
+    name = "ProtectedModel",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_ProtectedModel extends ProtectedModel {
+abstract class React4j_ProtectedModel extends ProtectedModel {
   React4j_ProtectedModel(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -43,7 +50,7 @@ class React4j_ProtectedModel extends ProtectedModel {
 
     @Override
     protected ProtectedModel createComponent() {
-      return new React4j_ProtectedModel( this );
+      return new Arez_React4j_ProtectedModel( this );
     }
 
     @Override

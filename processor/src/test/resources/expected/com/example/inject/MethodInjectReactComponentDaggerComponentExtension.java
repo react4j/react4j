@@ -18,7 +18,7 @@ public interface MethodInjectReactComponentDaggerComponentExtension {
   @Module
   interface DaggerModule {
     @Binds
-    Component bindComponent(React4j_MethodInjectReactComponent component);
+    Component bindComponent(Arez_React4j_MethodInjectReactComponent component);
   }
 
   @Subcomponent(

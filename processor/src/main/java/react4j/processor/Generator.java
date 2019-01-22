@@ -514,24 +514,25 @@ final class Generator
 
     builder.superclass( descriptor.getComponentType() );
 
-    if ( descriptor.isArezComponent() )
+    final AnnotationSpec.Builder arezAnnotation =
+      AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
+        addMember( "name", "$S", descriptor.getName() ).
+        addMember( "disposeTrackable", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
+    if ( descriptor.shouldRunArezScheduler() )
     {
-      final AnnotationSpec.Builder annotation =
-        AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
-          addMember( "name", "$S", descriptor.getName() ).
-          addMember( "disposeTrackable", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
-      if ( descriptor.shouldRunArezScheduler() )
-      {
-        annotation.addMember( "deferSchedule", "true" );
-      }
-      if ( descriptor.needsInjection() )
-      {
-        annotation.addMember( "inject", "$T.CONSUME", AREZ_INJECT_MODE_CLASSNAME );
-        annotation.addMember( "dagger", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
-      }
-      builder.addAnnotation( annotation.build() );
-      builder.addModifiers( Modifier.ABSTRACT );
+      arezAnnotation.addMember( "deferSchedule", "true" );
     }
+    if ( !descriptor.isArezComponent() )
+    {
+      arezAnnotation.addMember( "allowEmpty", "true" );
+    }
+    if ( descriptor.needsInjection() )
+    {
+      arezAnnotation.addMember( "inject", "$T.CONSUME", AREZ_INJECT_MODE_CLASSNAME );
+      arezAnnotation.addMember( "dagger", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
+    }
+    builder.addAnnotation( arezAnnotation.build() );
+    builder.addModifiers( Modifier.ABSTRACT );
 
     addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
@@ -545,6 +546,12 @@ final class Generator
       ctor.addStatement( "bindComponent( nativeComponent )" );
       builder.addMethod( ctor.build() );
     }
+    /*
+    if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
+    {
+      builder.addMethod( MethodSpec.constructorBuilder().addAnnotation( INJECT_CLASSNAME ).build() );
+    }
+    */
 
     builder.addType( buildFactory() );
     if ( descriptor.needsInjection() )
@@ -599,12 +606,8 @@ final class Generator
       builder.addMethod( buildRender( descriptor ).build() );
     }
 
-    if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
-    {
-      builder.addMethod( MethodSpec.constructorBuilder().addAnnotation( INJECT_CLASSNAME ).build() );
-    }
 
-    if ( descriptor.shouldRunArezScheduler() && descriptor.isArezComponent() )
+    if ( descriptor.shouldRunArezScheduler() )
     {
       builder.addMethod( MethodSpec.methodBuilder( "triggerScheduler" ).
         addAnnotation( Override.class ).

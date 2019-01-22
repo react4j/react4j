@@ -1,5 +1,7 @@
 package com.example.prop;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
+@ArezComponent(
+    name = "NullablePropAndNonnullChildComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_NullablePropAndNonnullChildComponent extends NullablePropAndNonnullChildComponent {
+abstract class React4j_NullablePropAndNonnullChildComponent extends NullablePropAndNonnullChildComponent {
   React4j_NullablePropAndNonnullChildComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -72,7 +79,7 @@ class React4j_NullablePropAndNonnullChildComponent extends NullablePropAndNonnul
 
     @Override
     protected NullablePropAndNonnullChildComponent createComponent() {
-      return new React4j_NullablePropAndNonnullChildComponent( this );
+      return new Arez_React4j_NullablePropAndNonnullChildComponent( this );
     }
   }
 }

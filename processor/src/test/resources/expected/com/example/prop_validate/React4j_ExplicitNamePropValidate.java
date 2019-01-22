@@ -1,5 +1,7 @@
 package com.example.prop_validate;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnShouldComponentUpdate;
 
+@ArezComponent(
+    name = "ExplicitNamePropValidate",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
+abstract class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
   React4j_ExplicitNamePropValidate(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -74,7 +81,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
 
     @Override
     protected ExplicitNamePropValidate createComponent() {
-      return new React4j_ExplicitNamePropValidate( this );
+      return new Arez_React4j_ExplicitNamePropValidate( this );
     }
   }
 
@@ -86,7 +93,7 @@ class React4j_ExplicitNamePropValidate extends ExplicitNamePropValidate {
 
     @Override
     protected ExplicitNamePropValidate createComponent() {
-      return new React4j_ExplicitNamePropValidate( this );
+      return new Arez_React4j_ExplicitNamePropValidate( this );
     }
 
     @Override

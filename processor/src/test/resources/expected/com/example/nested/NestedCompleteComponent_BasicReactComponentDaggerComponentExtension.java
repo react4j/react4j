@@ -18,7 +18,7 @@ public interface NestedCompleteComponent_BasicReactComponentDaggerComponentExten
   @Module
   interface DaggerModule {
     @Binds
-    Component bindComponent(NestedCompleteComponent_React4j_BasicReactComponent component);
+    Component bindComponent(Arez_NestedCompleteComponent_React4j_BasicReactComponent component);
   }
 
   @Subcomponent(

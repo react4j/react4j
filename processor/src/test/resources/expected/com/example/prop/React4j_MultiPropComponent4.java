@@ -1,5 +1,7 @@
 package com.example.prop;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
+@ArezComponent(
+    name = "MultiPropComponent4",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_MultiPropComponent4 extends MultiPropComponent4 {
+abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   React4j_MultiPropComponent4(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -100,7 +107,7 @@ class React4j_MultiPropComponent4 extends MultiPropComponent4 {
 
     @Override
     protected MultiPropComponent4 createComponent() {
-      return new React4j_MultiPropComponent4( this );
+      return new Arez_React4j_MultiPropComponent4( this );
     }
   }
 }

@@ -1,9 +1,11 @@
 package com.example.inject;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 import javax.inject.Provider;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
@@ -13,12 +15,15 @@ import react4j.React;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
+@ArezComponent(
+    name = "DaggerFalseComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true,
+    inject = InjectMode.CONSUME,
+    dagger = Feature.ENABLE
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_DaggerFalseComponent extends DaggerFalseComponent {
-  @Inject
-  React4j_DaggerFalseComponent() {
-  }
-
+abstract class React4j_DaggerFalseComponent extends DaggerFalseComponent {
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;

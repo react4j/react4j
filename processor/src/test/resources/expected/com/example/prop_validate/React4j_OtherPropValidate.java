@@ -1,5 +1,7 @@
 package com.example.prop_validate;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import java.util.ArrayList;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -13,8 +15,13 @@ import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnShouldComponentUpdate;
 
+@ArezComponent(
+    name = "OtherPropValidate",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_OtherPropValidate extends OtherPropValidate {
+abstract class React4j_OtherPropValidate extends OtherPropValidate {
   React4j_OtherPropValidate(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -75,7 +82,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
 
     @Override
     protected OtherPropValidate createComponent() {
-      return new React4j_OtherPropValidate( this );
+      return new Arez_React4j_OtherPropValidate( this );
     }
   }
 
@@ -87,7 +94,7 @@ class React4j_OtherPropValidate extends OtherPropValidate {
 
     @Override
     protected OtherPropValidate createComponent() {
-      return new React4j_OtherPropValidate( this );
+      return new Arez_React4j_OtherPropValidate( this );
     }
 
     @Override

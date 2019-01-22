@@ -1,5 +1,7 @@
 package com.example.prop_validate;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnShouldComponentUpdate;
 
+@ArezComponent(
+    name = "BooleanPropValidate",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_BooleanPropValidate extends BooleanPropValidate {
+abstract class React4j_BooleanPropValidate extends BooleanPropValidate {
   React4j_BooleanPropValidate(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -70,7 +77,7 @@ class React4j_BooleanPropValidate extends BooleanPropValidate {
 
     @Override
     protected BooleanPropValidate createComponent() {
-      return new React4j_BooleanPropValidate( this );
+      return new Arez_React4j_BooleanPropValidate( this );
     }
   }
 
@@ -82,7 +89,7 @@ class React4j_BooleanPropValidate extends BooleanPropValidate {
 
     @Override
     protected BooleanPropValidate createComponent() {
-      return new React4j_BooleanPropValidate( this );
+      return new Arez_React4j_BooleanPropValidate( this );
     }
 
     @Override

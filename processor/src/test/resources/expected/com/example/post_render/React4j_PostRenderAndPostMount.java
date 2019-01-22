@@ -1,5 +1,7 @@
 package com.example.post_render;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,8 +15,13 @@ import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 
+@ArezComponent(
+    name = "PostRenderAndPostMount",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
+abstract class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
   React4j_PostRenderAndPostMount(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -55,7 +62,7 @@ class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
 
     @Override
     protected PostRenderAndPostMount createComponent() {
-      return new React4j_PostRenderAndPostMount( this );
+      return new Arez_React4j_PostRenderAndPostMount( this );
     }
 
     @Override

@@ -18,7 +18,7 @@ public interface BasicReactComponentDaggerComponentExtension {
   @Module
   interface DaggerModule {
     @Binds
-    Component bindComponent(React4j_BasicReactComponent component);
+    Component bindComponent(Arez_React4j_BasicReactComponent component);
   }
 
   @Subcomponent(

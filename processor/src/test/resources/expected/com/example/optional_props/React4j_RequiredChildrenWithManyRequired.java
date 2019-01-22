@@ -1,5 +1,7 @@
 package com.example.optional_props;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
+@ArezComponent(
+    name = "RequiredChildrenWithManyRequired",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyRequired {
+abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyRequired {
   React4j_RequiredChildrenWithManyRequired(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -85,7 +92,7 @@ class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyR
 
     @Override
     protected RequiredChildrenWithManyRequired createComponent() {
-      return new React4j_RequiredChildrenWithManyRequired( this );
+      return new Arez_React4j_RequiredChildrenWithManyRequired( this );
     }
   }
 }

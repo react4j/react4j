@@ -1,5 +1,7 @@
 package com.example.nested;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,8 +13,13 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
+@ArezComponent(
+    name = "BasicReactComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends NestedNestedReactComponent.DeepNesting.BasicReactComponent {
+abstract class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends NestedNestedReactComponent.DeepNesting.BasicReactComponent {
   NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent(
       @Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
@@ -39,7 +46,7 @@ class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends
 
     @Override
     protected NestedNestedReactComponent.DeepNesting.BasicReactComponent createComponent() {
-      return new NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent( this );
+      return new Arez_NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent( this );
     }
   }
 }

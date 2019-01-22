@@ -1,5 +1,7 @@
 package com.example.prop;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import java.util.ArrayList;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -12,8 +14,13 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
+@ArezComponent(
+    name = "CollectionArrayListPropComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_CollectionArrayListPropComponent extends CollectionArrayListPropComponent {
+abstract class React4j_CollectionArrayListPropComponent extends CollectionArrayListPropComponent {
   React4j_CollectionArrayListPropComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -52,7 +59,7 @@ class React4j_CollectionArrayListPropComponent extends CollectionArrayListPropCo
 
     @Override
     protected CollectionArrayListPropComponent createComponent() {
-      return new React4j_CollectionArrayListPropComponent( this );
+      return new Arez_React4j_CollectionArrayListPropComponent( this );
     }
   }
 }

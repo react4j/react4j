@@ -1,5 +1,7 @@
 package com.example.on_prop_change;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidUpdate;
 
+@ArezComponent(
+    name = "PostUpdateOnPropChange",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
+abstract class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
   React4j_PostUpdateOnPropChange(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -65,7 +72,7 @@ class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
 
     @Override
     protected PostUpdateOnPropChange createComponent() {
-      return new React4j_PostUpdateOnPropChange( this );
+      return new Arez_React4j_PostUpdateOnPropChange( this );
     }
 
     @Override

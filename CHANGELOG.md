@@ -8,6 +8,12 @@
   class `react4j.internal.arez.IntrospectUtil` as the code is not expected to be used by end-user code.
 * **\[core\]** Extract some utility code out of `ReactArezComponent` into a new utility
   class `react4j.internal.arez.SchedulerUtil` as the code is not expected to be used by end-user code.
+* **\[processor\]** Classes that extend `react4j.Component` but not `react4j.arez.ReactArezComponent` are now
+  generated as `@ArezComponent(allowEmpty=true)` annotated classes. This means that the normal arez lifecycle
+  methods (i.e. those annotated with `@PostConstruct`, `@PreDispose`, `@PostDispose` etc.) are available to all
+  react4j components as are helper annotations such as `@CascadeDispose`. This removes the need to implement
+  parallel capabilities into the react4j annotation processor and significantly simplifies integration with
+  the injection framework.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

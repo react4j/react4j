@@ -18,7 +18,7 @@ public interface InjectTrueComponentDaggerComponentExtension {
   @Module
   interface DaggerModule {
     @Binds
-    Component bindComponent(React4j_InjectTrueComponent component);
+    Component bindComponent(Arez_React4j_InjectTrueComponent component);
   }
 
   @Subcomponent(

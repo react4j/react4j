@@ -1,5 +1,7 @@
 package com.example.prop;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,8 +14,13 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
+@ArezComponent(
+    name = "SingleChildPropComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_SingleChildPropComponent extends SingleChildPropComponent {
+abstract class React4j_SingleChildPropComponent extends SingleChildPropComponent {
   React4j_SingleChildPropComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -52,7 +59,7 @@ class React4j_SingleChildPropComponent extends SingleChildPropComponent {
 
     @Override
     protected SingleChildPropComponent createComponent() {
-      return new React4j_SingleChildPropComponent( this );
+      return new Arez_React4j_SingleChildPropComponent( this );
     }
   }
 }

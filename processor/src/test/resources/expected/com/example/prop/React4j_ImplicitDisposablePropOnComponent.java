@@ -1,5 +1,7 @@
 package com.example.prop;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,8 +13,13 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
+@ArezComponent(
+    name = "ImplicitDisposablePropOnComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposablePropOnComponent {
+abstract class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposablePropOnComponent {
   React4j_ImplicitDisposablePropOnComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -51,7 +58,7 @@ class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposablePropOn
 
     @Override
     protected ImplicitDisposablePropOnComponent createComponent() {
-      return new React4j_ImplicitDisposablePropOnComponent( this );
+      return new Arez_React4j_ImplicitDisposablePropOnComponent( this );
     }
   }
 }

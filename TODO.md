@@ -2,6 +2,10 @@
 
 ### Next Release
 
+* Need to generate a `dispose()` call for all react4j components in development mode and non `ReactArezComponent`
+  components should also have dispose generated when they have reactive elements included (i.e. `@Observable` and
+  friends).
+
 * `key` is valid on fragments elements.
 
 * Host `ReactElement` instances should be created within the `dom` library and we could create the instances
@@ -24,12 +28,6 @@
 * Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
   will push the call into a task that is invoked at a later time. Roughly we want to be able to take an effect and
   push it outside the commit phase of react rendering and have it run later
-
-* Consider making non-arez components into Arez components that do not track state. This would make it possible
-  to use `@CascadeDispose`, `@PostConstruct`, `@PreDispose` and `@PostDispose` annotations as well as better
-  `@Inject` support without bloating `react4j` with similar code generation and annotations.
-
-* Should generate an error when any method or field has an Arez annotation when not an arez component
 
 * Collections returned from props should be made immutable.
 
@@ -61,8 +59,6 @@
     For `STATELESS|PURE` components we could add an invariant check to ensure props are not invoked out of render.
     When inlining the `build()` method in builder will access static singleton instance of component, set
     props and call render. Alternatively we could require the users to write it as a static method somewhere.
-
-* Add `@DisposeOnUnmount` which is functionally equivalent to `@CascadeDispose` but available on normal react components
 
 * Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
 

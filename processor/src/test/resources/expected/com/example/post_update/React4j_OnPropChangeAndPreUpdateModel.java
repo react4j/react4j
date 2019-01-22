@@ -1,5 +1,7 @@
 package com.example.post_update;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,8 +15,13 @@ import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
+@ArezComponent(
+    name = "OnPropChangeAndPreUpdateModel",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateModel {
+abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateModel {
   React4j_OnPropChangeAndPreUpdateModel(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -66,7 +73,7 @@ class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreUpdateMode
 
     @Override
     protected OnPropChangeAndPreUpdateModel createComponent() {
-      return new React4j_OnPropChangeAndPreUpdateModel( this );
+      return new Arez_React4j_OnPropChangeAndPreUpdateModel( this );
     }
 
     @Override

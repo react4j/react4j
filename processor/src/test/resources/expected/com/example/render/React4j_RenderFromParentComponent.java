@@ -1,5 +1,7 @@
 package com.example.render;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,8 +13,13 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
+@ArezComponent(
+    name = "RenderFromParentComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_RenderFromParentComponent extends RenderFromParentComponent {
+abstract class React4j_RenderFromParentComponent extends RenderFromParentComponent {
   React4j_RenderFromParentComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -38,7 +45,7 @@ class React4j_RenderFromParentComponent extends RenderFromParentComponent {
 
     @Override
     protected RenderFromParentComponent createComponent() {
-      return new React4j_RenderFromParentComponent( this );
+      return new Arez_React4j_RenderFromParentComponent( this );
     }
   }
 }

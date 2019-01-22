@@ -1,5 +1,7 @@
 package com.example.on_prop_change;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import java.util.ArrayList;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -13,8 +15,13 @@ import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
+@ArezComponent(
+    name = "ParameterizedOnPropChange",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
+)
 @Generated("react4j.processor.ReactProcessor")
-class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChange {
+abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChange {
   React4j_ParameterizedOnPropChange(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -63,7 +70,7 @@ class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChange {
 
     @Override
     protected ParameterizedOnPropChange createComponent() {
-      return new React4j_ParameterizedOnPropChange( this );
+      return new Arez_React4j_ParameterizedOnPropChange( this );
     }
 
     @Override
