@@ -1,4 +1,4 @@
-package arez.downstream;
+package react4j.downstream;
 
 import java.io.IOException;
 import java.nio.file.Files;
