@@ -23,6 +23,7 @@ import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "NotObservableAsNotUpdateOnChangeProp",
@@ -83,7 +84,7 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
   )
   protected ReactNode render() {
     clearRenderDepsChanged();
-    pauseArezSchedulerUntilRenderLoopComplete();
+    SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {

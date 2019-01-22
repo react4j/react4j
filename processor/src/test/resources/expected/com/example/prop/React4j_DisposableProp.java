@@ -22,6 +22,7 @@ import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "DisposableProp",
@@ -82,7 +83,7 @@ abstract class React4j_DisposableProp extends DisposableProp {
   )
   protected ReactNode render() {
     clearRenderDepsChanged();
-    pauseArezSchedulerUntilRenderLoopComplete();
+    SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final Object $$react4jv$$_getValue = getValue();
     if ( Disposable.isDisposed( $$react4jv$$_getValue ) ) {

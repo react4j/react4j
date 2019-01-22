@@ -22,6 +22,7 @@ import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "ComponentWithArezProp",
@@ -91,7 +92,7 @@ abstract class React4j_ComponentWithArezProp extends ComponentWithArezProp {
   )
   protected ReactNode render() {
     clearRenderDepsChanged();
-    pauseArezSchedulerUntilRenderLoopComplete();
+    SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ComponentWithArezProp.Model $$react4jv$$_getModel = getModel();
     if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {

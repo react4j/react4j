@@ -28,6 +28,7 @@ import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
+import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "PropAndMemoizeComponent",
@@ -111,7 +112,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
   )
   protected ReactNode render() {
     clearRenderDepsChanged();
-    pauseArezSchedulerUntilRenderLoopComplete();
+    SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {

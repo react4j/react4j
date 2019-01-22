@@ -88,6 +88,7 @@ final class Generator
     ClassName.get( "react4j.internal", "NativeAdapterComponent" );
   private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeComponent" );
+  private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "SchedulerUtil" );
   private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
   private static final String SHOULD_COMPONENT_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "shouldComponentUpdate";
   private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
@@ -1173,7 +1174,7 @@ final class Generator
     method.addAnnotation( observe.build() );
 
     method.addStatement( "clearRenderDepsChanged()" );
-    method.addStatement( "pauseArezSchedulerUntilRenderLoopComplete()" );
+    method.addStatement( "$T.pauseUntilRenderLoopComplete()", SCHEDULER_UTIL_CLASSNAME );
     method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
     final List<PropDescriptor> disposableProps =
