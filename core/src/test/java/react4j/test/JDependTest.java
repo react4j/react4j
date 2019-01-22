@@ -27,6 +27,7 @@ public class JDependTest
     final JavaPackage react4j = constraint.addPackage( "react4j" );
     final JavaPackage react4jArez = constraint.addPackage( "react4j.arez" );
     final JavaPackage react4jInternal = constraint.addPackage( "react4j.internal" );
+    final JavaPackage react4jInternalArez = constraint.addPackage( "react4j.internal.arez" );
     constraint.addPackage( "react4j.annotations" );
     final JavaPackage braincheck = constraint.addPackage( "org.realityforge.braincheck" );
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
@@ -47,11 +48,16 @@ public class JDependTest
     react4jArez.dependsUpon( arez );
     react4jArez.dependsUpon( arezSpy );
     react4jArez.dependsUpon( elemental2Promise );
+    react4jArez.dependsUpon( react4jInternalArez );
 
     react4jInternal.dependsUpon( jsinteropAnnotations );
     react4jInternal.dependsUpon( jsinteropBase );
     react4jInternal.dependsUpon( elemental2Core );
     react4jInternal.dependsUpon( react4j );
+
+    react4jInternalArez.dependsUpon( jsinteropBase );
+    react4jInternalArez.dependsUpon( arez );
+    react4jInternalArez.dependsUpon( arezSpy );
 
     final DependencyConstraint.MatchResult result = jdepend.analyzeDependencies( constraint );
 
