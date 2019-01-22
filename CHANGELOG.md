@@ -17,6 +17,10 @@
 * **\[core\]** Move `ReactArezComponent.getArezComponentId()` to `Component.getComponentId()` and
   `ReactArezComponent.getArezComponentName()` to `Component.getComponentName()` so that the methods are available
   to all react components.
+* **\[core\]** Guard the data emitted as debug state to ensure that all the required compile time properties are
+  set to `true` before emitting debug values. This includes `react4j.store_debug_data_as_state` as well as the
+  associated Arez compile time properties `arez.enable_spies` and/or `arez.enable_names`. This ensures that these
+  compile time properties can be controlled independently while ensuring unused code is optimized out.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

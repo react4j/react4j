@@ -1,5 +1,6 @@
 package react4j;
 
+import arez.Arez;
 import arez.annotations.ComponentIdRef;
 import arez.annotations.ComponentNameRef;
 import elemental2.core.JsError;
@@ -166,7 +167,10 @@ public abstract class Component
         final JsPropertyMap<Object> newState = JsPropertyMap.of();
         // Present component id as state. Useful to track when instance ids change.
         newState.set( "Arez.id", getComponentId() );
-        newState.set( "Arez.name", getComponentName() );
+        if ( Arez.areNamesEnabled() )
+        {
+          newState.set( "Arez.name", getComponentName() );
+        }
         populateDebugData( newState );
 
         final JsPropertyMap<Object> state = component().state();
