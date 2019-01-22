@@ -2,8 +2,6 @@
 
 ### Next Release
 
-* Add `react4j-sithtracker` to `downstream-test` tests and record stats.
-
 * `key` is valid on fragments elements.
 
 * Host `ReactElement` instances should be created within the `dom` library and we could create the instances
