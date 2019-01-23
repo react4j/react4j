@@ -39,8 +39,7 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
     return props().getAny( Props.myProp ).asByte();
   }
 
-  @Override
-  protected final void validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
+  private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
     final Object raw$myProp = props.get( Props.myProp );
     if ( null != raw$myProp ) {
       final byte typed$myProp = Js.asByte( raw$myProp );
@@ -52,7 +51,7 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
     if ( React.shouldValidatePropValues() ) {
-      validatePropValues( nextProps );
+      $$react4j$$_validatePropValues( nextProps );
     }
     final JsPropertyMap<Object> props = props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
@@ -73,6 +72,10 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
+      if ( React.shouldValidatePropValues() ) {
+        assert null != props;
+        ((React4j_BytePropValidate) component() ).$$react4j$$_validatePropValues( props );
+      }
     }
 
     @Override
@@ -85,6 +88,10 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
+      if ( React.shouldValidatePropValues() ) {
+        assert null != props;
+        ((React4j_BytePropValidate) component() ).$$react4j$$_validatePropValues( props );
+      }
     }
 
     @Override

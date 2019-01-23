@@ -31,8 +31,6 @@ public abstract class NativeAdapterComponent<I extends Component>
     super( props );
     _component = createComponent();
     _component.bindComponent( this );
-
-    performPostConstruct();
   }
 
   /**
@@ -41,14 +39,6 @@ public abstract class NativeAdapterComponent<I extends Component>
    * @return a new instance of the target component.
    */
   protected abstract I createComponent();
-
-  /**
-   * Initialize the target component.
-   */
-  private void performPostConstruct()
-  {
-    component().performPostConstruct();
-  }
 
   /**
    * Return the non-native component associated with this component.

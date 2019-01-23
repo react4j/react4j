@@ -41,8 +41,7 @@ abstract class React4j_NonnullPropValidate extends NonnullPropValidate {
     return props().getAny( Props.myProp ).asString();
   }
 
-  @Override
-  protected final void validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
+  private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
     final Object raw$myProp = props.get( Props.myProp );
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Required prop named 'myProp' is missing from component named 'NonnullPropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
@@ -57,7 +56,7 @@ abstract class React4j_NonnullPropValidate extends NonnullPropValidate {
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
     if ( React.shouldValidatePropValues() ) {
-      validatePropValues( nextProps );
+      $$react4j$$_validatePropValues( nextProps );
     }
     final JsPropertyMap<Object> props = props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
@@ -78,6 +77,10 @@ abstract class React4j_NonnullPropValidate extends NonnullPropValidate {
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
+      if ( React.shouldValidatePropValues() ) {
+        assert null != props;
+        ((React4j_NonnullPropValidate) component() ).$$react4j$$_validatePropValues( props );
+      }
     }
 
     @Override
@@ -90,6 +93,10 @@ abstract class React4j_NonnullPropValidate extends NonnullPropValidate {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
+      if ( React.shouldValidatePropValues() ) {
+        assert null != props;
+        ((React4j_NonnullPropValidate) component() ).$$react4j$$_validatePropValues( props );
+      }
     }
 
     @Override

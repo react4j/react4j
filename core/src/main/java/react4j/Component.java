@@ -109,32 +109,6 @@ public abstract class Component
   }
 
   /**
-   * Wrapper method that delegates to the {@link #postConstruct()} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
-   */
-  public void performPostConstruct()
-  {
-    final JsPropertyMap<Object> props = props();
-    if ( React.shouldValidatePropValues() && null != props )
-    {
-      validatePropValues( props );
-    }
-    postConstruct();
-  }
-
-  /**
-   * This method is invoked after the component is constructed and bound to a native react component.
-   * This is a good place to perform initialization. It is called before {@link #render()}, therefore
-   * setting state in this method will not trigger a re-rendering. This replaces the
-   * <a href="https://reactjs.org/docs/react-component.html#componentwillmount">componentWillMount</a>
-   * lifecycle method from react as well as the code that appears in constructors in native React ES6
-   * components.
-   */
-  protected void postConstruct()
-  {
-  }
-
-  /**
    * The componentDidCatch() method works like a JavaScript catch {} block, but for components.
    * Only class components can be error boundaries. In practice, most of the time you’ll want to
    * declare an error boundary component once and use it throughout your application.
@@ -148,15 +122,6 @@ public abstract class Component
    * @param info  information about component stack during thrown error.
    */
   protected void componentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
-  {
-  }
-
-  /**
-   * Perform validation on props supplied to the component.
-   *
-   * @param props the props of the component.
-   */
-  protected void validatePropValues( @Nonnull final JsPropertyMap<Object> props )
   {
   }
 

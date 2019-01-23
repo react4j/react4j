@@ -99,6 +99,7 @@ final class Generator
   private static final String COMPONENT_DID_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidUpdate";
   private static final String COMPONENT_DID_MOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidMount";
   private static final String COMPONENT_WILL_UNMOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentWillUnmount";
+  private static final String VALIDATE_PROPS_METHOD = FRAMEWORK_INTERNAL_PREFIX + "validatePropValues";
   private static final String COMPONENT_STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
 
   private Generator()
@@ -970,7 +971,7 @@ final class Generator
     {
       final CodeBlock.Builder validateBlock = CodeBlock.builder();
       validateBlock.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CLASSNAME );
-      validateBlock.addStatement( "validatePropValues( nextProps )" );
+      validateBlock.addStatement( "$N( nextProps )", VALIDATE_PROPS_METHOD );
       validateBlock.endControlFlow();
       method.addCode( validateBlock.build() );
     }
@@ -1288,9 +1289,8 @@ final class Generator
   private static MethodSpec.Builder buildPropValidatorMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "validatePropValues" ).
-        addAnnotation( Override.class ).
-        addModifiers( Modifier.PROTECTED, Modifier.FINAL ).
+      MethodSpec.methodBuilder( VALIDATE_PROPS_METHOD ).
+        addModifiers( Modifier.PRIVATE ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
           addAnnotation( NONNULL_CLASSNAME ).build() );
 
@@ -1543,6 +1543,18 @@ final class Generator
           addParameter( props.build() );
       method.addAnnotation( JS_CONSTRUCTOR_CLASSNAME );
       method.addStatement( "super( props )" );
+      if ( descriptor.hasValidatedProps() )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CLASSNAME );
+        block.addStatement( "assert null != props" );
+        block.addStatement( "(($T) component() ).$N( props )",
+                            descriptor.getEnhancedClassName(),
+                            VALIDATE_PROPS_METHOD );
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
+
       builder.addMethod( method.build() );
     }
 
