@@ -34,6 +34,8 @@
   is no longer any reason to disallow that scenario.
 * **\[core\]** Remove the `ReactArezComponent.getContext()` as it is no longer required within react4j. Users can
   add a similar method back in, if/when it is needed.
+* **\[core\]** Remove the constructor in `ReactArezComponent` as it was only overridden to make it protected
+  access but the class is abstract so can never be directly instantiated and thus the override had no impact.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

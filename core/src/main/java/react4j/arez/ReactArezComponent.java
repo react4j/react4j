@@ -29,10 +29,6 @@ public abstract class ReactArezComponent
   private boolean _renderDepsChanged;
   private boolean _unmounted;
 
-  protected ReactArezComponent()
-  {
-  }
-
   /**
    * Return true if the render dependencies have been marked as changed and component has yet to be re-rendered.
    *
