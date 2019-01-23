@@ -128,12 +128,12 @@ final class PropDescriptor
     final VariableElement param = method.getParameters().get( 0 );
     final boolean mismatchedNullability =
       (
-        null != ProcessorUtil.findAnnotationByType( param, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-        null != ProcessorUtil.findAnnotationByType( _method, Constants.NULLABLE_ANNOTATION_CLASSNAME )
+        ProcessorUtil.hasAnnotationOfType( param, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
+        ProcessorUtil.hasAnnotationOfType( _method, Constants.NULLABLE_ANNOTATION_CLASSNAME )
       ) ||
       (
-        null != ProcessorUtil.findAnnotationByType( param, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-        null != ProcessorUtil.findAnnotationByType( _method, Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+        ProcessorUtil.hasAnnotationOfType( param, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
+        ProcessorUtil.hasAnnotationOfType( _method, Constants.NONNULL_ANNOTATION_CLASSNAME ) );
 
     if ( mismatchedNullability )
     {

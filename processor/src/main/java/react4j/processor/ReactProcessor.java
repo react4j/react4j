@@ -170,14 +170,7 @@ public final class ReactProcessor
     emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( descriptor ) );
     if ( descriptor.needsDaggerIntegration() )
     {
-      if ( descriptor.isArezComponent() )
-      {
-        emitTypeSpec( descriptor.getPackageName(), Generator.buildArezDaggerComponentExtension( descriptor ) );
-      }
-      else
-      {
-        emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerComponentExtension( descriptor ) );
-      }
+      emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerComponentExtension( descriptor ) );
     }
   }
 
@@ -337,7 +330,7 @@ public final class ReactProcessor
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     final ArrayList<OnPropChangeDescriptor> onPropChangeDescriptors = new ArrayList<>();
@@ -389,12 +382,12 @@ public final class ReactProcessor
         }
         final boolean mismatchedNullability =
           (
-            null != ProcessorUtil.findAnnotationByType( parameter, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-            null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
+            ProcessorUtil.hasAnnotationOfType( parameter, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
+            ProcessorUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
           ) ||
           (
-            null != ProcessorUtil.findAnnotationByType( parameter, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-            null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+            ProcessorUtil.hasAnnotationOfType( parameter, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
+            ProcessorUtil.hasAnnotationOfType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
 
         if ( mismatchedNullability )
         {
@@ -450,7 +443,7 @@ public final class ReactProcessor
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final ExecutableElement method : methods )
@@ -517,7 +510,7 @@ public final class ReactProcessor
   {
     final List<ExecutableElement> defaultPropsMethods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final ExecutableElement method : defaultPropsMethods )
@@ -547,7 +540,7 @@ public final class ReactProcessor
   {
     final List<VariableElement> defaultPropsFields =
       ProcessorUtil.getFieldElements( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final VariableElement field : defaultPropsFields )
@@ -676,7 +669,7 @@ public final class ReactProcessor
   {
     final List<PropDescriptor> props =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
         .map( m -> createPropDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
 
@@ -711,7 +704,7 @@ public final class ReactProcessor
       default:
         return !prop.hasDefaultMethod() &&
                !prop.hasDefaultField() &&
-               null == ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME );
+               !ProcessorUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME );
     }
   }
 
@@ -782,7 +775,7 @@ public final class ReactProcessor
                                          "is not a subclass of react4j.arez.ReactArezComponent", method );
     }
     if ( TypeName.get( returnType ).isBoxedPrimitive() &&
-         null != ProcessorUtil.findAnnotationByType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+         ProcessorUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
       throw new ReactProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
                                          "@Nonnull annotation. The return type should be the primitive type.",
@@ -823,7 +816,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPreUpdate( method );
       }
@@ -835,7 +828,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.PRE_UNMOUNT_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.PRE_UNMOUNT_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPreUnmount( method );
       }
@@ -847,7 +840,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.POST_RENDER_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_RENDER_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostRender( method );
       }
@@ -859,7 +852,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostUpdate( method );
       }
@@ -871,7 +864,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostMount( method );
       }
@@ -1110,8 +1103,8 @@ public final class ReactProcessor
   {
     return getMethods( typeElement )
       .stream()
-      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
-                      ( null != ProcessorUtil.findAnnotationByType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
+      .anyMatch( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
+                      ( ProcessorUtil.hasAnnotationOfType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
                         ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
   }
 
@@ -1133,7 +1126,7 @@ public final class ReactProcessor
       default:
         return descriptor.isArezComponent() &&
                ElementKind.CLASS == propType.getKind() &&
-               null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME );
+               ProcessorUtil.hasAnnotationOfType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME );
     }
   }
 
@@ -1151,9 +1144,9 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        return ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( this::hasInjectAnnotation ) ||
+        return ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( ProcessorUtil::hasInjectAnnotation ) ||
                getMethods( typeElement ).
-                 stream().anyMatch( this::hasInjectAnnotation );
+                 stream().anyMatch( ProcessorUtil::hasInjectAnnotation );
     }
   }
 
@@ -1173,11 +1166,6 @@ public final class ReactProcessor
       default:
         return null != processingEnv.getElementUtils().getTypeElement( Constants.DAGGER_MODULE_CLASSNAME );
     }
-  }
-
-  private boolean hasInjectAnnotation( final Element method )
-  {
-    return null != ProcessorUtil.findAnnotationByType( method, Constants.INJECT_ANNOTATION_CLASSNAME );
   }
 
   /**
