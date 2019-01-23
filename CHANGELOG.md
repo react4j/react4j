@@ -41,6 +41,7 @@
   `ReactArezComponent` and use the compiler to optimize away unneeded code.
 * **\[processor\]** Move the `ReactArezComponent.getRenderObserver()` method into the generated class as user code
   does not need access to the raw Observer instance.
+* **\[core\]** Re-add the `Component.scheduleRender()` method that takes no parameters.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

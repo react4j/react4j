@@ -61,6 +61,17 @@ public abstract class Component
   }
 
   /**
+   * Schedule this component for re-rendering skipping the <code>shouldComponentUpdate()</code> lifecycle method.
+   * This is equivalent to calling {@link #scheduleRender(boolean)} passing a <code>true</code> value.
+   *
+   * @see #scheduleRender(boolean)
+   */
+  protected final void scheduleRender()
+  {
+    scheduleRender( true );
+  }
+
+  /**
    * Schedule this component for re-rendering.
    * The component re-renders when props change but calling this method is another way to schedule the
    * component to be re-rendered. When this method is called the <code>shouldComponentUpdate()</code>
