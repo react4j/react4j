@@ -16,12 +16,6 @@ import react4j.annotations.ReactComponent;
 abstract class OverrideLifecycleMethodsComponent
   extends Component
 {
-  // This lifecycle method should not have adapter synthesized.
-  @Override
-  protected void postConstruct()
-  {
-  }
-
   @Override
   protected ReactNode render()
   {
