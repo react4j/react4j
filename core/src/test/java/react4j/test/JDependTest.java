@@ -107,7 +107,7 @@ public class JDependTest
         oldEfferents.forEach( p -> sb
           .append( "Package " )
           .append( expected.getName() )
-          .append( " no longer depends depends upon " )
+          .append( " no longer depends upon " )
           .append( p.getName() )
           .append( "\n" )
         );
