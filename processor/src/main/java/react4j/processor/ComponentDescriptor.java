@@ -255,7 +255,6 @@ final class ComponentDescriptor
 
   void setMemoizeMethods( @Nonnull final List<MethodDescriptor> memoizeMethods )
   {
-    assert isArezComponent();
     _memoizeMethods = Objects.requireNonNull( memoizeMethods );
   }
 

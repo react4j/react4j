@@ -214,12 +214,6 @@ public class ReactProcessorTest
     return new Object[][]
       {
         new Object[]{ "com.example.arez.MemoizeOnPrivateComponent", "@Memoize target must not be private" },
-        new Object[]{ "com.example.arez.NonArezHasArezAnnotation",
-                      "@ReactComponent target has a method 'handleFoo' with an arez annotation 'arez.annotations.Action' but is not an arez component." },
-        new Object[]{ "com.example.arez.NonArezHasArezFieldAnnotation",
-                      "@ReactComponent target has a field '_field' with an arez annotation 'arez.annotations.CascadeDispose' but is not an arez component." },
-        new Object[]{ "com.example.component.AbstractMethodComponent",
-                      "@ReactComponent target has an unexpected abstract method" },
         new Object[]{ "com.example.component.ConcreteComponent", "@ReactComponent target must be abstract" },
         new Object[]{ "com.example.component.BadNameComponent",
                       "@ReactComponent target specified an invalid name '-abc'. The name must be a valid java identifier." },

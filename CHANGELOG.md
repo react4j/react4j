@@ -30,6 +30,8 @@
   react4j triggering resulted in reduced code size where this feature was used.
 * **\[processor\]** Fix bug where the enhanced component classes with fields annotated with `@Dependency` would
   trigger at the incorrect time and potentially result in null pointer exceptions.
+* **\[processor\]** Allow Arez annotations on react components that do not extend `ReactArezComponent` as there
+  is no longer any reason to disallow that scenario.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

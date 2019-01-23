@@ -230,7 +230,6 @@ public final class ReactProcessor
      */
     descriptor.sortProps();
 
-    verifyNoUnexpectedAbstractMethod( descriptor );
     verifyPropsNotAnnotatedWithArezAnnotations( descriptor );
     verifyPropsNotCollectionOfArezComponents( descriptor );
 
@@ -330,26 +329,6 @@ public final class ReactProcessor
           throw new ReactProcessorException( "@Prop target must not be annotated with any arez annotations but " +
                                              "is annotated by '" + classname + "'.", method );
         }
-      }
-    }
-  }
-
-  private void verifyNoUnexpectedAbstractMethod( @Nonnull final ComponentDescriptor descriptor )
-  {
-    if ( !descriptor.isArezComponent() )
-    {
-      final ExecutableElement abstractMethod =
-        getMethods( descriptor.getElement() )
-          .stream()
-          .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) )
-          // @Props methods are expected to be abstract
-          .filter( m -> descriptor.getProps().stream().noneMatch( p -> p.getMethod() == m ) )
-          .findAny()
-          .orElse( null );
-      if ( null != abstractMethod )
-      {
-        throw new ReactProcessorException( "@ReactComponent target has an unexpected abstract method",
-                                           abstractMethod );
       }
     }
   }
@@ -1027,7 +1006,6 @@ public final class ReactProcessor
     }
     else
     {
-      assert !isArezComponent;
       if ( null != ProcessorUtil.findDeclaredAnnotationValue( typeElement,
                                                               Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                                               "allowNoArezDeps" ) )
@@ -1057,40 +1035,9 @@ public final class ReactProcessor
                                         "allowNoArezDeps" ).getValue();
     descriptor.setArezComponent( isArezComponent, allowNoArezDeps );
 
-    if ( isArezComponent )
-    {
-      ensureMemoizeMatchesExpectations( typeElement );
-      descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
-    }
-    else
-    {
-      for ( final ExecutableElement method : ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ) )
-      {
-        for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
-        {
-          final String classname = mirror.getAnnotationType().toString();
-          if ( isArezAnnotation( classname ) )
-          {
-            throw new ReactProcessorException( "@ReactComponent target has a method '" + method.getSimpleName() +
-                                               "' with an arez annotation '" + classname + "' but is not an " +
-                                               "arez component.", method );
-          }
-        }
-      }
-      for ( final VariableElement element : ProcessorUtil.getFieldElements( typeElement ) )
-      {
-        for ( final AnnotationMirror mirror : element.getAnnotationMirrors() )
-        {
-          final String classname = mirror.getAnnotationType().toString();
-          if ( isArezAnnotation( classname ) )
-          {
-            throw new ReactProcessorException( "@ReactComponent target has a field '" + element.getSimpleName() +
-                                               "' with an arez annotation '" + classname + "' but is not an " +
-                                               "arez component.", element );
-          }
-        }
-      }
-    }
+    ensureMemoizeMatchesExpectations( typeElement );
+
+    descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
   }
 
   private void ensureMemoizeMatchesExpectations( @Nonnull final TypeElement typeElement )
