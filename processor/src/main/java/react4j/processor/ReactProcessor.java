@@ -1060,12 +1060,6 @@ public final class ReactProcessor
     if ( isArezComponent )
     {
       ensureMemoizeMatchesExpectations( typeElement );
-      final boolean runArezScheduler =
-        hasAnyArezScheduledObserverMethods( typeElement ) ||
-        hasAnyKeepAliveMemoizeMethods( typeElement ) ||
-        hasAnyDependencyMethods( typeElement );
-      descriptor.setRunArezScheduler( runArezScheduler );
-
       descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
     }
     else
@@ -1231,42 +1225,6 @@ public final class ReactProcessor
       default:
         return null != processingEnv.getElementUtils().getTypeElement( Constants.DAGGER_MODULE_CLASSNAME );
     }
-  }
-
-  private boolean hasAnyArezScheduledObserverMethods( @Nonnull final TypeElement typeElement )
-  {
-    return getMethods( typeElement )
-      .stream()
-      .anyMatch( m -> {
-        final AnnotationValue annotationValue =
-          ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
-                                             m,
-                                             Constants.OBSERVE_ANNOTATION_CLASSNAME,
-                                             "executor" );
-        return null != annotationValue &&
-               ( (VariableElement) annotationValue.getValue() ).getSimpleName().toString().equals( "INTERNAL" );
-      } );
-  }
-
-  private boolean hasAnyDependencyMethods( @Nonnull final TypeElement typeElement )
-  {
-    return getMethods( typeElement )
-      .stream()
-      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.DEPENDENCY_ANNOTATION_CLASSNAME ) );
-  }
-
-  private boolean hasAnyKeepAliveMemoizeMethods( @Nonnull final TypeElement typeElement )
-  {
-    return getMethods( typeElement )
-      .stream()
-      .anyMatch( m -> {
-        final AnnotationValue annotationValue =
-          ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
-                                             m,
-                                             Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                             "keepAlive" );
-        return null != annotationValue && (boolean) annotationValue.getValue();
-      } );
   }
 
   private boolean hasInjectAnnotation( final Element method )

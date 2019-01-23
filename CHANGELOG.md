@@ -24,6 +24,12 @@
   set to `true` before emitting debug values. This includes `react4j.store_debug_data_as_state` as well as the
   associated Arez compile time properties `arez.enable_spies` and/or `arez.enable_names`. This ensures that these
   compile time properties can be controlled independently while ensuring unused code is optimized out.
+* **\[processor\]** Fix bug where the enhanced component classes would trigger the Arez scheduler twice if there
+  was any schedulable elements that were part of the component. The second trigger would result in no action as
+  there would be no pending tasks but it did result in more code being generated than required. Removing the custom
+  react4j triggering resulted in reduced code size where this feature was used.
+* **\[processor\]** Fix bug where the enhanced component classes with fields annotated with `@Dependency` would
+  trigger at the incorrect time and potentially result in null pointer exceptions.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

@@ -43,7 +43,6 @@ final class ComponentDescriptor
   private boolean _arezComponent;
   private boolean _needsInjection;
   private boolean _needsDaggerIntegration;
-  private boolean _runArezScheduler;
   /**
    * Methods that are props accessors.
    * These should be implemented as accesses to the underlying props value.
@@ -231,16 +230,6 @@ final class ComponentDescriptor
   {
     _arezComponent = arezComponent;
     _allowNoArezDeps = allowNoArezDeps;
-  }
-
-  boolean shouldRunArezScheduler()
-  {
-    return _runArezScheduler;
-  }
-
-  void setRunArezScheduler( final boolean runArezScheduler )
-  {
-    _runArezScheduler = runArezScheduler;
   }
 
   @Nonnull

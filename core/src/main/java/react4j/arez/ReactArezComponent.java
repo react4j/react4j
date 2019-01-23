@@ -34,23 +34,6 @@ public abstract class ReactArezComponent
   }
 
   /**
-   * After construction of the object. Schedule any autoruns attached to component.
-   */
-  @Override
-  public final void performPostConstruct()
-  {
-    super.performPostConstruct();
-    triggerScheduler();
-  }
-
-  /**
-   * Template method overridden by annotation processor if there are autoruns to schedule.
-   */
-  protected void triggerScheduler()
-  {
-  }
-
-  /**
    * Return true if the render dependencies have been marked as changed and component has yet to be re-rendered.
    *
    * @return true if render dependencies changed, false otherwise.

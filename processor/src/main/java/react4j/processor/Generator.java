@@ -518,10 +518,6 @@ final class Generator
       AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
         addMember( "name", "$S", descriptor.getName() ).
         addMember( "disposeTrackable", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
-    if ( descriptor.shouldRunArezScheduler() )
-    {
-      arezAnnotation.addMember( "deferSchedule", "true" );
-    }
     if ( !descriptor.isArezComponent() )
     {
       arezAnnotation.addMember( "allowEmpty", "true" );
@@ -604,16 +600,6 @@ final class Generator
     {
       builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
       builder.addMethod( buildRender( descriptor ).build() );
-    }
-
-
-    if ( descriptor.shouldRunArezScheduler() )
-    {
-      builder.addMethod( MethodSpec.methodBuilder( "triggerScheduler" ).
-        addAnnotation( Override.class ).
-        addModifiers( Modifier.PROTECTED, Modifier.FINAL ).
-        addStatement( "getContext().triggerScheduler()" ).
-        build() );
     }
 
     if ( descriptor.isArezComponent() )
