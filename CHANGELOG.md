@@ -32,6 +32,8 @@
   trigger at the incorrect time and potentially result in null pointer exceptions.
 * **\[processor\]** Allow Arez annotations on react components that do not extend `ReactArezComponent` as there
   is no longer any reason to disallow that scenario.
+* **\[core\]** Remove the `ReactArezComponent.getContext()` as it is no longer required within react4j. Users can
+  add a similar method back in, if/when it is needed.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

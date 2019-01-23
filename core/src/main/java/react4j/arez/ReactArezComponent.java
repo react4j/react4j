@@ -66,17 +66,6 @@ public abstract class ReactArezComponent
   }
 
   /**
-   * Return the arez context that this component is associated with.
-   * The component is associated with the context that was active when it was created
-   * and can only react to observables associated with the same context.
-   *
-   * @return the arez context that this component is associated with.
-   */
-  @ContextRef
-  @Nonnull
-  protected abstract ArezContext getContext();
-
-  /**
    * Return the Observer associated with the render tracker method.
    *
    * @return the Observer associated with the render tracker method.
