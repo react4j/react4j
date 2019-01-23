@@ -90,6 +90,7 @@ final class Generator
     ClassName.get( "react4j.internal", "NativeAdapterComponent" );
   private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeComponent" );
+  private static final ClassName COMPONENT_STATE_CLASSNAME = ClassName.get( "react4j.internal.arez", "ComponentState" );
   private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "SchedulerUtil" );
   private static final ClassName INTROSPECT_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "IntrospectUtil" );
   private static final String FRAMEWORK_INTERNAL_PREFIX = "$$react4j$$_";
@@ -98,8 +99,7 @@ final class Generator
   private static final String COMPONENT_DID_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidUpdate";
   private static final String COMPONENT_DID_MOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidMount";
   private static final String COMPONENT_WILL_UNMOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentWillUnmount";
-  private static final String UNMOUNTED_FIELD = FRAMEWORK_INTERNAL_PREFIX + "unmounted";
-  private static final String RENDER_DEPS_CHANGED_FIELD = FRAMEWORK_INTERNAL_PREFIX + "renderDepsChanged";
+  private static final String COMPONENT_STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
 
   private Generator()
   {
@@ -556,8 +556,7 @@ final class Generator
 
     if ( descriptor.isArezComponent() )
     {
-      builder.addField( FieldSpec.builder( TypeName.BOOLEAN, RENDER_DEPS_CHANGED_FIELD, Modifier.PRIVATE ).build() );
-      builder.addField( FieldSpec.builder( TypeName.BOOLEAN, UNMOUNTED_FIELD, Modifier.PRIVATE ).build() );
+      builder.addField( FieldSpec.builder( TypeName.INT, COMPONENT_STATE_FIELD, Modifier.PRIVATE ).build() );
     }
 
     builder.addType( buildFactory() );
@@ -989,7 +988,7 @@ final class Generator
     {
       if ( descriptor.isArezComponent() )
       {
-        method.addStatement( "return $N", RENDER_DEPS_CHANGED_FIELD );
+        method.addStatement( "return $T.SCHEDULED == $N", COMPONENT_STATE_CLASSNAME, COMPONENT_STATE_FIELD );
       }
       else
       {
@@ -1039,7 +1038,9 @@ final class Generator
       {
         if ( descriptor.isArezComponent() )
         {
-          method.addStatement( "return modified || $N", RENDER_DEPS_CHANGED_FIELD );
+          method.addStatement( "return modified || $T.SCHEDULED == $N",
+                               COMPONENT_STATE_CLASSNAME,
+                               COMPONENT_STATE_FIELD );
         }
         else
         {
@@ -1050,7 +1051,7 @@ final class Generator
       {
         if ( descriptor.isArezComponent() )
         {
-          method.addStatement( "return $N", RENDER_DEPS_CHANGED_FIELD );
+          method.addStatement( "return $T.SCHEDULED == $N", COMPONENT_STATE_CLASSNAME, COMPONENT_STATE_FIELD );
         }
         else
         {
@@ -1145,7 +1146,7 @@ final class Generator
     }
     if ( descriptor.isArezComponent() )
     {
-      method.addStatement( "$N = true", UNMOUNTED_FIELD );
+      method.addStatement( "$N = $T.UNMOUNTED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
       method.addStatement( "$T.dispose( this )", DISPOSABLE_CLASSNAME );
     }
     return method;
@@ -1176,7 +1177,7 @@ final class Generator
     }
     method.addAnnotation( observe.build() );
 
-    method.addStatement( "$N = false", RENDER_DEPS_CHANGED_FIELD );
+    method.addStatement( "$N = $T.IDLE", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
     method.addStatement( "$T.pauseUntilRenderLoopComplete()", SCHEDULER_UTIL_CLASSNAME );
     method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
@@ -1268,20 +1269,16 @@ final class Generator
       .addModifiers( Modifier.FINAL );
 
     final CodeBlock.Builder outer = CodeBlock.builder();
-    outer.beginControlFlow( "if ( !$N )", RENDER_DEPS_CHANGED_FIELD );
-    outer.addStatement( "$N = true",RENDER_DEPS_CHANGED_FIELD );
-    final CodeBlock.Builder inner = CodeBlock.builder();
-    inner.beginControlFlow( "if ( !$N )", UNMOUNTED_FIELD );
-    if( descriptor.hasObservableProps() )
+    outer.beginControlFlow( "if ( $T.IDLE == $N )", COMPONENT_STATE_CLASSNAME, COMPONENT_STATE_FIELD );
+    outer.addStatement( "$N = $T.SCHEDULED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
+    if ( descriptor.hasObservableProps() )
     {
-      inner.addStatement( "scheduleRender( false )" );
+      outer.addStatement( "scheduleRender( false )" );
     }
     else
     {
-      inner.addStatement( "scheduleRender()" );
+      outer.addStatement( "scheduleRender()" );
     }
-    inner.endControlFlow();
-    outer.add( inner.build() );
     outer.endControlFlow();
     method.addCode( outer.build() );
     return method;

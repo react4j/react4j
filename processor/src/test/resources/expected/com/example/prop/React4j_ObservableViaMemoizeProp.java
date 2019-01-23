@@ -30,6 +30,7 @@ import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
+import react4j.internal.arez.ComponentState;
 import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
 
@@ -39,9 +40,7 @@ import react4j.internal.arez.SchedulerUtil;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp {
-  private boolean $$react4j$$_renderDepsChanged;
-
-  private boolean $$react4j$$_unmounted;
+  private int $$react4j$$_state;
 
   React4j_ObservableViaMemoizeProp(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
@@ -85,7 +84,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
       getValueObservableValue().reportChanged();
       modified = true;
     }
-    return modified || $$react4j$$_renderDepsChanged;
+    return modified || ComponentState.SCHEDULED == $$react4j$$_state;
   }
 
   private void $$react4j$$_componentDidMount() {
@@ -101,16 +100,14 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    $$react4j$$_unmounted = true;
+    $$react4j$$_state = ComponentState.UNMOUNTED;
     Disposable.dispose( this );
   }
 
   final void onRenderDepsChange() {
-    if ( !$$react4j$$_renderDepsChanged ) {
-      $$react4j$$_renderDepsChanged = true;
-      if ( !$$react4j$$_unmounted ) {
-        scheduleRender( false );
-      }
+    if ( ComponentState.IDLE == $$react4j$$_state ) {
+      $$react4j$$_state = ComponentState.SCHEDULED;
+      scheduleRender( false );
     }
   }
 
@@ -124,7 +121,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
       reportResult = false
   )
   protected ReactNode render() {
-    $$react4j$$_renderDepsChanged = false;
+    $$react4j$$_state = ComponentState.IDLE;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();

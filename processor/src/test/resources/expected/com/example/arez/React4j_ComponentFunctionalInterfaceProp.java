@@ -24,6 +24,7 @@ import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.arez.ComponentState;
 import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
 
@@ -33,9 +34,7 @@ import react4j.internal.arez.SchedulerUtil;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctionalInterfaceProp {
-  private boolean $$react4j$$_renderDepsChanged;
-
-  private boolean $$react4j$$_unmounted;
+  private int $$react4j$$_state;
 
   React4j_ComponentFunctionalInterfaceProp(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
@@ -72,16 +71,14 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    $$react4j$$_unmounted = true;
+    $$react4j$$_state = ComponentState.UNMOUNTED;
     Disposable.dispose( this );
   }
 
   final void onRenderDepsChange() {
-    if ( !$$react4j$$_renderDepsChanged ) {
-      $$react4j$$_renderDepsChanged = true;
-      if ( !$$react4j$$_unmounted ) {
-        scheduleRender();
-      }
+    if ( ComponentState.IDLE == $$react4j$$_state ) {
+      $$react4j$$_state = ComponentState.SCHEDULED;
+      scheduleRender();
     }
   }
 
@@ -95,7 +92,7 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
       reportResult = false
   )
   protected ReactNode render() {
-    $$react4j$$_renderDepsChanged = false;
+    $$react4j$$_state = ComponentState.IDLE;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();
