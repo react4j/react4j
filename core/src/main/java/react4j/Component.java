@@ -68,7 +68,7 @@ public abstract class Component
    */
   protected final void scheduleRender()
   {
-    scheduleRender( true );
+    component().forceUpdate();
   }
 
   /**
