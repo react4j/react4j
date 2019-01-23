@@ -239,10 +239,11 @@ final class WorkspaceUtil
     try
     {
       final String newBranch = switchToUpgradeBranch( context );
+      Exec.system( "git", "merge", "--no-edit", "origin/" + context.branch );
 
       buildAction.call();
       Git.checkout( context.branch );
-      Exec.system( "git", "merge", newBranch );
+      Exec.system( "git", "merge", "--no-edit", newBranch );
       Git.deleteBranch( newBranch );
     }
     catch ( final Throwable e )
