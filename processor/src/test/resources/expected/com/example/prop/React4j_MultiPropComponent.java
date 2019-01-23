@@ -9,6 +9,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
@@ -70,6 +71,12 @@ abstract class React4j_MultiPropComponent extends MultiPropComponent {
     @Override
     protected MultiPropComponent createComponent() {
       return new Arez_React4j_MultiPropComponent( this );
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_MultiPropComponent) component() ).render();
     }
   }
 }

@@ -178,6 +178,12 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
     public final void componentWillUnmount() {
       ((React4j_PropAndMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_PropAndMemoizeComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PropAndMemoizeComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
@@ -209,6 +215,12 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
     @Override
     public final void componentWillUnmount() {
       ((React4j_PropAndMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_PropAndMemoizeComponent) component() ).render();
     }
   }
 }

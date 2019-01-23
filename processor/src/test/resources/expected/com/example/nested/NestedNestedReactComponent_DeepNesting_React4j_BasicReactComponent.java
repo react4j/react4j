@@ -9,6 +9,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
@@ -47,6 +48,12 @@ abstract class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponen
     @Override
     protected NestedNestedReactComponent.DeepNesting.BasicReactComponent createComponent() {
       return new Arez_NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent( this );
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent) component() ).render();
     }
   }
 }

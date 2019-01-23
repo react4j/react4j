@@ -61,5 +61,11 @@ abstract class React4j_SingleChildPropComponent extends SingleChildPropComponent
     protected SingleChildPropComponent createComponent() {
       return new Arez_React4j_SingleChildPropComponent( this );
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_SingleChildPropComponent) component() ).render();
+    }
   }
 }

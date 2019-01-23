@@ -9,6 +9,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
@@ -82,6 +83,12 @@ abstract class React4j_FloatPropValidate extends FloatPropValidate {
     protected FloatPropValidate createComponent() {
       return new Arez_React4j_FloatPropValidate( this );
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_FloatPropValidate) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<FloatPropValidate> implements OnShouldComponentUpdate {
@@ -102,6 +109,12 @@ abstract class React4j_FloatPropValidate extends FloatPropValidate {
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return ((React4j_FloatPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_FloatPropValidate) component() ).render();
     }
   }
 }

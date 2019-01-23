@@ -58,5 +58,11 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
     protected NonnullChildPropComponent createComponent() {
       return new Arez_React4j_NonnullChildPropComponent( this );
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_NonnullChildPropComponent) component() ).render();
+    }
   }
 }

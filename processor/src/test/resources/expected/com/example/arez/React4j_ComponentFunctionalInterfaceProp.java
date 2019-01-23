@@ -136,6 +136,12 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
     public final void componentWillUnmount() {
       ((React4j_ComponentFunctionalInterfaceProp) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentFunctionalInterfaceProp) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ComponentFunctionalInterfaceProp> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -162,6 +168,12 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
     @Override
     public final void componentWillUnmount() {
       ((React4j_ComponentFunctionalInterfaceProp) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentFunctionalInterfaceProp) component() ).render();
     }
   }
 }

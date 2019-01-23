@@ -129,6 +129,12 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
     public final void componentWillUnmount() {
       ((React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ActionOnLifecycleComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ActionOnLifecycleComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -155,6 +161,12 @@ abstract class React4j_ActionOnLifecycleComponent extends ActionOnLifecycleCompo
     @Override
     public final void componentWillUnmount() {
       ((React4j_ActionOnLifecycleComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ActionOnLifecycleComponent) component() ).render();
     }
   }
 }

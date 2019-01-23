@@ -136,6 +136,12 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     public final void componentWillUnmount() {
       ((React4j_NonDisposableDisposableProp) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_NonDisposableDisposableProp) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NonDisposableDisposableProp> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -162,6 +168,12 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     @Override
     public final void componentWillUnmount() {
       ((React4j_NonDisposableDisposableProp) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_NonDisposableDisposableProp) component() ).render();
     }
   }
 }

@@ -123,6 +123,12 @@ abstract class React4j_AutorunArezReactComponent extends AutorunArezReactCompone
     public final void componentWillUnmount() {
       ((React4j_AutorunArezReactComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_AutorunArezReactComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<AutorunArezReactComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -149,6 +155,12 @@ abstract class React4j_AutorunArezReactComponent extends AutorunArezReactCompone
     @Override
     public final void componentWillUnmount() {
       ((React4j_AutorunArezReactComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_AutorunArezReactComponent) component() ).render();
     }
   }
 }

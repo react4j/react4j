@@ -133,6 +133,12 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
     public final void componentWillUnmount() {
       ((React4j_KeepAliveMemoizeArezReactComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_KeepAliveMemoizeArezReactComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<KeepAliveMemoizeArezReactComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -159,6 +165,12 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
     @Override
     public final void componentWillUnmount() {
       ((React4j_KeepAliveMemoizeArezReactComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_KeepAliveMemoizeArezReactComponent) component() ).render();
     }
   }
 }

@@ -138,6 +138,12 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
     public final void componentWillUnmount() {
       ((React4j_ParameterizedMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ParameterizedMemoizeComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ParameterizedMemoizeComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -164,6 +170,12 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
     @Override
     public final void componentWillUnmount() {
       ((React4j_ParameterizedMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ParameterizedMemoizeComponent) component() ).render();
     }
   }
 }

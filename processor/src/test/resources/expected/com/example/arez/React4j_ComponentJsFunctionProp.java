@@ -136,6 +136,12 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
     public final void componentWillUnmount() {
       ((React4j_ComponentJsFunctionProp) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentJsFunctionProp) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ComponentJsFunctionProp> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -162,6 +168,12 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
     @Override
     public final void componentWillUnmount() {
       ((React4j_ComponentJsFunctionProp) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentJsFunctionProp) component() ).render();
     }
   }
 }

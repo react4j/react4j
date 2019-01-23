@@ -9,6 +9,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
@@ -59,6 +60,12 @@ abstract class React4j_BasicModel extends BasicModel {
     @Override
     public final void componentDidMount() {
       ((React4j_BasicModel) component() ).$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_BasicModel) component() ).render();
     }
   }
 }

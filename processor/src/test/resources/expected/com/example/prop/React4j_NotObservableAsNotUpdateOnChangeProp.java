@@ -145,6 +145,12 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     public final void componentWillUnmount() {
       ((React4j_NotObservableAsNotUpdateOnChangeProp) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_NotObservableAsNotUpdateOnChangeProp) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<NotObservableAsNotUpdateOnChangeProp> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -171,6 +177,12 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     @Override
     public final void componentWillUnmount() {
       ((React4j_NotObservableAsNotUpdateOnChangeProp) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_NotObservableAsNotUpdateOnChangeProp) component() ).render();
     }
   }
 }

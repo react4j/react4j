@@ -1604,7 +1604,21 @@ final class Generator
       builder.addMethod( buildNativeComponentDidCatch().build() );
     }
 
+    builder.addMethod( buildNativeRender( descriptor ).build() );
+
     return builder.build();
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildNativeRender( @Nonnull final ComponentDescriptor descriptor )
+  {
+    return MethodSpec
+      .methodBuilder( "render" )
+      .addAnnotation( Override.class )
+      .addAnnotation( NULLABLE_CLASSNAME )
+      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .returns( REACT_NODE_CLASSNAME )
+      .addStatement( "return (($T) component() ).render()", descriptor.getEnhancedClassName() );
   }
 
   @Nonnull

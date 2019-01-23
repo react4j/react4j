@@ -102,12 +102,6 @@ public abstract class Component
   @Nullable
   protected abstract ReactNode render();
 
-  @Nullable
-  public final ReactNode performRender()
-  {
-    return render();
-  }
-
   /**
    * The componentDidCatch() method works like a JavaScript catch {} block, but for components.
    * Only class components can be error boundaries. In practice, most of the time you’ll want to

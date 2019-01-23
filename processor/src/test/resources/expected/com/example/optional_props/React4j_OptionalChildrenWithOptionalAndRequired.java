@@ -83,5 +83,11 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
     protected OptionalChildrenWithOptionalAndRequired createComponent() {
       return new Arez_React4j_OptionalChildrenWithOptionalAndRequired( this );
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_OptionalChildrenWithOptionalAndRequired) component() ).render();
+    }
   }
 }

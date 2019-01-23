@@ -61,5 +61,11 @@ abstract class React4j_MultipleChildrenPropComponent extends MultipleChildrenPro
     protected MultipleChildrenPropComponent createComponent() {
       return new Arez_React4j_MultipleChildrenPropComponent( this );
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_MultipleChildrenPropComponent) component() ).render();
+    }
   }
 }

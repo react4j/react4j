@@ -140,6 +140,12 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
     public final void componentWillUnmount() {
       ((React4j_ImplicitDisposableProp) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ImplicitDisposableProp) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ImplicitDisposableProp> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -166,6 +172,12 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
     @Override
     public final void componentWillUnmount() {
       ((React4j_ImplicitDisposableProp) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ImplicitDisposableProp) component() ).render();
     }
   }
 }

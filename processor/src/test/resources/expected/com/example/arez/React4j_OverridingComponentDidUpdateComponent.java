@@ -129,6 +129,12 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     public final void componentWillUnmount() {
       ((React4j_OverridingComponentDidUpdateComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_OverridingComponentDidUpdateComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<OverridingComponentDidUpdateComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -155,6 +161,12 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
     @Override
     public final void componentWillUnmount() {
       ((React4j_OverridingComponentDidUpdateComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_OverridingComponentDidUpdateComponent) component() ).render();
     }
   }
 }

@@ -151,6 +151,12 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
     public final void componentWillUnmount() {
       ((React4j_ComponentWithDependency) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentWithDependency) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithDependency> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -177,6 +183,12 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
     @Override
     public final void componentWillUnmount() {
       ((React4j_ComponentWithDependency) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentWithDependency) component() ).render();
     }
   }
 }

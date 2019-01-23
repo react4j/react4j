@@ -7,6 +7,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
@@ -98,6 +99,12 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       ((React4j_RootPackageCompleteComponent) component() ).$$react4j$$_componentDidUpdate();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_RootPackageCompleteComponent) component() ).render();
     }
   }
 }

@@ -133,6 +133,12 @@ abstract class React4j_GenericsReturnMemoizeComponent extends GenericsReturnMemo
     public final void componentWillUnmount() {
       ((React4j_GenericsReturnMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_GenericsReturnMemoizeComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<GenericsReturnMemoizeComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -159,6 +165,12 @@ abstract class React4j_GenericsReturnMemoizeComponent extends GenericsReturnMemo
     @Override
     public final void componentWillUnmount() {
       ((React4j_GenericsReturnMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_GenericsReturnMemoizeComponent) component() ).render();
     }
   }
 }

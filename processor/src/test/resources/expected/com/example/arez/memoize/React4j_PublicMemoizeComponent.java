@@ -132,6 +132,12 @@ abstract class React4j_PublicMemoizeComponent extends PublicMemoizeComponent {
     public final void componentWillUnmount() {
       ((React4j_PublicMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_PublicMemoizeComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PublicMemoizeComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -158,6 +164,12 @@ abstract class React4j_PublicMemoizeComponent extends PublicMemoizeComponent {
     @Override
     public final void componentWillUnmount() {
       ((React4j_PublicMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_PublicMemoizeComponent) component() ).render();
     }
   }
 }

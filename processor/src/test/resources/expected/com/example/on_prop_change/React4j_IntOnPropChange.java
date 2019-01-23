@@ -9,6 +9,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
@@ -73,6 +74,12 @@ abstract class React4j_IntOnPropChange extends IntOnPropChange {
         @Nonnull final JsPropertyMap<Object> prevState) {
       ((React4j_IntOnPropChange) component() ).$$react4j$$_componentPreUpdate( prevProps );
       return null;
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_IntOnPropChange) component() ).render();
     }
   }
 }

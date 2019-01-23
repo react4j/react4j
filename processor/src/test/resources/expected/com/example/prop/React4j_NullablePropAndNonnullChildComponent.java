@@ -81,5 +81,11 @@ abstract class React4j_NullablePropAndNonnullChildComponent extends NullableProp
     protected NullablePropAndNonnullChildComponent createComponent() {
       return new Arez_React4j_NullablePropAndNonnullChildComponent( this );
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_NullablePropAndNonnullChildComponent) component() ).render();
+    }
   }
 }

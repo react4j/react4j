@@ -133,6 +133,12 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
     public final void componentWillUnmount() {
       ((React4j_AnnotatedMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_AnnotatedMemoizeComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<AnnotatedMemoizeComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -159,6 +165,12 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
     @Override
     public final void componentWillUnmount() {
       ((React4j_AnnotatedMemoizeComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_AnnotatedMemoizeComponent) component() ).render();
     }
   }
 }

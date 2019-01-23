@@ -105,5 +105,11 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
     protected RequiredChildrenWithManyOptional createComponent() {
       return new Arez_React4j_RequiredChildrenWithManyOptional( this );
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_RequiredChildrenWithManyOptional) component() ).render();
+    }
   }
 }

@@ -12,6 +12,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -74,6 +75,12 @@ abstract class NestedCompleteComponent_React4j_BasicReactComponent extends Neste
     @Override
     protected NestedCompleteComponent.BasicReactComponent createComponent() {
       return InjectSupport.getProvider().get();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((NestedCompleteComponent_React4j_BasicReactComponent) component() ).render();
     }
   }
 }

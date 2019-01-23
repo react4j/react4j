@@ -140,6 +140,12 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
     public final void componentWillUnmount() {
       ((React4j_DisposableOptionalProp) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_DisposableOptionalProp) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<DisposableOptionalProp> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -166,6 +172,12 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
     @Override
     public final void componentWillUnmount() {
       ((React4j_DisposableOptionalProp) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_DisposableOptionalProp) component() ).render();
     }
   }
 }

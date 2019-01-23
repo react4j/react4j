@@ -169,6 +169,12 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     public final void componentWillUnmount() {
       ((React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ObservableViaObservedProp) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
@@ -200,6 +206,12 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     @Override
     public final void componentWillUnmount() {
       ((React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ObservableViaObservedProp) component() ).render();
     }
   }
 }

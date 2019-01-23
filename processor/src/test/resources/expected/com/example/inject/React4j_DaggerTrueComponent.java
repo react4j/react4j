@@ -12,6 +12,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 
@@ -61,6 +62,12 @@ abstract class React4j_DaggerTrueComponent extends DaggerTrueComponent {
     @Override
     protected DaggerTrueComponent createComponent() {
       return InjectSupport.getProvider().get();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_DaggerTrueComponent) component() ).render();
     }
   }
 }

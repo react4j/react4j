@@ -120,6 +120,12 @@ abstract class React4j_AllowNoArezDepsComponent extends AllowNoArezDepsComponent
     public final void componentWillUnmount() {
       ((React4j_AllowNoArezDepsComponent) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_AllowNoArezDepsComponent) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<AllowNoArezDepsComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -146,6 +152,12 @@ abstract class React4j_AllowNoArezDepsComponent extends AllowNoArezDepsComponent
     @Override
     public final void componentWillUnmount() {
       ((React4j_AllowNoArezDepsComponent) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_AllowNoArezDepsComponent) component() ).render();
     }
   }
 }

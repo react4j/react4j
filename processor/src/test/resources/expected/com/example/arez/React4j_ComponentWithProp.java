@@ -136,6 +136,12 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
     public final void componentWillUnmount() {
       ((React4j_ComponentWithProp) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentWithProp) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ComponentWithProp> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -162,6 +168,12 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
     @Override
     public final void componentWillUnmount() {
       ((React4j_ComponentWithProp) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentWithProp) component() ).render();
     }
   }
 }

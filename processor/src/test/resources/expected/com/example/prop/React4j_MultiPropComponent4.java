@@ -109,5 +109,11 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     protected MultiPropComponent4 createComponent() {
       return new Arez_React4j_MultiPropComponent4( this );
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_MultiPropComponent4) component() ).render();
+    }
   }
 }

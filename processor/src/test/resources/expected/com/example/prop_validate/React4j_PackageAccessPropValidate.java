@@ -9,6 +9,7 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
@@ -86,6 +87,12 @@ abstract class React4j_PackageAccessPropValidate extends PackageAccessPropValida
     protected PackageAccessPropValidate createComponent() {
       return new Arez_React4j_PackageAccessPropValidate( this );
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_PackageAccessPropValidate) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<PackageAccessPropValidate> implements OnShouldComponentUpdate {
@@ -106,6 +113,12 @@ abstract class React4j_PackageAccessPropValidate extends PackageAccessPropValida
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return ((React4j_PackageAccessPropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_PackageAccessPropValidate) component() ).render();
     }
   }
 }

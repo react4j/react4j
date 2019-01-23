@@ -124,6 +124,12 @@ abstract class React4j_ArezModel extends ArezModel {
     public final void componentWillUnmount() {
       ((React4j_ArezModel) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ArezModel) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ArezModel> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -150,6 +156,12 @@ abstract class React4j_ArezModel extends ArezModel {
     @Override
     public final void componentWillUnmount() {
       ((React4j_ArezModel) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ArezModel) component() ).render();
     }
   }
 }

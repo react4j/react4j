@@ -136,6 +136,12 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
     public final void componentWillUnmount() {
       ((React4j_ComponentShouldNotUpdateOnChangeProp) component() ).$$react4j$$_componentWillUnmount();
     }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentShouldNotUpdateOnChangeProp) component() ).render();
+    }
   }
 
   private static final class NativeReactComponent extends NativeAdapterComponent<ComponentShouldNotUpdateOnChangeProp> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
@@ -162,6 +168,12 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
     @Override
     public final void componentWillUnmount() {
       ((React4j_ComponentShouldNotUpdateOnChangeProp) component() ).$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return ((React4j_ComponentShouldNotUpdateOnChangeProp) component() ).render();
     }
   }
 }
