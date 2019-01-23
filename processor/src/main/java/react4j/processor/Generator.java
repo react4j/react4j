@@ -92,12 +92,12 @@ final class Generator
     ClassName.get( "react4j.internal", "NativeComponent" );
   private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "SchedulerUtil" );
   private static final ClassName INTROSPECT_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "IntrospectUtil" );
-  private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
-  private static final String SHOULD_COMPONENT_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "shouldComponentUpdate";
-  private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
-  private static final String COMPONENT_DID_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentDidUpdate";
-  private static final String COMPONENT_DID_MOUNT_METHOD = INTERNAL_METHOD_PREFIX + "componentDidMount";
-  private static final String COMPONENT_WILL_UNMOUNT_METHOD = INTERNAL_METHOD_PREFIX + "componentWillUnmount";
+  private static final String FRAMEWORK_INTERNAL_PREFIX = "$$react4j$$_";
+  private static final String SHOULD_COMPONENT_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "shouldComponentUpdate";
+  private static final String COMPONENT_PRE_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentPreUpdate";
+  private static final String COMPONENT_DID_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidUpdate";
+  private static final String COMPONENT_DID_MOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidMount";
+  private static final String COMPONENT_WILL_UNMOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentWillUnmount";
 
   private Generator()
   {
