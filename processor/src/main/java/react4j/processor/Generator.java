@@ -518,7 +518,7 @@ final class Generator
       AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
         addMember( "name", "$S", descriptor.getName() ).
         addMember( "disposeTrackable", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
-    if ( descriptor.allowEmpty() )
+    if ( !descriptor.isArezComponent() )
     {
       arezAnnotation.addMember( "allowEmpty", "true" );
     }

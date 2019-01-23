@@ -15,7 +15,8 @@ import react4j.internal.NativeComponent;
 
 @ArezComponent(
     name = "NonArezHasArezFieldAnnotation",
-    disposeTrackable = Feature.DISABLE
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_NonArezHasArezFieldAnnotation extends NonArezHasArezFieldAnnotation {
