@@ -39,6 +39,8 @@
 * **\[processor\]** Generate the `populateDebugData(data)` method for components that extend the `ReactArezComponent`
   class rather than inheriting implementation from `ReactArezComponent`. The purpose is to make it easier to remove
   `ReactArezComponent` and use the compiler to optimize away unneeded code.
+* **\[processor\]** Move the `ReactArezComponent.getRenderObserver()` method into the generated class as user code
+  does not need access to the raw Observer instance.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

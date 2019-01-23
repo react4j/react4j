@@ -2,10 +2,12 @@ package com.example.prop;
 
 import arez.Arez;
 import arez.Disposable;
+import arez.Observer;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
 import arez.annotations.Observe;
+import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -96,6 +98,10 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
     }
     return result;
   }
+
+  @Nonnull
+  @ObserverRef
+  abstract Observer getRenderObserver();
 
   @Override
   protected final void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {

@@ -41,6 +41,7 @@ final class Generator
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   private static final ClassName AREZ_CLASSNAME = ClassName.get( "arez", "Arez" );
+  private static final ClassName OBSERVER_CLASSNAME = ClassName.get( "arez", "Observer" );
   private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "ObservableValue" );
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
@@ -54,6 +55,7 @@ final class Generator
   private static final ClassName EXECUTOR_CLASSNAME = ClassName.get( "arez.annotations", "Executor" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
+  private static final ClassName OBSERVER_REF_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "ObserverRef" );
   private static final ClassName OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
@@ -601,6 +603,7 @@ final class Generator
     {
       builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
       builder.addMethod( buildRender( descriptor ).build() );
+      builder.addMethod( buildGetRenderObserver( descriptor ).build() );
       builder.addMethod( buildPopulateDebugData( descriptor ).build() );
     }
 
@@ -1212,6 +1215,18 @@ final class Generator
       method.addStatement( "return super.render()" );
     }
     return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildGetRenderObserver( @Nonnull final ComponentDescriptor descriptor )
+  {
+    assert descriptor.isArezComponent();
+    return MethodSpec
+      .methodBuilder( "getRenderObserver" )
+      .addAnnotation( NONNULL_CLASSNAME )
+      .addAnnotation( OBSERVER_REF_ANNOTATION_CLASSNAME )
+      .addModifiers( Modifier.ABSTRACT )
+      .returns( OBSERVER_CLASSNAME );
   }
 
   @Nonnull

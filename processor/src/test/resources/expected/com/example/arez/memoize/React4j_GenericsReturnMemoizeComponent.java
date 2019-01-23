@@ -2,11 +2,13 @@ package com.example.arez.memoize;
 
 import arez.Arez;
 import arez.Disposable;
+import arez.Observer;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
 import arez.annotations.Memoize;
 import arez.annotations.Observe;
+import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import java.util.function.Consumer;
 import javax.annotation.Generated;
@@ -85,6 +87,10 @@ abstract class React4j_GenericsReturnMemoizeComponent extends GenericsReturnMemo
     }
     return result;
   }
+
+  @Nonnull
+  @ObserverRef
+  abstract Observer getRenderObserver();
 
   @Override
   protected final void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
