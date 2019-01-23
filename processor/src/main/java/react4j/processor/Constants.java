@@ -19,9 +19,14 @@ final class Constants
   static final String POST_MOUNT_ANNOTATION_CLASSNAME = "react4j.annotations.PostMount";
   static final String INJECT_ANNOTATION_CLASSNAME = "javax.inject.Inject";
   static final String AREZ_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ArezComponent";
+  static final String ACTION_ANNOTATION_CLASSNAME = "arez.annotations.Action";
   static final String OBSERVE_ANNOTATION_CLASSNAME = "arez.annotations.Observe";
-  static final String DEPENDENCY_ANNOTATION_CLASSNAME = "arez.annotations.Dependency";
+  static final String CASCADE_DISPOSE_ANNOTATION_CLASSNAME = "arez.annotations.CascadeDispose";
   static final String MEMOIZE_ANNOTATION_CLASSNAME = "arez.annotations.Memoize";
+  static final String OBSERVABLE_ANNOTATION_CLASSNAME = "arez.annotations.Observable";
+  static final String INVERSE_ANNOTATION_CLASSNAME = "arez.annotations.Inverse";
+  static final String REFERENCE_ANNOTATION_CLASSNAME = "arez.annotations.Reference";
+  static final String COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME = "arez.annotations.ComponentDependency";
   static final String NONNULL_ANNOTATION_CLASSNAME = "javax.annotation.Nonnull";
   static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
   static final String DEPRECATED_ANNOTATION_CLASSNAME = "java.lang.Deprecated";

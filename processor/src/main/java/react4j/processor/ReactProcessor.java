@@ -1033,7 +1033,31 @@ public final class ReactProcessor
                                         typeElement,
                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                         "allowNoArezDeps" ).getValue();
-    descriptor.setArezComponent( isArezComponent, allowNoArezDeps );
+
+    final boolean hasArezMethod =
+      getMethods( typeElement ).stream().anyMatch( m -> {
+        //TODO: Once Arez stops enforcing allowEmpty=true => MUST be empty then we can remove this cruft
+        return
+          null != ProcessorUtil.findAnnotationByType( m, Constants.ACTION_ANNOTATION_CLASSNAME ) ||
+          null != ProcessorUtil.findAnnotationByType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) ||
+          null != ProcessorUtil.findAnnotationByType( m, Constants.CASCADE_DISPOSE_ANNOTATION_CLASSNAME ) ||
+          null != ProcessorUtil.findAnnotationByType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
+          null != ProcessorUtil.findAnnotationByType( m, Constants.OBSERVABLE_ANNOTATION_CLASSNAME ) ||
+          null != ProcessorUtil.findAnnotationByType( m, Constants.INVERSE_ANNOTATION_CLASSNAME ) ||
+          null != ProcessorUtil.findAnnotationByType( m, Constants.REFERENCE_ANNOTATION_CLASSNAME ) ||
+          null != ProcessorUtil.findAnnotationByType( m, Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME );
+      } );
+    final boolean hasArezField =
+      ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( f -> {
+        //TODO: Once Arez stops enforcing allowEmpty=true => MUST be empty then we can remove this cruft
+        return
+          null != ProcessorUtil.findAnnotationByType( f, Constants.CASCADE_DISPOSE_ANNOTATION_CLASSNAME ) ||
+          null != ProcessorUtil.findAnnotationByType( f, Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME );
+      } );
+
+    final boolean allowEmpty = !isArezComponent && !hasArezField && !hasArezMethod;
+
+    descriptor.setArezComponent( isArezComponent, allowNoArezDeps, allowEmpty );
 
     ensureMemoizeMatchesExpectations( typeElement );
 

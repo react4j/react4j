@@ -36,6 +36,8 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.ComponentWithDependency", false },
         new Object[]{ "com.example.arez.ComponentWithProp", false },
         new Object[]{ "com.example.arez.KeepAliveMemoizeArezReactComponent", false },
+        new Object[]{ "com.example.arez.NonArezHasArezAnnotation", false },
+        new Object[]{ "com.example.arez.NonArezHasArezFieldAnnotation", false },
         new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent", false },
         new Object[]{ "com.example.arez.RequireArezDepsComponent", false },
         new Object[]{ "com.example.basic.BasicReactComponent", false },
