@@ -38,6 +38,10 @@ import react4j.internal.arez.SchedulerUtil;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedProp {
+  private boolean $$react4j$$_renderDepsChanged;
+
+  private boolean $$react4j$$_unmounted;
+
   React4j_ObservableViaObservedProp(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -80,7 +84,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       getValueObservableValue().reportChanged();
       modified = true;
     }
-    return modified || hasRenderDepsChanged();
+    return modified || $$react4j$$_renderDepsChanged;
   }
 
   private void $$react4j$$_componentDidMount() {
@@ -96,11 +100,17 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   }
 
   private void $$react4j$$_componentWillUnmount() {
+    $$react4j$$_unmounted = true;
     Disposable.dispose( this );
   }
 
   final void onRenderDepsChange() {
-    onRenderDepsChange( true );
+    if ( !$$react4j$$_renderDepsChanged ) {
+      $$react4j$$_renderDepsChanged = true;
+      if ( !$$react4j$$_unmounted ) {
+        scheduleRender( false );
+      }
+    }
   }
 
   @Override
@@ -113,7 +123,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       reportResult = false
   )
   protected ReactNode render() {
-    clearRenderDepsChanged();
+    $$react4j$$_renderDepsChanged = false;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();

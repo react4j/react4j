@@ -33,6 +33,10 @@ import react4j.internal.arez.SchedulerUtil;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_AllowNoArezDepsComponent extends AllowNoArezDepsComponent {
+  private boolean $$react4j$$_renderDepsChanged;
+
+  private boolean $$react4j$$_unmounted;
+
   React4j_AllowNoArezDepsComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -59,11 +63,17 @@ abstract class React4j_AllowNoArezDepsComponent extends AllowNoArezDepsComponent
   }
 
   private void $$react4j$$_componentWillUnmount() {
+    $$react4j$$_unmounted = true;
     Disposable.dispose( this );
   }
 
   final void onRenderDepsChange() {
-    onRenderDepsChange( false );
+    if ( !$$react4j$$_renderDepsChanged ) {
+      $$react4j$$_renderDepsChanged = true;
+      if ( !$$react4j$$_unmounted ) {
+        scheduleRender();
+      }
+    }
   }
 
   @Override
@@ -77,7 +87,7 @@ abstract class React4j_AllowNoArezDepsComponent extends AllowNoArezDepsComponent
       depType = DepType.AREZ_OR_NONE
   )
   protected ReactNode render() {
-    clearRenderDepsChanged();
+    $$react4j$$_renderDepsChanged = false;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     return super.render();

@@ -35,6 +35,10 @@ import react4j.internal.arez.SchedulerUtil;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ParameterizedReturnMemoizeComponent extends ParameterizedReturnMemoizeComponent {
+  private boolean $$react4j$$_renderDepsChanged;
+
+  private boolean $$react4j$$_unmounted;
+
   React4j_ParameterizedReturnMemoizeComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -61,11 +65,17 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
   }
 
   private void $$react4j$$_componentWillUnmount() {
+    $$react4j$$_unmounted = true;
     Disposable.dispose( this );
   }
 
   final void onRenderDepsChange() {
-    onRenderDepsChange( false );
+    if ( !$$react4j$$_renderDepsChanged ) {
+      $$react4j$$_renderDepsChanged = true;
+      if ( !$$react4j$$_unmounted ) {
+        scheduleRender();
+      }
+    }
   }
 
   @Override
@@ -78,7 +88,7 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
       reportResult = false
   )
   protected ReactNode render() {
-    clearRenderDepsChanged();
+    $$react4j$$_renderDepsChanged = false;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();

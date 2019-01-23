@@ -36,6 +36,10 @@ import react4j.internal.arez.SchedulerUtil;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ArezReactComponent extends ArezReactComponent {
+  private boolean $$react4j$$_renderDepsChanged;
+
+  private boolean $$react4j$$_unmounted;
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
@@ -58,11 +62,17 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
   }
 
   private void $$react4j$$_componentWillUnmount() {
+    $$react4j$$_unmounted = true;
     Disposable.dispose( this );
   }
 
   final void onRenderDepsChange() {
-    onRenderDepsChange( false );
+    if ( !$$react4j$$_renderDepsChanged ) {
+      $$react4j$$_renderDepsChanged = true;
+      if ( !$$react4j$$_unmounted ) {
+        scheduleRender();
+      }
+    }
   }
 
   @Override
@@ -75,7 +85,7 @@ abstract class React4j_ArezReactComponent extends ArezReactComponent {
       reportResult = false
   )
   protected ReactNode render() {
-    clearRenderDepsChanged();
+    $$react4j$$_renderDepsChanged = false;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();

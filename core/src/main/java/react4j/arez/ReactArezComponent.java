@@ -1,7 +1,6 @@
 package react4j.arez;
 
 import arez.annotations.Action;
-import arez.annotations.PreDispose;
 import react4j.Component;
 
 /**
@@ -17,44 +16,4 @@ import react4j.Component;
 public abstract class ReactArezComponent
   extends Component
 {
-  private boolean _renderDepsChanged;
-  private boolean _unmounted;
-
-  /**
-   * Return true if the render dependencies have been marked as changed and component has yet to be re-rendered.
-   *
-   * @return true if render dependencies changed, false otherwise.
-   */
-  protected final boolean hasRenderDepsChanged()
-  {
-    return _renderDepsChanged;
-  }
-
-  /**
-   * Helper method invoked when it has detected a dependency of the render method has changed.
-   *
-   * @param componentHasObservableProps flag indicating whether the component has any observable props.
-   */
-  protected final void onRenderDepsChange( final boolean componentHasObservableProps )
-  {
-    if ( !_renderDepsChanged )
-    {
-      _renderDepsChanged = true;
-      if ( !_unmounted )
-      {
-        scheduleRender( !componentHasObservableProps );
-      }
-    }
-  }
-
-  protected final void clearRenderDepsChanged()
-  {
-    _renderDepsChanged = false;
-  }
-
-  @PreDispose
-  protected void preDispose()
-  {
-    _unmounted = true;
-  }
 }

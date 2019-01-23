@@ -98,6 +98,8 @@ final class Generator
   private static final String COMPONENT_DID_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidUpdate";
   private static final String COMPONENT_DID_MOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidMount";
   private static final String COMPONENT_WILL_UNMOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentWillUnmount";
+  private static final String UNMOUNTED_FIELD = FRAMEWORK_INTERNAL_PREFIX + "unmounted";
+  private static final String RENDER_DEPS_CHANGED_FIELD = FRAMEWORK_INTERNAL_PREFIX + "renderDepsChanged";
 
   private Generator()
   {
@@ -552,6 +554,12 @@ final class Generator
     }
     */
 
+    if ( descriptor.isArezComponent() )
+    {
+      builder.addField( FieldSpec.builder( TypeName.BOOLEAN, RENDER_DEPS_CHANGED_FIELD, Modifier.PRIVATE ).build() );
+      builder.addField( FieldSpec.builder( TypeName.BOOLEAN, UNMOUNTED_FIELD, Modifier.PRIVATE ).build() );
+    }
+
     builder.addType( buildFactory() );
     if ( descriptor.needsInjection() )
     {
@@ -981,7 +989,7 @@ final class Generator
     {
       if ( descriptor.isArezComponent() )
       {
-        method.addStatement( "return hasRenderDepsChanged()" );
+        method.addStatement( "return $N", RENDER_DEPS_CHANGED_FIELD );
       }
       else
       {
@@ -1031,7 +1039,7 @@ final class Generator
       {
         if ( descriptor.isArezComponent() )
         {
-          method.addStatement( "return modified || hasRenderDepsChanged()" );
+          method.addStatement( "return modified || $N", RENDER_DEPS_CHANGED_FIELD );
         }
         else
         {
@@ -1042,7 +1050,7 @@ final class Generator
       {
         if ( descriptor.isArezComponent() )
         {
-          method.addStatement( "return hasRenderDepsChanged()" );
+          method.addStatement( "return $N", RENDER_DEPS_CHANGED_FIELD );
         }
         else
         {
@@ -1137,6 +1145,7 @@ final class Generator
     }
     if ( descriptor.isArezComponent() )
     {
+      method.addStatement( "$N = true", UNMOUNTED_FIELD );
       method.addStatement( "$T.dispose( this )", DISPOSABLE_CLASSNAME );
     }
     return method;
@@ -1167,7 +1176,7 @@ final class Generator
     }
     method.addAnnotation( observe.build() );
 
-    method.addStatement( "clearRenderDepsChanged()" );
+    method.addStatement( "$N = false", RENDER_DEPS_CHANGED_FIELD );
     method.addStatement( "$T.pauseUntilRenderLoopComplete()", SCHEDULER_UTIL_CLASSNAME );
     method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
@@ -1254,10 +1263,28 @@ final class Generator
   private static MethodSpec.Builder buildOnRenderDepsChange( @Nonnull final ComponentDescriptor descriptor )
   {
     assert descriptor.isArezComponent();
-    return MethodSpec
+    final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "onRenderDepsChange" )
-      .addModifiers( Modifier.FINAL )
-      .addStatement( "onRenderDepsChange( $N )", String.valueOf( descriptor.hasObservableProps() ) );
+      .addModifiers( Modifier.FINAL );
+
+    final CodeBlock.Builder outer = CodeBlock.builder();
+    outer.beginControlFlow( "if ( !$N )", RENDER_DEPS_CHANGED_FIELD );
+    outer.addStatement( "$N = true",RENDER_DEPS_CHANGED_FIELD );
+    final CodeBlock.Builder inner = CodeBlock.builder();
+    inner.beginControlFlow( "if ( !$N )", UNMOUNTED_FIELD );
+    if( descriptor.hasObservableProps() )
+    {
+      inner.addStatement( "scheduleRender( false )" );
+    }
+    else
+    {
+      inner.addStatement( "scheduleRender()" );
+    }
+    inner.endControlFlow();
+    outer.add( inner.build() );
+    outer.endControlFlow();
+    method.addCode( outer.build() );
+    return method;
   }
 
   @Nonnull
