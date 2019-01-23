@@ -4,7 +4,9 @@
 
 * **\[core\]** Merge the `react4j-arez` artifact into `react4j-core` as the `react4j-core` artifact has never
   been used without also using `react4j-arez` in any production application.
-* **\[core\]** Move the `ObservableValue` introspection utilities from `ReactArezComponent` into a new utility
+* **\[core\]** Move the `ObservableValue` introspection utilities from `ReactArezComponent` into the new utility
+  class `react4j.internal.arez.IntrospectUtil` as the code is not expected to be used by end-user code.
+* **\[core\]** Move the `Observer` introspection utilities from `ReactArezComponent` into the new utility
   class `react4j.internal.arez.IntrospectUtil` as the code is not expected to be used by end-user code.
 * **\[core\]** Extract some utility code out of `ReactArezComponent` into a new utility
   class `react4j.internal.arez.SchedulerUtil` as the code is not expected to be used by end-user code.

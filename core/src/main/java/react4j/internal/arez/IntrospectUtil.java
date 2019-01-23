@@ -1,11 +1,14 @@
 package react4j.internal.arez;
 
 import arez.Arez;
+import arez.Observer;
 import arez.spy.ObservableValueInfo;
+import arez.spy.ObserverInfo;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Utilities for introspecting the Arez components and runtime.
@@ -88,5 +91,18 @@ public final class IntrospectUtil
     {
       return throwable;
     }
+  }
+
+  /**
+   * For the specified observer, collect all dependencies and record them in data to be emitted as debug data.
+   *
+   * @param observer the observer.
+   * @param data     the target in which to place debug data.
+   */
+  public static void collectDependencyDebugData( @Nonnull final Observer observer,
+                                                 @Nonnull final JsPropertyMap<Object> data )
+  {
+    final ObserverInfo observerInfo = observer.getContext().getSpy().asObserverInfo( observer );
+    observerInfo.getDependencies().forEach( d -> data.set( d.getName(), getValue( d ) ) );
   }
 }

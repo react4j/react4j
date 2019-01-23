@@ -7,7 +7,6 @@ import arez.annotations.Action;
 import arez.annotations.ContextRef;
 import arez.annotations.ObserverRef;
 import arez.annotations.PreDispose;
-import arez.spy.ObserverInfo;
 import javax.annotation.Nonnull;
 import jsinterop.base.JsPropertyMap;
 import react4j.Component;
@@ -117,9 +116,7 @@ public abstract class ReactArezComponent
   {
     if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() )
     {
-      // Collect existing dependencies as state
-      final ObserverInfo observerInfo = getContext().getSpy().asObserverInfo( getRenderObserver() );
-      observerInfo.getDependencies().forEach( d -> data.set( d.getName(), IntrospectUtil.getValue( d ) ) );
+      IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
     }
   }
 }
