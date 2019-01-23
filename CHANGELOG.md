@@ -17,6 +17,7 @@
 * **\[core\]** Move `ReactArezComponent.getArezComponentId()` to `Component.getComponentId()` and
   `ReactArezComponent.getArezComponentName()` to `Component.getComponentName()` so that the methods are available
   to all react components.
+* **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.125`.
 * **\[core\]** Guard the data emitted as debug state to ensure that all the required compile time properties are
   set to `true` before emitting debug values. This includes `react4j.store_debug_data_as_state` as well as the
   associated Arez compile time properties `arez.enable_spies` and/or `arez.enable_names`. This ensures that these
