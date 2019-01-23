@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.ReactNode;
 
-public class MyComponent
+public abstract class MyComponent
   extends Component
 {
   @Nullable
