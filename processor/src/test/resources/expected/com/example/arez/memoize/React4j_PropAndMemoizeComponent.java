@@ -28,6 +28,7 @@ import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
+import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
@@ -119,6 +120,13 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
       Guards.invariant( () -> !getRenderObserver().getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
     }
     return result;
+  }
+
+  @Override
+  protected final void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
+    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
+      IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
+    }
   }
 
   @Override

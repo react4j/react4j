@@ -89,6 +89,7 @@ final class Generator
   private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeComponent" );
   private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "SchedulerUtil" );
+  private static final ClassName INTROSPECT_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "IntrospectUtil" );
   private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
   private static final String SHOULD_COMPONENT_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "shouldComponentUpdate";
   private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
@@ -600,6 +601,7 @@ final class Generator
     {
       builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
       builder.addMethod( buildRender( descriptor ).build() );
+      builder.addMethod( buildPopulateDebugData( descriptor ).build() );
     }
 
     if ( descriptor.isArezComponent() )
@@ -1209,6 +1211,27 @@ final class Generator
     {
       method.addStatement( "return super.render()" );
     }
+    return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildPopulateDebugData( @Nonnull final ComponentDescriptor descriptor )
+  {
+    assert descriptor.isArezComponent();
+    final MethodSpec.Builder method = MethodSpec
+      .methodBuilder( "populateDebugData" )
+      .addAnnotation( Override.class )
+      .addModifiers( Modifier.FINAL, Modifier.PROTECTED )
+      .addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "data", Modifier.FINAL )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() );
+    final CodeBlock.Builder block = CodeBlock.builder();
+    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() && $T.areSpiesEnabled() )",
+                            REACT_CLASSNAME,
+                            AREZ_CLASSNAME );
+    block.addStatement( "$T.collectDependencyDebugData( getRenderObserver(), data )", INTROSPECT_UTIL_CLASSNAME );
+    block.endControlFlow();
+    method.addCode( block.build() );
     return method;
   }
 

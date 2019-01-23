@@ -1,17 +1,11 @@
 package react4j.arez;
 
-import arez.Arez;
-import arez.ArezContext;
 import arez.Observer;
 import arez.annotations.Action;
-import arez.annotations.ContextRef;
 import arez.annotations.ObserverRef;
 import arez.annotations.PreDispose;
 import javax.annotation.Nonnull;
-import jsinterop.base.JsPropertyMap;
 import react4j.Component;
-import react4j.React;
-import react4j.internal.arez.IntrospectUtil;
 
 /**
  * A base class for all Arez enabled components. This class makes the component
@@ -74,17 +68,5 @@ public abstract class ReactArezComponent
   protected void preDispose()
   {
     _unmounted = true;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected final void populateDebugData( @Nonnull final JsPropertyMap<Object> data )
-  {
-    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() )
-    {
-      IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
-    }
   }
 }

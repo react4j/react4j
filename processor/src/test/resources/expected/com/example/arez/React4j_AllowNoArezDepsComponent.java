@@ -1,5 +1,6 @@
 package com.example.arez;
 
+import arez.Arez;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.DepType;
@@ -21,6 +22,7 @@ import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
@@ -77,6 +79,13 @@ abstract class React4j_AllowNoArezDepsComponent extends AllowNoArezDepsComponent
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     return super.render();
+  }
+
+  @Override
+  protected final void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
+    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
+      IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
+    }
   }
 
   static final class Factory {

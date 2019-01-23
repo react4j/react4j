@@ -36,6 +36,9 @@
   add a similar method back in, if/when it is needed.
 * **\[core\]** Remove the constructor in `ReactArezComponent` as it was only overridden to make it protected
   access but the class is abstract so can never be directly instantiated and thus the override had no impact.
+* **\[processor\]** Generate the `populateDebugData(data)` method for components that extend the `ReactArezComponent`
+  class rather than inheriting implementation from `ReactArezComponent`. The purpose is to make it easier to remove
+  `ReactArezComponent` and use the compiler to optimize away unneeded code.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)
