@@ -28,8 +28,7 @@ import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "ParameterizedMemoizeComponent",
-    disposeTrackable = Feature.DISABLE,
-    deferSchedule = true
+    disposeTrackable = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoizeComponent {
@@ -81,14 +80,9 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
-      Guards.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
+      Guards.invariant( () -> !getRenderObserver().getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
     }
     return result;
-  }
-
-  @Override
-  protected final void triggerScheduler() {
-    getContext().triggerScheduler();
   }
 
   @Override

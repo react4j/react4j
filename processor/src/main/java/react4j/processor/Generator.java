@@ -1199,7 +1199,7 @@ final class Generator
                                       AREZ_CLASSNAME,
                                       AREZ_CLASSNAME );
       depCheckBlock.addStatement(
-        "$T.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> \"ReactArezComponent render completed on '\" + this + \"' but the component does not have any Arez dependencies. This component should extend react4j.Component instead.\" )",
+        "$T.invariant( () -> !getRenderObserver().getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> \"ReactArezComponent render completed on '\" + this + \"' but the component does not have any Arez dependencies. This component should extend react4j.Component instead.\" )",
         GUARDS_CLASSNAME );
       depCheckBlock.endControlFlow();
       method.addCode( depCheckBlock.build() );
