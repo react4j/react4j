@@ -29,7 +29,7 @@ public @interface ReactComponent
    * Indicate whether the generated component class is expected to be created and injected by the injection framework.
    * {@link Feature#ENABLE} will force injection framework integration, {@link Feature#DISABLE}
    * will force no injection framework integration and {@link Feature#AUTODETECT} will enable injection framework
-   * integration  if any fields or methods in the component or any parent type has an {@link javax.inject.Inject}
+   * integration  if any fields or methods in the component or any parent type has an javax.inject.Inject
    * annotation.
    *
    * @return enum controlling injection framework integration.
