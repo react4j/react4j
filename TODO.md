@@ -1,10 +1,23 @@
 ## TODO
 
-### Next Release
+### Current Release
 
 * Need to generate a `dispose()` call for all react4j components in development mode and non `ReactArezComponent`
   components should also have dispose generated when they have reactive elements included (i.e. `@Observable` and
   friends).
+
+* Remove `ReactArezComponent`
+
+* Support `@OnChildError` annotation that stands in for `componentDidCatch` lifecycle method.
+
+* Should be possible to mark a prop as immutable and if it changes it is a new component. This is essentially
+  deriving the key from the props. Maybe we should have a mechanisms for generating a key from immutable props.
+  Props would be marked as immutable and if they change it would result in a new key? The key would be synthesized
+  at construction time. Primitive types and known wrapper types could be handled explicitly while other types would
+  be expected to implement a set of of interfaces to get key component (i.e. `arez.component.Identifiable`,
+  `react4j.KeyPart`). If any Key contributing props exist then it would not be possible to explicitly set key.
+
+### Next Release
 
 * `key` is valid on fragments elements.
 
@@ -12,8 +25,6 @@
   directly rather than copying props and adding special handling for `ref`, `key` and `children`.
 
 * Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
-
-* Support `@OnChildError` annotation that stands in for `componentDidCatch` lifecycle method.
 
 * Change remaining lifecycle hooks to be annotation driven. i.e.
   If we do this then the annotation processor could completely take over responsibility for implementing lifecycle
@@ -30,13 +41,6 @@
   push it outside the commit phase of react rendering and have it run later
 
 * Collections returned from props should be made immutable.
-
-* Should be possible to mark a prop as immutable and if it changes it is a new component. This is essentially
-  deriving the key from the props. Maybe we should have a mechanisms for generating a key from immutable props.
-  Props would be marked as immutable and if they change it would result in a new key? The key would be synthesized
-  at construction time. Primitive types and known wrapper types could be handled explicitly while other types would
-  be expected to implement a set of of interfaces to get key component (i.e. `arez.component.Identifiable`,
-  `react4j.KeyPart`). If any Key contributing props exist then it would not be possible to explicitly set key.
 
 * Howto: Offscreen rendering?
 
