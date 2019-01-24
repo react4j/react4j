@@ -26,23 +26,15 @@ public @interface ReactComponent
   String name() default "<default>";
 
   /**
-   * Indicate whether an @Inject annotation should be added to constructor of generated class.
-   * {@link Feature#ENABLE} will force the addition of an @Inject annotation, {@link Feature#DISABLE}
-   * will result in no @Inject annotation and {@link Feature#AUTODETECT} will add an @Inject
-   * if any fields or methods in the react4j component or any parent type has an @Inject annotation.
+   * Indicate whether the generated component class is expected to be created and injected by the injection framework.
+   * {@link Feature#ENABLE} will force injection framework integration, {@link Feature#DISABLE}
+   * will force no injection framework integration and {@link Feature#AUTODETECT} will enable injection framework
+   * integration  if any fields or methods in the component or any parent type has an {@link javax.inject.Inject}
+   * annotation.
    *
-   * @return enum controlling present of Inject annotation on constructor.
+   * @return enum controlling injection framework integration.
    */
   Feature inject() default Feature.AUTODETECT;
-
-  /**
-   * Indicate whether a dagger sub-component and module is created for component.
-   * Dagger is detected by searching for "dagger.Module" class in the same processing environment that
-   * is compiling the react4j component.
-   *
-   * @return enum controlling whether dagger artifacts are generated.
-   */
-  Feature dagger() default Feature.AUTODETECT;
 
   /**
    * React components that are arez enabled will generate an error if they observe no arez dependencies and this parameter is false.

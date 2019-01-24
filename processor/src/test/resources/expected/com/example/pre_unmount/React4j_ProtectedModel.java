@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentWillUnmount;
 
@@ -43,26 +42,24 @@ abstract class React4j_ProtectedModel extends ProtectedModel {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<ProtectedModel> implements OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
+    private React4j_ProtectedModel $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected ProtectedModel createComponent() {
-      return new Arez_React4j_ProtectedModel( this );
+      $$react4j$$_component = new Arez_React4j_ProtectedModel( this );
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((React4j_ProtectedModel) component() ).$$react4j$$_componentWillUnmount();
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_ProtectedModel) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

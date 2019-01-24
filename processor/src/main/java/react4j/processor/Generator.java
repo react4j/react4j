@@ -35,8 +35,6 @@ import javax.lang.model.type.TypeMirror;
 @SuppressWarnings( "Duplicates" )
 final class Generator
 {
-  private static final ClassName INJECT_CLASSNAME = ClassName.get( "javax.inject", "Inject" );
-  private static final ClassName PROVIDER_CLASSNAME = ClassName.get( "javax.inject", "Provider" );
   private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
@@ -50,6 +48,7 @@ final class Generator
     ClassName.get( "arez.annotations", "InjectMode" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
+  private static final ClassName PER_INSTANCE_CLASSNAME = ClassName.get( "arez.annotations", "PerInstance" );
   private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
   private static final ClassName EXECUTOR_CLASSNAME = ClassName.get( "arez.annotations", "Executor" );
@@ -71,7 +70,6 @@ final class Generator
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
   private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
-  private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j.internal", "ComponentConstructorFunction" );
   private static final ClassName ON_COMPONENT_DID_MOUNT_CLASSNAME =
@@ -84,10 +82,8 @@ final class Generator
     ClassName.get( "react4j.internal", "OnGetSnapshotBeforeUpdate" );
   private static final ClassName ON_COMPONENT_SHOULD_UPDATE_CLASSNAME =
     ClassName.get( "react4j.internal", "OnShouldComponentUpdate" );
-  private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
-    ClassName.get( "react4j.internal", "componentDidCatch" );
-  private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
-    ClassName.get( "react4j.internal", "NativeAdapterComponent" );
+  //private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
+  //  ClassName.get( "react4j.internal", "componentDidCatch" );
   private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeComponent" );
   private static final ClassName COMPONENT_STATE_CLASSNAME = ClassName.get( "react4j.internal.arez", "ComponentState" );
@@ -101,6 +97,7 @@ final class Generator
   private static final String COMPONENT_WILL_UNMOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentWillUnmount";
   private static final String VALIDATE_PROPS_METHOD = FRAMEWORK_INTERNAL_PREFIX + "validatePropValues";
   private static final String COMPONENT_STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
+  private static final String COMPONENT_FIELD = FRAMEWORK_INTERNAL_PREFIX + "component";
 
   private Generator()
   {
@@ -347,7 +344,7 @@ final class Generator
       assert null != propMethod;
       final PropDescriptor prop = stepMethod.getProp();
       assert null != prop;
-      if ( isNonnull( propMethod ) )
+      if ( ProcessorUtil.isNonnull( propMethod ) )
       {
         method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $T.requireNonNull( $N ) ) )",
                              descriptor.getEnhancedClassName(),
@@ -381,7 +378,7 @@ final class Generator
       }
       else
       {
-        if ( ( null != propMethod && isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
+        if ( ( null != propMethod && ProcessorUtil.isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
         {
           method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
         }
@@ -408,11 +405,6 @@ final class Generator
     configureStepMethodReturns( descriptor, method, step, stepMethod.getStepMethodType() );
 
     return method.build();
-  }
-
-  private static boolean isNonnull( @Nonnull final ExecutableElement method )
-  {
-    return null != ProcessorUtil.findAnnotationByType( method, Constants.NONNULL_ANNOTATION_CLASSNAME );
   }
 
   @Nonnull
@@ -539,21 +531,18 @@ final class Generator
     addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
-    if ( !descriptor.needsInjection() )
+    final ParameterSpec.Builder parameter =
+      ParameterSpec
+        .builder( REACT_NATIVE_COMPONENT_CLASSNAME, "nativeComponent", Modifier.FINAL )
+        .addAnnotation( NONNULL_CLASSNAME );
+    if ( descriptor.needsInjection() )
     {
-      final MethodSpec.Builder ctor = MethodSpec.constructorBuilder();
-      ctor.addParameter( ParameterSpec.builder( REACT_NATIVE_COMPONENT_CLASSNAME, "nativeComponent", Modifier.FINAL )
-                           .addAnnotation( NONNULL_CLASSNAME )
-                           .build() );
-      ctor.addStatement( "bindComponent( nativeComponent )" );
-      builder.addMethod( ctor.build() );
+      parameter.addAnnotation( PER_INSTANCE_CLASSNAME );
     }
-    /*
-    if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
-    {
-      builder.addMethod( MethodSpec.constructorBuilder().addAnnotation( INJECT_CLASSNAME ).build() );
-    }
-    */
+    final MethodSpec.Builder ctor = MethodSpec.constructorBuilder()
+      .addParameter( parameter.build() )
+      .addStatement( "bindComponent( nativeComponent )" );
+    builder.addMethod( ctor.build() );
 
     if ( descriptor.isArezComponent() )
     {
@@ -561,10 +550,6 @@ final class Generator
     }
 
     builder.addType( buildFactory() );
-    if ( descriptor.needsInjection() )
-    {
-      builder.addType( buildInjectSupport( descriptor ) );
-    }
     if ( !descriptor.getProps().isEmpty() )
     {
       builder.addType( buildPropsType( descriptor ) );
@@ -775,7 +760,7 @@ final class Generator
     }
     final String convertMethodName = getConverter( returnType, methodElement );
     final TypeKind resultKind = methodElement.getReturnType().getKind();
-    if ( !resultKind.isPrimitive() && !isNonnull( methodElement ) )
+    if ( !resultKind.isPrimitive() && !ProcessorUtil.isNonnull( methodElement ) )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
@@ -891,7 +876,7 @@ final class Generator
         requireComma = true;
         final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
         final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
-        if ( !resultKind.isPrimitive() && !isNonnull( prop.getMethod() ) )
+        if ( !resultKind.isPrimitive() && !ProcessorUtil.isNonnull( prop.getMethod() ) )
         {
           sb.append( "$T.uncheckedCast( props.getAny( Props.$N ) )" );
           params.add( JS_CLASSNAME );
@@ -1300,7 +1285,7 @@ final class Generator
       final String rawName = "raw$" + name;
       final String typedName = "typed$" + name;
       method.addStatement( "final $T $N = props.get( Props.$N )", Object.class, rawName, prop.getConstantName() );
-      final boolean isNonNull = isNonnull( prop.getMethod() );
+      final boolean isNonNull = ProcessorUtil.isNonnull( prop.getMethod() );
       if ( !prop.isOptional() && isNonNull )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
@@ -1338,50 +1323,61 @@ final class Generator
   private static TypeSpec buildInjectSupport( @Nonnull final ComponentDescriptor descriptor )
   {
     assert descriptor.needsInjection();
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( "InjectSupport" );
+    final TypeSpec.Builder builder =
+      TypeSpec.classBuilder( "InjectSupport" ).addModifiers( Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL );
 
-    //Ensure it can not be subclassed
-    builder.addModifiers( Modifier.FINAL );
-    builder.addModifiers( Modifier.STATIC );
-
-    builder.addField( buildProviderField( descriptor ).build() );
-    builder.addMethod( buildSetProviderMethod( descriptor ).build() );
-    builder.addMethod( buildGetProviderMethod( descriptor ).build() );
+    builder.addField( buildFactoryField( descriptor ).build() );
+    builder.addMethod( buildSetFactoryMethod( descriptor ).build() );
+    builder.addMethod( buildInjectCreateMethod( descriptor ).build() );
 
     return builder.build();
   }
 
-  private static FieldSpec.Builder buildProviderField( @Nonnull final ComponentDescriptor descriptor )
+  private static FieldSpec.Builder buildFactoryField( @Nonnull final ComponentDescriptor descriptor )
   {
-    return FieldSpec.builder( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
-                                                         TypeName.get( descriptor.getDeclaredType() ) ),
-                              "c_provider",
+    return FieldSpec.builder( descriptor.getArezClassName().nestedClass( "Factory" ),
+                              "c_factory",
                               Modifier.STATIC,
                               Modifier.PRIVATE );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildSetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildSetFactoryMethod( @Nonnull final ComponentDescriptor descriptor )
   {
-    return MethodSpec.methodBuilder( "setProvider" ).
-      addModifiers( Modifier.STATIC ).
-      addParameter( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
-                                               TypeName.get( descriptor.getDeclaredType() ) ),
-                    "provider",
-                    Modifier.FINAL ).
-      addStatement( "c_provider = provider" );
+    final MethodSpec.Builder method = MethodSpec
+      .methodBuilder( "setFactory" )
+      .addModifiers( Modifier.STATIC )
+      .addParameter( ParameterSpec
+                       .builder( descriptor.getArezClassName().nestedClass( "Factory" ), "factory", Modifier.FINAL )
+                       .addAnnotation( NONNULL_CLASSNAME ).build() );
+    final CodeBlock.Builder block = CodeBlock.builder();
+    block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+    block.addStatement( "$T.invariant( () -> null == c_factory, () -> \"Attempted to re-initialize the React4j " +
+                        "dependency injection provider for the component named '$N'. Initialization should only " +
+                        "occur a single time.\" )", GUARDS_CLASSNAME, descriptor.getName() );
+    block.endControlFlow();
+    method.addCode( block.build() );
+    method.addStatement( "c_factory = factory" );
+    return method;
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildGetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildInjectCreateMethod( @Nonnull final ComponentDescriptor descriptor )
   {
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( "getProvider" ).
-      addModifiers( Modifier.PRIVATE, Modifier.STATIC ).
-      returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, TypeName.get( descriptor.getDeclaredType() ) ) );
+    final ParameterSpec.Builder parameter =
+      ParameterSpec
+        .builder( REACT_NATIVE_COMPONENT_CLASSNAME, "nativeComponent", Modifier.FINAL )
+        .addAnnotation( NONNULL_CLASSNAME );
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( "create" )
+        .addModifiers( Modifier.PUBLIC, Modifier.STATIC )
+        .addParameter( parameter.build() )
+        .returns( descriptor.getEnhancedClassName() );
     final CodeBlock.Builder block = CodeBlock.builder();
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
     block.addStatement(
-      "$T.invariant( () -> null != c_provider, () -> \"Attempted to create an instance of the React4j " +
+      "$T.invariant( () -> null != c_factory, () -> \"Attempted to create an instance of the React4j " +
       "component named '$N' before the dependency injection provider has been initialized. Please see " +
       "the documentation at https://react4j.github.io/dependency_injection for directions how to " +
       "configure dependency injection.\" )",
@@ -1389,7 +1385,7 @@ final class Generator
       descriptor.getName() );
     block.endControlFlow();
     method.addCode( block.build() );
-    return method.addStatement( "return c_provider" );
+    return method.addStatement( "return c_factory.create( nativeComponent )" );
   }
 
   @Nonnull
@@ -1484,11 +1480,12 @@ final class Generator
     builder.addModifiers( Modifier.STATIC );
     builder.addModifiers( Modifier.PRIVATE );
 
-    final TypeName superType =
-      ParameterizedTypeName.get( REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME, descriptor.getComponentType() );
-
-    builder.superclass( superType );
+    builder.superclass( REACT_NATIVE_COMPONENT_CLASSNAME );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
+
+    builder.addField( FieldSpec
+                        .builder( descriptor.getEnhancedClassName(), COMPONENT_FIELD, Modifier.PRIVATE )
+                        .build() );
 
     if ( lite )
     {
@@ -1539,18 +1536,26 @@ final class Generator
         ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
           addAnnotation( NULLABLE_CLASSNAME );
       final MethodSpec.Builder method =
-        MethodSpec.constructorBuilder().
-          addParameter( props.build() );
-      method.addAnnotation( JS_CONSTRUCTOR_CLASSNAME );
+        MethodSpec.constructorBuilder().addParameter( props.build() ).addAnnotation( JS_CONSTRUCTOR_CLASSNAME );
       method.addStatement( "super( props )" );
+      if ( descriptor.needsInjection() )
+      {
+        method.addStatement( "$N = $T.InjectSupport.create( this )",
+                             COMPONENT_FIELD,
+                             descriptor.getDaggerComponentExtensionClassName() );
+      }
+      else
+      {
+        final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
+        method.addStatement( "$N = new $T" + infix + "( this )", COMPONENT_FIELD, descriptor.getArezClassName() );
+      }
+
       if ( descriptor.hasValidatedProps() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CLASSNAME );
         block.addStatement( "assert null != props" );
-        block.addStatement( "(($T) component() ).$N( props )",
-                            descriptor.getEnhancedClassName(),
-                            VALIDATE_PROPS_METHOD );
+        block.addStatement( "$N.$N( props )", COMPONENT_FIELD, VALIDATE_PROPS_METHOD );
         block.endControlFlow();
         method.addCode( block.build() );
       }
@@ -1558,37 +1563,18 @@ final class Generator
       builder.addMethod( method.build() );
     }
 
-    // build createComponent
-    {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "createComponent" ).
-          addAnnotation( Override.class ).
-          addModifiers( Modifier.PROTECTED ).
-          returns( descriptor.getComponentType() );
-      if ( descriptor.needsInjection() )
-      {
-        method.addStatement( "return InjectSupport.getProvider().get()" );
-      }
-      else
-      {
-        final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
-        method.addStatement( "return new $T" + infix + "( this )", descriptor.getClassNameToConstruct() );
-      }
-      builder.addMethod( method.build() );
-    }
-
     if ( lite ? descriptor.generateComponentDidMountInLiteLifecycle() : descriptor.generateComponentDidMount() )
     {
       // We add this so the DevTool sees any debug data saved
-      builder.addMethod( buildNativeComponentDidMount( descriptor ).build() );
+      builder.addMethod( buildNativeComponentDidMount().build() );
     }
     if ( lite ? descriptor.generateShouldComponentUpdateInLiteLifecycle() : descriptor.generateShouldComponentUpdate() )
     {
-      builder.addMethod( buildNativeShouldComponentUpdate( descriptor ).build() );
+      builder.addMethod( buildNativeShouldComponentUpdate().build() );
     }
     if ( descriptor.generateComponentPreUpdate() )
     {
-      builder.addMethod( buildNativeComponentPreUpdate( descriptor ).build() );
+      builder.addMethod( buildNativeComponentPreUpdate().build() );
     }
     if ( lite ? descriptor.generateComponentDidUpdateInLiteLifecycle() : descriptor.generateComponentDidUpdate() )
     {
@@ -1597,20 +1583,20 @@ final class Generator
     }
     if ( descriptor.generateComponentWillUnmount() )
     {
-      builder.addMethod( buildNativeComponentWillUnmount( descriptor ).build() );
+      builder.addMethod( buildNativeComponentWillUnmount().build() );
     }
     if ( descriptor.generateComponentDidCatch() )
     {
       builder.addMethod( buildNativeComponentDidCatch().build() );
     }
 
-    builder.addMethod( buildNativeRender( descriptor ).build() );
+    builder.addMethod( buildNativeRender().build() );
 
     return builder.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeRender( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildNativeRender()
   {
     return MethodSpec
       .methodBuilder( "render" )
@@ -1618,23 +1604,21 @@ final class Generator
       .addAnnotation( NULLABLE_CLASSNAME )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .returns( REACT_NODE_CLASSNAME )
-      .addStatement( "return (($T) component() ).render()", descriptor.getEnhancedClassName() );
+      .addStatement( "return $N.render()", COMPONENT_FIELD );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeComponentDidMount( @Nonnull final ComponentDescriptor componentDescriptor )
+  private static MethodSpec.Builder buildNativeComponentDidMount()
   {
     return MethodSpec
       .methodBuilder( "componentDidMount" )
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .addStatement( "(($T) component() ).$N()",
-                     componentDescriptor.getEnhancedClassName(),
-                     COMPONENT_DID_MOUNT_METHOD );
+      .addStatement( "$N.$N()", COMPONENT_FIELD, COMPONENT_DID_MOUNT_METHOD );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeShouldComponentUpdate( @Nonnull final ComponentDescriptor componentDescriptor )
+  private static MethodSpec.Builder buildNativeShouldComponentUpdate()
   {
     return MethodSpec
       .methodBuilder( "shouldComponentUpdate" )
@@ -1645,13 +1629,11 @@ final class Generator
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
-      .addStatement( "return (($T) component() ).$N( nextProps )",
-                     componentDescriptor.getEnhancedClassName(),
-                     SHOULD_COMPONENT_UPDATE_METHOD );
+      .addStatement( "return $N.$N( nextProps )", COMPONENT_FIELD, SHOULD_COMPONENT_UPDATE_METHOD );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeComponentPreUpdate( @Nonnull final ComponentDescriptor componentDescriptor )
+  private static MethodSpec.Builder buildNativeComponentPreUpdate()
   {
     return MethodSpec
       .methodBuilder( "getSnapshotBeforeUpdate" )
@@ -1666,9 +1648,7 @@ final class Generator
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
-      .addStatement( "(($T) component() ).$N( prevProps )",
-                     componentDescriptor.getEnhancedClassName(),
-                     COMPONENT_PRE_UPDATE_METHOD )
+      .addStatement( "$N.$N( prevProps )", COMPONENT_FIELD, COMPONENT_PRE_UPDATE_METHOD )
       .addStatement( "return null" );
   }
 
@@ -1685,28 +1665,22 @@ final class Generator
                        .build() );
     if ( descriptor.hasPostUpdateOnPropChange() )
     {
-      return method.addStatement( "(($T) component() ).$N( prevProps )",
-                                  descriptor.getEnhancedClassName(),
-                                  COMPONENT_DID_UPDATE_METHOD );
+      return method.addStatement( "$N.$N( prevProps )", COMPONENT_FIELD, COMPONENT_DID_UPDATE_METHOD );
     }
     else
     {
-      return method.addStatement( "(($T) component() ).$N()",
-                                  descriptor.getEnhancedClassName(),
-                                  COMPONENT_DID_UPDATE_METHOD );
+      return method.addStatement( "$N.$N()", COMPONENT_FIELD, COMPONENT_DID_UPDATE_METHOD );
     }
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeComponentWillUnmount( @Nonnull final ComponentDescriptor componentDescriptor )
+  private static MethodSpec.Builder buildNativeComponentWillUnmount()
   {
     return MethodSpec
       .methodBuilder( "componentWillUnmount" )
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .addStatement( "(($T) component() ).$N()",
-                     componentDescriptor.getEnhancedClassName(),
-                     COMPONENT_WILL_UNMOUNT_METHOD );
+      .addStatement( "$N.$N()", COMPONENT_FIELD, COMPONENT_WILL_UNMOUNT_METHOD );
   }
 
   @Nonnull
@@ -1735,7 +1709,7 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildArezDaggerComponentExtension( @Nonnull final ComponentDescriptor descriptor )
+  static TypeSpec buildDaggerComponentExtension( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerComponentExtensionClassName() );
     final ClassName superClassName = descriptor.getArezDaggerExtensionClassName();
@@ -1748,12 +1722,15 @@ final class Generator
     final MethodSpec.Builder method =
       MethodSpec
         .methodBuilder( "bind" + descriptor.getName() )
-        .addModifiers( Modifier.PUBLIC, Modifier.DEFAULT )
-        .addStatement( "$T.super.$N()", superClassName, "bind" + descriptor.getName() )
-        .addStatement( "$T.InjectSupport.setProvider( () -> ($T) $N().createProvider().get() )",
-                       descriptor.getEnhancedClassName(),
-                       descriptor.getClassName(),
-                       "get" + descriptor.getName() + "DaggerSubcomponent" );
+        .addModifiers( Modifier.PUBLIC, Modifier.DEFAULT );
+
+    if ( descriptor.needsEnhancer() )
+    {
+      method.addStatement( "$T.super.$N()", superClassName, "bind" + descriptor.getName() );
+    }
+
+    method.addStatement( "InjectSupport.setFactory( $N().createFactory() )",
+                         "get" + descriptor.getName() + "DaggerSubcomponent" );
 
     builder.addMethod( method.build() );
 
@@ -1767,106 +1744,10 @@ final class Generator
                          .returns( ClassName.bestGuess( "DaggerSubcomponent" ) )
                          .build() );
 
-    return builder.build();
-  }
-
-  @Nonnull
-  static TypeSpec buildDaggerComponentExtension( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerComponentExtensionClassName() );
-    addGeneratedAnnotation( descriptor, builder );
-    addOriginatingTypes( descriptor.getElement(), builder );
-
-    builder.addModifiers( Modifier.PUBLIC );
-
+    if ( descriptor.needsInjection() )
     {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "get" + descriptor.getName() + "DaggerSubcomponent" ).
-          addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT ).
-          returns( ClassName.bestGuess( "DaggerSubcomponent" ) );
-      builder.addMethod( method.build() );
+      builder.addType( buildInjectSupport( descriptor ) );
     }
-    {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "bind" + descriptor.getName() ).
-          addModifiers( Modifier.PUBLIC, Modifier.DEFAULT );
-      if ( descriptor.getElement().getModifiers().contains( Modifier.PUBLIC ) )
-      {
-        method.addStatement( "$T.InjectSupport.setProvider( $N().createProvider() )",
-                             descriptor.getEnhancedClassName(),
-                             "get" + descriptor.getName() + "DaggerSubcomponent" );
-      }
-      else
-      {
-        method.addStatement( "$T.InjectSupport.setProvider( () -> ($T) $N().createProvider().get() )",
-                             descriptor.getEnhancedClassName(),
-                             descriptor.getClassName(),
-                             "get" + descriptor.getName() + "DaggerSubcomponent" );
-      }
-      builder.addMethod( method.build() );
-    }
-
-    builder.addType( buildDaggerModule( descriptor ) );
-    builder.addType( buildDaggerComponent( descriptor ) );
-
-    return builder.build();
-  }
-
-  @Nonnull
-  private static TypeSpec buildDaggerComponent( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "DaggerSubcomponent" );
-
-    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
-    final AnnotationSpec.Builder subcomponent =
-      AnnotationSpec.builder( ClassName.bestGuess( Constants.DAGGER_SUBCOMPONENT_CLASSNAME ) );
-    subcomponent.addMember( "modules", "DaggerModule.class" );
-    builder.addAnnotation( subcomponent.build() );
-
-    if ( descriptor.getElement().getModifiers().contains( Modifier.PUBLIC ) )
-    {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "createProvider" ).
-          addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
-          returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, descriptor.getClassName() ) );
-      builder.addMethod( method.build() );
-    }
-    else
-    {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "createProvider" ).
-          addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
-          returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, COMPONENT_CLASSNAME ) );
-      builder.addMethod( method.build() );
-    }
-
-    return builder.build();
-  }
-
-  @Nonnull
-  private static TypeSpec buildDaggerModule( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "DaggerModule" );
-
-    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
-    builder.addAnnotation( ClassName.bestGuess( Constants.DAGGER_MODULE_CLASSNAME ) );
-
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "bindComponent" ).
-        addAnnotation( ClassName.bestGuess( Constants.DAGGER_BINDS_CLASSNAME ) ).
-        addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
-        addParameter( descriptor.getClassNameToConstruct(), "component" ).
-        returns( descriptor.getClassName() );
-    if ( descriptor.getElement().getModifiers().contains( Modifier.PUBLIC ) )
-    {
-      method.returns( descriptor.getClassName() );
-    }
-    else
-    {
-      method.returns( COMPONENT_CLASSNAME );
-    }
-
-    builder.addMethod( method.build() );
 
     return builder.build();
   }

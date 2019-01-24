@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
 @ArezComponent(
@@ -51,21 +50,19 @@ abstract class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent
     static final String window = React.shouldMinimizePropKeys() ? "a" : "window";
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<NonJavaBeanPropComponent> {
+  private static final class NativeReactComponent extends NativeComponent {
+    private React4j_NonJavaBeanPropComponent $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected NonJavaBeanPropComponent createComponent() {
-      return new Arez_React4j_NonJavaBeanPropComponent( this );
+      $$react4j$$_component = new Arez_React4j_NonJavaBeanPropComponent( this );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_NonJavaBeanPropComponent) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

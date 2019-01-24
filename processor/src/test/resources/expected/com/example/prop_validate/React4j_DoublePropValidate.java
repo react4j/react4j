@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnShouldComponentUpdate;
 
@@ -69,52 +68,48 @@ abstract class React4j_DoublePropValidate extends DoublePropValidate {
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<DoublePropValidate> {
+  private static final class LiteNativeReactComponent extends NativeComponent {
+    private React4j_DoublePropValidate $$react4j$$_component;
+
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
+      $$react4j$$_component = new Arez_React4j_DoublePropValidate( this );
       if ( React.shouldValidatePropValues() ) {
         assert null != props;
-        ((React4j_DoublePropValidate) component() ).$$react4j$$_validatePropValues( props );
+        $$react4j$$_component.$$react4j$$_validatePropValues( props );
       }
-    }
-
-    @Override
-    protected DoublePropValidate createComponent() {
-      return new Arez_React4j_DoublePropValidate( this );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_DoublePropValidate) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<DoublePropValidate> implements OnShouldComponentUpdate {
+  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
+    private React4j_DoublePropValidate $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
+      $$react4j$$_component = new Arez_React4j_DoublePropValidate( this );
       if ( React.shouldValidatePropValues() ) {
         assert null != props;
-        ((React4j_DoublePropValidate) component() ).$$react4j$$_validatePropValues( props );
+        $$react4j$$_component.$$react4j$$_validatePropValues( props );
       }
-    }
-
-    @Override
-    protected DoublePropValidate createComponent() {
-      return new Arez_React4j_DoublePropValidate( this );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return ((React4j_DoublePropValidate) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_DoublePropValidate) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

@@ -1,6 +1,5 @@
 package com.example.inject;
 
-import arez.annotations.PostConstruct;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import react4j.ReactNode;
@@ -13,11 +12,6 @@ abstract class ArezReactComponent
 {
   @Inject
   String someParam;
-
-  @PostConstruct
-  final void postConstruct2()
-  {
-  }
 
   @Nullable
   @Override

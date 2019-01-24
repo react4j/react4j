@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
@@ -55,31 +54,29 @@ abstract class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<PostRenderAndPostUpdate> implements OnComponentDidMount, OnComponentDidUpdate {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate {
+    private React4j_PostRenderAndPostUpdate $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected PostRenderAndPostUpdate createComponent() {
-      return new Arez_React4j_PostRenderAndPostUpdate( this );
+      $$react4j$$_component = new Arez_React4j_PostRenderAndPostUpdate( this );
     }
 
     @Override
     public final void componentDidMount() {
-      ((React4j_PostRenderAndPostUpdate) component() ).$$react4j$$_componentDidMount();
+      $$react4j$$_component.$$react4j$$_componentDidMount();
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_PostRenderAndPostUpdate) component() ).$$react4j$$_componentDidUpdate();
+      $$react4j$$_component.$$react4j$$_componentDidUpdate();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_PostRenderAndPostUpdate) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

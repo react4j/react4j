@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidUpdate;
 
@@ -65,26 +64,24 @@ abstract class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<PostUpdateOnPropChange> implements OnComponentDidUpdate {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidUpdate {
+    private React4j_PostUpdateOnPropChange $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected PostUpdateOnPropChange createComponent() {
-      return new Arez_React4j_PostUpdateOnPropChange( this );
+      $$react4j$$_component = new Arez_React4j_PostUpdateOnPropChange( this );
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_PostUpdateOnPropChange) component() ).$$react4j$$_componentDidUpdate( prevProps );
+      $$react4j$$_component.$$react4j$$_componentDidUpdate( prevProps );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_PostUpdateOnPropChange) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

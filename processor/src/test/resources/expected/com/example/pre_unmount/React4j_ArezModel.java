@@ -19,7 +19,6 @@ import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
@@ -109,59 +108,55 @@ abstract class React4j_ArezModel extends ArezModel {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ArezModel> implements OnComponentWillUnmount {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
+    private React4j_ArezModel $$react4j$$_component;
+
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected ArezModel createComponent() {
-      return new Arez_React4j_ArezModel( this );
+      $$react4j$$_component = new Arez_React4j_ArezModel( this );
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((React4j_ArezModel) component() ).$$react4j$$_componentWillUnmount();
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_ArezModel) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<ArezModel> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
+    private React4j_ArezModel $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected ArezModel createComponent() {
-      return new Arez_React4j_ArezModel( this );
+      $$react4j$$_component = new Arez_React4j_ArezModel( this );
     }
 
     @Override
     public final void componentDidMount() {
-      ((React4j_ArezModel) component() ).$$react4j$$_componentDidMount();
+      $$react4j$$_component.$$react4j$$_componentDidMount();
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_ArezModel) component() ).$$react4j$$_componentDidUpdate();
+      $$react4j$$_component.$$react4j$$_componentDidUpdate();
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((React4j_ArezModel) component() ).$$react4j$$_componentWillUnmount();
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_ArezModel) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

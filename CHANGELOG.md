@@ -47,6 +47,15 @@
   and J2CL compilers.
 * Archive the `react4j-widget` library as there is no desire or need to continue supporting it. While the library
   will likely continue to work, the project will not verify this going forward.
+* **\[processor\]** Remove `react4j.internal.NativeAdapterComponent` and have the annotation processor generate
+  the required infrastructure per-component. This affords more opportunities for the optimizing compilers to eliminate
+  unused code and simplifies understanding of the generated classes.
+* **\[core\]** Remove the `dagger` parameter from `@ReactComponent` as the framework has not supported alternative
+  injection frameworks for a while and thus the parameter provided no actual value.
+* **\[core\]** Completely rewrite the injection framework support is generated to use infrastructure supplied by
+  the Arez component model now that all react4j components are Arez components.
+* **\[core\]** Convert `Component.bindComponent()` to protected access and add invariant check to verify that it is
+  not called multiple times.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

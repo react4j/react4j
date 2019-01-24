@@ -8,7 +8,7 @@ import react4j.annotations.ReactComponent;
 
 public class NestedCompleteComponent
 {
-  @ReactComponent( dagger = Feature.ENABLE, inject = Feature.ENABLE )
+  @ReactComponent( inject = Feature.ENABLE )
   static abstract class BasicReactComponent
     extends Component
   {

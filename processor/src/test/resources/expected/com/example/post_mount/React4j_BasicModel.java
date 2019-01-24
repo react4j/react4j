@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 
@@ -46,26 +45,24 @@ abstract class React4j_BasicModel extends BasicModel {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<BasicModel> implements OnComponentDidMount {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount {
+    private React4j_BasicModel $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected BasicModel createComponent() {
-      return new Arez_React4j_BasicModel( this );
+      $$react4j$$_component = new Arez_React4j_BasicModel( this );
     }
 
     @Override
     public final void componentDidMount() {
-      ((React4j_BasicModel) component() ).$$react4j$$_componentDidMount();
+      $$react4j$$_component.$$react4j$$_componentDidMount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_BasicModel) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

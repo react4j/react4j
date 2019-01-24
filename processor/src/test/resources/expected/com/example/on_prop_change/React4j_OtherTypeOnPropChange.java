@@ -12,7 +12,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
@@ -63,28 +62,26 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<OtherTypeOnPropChange> implements OnGetSnapshotBeforeUpdate {
+  private static final class NativeReactComponent extends NativeComponent implements OnGetSnapshotBeforeUpdate {
+    private React4j_OtherTypeOnPropChange $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected OtherTypeOnPropChange createComponent() {
-      return new Arez_React4j_OtherTypeOnPropChange( this );
+      $$react4j$$_component = new Arez_React4j_OtherTypeOnPropChange( this );
     }
 
     @Override
     public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      ((React4j_OtherTypeOnPropChange) component() ).$$react4j$$_componentPreUpdate( prevProps );
+      $$react4j$$_component.$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_OtherTypeOnPropChange) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

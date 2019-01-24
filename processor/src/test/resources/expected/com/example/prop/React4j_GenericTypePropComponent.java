@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
 @ArezComponent(
@@ -51,21 +50,19 @@ abstract class React4j_GenericTypePropComponent<T> extends GenericTypePropCompon
     static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
   }
 
-  private static final class NativeReactComponent<T> extends NativeAdapterComponent<GenericTypePropComponent<T>> {
+  private static final class NativeReactComponent<T> extends NativeComponent {
+    private React4j_GenericTypePropComponent $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected GenericTypePropComponent<T> createComponent() {
-      return new Arez_React4j_GenericTypePropComponent<T>( this );
+      $$react4j$$_component = new Arez_React4j_GenericTypePropComponent<T>( this );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_GenericTypePropComponent) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

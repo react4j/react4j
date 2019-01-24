@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
 @ArezComponent(
@@ -51,21 +50,19 @@ abstract class React4j_CustomNameProp extends CustomNameProp {
     static final String foo = React.shouldMinimizePropKeys() ? "a" : "foo";
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<CustomNameProp> {
+  private static final class NativeReactComponent extends NativeComponent {
+    private React4j_CustomNameProp $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected CustomNameProp createComponent() {
-      return new Arez_React4j_CustomNameProp( this );
+      $$react4j$$_component = new Arez_React4j_CustomNameProp( this );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_CustomNameProp) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

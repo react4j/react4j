@@ -29,13 +29,26 @@ public abstract class Component
    */
   private boolean _scheduledDebugStateUpdate;
 
-  public final void bindComponent( @Nonnull final NativeComponent nativeComponent )
+  /**
+   * Bind the native react component to this component.
+   * This should not be called by user code and is instead invoked by the generated component class.
+   *
+   * @param nativeComponent the native react component.
+   */
+  protected final void bindComponent( @Nonnull final NativeComponent nativeComponent )
   {
+    if ( React.shouldCheckInvariants() )
+    {
+      invariant( () -> null == _nativeComponent,
+                 () -> "Invoked bindComponent() on " + this + " but component has already been bound." );
+    }
     _nativeComponent = Objects.requireNonNull( nativeComponent );
   }
 
   /**
    * Return the native react component.
+   *
+   * @return the native react component.
    */
   @Nonnull
   private NativeComponent component()

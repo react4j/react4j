@@ -7,22 +7,22 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class InjectFalseDaggerTrueComponentBuilder {
-  private InjectFalseDaggerTrueComponentBuilder() {
+public class MethodInjectObserveOnReactComponentBuilder {
+  private MethodInjectObserveOnReactComponentBuilder() {
   }
 
   @Nonnull
-  static ReactNode key(@Nonnull final String key) {
+  public static ReactNode key(@Nonnull final String key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static ReactNode key(final int key) {
+  public static ReactNode key(final int key) {
     return new Builder().key( key );
   }
 
   @Nonnull
-  static ReactNode build() {
+  public static ReactNode build() {
     return new Builder().build();
   }
 
@@ -40,7 +40,7 @@ class InjectFalseDaggerTrueComponentBuilder {
   }
 
   private static class Builder implements Step1, Step2 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_InjectFalseDaggerTrueComponent.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_MethodInjectObserveOnReactComponent.Factory.TYPE );
 
     @Override
     @Nonnull

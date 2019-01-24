@@ -42,7 +42,6 @@ final class ComponentDescriptor
   private ExecutableElement _preUnmount;
   private boolean _arezComponent;
   private boolean _needsInjection;
-  private boolean _needsDaggerIntegration;
   /**
    * Methods that are props accessors.
    * These should be implemented as accesses to the underlying props value.
@@ -62,18 +61,21 @@ final class ComponentDescriptor
   private List<MethodDescriptor> _memoizeMethods;
   private Boolean _hasValidatedProps;
   private boolean _allowNoArezDeps;
+  private final boolean _needsEnhancer;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
                        @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
-                       @Nonnull final TypeElement element )
+                       @Nonnull final TypeElement element,
+                       final boolean needsEnhancer )
   {
     _elements = Objects.requireNonNull( elements );
     _sourceVersion = Objects.requireNonNull( sourceVersion );
     _name = Objects.requireNonNull( name );
     _packageElement = Objects.requireNonNull( packageElement );
     _element = Objects.requireNonNull( element );
+    _needsEnhancer = needsEnhancer;
 
     if ( ElementKind.CLASS != element.getKind() )
     {
@@ -130,6 +132,11 @@ final class ComponentDescriptor
     return _name;
   }
 
+  boolean needsEnhancer()
+  {
+    return _needsEnhancer;
+  }
+
   @Nonnull
   ClassName getClassName()
   {
@@ -170,13 +177,12 @@ final class ComponentDescriptor
   @Nonnull
   ClassName getArezDaggerExtensionClassName()
   {
-    assert isArezComponent();
     return ClassName.get( getPackageName(),
                           getNestedClassPrefix() + "React4j_" + _element.getSimpleName() + "DaggerComponentExtension" );
   }
 
   @Nonnull
-  ClassName getClassNameToConstruct()
+  ClassName getArezClassName()
   {
     final String simpleName = "Arez_" + getNestedClassPrefix() + "React4j_" + _element.getSimpleName();
     return ClassName.get( getPackageName(), simpleName );
@@ -205,16 +211,6 @@ final class ComponentDescriptor
   void setNeedsInjection( final boolean needsInjection )
   {
     _needsInjection = needsInjection;
-  }
-
-  boolean needsDaggerIntegration()
-  {
-    return _needsDaggerIntegration;
-  }
-
-  void setNeedsDaggerIntegration( final boolean needsDaggerIntegration )
-  {
-    _needsDaggerIntegration = needsDaggerIntegration;
   }
 
   boolean isArezComponent()

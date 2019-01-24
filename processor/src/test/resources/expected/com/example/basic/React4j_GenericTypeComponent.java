@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
 @ArezComponent(
@@ -38,21 +37,19 @@ abstract class React4j_GenericTypeComponent<T> extends GenericTypeComponent<T> {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent<T> extends NativeAdapterComponent<GenericTypeComponent<T>> {
+  private static final class NativeReactComponent<T> extends NativeComponent {
+    private React4j_GenericTypeComponent $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected GenericTypeComponent<T> createComponent() {
-      return new Arez_React4j_GenericTypeComponent<T>( this );
+      $$react4j$$_component = new Arez_React4j_GenericTypeComponent<T>( this );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_GenericTypeComponent) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

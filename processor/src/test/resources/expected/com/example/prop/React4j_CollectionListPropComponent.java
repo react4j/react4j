@@ -12,7 +12,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
 @ArezComponent(
@@ -52,21 +51,19 @@ abstract class React4j_CollectionListPropComponent extends CollectionListPropCom
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<CollectionListPropComponent> {
+  private static final class NativeReactComponent extends NativeComponent {
+    private React4j_CollectionListPropComponent $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected CollectionListPropComponent createComponent() {
-      return new Arez_React4j_CollectionListPropComponent( this );
+      $$react4j$$_component = new Arez_React4j_CollectionListPropComponent( this );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_CollectionListPropComponent) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

@@ -168,7 +168,7 @@ public final class ReactProcessor
     final ComponentDescriptor descriptor = parse( element );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( descriptor ) );
-    if ( descriptor.needsDaggerIntegration() )
+    if ( descriptor.needsInjection() )
     {
       emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerComponentExtension( descriptor ) );
     }
@@ -183,19 +183,51 @@ public final class ReactProcessor
       writeTo( processingEnv.getFiler() );
   }
 
+  /**
+   * Return true if the Arez framework will generate an enhancer as part of injection setup.
+   * This is extremely brittle as any time the logic changes in Arez it needs to be changed
+   * here. At some point we need to figure out how injection framework can be improved to
+   * take over this responsibility.
+   */
+  private boolean needsEnhancer( @Nonnull final TypeElement typeElement )
+  {
+    final List<ExecutableElement> methods = getMethods( typeElement );
+    final boolean nonConstructorInjections =
+      methods
+        .stream()
+        .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) ) ||
+      ProcessorUtil.getFieldElements( typeElement )
+        .stream()
+        .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) );
+    return nonConstructorInjections && methods.stream()
+      .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_ANNOTATION_CLASSNAME ) ||
+                      ProcessorUtil.hasAnnotationOfType( e, Constants.OBSERVE_ANNOTATION_CLASSNAME ) ||
+                      ProcessorUtil.hasAnnotationOfType( e,
+                                                         Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME ) ||
+                      (
+                        ProcessorUtil.hasAnnotationOfType( e, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) &&
+                        ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                          e,
+                                                          Constants.MEMOIZE_ANNOTATION_CLASSNAME,
+                                                          "keepAlive" )
+                          .getValue() == Boolean.TRUE
+                      ) );
+  }
+
   @Nonnull
   private ComponentDescriptor parse( @Nonnull final TypeElement typeElement )
   {
     final String name = deriveComponentName( typeElement );
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
+    final boolean needsEnhancer = needsEnhancer( typeElement );
     final ComponentDescriptor descriptor =
       new ComponentDescriptor( processingEnv.getElementUtils(),
                                processingEnv.getSourceVersion(),
                                name,
                                packageElement,
-                               typeElement );
+                               typeElement,
+                               needsEnhancer );
 
-    // TODO: Cache methods rather than rescanning
     determineComponentType( descriptor, typeElement );
     determineRenderMethod( typeElement, descriptor );
     determineProps( descriptor );
@@ -1010,17 +1042,15 @@ public final class ReactProcessor
     }
 
     final boolean needsInjection = isInjectionRequired( typeElement );
-    final boolean isDaggerPresent = needsInjection && isDaggerRequired( typeElement );
 
-    if ( isDaggerPresent && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
+    if ( needsInjection && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
-      throw new ReactProcessorException( "@ReactComponent target has enabled dagger injection and the class " +
-                                         "has type argument but type arguments on a component are not compatible " +
-                                         "with dagger injected components", typeElement );
+      throw new ReactProcessorException( "@ReactComponent target has enabled injection integration but the class " +
+                                         "has type arguments which is incompatible with injection integration.",
+                                         typeElement );
     }
 
     descriptor.setNeedsInjection( needsInjection );
-    descriptor.setNeedsDaggerIntegration( isDaggerPresent );
     final boolean allowNoArezDeps = (Boolean)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                         typeElement,
@@ -1147,24 +1177,6 @@ public final class ReactProcessor
         return ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( ProcessorUtil::hasInjectAnnotation ) ||
                getMethods( typeElement ).
                  stream().anyMatch( ProcessorUtil::hasInjectAnnotation );
-    }
-  }
-
-  private boolean isDaggerRequired( @Nonnull final TypeElement typeElement )
-  {
-    final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        typeElement,
-                                        Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                        "dagger" ).getValue();
-    switch ( parameter.getSimpleName().toString() )
-    {
-      case "ENABLE":
-        return true;
-      case "DISABLE":
-        return false;
-      default:
-        return null != processingEnv.getElementUtils().getTypeElement( Constants.DAGGER_MODULE_CLASSNAME );
     }
   }
 

@@ -1,30 +1,36 @@
 package com.example.inject;
 
-import dagger.Binds;
-import dagger.Module;
-import dagger.Subcomponent;
 import javax.annotation.Generated;
-import javax.inject.Provider;
-import react4j.Component;
+import javax.annotation.Nonnull;
+import org.realityforge.braincheck.Guards;
+import react4j.React;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
-public interface MethodInjectReactComponentDaggerComponentExtension {
+public interface MethodInjectReactComponentDaggerComponentExtension extends React4j_MethodInjectReactComponentDaggerComponentExtension {
+  default void bindMethodInjectReactComponent() {
+    InjectSupport.setFactory( getMethodInjectReactComponentDaggerSubcomponent().createFactory() );
+  }
+
+  @Override
   DaggerSubcomponent getMethodInjectReactComponentDaggerSubcomponent();
 
-  default void bindMethodInjectReactComponent() {
-    React4j_MethodInjectReactComponent.InjectSupport.setProvider( () -> (MethodInjectReactComponent) getMethodInjectReactComponentDaggerSubcomponent().createProvider().get() );
-  }
+  final class InjectSupport {
+    private static Arez_React4j_MethodInjectReactComponent.Factory c_factory;
 
-  @Module
-  interface DaggerModule {
-    @Binds
-    Component bindComponent(Arez_React4j_MethodInjectReactComponent component);
-  }
+    static void setFactory(@Nonnull final Arez_React4j_MethodInjectReactComponent.Factory factory) {
+      if ( React.shouldCheckInvariants() ) {
+        Guards.invariant( () -> null == c_factory, () -> "Attempted to re-initialize the React4j dependency injection provider for the component named 'MethodInjectReactComponent'. Initialization should only occur a single time." );
+      }
+      c_factory = factory;
+    }
 
-  @Subcomponent(
-      modules = DaggerModule.class
-  )
-  interface DaggerSubcomponent {
-    Provider<Component> createProvider();
+    public static React4j_MethodInjectReactComponent create(
+        @Nonnull final NativeComponent nativeComponent) {
+      if ( React.shouldCheckInvariants() ) {
+        Guards.invariant( () -> null != c_factory, () -> "Attempted to create an instance of the React4j component named 'MethodInjectReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+      }
+      return c_factory.create( nativeComponent );
+    }
   }
 }

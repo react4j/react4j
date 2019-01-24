@@ -3,18 +3,17 @@ package com.example.inject;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
+import arez.annotations.PerInstance;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.inject.Provider;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
 
 @ArezComponent(
     name = "PublicReactComponent",
@@ -25,6 +24,10 @@ import react4j.internal.NativeAdapterComponent;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_PublicReactComponent extends PublicReactComponent {
+  React4j_PublicReactComponent(@Nonnull @PerInstance final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
+  }
+
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
@@ -38,36 +41,19 @@ abstract class React4j_PublicReactComponent extends PublicReactComponent {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class InjectSupport {
-    private static Provider<PublicReactComponent> c_provider;
+  private static final class NativeReactComponent extends NativeComponent {
+    private React4j_PublicReactComponent $$react4j$$_component;
 
-    static void setProvider(final Provider<PublicReactComponent> provider) {
-      c_provider = provider;
-    }
-
-    private static Provider<PublicReactComponent> getProvider() {
-      if ( React.shouldCheckInvariants() ) {
-        Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'PublicReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
-      }
-      return c_provider;
-    }
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<PublicReactComponent> {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected PublicReactComponent createComponent() {
-      return InjectSupport.getProvider().get();
+      $$react4j$$_component = PublicReactComponentDaggerComponentExtension.InjectSupport.create( this );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_PublicReactComponent) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

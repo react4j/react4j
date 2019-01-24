@@ -11,7 +11,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
 @ArezComponent(
@@ -51,21 +50,19 @@ abstract class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorf
     static final String myProp12$23 = React.shouldMinimizePropKeys() ? "a" : "myProp12$23";
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<PropDefaultWithColorfulName> {
+  private static final class NativeReactComponent extends NativeComponent {
+    private React4j_PropDefaultWithColorfulName $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected PropDefaultWithColorfulName createComponent() {
-      return new Arez_React4j_PropDefaultWithColorfulName( this );
+      $$react4j$$_component = new Arez_React4j_PropDefaultWithColorfulName( this );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_PropDefaultWithColorfulName) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

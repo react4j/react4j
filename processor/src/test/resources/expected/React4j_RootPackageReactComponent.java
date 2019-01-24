@@ -9,7 +9,6 @@ import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 
 @ArezComponent(
@@ -36,21 +35,19 @@ abstract class React4j_RootPackageReactComponent extends RootPackageReactCompone
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<RootPackageReactComponent> {
+  private static final class NativeReactComponent extends NativeComponent {
+    private React4j_RootPackageReactComponent $$react4j$$_component;
+
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected RootPackageReactComponent createComponent() {
-      return new Arez_React4j_RootPackageReactComponent( this );
+      $$react4j$$_component = new Arez_React4j_RootPackageReactComponent( this );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return ((React4j_RootPackageReactComponent) component() ).render();
+      return $$react4j$$_component.render();
     }
   }
 }

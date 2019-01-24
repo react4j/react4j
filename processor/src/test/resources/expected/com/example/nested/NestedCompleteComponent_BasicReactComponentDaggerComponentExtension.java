@@ -1,30 +1,37 @@
 package com.example.nested;
 
-import dagger.Binds;
-import dagger.Module;
-import dagger.Subcomponent;
 import javax.annotation.Generated;
-import javax.inject.Provider;
-import react4j.Component;
+import javax.annotation.Nonnull;
+import org.realityforge.braincheck.Guards;
+import react4j.React;
+import react4j.internal.NativeComponent;
 
 @Generated("react4j.processor.ReactProcessor")
-public interface NestedCompleteComponent_BasicReactComponentDaggerComponentExtension {
+public interface NestedCompleteComponent_BasicReactComponentDaggerComponentExtension extends NestedCompleteComponent_React4j_BasicReactComponentDaggerComponentExtension {
+  default void bindBasicReactComponent() {
+    InjectSupport.setFactory( getBasicReactComponentDaggerSubcomponent().createFactory() );
+  }
+
+  @Override
   DaggerSubcomponent getBasicReactComponentDaggerSubcomponent();
 
-  default void bindBasicReactComponent() {
-    NestedCompleteComponent_React4j_BasicReactComponent.InjectSupport.setProvider( () -> (NestedCompleteComponent.BasicReactComponent) getBasicReactComponentDaggerSubcomponent().createProvider().get() );
-  }
+  final class InjectSupport {
+    private static Arez_NestedCompleteComponent_React4j_BasicReactComponent.Factory c_factory;
 
-  @Module
-  interface DaggerModule {
-    @Binds
-    Component bindComponent(Arez_NestedCompleteComponent_React4j_BasicReactComponent component);
-  }
+    static void setFactory(
+        @Nonnull final Arez_NestedCompleteComponent_React4j_BasicReactComponent.Factory factory) {
+      if ( React.shouldCheckInvariants() ) {
+        Guards.invariant( () -> null == c_factory, () -> "Attempted to re-initialize the React4j dependency injection provider for the component named 'BasicReactComponent'. Initialization should only occur a single time." );
+      }
+      c_factory = factory;
+    }
 
-  @Subcomponent(
-      modules = DaggerModule.class
-  )
-  interface DaggerSubcomponent {
-    Provider<Component> createProvider();
+    public static NestedCompleteComponent_React4j_BasicReactComponent create(
+        @Nonnull final NativeComponent nativeComponent) {
+      if ( React.shouldCheckInvariants() ) {
+        Guards.invariant( () -> null != c_factory, () -> "Attempted to create an instance of the React4j component named 'BasicReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
+      }
+      return c_factory.create( nativeComponent );
+    }
   }
 }
