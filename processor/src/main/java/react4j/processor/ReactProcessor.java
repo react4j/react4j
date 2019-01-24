@@ -201,17 +201,40 @@ public final class ReactProcessor
         .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) );
     return nonConstructorInjections && methods.stream()
       .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_ANNOTATION_CLASSNAME ) ||
-                      ProcessorUtil.hasAnnotationOfType( e, Constants.OBSERVE_ANNOTATION_CLASSNAME ) ||
                       ProcessorUtil.hasAnnotationOfType( e,
                                                          Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME ) ||
-                      (
-                        ProcessorUtil.hasAnnotationOfType( e, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) &&
-                        ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                          e,
-                                                          Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                                          "keepAlive" )
-                          .getValue() == Boolean.TRUE
-                      ) );
+                      isSchedulableObserve( e ) ||
+                      isSchedulableMemoize( e )
+      );
+  }
+
+  private boolean isSchedulableMemoize( @Nonnull final ExecutableElement e )
+  {
+    return ProcessorUtil.hasAnnotationOfType( e, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) &&
+           ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                             e,
+                                             Constants.MEMOIZE_ANNOTATION_CLASSNAME,
+                                             "keepAlive" )
+             .getValue() == Boolean.TRUE;
+  }
+
+  private boolean isSchedulableObserve( @Nonnull final ExecutableElement e )
+  {
+    final boolean hasObserve = ProcessorUtil.hasAnnotationOfType( e, Constants.OBSERVE_ANNOTATION_CLASSNAME );
+    if ( !hasObserve )
+    {
+      return false;
+    }
+    else
+    {
+      final VariableElement executor =
+        (VariableElement) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                            e,
+                                                            Constants.OBSERVE_ANNOTATION_CLASSNAME,
+                                                            "executor" )
+          .getValue();
+      return executor.getSimpleName().toString().equals( "INTERNAL" );
+    }
   }
 
   @Nonnull
