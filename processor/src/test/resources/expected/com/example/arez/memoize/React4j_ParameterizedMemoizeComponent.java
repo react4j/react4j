@@ -64,7 +64,7 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    Disposable.dispose( this );
+    ((Arez_React4j_ParameterizedMemoizeComponent) this).dispose();
   }
 
   final void onRenderDepsChange() {

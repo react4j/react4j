@@ -62,7 +62,7 @@ abstract class React4j_RequireArezDepsComponent extends RequireArezDepsComponent
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    Disposable.dispose( this );
+    ((Arez_React4j_RequireArezDepsComponent) this).dispose();
   }
 
   final void onRenderDepsChange() {

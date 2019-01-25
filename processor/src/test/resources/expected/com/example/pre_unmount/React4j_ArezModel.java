@@ -63,7 +63,7 @@ abstract class React4j_ArezModel extends ArezModel {
   private void $$react4j$$_componentWillUnmount() {
     preUnmount();
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    Disposable.dispose( this );
+    ((Arez_React4j_ArezModel) this).dispose();
   }
 
   final void onRenderDepsChange() {

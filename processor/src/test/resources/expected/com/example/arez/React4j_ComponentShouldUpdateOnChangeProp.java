@@ -71,7 +71,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    Disposable.dispose( this );
+    ((Arez_React4j_ComponentShouldUpdateOnChangeProp) this).dispose();
   }
 
   final void onRenderDepsChange() {

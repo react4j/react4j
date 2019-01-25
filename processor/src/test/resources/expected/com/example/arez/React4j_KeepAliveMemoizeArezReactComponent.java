@@ -63,7 +63,7 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    Disposable.dispose( this );
+    ((Arez_React4j_KeepAliveMemoizeArezReactComponent) this).dispose();
   }
 
   final void onRenderDepsChange() {

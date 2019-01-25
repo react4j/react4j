@@ -71,7 +71,7 @@ abstract class React4j_DisposableOptionalProp extends DisposableOptionalProp {
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    Disposable.dispose( this );
+    ((Arez_React4j_DisposableOptionalProp) this).dispose();
   }
 
   final void onRenderDepsChange() {

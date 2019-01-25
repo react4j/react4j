@@ -99,7 +99,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    Disposable.dispose( this );
+    ((Arez_React4j_ObservableViaObservedProp) this).dispose();
   }
 
   final void onRenderDepsChange() {

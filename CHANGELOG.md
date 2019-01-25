@@ -57,6 +57,8 @@
 * **\[core\]** Convert `Component.bindComponent()` to protected access and add invariant check to verify that it is
   not called multiple times.
 * **\[core\]** Remove lifecycle method `Component.componentDidCatch(...)` and replace with annotation `@OnError`.
+* **\[processor\]** Move from `Disposable.dispose( this )` to `((Arez_MyComponent) this).dispose()` so that the
+  optimizing compiler can inline the method where possible.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

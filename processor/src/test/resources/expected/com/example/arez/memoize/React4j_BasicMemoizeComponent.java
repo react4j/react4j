@@ -63,7 +63,7 @@ abstract class React4j_BasicMemoizeComponent extends BasicMemoizeComponent {
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    Disposable.dispose( this );
+    ((Arez_React4j_BasicMemoizeComponent) this).dispose();
   }
 
   final void onRenderDepsChange() {

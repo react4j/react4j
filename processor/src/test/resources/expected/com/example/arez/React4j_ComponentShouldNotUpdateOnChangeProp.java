@@ -71,7 +71,7 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    Disposable.dispose( this );
+    ((Arez_React4j_ComponentShouldNotUpdateOnChangeProp) this).dispose();
   }
 
   final void onRenderDepsChange() {
