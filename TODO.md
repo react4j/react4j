@@ -8,8 +8,6 @@
 
 * Remove `ReactArezComponent`
 
-* Support `@OnChildError` annotation that stands in for `componentDidCatch` lifecycle method.
-
 * Should be possible to mark a prop as immutable and if it changes it is a new component. This is essentially
   deriving the key from the props. Maybe we should have a mechanisms for generating a key from immutable props.
   Props would be marked as immutable and if they change it would result in a new key? The key would be synthesized

@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import react4j.Component;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
+import react4j.annotations.OnError;
 import react4j.annotations.PostMount;
 import react4j.annotations.PostRender;
 import react4j.annotations.PostUpdate;
@@ -38,7 +39,7 @@ abstract class OverrideLifecycleMethodsComponent
   }
 
   @PreUnmount
-  protected void preUnmount()
+  final void preUnmount()
   {
   }
 
@@ -47,8 +48,8 @@ abstract class OverrideLifecycleMethodsComponent
   {
   }
 
-  @Override
-  protected void componentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
+  @OnError
+  final void onError( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
   }
 }

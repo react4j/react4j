@@ -15,6 +15,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
 
@@ -40,6 +41,8 @@ final class ComponentDescriptor
   private ExecutableElement _postMount;
   @Nullable
   private ExecutableElement _preUnmount;
+  @Nullable
+  private ExecutableElement _onError;
   private boolean _arezComponent;
   private boolean _needsInjection;
   /**
@@ -428,6 +431,65 @@ final class ComponentDescriptor
     }
   }
 
+  @Nullable
+  ExecutableElement getOnError()
+  {
+    return _onError;
+  }
+
+  void setOnError( @Nonnull final ExecutableElement onError )
+    throws ReactProcessorException
+  {
+    MethodChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+    MethodChecks.mustNotBePublic( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+    MethodChecks.mustBeSubclassCallable( getElement(), Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+    MethodChecks.mustNotReturnAValue( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+    MethodChecks.mustNotThrowAnyExceptions( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+
+    boolean infoFound = false;
+    boolean errorFound = false;
+    for ( final VariableElement parameter : onError.getParameters() )
+    {
+      final TypeName typeName = TypeName.get( parameter.asType() );
+      if ( typeName.toString().equals( Constants.ERROR_INFO_CLASSNAME ) )
+      {
+        if ( infoFound )
+        {
+          throw new ReactProcessorException( "@OnError target has multiple parameters of type " +
+                                             Constants.ERROR_INFO_CLASSNAME,
+                                             onError );
+        }
+        infoFound = true;
+      }
+      else if ( typeName.toString().equals( Constants.JS_ERROR_CLASSNAME ) )
+      {
+        if ( errorFound )
+        {
+          throw new ReactProcessorException( "@OnError target has multiple parameters of type " +
+                                             Constants.JS_ERROR_CLASSNAME,
+                                             onError );
+        }
+        errorFound = true;
+      }
+      else
+      {
+        throw new ReactProcessorException( "@OnError target has parameter of invalid type named " +
+                                           parameter.getSimpleName().toString(),
+                                           parameter );
+      }
+    }
+
+    if ( null != _onError )
+    {
+      throw new ReactProcessorException( "@OnError target duplicates existing method named " + _onError.getSimpleName(),
+                                         onError );
+    }
+    else
+    {
+      _onError = onError;
+    }
+  }
+
   private boolean shouldGenerateLifecycle()
   {
     return isArezComponent() ||
@@ -468,8 +530,7 @@ final class ComponentDescriptor
 
   boolean generateComponentDidCatch()
   {
-    //TODO: Implement this
-    return false;
+    return null != _onError;
   }
 
   boolean generateComponentWillUnmount()

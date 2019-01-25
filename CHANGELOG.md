@@ -56,6 +56,7 @@
   the Arez component model now that all react4j components are Arez components.
 * **\[core\]** Convert `Component.bindComponent()` to protected access and add invariant check to verify that it is
   not called multiple times.
+* **\[core\]** Remove lifecycle method `Component.componentDidCatch(...)` and replace with annotation `@OnError`.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

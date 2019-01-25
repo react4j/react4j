@@ -2,6 +2,7 @@ package com.example.lifecycle;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import elemental2.core.JsError;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,9 +10,11 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
+import react4j.ReactErrorInfo;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
+import react4j.internal.OnComponentDidCatch;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
@@ -65,7 +68,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnGetSnapshotBeforeUpdate, OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnGetSnapshotBeforeUpdate, OnComponentWillUnmount, OnComponentDidCatch {
     private React4j_OverrideLifecycleMethodsComponent $$react4j$$_component;
 
     @JsConstructor
@@ -94,6 +97,12 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     @Override
     public final void componentWillUnmount() {
       $$react4j$$_component.$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    public final void componentDidCatch(@Nonnull final JsError error,
+        @Nonnull final ReactErrorInfo info) {
+      $$react4j$$_component.onError( error, info );
     }
 
     @Override

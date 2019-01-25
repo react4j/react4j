@@ -82,8 +82,8 @@ final class Generator
     ClassName.get( "react4j.internal", "OnGetSnapshotBeforeUpdate" );
   private static final ClassName ON_COMPONENT_SHOULD_UPDATE_CLASSNAME =
     ClassName.get( "react4j.internal", "OnShouldComponentUpdate" );
-  //private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
-  //  ClassName.get( "react4j.internal", "componentDidCatch" );
+  private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
+    ClassName.get( "react4j.internal", "OnComponentDidCatch" );
   private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeComponent" );
   private static final ClassName COMPONENT_STATE_CLASSNAME = ClassName.get( "react4j.internal.arez", "ComponentState" );
@@ -1527,7 +1527,7 @@ final class Generator
     }
     if ( descriptor.generateComponentDidCatch() )
     {
-      builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
+      builder.addSuperinterface( ON_COMPONENT_DID_CATCH_CLASSNAME );
     }
 
     // build the constructor
@@ -1587,7 +1587,7 @@ final class Generator
     }
     if ( descriptor.generateComponentDidCatch() )
     {
-      builder.addMethod( buildNativeComponentDidCatch().build() );
+      builder.addMethod( buildNativeComponentDidCatch( descriptor ).build() );
     }
 
     builder.addMethod( buildNativeRender().build() );
@@ -1684,20 +1684,34 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeComponentDidCatch()
+  private static MethodSpec.Builder buildNativeComponentDidCatch( @Nonnull final ComponentDescriptor descriptor )
   {
-    return MethodSpec
+    final ExecutableElement onError = descriptor.getOnError();
+    assert null != onError;
+    final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "componentDidCatch" )
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .returns( TypeName.get( Object.class ) )
       .addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
-                       .build() )
-      .addStatement( "performComponentDidCatch( error, info )" );
+                       .build() );
+
+    final List<? extends VariableElement> parameters = onError.getParameters();
+    final String args =
+      parameters.isEmpty() ?
+      "()" :
+      "( " +
+      parameters.stream()
+        .map( p -> TypeName.get( p.asType() ).toString().equals( Constants.JS_ERROR_CLASSNAME ) ? "error" : "info" )
+        .collect(
+          Collectors.joining( ", " ) ) +
+      " )";
+
+    method.addStatement( "$N.$N" + args, COMPONENT_FIELD, onError.getSimpleName() );
+    return method;
   }
 
   private static String asTypeArgumentsInfix( final DeclaredType declaredType )
