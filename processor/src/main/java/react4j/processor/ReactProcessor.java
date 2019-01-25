@@ -221,7 +221,6 @@ public final class ReactProcessor
     determinePostRenderMethod( typeElement, descriptor );
     determinePostUpdateMethod( typeElement, descriptor );
     determinePostMountMethod( typeElement, descriptor );
-    determinePreUnmountMethod( typeElement, descriptor );
     determineOnErrorMethod( typeElement, descriptor );
 
     for ( final PropDescriptor prop : descriptor.getProps() )
@@ -834,18 +833,6 @@ public final class ReactProcessor
       if ( ProcessorUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPreUpdate( method );
-      }
-    }
-  }
-
-  private void determinePreUnmountMethod( @Nonnull final TypeElement typeElement,
-                                          @Nonnull final ComponentDescriptor descriptor )
-  {
-    for ( final ExecutableElement method : getMethods( typeElement ) )
-    {
-      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.PRE_UNMOUNT_ANNOTATION_CLASSNAME ) )
-      {
-        descriptor.setPreUnmount( method );
       }
     }
   }

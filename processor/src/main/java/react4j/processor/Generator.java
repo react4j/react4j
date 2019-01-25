@@ -1125,11 +1125,6 @@ final class Generator
         .methodBuilder( COMPONENT_WILL_UNMOUNT_METHOD )
         .addModifiers( Modifier.PRIVATE );
 
-    final ExecutableElement preUnmount = descriptor.getPreUnmount();
-    if ( null != preUnmount )
-    {
-      method.addStatement( "$N()", preUnmount.getSimpleName().toString() );
-    }
     if ( descriptor.isArezComponent() )
     {
       method.addStatement( "$N = $T.UNMOUNTED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );

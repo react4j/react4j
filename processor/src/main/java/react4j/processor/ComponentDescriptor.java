@@ -40,8 +40,6 @@ final class ComponentDescriptor
   @Nullable
   private ExecutableElement _postMount;
   @Nullable
-  private ExecutableElement _preUnmount;
-  @Nullable
   private ExecutableElement _onError;
   private boolean _arezComponent;
   private boolean _needsInjection;
@@ -227,11 +225,6 @@ final class ComponentDescriptor
     return _allowNoArezDeps;
   }
 
-  boolean hasArezElements()
-  {
-    return _hasArezElements;
-  }
-
   void setArezComponent( final boolean arezComponent, final boolean allowNoArezDeps, final boolean hasArezElements )
   {
     _arezComponent = arezComponent;
@@ -347,28 +340,6 @@ final class ComponentDescriptor
     else
     {
       _preUpdate = preUpdate;
-    }
-  }
-
-  @Nullable
-  ExecutableElement getPreUnmount()
-  {
-    return _preUnmount;
-  }
-
-  void setPreUnmount( @Nonnull final ExecutableElement preUnmount )
-    throws ReactProcessorException
-  {
-    MethodChecks.mustBeLifecycleHook( getElement(), Constants.PRE_UNMOUNT_ANNOTATION_CLASSNAME, preUnmount );
-
-    if ( null != _preUnmount )
-    {
-      throw new ReactProcessorException( "@PreUnmount target duplicates existing method named " +
-                                         _preUnmount.getSimpleName(), preUnmount );
-    }
-    else
-    {
-      _preUnmount = preUnmount;
     }
   }
 
@@ -543,7 +514,7 @@ final class ComponentDescriptor
 
   boolean generateComponentWillUnmountInLiteLifecycle()
   {
-    return hasArezElements() || null != _preUnmount;
+    return _hasArezElements;
   }
 
   boolean generateComponentWillUnmount()
