@@ -1052,7 +1052,35 @@ public final class ReactProcessor
                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                         "allowNoArezDeps" ).getValue();
 
-    descriptor.setArezComponent( isArezComponent, allowNoArezDeps );
+    final boolean hasArezElements =
+      isArezComponent ||
+      getMethods( typeElement ).stream().anyMatch( e -> e.getAnnotationMirrors()
+        .stream()
+        .map( a -> a.getAnnotationType().toString() )
+        .anyMatch( n -> n.startsWith( "arez.annotations." ) &&
+                        !(
+                          // Ignore these annotations as they do not create disposable elements
+                          n.endsWith( "PostConstruct" ) ||
+                          n.endsWith( "ContextRef" ) ||
+                          n.endsWith( "ComponentTypeNameRef" ) ||
+                          n.endsWith( "ComponentNameRef" ) ||
+                          n.endsWith( "ComponentIdRef" ) ||
+                          n.endsWith( "ComponentId" ) ||
+                          n.endsWith( "Action" )
+                        )
+        )
+      ) ||
+      ProcessorUtil
+        .getFieldElements( typeElement )
+        .stream()
+        .anyMatch( e -> e.getAnnotationMirrors()
+          .stream()
+          .map( a -> a.getAnnotationType().toString() )
+          .anyMatch( n -> n.equals( Constants.CASCADE_DISPOSE_ANNOTATION_CLASSNAME ) ||
+                          n.equals( Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME ) )
+        );
+
+    descriptor.setArezComponent( isArezComponent, allowNoArezDeps, hasArezElements );
 
     ensureMemoizeMatchesExpectations( typeElement );
 

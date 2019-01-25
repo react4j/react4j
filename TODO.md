@@ -2,10 +2,6 @@
 
 ### Current Release
 
-* Need to generate a `dispose()` call for all react4j components in development mode and non `ReactArezComponent`
-  components should also have dispose generated when they have reactive elements included (i.e. `@Observable` and
-  friends).
-
 * Remove `ReactArezComponent`
 
 * Should be possible to mark a prop as immutable and if it changes it is a new component. This is essentially

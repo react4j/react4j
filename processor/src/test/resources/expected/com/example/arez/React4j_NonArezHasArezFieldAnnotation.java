@@ -12,6 +12,7 @@ import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
+import react4j.internal.OnComponentWillUnmount;
 
 @ArezComponent(
     name = "NonArezHasArezFieldAnnotation",
@@ -33,17 +34,26 @@ abstract class React4j_NonArezHasArezFieldAnnotation extends NonArezHasArezField
     return componentConstructor;
   }
 
+  private void $$react4j$$_componentWillUnmount() {
+    ((Arez_React4j_NonArezHasArezFieldAnnotation) this).dispose();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent extends NativeComponent {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
     private React4j_NonArezHasArezFieldAnnotation $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_NonArezHasArezFieldAnnotation( this );
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override

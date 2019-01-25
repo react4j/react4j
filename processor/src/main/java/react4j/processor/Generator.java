@@ -1133,6 +1133,9 @@ final class Generator
     if ( descriptor.isArezComponent() )
     {
       method.addStatement( "$N = $T.UNMOUNTED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
+    }
+    if ( descriptor.hasArezElements() )
+    {
       method.addStatement( "(($T) this).dispose()", descriptor.getArezClassName() );
     }
     return method;

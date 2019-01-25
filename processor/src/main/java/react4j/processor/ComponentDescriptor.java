@@ -65,6 +65,7 @@ final class ComponentDescriptor
   private Boolean _hasValidatedProps;
   private boolean _allowNoArezDeps;
   private final boolean _nonConstructorInjections;
+  private boolean _hasArezElements;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
@@ -226,10 +227,16 @@ final class ComponentDescriptor
     return _allowNoArezDeps;
   }
 
-  void setArezComponent( final boolean arezComponent, final boolean allowNoArezDeps )
+  boolean hasArezElements()
+  {
+    return _hasArezElements;
+  }
+
+  void setArezComponent( final boolean arezComponent, final boolean allowNoArezDeps, final boolean hasArezElements )
   {
     _arezComponent = arezComponent;
     _allowNoArezDeps = allowNoArezDeps;
+    _hasArezElements = hasArezElements;
   }
 
   @Nonnull
@@ -535,7 +542,7 @@ final class ComponentDescriptor
 
   boolean generateComponentWillUnmount()
   {
-    return isArezComponent() || null != _preUnmount;
+    return hasArezElements() || null != _preUnmount;
   }
 
   boolean generateComponentPreUpdate()
