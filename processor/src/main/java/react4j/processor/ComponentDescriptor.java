@@ -62,15 +62,13 @@ final class ComponentDescriptor
   private Boolean _hasValidatedProps;
   private boolean _allowNoArezDeps;
   private final boolean _nonConstructorInjections;
-  private final boolean _needsEnhancer;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
                        @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
                        @Nonnull final TypeElement element,
-                       final boolean nonConstructorInjections,
-                       final boolean needsEnhancer )
+                       final boolean nonConstructorInjections )
   {
     _elements = Objects.requireNonNull( elements );
     _sourceVersion = Objects.requireNonNull( sourceVersion );
@@ -78,7 +76,6 @@ final class ComponentDescriptor
     _packageElement = Objects.requireNonNull( packageElement );
     _element = Objects.requireNonNull( element );
     _nonConstructorInjections = nonConstructorInjections;
-    _needsEnhancer = needsEnhancer;
 
     if ( ElementKind.CLASS != element.getKind() )
     {
@@ -133,11 +130,6 @@ final class ComponentDescriptor
   String getName()
   {
     return _name;
-  }
-
-  boolean needsEnhancer()
-  {
-    return _needsEnhancer;
   }
 
   boolean nonConstructorInjections()

@@ -184,24 +184,6 @@ public final class ReactProcessor
   }
 
   /**
-   * Return true if the Arez framework will generate an enhancer as part of injection setup.
-   * This is extremely brittle as any time the logic changes in Arez it needs to be changed
-   * here. At some point we need to figure out how injection framework can be improved to
-   * take over this responsibility.
-   * This method should only be invoked if nonConstructorInjections() returns true.
-   */
-  private boolean needsEnhancer( @Nonnull final TypeElement typeElement )
-  {
-    return getMethods( typeElement ).stream()
-      .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_ANNOTATION_CLASSNAME ) ||
-                      ProcessorUtil.hasAnnotationOfType( e,
-                                                         Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME ) ||
-                      isSchedulableObserve( e ) ||
-                      isSchedulableMemoize( e )
-      );
-  }
-
-  /**
    * Return true if there is any injection points that are not through the constructor.
    */
   private boolean nonConstructorInjections( @Nonnull final TypeElement typeElement )
@@ -214,50 +196,19 @@ public final class ReactProcessor
              .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) );
   }
 
-  private boolean isSchedulableMemoize( @Nonnull final ExecutableElement e )
-  {
-    return ProcessorUtil.hasAnnotationOfType( e, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) &&
-           ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                             e,
-                                             Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                             "keepAlive" )
-             .getValue() == Boolean.TRUE;
-  }
-
-  private boolean isSchedulableObserve( @Nonnull final ExecutableElement e )
-  {
-    final boolean hasObserve = ProcessorUtil.hasAnnotationOfType( e, Constants.OBSERVE_ANNOTATION_CLASSNAME );
-    if ( !hasObserve )
-    {
-      return false;
-    }
-    else
-    {
-      final VariableElement executor =
-        (VariableElement) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                            e,
-                                                            Constants.OBSERVE_ANNOTATION_CLASSNAME,
-                                                            "executor" )
-          .getValue();
-      return executor.getSimpleName().toString().equals( "INTERNAL" );
-    }
-  }
-
   @Nonnull
   private ComponentDescriptor parse( @Nonnull final TypeElement typeElement )
   {
     final String name = deriveComponentName( typeElement );
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
     final boolean nonConstructorInjections = nonConstructorInjections( typeElement );
-    final boolean needsEnhancer = nonConstructorInjections && needsEnhancer( typeElement );
     final ComponentDescriptor descriptor =
       new ComponentDescriptor( processingEnv.getElementUtils(),
                                processingEnv.getSourceVersion(),
                                name,
                                packageElement,
                                typeElement,
-                               nonConstructorInjections,
-                               needsEnhancer );
+                               nonConstructorInjections );
 
     determineComponentType( descriptor, typeElement );
     determineRenderMethod( typeElement, descriptor );
