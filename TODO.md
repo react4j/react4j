@@ -19,6 +19,9 @@
 
 ### Next Release
 
+* Change the way we process `@Memoize` so that instead we use the "new" feature of Arez (when it is implemented)
+  to override the priority from within hook methods.
+
 * `key` is valid on fragments elements.
 
 * Host `ReactElement` instances should be created within the `dom` library and we could create the instances
