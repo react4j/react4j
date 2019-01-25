@@ -122,7 +122,8 @@ abstract class AbstractReactProcessorTest
         final Path target = fixtureDir().resolve( "expected/" + fileObject.getName().replace( "/SOURCE_OUTPUT/", "" ) );
         final String filename = target.toFile().getName();
         if ( filename.startsWith( "Arez_" ) || filename.contains( "_Arez_" ) ||
-             ( filename.startsWith( "React4j_" ) && filename.endsWith( "DaggerComponentExtension.java" ) ) )
+             ( filename.startsWith( "React4j_" ) && filename.endsWith( "DaggerComponentExtension.java" ) ) ||
+             ( filename.contains( "_React4j_" ) && filename.endsWith( "DaggerComponentExtension.java" ) ) )
         {
           continue;
         }
