@@ -117,7 +117,7 @@ final class MethodChecks
     }
   }
 
-  private static void mustNotBeAbstract( @Nonnull final String annotationName, @Nonnull final Element element )
+  static void mustNotBeAbstract( @Nonnull final String annotationName, @Nonnull final Element element )
     throws ReactProcessorException
   {
     if ( element.getModifiers().contains( Modifier.ABSTRACT ) )
