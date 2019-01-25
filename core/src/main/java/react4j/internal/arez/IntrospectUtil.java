@@ -21,7 +21,7 @@ public final class IntrospectUtil
 
   /**
    * Return the value for specified observable.
-   * Exceptions are caught and types are converted to strings using {@link Object#toString()}
+   * Exceptions are caught and types are converted to strings using {@link java.lang.Object#toString()}
    *
    * @param observableInfo the observable.
    * @return the value as a string.
