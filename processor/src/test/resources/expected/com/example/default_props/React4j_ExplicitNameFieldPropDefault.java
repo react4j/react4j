@@ -12,6 +12,7 @@ import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
+import react4j.internal.OnComponentWillUnmount;
 
 @ArezComponent(
     name = "ExplicitNameFieldPropDefault",
@@ -26,7 +27,7 @@ abstract class React4j_ExplicitNameFieldPropDefault extends ExplicitNameFieldPro
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ExplicitNameFieldPropDefault" );
     }
@@ -42,6 +43,10 @@ abstract class React4j_ExplicitNameFieldPropDefault extends ExplicitNameFieldPro
     }
   }
 
+  private void $$react4j$$_componentWillUnmount() {
+    ((Arez_React4j_ExplicitNameFieldPropDefault) this).dispose();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -50,13 +55,34 @@ abstract class React4j_ExplicitNameFieldPropDefault extends ExplicitNameFieldPro
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class NativeReactComponent extends NativeComponent {
+  private static final class LiteNativeReactComponent extends NativeComponent {
+    private React4j_ExplicitNameFieldPropDefault $$react4j$$_component;
+
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+      $$react4j$$_component = new Arez_React4j_ExplicitNameFieldPropDefault( this );
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
+    }
+  }
+
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
     private React4j_ExplicitNameFieldPropDefault $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_ExplicitNameFieldPropDefault( this );
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override

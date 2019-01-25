@@ -14,6 +14,7 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
+import react4j.internal.OnComponentWillUnmount;
 
 @ArezComponent(
     name = "BasicModel",
@@ -28,7 +29,7 @@ abstract class React4j_BasicModel extends BasicModel {
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicModel" );
     }
@@ -49,11 +50,41 @@ abstract class React4j_BasicModel extends BasicModel {
     }
   }
 
+  private void $$react4j$$_componentWillUnmount() {
+    ((Arez_React4j_BasicModel) this).dispose();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate {
+    private React4j_BasicModel $$react4j$$_component;
+
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+      $$react4j$$_component = new Arez_React4j_BasicModel( this );
+    }
+
+    @Override
+    public final void componentDidMount() {
+      $$react4j$$_component.$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      $$react4j$$_component.$$react4j$$_componentDidUpdate();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
+    }
+  }
+
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
     private React4j_BasicModel $$react4j$$_component;
 
     @JsConstructor
@@ -70,6 +101,11 @@ abstract class React4j_BasicModel extends BasicModel {
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       $$react4j$$_component.$$react4j$$_componentDidUpdate();
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override

@@ -511,6 +511,7 @@ final class ComponentDescriptor
   boolean shouldGenerateLiteLifecycle()
   {
     return ( generateComponentDidUpdateInLiteLifecycle() != generateComponentDidUpdate() ||
+             generateComponentWillUnmountInLiteLifecycle() != generateComponentWillUnmount() ||
              generateShouldComponentUpdateInLiteLifecycle() != generateShouldComponentUpdate() ||
              generateComponentDidMountInLiteLifecycle() != generateComponentDidMount() ) &&
            shouldGenerateLifecycle();
@@ -540,9 +541,14 @@ final class ComponentDescriptor
     return null != _onError;
   }
 
-  boolean generateComponentWillUnmount()
+  boolean generateComponentWillUnmountInLiteLifecycle()
   {
     return hasArezElements() || null != _preUnmount;
+  }
+
+  boolean generateComponentWillUnmount()
+  {
+    return true;
   }
 
   boolean generateComponentPreUpdate()

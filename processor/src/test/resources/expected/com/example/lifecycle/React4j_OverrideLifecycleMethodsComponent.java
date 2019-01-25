@@ -62,13 +62,14 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
 
   private void $$react4j$$_componentWillUnmount() {
     preUnmount();
+    ((Arez_React4j_OverrideLifecycleMethodsComponent) this).dispose();
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnGetSnapshotBeforeUpdate, OnComponentWillUnmount, OnComponentDidCatch {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate, OnComponentDidCatch {
     private React4j_OverrideLifecycleMethodsComponent $$react4j$$_component;
 
     @JsConstructor

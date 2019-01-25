@@ -12,6 +12,7 @@ import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
+import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
@@ -60,6 +61,10 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
     return false;
   }
 
+  private void $$react4j$$_componentWillUnmount() {
+    ((Arez_React4j_BytePropValidate) this).dispose();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -88,7 +93,7 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
+  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     private React4j_BytePropValidate $$react4j$$_component;
 
     @JsConstructor
@@ -104,6 +109,11 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override

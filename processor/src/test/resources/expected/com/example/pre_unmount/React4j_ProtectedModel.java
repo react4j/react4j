@@ -36,6 +36,7 @@ abstract class React4j_ProtectedModel extends ProtectedModel {
 
   private void $$react4j$$_componentWillUnmount() {
     preUnmount();
+    ((Arez_React4j_ProtectedModel) this).dispose();
   }
 
   static final class Factory {

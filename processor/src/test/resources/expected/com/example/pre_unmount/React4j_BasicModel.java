@@ -36,6 +36,7 @@ abstract class React4j_BasicModel extends BasicModel {
 
   private void $$react4j$$_componentWillUnmount() {
     preUnmount();
+    ((Arez_React4j_BasicModel) this).dispose();
   }
 
   static final class Factory {

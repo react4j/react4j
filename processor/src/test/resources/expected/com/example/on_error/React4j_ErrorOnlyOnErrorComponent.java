@@ -15,6 +15,7 @@ import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidCatch;
+import react4j.internal.OnComponentWillUnmount;
 
 @ArezComponent(
     name = "ErrorOnlyOnErrorComponent",
@@ -29,24 +30,55 @@ abstract class React4j_ErrorOnlyOnErrorComponent extends ErrorOnlyOnErrorCompone
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ErrorOnlyOnErrorComponent" );
     }
     return componentConstructor;
   }
 
+  private void $$react4j$$_componentWillUnmount() {
+    ((Arez_React4j_ErrorOnlyOnErrorComponent) this).dispose();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidCatch {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidCatch {
+    private React4j_ErrorOnlyOnErrorComponent $$react4j$$_component;
+
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+      $$react4j$$_component = new Arez_React4j_ErrorOnlyOnErrorComponent( this );
+    }
+
+    @Override
+    public final void componentDidCatch(@Nonnull final JsError error,
+        @Nonnull final ReactErrorInfo info) {
+      $$react4j$$_component.onError( error );
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
+    }
+  }
+
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentWillUnmount, OnComponentDidCatch {
     private React4j_ErrorOnlyOnErrorComponent $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_ErrorOnlyOnErrorComponent( this );
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override

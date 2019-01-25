@@ -1134,10 +1134,10 @@ final class Generator
     {
       method.addStatement( "$N = $T.UNMOUNTED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
     }
-    if ( descriptor.hasArezElements() )
-    {
-      method.addStatement( "(($T) this).dispose()", descriptor.getArezClassName() );
-    }
+    // We always dispose here rather than checking hasArezElements()
+    // as this code path is only invoked when there are Arez elements, when we are in non-production
+    // mode (and thus this makes debugging easier). Thus no need to have a guard
+    method.addStatement( "(($T) this).dispose()", descriptor.getArezClassName() );
     return method;
   }
 
@@ -1504,6 +1504,10 @@ final class Generator
       {
         builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
       }
+      if ( descriptor.generateComponentWillUnmountInLiteLifecycle() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
+      }
     }
     else
     {
@@ -1519,14 +1523,14 @@ final class Generator
       {
         builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
       }
+      if ( descriptor.generateComponentWillUnmount() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
+      }
     }
     if ( descriptor.generateComponentPreUpdate() )
     {
       builder.addSuperinterface( ON_GET_SNAPSHOT_BEFORE_UPDATE_CLASSNAME );
-    }
-    if ( descriptor.generateComponentWillUnmount() )
-    {
-      builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
     }
     if ( descriptor.generateComponentDidCatch() )
     {
@@ -1584,7 +1588,7 @@ final class Generator
       // We add this for Arez components so the DevTool sees any debug data saved
       builder.addMethod( buildNativeComponentDidUpdate( descriptor ).build() );
     }
-    if ( descriptor.generateComponentWillUnmount() )
+    if ( lite ? descriptor.generateComponentWillUnmountInLiteLifecycle() : descriptor.generateComponentWillUnmount() )
     {
       builder.addMethod( buildNativeComponentWillUnmount().build() );
     }

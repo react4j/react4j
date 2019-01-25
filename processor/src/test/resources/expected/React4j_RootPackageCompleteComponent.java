@@ -12,6 +12,7 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
+import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 
 @ArezComponent(
@@ -27,7 +28,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "RootPackageCompleteComponent" );
     }
@@ -64,6 +65,10 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     }
   }
 
+  private void $$react4j$$_componentWillUnmount() {
+    ((Arez_React4j_RootPackageCompleteComponent) this).dispose();
+  }
+
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
@@ -72,7 +77,40 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnGetSnapshotBeforeUpdate {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnGetSnapshotBeforeUpdate {
+    private React4j_RootPackageCompleteComponent $$react4j$$_component;
+
+    @JsConstructor
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+      $$react4j$$_component = new Arez_React4j_RootPackageCompleteComponent( this );
+    }
+
+    @Override
+    public final void componentDidMount() {
+      $$react4j$$_component.$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+        @Nonnull final JsPropertyMap<Object> prevState) {
+      $$react4j$$_component.$$react4j$$_componentPreUpdate( prevProps );
+      return null;
+    }
+
+    @Override
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+      $$react4j$$_component.$$react4j$$_componentDidUpdate();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
+    }
+  }
+
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
     private React4j_RootPackageCompleteComponent $$react4j$$_component;
 
     @JsConstructor
@@ -96,6 +134,11 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       $$react4j$$_component.$$react4j$$_componentDidUpdate();
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override
