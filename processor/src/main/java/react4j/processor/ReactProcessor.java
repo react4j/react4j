@@ -188,24 +188,30 @@ public final class ReactProcessor
    * This is extremely brittle as any time the logic changes in Arez it needs to be changed
    * here. At some point we need to figure out how injection framework can be improved to
    * take over this responsibility.
+   * This method should only be invoked if nonConstructorInjections() returns true.
    */
   private boolean needsEnhancer( @Nonnull final TypeElement typeElement )
   {
-    final List<ExecutableElement> methods = getMethods( typeElement );
-    final boolean nonConstructorInjections =
-      methods
-        .stream()
-        .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) ) ||
-      ProcessorUtil.getFieldElements( typeElement )
-        .stream()
-        .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) );
-    return nonConstructorInjections && methods.stream()
+    return getMethods( typeElement ).stream()
       .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_ANNOTATION_CLASSNAME ) ||
                       ProcessorUtil.hasAnnotationOfType( e,
                                                          Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME ) ||
                       isSchedulableObserve( e ) ||
                       isSchedulableMemoize( e )
       );
+  }
+
+  /**
+   * Return true if there is any injection points that are not through the constructor.
+   */
+  private boolean nonConstructorInjections( @Nonnull final TypeElement typeElement )
+  {
+    return getMethods( typeElement )
+             .stream()
+             .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) ) ||
+           ProcessorUtil.getFieldElements( typeElement )
+             .stream()
+             .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) );
   }
 
   private boolean isSchedulableMemoize( @Nonnull final ExecutableElement e )
@@ -242,13 +248,15 @@ public final class ReactProcessor
   {
     final String name = deriveComponentName( typeElement );
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
-    final boolean needsEnhancer = needsEnhancer( typeElement );
+    final boolean nonConstructorInjections = nonConstructorInjections( typeElement );
+    final boolean needsEnhancer = nonConstructorInjections && needsEnhancer( typeElement );
     final ComponentDescriptor descriptor =
       new ComponentDescriptor( processingEnv.getElementUtils(),
                                processingEnv.getSourceVersion(),
                                name,
                                packageElement,
                                typeElement,
+                               nonConstructorInjections,
                                needsEnhancer );
 
     determineComponentType( descriptor, typeElement );

@@ -9,6 +9,7 @@ import react4j.internal.NativeComponent;
 @Generated("react4j.processor.ReactProcessor")
 public interface InjectTrueComponentDaggerComponentExtension extends React4j_InjectTrueComponentDaggerComponentExtension {
   default void bindInjectTrueComponent() {
+    React4j_InjectTrueComponentDaggerComponentExtension.super.bindInjectTrueComponent();
     InjectSupport.setFactory( getInjectTrueComponentDaggerSubcomponent().createFactory() );
   }
 

@@ -61,6 +61,7 @@ final class ComponentDescriptor
   private List<MethodDescriptor> _memoizeMethods;
   private Boolean _hasValidatedProps;
   private boolean _allowNoArezDeps;
+  private final boolean _nonConstructorInjections;
   private final boolean _needsEnhancer;
 
   ComponentDescriptor( @Nonnull final Elements elements,
@@ -68,6 +69,7 @@ final class ComponentDescriptor
                        @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
                        @Nonnull final TypeElement element,
+                       final boolean nonConstructorInjections,
                        final boolean needsEnhancer )
   {
     _elements = Objects.requireNonNull( elements );
@@ -75,6 +77,7 @@ final class ComponentDescriptor
     _name = Objects.requireNonNull( name );
     _packageElement = Objects.requireNonNull( packageElement );
     _element = Objects.requireNonNull( element );
+    _nonConstructorInjections = nonConstructorInjections;
     _needsEnhancer = needsEnhancer;
 
     if ( ElementKind.CLASS != element.getKind() )
@@ -135,6 +138,11 @@ final class ComponentDescriptor
   boolean needsEnhancer()
   {
     return _needsEnhancer;
+  }
+
+  boolean nonConstructorInjections()
+  {
+    return _nonConstructorInjections;
   }
 
   @Nonnull

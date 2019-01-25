@@ -9,6 +9,7 @@ import react4j.internal.NativeComponent;
 @Generated("react4j.processor.ReactProcessor")
 public interface PublicReactComponentDaggerComponentExtension extends React4j_PublicReactComponentDaggerComponentExtension {
   default void bindPublicReactComponent() {
+    React4j_PublicReactComponentDaggerComponentExtension.super.bindPublicReactComponent();
     InjectSupport.setFactory( getPublicReactComponentDaggerSubcomponent().createFactory() );
   }
 

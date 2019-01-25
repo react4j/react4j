@@ -1724,7 +1724,7 @@ final class Generator
         .methodBuilder( "bind" + descriptor.getName() )
         .addModifiers( Modifier.PUBLIC, Modifier.DEFAULT );
 
-    if ( descriptor.needsEnhancer() )
+    if ( descriptor.nonConstructorInjections() )
     {
       method.addStatement( "$T.super.$N()", superClassName, "bind" + descriptor.getName() );
     }
