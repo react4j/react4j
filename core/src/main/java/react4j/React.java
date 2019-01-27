@@ -1,9 +1,6 @@
 package react4j;
 
 import elemental2.core.JsArray;
-import java.util.List;
-import java.util.function.IntFunction;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
@@ -246,7 +243,7 @@ public final class React
    * Create a StrictMode component with the specified children.
    *
    * @param children the child nodes.
-   * @return a new React.Fragment object.
+   * @return a new React.StrictMode component.
    */
   @JsOverlay
   public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
@@ -261,7 +258,7 @@ public final class React
    * Create a Fragment with the specified key and children.
    *
    * @param children the child nodes.
-   * @return a new React.Fragment object.
+   * @return a new React.Fragment component.
    */
   @JsOverlay
   public static ReactNode createFragment( @Nullable final String key, @Nonnull final ReactNode... children )
