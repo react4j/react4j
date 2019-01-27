@@ -270,35 +270,6 @@ public final class React
   }
 
   /**
-   * Create a Fragment with the specified children.
-   *
-   * @param children the child nodes.
-   * @return a new React.Fragment object.
-   */
-  @JsOverlay
-  public static ReactNode createFragment( @Nonnull final ReactNode... children )
-  {
-    return createFragment( null, children );
-  }
-
-  /**
-   * Create a Fragment with the specified children.
-   *
-   * @param children the child nodes.
-   * @return a new React.Fragment object.
-   */
-  @JsOverlay
-  public static ReactNode createFragment( @Nonnull final Stream<? extends ReactNode> children )
-  {
-    /*
-     * The GWT compiler does not handle method refs in this context. Not sure why
-     */
-    @SuppressWarnings( "Convert2MethodRef" )
-    final IntFunction<ReactNode[]> intFunction = v -> new ReactNode[ v ];
-    return createFragment( children.toArray( intFunction ) );
-  }
-
-  /**
    * Creates a context with specified default value.
    *
    * @param <T>          the type of the context.
