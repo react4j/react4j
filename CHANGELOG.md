@@ -63,6 +63,7 @@
   nullable key parameter and add add a factory method in `react4j.dom.DOM` that accepts a key. Keys are valid on
   fragment nodes and the code has been change to reflect this.
 * **\[core\]** Add initial support for `<Suspense/>` component.
+* **\[dom\]** Add support for `ReactDOM.createRoot(...)` as the first step for enabling usage of concurrent mode.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)
