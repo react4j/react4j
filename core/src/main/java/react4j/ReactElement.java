@@ -85,7 +85,7 @@ public class ReactElement
   private static ReactElement createRawNode( @Nonnull final Object typeof, @Nonnull final Object type )
   {
     final ReactElement element = new ReactElement();
-    element.typeof = Objects.requireNonNull( typeof);
+    element.typeof = Objects.requireNonNull( typeof );
     element.type = Objects.requireNonNull( type );
     element._owner = React.currentOwner();
     return element;
