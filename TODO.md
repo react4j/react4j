@@ -170,6 +170,8 @@
 
 * Port https://github.com/kenwheeler/hooks-drum-machine across to react4j
 
+* Consider a Metronome - https://daveceddia.com/react-practice-projects/#metronome & https://github.com/cwilso/metronome
+
 * Port https://github.com/benawad/slack-clone-client/tree/53_code_splitting across to react4j. Good way to experiment with GraphQL and few other interesting elements.
 
 ### Spritz Integration
