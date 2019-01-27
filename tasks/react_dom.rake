@@ -83,21 +83,21 @@ public final class DOM
   }
 
   @Nonnull
-  public static ReactNode fragment( @Nonnull final String key, @Nonnull final ReactNode... children )
+  public static ReactNode fragment( @Nullable final String key, @Nonnull final ReactNode... children )
   {
-    return React.createFragment( Objects.requireNonNull( key ), Objects.requireNonNull( children ) );
+    return React.createFragment( key, Objects.requireNonNull( children ) );
   }
 
   @Nonnull
-  public static ReactNode fragment( @Nonnull final String key, @Nonnull final List<? extends ReactNode> children )
+  public static ReactNode fragment( @Nullable final String key, @Nonnull final List<? extends ReactNode> children )
   {
-    return React.createFragment( Objects.requireNonNull( key ), Objects.requireNonNull( children ) );
+    return fragment( key, Objects.requireNonNull( children ).stream() );
   }
 
   @Nonnull
-  public static ReactNode fragment( @Nonnull final String key, @Nonnull final Stream<? extends ReactNode> children )
+  public static ReactNode fragment( @Nullable final String key, @Nonnull final Stream<? extends ReactNode> children )
   {
-    return React.createFragment( Objects.requireNonNull( key ), Objects.requireNonNull( children ) );
+    return React.createFragment( key, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
   }
 
   @Nonnull
@@ -109,13 +109,13 @@ public final class DOM
   @Nonnull
   public static ReactNode fragment( @Nonnull final List<? extends ReactNode> children )
   {
-    return React.createFragment( null, Objects.requireNonNull( children ) );
+    return fragment( null, Objects.requireNonNull( children ).stream() );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nonnull final Stream<? extends ReactNode> children )
   {
-    return React.createFragment( null, Objects.requireNonNull( children ) );
+    return React.createFragment( null, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
   }
 HEADER
   factories.each_pair do |key, prop_type|
