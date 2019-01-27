@@ -122,6 +122,24 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
+  public static ReactElement createSuspense( @Nullable final String key,
+                                             @Nullable final ReactNode fallback,
+                                             final int maxTimeToFallback,
+                                             @Nonnull final ReactNode... children )
+  {
+    final ReactElement element = createRawNode( React.Element, React.Suspense );
+    element.key = key;
+    element.ref = null;
+    element.props = JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children,
+                                      "fallback", fallback,
+                                      "ms", maxTimeToFallback );
+
+    element.complete();
+    return element;
+  }
+
+  @JsOverlay
+  @Nonnull
   public static ReactElement createHostElement( @Nonnull final String type,
                                                 @Nullable final String key,
                                                 @Nullable final Object ref,

@@ -58,6 +58,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
 import react4j.React;
+import react4j.ReactElement;
 import react4j.ReactNode;
 HEADER
   factories.values.sort.uniq.each do |prop_type|
@@ -75,6 +76,9 @@ public final class DOM
   private DOM()
   {
   }
+
+  // Arbitrarily large value as the time will be clamped to the expiration time of the whole tree
+  private static final int DEFAULT_TIME_TO_FALLBACK = 1000000000;
 
   @Nonnull
   public static ReactNode text( @Nonnull final String content )
@@ -116,6 +120,101 @@ public final class DOM
   public static ReactNode fragment( @Nonnull final Stream<? extends ReactNode> children )
   {
     return React.createFragment( null, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final ReactNode... children )
+  {
+    return ReactElement.createSuspense( key, fallback, maxTimeToFallback, Objects.requireNonNull( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final List<? extends ReactNode> children )
+  {
+    return suspense( key, fallback, maxTimeToFallback, Objects.requireNonNull( children ).stream() );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return suspense( key, fallback, maxTimeToFallback, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final ReactNode... children )
+  {
+    return suspense( null, fallback, maxTimeToFallback, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final List<? extends ReactNode> children )
+  {
+    return suspense( null, fallback, maxTimeToFallback, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return suspense( null, fallback, maxTimeToFallback, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    @Nonnull final ReactNode... children )
+  {
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    @Nonnull final List<? extends ReactNode> children )
+  {
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ).stream() );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback, @Nonnull final ReactNode... children )
+  {
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    @Nonnull final List<? extends ReactNode> children )
+  {
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ).stream() );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
   }
 HEADER
   factories.each_pair do |key, prop_type|
