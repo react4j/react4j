@@ -111,7 +111,7 @@ public class ReactElement
   @Nonnull
   public static ReactElement createFragment( @Nonnull final ReactNode... children )
   {
-    final ReactElement element = ReactElement.createRawNode( React.Element, React.Fragment );
+    final ReactElement element = createRawNode( React.Element, React.Fragment );
     element.key = null;
     element.ref = null;
     element.props = JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children );
