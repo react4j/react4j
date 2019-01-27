@@ -258,15 +258,15 @@ public final class React
   }
 
   /**
-   * Create a Fragment with the specified children.
+   * Create a Fragment with the specified key and children.
    *
    * @param children the child nodes.
    * @return a new React.Fragment object.
    */
   @JsOverlay
-  public static ReactNode createFragment( @Nonnull final ReactNode... children )
+  public static ReactNode createFragment( @Nullable final String key, @Nonnull final ReactNode... children )
   {
-    return ReactElement.createFragment( children );
+    return ReactElement.createFragment( key, children );
   }
 
   /**
@@ -276,9 +276,9 @@ public final class React
    * @return a new React.Fragment object.
    */
   @JsOverlay
-  public static ReactNode createFragment( @Nonnull final List<? extends ReactNode> children )
+  public static ReactNode createFragment( @Nonnull final ReactNode... children )
   {
-    return createFragment( children.stream() );
+    return createFragment( null, children );
   }
 
   /**

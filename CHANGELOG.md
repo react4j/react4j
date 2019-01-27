@@ -59,6 +59,9 @@
 * **\[core\]** Remove lifecycle method `Component.componentDidCatch(...)` and replace with annotation `@OnError`.
 * **\[processor\]** Move from `Disposable.dispose( this )` to `((Arez_MyComponent) this).dispose()` so that the
   optimizing compiler can inline the method where possible.
+* **\[core\]** Change `ReactElement.createFragment(...)` and `React.createFragment(...)` methods to accept a
+  nullable key parameter and add add a factory method in `react4j.dom.DOM` that accepts a key. Keys are valid on
+  fragment nodes and the code has been change to reflect this.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

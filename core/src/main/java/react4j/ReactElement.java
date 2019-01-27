@@ -109,10 +109,10 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
-  public static ReactElement createFragment( @Nonnull final ReactNode... children )
+  public static ReactElement createFragment( @Nullable final String key, @Nonnull final ReactNode... children )
   {
     final ReactElement element = createRawNode( React.Element, React.Fragment );
-    element.key = null;
+    element.key = key;
     element.ref = null;
     element.props = JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children );
 

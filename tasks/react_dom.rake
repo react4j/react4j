@@ -51,6 +51,7 @@ def generate_factory
 package react4j.dom;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -82,21 +83,39 @@ public final class DOM
   }
 
   @Nonnull
+  public static ReactNode fragment( @Nonnull final String key, @Nonnull final ReactNode... children )
+  {
+    return React.createFragment( Objects.requireNonNull( key ), Objects.requireNonNull( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode fragment( @Nonnull final String key, @Nonnull final List<? extends ReactNode> children )
+  {
+    return React.createFragment( Objects.requireNonNull( key ), Objects.requireNonNull( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode fragment( @Nonnull final String key, @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return React.createFragment( Objects.requireNonNull( key ), Objects.requireNonNull( children ) );
+  }
+
+  @Nonnull
   public static ReactNode fragment( @Nonnull final ReactNode... children )
   {
-    return React.createFragment( children );
+    return React.createFragment( null, Objects.requireNonNull( children ) );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nonnull final List<? extends ReactNode> children )
   {
-    return React.createFragment( children );
+    return React.createFragment( null, Objects.requireNonNull( children ) );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nonnull final Stream<? extends ReactNode> children )
   {
-    return React.createFragment( children );
+    return React.createFragment( null, Objects.requireNonNull( children ) );
   }
 HEADER
   factories.each_pair do |key, prop_type|
