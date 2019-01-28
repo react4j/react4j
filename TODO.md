@@ -170,6 +170,7 @@
 * Port https://github.com/benawad/slack-clone-client/tree/53_code_splitting across to react4j. Good way to experiment with GraphQL and few other interesting elements.
 
 * Another app to build is a YouTube clone ala https://github.com/productioncoder/youtube-react
+  It seems relatively advanced and may require a router to be in place prior to starting.
 
 ### Spritz Integration
 
