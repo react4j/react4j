@@ -16,12 +16,6 @@
 
 * Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
-* Change remaining lifecycle hooks to be annotation driven. i.e.
-  If we do this then the annotation processor could completely take over responsibility for implementing lifecycle
-  steps rather than part of it being in `react4j.Component`.
-  To achieve this we need to pass in props to the java components constructor and mark it with Arez's `@PerInstance`
-  annotation. This may involve marking all stateful components as Arez components to get this to work effectively.
-
 * Add some way to define effects which is just method called after render that returns a disposable to stop action.
   Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
   method that calls dispose on previous return if any. (From react 17)
