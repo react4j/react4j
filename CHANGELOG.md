@@ -71,6 +71,8 @@
 * **\[core\]** The error message from annotation processor when a user defines a prop named `key` suggested using
   a method that does not exist and has not worked since upgraded to React 16+ so update the error message.
 * **\[core\]** Remove `React.createFragment()` in favour of directly calling `ReactElement.createFragment()`.
+* **\[core\]** Remove every variant of `React.createElement(...)`. The code and/or behaviour has been inlined into
+  the `DOM` factory methods to aid code optimization process.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

@@ -57,7 +57,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
-import react4j.React;
+import jsinterop.base.JsPropertyMap;
 import react4j.ReactElement;
 import react4j.ReactNode;
 HEADER
@@ -223,25 +223,25 @@ HEADER
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactNode... children )
   {
-    return React.createElement( "#{key}", props, children );
+    return createElement( "#{key}", Js.asPropertyMap( props ), children );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nullable final ReactNode... children )
   {
-    return React.createElement( "#{key}", null, children );
+    return createElement( "#{key}", null, children );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final String content )
   {
-    return React.createElement( "#{key}", props, text( content ) );
+    return createElement( "#{key}", Js.asPropertyMap( props ), text( content ) );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props )
   {
-    return React.createElement( "#{key}", props );
+    return createElement( "#{key}", Js.asPropertyMap( props ), null );
   }
 
   @Nonnull
@@ -289,7 +289,7 @@ HEADER
   @Nonnull
   public static ReactNode #{key}()
   {
-    return React.createElement( "#{key}", null );
+    return createElement( "#{key}", null, null );
   }
 
   @Nonnull
@@ -319,6 +319,49 @@ HEADER
   end
 
   content += <<FOOTER
+
+  /**
+   * Create and return a new ReactElement of the given type with specified children.
+   *
+   * @param type     A HTML tag name (eg. 'div', 'span', etc)
+   * @param props    The props to pass to the element.
+   * @param children The child elements.
+   * @return the created ReactElement
+   */
+  @Nonnull
+  private static ReactElement createElement( @Nonnull final String type, @Nullable final JsPropertyMap<Object> props, @Nullable final ReactNode... children )
+  {
+    final JsPropertyMap<Object> actual = JsPropertyMap.of();
+    String key = null;
+    Object ref = null;
+    if ( null != props )
+    {
+      key = props.has( "key" ) ? Js.asString( props.get( "key" ) ) : null;
+      ref = props.has( "ref" ) ? props.get( "ref" ) : null;
+      props.forEach( p -> {
+        // In future we can probably remove this check when/if components are creating elements directly
+        // and can thus guarantee that these keys are not part of props.
+        if ( !p.equals( "key" ) && !p.equals( "ref" ) )
+        {
+          actual.set( p, props.get( p ) );
+        }
+      } );
+    }
+    // In a future iteration if we re-write the reconciler we should probably ensure that shape of ReactElement
+    // is always consistent and is either null or always an array element.
+    if ( null != children && children.length > 0 )
+    {
+      if ( 1 == children.length )
+      {
+        actual.set( "children", children[ 0 ] );
+      }
+      else
+      {
+        actual.set( "children", children );
+      }
+    }
+    return ReactElement.createHostElement( type, key, ref, actual );
+  }
 
   @Nonnull
   private static ReactNode[] toArray( @Nonnull final List<? extends ReactNode> children )
