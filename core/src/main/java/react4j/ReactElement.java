@@ -120,6 +120,21 @@ public class ReactElement
     return element;
   }
 
+  /**
+   * Create a StrictMode component with the specified children.
+   *
+   * @param children the child nodes.
+   * @return a new React.StrictMode component.
+   */
+  @JsOverlay
+  public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
+  {
+    return ReactElement.createRawElement( React.StrictMode,
+                                          null,
+                                          null,
+                                          JsPropertyMap.of( "children", Objects.requireNonNull( children ) ) );
+  }
+
   @JsOverlay
   @Nonnull
   public static ReactElement createSuspense( @Nullable final String key,

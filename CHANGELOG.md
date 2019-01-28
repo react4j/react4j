@@ -73,6 +73,7 @@
 * **\[core\]** Remove `React.createFragment()` in favour of directly calling `ReactElement.createFragment()`.
 * **\[core\]** Remove every variant of `React.createElement(...)`. The code and/or behaviour has been inlined into
   the `DOM` factory methods to aid code optimization process.
+* **\[core\]** Move `React.createStrictMode(...)` to `ReactElement.createStrictMode(...)`.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

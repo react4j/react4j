@@ -6,7 +6,6 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsPropertyMap;
 
 /**
  * Native interface to native runtime for creating component.
@@ -157,21 +156,6 @@ public final class React
   @SuppressWarnings( "unused" )
   @JsProperty( name = "Lazy" )
   public static Object Lazy;
-
-  /**
-   * Create a StrictMode component with the specified children.
-   *
-   * @param children the child nodes.
-   * @return a new React.StrictMode component.
-   */
-  @JsOverlay
-  public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
-  {
-    return ReactElement.createRawElement( StrictMode,
-                                          null,
-                                          null,
-                                          JsPropertyMap.of( "children", children ) );
-  }
 
   /**
    * Creates a context with specified default value.
