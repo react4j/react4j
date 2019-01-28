@@ -144,6 +144,11 @@
 
 * Consider a Metronome - https://daveceddia.com/react-practice-projects/#metronome & https://github.com/cwilso/metronome
 
+* Port Minesweeper
+  - https://medium.com/@tdelev/minesweeper-in-typescript-and-react-f5f8a5d57383
+  - https://github.com/tdelev/minesweeper-react
+  - https://delev.me/minesweeper-react/
+
 * Port https://github.com/benawad/slack-clone-client/tree/53_code_splitting across to react4j. Good way to experiment with GraphQL and few other interesting elements.
 
 * Another app to build is a YouTube clone ala https://github.com/productioncoder/youtube-react
