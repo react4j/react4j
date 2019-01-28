@@ -101,25 +101,25 @@ public final class DOM
   @Nonnull
   public static ReactNode fragment( @Nullable final String key, @Nonnull final Stream<? extends ReactNode> children )
   {
-    return ReactElement.createFragment( key, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+    return fragment( key, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nonnull final ReactNode... children )
   {
-    return ReactElement.createFragment( null, Objects.requireNonNull( children ) );
+    return fragment( null, children );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nonnull final List<? extends ReactNode> children )
   {
-    return fragment( null, Objects.requireNonNull( children ).stream() );
+    return fragment( null, children );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nonnull final Stream<? extends ReactNode> children )
   {
-    return ReactElement.createFragment( null, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+    return fragment( null, children );
   }
 
   @Nonnull
