@@ -169,6 +169,8 @@
 
 * Port https://github.com/benawad/slack-clone-client/tree/53_code_splitting across to react4j. Good way to experiment with GraphQL and few other interesting elements.
 
+* Another app to build is a YouTube clone ala https://github.com/productioncoder/youtube-react
+
 ### Spritz Integration
 
 Could we enhance the component source so handlers could be converted into stream sources. Props could also be passed
