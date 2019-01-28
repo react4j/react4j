@@ -114,7 +114,7 @@ public class ReactElement
     final ReactElement element = createRawNode( React.Element, React.Fragment );
     element.key = key;
     element.ref = null;
-    element.props = JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children );
+    element.props = JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, Objects.requireNonNull( children ) );
 
     element.complete();
     return element;
@@ -130,7 +130,7 @@ public class ReactElement
     final ReactElement element = createRawNode( React.Element, React.Suspense );
     element.key = key;
     element.ref = null;
-    element.props = JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children,
+    element.props = JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, Objects.requireNonNull( children ),
                                       "fallback", fallback,
                                       "ms", maxTimeToFallback );
 
