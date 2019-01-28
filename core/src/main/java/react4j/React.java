@@ -255,18 +255,6 @@ public final class React
   }
 
   /**
-   * Create a Fragment with the specified key and children.
-   *
-   * @param children the child nodes.
-   * @return a new React.Fragment component.
-   */
-  @JsOverlay
-  public static ReactNode createFragment( @Nullable final String key, @Nonnull final ReactNode... children )
-  {
-    return ReactElement.createFragment( key, children );
-  }
-
-  /**
    * Creates a context with specified default value.
    *
    * @param <T>          the type of the context.

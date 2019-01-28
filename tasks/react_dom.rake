@@ -89,7 +89,7 @@ public final class DOM
   @Nonnull
   public static ReactNode fragment( @Nullable final String key, @Nonnull final ReactNode... children )
   {
-    return React.createFragment( key, Objects.requireNonNull( children ) );
+    return ReactElement.createFragment( key, Objects.requireNonNull( children ) );
   }
 
   @Nonnull
@@ -101,13 +101,13 @@ public final class DOM
   @Nonnull
   public static ReactNode fragment( @Nullable final String key, @Nonnull final Stream<? extends ReactNode> children )
   {
-    return React.createFragment( key, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+    return ReactElement.createFragment( key, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nonnull final ReactNode... children )
   {
-    return React.createFragment( null, Objects.requireNonNull( children ) );
+    return ReactElement.createFragment( null, Objects.requireNonNull( children ) );
   }
 
   @Nonnull
@@ -119,7 +119,7 @@ public final class DOM
   @Nonnull
   public static ReactNode fragment( @Nonnull final Stream<? extends ReactNode> children )
   {
-    return React.createFragment( null, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+    return ReactElement.createFragment( null, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
   }
 
   @Nonnull
