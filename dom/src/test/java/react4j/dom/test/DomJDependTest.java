@@ -100,7 +100,7 @@ public class DomJDependTest
         oldEfferents.forEach( p -> sb
           .append( "Package " )
           .append( expected.getName() )
-          .append( " no longer depends depends upon " )
+          .append( " no longer depends upon " )
           .append( p.getName() )
           .append( "\n" )
         );
@@ -111,7 +111,7 @@ public class DomJDependTest
         newEfferents.forEach( p -> sb
           .append( "Package " )
           .append( expected.getName() )
-          .append( " now upon " )
+          .append( " now depends upon " )
           .append( p.getName() )
           .append( "\n" )
         );
