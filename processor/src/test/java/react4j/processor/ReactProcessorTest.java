@@ -396,7 +396,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.PropNamedBuild",
                       "@Prop named 'build' is invalid as it conflicts with the method named build() that is used in the generated Builder classes" },
         new Object[]{ "com.example.prop.PropNamedKeyComponent",
-                      "@Prop named 'key' is invalid as the name references value used in the reconciliation process. This value can be accessed via Component.getKey()" },
+                      "@Prop named 'key' is invalid as the name references value used in the reconciliation process." },
         new Object[]{ "com.example.prop.PropNoReturnComponent", "@Prop target must return a value" },
         new Object[]{ "com.example.prop.PropNotAbstractComponent", "@Prop target must be abstract" },
         new Object[]{ "com.example.prop.PropThrowsExceptionComponent", "@Prop target must not throw any exceptions" },

@@ -748,8 +748,7 @@ public final class ReactProcessor
     if ( "key".equals( name ) )
     {
       throw new ReactProcessorException( "@Prop named 'key' is invalid as the name references value used in the " +
-                                         "reconciliation process. This value can be accessed via Component.getKey()",
-                                         method );
+                                         "reconciliation process.", method );
     }
     else if ( "build".equals( name ) )
     {
