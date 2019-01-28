@@ -410,6 +410,12 @@ public final class ReactProcessor
                                              "incompatible with the associated @Prop method named " +
                                              method.getSimpleName(), method );
         }
+        if ( prop.isImmutable() )
+        {
+          throw new ReactProcessorException( "@OnPropChange target has a parameter named '" +
+                                             parameter.getSimpleName() + "' that is associated with a @Prop " +
+                                             "annotated method and the prop is specified as immutable.", method );
+        }
         propDescriptors.add( prop );
       }
       onPropChangeDescriptors.add( new OnPropChangeDescriptor( method, propDescriptors, preUpdate ) );
@@ -778,6 +784,7 @@ public final class ReactProcessor
     final boolean shouldUpdateOnChange = shouldUpdateOnChange( method );
     final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange );
     final boolean disposable = null != propType && isPropDisposable( descriptor, method, propType );
+    final boolean immutable = isPropImmutable( method );
     if ( observable && !descriptor.isArezComponent() )
     {
       throw new ReactProcessorException( "@Prop named '" + name + "' is marked as observable but the host component " +
@@ -788,14 +795,108 @@ public final class ReactProcessor
       throw new ReactProcessorException( "@Prop named '" + name + "' is marked as disposable but the host component " +
                                          "is not a subclass of react4j.arez.ReactArezComponent", method );
     }
-    if ( TypeName.get( returnType ).isBoxedPrimitive() &&
+    final TypeName typeName = TypeName.get( returnType );
+    if ( typeName.isBoxedPrimitive() &&
          ProcessorUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
       throw new ReactProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
                                          "@Nonnull annotation. The return type should be the primitive type.",
                                          method );
     }
-    return new PropDescriptor( descriptor, name, method, methodType, shouldUpdateOnChange, observable, disposable );
+    final ImmutablePropKeyStrategy strategy = immutable ? getImmutablePropKeyStrategy( typeName, propType ) : null;
+    if ( immutable && null == strategy )
+    {
+      throw new ReactProcessorException( "@Prop named '" + name + "' has specified the 'immutable' parameter as " +
+                                         "true but the annotation processor can not extract a key part from the " +
+                                         "type. This is because the type is not recognized as conforming to the " +
+                                         "rules as documented in the javadocs for the immutable parameter of " +
+                                         "the @Prop annotation.",
+                                         method );
+    }
+    return new PropDescriptor( descriptor,
+                               name,
+                               method,
+                               methodType,
+                               shouldUpdateOnChange,
+                               observable,
+                               disposable,
+                               strategy );
+  }
+
+  @Nullable
+  private ImmutablePropKeyStrategy getImmutablePropKeyStrategy( @Nonnull final TypeName typeName,
+                                                                @Nullable final Element element )
+  {
+    if ( typeName.toString().equals( "java.lang.String" ) )
+    {
+      return ImmutablePropKeyStrategy.IS_STRING;
+    }
+    else if ( typeName.isBoxedPrimitive() || typeName.isPrimitive() )
+    {
+      return ImmutablePropKeyStrategy.TO_STRING;
+    }
+    else if ( null != element )
+    {
+      if ( ElementKind.CLASS == element.getKind() &&
+           ProcessorUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) &&
+           isIdRequired( (TypeElement) element ) )
+      {
+        return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
+      }
+      else if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
+                implementsKeyed( (TypeElement) element ) )
+      {
+        return ImmutablePropKeyStrategy.KEYED;
+      }
+    }
+    return null;
+  }
+
+  private boolean implementsKeyed( @Nonnull final TypeElement element )
+  {
+
+    return isKeyedDeclared( element ) ||
+           ProcessorUtil.getSuperTypes( element ).stream().anyMatch( this::isKeyedDeclared );
+  }
+
+  private boolean isKeyedDeclared( @Nonnull final TypeElement element )
+  {
+    return element.getInterfaces()
+      .stream()
+      .anyMatch( i -> i.toString().equals( Constants.KEYED_CLASSNAME ) );
+  }
+
+  /**
+   * The logic from this method has been cloned from Arez.
+   * One day we should consider improving Arez so that this is not required somehow?
+   */
+  private boolean isIdRequired( @Nonnull final TypeElement element )
+  {
+    final VariableElement injectParameter = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        element,
+                                        Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME,
+                                        "requireId" ).getValue();
+    switch ( injectParameter.getSimpleName().toString() )
+    {
+      case "ENABLE":
+        return true;
+      case "DISABLE":
+        return false;
+      default:
+        if ( ProcessorUtil.hasAnnotationOfType( element, Constants.REPOSITORY_ANNOTATION_CLASSNAME ) )
+        {
+          return true;
+        }
+        else
+        {
+          return ProcessorUtil
+            .getMethods( element, processingEnv.getTypeUtils() )
+            .stream()
+            .anyMatch( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_ANNOTATION_CLASSNAME ) ||
+                            ProcessorUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_REF_ANNOTATION_CLASSNAME ) );
+        }
+    }
   }
 
   @Nonnull
@@ -1146,6 +1247,14 @@ public final class ReactProcessor
       .anyMatch( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
                       ( ProcessorUtil.hasAnnotationOfType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
                         ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
+  }
+
+  private boolean isPropImmutable( @Nonnull final ExecutableElement method )
+  {
+    return (Boolean) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                       method,
+                                                       Constants.PROP_ANNOTATION_CLASSNAME,
+                                                       "immutable" ).getValue();
   }
 
   private boolean isPropDisposable( @Nonnull final ComponentDescriptor descriptor,

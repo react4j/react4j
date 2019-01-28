@@ -1,9 +1,11 @@
 package react4j.annotations;
 
+import arez.annotations.ArezComponent;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import javax.annotation.Nonnull;
+import react4j.Keyed;
 
 /**
  * Annotation used to specify an abstract method that returns a prop.
@@ -87,4 +89,27 @@ public @interface Prop
    * @return the enum indicating whether prop is disposable and should be checked before rendering component.
    */
   Feature disposable() default Feature.AUTODETECT;
+
+  /**
+   * True if the prop is not expected to change after initial value is set. If the value of the prop does change
+   * then it is expected that the react component will be unmounted and a new component created. This is implemented
+   * by synthesizing a key for the component every time the component that is derived from this prop. To enable this
+   * the annotation processor must be able to identify the type of the prop so that a key can be synthesized. The
+   * following types are supported by the annotation processor;
+   *
+   * <ul>
+   * <li>primitive types (i.e. boolean, short etc) and their corresponding boxed types (i.e. {@link java.lang.Boolean}, {@link java.lang.Short} etc).</li>
+   * <li>the {@link java.lang.String} type</li>
+   * <li>any class that is annotated with {@link ArezComponent} where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
+   * <li>any class that implements {@link Keyed}</li>
+   * </ul>
+   *
+   * <p>In the future, the annotation processor may include additional allowable types such as those that implement
+   * {@link arez.component.Identifiable} directly or other primitive types within the runtime library. These other
+   * types will be added if demand is established, othewise an additional hook will be added to allow users to
+   * customize key generation using a static method on the component. </p>
+   *
+   * @return true if changing the prop recreates the component.
+   */
+  boolean immutable() default false;
 }

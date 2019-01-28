@@ -4,6 +4,7 @@ final class Constants
 {
   static final String COMPONENT_CLASSNAME = "react4j.Component";
   static final String ERROR_INFO_CLASSNAME = "react4j.ReactErrorInfo";
+  static final String KEYED_CLASSNAME = "react4j.Keyed";
   static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";
   static final String PROP_REF_ANNOTATION_CLASSNAME = "react4j.annotations.PropRef";
   static final String PROP_DEFAULT_ANNOTATION_CLASSNAME = "react4j.annotations.PropDefault";
@@ -17,6 +18,9 @@ final class Constants
   static final String POST_MOUNT_ANNOTATION_CLASSNAME = "react4j.annotations.PostMount";
   static final String INJECT_ANNOTATION_CLASSNAME = "javax.inject.Inject";
   static final String AREZ_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ArezComponent";
+  static final String REPOSITORY_ANNOTATION_CLASSNAME = "arez.annotations.Repository";
+  static final String COMPONENT_ID_ANNOTATION_CLASSNAME = "arez.annotations.ComponentId";
+  static final String COMPONENT_ID_REF_ANNOTATION_CLASSNAME = "arez.annotations.ComponentIdRef";
   static final String OBSERVE_ANNOTATION_CLASSNAME = "arez.annotations.Observe";
   static final String MEMOIZE_ANNOTATION_CLASSNAME = "arez.annotations.Memoize";
   static final String COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME = "arez.annotations.ComponentDependency";

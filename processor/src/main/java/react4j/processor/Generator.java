@@ -59,6 +59,8 @@ final class Generator
     ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
+  private static final ClassName IDENTIFIABLE_CLASSNAME =
+    ClassName.get( "arez.component", "Identifiable" );
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
   private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
@@ -67,6 +69,7 @@ final class Generator
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
+  private static final ClassName KEYED_CLASSNAME = ClassName.get( "react4j", "Keyed" );
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
   private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
@@ -122,11 +125,16 @@ final class Generator
       builder.addType( buildBuilderStepInterface( descriptor, step ) );
     }
 
-    // key step
-    buildStaticStepMethodMethods( descriptor, builder, steps.get( 0 ) );
+    int index = 0;
+    if ( !descriptor.hasSyntheticKey() )
+    {
+      // key step
+      buildStaticStepMethodMethods( descriptor, builder, steps.get( index ) );
+      index++;
+    }
 
     // first step which may be required prop, optional props, or build terminal step.
-    buildStaticStepMethodMethods( descriptor, builder, steps.get( 1 ) );
+    buildStaticStepMethodMethods( descriptor, builder, steps.get( index ) );
 
     builder.addType( buildBuilder( descriptor, builderDescriptor ) );
 
@@ -304,6 +312,7 @@ final class Generator
     method.addAnnotation( Override.class );
     method.addAnnotation( NONNULL_CLASSNAME );
 
+    final PropDescriptor prop = stepMethod.getProp();
     final ExecutableType propMethodType = stepMethod.getPropMethodType();
     if ( null != propMethodType )
     {
@@ -324,10 +333,33 @@ final class Generator
 
     boolean returnHandled = false;
 
+    if ( null != prop && prop.isImmutable() && 1 == descriptor.syntheticKeyComponents() )
+    {
+      final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
+      if ( ImmutablePropKeyStrategy.KEYED == strategy )
+      {
+        method.addStatement( "_element.setKey( $N.getKey() )", stepMethod.getName() );
+      }
+      else if ( ImmutablePropKeyStrategy.IS_STRING == strategy )
+      {
+        method.addStatement( "_element.setKey( $N )", stepMethod.getName() );
+      }
+      else if ( ImmutablePropKeyStrategy.TO_STRING == strategy )
+      {
+        method.addStatement( "_element.setKey( String.valueOf( $N ) )", stepMethod.getName() );
+      }
+      else
+      {
+        assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
+        method.addStatement( "_element.setKey( String.valueOf( $T.<Object>getArezId( $N ) ) )",
+                             IDENTIFIABLE_CLASSNAME,
+                             stepMethod.getName() );
+      }
+    }
+
     if ( stepMethod.isChildrenIntrinsic() )
     {
       method.varargs();
-      final PropDescriptor prop = stepMethod.getProp();
       assert null != prop;
       method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $N ) )",
                            descriptor.getEnhancedClassName(),
@@ -342,7 +374,6 @@ final class Generator
     else if ( stepMethod.isChildIntrinsic() )
     {
       assert null != propMethod;
-      final PropDescriptor prop = stepMethod.getProp();
       assert null != prop;
       if ( ProcessorUtil.isNonnull( propMethod ) )
       {
@@ -382,7 +413,6 @@ final class Generator
         {
           method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
         }
-        final PropDescriptor prop = stepMethod.getProp();
         assert null != prop;
         method.addStatement( "_element.props().set( $T.Props.$N, $N )",
                              descriptor.getEnhancedClassName(),
@@ -408,15 +438,64 @@ final class Generator
   }
 
   @Nonnull
-  private static MethodSpec buildBuildStepImpl()
+  private static MethodSpec buildBuildStepImpl( @Nonnull final ComponentDescriptor descriptor )
   {
-    return MethodSpec.methodBuilder( "build" )
+    final MethodSpec.Builder method = MethodSpec
+      .methodBuilder( "build" )
       .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
-      .addAnnotation( NONNULL_CLASSNAME )
+      .addAnnotation( NONNULL_CLASSNAME );
+    final List<PropDescriptor> syntheticProps =
+      descriptor.getProps().stream().filter( PropDescriptor::isImmutable ).collect( Collectors.toList() );
+    if ( syntheticProps.size() > 1 )
+    {
+      final StringBuilder sb = new StringBuilder();
+      sb.append( "_element.setKey( " );
+      final ArrayList<Object> params = new ArrayList<>();
+      boolean firstProp = true;
+      for ( final PropDescriptor prop : syntheticProps )
+      {
+        if ( !firstProp )
+        {
+          sb.append( " + \"-\" + " );
+        }
+        firstProp = false;
+        final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
+        if ( ImmutablePropKeyStrategy.KEYED == strategy )
+        {
+          sb.append( "( ($T) _element.props().get( $T.Props.$N ) ).getKey()" );
+          params.add( KEYED_CLASSNAME );
+          params.add( descriptor.getEnhancedClassName() );
+          params.add( prop.getConstantName() );
+        }
+        else if ( ImmutablePropKeyStrategy.IS_STRING == strategy )
+        {
+          sb.append( "_element.props().get( $T.Props.$N )" );
+          params.add( descriptor.getEnhancedClassName() );
+          params.add( prop.getConstantName() );
+        }
+        else if ( ImmutablePropKeyStrategy.TO_STRING == strategy )
+        {
+          sb.append( "String.valueOf( _element.props().get( $T.Props.$N ) )" );
+          params.add( descriptor.getEnhancedClassName() );
+          params.add( prop.getConstantName() );
+        }
+        else
+        {
+          assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
+          sb.append( "String.valueOf( $T.<Object>getArezId( _element.props().get( $T.Props.$N ) ) )" );
+          params.add( IDENTIFIABLE_CLASSNAME );
+          params.add( descriptor.getEnhancedClassName() );
+          params.add( prop.getConstantName() );
+        }
+      }
+      sb.append( " )" );
+      method.addStatement( sb.toString(), params.toArray() );
+    }
+    method
       .addStatement( "_element.complete()" )
       .addStatement( "return _element" )
-      .returns( REACT_NODE_CLASSNAME )
-      .build();
+      .returns( REACT_NODE_CLASSNAME );
+    return method.build();
   }
 
   @Nonnull
@@ -484,7 +563,7 @@ final class Generator
     }
     builder.addField( field.build() );
 
-    builder.addMethod( buildBuildStepImpl() );
+    builder.addMethod( buildBuildStepImpl( descriptor ) );
 
     return builder.build();
   }
@@ -1778,11 +1857,14 @@ final class Generator
 
     final int propsSize = props.size();
 
-    // Key step
-    final Step keyStep = builder.addStep();
-    final StepMethodType keyStepMethodType = 0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE;
-    keyStep.addMethod( "key", "key", TypeName.get( String.class ), keyStepMethodType );
-    keyStep.addMethod( "key", "*key_int*", TypeName.INT, keyStepMethodType );
+    if ( !descriptor.hasSyntheticKey() )
+    {
+      // Key step
+      final Step keyStep = builder.addStep();
+      final StepMethodType keyStepMethodType = 0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE;
+      keyStep.addMethod( "key", "key", TypeName.get( String.class ), keyStepMethodType );
+      keyStep.addMethod( "key", "*key_int*", TypeName.INT, keyStepMethodType );
+    }
 
     final boolean hasSingleOptional = props.stream().filter( PropDescriptor::isOptional ).count() == 1;
     boolean hasRequiredAfterOptional = false;

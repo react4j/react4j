@@ -64,6 +64,10 @@
   fragment nodes and the code has been change to reflect this.
 * **\[core\]** Add initial support for `<Suspense/>` component.
 * **\[dom\]** Add support for `ReactDOM.createRoot(...)` as the first step for enabling usage of concurrent mode.
+* **\[core\]** Add the `immutable` parameter to the `@Prop` annotation. If set to true then the react component
+  will be recreated if the value of the prop changes. This is accomplished by synthesizing a key for the component
+  from the set of immutable props. If any prop has been marked as immutable then it will no longer possible for the
+  developer to manually specify the key parameter.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)
