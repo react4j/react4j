@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import java.util.HashSet;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -18,7 +19,9 @@ import react4j.internal.OnComponentWillUnmount;
 @ArezComponent(
     name = "CollectionHashSetPropComponent",
     disposeTrackable = Feature.DISABLE,
-    allowEmpty = true
+    allowEmpty = true,
+    inject = InjectMode.NONE,
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_CollectionHashSetPropComponent extends CollectionHashSetPropComponent {

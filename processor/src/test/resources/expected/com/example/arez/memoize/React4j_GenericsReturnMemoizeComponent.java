@@ -6,6 +6,7 @@ import arez.Observer;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import arez.annotations.Memoize;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
@@ -31,7 +32,9 @@ import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "GenericsReturnMemoizeComponent",
-    disposeTrackable = Feature.DISABLE
+    disposeTrackable = Feature.DISABLE,
+    inject = InjectMode.NONE,
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_GenericsReturnMemoizeComponent extends GenericsReturnMemoizeComponent {

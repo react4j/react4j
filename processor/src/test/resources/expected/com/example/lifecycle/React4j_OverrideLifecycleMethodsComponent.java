@@ -2,6 +2,7 @@ package com.example.lifecycle;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import elemental2.core.JsError;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -23,7 +24,9 @@ import react4j.internal.OnGetSnapshotBeforeUpdate;
 @ArezComponent(
     name = "OverrideLifecycleMethodsComponent",
     disposeTrackable = Feature.DISABLE,
-    allowEmpty = true
+    allowEmpty = true,
+    inject = InjectMode.NONE,
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecycleMethodsComponent {

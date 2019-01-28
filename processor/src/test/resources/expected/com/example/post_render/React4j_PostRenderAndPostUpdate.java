@@ -2,6 +2,7 @@ package com.example.post_render;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,7 +20,9 @@ import react4j.internal.OnComponentWillUnmount;
 @ArezComponent(
     name = "PostRenderAndPostUpdate",
     disposeTrackable = Feature.DISABLE,
-    allowEmpty = true
+    allowEmpty = true,
+    inject = InjectMode.NONE,
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {

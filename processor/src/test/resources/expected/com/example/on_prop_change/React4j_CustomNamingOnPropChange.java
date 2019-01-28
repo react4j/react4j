@@ -2,6 +2,7 @@ package com.example.on_prop_change;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,7 +19,9 @@ import react4j.internal.OnGetSnapshotBeforeUpdate;
 @ArezComponent(
     name = "CustomNamingOnPropChange",
     disposeTrackable = Feature.DISABLE,
-    allowEmpty = true
+    allowEmpty = true,
+    inject = InjectMode.NONE,
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange {

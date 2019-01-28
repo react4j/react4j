@@ -8,6 +8,7 @@ import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
@@ -35,7 +36,9 @@ import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "PropAndMemoizeComponent",
-    disposeTrackable = Feature.DISABLE
+    disposeTrackable = Feature.DISABLE,
+    inject = InjectMode.NONE,
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
