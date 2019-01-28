@@ -89,19 +89,19 @@ public final class DOM
   @Nonnull
   public static ReactNode fragment( @Nullable final String key, @Nonnull final ReactNode... children )
   {
-    return ReactElement.createFragment( key, Objects.requireNonNull( children ) );
+    return ReactElement.createFragment( key, children );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nullable final String key, @Nonnull final List<? extends ReactNode> children )
   {
-    return fragment( key, Objects.requireNonNull( children ).stream() );
+    return fragment( key, toArray( children ) );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nullable final String key, @Nonnull final Stream<? extends ReactNode> children )
   {
-    return fragment( key, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+    return fragment( key, toArray( children ) );
   }
 
   @Nonnull
@@ -128,7 +128,7 @@ public final class DOM
                                     final int maxTimeToFallback,
                                     @Nonnull final ReactNode... children )
   {
-    return ReactElement.createSuspense( key, fallback, maxTimeToFallback, Objects.requireNonNull( children ) );
+    return ReactElement.createSuspense( key, fallback, maxTimeToFallback, children );
   }
 
   @Nonnull
@@ -137,7 +137,7 @@ public final class DOM
                                     final int maxTimeToFallback,
                                     @Nonnull final List<? extends ReactNode> children )
   {
-    return suspense( key, fallback, maxTimeToFallback, Objects.requireNonNull( children ).stream() );
+    return suspense( key, fallback, maxTimeToFallback, toArray( children ) );
   }
 
   @Nonnull
@@ -146,7 +146,7 @@ public final class DOM
                                     final int maxTimeToFallback,
                                     @Nonnull final Stream<? extends ReactNode> children )
   {
-    return suspense( key, fallback, maxTimeToFallback, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+    return suspense( key, fallback, maxTimeToFallback, toArray( children ) );
   }
 
   @Nonnull
@@ -178,7 +178,7 @@ public final class DOM
                                     @Nullable final ReactNode fallback,
                                     @Nonnull final ReactNode... children )
   {
-    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ) );
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, children );
   }
 
   @Nonnull
@@ -186,7 +186,7 @@ public final class DOM
                                     @Nullable final ReactNode fallback,
                                     @Nonnull final List<? extends ReactNode> children )
   {
-    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ).stream() );
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
   }
 
   @Nonnull
@@ -194,27 +194,27 @@ public final class DOM
                                     @Nullable final ReactNode fallback,
                                     @Nonnull final Stream<? extends ReactNode> children )
   {
-    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
   }
 
   @Nonnull
   public static ReactNode suspense( @Nullable final ReactNode fallback, @Nonnull final ReactNode... children )
   {
-    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ) );
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, children );
   }
 
   @Nonnull
   public static ReactNode suspense( @Nullable final ReactNode fallback,
                                     @Nonnull final List<? extends ReactNode> children )
   {
-    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ).stream() );
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
   }
 
   @Nonnull
   public static ReactNode suspense( @Nullable final ReactNode fallback,
                                     @Nonnull final Stream<? extends ReactNode> children )
   {
-    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, Objects.requireNonNull( children ).toArray( ReactNode[]::new ) );
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
   }
 HEADER
   factories.each_pair do |key, prop_type|
@@ -295,30 +295,42 @@ HEADER
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final List<? extends ReactNode> children )
   {
-    return #{key}( props, children.stream() );
+    return #{key}( props, toArray( children ) );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final List<? extends ReactNode> children )
   {
-    return #{key}( children.stream() );
+    return #{key}( toArray( children ) );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final Stream<? extends ReactNode> children )
   {
-    return #{key}( props, children.toArray( ReactNode[]::new ) );
+    return #{key}( props, toArray( children ) );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final Stream<? extends ReactNode> children )
   {
-    return #{key}( children.toArray( ReactNode[]::new ) );
+    return #{key}( toArray( children ) );
   }
 HEADER
   end
 
   content += <<FOOTER
+
+  @Nonnull
+  private static ReactNode[] toArray( @Nonnull final List<? extends ReactNode> children )
+  {
+    return Objects.requireNonNull( children ).toArray( new ReactNode[ 0 ] );
+  }
+
+  @Nonnull
+  private static ReactNode[] toArray( @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return Objects.requireNonNull( children ).toArray( ReactNode[]::new );
+  }
 }
 FOOTER
 
