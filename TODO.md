@@ -118,17 +118,6 @@
 
 * Consider renaming `@Prop` to `@Input`
 
-* If we were to ever re-implement the component model at a basic level, an interesting approach would be to
-  allow individual components to register actions to occur at each lifecycle stage. We could also use the
-  strategies in [ivi](https://github.com/localvoid/ivi) or whatever is winning the
-  [uibench](https://localvoid.github.io/uibench/) benchmark at the time. [Nerv](https://github.com/NervJS/nerv)
-  has some interesting benchmarks at https://github.com/NervJS/nerv/tree/master/benchmarks
-
-* Investigate feasibility of https://github.com/sokra/rawact which compiles react components into native
-  browser interactions in attempt to eliminate overhead of library. A similar framework is imba @ http://imba.io/
-  which can learn about in https://scrimba.com/p/c6B9rAM - actually imba + Embers AOT template compiler seem
-  like a very very very interesting approach.
-
 #### Documentation
 
 * Add graph reflecting size of TodoMVC over time
@@ -145,9 +134,6 @@
 
 * Or most excellent image from https://medium.freecodecamp.org/why-react16-is-a-blessing-to-react-developers-31433bfc210a
 
-* Add notes regarding fiber like - https://github.com/acdlite/react-fiber-architecture
-  Also useful to extract notes from https://www.youtube.com/watch?v=ZCuYPiUIONs&app=desktop
-
 * Create a jsbin-alike to display GWT code
   - https://github.com/jsbin/jsbin
   - http://jsbin.com/?html,css,js,console,output
@@ -157,9 +143,6 @@
   - Possibly with custom scripting - see https://wickstrom.tech/programming/2018/10/26/writing-a-screencast-video-editor-in-haskell.html
   - See egghead training videos as well.
   - https://www.youtube.com/playlist?list=PLV5CVI1eNcJhc9Lxu83Zp4uyqP2yKV4xl&app=desktop
-
-* Consider using the React4j component model (a.k.a. annotations) and seeing if it can be used to generate
-  a custom-element based component such as via Stencil.js.
 
 * Port https://github.com/realityforge/Piano-Trainer across to react4j
 
@@ -182,3 +165,29 @@ Vue integration that uses a similar thing inside template language is described 
 
 Another integration approach is to add a "<Stream/>" component that takes a stream as a prop and has a render prop
 that has output of stream as parameter. See [react-streams](https://github.com/johnlindquist/react-streams/) for inspiration.
+
+### Fiber Reimplementation
+
+It seems that at some point there may be a demand to re-implement the underlying react reconciliation layer. If
+we ever do this here is a list of helpful links that could provide useful
+
+* [react-fiber-implement](https://github.com/tranbathanhtung/react-fiber-implement) A simplified implementation some one is using to learn how fiber works
+* [Implementation notes on react's scheduling model](https://gist.github.com/Jessidhia/49d0915b7e722dc5b49ab9779b5906e8)
+* Add notes regarding fiber like - https://github.com/acdlite/react-fiber-architecture
+* Also useful to extract notes from https://www.youtube.com/watch?v=ZCuYPiUIONs&app=desktop
+
+#### Additional Capabilities
+
+* If we were to ever re-implement the component model at a basic level, an interesting approach would be to
+  allow individual components to register actions to occur at each lifecycle stage. We could also use the
+  strategies in [ivi](https://github.com/localvoid/ivi) or whatever is winning the
+  [uibench](https://localvoid.github.io/uibench/) benchmark at the time. [Nerv](https://github.com/NervJS/nerv)
+  has some interesting benchmarks at https://github.com/NervJS/nerv/tree/master/benchmarks
+
+* Consider using the React4j component model (a.k.a. annotations) and seeing if it can be used to generate
+  a custom-element based component such as via Stencil.js.
+
+* Investigate feasibility of https://github.com/sokra/rawact which compiles react components into native
+  browser interactions in attempt to eliminate overhead of library. A similar framework is imba @ http://imba.io/
+  which can learn about in https://scrimba.com/p/c6B9rAM - actually imba + Embers AOT template compiler seem
+  like a very very very interesting approach.
