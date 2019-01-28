@@ -13,6 +13,8 @@
 
 ### Next Release
 
+* Add `react4j-drumloop` into build tests
+
 * Change the way we process `@Memoize` so that instead we use the "new" feature of Arez (when it is implemented)
   to override the priority from within hook methods.
 
