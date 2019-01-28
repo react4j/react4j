@@ -2,6 +2,7 @@ package react4j.dom.test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -116,7 +117,10 @@ public class DomJDependTest
           .append( "\n" )
         );
       }
-      fail( sb.toString() );
+
+      final String message =
+        Arrays.stream( sb.toString().split( "\\n" ) ).sorted().distinct().collect( Collectors.joining( "\n" ) );
+      fail( message );
     }
   }
 
