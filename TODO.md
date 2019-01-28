@@ -16,8 +16,8 @@
 * Change the way we process `@Memoize` so that instead we use the "new" feature of Arez (when it is implemented)
   to override the priority from within hook methods.
 
-* Host `ReactElement` instances should be created within the `dom` library and we could create the instances
-  directly rather than copying props and adding special handling for `ref`, `key` and `children`.
+* Reactor the way the `dom` library creates host `ReactElement` instances to avoid copying props and adding
+  special handling for `ref`, `key` and `children` and instead creating elements directly.
 
 * Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
