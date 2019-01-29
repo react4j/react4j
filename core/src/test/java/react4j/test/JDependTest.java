@@ -26,7 +26,6 @@ public class JDependTest
     final DependencyConstraint constraint = new DependencyConstraint();
 
     final JavaPackage react4j = constraint.addPackage( "react4j" );
-    final JavaPackage react4jArez = constraint.addPackage( "react4j.arez" );
     final JavaPackage react4jInternal = constraint.addPackage( "react4j.internal" );
     final JavaPackage react4jInternalArez = constraint.addPackage( "react4j.internal.arez" );
     constraint.addPackage( "react4j.annotations" );
@@ -44,8 +43,6 @@ public class JDependTest
     react4j.dependsUpon( elemental2Core );
     react4j.dependsUpon( react4jInternal );
     react4j.dependsUpon( arez );
-
-    react4jArez.dependsUpon( react4j );
 
     react4jInternal.dependsUpon( jsinteropAnnotations );
     react4jInternal.dependsUpon( jsinteropBase );
