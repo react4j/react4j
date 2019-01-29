@@ -641,3 +641,25 @@ ReactDOM.unmountComponentAtNode = function(container) {};
 ReactDOM.unstable_batchedUpdates = function(callback) {};
 
 ReactDOM.createPortal = function() {};
+
+/**
+ * @interface
+ */
+React.ReactRoot = function() {};
+
+/**
+ * @param {React.Component} child
+ * @param {Function=} opt_callback
+ */
+React.ReactRoot.prototype.render = function(child, opt_callback) {};
+
+/**
+ * @param {Function=} opt_callback
+ */
+React.ReactRoot.prototype.unmount = function(opt_callback) {};
+
+/**
+ * @param {Element} container
+ * @return {React.ReactRoot}
+ */
+ReactDOM.unstable_createRoot = function(container) {};
