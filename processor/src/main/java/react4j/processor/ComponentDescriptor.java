@@ -539,7 +539,9 @@ final class ComponentDescriptor
 
   boolean generateComponentDidMount()
   {
-    return generateComponentDidMountInLiteLifecycle() || isArezComponent();
+    return generateComponentDidMountInLiteLifecycle() ||
+           // We do it when tracking render so we can store debug information in state
+           isArezComponent();
   }
 
   boolean generateComponentDidMountInLiteLifecycle()
@@ -559,7 +561,9 @@ final class ComponentDescriptor
 
   boolean generateComponentDidUpdate()
   {
-    return generateComponentDidUpdateInLiteLifecycle() || isArezComponent();
+    return generateComponentDidUpdateInLiteLifecycle() ||
+           // We do it when tracking render so we can store debug information in state
+           isArezComponent();
   }
 
   boolean generateComponentDidUpdateInLiteLifecycle()
