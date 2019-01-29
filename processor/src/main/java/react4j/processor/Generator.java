@@ -686,10 +686,7 @@ final class Generator
       builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
       builder.addMethod( buildGetRenderObserver( descriptor ).build() );
       builder.addMethod( buildPopulateDebugData( descriptor ).build() );
-    }
 
-    if ( descriptor.trackRender() )
-    {
       for ( final MethodDescriptor method : descriptor.getMemoizeMethods() )
       {
         builder.addMethod( buildMemoizeWrapperMethod( method ).build() );
