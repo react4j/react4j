@@ -387,7 +387,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.MultipleChildrenPropsComponent",
                       "Multiple candidate children @Prop annotated methods: getChildren and getChild" },
         new Object[]{ "com.example.prop.ObserveOnNonArezProp",
-                      "@Prop named 'myKey' is marked as observable but the host component is not a subclass of react4j.arez.ReactArezComponent" },
+                      "@Prop named 'myKey' is marked as observable but the 'type' parameter of the @ReactComponent is not TRACKING or MAYBE_TRACKING." },
         new Object[]{ "com.example.prop.PropHasParameterComponent", "@Prop target must not have any parameters" },
         new Object[]{ "com.example.prop.PropNamedBuild",
                       "@Prop named 'build' is invalid as it conflicts with the method named build() that is used in the generated Builder classes" },

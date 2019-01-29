@@ -788,8 +788,9 @@ public final class ReactProcessor
     final boolean immutable = isPropImmutable( method );
     if ( observable && !descriptor.isArezComponent() )
     {
-      throw new ReactProcessorException( "@Prop named '" + name + "' is marked as observable but the host component " +
-                                         "is not a subclass of react4j.arez.ReactArezComponent", method );
+      throw new ReactProcessorException( "@Prop named '" + name + "' is marked as observable but the 'type' " +
+                                         "parameter of the @ReactComponent is not TRACKING or MAYBE_TRACKING.",
+                                         method );
     }
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() &&
