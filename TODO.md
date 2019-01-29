@@ -1,9 +1,5 @@
 ## TODO
 
-### Current Release
-
-* Refactor tests so not all Memoize or arez lifecycle require tracking. In fact move into different packages
-
 ### Next Release
 
 * Add `react4j-drumloop` into build tests
