@@ -68,7 +68,6 @@
 * Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
   (See TODOs in Generator.java) with the enhancers.
 
-* Consider separating Arez react component infrastructure into a mixin with default methods.
 
 ### Medium Priorities
 
