@@ -2,6 +2,7 @@
 
 ### Current Release
 
+* Refactor tests so not all Memoize or arez lifecycle require tracking. In fact move into different packages
 
 ### Next Release
 
