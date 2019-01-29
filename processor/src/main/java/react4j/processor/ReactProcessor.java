@@ -1109,7 +1109,6 @@ public final class ReactProcessor
     }
 
     final boolean needsInjection = isInjectionRequired( typeElement );
-
     if ( needsInjection && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
       throw new ReactProcessorException( "@ReactComponent target has enabled injection integration but the class " +
