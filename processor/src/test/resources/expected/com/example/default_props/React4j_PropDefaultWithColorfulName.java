@@ -14,6 +14,7 @@ import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "PropDefaultWithColorfulName",
@@ -46,6 +47,16 @@ abstract class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorf
     }
   }
 
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    final JsPropertyMap<Object> props = props();
+    if ( !Js.isTripleEqual( props.get( Props.myProp12$23 ), nextProps.get( Props.myProp12$23 ) ) ) {
+      return true;
+    }
+    return false;
+  }
+
   private void $$react4j$$_componentWillUnmount() {
     ((Arez_React4j_PropDefaultWithColorfulName) this).dispose();
   }
@@ -58,7 +69,7 @@ abstract class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorf
     static final String myProp12$23 = React.shouldMinimizePropKeys() ? "a" : "myProp12$23";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     private React4j_PropDefaultWithColorfulName $$react4j$$_component;
 
     @JsConstructor
@@ -68,19 +79,29 @@ abstract class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorf
     }
 
     @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+    }
+
+    @Override
     @Nullable
     public final ReactNode render() {
       return $$react4j$$_component.render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     private React4j_PropDefaultWithColorfulName $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_PropDefaultWithColorfulName( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

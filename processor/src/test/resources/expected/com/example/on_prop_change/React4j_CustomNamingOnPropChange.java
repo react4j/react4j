@@ -15,6 +15,7 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "CustomNamingOnPropChange",
@@ -57,6 +58,22 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
     return props().getAny( Props.myProp3 ).asInt();
   }
 
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    final JsPropertyMap<Object> props = props();
+    if ( !Js.isTripleEqual( props.get( Props.myProp1 ), nextProps.get( Props.myProp1 ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( props.get( Props.myProp2 ), nextProps.get( Props.myProp2 ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( props.get( Props.myProp3 ), nextProps.get( Props.myProp3 ) ) ) {
+      return true;
+    }
+    return false;
+  }
+
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
       final JsPropertyMap<Object> props = props();
@@ -91,13 +108,18 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
     static final String myProp3 = React.shouldMinimizePropKeys() ? "c" : "myProp3";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnGetSnapshotBeforeUpdate {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
     private React4j_CustomNamingOnPropChange $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_CustomNamingOnPropChange( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -114,13 +136,18 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
+  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
     private React4j_CustomNamingOnPropChange $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_CustomNamingOnPropChange( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

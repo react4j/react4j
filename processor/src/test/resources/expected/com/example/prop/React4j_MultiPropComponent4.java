@@ -14,6 +14,7 @@ import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "MultiPropComponent4",
@@ -86,6 +87,28 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     }
   }
 
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    final JsPropertyMap<Object> props = props();
+    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( props.get( Props.myProp2 ), nextProps.get( Props.myProp2 ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( props.get( Props.myProp3 ), nextProps.get( Props.myProp3 ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( props.get( Props.myProp4 ), nextProps.get( Props.myProp4 ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( props.get( Props.child ), nextProps.get( Props.child ) ) ) {
+      return true;
+    }
+    return false;
+  }
+
   private void $$react4j$$_componentWillUnmount() {
     ((Arez_React4j_MultiPropComponent4) this).dispose();
   }
@@ -106,7 +129,7 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     static final String child = "children";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     private React4j_MultiPropComponent4 $$react4j$$_component;
 
     @JsConstructor
@@ -116,19 +139,29 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     }
 
     @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+    }
+
+    @Override
     @Nullable
     public final ReactNode render() {
       return $$react4j$$_component.render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     private React4j_MultiPropComponent4 $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_MultiPropComponent4( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

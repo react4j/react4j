@@ -16,6 +16,7 @@ import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "OnPropChangeAndPreUpdateModel",
@@ -42,6 +43,16 @@ abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreU
   @Override
   protected int getMyProp() {
     return props().getAny( Props.myProp ).asInt();
+  }
+
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    final JsPropertyMap<Object> props = props();
+    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+      return true;
+    }
+    return false;
   }
 
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
@@ -73,13 +84,18 @@ abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreU
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnGetSnapshotBeforeUpdate {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
     private React4j_OnPropChangeAndPreUpdateModel $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_OnPropChangeAndPreUpdateModel( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -101,13 +117,18 @@ abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreU
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
     private React4j_OnPropChangeAndPreUpdateModel $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_OnPropChangeAndPreUpdateModel( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
