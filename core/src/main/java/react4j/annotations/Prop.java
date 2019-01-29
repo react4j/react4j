@@ -75,18 +75,13 @@ public @interface Prop
   Feature observable() default Feature.AUTODETECT;
 
   /**
-   * Return an enum indicating whether prop is disposable and should be checked before rendering component.
-   * If a prop is disposable then the class will override <code>ReactArezComponent.anyPropsDisposed()</code>
-   * and check whether the prop is disposed prior to attempting to render the component. If any props
-   * are disposed then rendering will be aborted and the render method will return null.
-   * If set to {@link Feature#ENABLE} then the code will add an isDisposed() check while if set to
-   * {@link Feature#DISABLE} no such check will be generated. If set to {@link Feature#AUTODETECT} then the
-   * annotation processor will inspect the type of the prop and treat it as {@link Feature#ENABLE} if the
-   * type is annotated with the <code>arez.annotations.ArezComponent</code> annotation and the host component is
-   * an Arez component. It is invalid to specify {@link Feature#ENABLE} unless the host component is an Arez
-   * component.
+   * Return an enum indicating whether the component should check whether the value of the prop is disposed
+   * prior to rendering. If the value is disposed then the render method will exit early and return null.
+   * If this parameter is set to {@link Feature#AUTODETECT} then the annotation processor will inspect the
+   * type of the prop and treat it as {@link Feature#ENABLE} if the type is annotated with the {@link ArezComponent}
+   * annotation.
    *
-   * @return the enum indicating whether prop is disposable and should be checked before rendering component.
+   * @return an enum indicating whether the component should check whether the value of the prop is disposed prior to rendering.
    */
   Feature disposable() default Feature.AUTODETECT;
 
