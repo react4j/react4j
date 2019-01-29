@@ -132,6 +132,8 @@ in ES6 and a constructor function.
 
 ## Arez Integration
 
+**WARNING**: This section is no longer up to date. We hope to fix this in the medium term.
+
 ### Which components should extend ReactArezComponent?
 
 Any component that uses arez observable properties or computed properties within the `render()` method should
