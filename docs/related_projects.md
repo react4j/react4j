@@ -13,7 +13,6 @@ to this page.
 * [react-widget](https://github.com/react4j/react4j-widget) The library provides a GWT widget that
   renders a React4j element. This project has been archived as there is no desire to continue supporting
   this architecture although it should still be possible.
-  <span style="font-size: smaller">**[API Docs](https://react4j.github.io/widget) · [GitHub Project](https://github.com/react4j/react4j-widget)**</span>
 * [react-windowportal](https://github.com/react4j/react4j-windowportal) The library provides a portal that
   renders into a Window.
   <span style="font-size: smaller">**[API Docs](https://react4j.github.io/windowportal) · [GitHub Project](https://github.com/react4j/react4j-windowportal)**</span>
