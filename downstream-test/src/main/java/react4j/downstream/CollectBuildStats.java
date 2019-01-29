@@ -34,15 +34,7 @@ public final class CollectBuildStats
   {
     Gir.go( () -> {
       final List<String> baseBranches =
-        Arrays.asList( "raw",
-                       "arez",
-                       "dagger",
-                       "raw_maven",
-                       "arez_maven",
-                       "dagger_maven",
-                       "raw_maven_j2cl",
-                       "arez_maven_j2cl",
-                       "dagger_maven_j2cl" );
+        Arrays.asList( "raw", "arez", "dagger", "raw_maven", "arez_maven", "dagger_maven" );
 
       final ArrayList<String> branches = new ArrayList<>( baseBranches );
       if ( WorkspaceUtil.buildJ2clBuilds() )
