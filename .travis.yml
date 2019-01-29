@@ -11,7 +11,6 @@ before_install:
 - "(cd ../ && tar xvf secrets.tar)"
 - chmod 600 ../deploy
 - eval `ssh-agent -s` && ssh-add ../deploy
-- cp etc/settings.xml $HOME/.m2/settings.xml
 install:
 - nvm install v6.10.3
 - nvm use v6.10.3
