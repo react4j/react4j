@@ -201,6 +201,7 @@ public final class ReactProcessor
   {
     final String name = deriveComponentName( typeElement );
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
+    final ComponentType type = extractComponentType( typeElement );
     final boolean nonConstructorInjections = nonConstructorInjections( typeElement );
     final ComponentDescriptor descriptor =
       new ComponentDescriptor( processingEnv.getElementUtils(),
@@ -208,9 +209,10 @@ public final class ReactProcessor
                                name,
                                packageElement,
                                typeElement,
+                               type,
                                nonConstructorInjections );
 
-    determineComponentType( descriptor, typeElement );
+    determineComponentCapabilities( descriptor, typeElement );
     determineRenderMethod( typeElement, descriptor );
     determineProps( descriptor );
     determinePropValidatesMethods( descriptor );
@@ -1071,35 +1073,22 @@ public final class ReactProcessor
     return _componentRenderMethod;
   }
 
-  private void determineComponentType( @Nonnull final ComponentDescriptor descriptor,
-                                       @Nonnull final TypeElement typeElement )
+  private void determineComponentCapabilities( @Nonnull final ComponentDescriptor descriptor,
+                                               @Nonnull final TypeElement typeElement )
   {
     final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
     final TypeMirror rawComponentType = processingEnv.getTypeUtils().erasure( componentType.asType() );
 
-    /*
-     * Arez need not be on the classpath in which case this will return a null value to arezComponentType.
-     * Our code should just gracefully handle this and perform none of the arez specific checks or generation.
-     */
-    @Nullable
-    final TypeElement arezComponentType =
-      processingEnv.getElementUtils().getTypeElement( "react4j.arez.ReactArezComponent" );
-    @Nullable
-    final TypeMirror rawArezComponentType =
-      null == arezComponentType ? null : processingEnv.getTypeUtils().erasure( arezComponentType.asType() );
+    final TypeMirror declaredType = descriptor.getDeclaredType();
 
-    final TypeMirror type = descriptor.getDeclaredType();
-
-    final boolean isComponent = processingEnv.getTypeUtils().isSubtype( type, rawComponentType );
-    final boolean isArezComponent =
-      null != rawArezComponentType && processingEnv.getTypeUtils().isSubtype( type, rawArezComponentType );
+    final boolean isComponent = processingEnv.getTypeUtils().isSubtype( declaredType, rawComponentType );
 
     if ( !isComponent )
     {
       throw new ReactProcessorException( "@ReactComponent target must be a subclass of react4j.Component",
                                          typeElement );
     }
-    else if ( isArezComponent )
+    else if ( descriptor.isArezComponent() )
     {
       final AnnotationMirror arezAnnotation = typeElement.getAnnotationMirrors().stream().
         filter( m -> m.getAnnotationType().toString().equals( "arez.annotations.ArezComponent" ) ).
@@ -1133,14 +1122,8 @@ public final class ReactProcessor
     }
 
     descriptor.setNeedsInjection( needsInjection );
-    final boolean allowNoArezDeps = (Boolean)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        typeElement,
-                                        Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                        "allowNoArezDeps" ).getValue();
-
     final boolean hasArezElements =
-      isArezComponent ||
+      descriptor.isArezComponent() ||
       getMethods( typeElement ).stream().anyMatch( e -> e.getAnnotationMirrors()
         .stream()
         .map( a -> a.getAnnotationType().toString() )
@@ -1167,11 +1150,21 @@ public final class ReactProcessor
                           n.equals( Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME ) )
         );
 
-    descriptor.setArezComponent( isArezComponent, allowNoArezDeps, hasArezElements );
+    descriptor.setHasArezElements( hasArezElements );
 
     ensureMemoizeMatchesExpectations( typeElement );
 
     descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
+  }
+
+  private ComponentType extractComponentType( @Nonnull final TypeElement typeElement )
+  {
+    final VariableElement declaredTypeEnum = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        typeElement,
+                                        Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                        "type" ).getValue();
+    return ComponentType.valueOf( declaredTypeEnum.getSimpleName().toString() );
   }
 
   private void ensureMemoizeMatchesExpectations( @Nonnull final TypeElement typeElement )

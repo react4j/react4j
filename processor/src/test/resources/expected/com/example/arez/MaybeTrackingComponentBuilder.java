@@ -7,8 +7,8 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class AllowNoArezDepsComponentBuilder {
-  private AllowNoArezDepsComponentBuilder() {
+class MaybeTrackingComponentBuilder {
+  private MaybeTrackingComponentBuilder() {
   }
 
   @Nonnull
@@ -40,7 +40,7 @@ class AllowNoArezDepsComponentBuilder {
   }
 
   private static class Builder implements Step1, Step2 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_AllowNoArezDepsComponent.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_MaybeTrackingComponent.Factory.TYPE );
 
     @Override
     @Nonnull

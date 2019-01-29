@@ -2,12 +2,6 @@
 
 ### Current Release
 
-* Remove `ReactArezComponent` and replace with `type` parameter on `@ReactComponent` with possible values:
-  - `STATEFUL` => can use fields or lifecycle methods.
-  - `MAYBE_TRACKING` => Observe the render method but allow zero dependencies.
-  - `TRACKING` => Observe the render method and require dependencies.
-
-  This will also mean the removal of `@ReactComponent.allowNoArezDeps`
 
 ### Next Release
 

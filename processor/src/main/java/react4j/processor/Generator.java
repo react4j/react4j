@@ -1239,7 +1239,7 @@ final class Generator
         .addMember( "executor", "$T.EXTERNAL", EXECUTOR_CLASSNAME )
         .addMember( "observeLowerPriorityDependencies", "true" )
         .addMember( "reportResult", "false" );
-    if ( descriptor.allowNoArezDeps() )
+    if ( ComponentType.MAYBE_TRACKING == descriptor.getType() )
     {
       observe.addMember( "depType", "$T.AREZ_OR_NONE", DEP_TYPE_CLASSNAME );
     }
@@ -1273,7 +1273,7 @@ final class Generator
       method.addCode( block.build() );
     }
 
-    if ( !descriptor.allowNoArezDeps() )
+    if ( ComponentType.TRACKING == descriptor.getType() )
     {
       method.addStatement( "final $T result = super.render()", REACT_NODE_CLASSNAME );
 

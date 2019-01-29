@@ -1,7 +1,0 @@
-<module>
-  <inherits name='react4j.arez.Arez'/>
-  <inherits name='react4j.ReactDev'/>
-  <inherits name='arez.ArezDev'/>
-
-  <source path='ignored'/>
-</module>

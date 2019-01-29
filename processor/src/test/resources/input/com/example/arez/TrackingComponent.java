@@ -1,13 +1,15 @@
-package com.example.component;
+package com.example.arez;
 
+import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
 
-@ReactComponent( allowNoArezDeps = true )
-abstract class NoArezDepsNonArezComponent
+@ReactComponent( type = ReactComponent.Type.TRACKING )
+abstract class TrackingComponent
   extends Component
 {
+  @Nullable
   @Override
   protected ReactNode render()
   {

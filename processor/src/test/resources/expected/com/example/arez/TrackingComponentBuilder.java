@@ -7,8 +7,8 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class RequireArezDepsComponentBuilder {
-  private RequireArezDepsComponentBuilder() {
+class TrackingComponentBuilder {
+  private TrackingComponentBuilder() {
   }
 
   @Nonnull
@@ -40,7 +40,7 @@ class RequireArezDepsComponentBuilder {
   }
 
   private static class Builder implements Step1, Step2 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_RequireArezDepsComponent.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_TrackingComponent.Factory.TYPE );
 
     @Override
     @Nonnull

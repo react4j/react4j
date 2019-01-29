@@ -74,6 +74,14 @@
 * **\[core\]** Remove every variant of `React.createElement(...)`. The code and/or behaviour has been inlined into
   the `DOM` factory methods to aid code optimization process.
 * **\[core\]** Move `React.createStrictMode(...)` to `ReactElement.createStrictMode(...)`.
+* **\[core\]** Remove the `ReactArezComponent` class and replace it with the `type` parameter on the
+  `@ReactComponent` annotation. The possible values for `type` are:
+  - `STATEFUL`: The component can use fields or lifecycle methods.
+  - `TRACKING`: The component is `STATEFUL` and the render method is annotated with `@Observe` and will
+    re-render when a dependency changes.
+  - `MAYBE_TRACKING`: The component is `TRACKING` but the render method may have zero dependencies.
+* **\[core\]** Remove the `allowNoArezDeps` parameter from the `@ReactComponent` annotation as it no longer
+  provides any value over `MAYBE_TRACKING` components.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

@@ -31,6 +31,9 @@ final class ComponentDescriptor
   private final PackageElement _packageElement;
   @Nonnull
   private final TypeElement _element;
+  @Nonnull
+  private final ComponentType _type;
+  private final boolean _nonConstructorInjections;
   @Nullable
   private ExecutableElement _preUpdate;
   @Nullable
@@ -41,7 +44,6 @@ final class ComponentDescriptor
   private ExecutableElement _postMount;
   @Nullable
   private ExecutableElement _onError;
-  private boolean _arezComponent;
   private boolean _needsInjection;
   /**
    * Methods that are props accessors.
@@ -61,8 +63,6 @@ final class ComponentDescriptor
   @Nullable
   private List<MethodDescriptor> _memoizeMethods;
   private Boolean _hasValidatedProps;
-  private boolean _allowNoArezDeps;
-  private final boolean _nonConstructorInjections;
   private boolean _hasArezElements;
 
   ComponentDescriptor( @Nonnull final Elements elements,
@@ -70,6 +70,7 @@ final class ComponentDescriptor
                        @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
                        @Nonnull final TypeElement element,
+                       @Nonnull final ComponentType type,
                        final boolean nonConstructorInjections )
   {
     _elements = Objects.requireNonNull( elements );
@@ -77,6 +78,7 @@ final class ComponentDescriptor
     _name = Objects.requireNonNull( name );
     _packageElement = Objects.requireNonNull( packageElement );
     _element = Objects.requireNonNull( element );
+    _type = Objects.requireNonNull( type );
     _nonConstructorInjections = nonConstructorInjections;
 
     if ( ElementKind.CLASS != element.getKind() )
@@ -217,19 +219,17 @@ final class ComponentDescriptor
 
   boolean isArezComponent()
   {
-    return _arezComponent;
+    return ComponentType.MAYBE_TRACKING == _type || ComponentType.TRACKING == _type;
   }
 
-  boolean allowNoArezDeps()
+  void setHasArezElements( final boolean hasArezElements )
   {
-    return _allowNoArezDeps;
-  }
-
-  void setArezComponent( final boolean arezComponent, final boolean allowNoArezDeps, final boolean hasArezElements )
-  {
-    _arezComponent = arezComponent;
-    _allowNoArezDeps = allowNoArezDeps;
     _hasArezElements = hasArezElements;
+  }
+
+  public ComponentType getType()
+  {
+    return _type;
   }
 
   @Nonnull

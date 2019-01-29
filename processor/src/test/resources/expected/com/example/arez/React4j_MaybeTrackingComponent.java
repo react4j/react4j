@@ -4,6 +4,7 @@ import arez.Arez;
 import arez.Disposable;
 import arez.Observer;
 import arez.annotations.ArezComponent;
+import arez.annotations.DepType;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
@@ -16,7 +17,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
@@ -29,16 +29,16 @@ import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
-    name = "RequireArezDepsComponent",
+    name = "MaybeTrackingComponent",
     disposeTrackable = Feature.DISABLE,
     inject = InjectMode.NONE,
     dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class React4j_RequireArezDepsComponent extends RequireArezDepsComponent {
+abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
   private int $$react4j$$_state;
 
-  React4j_RequireArezDepsComponent(@Nonnull final NativeComponent nativeComponent) {
+  React4j_MaybeTrackingComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
 
@@ -46,7 +46,7 @@ abstract class React4j_RequireArezDepsComponent extends RequireArezDepsComponent
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "RequireArezDepsComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "MaybeTrackingComponent" );
     }
     return componentConstructor;
   }
@@ -65,7 +65,7 @@ abstract class React4j_RequireArezDepsComponent extends RequireArezDepsComponent
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    ((Arez_React4j_RequireArezDepsComponent) this).dispose();
+    ((Arez_React4j_MaybeTrackingComponent) this).dispose();
   }
 
   final void onRenderDepsChange() {
@@ -82,17 +82,14 @@ abstract class React4j_RequireArezDepsComponent extends RequireArezDepsComponent
       priority = Priority.LOW,
       executor = Executor.EXTERNAL,
       observeLowerPriorityDependencies = true,
-      reportResult = false
+      reportResult = false,
+      depType = DepType.AREZ_OR_NONE
   )
   protected ReactNode render() {
     $$react4j$$_state = ComponentState.IDLE;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
-    final ReactNode result = super.render();
-    if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
-      Guards.invariant( () -> !getRenderObserver().getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
-    }
-    return result;
+    return super.render();
   }
 
   @Nonnull
@@ -111,12 +108,12 @@ abstract class React4j_RequireArezDepsComponent extends RequireArezDepsComponent
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
-    private React4j_RequireArezDepsComponent $$react4j$$_component;
+    private React4j_MaybeTrackingComponent $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_RequireArezDepsComponent( this );
+      $$react4j$$_component = new Arez_React4j_MaybeTrackingComponent( this );
     }
 
     @Override
@@ -132,12 +129,12 @@ abstract class React4j_RequireArezDepsComponent extends RequireArezDepsComponent
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
-    private React4j_RequireArezDepsComponent $$react4j$$_component;
+    private React4j_MaybeTrackingComponent $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_RequireArezDepsComponent( this );
+      $$react4j$$_component = new Arez_React4j_MaybeTrackingComponent( this );
     }
 
     @Override
