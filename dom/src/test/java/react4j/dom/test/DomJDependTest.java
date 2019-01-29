@@ -39,6 +39,7 @@ public class DomJDependTest
 
     react4jDom.dependsUpon( react4j );
     react4jDom.dependsUpon( jsinteropAnnotations );
+    react4jDom.dependsUpon( jsinteropBase );
     react4jDom.dependsUpon( elemental2Dom );
     react4jDom.dependsUpon( react4jDomHtml );
 
