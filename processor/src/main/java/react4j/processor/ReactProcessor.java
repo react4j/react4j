@@ -1078,7 +1078,7 @@ public final class ReactProcessor
       throw new ReactProcessorException( "@ReactComponent target must be a subclass of react4j.Component",
                                          typeElement );
     }
-    else if ( descriptor.trackRender() )
+    else
     {
       final AnnotationMirror arezAnnotation = typeElement.getAnnotationMirrors().stream().
         filter( m -> m.getAnnotationType().toString().equals( "arez.annotations.ArezComponent" ) ).
@@ -1086,7 +1086,7 @@ public final class ReactProcessor
       if ( null != arezAnnotation )
       {
         throw new ReactProcessorException( "@ReactComponent target should not be annotated with the " +
-                                           "arez.annotations.ArezComponent as React4j will add annotation",
+                                           "arez.annotations.ArezComponent as React4j will add the annotation.",
                                            typeElement );
       }
     }
