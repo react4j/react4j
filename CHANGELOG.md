@@ -85,6 +85,9 @@
 * **\[core\]** Add support for `@Prop(disposable=ENABLE)` props in `@ReactComponent(type=STATEFUL)` components
   and update `@Prop(disposable=AUTODETECT)` to resolve correctly detect disposable props even in `STATEFUL`
   components.
+* **\[core\]** Add support for `@Prop(observable=ENABLE)` props in `@ReactComponent(type=STATEFUL)` components
+  and update `@Prop(disposable=AUTODETECT)` to resolve correctly detect observable props even in `STATEFUL`
+  components. See javadocs for further details.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

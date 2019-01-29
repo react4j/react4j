@@ -786,12 +786,6 @@ public final class ReactProcessor
     final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange );
     final boolean disposable = null != propType && isPropDisposable( descriptor, method, propType );
     final boolean immutable = isPropImmutable( method );
-    if ( observable && !descriptor.trackRender() )
-    {
-      throw new ReactProcessorException( "@Prop named '" + name + "' is marked as observable but the 'type' " +
-                                         "parameter of the @ReactComponent is not TRACKING or MAYBE_TRACKING.",
-                                         method );
-    }
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() &&
          ProcessorUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
@@ -1210,9 +1204,7 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        return descriptor.trackRender() &&
-               shouldUpdateOnChange &&
-               hasAnyArezObserverMethods( descriptor.getElement() );
+        return shouldUpdateOnChange && hasAnyArezObserverMethods( descriptor.getElement() );
     }
   }
 

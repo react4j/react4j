@@ -386,8 +386,6 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentHasNoId", "@Prop named 'myProp' has specified the 'immutable' parameter as true but the annotation processor can not extract a key part from the type. This is because the type is not recognized as conforming to the rules as documented in the javadocs for the immutable parameter of the @Prop annotation." },
         new Object[]{ "com.example.prop.MultipleChildrenPropsComponent",
                       "Multiple candidate children @Prop annotated methods: getChildren and getChild" },
-        new Object[]{ "com.example.prop.ObserveOnNonArezProp",
-                      "@Prop named 'myKey' is marked as observable but the 'type' parameter of the @ReactComponent is not TRACKING or MAYBE_TRACKING." },
         new Object[]{ "com.example.prop.PropHasParameterComponent", "@Prop target must not have any parameters" },
         new Object[]{ "com.example.prop.PropNamedBuild",
                       "@Prop named 'build' is invalid as it conflicts with the method named build() that is used in the generated Builder classes" },

@@ -644,7 +644,7 @@ final class Generator
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
       builder.addMethod( buildPropMethod( descriptor, prop ).build() );
-      if ( descriptor.trackRender() && prop.isObservable() )
+      if ( prop.isObservable() )
       {
         builder.addMethod( buildPropObservableValueRefMethod( prop ).build() );
       }
@@ -834,7 +834,7 @@ final class Generator
 
     method.addAnnotation( Override.class );
 
-    if ( descriptor.trackRender() && prop.isObservable() )
+    if ( prop.isObservable() )
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).

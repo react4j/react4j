@@ -7,7 +7,7 @@ import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 
-@ReactComponent( type = ReactComponent.Type.TRACKING )
+@ReactComponent
 abstract class ObservableViaMemoizeProp
   extends Component
 {

@@ -1,6 +1,9 @@
 package react4j.annotations;
 
 import arez.annotations.ArezComponent;
+import arez.annotations.Memoize;
+import arez.annotations.Observable;
+import arez.annotations.Observe;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
@@ -61,14 +64,13 @@ public @interface Prop
   Feature shouldUpdateOnChange() default Feature.AUTODETECT;
 
   /**
-   * Indicate whether the prop is an Arez observable.
-   * If set to {@link Feature#ENABLE} the generated class will make the prop observable and report changes
-   * in the prop when the prop changes. The component MUST be a subclass of <code>ReactArezComponent</code>.
-   * If set to {@link Feature#DISABLE} then the prop will not be observable. If set to {@link Feature#AUTODETECT}
-   * then the prop will be observable if the component is a subclass of <code>ReactArezComponent</code>, the value
-   * of {@link #shouldUpdateOnChange()} is not {@link Feature#DISABLE} and the component has a method
-   * annotated with <code>arez.annotations.Computed</code>, <code>arez.annotations.Memoize</code> or
-   * <code>arez.annotations.Observe</code>.
+   * Indicate whether the prop should be annotated by {@link Observable}.
+   *
+   * <p>If set to {@link Feature#AUTODETECT} then the prop will be observable if and only if:</p>
+   * <ul>
+   * <li>{@link #shouldUpdateOnChange()} is not set to {@link Feature#DISABLE}.</li>
+   * <li>the component has at least one method annotated with {@link Memoize} or {@link Observe}.</li>
+   * </ul>
    *
    * @return the enum indicating whether prop is observable.
    */
