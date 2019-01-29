@@ -21,8 +21,7 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "CollectionPropComponent",
     disposeTrackable = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.NONE,
-    dagger = Feature.DISABLE
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_CollectionPropComponent extends CollectionPropComponent {

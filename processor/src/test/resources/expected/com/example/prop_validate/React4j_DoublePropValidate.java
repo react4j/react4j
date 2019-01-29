@@ -20,8 +20,7 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "DoublePropValidate",
     disposeTrackable = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.NONE,
-    dagger = Feature.DISABLE
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_DoublePropValidate extends DoublePropValidate {
@@ -76,7 +75,7 @@ abstract class React4j_DoublePropValidate extends DoublePropValidate {
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     private React4j_DoublePropValidate $$react4j$$_component;
 
     @JsConstructor
@@ -87,6 +86,11 @@ abstract class React4j_DoublePropValidate extends DoublePropValidate {
         assert null != props;
         $$react4j$$_component.$$react4j$$_validatePropValues( props );
       }
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

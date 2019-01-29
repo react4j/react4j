@@ -21,8 +21,7 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "BasicReactComponent",
     disposeTrackable = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.CONSUME,
-    dagger = Feature.ENABLE
+    inject = InjectMode.CONSUME
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {

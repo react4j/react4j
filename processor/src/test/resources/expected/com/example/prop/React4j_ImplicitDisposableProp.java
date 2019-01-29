@@ -32,8 +32,7 @@ import react4j.internal.arez.SchedulerUtil;
 @ArezComponent(
     name = "ImplicitDisposableProp",
     disposeTrackable = Feature.DISABLE,
-    inject = InjectMode.NONE,
-    dagger = Feature.DISABLE
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {

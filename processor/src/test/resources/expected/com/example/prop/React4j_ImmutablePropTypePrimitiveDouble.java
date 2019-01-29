@@ -20,8 +20,7 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "ImmutablePropTypePrimitiveDouble",
     disposeTrackable = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.NONE,
-    dagger = Feature.DISABLE
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTypePrimitiveDouble {

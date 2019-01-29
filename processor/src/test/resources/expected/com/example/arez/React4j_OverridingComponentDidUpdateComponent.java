@@ -31,8 +31,7 @@ import react4j.internal.arez.SchedulerUtil;
 @ArezComponent(
     name = "OverridingComponentDidUpdateComponent",
     disposeTrackable = Feature.DISABLE,
-    inject = InjectMode.NONE,
-    dagger = Feature.DISABLE
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingComponentDidUpdateComponent {

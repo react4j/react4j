@@ -20,8 +20,7 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "ProtectedPropValidate",
     disposeTrackable = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.NONE,
-    dagger = Feature.DISABLE
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
@@ -80,7 +79,7 @@ abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     private React4j_ProtectedPropValidate $$react4j$$_component;
 
     @JsConstructor
@@ -91,6 +90,11 @@ abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
         assert null != props;
         $$react4j$$_component.$$react4j$$_validatePropValues( props );
       }
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

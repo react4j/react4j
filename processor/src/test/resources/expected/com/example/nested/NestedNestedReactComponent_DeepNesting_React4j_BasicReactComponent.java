@@ -19,8 +19,7 @@ import react4j.internal.OnComponentWillUnmount;
     name = "BasicReactComponent",
     disposeTrackable = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.NONE,
-    dagger = Feature.DISABLE
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends NestedNestedReactComponent.DeepNesting.BasicReactComponent {

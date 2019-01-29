@@ -602,12 +602,10 @@ final class Generator
     if ( descriptor.needsInjection() )
     {
       arezAnnotation.addMember( "inject", "$T.CONSUME", AREZ_INJECT_MODE_CLASSNAME );
-      arezAnnotation.addMember( "dagger", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
     }
     else
     {
       arezAnnotation.addMember( "inject", "$T.NONE", AREZ_INJECT_MODE_CLASSNAME );
-      arezAnnotation.addMember( "dagger", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
     }
     builder.addAnnotation( arezAnnotation.build() );
     builder.addModifiers( Modifier.ABSTRACT );

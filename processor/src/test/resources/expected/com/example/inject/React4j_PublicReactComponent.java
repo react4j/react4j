@@ -20,8 +20,7 @@ import react4j.internal.OnComponentWillUnmount;
     name = "PublicReactComponent",
     disposeTrackable = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.CONSUME,
-    dagger = Feature.ENABLE
+    inject = InjectMode.CONSUME
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_PublicReactComponent extends PublicReactComponent {

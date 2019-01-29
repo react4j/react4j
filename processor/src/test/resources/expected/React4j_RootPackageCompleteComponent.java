@@ -15,13 +15,13 @@ import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "RootPackageCompleteComponent",
     disposeTrackable = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.NONE,
-    dagger = Feature.DISABLE
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteComponent {
@@ -41,6 +41,16 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
   @Override
   int getMyProp() {
     return props().getAny( Props.myProp ).asInt();
+  }
+
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    final JsPropertyMap<Object> props = props();
+    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+      return true;
+    }
+    return false;
   }
 
   private void $$react4j$$_componentDidMount() {
@@ -80,7 +90,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnGetSnapshotBeforeUpdate {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
     private React4j_RootPackageCompleteComponent $$react4j$$_component;
 
     @JsConstructor
@@ -92,6 +102,11 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     @Override
     public final void componentDidMount() {
       $$react4j$$_component.$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -113,7 +128,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
     private React4j_RootPackageCompleteComponent $$react4j$$_component;
 
     @JsConstructor
@@ -125,6 +140,11 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     @Override
     public final void componentDidMount() {
       $$react4j$$_component.$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
