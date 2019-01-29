@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
@@ -49,6 +50,17 @@ abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromComponentId exte
 
   private void $$react4j$$_componentWillUnmount() {
     ((Arez_React4j_ImmutablePropTypeArezComponentWhereIdFromComponentId) this).dispose();
+  }
+
+  @Override
+  @Nullable
+  protected ReactNode render() {
+    assert Disposable.isNotDisposed( this );
+    final ImmutablePropTypeArezComponentWhereIdFromComponentId.MyComponent $$react4jv$$_getMyProp = getMyProp();
+    if ( Disposable.isDisposed( $$react4jv$$_getMyProp ) ) {
+      return null;
+    }
+    return super.render();
   }
 
   static final class Factory {

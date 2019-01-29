@@ -676,10 +676,14 @@ final class Generator
       builder.addMethod( buildComponentWillUnmount( descriptor ).build() );
     }
 
+    if ( descriptor.isArezComponent() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable ) )
+    {
+      builder.addMethod( buildRender( descriptor ).build() );
+    }
+
     if ( descriptor.isArezComponent() )
     {
       builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
-      builder.addMethod( buildRender( descriptor ).build() );
       builder.addMethod( buildGetRenderObserver( descriptor ).build() );
       builder.addMethod( buildPopulateDebugData( descriptor ).build() );
     }
@@ -1223,7 +1227,7 @@ final class Generator
   @Nonnull
   private static MethodSpec.Builder buildRender( @Nonnull final ComponentDescriptor descriptor )
   {
-    assert descriptor.isArezComponent();
+    assert descriptor.isArezComponent() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable );
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "render" )
       .addAnnotation( Override.class )
@@ -1231,22 +1235,25 @@ final class Generator
       .addModifiers( Modifier.PROTECTED )
       .returns( REACT_NODE_CLASSNAME );
 
-    final AnnotationSpec.Builder observe =
-      AnnotationSpec
-        .builder( OBSERVE_ANNOTATION_CLASSNAME )
-        .addMember( "name", "$S", "render" )
-        .addMember( "priority", "$T.LOW", PRIORITY_CLASSNAME )
-        .addMember( "executor", "$T.EXTERNAL", EXECUTOR_CLASSNAME )
-        .addMember( "observeLowerPriorityDependencies", "true" )
-        .addMember( "reportResult", "false" );
-    if ( ComponentType.MAYBE_TRACKING == descriptor.getType() )
+    if ( descriptor.isArezComponent() )
     {
-      observe.addMember( "depType", "$T.AREZ_OR_NONE", DEP_TYPE_CLASSNAME );
-    }
-    method.addAnnotation( observe.build() );
+      final AnnotationSpec.Builder observe =
+        AnnotationSpec
+          .builder( OBSERVE_ANNOTATION_CLASSNAME )
+          .addMember( "name", "$S", "render" )
+          .addMember( "priority", "$T.LOW", PRIORITY_CLASSNAME )
+          .addMember( "executor", "$T.EXTERNAL", EXECUTOR_CLASSNAME )
+          .addMember( "observeLowerPriorityDependencies", "true" )
+          .addMember( "reportResult", "false" );
+      if ( ComponentType.MAYBE_TRACKING == descriptor.getType() )
+      {
+        observe.addMember( "depType", "$T.AREZ_OR_NONE", DEP_TYPE_CLASSNAME );
+      }
+      method.addAnnotation( observe.build() );
 
-    method.addStatement( "$N = $T.IDLE", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
-    method.addStatement( "$T.pauseUntilRenderLoopComplete()", SCHEDULER_UTIL_CLASSNAME );
+      method.addStatement( "$N = $T.IDLE", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
+      method.addStatement( "$T.pauseUntilRenderLoopComplete()", SCHEDULER_UTIL_CLASSNAME );
+    }
     method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
     final List<PropDescriptor> disposableProps =

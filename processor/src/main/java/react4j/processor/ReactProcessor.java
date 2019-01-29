@@ -791,11 +791,6 @@ public final class ReactProcessor
       throw new ReactProcessorException( "@Prop named '" + name + "' is marked as observable but the host component " +
                                          "is not a subclass of react4j.arez.ReactArezComponent", method );
     }
-    if ( disposable && !descriptor.isArezComponent() )
-    {
-      throw new ReactProcessorException( "@Prop named '" + name + "' is marked as disposable but the host component " +
-                                         "is not a subclass of react4j.arez.ReactArezComponent", method );
-    }
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() &&
          ProcessorUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )

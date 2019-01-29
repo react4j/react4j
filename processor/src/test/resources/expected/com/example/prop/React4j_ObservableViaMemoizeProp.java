@@ -106,13 +106,6 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
     ((Arez_React4j_ObservableViaMemoizeProp) this).dispose();
   }
 
-  final void onRenderDepsChange() {
-    if ( ComponentState.IDLE == $$react4j$$_state ) {
-      $$react4j$$_state = ComponentState.SCHEDULED;
-      scheduleRender( false );
-    }
-  }
-
   @Override
   @Nullable
   @Observe(
@@ -131,6 +124,13 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
       Guards.invariant( () -> !getRenderObserver().getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
     }
     return result;
+  }
+
+  final void onRenderDepsChange() {
+    if ( ComponentState.IDLE == $$react4j$$_state ) {
+      $$react4j$$_state = ComponentState.SCHEDULED;
+      scheduleRender( false );
+    }
   }
 
   @Nonnull

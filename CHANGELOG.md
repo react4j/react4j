@@ -82,6 +82,9 @@
   - `MAYBE_TRACKING`: The component is `TRACKING` but the render method may have zero dependencies.
 * **\[core\]** Remove the `allowNoArezDeps` parameter from the `@ReactComponent` annotation as it no longer
   provides any value over `MAYBE_TRACKING` components.
+* **\[core\]** Add support for `@Prop(disposable=ENABLE)` props in `@ReactComponent(type=STATEFUL)` components
+  and update `@Prop(disposable=AUTODETECT)` to resolve correctly detect disposable props even in `STATEFUL`
+  components.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)

@@ -68,13 +68,6 @@ abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
     ((Arez_React4j_MaybeTrackingComponent) this).dispose();
   }
 
-  final void onRenderDepsChange() {
-    if ( ComponentState.IDLE == $$react4j$$_state ) {
-      $$react4j$$_state = ComponentState.SCHEDULED;
-      scheduleRender();
-    }
-  }
-
   @Override
   @Nullable
   @Observe(
@@ -90,6 +83,13 @@ abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     return super.render();
+  }
+
+  final void onRenderDepsChange() {
+    if ( ComponentState.IDLE == $$react4j$$_state ) {
+      $$react4j$$_state = ComponentState.SCHEDULED;
+      scheduleRender();
+    }
   }
 
   @Nonnull
