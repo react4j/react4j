@@ -1091,19 +1091,8 @@ public final class ReactProcessor
         findAny().orElse( null );
       if ( null != arezAnnotation )
       {
-        throw new ReactProcessorException( "@ReactComponent target extends react4j.arez.ReactArezComponent and should " +
-                                           "not be annotated with arez.annotations.ArezComponent as " +
-                                           "React4j will add annotation", typeElement );
-      }
-    }
-    else
-    {
-      if ( null != ProcessorUtil.findDeclaredAnnotationValue( typeElement,
-                                                              Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                                              "allowNoArezDeps" ) )
-      {
-        throw new ReactProcessorException( "@ReactComponent target does not extend react4j.arez.ReactArezComponent " +
-                                           "but has incorrectly specified the parameter allowNoArezDeps.",
+        throw new ReactProcessorException( "@ReactComponent target should not be annotated with the " +
+                                           "arez.annotations.ArezComponent as React4j will add annotation",
                                            typeElement );
       }
     }
