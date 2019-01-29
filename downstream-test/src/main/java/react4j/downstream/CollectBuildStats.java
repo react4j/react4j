@@ -157,11 +157,11 @@ public final class CollectBuildStats
 
   private static void archivej2clOutput( @Nonnull final Path archiveDir )
   {
-    WorkspaceUtil.archiveDirectory( FileUtil.getCurrentDirectory().resolve( "out/sources" ),
-                                    archiveDir.resolve( "sources" ) );
-    WorkspaceUtil.archiveFile( FileUtil.getCurrentDirectory().resolve( "out/app.js" ),
+    final Path currentDirectory = FileUtil.getCurrentDirectory();
+    WorkspaceUtil.archiveDirectory( currentDirectory.resolve( "out/sources" ), archiveDir.resolve( "sources" ) );
+    WorkspaceUtil.archiveFile( currentDirectory.resolve( "out/app.js" ),
                                archiveDir.resolve( "assets/todomvc/todomvc.nocache.js" ) );
-    WorkspaceUtil.archiveFile( FileUtil.getCurrentDirectory().resolve( "out/app.map" ),
+    WorkspaceUtil.archiveFile( currentDirectory.resolve( "out/app.map" ),
                                archiveDir.resolve( "assets/todomvc/todomvc.nocache.map" ) );
   }
 
