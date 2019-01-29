@@ -22,7 +22,7 @@ class ComponentShouldUpdateOnChangePropBuilder {
   }
 
   @Nonnull
-  static ReactNode value(final String value) {
+  static Step3 value(final String value) {
     return new Builder().value( value );
   }
 
@@ -36,10 +36,15 @@ class ComponentShouldUpdateOnChangePropBuilder {
 
   public interface Step2 {
     @Nonnull
-    ReactNode value(String value);
+    Step3 value(String value);
   }
 
-  private static class Builder implements Step1, Step2 {
+  public interface Step3 {
+    @Nonnull
+    ReactNode other(String other);
+  }
+
+  private static class Builder implements Step1, Step2, Step3 {
     private final ReactElement _element = ReactElement.createComponentElement( React4j_ComponentShouldUpdateOnChangeProp.Factory.TYPE );
 
     @Override
@@ -57,8 +62,15 @@ class ComponentShouldUpdateOnChangePropBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode value(final String value) {
+    public final Step3 value(final String value) {
       _element.props().set( React4j_ComponentShouldUpdateOnChangeProp.Props.value, value );
+      return this;
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode other(final String other) {
+      _element.props().set( React4j_ComponentShouldUpdateOnChangeProp.Props.other, other );
       return build();
     }
 

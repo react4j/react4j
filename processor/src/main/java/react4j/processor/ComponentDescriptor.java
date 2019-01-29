@@ -504,16 +504,7 @@ final class ComponentDescriptor
 
   boolean generateShouldComponentUpdateInLiteLifecycle()
   {
-    /*
-     * We do not need to implement this when we are an arez component with no observable props
-     * and all "update on change" props as any prop change will cause a re-render which is effectively
-     * the same behaviour. Hence why isArezComponent() has been removed from this list.
-     */
-    return hasObservableProps() ||
-           // If any prop change requires a re-render then there is no need for SCU but if then
-           // there is at least one that need not cause a re-render then we need to implement SCU so we
-           // can skip that scenario
-           ( hasUpdateOnChangeProps() && !getProps().stream().allMatch( PropDescriptor::shouldUpdateOnChange ) );
+    return hasObservableProps() || hasUpdateOnChangeProps();
   }
 
   boolean generateComponentDidCatch()

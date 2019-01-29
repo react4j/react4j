@@ -14,6 +14,9 @@ abstract class ComponentShouldUpdateOnChangeProp
   @Prop( shouldUpdateOnChange = Feature.ENABLE )
   protected abstract String getValue();
 
+  @Prop( shouldUpdateOnChange = Feature.DISABLE )
+  protected abstract String getOther();
+
   @Nullable
   @Override
   protected ReactNode render()

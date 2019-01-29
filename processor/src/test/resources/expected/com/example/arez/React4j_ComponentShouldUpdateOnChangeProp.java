@@ -24,6 +24,7 @@ import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.arez.ComponentState;
 import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
@@ -58,6 +59,25 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
     } else {
       return Js.uncheckedCast( props().getAny( Props.value ) );
     }
+  }
+
+  @Override
+  protected String getOther() {
+    if ( React.shouldCheckInvariants() ) {
+      return null != props().getAny( Props.other ) ? props().getAny( Props.other ).asString() : null;
+    } else {
+      return Js.uncheckedCast( props().getAny( Props.other ) );
+    }
+  }
+
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    final JsPropertyMap<Object> props = props();
+    if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
+      return true;
+    }
+    return ComponentState.SCHEDULED == $$react4j$$_state;
   }
 
   private void $$react4j$$_componentDidMount() {
@@ -121,15 +141,22 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
 
   static final class Props {
     static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
+
+    static final String other = React.shouldMinimizePropKeys() ? "b" : "other";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     private React4j_ComponentShouldUpdateOnChangeProp $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_ComponentShouldUpdateOnChangeProp( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -144,7 +171,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     private React4j_ComponentShouldUpdateOnChangeProp $$react4j$$_component;
 
     @JsConstructor
@@ -156,6 +183,11 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
     @Override
     public final void componentDidMount() {
       $$react4j$$_component.$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

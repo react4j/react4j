@@ -88,6 +88,8 @@
 * **\[core\]** Add support for `@Prop(observable=ENABLE)` props in `@ReactComponent(type=STATEFUL)` components
   and update `@Prop(disposable=AUTODETECT)` to resolve correctly detect observable props even in `STATEFUL`
   components. See javadocs for further details.
+* **\[processor\]** Remove an "optimization" that resulted in the `shouldComponentUpdate()` react lifecycle being
+  omitted if all the props were `observable=DISABLE` and `shouldUpdateOnChange=ENABLE`.
 
 ### [v0.113](https://github.com/react4j/react4j/tree/v0.113) (2019-01-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.112...v0.113)
