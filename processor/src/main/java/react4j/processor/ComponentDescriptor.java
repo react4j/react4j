@@ -217,7 +217,7 @@ final class ComponentDescriptor
     _needsInjection = needsInjection;
   }
 
-  boolean isArezComponent()
+  boolean trackRender()
   {
     return ComponentType.MAYBE_TRACKING == _type || ComponentType.TRACKING == _type;
   }
@@ -540,7 +540,7 @@ final class ComponentDescriptor
   {
     return generateComponentDidMountInLiteLifecycle() ||
            // We do it when tracking render so we can store debug information in state
-           isArezComponent();
+           trackRender();
   }
 
   boolean generateComponentDidMountInLiteLifecycle()
@@ -562,7 +562,7 @@ final class ComponentDescriptor
   {
     return generateComponentDidUpdateInLiteLifecycle() ||
            // We do it when tracking render so we can store debug information in state
-           isArezComponent();
+           trackRender();
   }
 
   boolean generateComponentDidUpdateInLiteLifecycle()

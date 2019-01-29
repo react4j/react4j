@@ -786,7 +786,7 @@ public final class ReactProcessor
     final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange );
     final boolean disposable = null != propType && isPropDisposable( descriptor, method, propType );
     final boolean immutable = isPropImmutable( method );
-    if ( observable && !descriptor.isArezComponent() )
+    if ( observable && !descriptor.trackRender() )
     {
       throw new ReactProcessorException( "@Prop named '" + name + "' is marked as observable but the 'type' " +
                                          "parameter of the @ReactComponent is not TRACKING or MAYBE_TRACKING.",
@@ -1084,7 +1084,7 @@ public final class ReactProcessor
       throw new ReactProcessorException( "@ReactComponent target must be a subclass of react4j.Component",
                                          typeElement );
     }
-    else if ( descriptor.isArezComponent() )
+    else if ( descriptor.trackRender() )
     {
       final AnnotationMirror arezAnnotation = typeElement.getAnnotationMirrors().stream().
         filter( m -> m.getAnnotationType().toString().equals( "arez.annotations.ArezComponent" ) ).
@@ -1107,7 +1107,7 @@ public final class ReactProcessor
 
     descriptor.setNeedsInjection( needsInjection );
     final boolean hasArezElements =
-      descriptor.isArezComponent() ||
+      descriptor.trackRender() ||
       getMethods( typeElement ).stream().anyMatch( e -> e.getAnnotationMirrors()
         .stream()
         .map( a -> a.getAnnotationType().toString() )
@@ -1210,7 +1210,7 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        return descriptor.isArezComponent() &&
+        return descriptor.trackRender() &&
                shouldUpdateOnChange &&
                hasAnyArezObserverMethods( descriptor.getElement() );
     }

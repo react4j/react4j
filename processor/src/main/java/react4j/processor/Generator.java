@@ -595,7 +595,7 @@ final class Generator
       AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
         addMember( "name", "$S", descriptor.getName() ).
         addMember( "disposeTrackable", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
-    if ( !descriptor.isArezComponent() )
+    if ( !descriptor.trackRender() )
     {
       arezAnnotation.addMember( "allowEmpty", "true" );
     }
@@ -628,7 +628,7 @@ final class Generator
       .addStatement( "bindComponent( nativeComponent )" );
     builder.addMethod( ctor.build() );
 
-    if ( descriptor.isArezComponent() )
+    if ( descriptor.trackRender() )
     {
       builder.addField( FieldSpec.builder( TypeName.INT, COMPONENT_STATE_FIELD, Modifier.PRIVATE ).build() );
     }
@@ -644,7 +644,7 @@ final class Generator
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
       builder.addMethod( buildPropMethod( descriptor, prop ).build() );
-      if ( descriptor.isArezComponent() && prop.isObservable() )
+      if ( descriptor.trackRender() && prop.isObservable() )
       {
         builder.addMethod( buildPropObservableValueRefMethod( prop ).build() );
       }
@@ -676,19 +676,19 @@ final class Generator
       builder.addMethod( buildComponentWillUnmount( descriptor ).build() );
     }
 
-    if ( descriptor.isArezComponent() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable ) )
+    if ( descriptor.trackRender() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable ) )
     {
       builder.addMethod( buildRender( descriptor ).build() );
     }
 
-    if ( descriptor.isArezComponent() )
+    if ( descriptor.trackRender() )
     {
       builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
       builder.addMethod( buildGetRenderObserver( descriptor ).build() );
       builder.addMethod( buildPopulateDebugData( descriptor ).build() );
     }
 
-    if ( descriptor.isArezComponent() )
+    if ( descriptor.trackRender() )
     {
       for ( final MethodDescriptor method : descriptor.getMemoizeMethods() )
       {
@@ -837,7 +837,7 @@ final class Generator
 
     method.addAnnotation( Override.class );
 
-    if ( descriptor.isArezComponent() && prop.isObservable() )
+    if ( descriptor.trackRender() && prop.isObservable() )
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
@@ -1060,7 +1060,7 @@ final class Generator
 
     if ( observableProps.isEmpty() && updateOnChangeProps.isEmpty() )
     {
-      if ( descriptor.isArezComponent() )
+      if ( descriptor.trackRender() )
       {
         method.addStatement( "return $T.SCHEDULED == $N", COMPONENT_STATE_CLASSNAME, COMPONENT_STATE_FIELD );
       }
@@ -1110,7 +1110,7 @@ final class Generator
       }
       if ( hasObservablePropsToUpdateOnChange )
       {
-        if ( descriptor.isArezComponent() )
+        if ( descriptor.trackRender() )
         {
           method.addStatement( "return modified || $T.SCHEDULED == $N",
                                COMPONENT_STATE_CLASSNAME,
@@ -1123,7 +1123,7 @@ final class Generator
       }
       else
       {
-        if ( descriptor.isArezComponent() )
+        if ( descriptor.trackRender() )
         {
           method.addStatement( "return $T.SCHEDULED == $N", COMPONENT_STATE_CLASSNAME, COMPONENT_STATE_FIELD );
         }
@@ -1213,7 +1213,7 @@ final class Generator
         .methodBuilder( COMPONENT_WILL_UNMOUNT_METHOD )
         .addModifiers( Modifier.PRIVATE );
 
-    if ( descriptor.isArezComponent() )
+    if ( descriptor.trackRender() )
     {
       method.addStatement( "$N = $T.UNMOUNTED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
     }
@@ -1227,7 +1227,7 @@ final class Generator
   @Nonnull
   private static MethodSpec.Builder buildRender( @Nonnull final ComponentDescriptor descriptor )
   {
-    assert descriptor.isArezComponent() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable );
+    assert descriptor.trackRender() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable );
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "render" )
       .addAnnotation( Override.class )
@@ -1235,7 +1235,7 @@ final class Generator
       .addModifiers( Modifier.PROTECTED )
       .returns( REACT_NODE_CLASSNAME );
 
-    if ( descriptor.isArezComponent() )
+    if ( descriptor.trackRender() )
     {
       final AnnotationSpec.Builder observe =
         AnnotationSpec
@@ -1305,7 +1305,7 @@ final class Generator
   @Nonnull
   private static MethodSpec.Builder buildGetRenderObserver( @Nonnull final ComponentDescriptor descriptor )
   {
-    assert descriptor.isArezComponent();
+    assert descriptor.trackRender();
     return MethodSpec
       .methodBuilder( "getRenderObserver" )
       .addAnnotation( NONNULL_CLASSNAME )
@@ -1317,7 +1317,7 @@ final class Generator
   @Nonnull
   private static MethodSpec.Builder buildPopulateDebugData( @Nonnull final ComponentDescriptor descriptor )
   {
-    assert descriptor.isArezComponent();
+    assert descriptor.trackRender();
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "populateDebugData" )
       .addAnnotation( Override.class )
@@ -1338,7 +1338,7 @@ final class Generator
   @Nonnull
   private static MethodSpec.Builder buildOnRenderDepsChange( @Nonnull final ComponentDescriptor descriptor )
   {
-    assert descriptor.isArezComponent();
+    assert descriptor.trackRender();
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "onRenderDepsChange" )
       .addModifiers( Modifier.FINAL );
