@@ -1,63 +1,22 @@
 ## TODO
 
-### Next Release
+### Very High Priority
 
 * Add `react4j-drumloop` into build tests
 
 * Change the way we process `@Memoize` so that instead we use the "new" feature of Arez (when it is implemented)
   to override the priority from within hook methods.
 
-* Reactor the way the `dom` library creates host `ReactElement` instances to avoid copying props and adding
-  special handling for `ref`, `key` and `children` and instead creating elements directly.
-
-* Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
-
-* Add some way to define effects which is just method called after render that returns a disposable to stop action.
-  Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
-  method that calls dispose on previous return if any. (From react 17)
-
-* Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
-  will push the call into a task that is invoked at a later time. Roughly we want to be able to take an effect and
-  push it outside the commit phase of react rendering and have it run later
-
-* Collections returned from props should be made immutable.
-
-* Howto: Offscreen rendering?
-
-* Generate documentation for components from annotations. This documentation could use the prop types to give
-  basic documentation overview and then use special annotations to give extended documentation and/or reference
-  examples that will be both output as documentation and fed into basic test infrastructure. This ensures that the
-  examples will continue to work as the library is evolved. There is a few examples like this in react world ...
-  stylguidist??
-
-* Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
-
-* Introduce `TreeLocal` component which is react "context". A single `TreeLocal` can be represented using react 16.4's
-  static context field. Multiple `TreeLocal` instances on a component may need to be represented by a chain of
-  components the pass down context as props. This may be overly complex so perhaps we could just remove that possibility.
-
-### Very High Priority
-
 * Add helper to autoload js assets
 
 * Make the name of the assets based off the version of the underlying react library. i.e. Name them `react-16.5.0.js`
   rather than `react.js` so cache is never in conflict.
 
-- EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
-  schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
-  this lower down in the react stack.
-- EventHandlers should probably start profiler "interactions" by default with the ability to disable
-
-* Start to add javascript tests - starting with braincheck ala
-  https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
-
-* Migrate to React 16.5.0 features
-  - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
-  - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
-  - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
-    production js produced. - https://github.com/facebook/react/issues/13634
-
 ### High Priorities
+
+* Introduce `TreeLocal` component which is react "context". A single `TreeLocal` can be represented using react 16.4's
+  static context field. Multiple `TreeLocal` instances on a component may need to be represented by a chain of
+  components the pass down context as props. This may be overly complex so perhaps we could just remove that possibility.
 
 * Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
   (See TODOs in Generator.java) with the enhancers.
@@ -66,7 +25,18 @@
   - `STATELESS` => inlined into caller without a component in production mode.
   - `PURE` => autogenerate SCU assuming `Js.isTripleEqual()` for props implies no re-render.
 
+* Generate documentation for components from annotations. This documentation could use the prop types to give
+  basic documentation overview and then use special annotations to give extended documentation and/or reference
+  examples that will be both output as documentation and fed into basic test infrastructure. This ensures that the
+  examples will continue to work as the library is evolved. There is a few examples like this in react world ...
+  stylguidist??
+
 ### Medium Priorities
+
+* Reactor the way the `dom` library creates host `ReactElement` instances to avoid copying props and adding
+  special handling for `ref`, `key` and `children` and instead creating elements directly.
+
+* Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
 * Figure out a way to define dom factories in java that are optimized away in production such that
   `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
@@ -79,7 +49,23 @@
   - https://www.w3schools.com/tags/ref_standardattributes.asp
   - Consider typed refs that bind to underlying Elemental2 element.
 
+* Migrate to React 16.5.0 features
+  - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
+  - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
+  - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
+    production js produced. - https://github.com/facebook/react/issues/13634
+
 ### Low Priorities
+
+* Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
+
+- EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
+  schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
+  this lower down in the react stack.
+- EventHandlers should probably start profiler "interactions" by default with the ability to disable
+
+* Start to add javascript tests - starting with braincheck ala
+  https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
 
 * Animation/Transition capabilities are getting more urgent.
   - https://github.com/reactjs/react-transition-group/blob/master/src/Transition.js
@@ -95,6 +81,18 @@
 * Consider renaming `@Prop` to `@Input`
 
 * Add `Observer` react component that is just an arez component that performs change tracking for render prop.
+
+* Howto: Offscreen rendering?
+
+* Add some way to define effects which is just method called after render that returns a disposable to stop action.
+  Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
+  method that calls dispose on previous return if any. (From react 17)
+
+* Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
+  will push the call into a task that is invoked at a later time. Roughly we want to be able to take an effect and
+  push it outside the commit phase of react rendering and have it run later
+
+* Collections returned from props should be made immutable.
 
 #### Documentation
 
