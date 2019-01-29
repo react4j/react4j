@@ -480,8 +480,7 @@ final class ComponentDescriptor
 
   private boolean shouldGenerateLifecycle()
   {
-    return isArezComponent() ||
-           generateComponentDidMount() ||
+    return generateComponentDidMount() ||
            generateShouldComponentUpdate() ||
            generateComponentPreUpdate() ||
            generateComponentDidUpdate() ||
