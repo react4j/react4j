@@ -27,6 +27,11 @@ final class WorkspaceUtil
   {
   }
 
+  static boolean buildJ2clBuilds()
+  {
+    return System.getProperty( "react4j.build_j2cl_variants", "true" ).equals( "true" );
+  }
+
   private static boolean storeStatistics()
   {
     return System.getProperty( "react4j.deploy_test.store_statistics", "false" ).equals( "true" );
