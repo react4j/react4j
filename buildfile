@@ -165,7 +165,6 @@ define 'react4j' do
       {
         'react4j.current.version' => ENV['PREVIOUS_PRODUCT_VERSION'] || project.version,
         'react4j.next.version' => ENV['PRODUCT_VERSION'] || project.version,
-        'react4j.build_j2cl_variants' => ENV['J2CL'] != 'no',
         'react4j.deploy_test.fixture_dir' => _('src/test/resources/fixtures').to_s,
         'react4j.deploy_test.work_dir' => _(:target, 'deploy_test/workdir').to_s
       }
@@ -207,6 +206,7 @@ define 'react4j' do
       # Take the version that we are releasing else fallback to project version
       properties['react4j.current.version'] = ENV['PREVIOUS_PRODUCT_VERSION'] || project.version
       properties['react4j.next.version'] = ENV['PRODUCT_VERSION'] || project.version
+      properties['react4j.next.build_j2cl_variants'] = ENV['J2CL'] != 'no'
       properties['react4j.deploy_test.work_dir'] = _(:target, 'deploy_test/workdir').to_s
       properties['react4j.deploy_test.fixture_dir'] = _('src/test/resources/fixtures').to_s
       properties['react4j.deploy_test.local_repository_url'] = local_test_repository_url
