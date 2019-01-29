@@ -31,7 +31,6 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.ComponentFunctionalInterfaceProp", false },
         new Object[]{ "com.example.arez.ComponentJsFunctionProp", false },
         new Object[]{ "com.example.arez.ComponentShouldNotUpdateOnChangeProp", false },
-        new Object[]{ "com.example.arez.ComponentShouldUpdateOnChangeAllProp", false },
         new Object[]{ "com.example.arez.ComponentShouldUpdateOnChangeProp", false },
         new Object[]{ "com.example.arez.ComponentWithChildProp", false },
         new Object[]{ "com.example.arez.ComponentWithDependency", false },
