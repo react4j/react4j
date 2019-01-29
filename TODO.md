@@ -30,10 +30,6 @@
   examples will continue to work as the library is evolved. There is a few examples like this in react world ...
   stylguidist??
 
-* Add additional `@ReacComponent.type` values `STATELESS|PURE`
-  - `STATELESS` => inlined into caller without a component in production mode.
-  - `PURE` => autogenerate SCU assuming `Js.isTripleEqual()` for props implies no re-render.
-
 * Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
 
 * Introduce `TreeLocal` component which is react "context". A single `TreeLocal` can be represented using react 16.4's
@@ -66,6 +62,9 @@
 * Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
   (See TODOs in Generator.java) with the enhancers.
 
+* Add additional `@ReacComponent.type` values `STATELESS|PURE`
+  - `STATELESS` => inlined into caller without a component in production mode.
+  - `PURE` => autogenerate SCU assuming `Js.isTripleEqual()` for props implies no re-render.
 
 ### Medium Priorities
 
