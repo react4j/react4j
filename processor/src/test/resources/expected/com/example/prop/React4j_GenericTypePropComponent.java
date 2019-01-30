@@ -69,7 +69,7 @@ abstract class React4j_GenericTypePropComponent<T> extends GenericTypePropCompon
   }
 
   private static final class LiteNativeReactComponent<T> extends NativeComponent implements OnShouldComponentUpdate {
-    private React4j_GenericTypePropComponent $$react4j$$_component;
+    private React4j_GenericTypePropComponent<T> $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
@@ -90,7 +90,7 @@ abstract class React4j_GenericTypePropComponent<T> extends GenericTypePropCompon
   }
 
   private static final class NativeReactComponent<T> extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    private React4j_GenericTypePropComponent $$react4j$$_component;
+    private React4j_GenericTypePropComponent<T> $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

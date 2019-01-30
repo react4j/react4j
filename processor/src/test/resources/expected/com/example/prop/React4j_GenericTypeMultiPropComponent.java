@@ -113,7 +113,7 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
   }
 
   private static final class LiteNativeReactComponent<T> extends NativeComponent implements OnShouldComponentUpdate {
-    private React4j_GenericTypeMultiPropComponent $$react4j$$_component;
+    private React4j_GenericTypeMultiPropComponent<T> $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
@@ -134,7 +134,7 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
   }
 
   private static final class NativeReactComponent<T> extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    private React4j_GenericTypeMultiPropComponent $$react4j$$_component;
+    private React4j_GenericTypeMultiPropComponent<T> $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

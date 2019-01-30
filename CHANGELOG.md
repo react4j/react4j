@@ -13,6 +13,7 @@
   have consistent behaviour regardless of whether they require a prop or not. This is more consistent
   behaviour but is a breaking change compared to version `0.114` that would re-render components with no
   props every time their container was re-rendered.
+* **\[processor\]** Add missing type parameters in generated component class to avoid `unchecked` compiler warning.
 
 ### [v0.114](https://github.com/react4j/react4j/tree/v0.114) (2019-01-30)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.113...v0.114)

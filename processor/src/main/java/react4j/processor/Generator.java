@@ -1567,8 +1567,20 @@ final class Generator
     builder.superclass( REACT_NATIVE_COMPONENT_CLASSNAME );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
+    final TypeName componentFieldType;
+    if ( descriptor.getElement().getTypeParameters().isEmpty() )
+    {
+      componentFieldType = descriptor.getEnhancedClassName();
+    }
+    else
+    {
+      final TypeName[] typeNames =
+        ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ).toArray( new TypeName[ 0 ] );
+      componentFieldType = ParameterizedTypeName.get( descriptor.getEnhancedClassName(), typeNames );
+    }
+
     builder.addField( FieldSpec
-                        .builder( descriptor.getEnhancedClassName(), COMPONENT_FIELD, Modifier.PRIVATE )
+                        .builder( componentFieldType, COMPONENT_FIELD, Modifier.PRIVATE )
                         .build() );
 
     if ( lite )
