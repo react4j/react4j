@@ -863,12 +863,12 @@ public final class ReactProcessor
    */
   private boolean isIdRequired( @Nonnull final TypeElement element )
   {
-    final VariableElement injectParameter = (VariableElement)
+    final VariableElement requireIdParameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                         element,
                                         Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME,
                                         "requireId" ).getValue();
-    switch ( injectParameter.getSimpleName().toString() )
+    switch ( requireIdParameter.getSimpleName().toString() )
     {
       case "ENABLE":
         return true;
