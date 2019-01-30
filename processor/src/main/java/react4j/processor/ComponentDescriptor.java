@@ -553,8 +553,8 @@ final class ComponentDescriptor
   {
     //noinspection PointlessBooleanExpression,ConstantConditions
     return /* type != STATELESS */ true ||
-           hasObservableProps() ||
-           hasUpdateOnChangeProps();
+                                   hasObservableProps() ||
+                                   hasUpdateOnChangeProps();
   }
 
   boolean generateComponentDidCatch()
