@@ -241,7 +241,7 @@ HEADER
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props )
   {
-    return createElement( "#{key}", Js.asPropertyMap( props ), null );
+    return createElement( "#{key}", Js.asPropertyMap( props ), (ReactNode[]) null );
   }
 
   @Nonnull
@@ -289,7 +289,7 @@ HEADER
   @Nonnull
   public static ReactNode #{key}()
   {
-    return createElement( "#{key}", null, null );
+    return createElement( "#{key}", null, (ReactNode[]) null );
   }
 
   @Nonnull
