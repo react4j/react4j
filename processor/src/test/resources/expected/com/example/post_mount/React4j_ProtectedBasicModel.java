@@ -15,6 +15,7 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "ProtectedBasicModel",
@@ -37,6 +38,12 @@ abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
     return componentConstructor;
   }
 
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    return false;
+  }
+
   private void $$react4j$$_componentDidMount() {
     postMount();
     if ( React.shouldStoreDebugDataAsState() ) {
@@ -52,7 +59,7 @@ abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnShouldComponentUpdate {
     private React4j_ProtectedBasicModel $$react4j$$_component;
 
     @JsConstructor
@@ -67,13 +74,18 @@ abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
     }
 
     @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+    }
+
+    @Override
     @Nullable
     public final ReactNode render() {
       return $$react4j$$_component.render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnShouldComponentUpdate, OnComponentWillUnmount {
     private React4j_ProtectedBasicModel $$react4j$$_component;
 
     @JsConstructor
@@ -85,6 +97,11 @@ abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
     @Override
     public final void componentDidMount() {
       $$react4j$$_component.$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

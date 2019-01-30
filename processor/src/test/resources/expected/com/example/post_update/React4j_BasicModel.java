@@ -15,6 +15,7 @@ import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "BasicModel",
@@ -37,6 +38,12 @@ abstract class React4j_BasicModel extends BasicModel {
     return componentConstructor;
   }
 
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    return false;
+  }
+
   private void $$react4j$$_componentDidUpdate() {
     postUpdate();
     if ( React.shouldStoreDebugDataAsState() ) {
@@ -52,13 +59,18 @@ abstract class React4j_BasicModel extends BasicModel {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidUpdate {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate {
     private React4j_BasicModel $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_BasicModel( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -73,13 +85,18 @@ abstract class React4j_BasicModel extends BasicModel {
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     private React4j_BasicModel $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_BasicModel( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

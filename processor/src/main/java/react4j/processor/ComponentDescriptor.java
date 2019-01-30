@@ -499,12 +499,16 @@ final class ComponentDescriptor
 
   boolean generateShouldComponentUpdate()
   {
+    //noinspection ConstantConditions
     return generateShouldComponentUpdateInLiteLifecycle() || hasValidatedProps();
   }
 
   boolean generateShouldComponentUpdateInLiteLifecycle()
   {
-    return hasObservableProps() || hasUpdateOnChangeProps();
+    //noinspection PointlessBooleanExpression,ConstantConditions
+    return /* type != STATELESS */ true ||
+           hasObservableProps() ||
+           hasUpdateOnChangeProps();
   }
 
   boolean generateComponentDidCatch()

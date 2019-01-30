@@ -4,6 +4,15 @@
 
 * **\[core\]** Improve the javadocs on the `ReactComponent.Type` enums to clarify when a component will be
   re-rendered.
+* **\[processor\]** Generate an error if a `@Prop` has specified both `shouldUpdateOnChange=ENABLE` and
+  `immutable=true`.
+* **\[processor\]** If a `@Prop` has specified `immutable=true` and `shouldUpdateOnChange=AUTODETECT` then
+  resolve the `shouldUpdateOnChange` parameter to `DISABLE`.
+* **\[processor\]** Implement the `shouldComponentUpdate()` lifecycle method for all components, even if
+  they have no props or no props where `shouldUpdateOnChange` resolves to `ENABLE`. This is so that components
+  have consistent behaviour regardless of whether they require a prop or not. This is more consistent
+  behaviour but is a breaking change compared to version `0.114` that would re-render components with no
+  props every time their container was re-rendered.
 
 ### [v0.114](https://github.com/react4j/react4j/tree/v0.114) (2019-01-30)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.113...v0.114)

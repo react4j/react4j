@@ -12,6 +12,7 @@ import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "RootPackageReactComponent",
@@ -34,6 +35,12 @@ abstract class React4j_RootPackageReactComponent extends RootPackageReactCompone
     return componentConstructor;
   }
 
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    return false;
+  }
+
   private void $$react4j$$_componentWillUnmount() {
     ((Arez_React4j_RootPackageReactComponent) this).dispose();
   }
@@ -42,7 +49,7 @@ abstract class React4j_RootPackageReactComponent extends RootPackageReactCompone
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     private React4j_RootPackageReactComponent $$react4j$$_component;
 
     @JsConstructor
@@ -52,19 +59,29 @@ abstract class React4j_RootPackageReactComponent extends RootPackageReactCompone
     }
 
     @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+    }
+
+    @Override
     @Nullable
     public final ReactNode render() {
       return $$react4j$$_component.render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     private React4j_RootPackageReactComponent $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
       $$react4j$$_component = new Arez_React4j_RootPackageReactComponent( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override

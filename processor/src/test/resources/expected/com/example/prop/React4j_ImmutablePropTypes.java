@@ -73,19 +73,6 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
-    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
-      return true;
-    }
-    if ( !Js.isTripleEqual( props.get( Props.myOtherProp ), nextProps.get( Props.myOtherProp ) ) ) {
-      return true;
-    }
-    if ( !Js.isTripleEqual( props.get( Props.stillAnotherProp ), nextProps.get( Props.stillAnotherProp ) ) ) {
-      return true;
-    }
-    if ( !Js.isTripleEqual( props.get( Props.BobsProp ), nextProps.get( Props.BobsProp ) ) ) {
-      return true;
-    }
     return false;
   }
 

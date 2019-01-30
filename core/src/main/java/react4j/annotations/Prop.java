@@ -53,11 +53,9 @@ public @interface Prop
   Feature require() default Feature.AUTODETECT;
 
   /**
-   * Return an enum indicating whether prop should trigger a change if it updated.
-   * If set to {@link Feature#ENABLE} then the code will check the prop when implementing
-   * <code>shouldComponentUpdate</code> while setting the value to {@link Feature#DISABLE} will result in
-   * the value of the prop being ignored when determining whether a prop change should cause a re-render.
-   * If set to {@link Feature#AUTODETECT} then the annotation processor will treat it as {@link Feature#ENABLE}.
+   * Indicate whether changing the value of the prop should schedule a re-render.
+   * If set to {@link Feature#AUTODETECT} then the annotation processor will treat it as
+   * {@link Feature#ENABLE} unless {@link #immutable()} is set to <code>true</code>.
    *
    * @return the enum indicating whether prop should trigger a render if it is modified.
    */

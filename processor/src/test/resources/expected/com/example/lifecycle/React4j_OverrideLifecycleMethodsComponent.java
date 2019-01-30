@@ -20,6 +20,7 @@ import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
+import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "OverrideLifecycleMethodsComponent",
@@ -40,6 +41,12 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
       Js.asPropertyMap( componentConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
     }
     return componentConstructor;
+  }
+
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    return false;
   }
 
   private void $$react4j$$_componentDidMount() {
@@ -70,7 +77,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnGetSnapshotBeforeUpdate, OnComponentDidCatch {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate, OnComponentDidCatch {
     private React4j_OverrideLifecycleMethodsComponent $$react4j$$_component;
 
     @JsConstructor
@@ -82,6 +89,11 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     @Override
     public final void componentDidMount() {
       $$react4j$$_component.$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
@@ -109,7 +121,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate, OnComponentDidCatch {
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate, OnComponentDidCatch {
     private React4j_OverrideLifecycleMethodsComponent $$react4j$$_component;
 
     @JsConstructor
@@ -121,6 +133,11 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     @Override
     public final void componentDidMount() {
       $$react4j$$_component.$$react4j$$_componentDidMount();
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
