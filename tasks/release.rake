@@ -116,7 +116,7 @@ CONTENT
     end
 
     stage('BuildWebsite', 'Build the website to ensure site still builds') do
-      task('site:build').invoke
+      sh "bundle exec buildr clean site:build TEST=no GWT=react4j:doc-examples#{Buildr.application.options.trace ? ' --trace' : ''}"
       task('site:link_check').invoke
     end
 
@@ -125,7 +125,7 @@ CONTENT
     end
 
     stage('MavenCentralPublish', 'Publish artifacts to Maven Central') do
-      sh 'buildr clean mcrt:publish_if_tagged site:deploy TEST=no'
+      sh 'buildr clean mcrt:publish_if_tagged site:deploy TEST=no GWT=react4j:doc-examples'
     end
 
     stage('PatchChangelogPostRelease', 'Patch the changelog post release to prepare for next development iteration') do
