@@ -144,6 +144,8 @@ Applications to build and help asses react4j going forward.
 * Another app to build is a YouTube clone ala https://github.com/productioncoder/youtube-react
   It seems relatively advanced and may require a router to be in place prior to starting.
 
+* [Maze Game](https://github.com/TheCodeDepository/PickleRick-MazeGame)
+
 ### Spritz Integration
 
 Could we enhance the component source so handlers could be converted into stream sources. Props could also be passed
