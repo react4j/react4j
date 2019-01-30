@@ -6,7 +6,7 @@ complete as there is too much un-said.
 
 ### Current Release
 
-* Support @Inject through parameters in React4j components?
+* Support `@Inject` through constructor parameters in React4j components?
 
 ### Very High Priority
 
