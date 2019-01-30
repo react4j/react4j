@@ -784,7 +784,7 @@ public final class ReactProcessor
     final Element propType = processingEnv.getTypeUtils().asElement( returnType );
     final boolean immutable = isPropImmutable( method );
     final boolean shouldUpdateOnChange = shouldUpdateOnChange( method, immutable );
-    final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange );
+    final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange, immutable );
     final boolean disposable = null != propType && isPropDisposable( descriptor, method, propType );
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() &&
@@ -1197,7 +1197,8 @@ public final class ReactProcessor
 
   private boolean isPropObservable( @Nonnull final ComponentDescriptor descriptor,
                                     @Nonnull final ExecutableElement method,
-                                    final boolean shouldUpdateOnChange )
+                                    final boolean shouldUpdateOnChange,
+                                    final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
@@ -1207,6 +1208,12 @@ public final class ReactProcessor
     switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
+        if ( immutable )
+        {
+          throw new ReactProcessorException( "@Prop target has specified both immutable=true and " +
+                                             "observable=ENABLE which is an invalid combination.",
+                                             method );
+        }
         return true;
       case "DISABLE":
         return false;

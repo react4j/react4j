@@ -4,8 +4,8 @@
 
 * **\[core\]** Improve the javadocs on the `ReactComponent.Type` enums to clarify when a component will be
   re-rendered.
-* **\[processor\]** Generate an error if a `@Prop` has specified both `shouldUpdateOnChange=ENABLE` and
-  `immutable=true`.
+* **\[processor\]** Generate an error if a `@Prop` has specified `immutable=true` and either
+  `shouldUpdateOnChange=ENABLE` or `observable=ENABLE`.
 * **\[processor\]** If a `@Prop` has specified `immutable=true` and `shouldUpdateOnChange=AUTODETECT` then
   resolve the `shouldUpdateOnChange` parameter to `DISABLE`.
 * **\[processor\]** Implement the `shouldComponentUpdate()` lifecycle method for all components, even if

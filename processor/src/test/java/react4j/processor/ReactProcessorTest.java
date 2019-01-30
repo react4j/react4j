@@ -383,6 +383,8 @@ public class ReactProcessorTest
                       "@Prop target is a collection that contains Arez components. This is not a safe pattern when the arez components can be disposed." },
         new Object[]{ "com.example.prop.GenericPropComponent",
                       "@Prop named 'value' is has a type variable as a return type that is declared on the method." },
+        new Object[]{ "com.example.prop.ImmutableObservableProp",
+                      "@Prop target has specified both immutable=true and observable=ENABLE which is an invalid combination." },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentHasNoId",
                       "@Prop named 'myProp' has specified the 'immutable' parameter as true but the annotation processor can not extract a key part from the type. This is because the type is not recognized as conforming to the rules as documented in the javadocs for the immutable parameter of the @Prop annotation." },
         new Object[]{ "com.example.prop.ImmutableShouldUpdateOnChangeProp",
