@@ -2,16 +2,22 @@ package com.example.nested;
 
 import react4j.Component;
 import react4j.ReactNode;
-import react4j.annotations.Feature;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 
 public class NestedCompleteComponent
 {
-  @ReactComponent( inject = Feature.ENABLE )
+  @ReactComponent
   static abstract class BasicReactComponent
     extends Component
   {
+    private final String _value;
+
+    BasicReactComponent( final String value )
+    {
+      _value = value;
+    }
+
     @Prop
     abstract String getMyProp();
 

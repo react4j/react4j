@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* **\[core\]** Remove the `inject` parameter from the `@ReactComponent` annotation the value is derivable.
+
 ### [v0.115](https://github.com/react4j/react4j/tree/v0.115) (2019-01-30)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.114...v0.115)
 

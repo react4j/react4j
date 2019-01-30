@@ -1091,16 +1091,13 @@ public final class ReactProcessor
       }
     }
 
-    final boolean needsInjection =
-      isInjectionRequired( typeElement, descriptor.hasConstructorParams(), descriptor.nonConstructorInjections() );
-    if ( needsInjection && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
+    if ( descriptor.needsInjection() && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
       throw new ReactProcessorException( "@ReactComponent target has enabled injection integration but the class " +
                                          "has type arguments which is incompatible with injection integration.",
                                          typeElement );
     }
 
-    descriptor.setNeedsInjection( needsInjection );
     final boolean hasArezElements =
       descriptor.trackRender() ||
       getMethods( typeElement ).stream().anyMatch( e -> e.getAnnotationMirrors()
@@ -1256,32 +1253,6 @@ public final class ReactProcessor
       default:
         return ElementKind.CLASS == propType.getKind() &&
                ProcessorUtil.hasAnnotationOfType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME );
-    }
-  }
-
-  private boolean isInjectionRequired( @Nonnull final TypeElement typeElement,
-                                       final boolean hasConstructorParams,
-                                       final boolean nonConstructorInjections )
-  {
-    final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        typeElement,
-                                        Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                        "inject" ).getValue();
-    switch ( parameter.getSimpleName().toString() )
-    {
-      case "ENABLE":
-        return true;
-      case "DISABLE":
-        if ( hasConstructorParams )
-        {
-          throw new ReactProcessorException( "@ReactComponent target has specified both inject=DISABLE " +
-                                             "but has a constructor with parameters that requires injection.",
-                                             typeElement );
-        }
-        return false;
-      default:
-        return hasConstructorParams || nonConstructorInjections;
     }
   }
 

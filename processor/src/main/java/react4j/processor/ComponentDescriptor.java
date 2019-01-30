@@ -47,7 +47,6 @@ final class ComponentDescriptor
   private ExecutableElement _postMount;
   @Nullable
   private ExecutableElement _onError;
-  private boolean _needsInjection;
   /**
    * Methods that are props accessors.
    * These should be implemented as accesses to the underlying props value.
@@ -250,12 +249,7 @@ final class ComponentDescriptor
 
   boolean needsInjection()
   {
-    return _needsInjection;
-  }
-
-  void setNeedsInjection( final boolean needsInjection )
-  {
-    _needsInjection = needsInjection;
+    return nonConstructorInjections() || hasConstructorParams();
   }
 
   boolean trackRender()
