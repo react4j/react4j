@@ -49,6 +49,16 @@ public class ReactDOM
     void call();
   }
 
+  @JsOverlay
+  @Nonnull
+  public static ReactRoot createRoot( @Nonnull final Element container )
+  {
+    return unstable_createRoot( container );
+  }
+
+  @Nonnull
+  private static native ReactRoot unstable_createRoot( @Nonnull Element container );
+
   /**
    * Portals provide a first-class way to render children into a DOM node that exists outside the DOM hierarchy
    * of the parent component.

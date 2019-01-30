@@ -322,9 +322,24 @@ final class ProcessorUtil
       filter( a -> a.getAnnotationType().toString().equals( annotationClassName ) ).findFirst().orElse( null );
   }
 
+  static boolean hasAnnotationOfType( @Nonnull final Element typeElement, @Nonnull final String annotationClassName )
+  {
+    return null != findAnnotationByType( typeElement, annotationClassName );
+  }
+
   @Nonnull
   static String toSimpleName( @Nonnull final String annotationName )
   {
     return annotationName.replaceAll( ".*\\.", "" );
+  }
+
+  static boolean isNonnull( @Nonnull final ExecutableElement method )
+  {
+    return hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME );
+  }
+
+  static boolean hasInjectAnnotation( final Element method )
+  {
+    return hasAnnotationOfType( method, Constants.INJECT_ANNOTATION_CLASSNAME );
   }
 }

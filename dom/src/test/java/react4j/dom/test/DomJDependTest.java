@@ -2,6 +2,7 @@ package react4j.dom.test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -38,6 +39,7 @@ public class DomJDependTest
 
     react4jDom.dependsUpon( react4j );
     react4jDom.dependsUpon( jsinteropAnnotations );
+    react4jDom.dependsUpon( jsinteropBase );
     react4jDom.dependsUpon( elemental2Dom );
     react4jDom.dependsUpon( react4jDomHtml );
 
@@ -100,7 +102,7 @@ public class DomJDependTest
         oldEfferents.forEach( p -> sb
           .append( "Package " )
           .append( expected.getName() )
-          .append( " no longer depends depends upon " )
+          .append( " no longer depends upon " )
           .append( p.getName() )
           .append( "\n" )
         );
@@ -111,12 +113,15 @@ public class DomJDependTest
         newEfferents.forEach( p -> sb
           .append( "Package " )
           .append( expected.getName() )
-          .append( " now upon " )
+          .append( " now depends upon " )
           .append( p.getName() )
           .append( "\n" )
         );
       }
-      fail( sb.toString() );
+
+      final String message =
+        Arrays.stream( sb.toString().split( "\\n" ) ).sorted().distinct().collect( Collectors.joining( "\n" ) );
+      fail( message );
     }
   }
 

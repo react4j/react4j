@@ -1,27 +1,38 @@
 package com.example.nested;
 
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
+import arez.annotations.InjectMode;
+import arez.annotations.PerInstance;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
 import react4j.React;
+import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
+import react4j.internal.NativeComponent;
+import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnShouldComponentUpdate;
 
+@ArezComponent(
+    name = "BasicReactComponent",
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true,
+    inject = InjectMode.CONSUME
+)
 @Generated("react4j.processor.ReactProcessor")
-class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {
-  @Inject
-  NestedCompleteComponent_React4j_BasicReactComponent() {
+abstract class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {
+  NestedCompleteComponent_React4j_BasicReactComponent(
+      @Nonnull @PerInstance final NativeComponent nativeComponent) {
+    bindComponent( nativeComponent );
   }
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicReactComponent" );
     }
@@ -37,38 +48,72 @@ class NestedCompleteComponent_React4j_BasicReactComponent extends NestedComplete
     }
   }
 
-  static final class Factory {
-    static final ComponentConstructorFunction TYPE = getConstructorFunction();
+  private boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<Object> nextProps) {
+    assert null != nextProps;
+    final JsPropertyMap<Object> props = props();
+    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+      return true;
+    }
+    return false;
   }
 
-  static final class InjectSupport {
-    private static Provider<NestedCompleteComponent.BasicReactComponent> c_provider;
+  private void $$react4j$$_componentWillUnmount() {
+    ((Arez_NestedCompleteComponent_React4j_BasicReactComponent) this).dispose();
+  }
 
-    static void setProvider(final Provider<NestedCompleteComponent.BasicReactComponent> provider) {
-      c_provider = provider;
-    }
-
-    private static Provider<NestedCompleteComponent.BasicReactComponent> getProvider() {
-      if ( React.shouldCheckInvariants() ) {
-        Guards.invariant( () -> null != c_provider, () -> "Attempted to create an instance of the React4j component named 'BasicReactComponent' before the dependency injection provider has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
-      }
-      return c_provider;
-    }
+  static final class Factory {
+    static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   static final class Props {
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class NativeReactComponent extends NativeAdapterComponent<NestedCompleteComponent.BasicReactComponent> {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
+    private NestedCompleteComponent_React4j_BasicReactComponent $$react4j$$_component;
+
     @JsConstructor
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
+      $$react4j$$_component = NestedCompleteComponent_BasicReactComponentDaggerComponentExtension.InjectSupport.create( this );
     }
 
     @Override
-    protected NestedCompleteComponent.BasicReactComponent createComponent() {
-      return InjectSupport.getProvider().get();
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
+    }
+  }
+
+  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    private NestedCompleteComponent_React4j_BasicReactComponent $$react4j$$_component;
+
+    @JsConstructor
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+      $$react4j$$_component = NestedCompleteComponent_BasicReactComponentDaggerComponentExtension.InjectSupport.create( this );
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
     }
   }
 }

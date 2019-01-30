@@ -1,5 +1,8 @@
 package react4j;
 
+import arez.Arez;
+import arez.annotations.ComponentIdRef;
+import arez.annotations.ComponentNameRef;
 import elemental2.core.JsError;
 import elemental2.core.JsObject;
 import java.util.Objects;
@@ -26,13 +29,26 @@ public abstract class Component
    */
   private boolean _scheduledDebugStateUpdate;
 
-  public final void bindComponent( @Nonnull final NativeComponent nativeComponent )
+  /**
+   * Bind the native react component to this component.
+   * This should not be called by user code and is instead invoked by the generated component class.
+   *
+   * @param nativeComponent the native react component.
+   */
+  protected final void bindComponent( @Nonnull final NativeComponent nativeComponent )
   {
+    if ( React.shouldCheckInvariants() )
+    {
+      invariant( () -> null == _nativeComponent,
+                 () -> "Invoked bindComponent() on " + this + " but component has already been bound." );
+    }
     _nativeComponent = Objects.requireNonNull( nativeComponent );
   }
 
   /**
    * Return the native react component.
+   *
+   * @return the native react component.
    */
   @Nonnull
   private NativeComponent component()
@@ -55,6 +71,17 @@ public abstract class Component
   protected final JsPropertyMap<Object> props()
   {
     return component().props();
+  }
+
+  /**
+   * Schedule this component for re-rendering skipping the <code>shouldComponentUpdate()</code> lifecycle method.
+   * This is equivalent to calling {@link #scheduleRender(boolean)} passing a <code>true</code> value.
+   *
+   * @see #scheduleRender(boolean)
+   */
+  protected final void scheduleRender()
+  {
+    component().forceUpdate();
   }
 
   /**
@@ -88,64 +115,6 @@ public abstract class Component
   @Nullable
   protected abstract ReactNode render();
 
-  @Nullable
-  public final ReactNode performRender()
-  {
-    return render();
-  }
-
-  /**
-   * Wrapper method that delegates to the {@link #postConstruct()} method.
-   * This method exists to give middleware a mechanism to hook into component lifecycle step.
-   */
-  public void performPostConstruct()
-  {
-    final JsPropertyMap<Object> props = props();
-    if ( React.shouldValidatePropValues() && null != props )
-    {
-      validatePropValues( props );
-    }
-    postConstruct();
-  }
-
-  /**
-   * This method is invoked after the component is constructed and bound to a native react component.
-   * This is a good place to perform initialization. It is called before {@link #render()}, therefore
-   * setting state in this method will not trigger a re-rendering. This replaces the
-   * <a href="https://reactjs.org/docs/react-component.html#componentwillmount">componentWillMount</a>
-   * lifecycle method from react as well as the code that appears in constructors in native React ES6
-   * components.
-   */
-  protected void postConstruct()
-  {
-  }
-
-  /**
-   * The componentDidCatch() method works like a JavaScript catch {} block, but for components.
-   * Only class components can be error boundaries. In practice, most of the time you’ll want to
-   * declare an error boundary component once and use it throughout your application.
-   *
-   * <p>Note that error boundaries only catch errors in the components below them in the tree. An
-   * error boundary can’t catch an error within itself. If an error boundary fails trying to render
-   * the error message, the error will propagate to the closest error boundary above it. This, too,
-   * is similar to how catch {} block works in JavaScript.</p>
-   *
-   * @param error the error that has been thrown.
-   * @param info  information about component stack during thrown error.
-   */
-  protected void componentDidCatch( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
-  {
-  }
-
-  /**
-   * Perform validation on props supplied to the component.
-   *
-   * @param props the props of the component.
-   */
-  protected void validatePropValues( @Nonnull final JsPropertyMap<Object> props )
-  {
-  }
-
   /**
    * Store debug data on the state object of the native component.
    * This is only done if {@link React#shouldStoreDebugDataAsState()} returns true and is primarily
@@ -162,6 +131,12 @@ public abstract class Component
       else
       {
         final JsPropertyMap<Object> newState = JsPropertyMap.of();
+        // Present component id as state. Useful to track when instance ids change.
+        newState.set( "Arez.id", getComponentId() );
+        if ( Arez.areNamesEnabled() )
+        {
+          newState.set( "Arez.name", getComponentName() );
+        }
         populateDebugData( newState );
 
         final JsPropertyMap<Object> state = component().state();
@@ -208,11 +183,27 @@ public abstract class Component
   }
 
   /**
+   * Return the unique identifier of component according to Arez.
+   *
+   * @return the unique identifier of component according to Arez.
+   */
+  @ComponentIdRef
+  protected abstract int getComponentId();
+
+  /**
+   * Return the name of the component according to Arez.
+   *
+   * @return the name of the component according to Arez.
+   */
+  @ComponentNameRef
+  protected abstract String getComponentName();
+
+  /**
    * Populate the state parameter with any data that is useful when debugging the component.
    *
-   * @param state the property map to populate with debug data.
+   * @param data the property map to populate with debug data.
    */
-  protected void populateDebugData( @Nonnull final JsPropertyMap<Object> state )
+  protected void populateDebugData( @Nonnull final JsPropertyMap<Object> data )
   {
   }
 }

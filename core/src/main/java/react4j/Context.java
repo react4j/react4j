@@ -70,14 +70,14 @@ public class Context<T>
     @Nonnull
     public final ProviderBuilder<ST> value( @Nullable final ST value )
     {
-      _element.props().set( PropNames.VALUE_PROP_NAME, value );
+      _element.props().set( "value", value );
       return this;
     }
 
     @Nonnull
     public final ReactNode children( final ReactNode... children )
     {
-      _element.props().set( PropNames.CHILDREN_PROP_NAME, children );
+      _element.props().set( "children", children );
       return build();
     }
 
@@ -139,7 +139,7 @@ public class Context<T>
     @Nonnull
     public final ReactNode render( @Nonnull final ConsumerRenderFunction<ST> render )
     {
-      _element.props().set( PropNames.CHILDREN_PROP_NAME, render );
+      _element.props().set( "children", render );
       _element.complete();
       return _element;
     }

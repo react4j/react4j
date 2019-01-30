@@ -2,6 +2,10 @@
 title: Dependency Injection
 ---
 
+**WARNING**: This document is no longer up to date and React4j heavily relies on Arez's
+[dependency injection](https://arez.github.io/docs/dependency_injection.html) which is also not up to date.
+We hope to fix this in the medium term.
+
 React4j can be integrated with dependency injection frameworks such as [Dagger2](https://google.github.io/dagger)
 and [GIN](https://code.google.com/archive/p/google-gin/). The dependency injection framework is responsible
 for creating the component and injecting the required dependencies.

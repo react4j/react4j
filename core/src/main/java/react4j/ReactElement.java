@@ -85,7 +85,7 @@ public class ReactElement
   private static ReactElement createRawNode( @Nonnull final Object typeof, @Nonnull final Object type )
   {
     final ReactElement element = new ReactElement();
-    element.typeof = typeof;
+    element.typeof = Objects.requireNonNull( typeof );
     element.type = Objects.requireNonNull( type );
     element._owner = React.currentOwner();
     return element;
@@ -109,12 +109,45 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
-  public static ReactElement createFragment( @Nonnull final ReactNode... children )
+  public static ReactElement createFragment( @Nullable final String key, @Nonnull final ReactNode... children )
   {
-    final ReactElement element = ReactElement.createRawNode( React.Element, React.Fragment );
-    element.key = null;
+    final ReactElement element = createRawNode( React.Element, React.Fragment );
+    element.key = key;
     element.ref = null;
-    element.props = JsPropertyMap.of( PropNames.CHILDREN_PROP_NAME, children );
+    element.props = JsPropertyMap.of( "children", Objects.requireNonNull( children ) );
+
+    element.complete();
+    return element;
+  }
+
+  /**
+   * Create a StrictMode component with the specified children.
+   *
+   * @param children the child nodes.
+   * @return a new React.StrictMode component.
+   */
+  @JsOverlay
+  public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
+  {
+    return ReactElement.createRawElement( React.StrictMode,
+                                          null,
+                                          null,
+                                          JsPropertyMap.of( "children", Objects.requireNonNull( children ) ) );
+  }
+
+  @JsOverlay
+  @Nonnull
+  public static ReactElement createSuspense( @Nullable final String key,
+                                             @Nullable final ReactNode fallback,
+                                             final int maxTimeToFallback,
+                                             @Nonnull final ReactNode... children )
+  {
+    final ReactElement element = createRawNode( React.Element, React.Suspense );
+    element.key = key;
+    element.ref = null;
+    element.props = JsPropertyMap.of( "children", Objects.requireNonNull( children ),
+                                      "fallback", fallback,
+                                      "ms", maxTimeToFallback );
 
     element.complete();
     return element;

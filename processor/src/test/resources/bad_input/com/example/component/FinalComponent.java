@@ -13,4 +13,16 @@ final class FinalComponent
   {
     return null;
   }
+
+  @Override
+  protected int getComponentId()
+  {
+    return 0;
+  }
+
+  @Override
+  protected String getComponentName()
+  {
+    return null;
+  }
 }

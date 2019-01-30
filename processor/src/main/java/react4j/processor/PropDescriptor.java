@@ -22,6 +22,8 @@ final class PropDescriptor
   private final boolean _observable;
   private final boolean _disposable;
   @Nullable
+  private final ImmutablePropKeyStrategy _immutablePropKeyStrategy;
+  @Nullable
   private VariableElement _defaultField;
   @Nullable
   private ExecutableElement _defaultMethod;
@@ -38,7 +40,8 @@ final class PropDescriptor
                   @Nonnull final ExecutableType methodType,
                   final boolean shouldUpdateOnChange,
                   final boolean observable,
-                  final boolean disposable )
+                  final boolean disposable,
+                  @Nullable final ImmutablePropKeyStrategy immutablePropKeyStrategy )
   {
     _descriptor = Objects.requireNonNull( descriptor );
     _name = Objects.requireNonNull( name );
@@ -47,6 +50,7 @@ final class PropDescriptor
     _shouldUpdateOnChange = shouldUpdateOnChange;
     _observable = observable;
     _disposable = disposable;
+    _immutablePropKeyStrategy = immutablePropKeyStrategy;
   }
 
   @Nonnull
@@ -80,6 +84,18 @@ final class PropDescriptor
   boolean isDisposable()
   {
     return _disposable;
+  }
+
+  boolean isImmutable()
+  {
+    return null != _immutablePropKeyStrategy;
+  }
+
+  @Nonnull
+  ImmutablePropKeyStrategy getImmutablePropKeyStrategy()
+  {
+    assert null != _immutablePropKeyStrategy;
+    return _immutablePropKeyStrategy;
   }
 
   void setDefaultMethod( @Nonnull final ExecutableElement method )
@@ -128,12 +144,12 @@ final class PropDescriptor
     final VariableElement param = method.getParameters().get( 0 );
     final boolean mismatchedNullability =
       (
-        null != ProcessorUtil.findAnnotationByType( param, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-        null != ProcessorUtil.findAnnotationByType( _method, Constants.NULLABLE_ANNOTATION_CLASSNAME )
+        ProcessorUtil.hasAnnotationOfType( param, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
+        ProcessorUtil.hasAnnotationOfType( _method, Constants.NULLABLE_ANNOTATION_CLASSNAME )
       ) ||
       (
-        null != ProcessorUtil.findAnnotationByType( param, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-        null != ProcessorUtil.findAnnotationByType( _method, Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+        ProcessorUtil.hasAnnotationOfType( param, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
+        ProcessorUtil.hasAnnotationOfType( _method, Constants.NONNULL_ANNOTATION_CLASSNAME ) );
 
     if ( mismatchedNullability )
     {

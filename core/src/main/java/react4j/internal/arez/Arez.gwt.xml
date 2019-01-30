@@ -1,0 +1,5 @@
+<module>
+  <inherits name='react4j.React'/>
+
+  <source path='' includes='*.java'/>
+</module>

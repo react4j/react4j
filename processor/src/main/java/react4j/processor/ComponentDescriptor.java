@@ -15,6 +15,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
 
@@ -30,6 +31,9 @@ final class ComponentDescriptor
   private final PackageElement _packageElement;
   @Nonnull
   private final TypeElement _element;
+  @Nonnull
+  private final ComponentType _type;
+  private final boolean _nonConstructorInjections;
   @Nullable
   private ExecutableElement _preUpdate;
   @Nullable
@@ -39,11 +43,8 @@ final class ComponentDescriptor
   @Nullable
   private ExecutableElement _postMount;
   @Nullable
-  private ExecutableElement _preUnmount;
-  private boolean _arezComponent;
+  private ExecutableElement _onError;
   private boolean _needsInjection;
-  private boolean _needsDaggerIntegration;
-  private boolean _runArezScheduler;
   /**
    * Methods that are props accessors.
    * These should be implemented as accesses to the underlying props value.
@@ -62,19 +63,23 @@ final class ComponentDescriptor
   @Nullable
   private List<MethodDescriptor> _memoizeMethods;
   private Boolean _hasValidatedProps;
-  private boolean _allowNoArezDeps;
+  private boolean _hasArezElements;
 
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
                        @Nonnull final String name,
                        @Nonnull final PackageElement packageElement,
-                       @Nonnull final TypeElement element )
+                       @Nonnull final TypeElement element,
+                       @Nonnull final ComponentType type,
+                       final boolean nonConstructorInjections )
   {
     _elements = Objects.requireNonNull( elements );
     _sourceVersion = Objects.requireNonNull( sourceVersion );
     _name = Objects.requireNonNull( name );
     _packageElement = Objects.requireNonNull( packageElement );
     _element = Objects.requireNonNull( element );
+    _type = Objects.requireNonNull( type );
+    _nonConstructorInjections = nonConstructorInjections;
 
     if ( ElementKind.CLASS != element.getKind() )
     {
@@ -131,6 +136,11 @@ final class ComponentDescriptor
     return _name;
   }
 
+  boolean nonConstructorInjections()
+  {
+    return _nonConstructorInjections;
+  }
+
   @Nonnull
   ClassName getClassName()
   {
@@ -164,22 +174,21 @@ final class ComponentDescriptor
   @Nonnull
   ClassName getDaggerComponentExtensionClassName()
   {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "DaggerComponentExtension" );
+    return ClassName.get( getPackageName(),
+                          getNestedClassPrefix() + _element.getSimpleName() + "DaggerComponentExtension" );
   }
 
   @Nonnull
   ClassName getArezDaggerExtensionClassName()
   {
-    assert isArezComponent();
     return ClassName.get( getPackageName(),
                           getNestedClassPrefix() + "React4j_" + _element.getSimpleName() + "DaggerComponentExtension" );
   }
 
   @Nonnull
-  ClassName getClassNameToConstruct()
+  ClassName getArezClassName()
   {
-    final String simpleName =
-      ( isArezComponent() ? "Arez_" : "" ) + getNestedClassPrefix() + "React4j_" + _element.getSimpleName();
+    final String simpleName = "Arez_" + getNestedClassPrefix() + "React4j_" + _element.getSimpleName();
     return ClassName.get( getPackageName(), simpleName );
   }
 
@@ -208,40 +217,19 @@ final class ComponentDescriptor
     _needsInjection = needsInjection;
   }
 
-  boolean needsDaggerIntegration()
+  boolean trackRender()
   {
-    return _needsDaggerIntegration;
+    return ComponentType.MAYBE_TRACKING == _type || ComponentType.TRACKING == _type;
   }
 
-  void setNeedsDaggerIntegration( final boolean needsDaggerIntegration )
+  void setHasArezElements( final boolean hasArezElements )
   {
-    _needsDaggerIntegration = needsDaggerIntegration;
+    _hasArezElements = hasArezElements;
   }
 
-  boolean isArezComponent()
+  public ComponentType getType()
   {
-    return _arezComponent;
-  }
-
-  boolean allowNoArezDeps()
-  {
-    return _allowNoArezDeps;
-  }
-
-  void setArezComponent( final boolean arezComponent, final boolean allowNoArezDeps )
-  {
-    _arezComponent = arezComponent;
-    _allowNoArezDeps = allowNoArezDeps;
-  }
-
-  boolean shouldRunArezScheduler()
-  {
-    return _runArezScheduler;
-  }
-
-  void setRunArezScheduler( final boolean runArezScheduler )
-  {
-    _runArezScheduler = runArezScheduler;
+    return _type;
   }
 
   @Nonnull
@@ -266,8 +254,17 @@ final class ComponentDescriptor
 
   void setMemoizeMethods( @Nonnull final List<MethodDescriptor> memoizeMethods )
   {
-    assert isArezComponent();
     _memoizeMethods = Objects.requireNonNull( memoizeMethods );
+  }
+
+  boolean hasSyntheticKey()
+  {
+    return getProps().stream().anyMatch( PropDescriptor::isImmutable );
+  }
+
+  int syntheticKeyComponents()
+  {
+    return (int) getProps().stream().filter( PropDescriptor::isImmutable ).count();
   }
 
   @Nonnull
@@ -357,28 +354,6 @@ final class ComponentDescriptor
   }
 
   @Nullable
-  ExecutableElement getPreUnmount()
-  {
-    return _preUnmount;
-  }
-
-  void setPreUnmount( @Nonnull final ExecutableElement preUnmount )
-    throws ReactProcessorException
-  {
-    MethodChecks.mustBeLifecycleHook( getElement(), Constants.PRE_UNMOUNT_ANNOTATION_CLASSNAME, preUnmount );
-
-    if ( null != _preUnmount )
-    {
-      throw new ReactProcessorException( "@PreUnmount target duplicates existing method named " +
-                                         _preUnmount.getSimpleName(), preUnmount );
-    }
-    else
-    {
-      _preUnmount = preUnmount;
-    }
-  }
-
-  @Nullable
   ExecutableElement getPostRender()
   {
     return _postRender;
@@ -444,10 +419,68 @@ final class ComponentDescriptor
     }
   }
 
+  @Nullable
+  ExecutableElement getOnError()
+  {
+    return _onError;
+  }
+
+  void setOnError( @Nonnull final ExecutableElement onError )
+    throws ReactProcessorException
+  {
+    MethodChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+    MethodChecks.mustNotBePublic( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+    MethodChecks.mustBeSubclassCallable( getElement(), Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+    MethodChecks.mustNotReturnAValue( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+    MethodChecks.mustNotThrowAnyExceptions( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+
+    boolean infoFound = false;
+    boolean errorFound = false;
+    for ( final VariableElement parameter : onError.getParameters() )
+    {
+      final TypeName typeName = TypeName.get( parameter.asType() );
+      if ( typeName.toString().equals( Constants.ERROR_INFO_CLASSNAME ) )
+      {
+        if ( infoFound )
+        {
+          throw new ReactProcessorException( "@OnError target has multiple parameters of type " +
+                                             Constants.ERROR_INFO_CLASSNAME,
+                                             onError );
+        }
+        infoFound = true;
+      }
+      else if ( typeName.toString().equals( Constants.JS_ERROR_CLASSNAME ) )
+      {
+        if ( errorFound )
+        {
+          throw new ReactProcessorException( "@OnError target has multiple parameters of type " +
+                                             Constants.JS_ERROR_CLASSNAME,
+                                             onError );
+        }
+        errorFound = true;
+      }
+      else
+      {
+        throw new ReactProcessorException( "@OnError target has parameter of invalid type named " +
+                                           parameter.getSimpleName().toString(),
+                                           parameter );
+      }
+    }
+
+    if ( null != _onError )
+    {
+      throw new ReactProcessorException( "@OnError target duplicates existing method named " + _onError.getSimpleName(),
+                                         onError );
+    }
+    else
+    {
+      _onError = onError;
+    }
+  }
+
   private boolean shouldGenerateLifecycle()
   {
-    return isArezComponent() ||
-           generateComponentDidMount() ||
+    return generateComponentDidMount() ||
            generateShouldComponentUpdate() ||
            generateComponentPreUpdate() ||
            generateComponentDidUpdate() ||
@@ -458,6 +491,7 @@ final class ComponentDescriptor
   boolean shouldGenerateLiteLifecycle()
   {
     return ( generateComponentDidUpdateInLiteLifecycle() != generateComponentDidUpdate() ||
+             generateComponentWillUnmountInLiteLifecycle() != generateComponentWillUnmount() ||
              generateShouldComponentUpdateInLiteLifecycle() != generateShouldComponentUpdate() ||
              generateComponentDidMountInLiteLifecycle() != generateComponentDidMount() ) &&
            shouldGenerateLifecycle();
@@ -470,27 +504,22 @@ final class ComponentDescriptor
 
   boolean generateShouldComponentUpdateInLiteLifecycle()
   {
-    /*
-     * We do not need to implement this when we are an arez component with no observable props
-     * and all "update on change" props as any prop change will cause a re-render which is effectively
-     * the same behaviour. Hence why isArezComponent() has been removed from this list.
-     */
-    return hasObservableProps() ||
-           // If any prop change requires a re-render then there is no need for SCU but if then
-           // there is at least one that need not cause a re-render then we need to implement SCU so we
-           // can skip that scenario
-           ( hasUpdateOnChangeProps() && !getProps().stream().allMatch( PropDescriptor::shouldUpdateOnChange ) );
+    return hasObservableProps() || hasUpdateOnChangeProps();
   }
 
   boolean generateComponentDidCatch()
   {
-    //TODO: Implement this
-    return false;
+    return null != _onError;
+  }
+
+  boolean generateComponentWillUnmountInLiteLifecycle()
+  {
+    return _hasArezElements;
   }
 
   boolean generateComponentWillUnmount()
   {
-    return isArezComponent() || null != _preUnmount;
+    return true;
   }
 
   boolean generateComponentPreUpdate()
@@ -500,7 +529,9 @@ final class ComponentDescriptor
 
   boolean generateComponentDidMount()
   {
-    return generateComponentDidMountInLiteLifecycle() || isArezComponent();
+    return generateComponentDidMountInLiteLifecycle() ||
+           // We do it when tracking render so we can store debug information in state
+           trackRender();
   }
 
   boolean generateComponentDidMountInLiteLifecycle()
@@ -520,7 +551,9 @@ final class ComponentDescriptor
 
   boolean generateComponentDidUpdate()
   {
-    return generateComponentDidUpdateInLiteLifecycle() || isArezComponent();
+    return generateComponentDidUpdateInLiteLifecycle() ||
+           // We do it when tracking render so we can store debug information in state
+           trackRender();
   }
 
   boolean generateComponentDidUpdateInLiteLifecycle()

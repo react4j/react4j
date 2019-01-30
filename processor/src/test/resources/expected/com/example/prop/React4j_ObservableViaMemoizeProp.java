@@ -1,37 +1,30 @@
 package com.example.prop;
 
-import arez.Arez;
-import arez.Disposable;
 import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
-import arez.annotations.Executor;
 import arez.annotations.Feature;
-import arez.annotations.Memoize;
+import arez.annotations.InjectMode;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
-import arez.annotations.Observe;
-import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
-import react4j.internal.OnComponentDidMount;
-import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "ObservableViaMemoizeProp",
-    disposeTrackable = Feature.DISABLE
+    disposeTrackable = Feature.DISABLE,
+    allowEmpty = true,
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp {
@@ -41,7 +34,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ObservableViaMemoizeProp" );
     }
@@ -77,55 +70,11 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
       getValueObservableValue().reportChanged();
       modified = true;
     }
-    return modified || hasRenderDepsChanged();
-  }
-
-  private void $$react4j$$_componentDidMount() {
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
-  }
-
-  private void $$react4j$$_componentDidUpdate() {
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
+    return modified;
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    Disposable.dispose( this );
-  }
-
-  final void onRenderDepsChange() {
-    onRenderDepsChange( true );
-  }
-
-  @Override
-  @Nullable
-  @Observe(
-      name = "render",
-      priority = Priority.LOW,
-      executor = Executor.EXTERNAL,
-      observeLowerPriorityDependencies = true,
-      reportResult = false
-  )
-  protected ReactNode render() {
-    clearRenderDepsChanged();
-    pauseArezSchedulerUntilRenderLoopComplete();
-    assert Disposable.isNotDisposed( this );
-    final ReactNode result = super.render();
-    if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
-      Guards.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
-    }
-    return result;
-  }
-
-  @Override
-  @Memoize(
-      priority = Priority.LOWEST
-  )
-  int someValue(final int i) {
-    return super.someValue(i);
+    ((Arez_React4j_ObservableViaMemoizeProp) this).dispose();
   }
 
   static final class Factory {
@@ -136,57 +85,29 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
     static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ObservableViaMemoizeProp> implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
+  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    private React4j_ObservableViaMemoizeProp $$react4j$$_component;
 
-    @Override
-    protected ObservableViaMemoizeProp createComponent() {
-      return new Arez_React4j_ObservableViaMemoizeProp( this );
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return ((React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
-    }
-
-    @Override
-    public final void componentWillUnmount() {
-      ((React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_componentWillUnmount();
-    }
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<ObservableViaMemoizeProp> implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected ObservableViaMemoizeProp createComponent() {
-      return new Arez_React4j_ObservableViaMemoizeProp( this );
-    }
-
-    @Override
-    public final void componentDidMount() {
-      ((React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_componentDidMount();
+      $$react4j$$_component = new Arez_React4j_ObservableViaMemoizeProp( this );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return ((React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
-    }
-
-    @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_componentDidUpdate();
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((React4j_ObservableViaMemoizeProp) component() ).$$react4j$$_componentWillUnmount();
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
     }
   }
 }

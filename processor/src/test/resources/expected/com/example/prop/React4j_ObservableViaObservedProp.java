@@ -1,37 +1,30 @@
 package com.example.prop;
 
-import arez.Arez;
-import arez.Disposable;
 import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
-import arez.annotations.Executor;
 import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
-import arez.annotations.Observe;
-import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
-import react4j.internal.OnComponentDidMount;
-import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "ObservableViaObservedProp",
     disposeTrackable = Feature.DISABLE,
-    deferSchedule = true
+    allowEmpty = true,
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedProp {
@@ -41,7 +34,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
 
   @Nonnull
   private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
+    final ComponentConstructorFunction componentConstructor = NativeReactComponent::new;
     if ( React.enableComponentNames() ) {
       Js.asPropertyMap( componentConstructor ).set( "displayName", "ObservableViaObservedProp" );
     }
@@ -77,52 +70,11 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       getValueObservableValue().reportChanged();
       modified = true;
     }
-    return modified || hasRenderDepsChanged();
-  }
-
-  private void $$react4j$$_componentDidMount() {
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
-  }
-
-  private void $$react4j$$_componentDidUpdate() {
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
+    return modified;
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    Disposable.dispose( this );
-  }
-
-  final void onRenderDepsChange() {
-    onRenderDepsChange( true );
-  }
-
-  @Override
-  @Nullable
-  @Observe(
-      name = "render",
-      priority = Priority.LOW,
-      executor = Executor.EXTERNAL,
-      observeLowerPriorityDependencies = true,
-      reportResult = false
-  )
-  protected ReactNode render() {
-    clearRenderDepsChanged();
-    pauseArezSchedulerUntilRenderLoopComplete();
-    assert Disposable.isNotDisposed( this );
-    final ReactNode result = super.render();
-    if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
-      Guards.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
-    }
-    return result;
-  }
-
-  @Override
-  protected final void triggerScheduler() {
-    getContext().triggerScheduler();
+    ((Arez_React4j_ObservableViaObservedProp) this).dispose();
   }
 
   static final class Factory {
@@ -133,57 +85,29 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
-    }
+  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    private React4j_ObservableViaObservedProp $$react4j$$_component;
 
-    @Override
-    protected ObservableViaObservedProp createComponent() {
-      return new Arez_React4j_ObservableViaObservedProp( this );
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return ((React4j_ObservableViaObservedProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
-    }
-
-    @Override
-    public final void componentWillUnmount() {
-      ((React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentWillUnmount();
-    }
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<ObservableViaObservedProp> implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected ObservableViaObservedProp createComponent() {
-      return new Arez_React4j_ObservableViaObservedProp( this );
-    }
-
-    @Override
-    public final void componentDidMount() {
-      ((React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentDidMount();
+      $$react4j$$_component = new Arez_React4j_ObservableViaObservedProp( this );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return ((React4j_ObservableViaObservedProp) component() ).$$react4j$$_shouldComponentUpdate( nextProps );
-    }
-
-    @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentDidUpdate();
+      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((React4j_ObservableViaObservedProp) component() ).$$react4j$$_componentWillUnmount();
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
     }
   }
 }

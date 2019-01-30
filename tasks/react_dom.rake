@@ -51,12 +51,14 @@ def generate_factory
 package react4j.dom;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.base.Js;
-import react4j.React;
+import jsinterop.base.JsPropertyMap;
+import react4j.ReactElement;
 import react4j.ReactNode;
 HEADER
   factories.values.sort.uniq.each do |prop_type|
@@ -75,6 +77,9 @@ public final class DOM
   {
   }
 
+  // Arbitrarily large value as the time will be clamped to the expiration time of the whole tree
+  private static final int DEFAULT_TIME_TO_FALLBACK = 1000000000;
+
   @Nonnull
   public static ReactNode text( @Nonnull final String content )
   {
@@ -82,21 +87,134 @@ public final class DOM
   }
 
   @Nonnull
+  public static ReactNode fragment( @Nullable final String key, @Nonnull final ReactNode... children )
+  {
+    return ReactElement.createFragment( key, children );
+  }
+
+  @Nonnull
+  public static ReactNode fragment( @Nullable final String key, @Nonnull final List<? extends ReactNode> children )
+  {
+    return fragment( key, toArray( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode fragment( @Nullable final String key, @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return fragment( key, toArray( children ) );
+  }
+
+  @Nonnull
   public static ReactNode fragment( @Nonnull final ReactNode... children )
   {
-    return React.createFragment( children );
+    return fragment( null, children );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nonnull final List<? extends ReactNode> children )
   {
-    return React.createFragment( children );
+    return fragment( null, children );
   }
 
   @Nonnull
   public static ReactNode fragment( @Nonnull final Stream<? extends ReactNode> children )
   {
-    return React.createFragment( children );
+    return fragment( null, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final ReactNode... children )
+  {
+    return ReactElement.createSuspense( key, fallback, maxTimeToFallback, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final List<? extends ReactNode> children )
+  {
+    return suspense( key, fallback, maxTimeToFallback, toArray( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return suspense( key, fallback, maxTimeToFallback, toArray( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final ReactNode... children )
+  {
+    return suspense( null, fallback, maxTimeToFallback, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final List<? extends ReactNode> children )
+  {
+    return suspense( null, fallback, maxTimeToFallback, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return suspense( null, fallback, maxTimeToFallback, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    @Nonnull final ReactNode... children )
+  {
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    @Nonnull final List<? extends ReactNode> children )
+  {
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback, @Nonnull final ReactNode... children )
+  {
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, children );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    @Nonnull final List<? extends ReactNode> children )
+  {
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
+  }
+
+  @Nonnull
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
   }
 HEADER
   factories.each_pair do |key, prop_type|
@@ -105,25 +223,25 @@ HEADER
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactNode... children )
   {
-    return React.createElement( "#{key}", props, children );
+    return createElement( "#{key}", Js.asPropertyMap( props ), children );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nullable final ReactNode... children )
   {
-    return React.createElement( "#{key}", null, children );
+    return createElement( "#{key}", null, children );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final String content )
   {
-    return React.createElement( "#{key}", props, text( content ) );
+    return createElement( "#{key}", Js.asPropertyMap( props ), text( content ) );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props )
   {
-    return React.createElement( "#{key}", props );
+    return createElement( "#{key}", Js.asPropertyMap( props ), null );
   }
 
   @Nonnull
@@ -171,36 +289,91 @@ HEADER
   @Nonnull
   public static ReactNode #{key}()
   {
-    return React.createElement( "#{key}", null );
+    return createElement( "#{key}", null, null );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final List<? extends ReactNode> children )
   {
-    return #{key}( props, children.stream() );
+    return #{key}( props, toArray( children ) );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final List<? extends ReactNode> children )
   {
-    return #{key}( children.stream() );
+    return #{key}( toArray( children ) );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final Stream<? extends ReactNode> children )
   {
-    return #{key}( props, children.toArray( ReactNode[]::new ) );
+    return #{key}( props, toArray( children ) );
   }
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final Stream<? extends ReactNode> children )
   {
-    return #{key}( children.toArray( ReactNode[]::new ) );
+    return #{key}( toArray( children ) );
   }
 HEADER
   end
 
   content += <<FOOTER
+
+  /**
+   * Create and return a new ReactElement of the given type with specified children.
+   *
+   * @param type     A HTML tag name (eg. 'div', 'span', etc)
+   * @param props    The props to pass to the element.
+   * @param children The child elements.
+   * @return the created ReactElement
+   */
+  @Nonnull
+  private static ReactElement createElement( @Nonnull final String type, @Nullable final JsPropertyMap<Object> props, @Nullable final ReactNode... children )
+  {
+    final JsPropertyMap<Object> actual = JsPropertyMap.of();
+    String key = null;
+    Object ref = null;
+    if ( null != props )
+    {
+      key = props.has( "key" ) ? Js.asString( props.get( "key" ) ) : null;
+      ref = props.has( "ref" ) ? props.get( "ref" ) : null;
+      props.forEach( p -> {
+        // In future we can probably remove this check when/if components are creating elements directly
+        // and can thus guarantee that these keys are not part of props.
+        if ( !p.equals( "key" ) && !p.equals( "ref" ) )
+        {
+          actual.set( p, props.get( p ) );
+        }
+      } );
+    }
+    // In a future iteration if we re-write the reconciler we should probably ensure that shape of ReactElement
+    // is always consistent and is either null or always an array element.
+    if ( null != children && children.length > 0 )
+    {
+      if ( 1 == children.length )
+      {
+        actual.set( "children", children[ 0 ] );
+      }
+      else
+      {
+        actual.set( "children", children );
+      }
+    }
+    return ReactElement.createHostElement( type, key, ref, actual );
+  }
+
+  @Nonnull
+  private static ReactNode[] toArray( @Nonnull final List<? extends ReactNode> children )
+  {
+    return Objects.requireNonNull( children ).toArray( new ReactNode[ 0 ] );
+  }
+
+  @Nonnull
+  private static ReactNode[] toArray( @Nonnull final Stream<? extends ReactNode> children )
+  {
+    return Objects.requireNonNull( children ).toArray( ReactNode[]::new );
+  }
 }
 FOOTER
 

@@ -168,16 +168,9 @@ public final class ReactProcessor
     final ComponentDescriptor descriptor = parse( element );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( descriptor ) );
-    if ( descriptor.needsDaggerIntegration() )
+    if ( descriptor.needsInjection() )
     {
-      if ( descriptor.isArezComponent() )
-      {
-        emitTypeSpec( descriptor.getPackageName(), Generator.buildArezDaggerComponentExtension( descriptor ) );
-      }
-      else
-      {
-        emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerComponentExtension( descriptor ) );
-      }
+      emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerComponentExtension( descriptor ) );
     }
   }
 
@@ -190,20 +183,36 @@ public final class ReactProcessor
       writeTo( processingEnv.getFiler() );
   }
 
+  /**
+   * Return true if there is any injection points that are not through the constructor.
+   */
+  private boolean nonConstructorInjections( @Nonnull final TypeElement typeElement )
+  {
+    return getMethods( typeElement )
+             .stream()
+             .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) ) ||
+           ProcessorUtil.getFieldElements( typeElement )
+             .stream()
+             .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) );
+  }
+
   @Nonnull
   private ComponentDescriptor parse( @Nonnull final TypeElement typeElement )
   {
     final String name = deriveComponentName( typeElement );
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
+    final ComponentType type = extractComponentType( typeElement );
+    final boolean nonConstructorInjections = nonConstructorInjections( typeElement );
     final ComponentDescriptor descriptor =
       new ComponentDescriptor( processingEnv.getElementUtils(),
                                processingEnv.getSourceVersion(),
                                name,
                                packageElement,
-                               typeElement );
+                               typeElement,
+                               type,
+                               nonConstructorInjections );
 
-    // TODO: Cache methods rather than rescanning
-    determineComponentType( descriptor, typeElement );
+    determineComponentCapabilities( descriptor, typeElement );
     determineRenderMethod( typeElement, descriptor );
     determineProps( descriptor );
     determinePropValidatesMethods( descriptor );
@@ -214,7 +223,7 @@ public final class ReactProcessor
     determinePostRenderMethod( typeElement, descriptor );
     determinePostUpdateMethod( typeElement, descriptor );
     determinePostMountMethod( typeElement, descriptor );
-    determinePreUnmountMethod( typeElement, descriptor );
+    determineOnErrorMethod( typeElement, descriptor );
 
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
@@ -230,7 +239,6 @@ public final class ReactProcessor
      */
     descriptor.sortProps();
 
-    verifyNoUnexpectedAbstractMethod( descriptor );
     verifyPropsNotAnnotatedWithArezAnnotations( descriptor );
     verifyPropsNotCollectionOfArezComponents( descriptor );
 
@@ -334,31 +342,11 @@ public final class ReactProcessor
     }
   }
 
-  private void verifyNoUnexpectedAbstractMethod( @Nonnull final ComponentDescriptor descriptor )
-  {
-    if ( !descriptor.isArezComponent() )
-    {
-      final ExecutableElement abstractMethod =
-        getMethods( descriptor.getElement() )
-          .stream()
-          .filter( m -> m.getModifiers().contains( Modifier.ABSTRACT ) )
-          // @Props methods are expected to be abstract
-          .filter( m -> descriptor.getProps().stream().noneMatch( p -> p.getMethod() == m ) )
-          .findAny()
-          .orElse( null );
-      if ( null != abstractMethod )
-      {
-        throw new ReactProcessorException( "@ReactComponent target has an unexpected abstract method",
-                                           abstractMethod );
-      }
-    }
-  }
-
   private void determineOnPropChangeMethods( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     final ArrayList<OnPropChangeDescriptor> onPropChangeDescriptors = new ArrayList<>();
@@ -410,12 +398,12 @@ public final class ReactProcessor
         }
         final boolean mismatchedNullability =
           (
-            null != ProcessorUtil.findAnnotationByType( parameter, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-            null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
+            ProcessorUtil.hasAnnotationOfType( parameter, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
+            ProcessorUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
           ) ||
           (
-            null != ProcessorUtil.findAnnotationByType( parameter, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-            null != ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+            ProcessorUtil.hasAnnotationOfType( parameter, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
+            ProcessorUtil.hasAnnotationOfType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
 
         if ( mismatchedNullability )
         {
@@ -423,6 +411,12 @@ public final class ReactProcessor
                                              parameter.getSimpleName() + "' that has a nullability annotation " +
                                              "incompatible with the associated @Prop method named " +
                                              method.getSimpleName(), method );
+        }
+        if ( prop.isImmutable() )
+        {
+          throw new ReactProcessorException( "@OnPropChange target has a parameter named '" +
+                                             parameter.getSimpleName() + "' that is associated with a @Prop " +
+                                             "annotated method and the prop is specified as immutable.", method );
         }
         propDescriptors.add( prop );
       }
@@ -471,7 +465,7 @@ public final class ReactProcessor
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final ExecutableElement method : methods )
@@ -538,7 +532,7 @@ public final class ReactProcessor
   {
     final List<ExecutableElement> defaultPropsMethods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final ExecutableElement method : defaultPropsMethods )
@@ -568,7 +562,7 @@ public final class ReactProcessor
   {
     final List<VariableElement> defaultPropsFields =
       ProcessorUtil.getFieldElements( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final VariableElement field : defaultPropsFields )
@@ -697,7 +691,7 @@ public final class ReactProcessor
   {
     final List<PropDescriptor> props =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
+        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
         .map( m -> createPropDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
 
@@ -732,7 +726,7 @@ public final class ReactProcessor
       default:
         return !prop.hasDefaultMethod() &&
                !prop.hasDefaultField() &&
-               null == ProcessorUtil.findAnnotationByType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME );
+               !ProcessorUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME );
     }
   }
 
@@ -756,8 +750,7 @@ public final class ReactProcessor
     if ( "key".equals( name ) )
     {
       throw new ReactProcessorException( "@Prop named 'key' is invalid as the name references value used in the " +
-                                         "reconciliation process. This value can be accessed via Component.getKey()",
-                                         method );
+                                         "reconciliation process.", method );
     }
     else if ( "build".equals( name ) )
     {
@@ -792,24 +785,109 @@ public final class ReactProcessor
     final boolean shouldUpdateOnChange = shouldUpdateOnChange( method );
     final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange );
     final boolean disposable = null != propType && isPropDisposable( descriptor, method, propType );
-    if ( observable && !descriptor.isArezComponent() )
-    {
-      throw new ReactProcessorException( "@Prop named '" + name + "' is marked as observable but the host component " +
-                                         "is not a subclass of react4j.arez.ReactArezComponent", method );
-    }
-    if ( disposable && !descriptor.isArezComponent() )
-    {
-      throw new ReactProcessorException( "@Prop named '" + name + "' is marked as disposable but the host component " +
-                                         "is not a subclass of react4j.arez.ReactArezComponent", method );
-    }
-    if ( TypeName.get( returnType ).isBoxedPrimitive() &&
-         null != ProcessorUtil.findAnnotationByType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+    final boolean immutable = isPropImmutable( method );
+    final TypeName typeName = TypeName.get( returnType );
+    if ( typeName.isBoxedPrimitive() &&
+         ProcessorUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
       throw new ReactProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
                                          "@Nonnull annotation. The return type should be the primitive type.",
                                          method );
     }
-    return new PropDescriptor( descriptor, name, method, methodType, shouldUpdateOnChange, observable, disposable );
+    final ImmutablePropKeyStrategy strategy = immutable ? getImmutablePropKeyStrategy( typeName, propType ) : null;
+    if ( immutable && null == strategy )
+    {
+      throw new ReactProcessorException( "@Prop named '" + name + "' has specified the 'immutable' parameter as " +
+                                         "true but the annotation processor can not extract a key part from the " +
+                                         "type. This is because the type is not recognized as conforming to the " +
+                                         "rules as documented in the javadocs for the immutable parameter of " +
+                                         "the @Prop annotation.",
+                                         method );
+    }
+    return new PropDescriptor( descriptor,
+                               name,
+                               method,
+                               methodType,
+                               shouldUpdateOnChange,
+                               observable,
+                               disposable,
+                               strategy );
+  }
+
+  @Nullable
+  private ImmutablePropKeyStrategy getImmutablePropKeyStrategy( @Nonnull final TypeName typeName,
+                                                                @Nullable final Element element )
+  {
+    if ( typeName.toString().equals( "java.lang.String" ) )
+    {
+      return ImmutablePropKeyStrategy.IS_STRING;
+    }
+    else if ( typeName.isBoxedPrimitive() || typeName.isPrimitive() )
+    {
+      return ImmutablePropKeyStrategy.TO_STRING;
+    }
+    else if ( null != element )
+    {
+      if ( ElementKind.CLASS == element.getKind() &&
+           ProcessorUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) &&
+           isIdRequired( (TypeElement) element ) )
+      {
+        return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
+      }
+      else if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
+                implementsKeyed( (TypeElement) element ) )
+      {
+        return ImmutablePropKeyStrategy.KEYED;
+      }
+    }
+    return null;
+  }
+
+  private boolean implementsKeyed( @Nonnull final TypeElement element )
+  {
+
+    return isKeyedDeclared( element ) ||
+           ProcessorUtil.getSuperTypes( element ).stream().anyMatch( this::isKeyedDeclared );
+  }
+
+  private boolean isKeyedDeclared( @Nonnull final TypeElement element )
+  {
+    return element.getInterfaces()
+      .stream()
+      .anyMatch( i -> i.toString().equals( Constants.KEYED_CLASSNAME ) );
+  }
+
+  /**
+   * The logic from this method has been cloned from Arez.
+   * One day we should consider improving Arez so that this is not required somehow?
+   */
+  private boolean isIdRequired( @Nonnull final TypeElement element )
+  {
+    final VariableElement injectParameter = (VariableElement)
+      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                        element,
+                                        Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME,
+                                        "requireId" ).getValue();
+    switch ( injectParameter.getSimpleName().toString() )
+    {
+      case "ENABLE":
+        return true;
+      case "DISABLE":
+        return false;
+      default:
+        if ( ProcessorUtil.hasAnnotationOfType( element, Constants.REPOSITORY_ANNOTATION_CLASSNAME ) )
+        {
+          return true;
+        }
+        else
+        {
+          return ProcessorUtil
+            .getMethods( element, processingEnv.getTypeUtils() )
+            .stream()
+            .anyMatch( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_ANNOTATION_CLASSNAME ) ||
+                            ProcessorUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_REF_ANNOTATION_CLASSNAME ) );
+        }
+    }
   }
 
   @Nonnull
@@ -844,21 +922,21 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPreUpdate( method );
       }
     }
   }
 
-  private void determinePreUnmountMethod( @Nonnull final TypeElement typeElement,
-                                          @Nonnull final ComponentDescriptor descriptor )
+  private void determineOnErrorMethod( @Nonnull final TypeElement typeElement,
+                                       @Nonnull final ComponentDescriptor descriptor )
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.PRE_UNMOUNT_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.ON_ERROR_ANNOTATION_CLASSNAME ) )
       {
-        descriptor.setPreUnmount( method );
+        descriptor.setOnError( method );
       }
     }
   }
@@ -868,7 +946,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.POST_RENDER_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_RENDER_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostRender( method );
       }
@@ -880,7 +958,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostUpdate( method );
       }
@@ -892,7 +970,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( null != ProcessorUtil.findAnnotationByType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostMount( method );
       }
@@ -985,118 +1063,86 @@ public final class ReactProcessor
     return _componentRenderMethod;
   }
 
-  private void determineComponentType( @Nonnull final ComponentDescriptor descriptor,
-                                       @Nonnull final TypeElement typeElement )
+  private void determineComponentCapabilities( @Nonnull final ComponentDescriptor descriptor,
+                                               @Nonnull final TypeElement typeElement )
   {
     final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
     final TypeMirror rawComponentType = processingEnv.getTypeUtils().erasure( componentType.asType() );
 
-    /*
-     * Arez need not be on the classpath in which case this will return a null value to arezComponentType.
-     * Our code should just gracefully handle this and perform none of the arez specific checks or generation.
-     */
-    @Nullable
-    final TypeElement arezComponentType =
-      processingEnv.getElementUtils().getTypeElement( "react4j.arez.ReactArezComponent" );
-    @Nullable
-    final TypeMirror rawArezComponentType =
-      null == arezComponentType ? null : processingEnv.getTypeUtils().erasure( arezComponentType.asType() );
+    final TypeMirror declaredType = descriptor.getDeclaredType();
 
-    final TypeMirror type = descriptor.getDeclaredType();
-
-    final boolean isComponent = processingEnv.getTypeUtils().isSubtype( type, rawComponentType );
-    final boolean isArezComponent =
-      null != rawArezComponentType && processingEnv.getTypeUtils().isSubtype( type, rawArezComponentType );
+    final boolean isComponent = processingEnv.getTypeUtils().isSubtype( declaredType, rawComponentType );
 
     if ( !isComponent )
     {
       throw new ReactProcessorException( "@ReactComponent target must be a subclass of react4j.Component",
                                          typeElement );
     }
-    else if ( isArezComponent )
+    else
     {
       final AnnotationMirror arezAnnotation = typeElement.getAnnotationMirrors().stream().
         filter( m -> m.getAnnotationType().toString().equals( "arez.annotations.ArezComponent" ) ).
         findAny().orElse( null );
       if ( null != arezAnnotation )
       {
-        throw new ReactProcessorException( "@ReactComponent target extends react4j.arez.ReactArezComponent and should " +
-                                           "not be annotated with arez.annotations.ArezComponent as " +
-                                           "React4j will add annotation", typeElement );
-      }
-    }
-    else
-    {
-      assert !isArezComponent;
-      if ( null != ProcessorUtil.findDeclaredAnnotationValue( typeElement,
-                                                              Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                                              "allowNoArezDeps" ) )
-      {
-        throw new ReactProcessorException( "@ReactComponent target does not extend react4j.arez.ReactArezComponent " +
-                                           "but has incorrectly specified the parameter allowNoArezDeps.",
+        throw new ReactProcessorException( "@ReactComponent target should not be annotated with the " +
+                                           "arez.annotations.ArezComponent as React4j will add the annotation.",
                                            typeElement );
       }
     }
 
     final boolean needsInjection = isInjectionRequired( typeElement );
-    final boolean isDaggerPresent = needsInjection && isDaggerRequired( typeElement );
-
-    if ( isDaggerPresent && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
+    if ( needsInjection && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
-      throw new ReactProcessorException( "@ReactComponent target has enabled dagger injection and the class " +
-                                         "has type argument but type arguments on a component are not compatible " +
-                                         "with dagger injected components", typeElement );
+      throw new ReactProcessorException( "@ReactComponent target has enabled injection integration but the class " +
+                                         "has type arguments which is incompatible with injection integration.",
+                                         typeElement );
     }
 
     descriptor.setNeedsInjection( needsInjection );
-    descriptor.setNeedsDaggerIntegration( isDaggerPresent );
-    final boolean allowNoArezDeps = (Boolean)
+    final boolean hasArezElements =
+      descriptor.trackRender() ||
+      getMethods( typeElement ).stream().anyMatch( e -> e.getAnnotationMirrors()
+        .stream()
+        .map( a -> a.getAnnotationType().toString() )
+        .anyMatch( n -> n.startsWith( "arez.annotations." ) &&
+                        !(
+                          // Ignore these annotations as they do not create disposable elements
+                          n.endsWith( "PostConstruct" ) ||
+                          n.endsWith( "ContextRef" ) ||
+                          n.endsWith( "ComponentTypeNameRef" ) ||
+                          n.endsWith( "ComponentNameRef" ) ||
+                          n.endsWith( "ComponentIdRef" ) ||
+                          n.endsWith( "ComponentId" ) ||
+                          n.endsWith( "Action" )
+                        )
+        )
+      ) ||
+      ProcessorUtil
+        .getFieldElements( typeElement )
+        .stream()
+        .anyMatch( e -> e.getAnnotationMirrors()
+          .stream()
+          .map( a -> a.getAnnotationType().toString() )
+          .anyMatch( n -> n.equals( Constants.CASCADE_DISPOSE_ANNOTATION_CLASSNAME ) ||
+                          n.equals( Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME ) )
+        );
+
+    descriptor.setHasArezElements( hasArezElements );
+
+    ensureMemoizeMatchesExpectations( typeElement );
+
+    descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
+  }
+
+  private ComponentType extractComponentType( @Nonnull final TypeElement typeElement )
+  {
+    final VariableElement declaredTypeEnum = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
                                         typeElement,
                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                        "allowNoArezDeps" ).getValue();
-    descriptor.setArezComponent( isArezComponent, allowNoArezDeps );
-
-    if ( isArezComponent )
-    {
-      ensureMemoizeMatchesExpectations( typeElement );
-      final boolean runArezScheduler =
-        hasAnyArezScheduledObserverMethods( typeElement ) ||
-        hasAnyKeepAliveMemoizeMethods( typeElement ) ||
-        hasAnyDependencyMethods( typeElement );
-      descriptor.setRunArezScheduler( runArezScheduler );
-
-      descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
-    }
-    else
-    {
-      for ( final ExecutableElement method : ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() ) )
-      {
-        for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
-        {
-          final String classname = mirror.getAnnotationType().toString();
-          if ( isArezAnnotation( classname ) )
-          {
-            throw new ReactProcessorException( "@ReactComponent target has a method '" + method.getSimpleName() +
-                                               "' with an arez annotation '" + classname + "' but is not an " +
-                                               "arez component.", method );
-          }
-        }
-      }
-      for ( final VariableElement element : ProcessorUtil.getFieldElements( typeElement ) )
-      {
-        for ( final AnnotationMirror mirror : element.getAnnotationMirrors() )
-        {
-          final String classname = mirror.getAnnotationType().toString();
-          if ( isArezAnnotation( classname ) )
-          {
-            throw new ReactProcessorException( "@ReactComponent target has a field '" + element.getSimpleName() +
-                                               "' with an arez annotation '" + classname + "' but is not an " +
-                                               "arez component.", element );
-          }
-        }
-      }
-    }
+                                        "type" ).getValue();
+    return ComponentType.valueOf( declaredTypeEnum.getSimpleName().toString() );
   }
 
   private void ensureMemoizeMatchesExpectations( @Nonnull final TypeElement typeElement )
@@ -1158,9 +1204,7 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        return descriptor.isArezComponent() &&
-               shouldUpdateOnChange &&
-               hasAnyArezObserverMethods( descriptor.getElement() );
+        return shouldUpdateOnChange && hasAnyArezObserverMethods( descriptor.getElement() );
     }
   }
 
@@ -1168,9 +1212,17 @@ public final class ReactProcessor
   {
     return getMethods( typeElement )
       .stream()
-      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
-                      ( null != ProcessorUtil.findAnnotationByType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
+      .anyMatch( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
+                      ( ProcessorUtil.hasAnnotationOfType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
                         ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
+  }
+
+  private boolean isPropImmutable( @Nonnull final ExecutableElement method )
+  {
+    return (Boolean) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                       method,
+                                                       Constants.PROP_ANNOTATION_CLASSNAME,
+                                                       "immutable" ).getValue();
   }
 
   private boolean isPropDisposable( @Nonnull final ComponentDescriptor descriptor,
@@ -1189,9 +1241,8 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        return descriptor.isArezComponent() &&
-               ElementKind.CLASS == propType.getKind() &&
-               null != ProcessorUtil.findAnnotationByType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME );
+        return ElementKind.CLASS == propType.getKind() &&
+               ProcessorUtil.hasAnnotationOfType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME );
     }
   }
 
@@ -1209,69 +1260,10 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        return ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( this::hasInjectAnnotation ) ||
+        return ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( ProcessorUtil::hasInjectAnnotation ) ||
                getMethods( typeElement ).
-                 stream().anyMatch( this::hasInjectAnnotation );
+                 stream().anyMatch( ProcessorUtil::hasInjectAnnotation );
     }
-  }
-
-  private boolean isDaggerRequired( @Nonnull final TypeElement typeElement )
-  {
-    final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        typeElement,
-                                        Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                        "dagger" ).getValue();
-    switch ( parameter.getSimpleName().toString() )
-    {
-      case "ENABLE":
-        return true;
-      case "DISABLE":
-        return false;
-      default:
-        return null != processingEnv.getElementUtils().getTypeElement( Constants.DAGGER_MODULE_CLASSNAME );
-    }
-  }
-
-  private boolean hasAnyArezScheduledObserverMethods( @Nonnull final TypeElement typeElement )
-  {
-    return getMethods( typeElement )
-      .stream()
-      .anyMatch( m -> {
-        final AnnotationValue annotationValue =
-          ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
-                                             m,
-                                             Constants.OBSERVE_ANNOTATION_CLASSNAME,
-                                             "executor" );
-        return null != annotationValue &&
-               ( (VariableElement) annotationValue.getValue() ).getSimpleName().toString().equals( "INTERNAL" );
-      } );
-  }
-
-  private boolean hasAnyDependencyMethods( @Nonnull final TypeElement typeElement )
-  {
-    return getMethods( typeElement )
-      .stream()
-      .anyMatch( m -> null != ProcessorUtil.findAnnotationByType( m, Constants.DEPENDENCY_ANNOTATION_CLASSNAME ) );
-  }
-
-  private boolean hasAnyKeepAliveMemoizeMethods( @Nonnull final TypeElement typeElement )
-  {
-    return getMethods( typeElement )
-      .stream()
-      .anyMatch( m -> {
-        final AnnotationValue annotationValue =
-          ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
-                                             m,
-                                             Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                             "keepAlive" );
-        return null != annotationValue && (boolean) annotationValue.getValue();
-      } );
-  }
-
-  private boolean hasInjectAnnotation( final Element method )
-  {
-    return null != ProcessorUtil.findAnnotationByType( method, Constants.INJECT_ANNOTATION_CLASSNAME );
   }
 
   /**

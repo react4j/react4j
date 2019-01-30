@@ -24,7 +24,7 @@ public abstract class NativeComponent
   private JsPropertyMap<Object> state;
 
   @JsConstructor
-  NativeComponent( @Nullable final JsPropertyMap<Object> props )
+  protected NativeComponent( @Nullable final JsPropertyMap<Object> props )
   {
   }
 

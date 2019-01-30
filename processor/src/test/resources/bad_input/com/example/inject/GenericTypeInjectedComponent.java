@@ -6,7 +6,7 @@ import react4j.ReactNode;
 import react4j.annotations.Feature;
 import react4j.annotations.ReactComponent;
 
-@ReactComponent( dagger = Feature.ENABLE )
+@ReactComponent
 abstract class GenericTypeInjectedComponent<T>
   extends Component
 {

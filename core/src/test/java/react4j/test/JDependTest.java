@@ -2,6 +2,7 @@ package react4j.test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -26,22 +27,32 @@ public class JDependTest
 
     final JavaPackage react4j = constraint.addPackage( "react4j" );
     final JavaPackage react4jInternal = constraint.addPackage( "react4j.internal" );
+    final JavaPackage react4jInternalArez = constraint.addPackage( "react4j.internal.arez" );
     constraint.addPackage( "react4j.annotations" );
     final JavaPackage braincheck = constraint.addPackage( "org.realityforge.braincheck" );
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
     final JavaPackage jsinteropBase = constraint.addPackage( "jsinterop.base" );
     final JavaPackage elemental2Core = constraint.addPackage( "elemental2.core" );
+    final JavaPackage elemental2Promise = constraint.addPackage( "elemental2.promise" );
+    final JavaPackage arez = constraint.addPackage( "arez" );
+    final JavaPackage arezSpy = constraint.addPackage( "arez.spy" );
 
     react4j.dependsUpon( jsinteropAnnotations );
     react4j.dependsUpon( jsinteropBase );
     react4j.dependsUpon( braincheck );
     react4j.dependsUpon( elemental2Core );
     react4j.dependsUpon( react4jInternal );
+    react4j.dependsUpon( arez );
 
     react4jInternal.dependsUpon( jsinteropAnnotations );
     react4jInternal.dependsUpon( jsinteropBase );
     react4jInternal.dependsUpon( elemental2Core );
     react4jInternal.dependsUpon( react4j );
+
+    react4jInternalArez.dependsUpon( jsinteropBase );
+    react4jInternalArez.dependsUpon( elemental2Promise );
+    react4jInternalArez.dependsUpon( arez );
+    react4jInternalArez.dependsUpon( arezSpy );
 
     final DependencyConstraint.MatchResult result = jdepend.analyzeDependencies( constraint );
 
@@ -90,7 +101,7 @@ public class JDependTest
         oldEfferents.forEach( p -> sb
           .append( "Package " )
           .append( expected.getName() )
-          .append( " no longer depends depends upon " )
+          .append( " no longer depends upon " )
           .append( p.getName() )
           .append( "\n" )
         );
@@ -106,7 +117,10 @@ public class JDependTest
           .append( "\n" )
         );
       }
-      fail( sb.toString() );
+
+      final String message =
+        Arrays.stream( sb.toString().split( "\\n" ) ).sorted().distinct().collect( Collectors.joining( "\n" ) );
+      fail( message );
     }
   }
 

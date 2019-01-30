@@ -1,48 +1,39 @@
 ## TODO
 
-### Next Release
+This document is essentially a list of shorthand notes describing work yet to completed.
+Unfortunately it is not complete enough for other people to pick work off the list and
+complete as there is too much un-said.
 
-* Add `react4j-sithtracker` to `downstream-test` tests and record stats.
+### Current Release
 
-* `key` is valid on fragments elements.
+* Support @Inject through parameters in React4j components?
 
-* Host `ReactElement` instances should be created within the `dom` library and we could create the instances
-  directly rather than copying props and adding special handling for `ref`, `key` and `children`.
+### Very High Priority
 
-* Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
+* Add `react4j-drumloop` into build tests
 
-* Support `@OnChildError` annotation that stands in for `componentDidCatch` lifecycle method.
+* Change the way we process `@Memoize` so that instead we use the "new" feature of Arez (when it is implemented)
+  to override the priority from within hook methods.
 
-* Change remaining lifecycle hooks to be annotation driven. i.e.
-  If we do this then the annotation processor could completely take over responsibility for implementing lifecycle
-  steps rather than part of it being in `react4j.Component`.
-  To achieve this we need to pass in props to the java components constructor and mark it with Arez's `@PerInstance`
-  annotation. This may involve marking all stateful components as Arez components to get this to work effectively.
+* Add helper to autoload js assets
 
-* Add some way to define effects which is just method called after render that returns a disposable to stop action.
-  Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
-  method that calls dispose on previous return if any. (From react 17)
+* Make the name of the assets based off the version of the underlying react library. i.e. Name them `react-16.5.0.js`
+  rather than `react.js` so cache is never in conflict.
 
-* Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
-  will push the call into a task that is invoked at a later time. Roughly we want to be able to take an effect and
-  push it outside the commit phase of react rendering and have it run later
+### High Priorities
 
-* Consider making non-arez components into Arez components that do not track state. This would make it possible
-  to use `@CascadeDispose`, `@PostConstruct`, `@PreDispose` and `@PostDispose` annotations as well as better
-  `@Inject` support without bloating `react4j` with similar code generation and annotations.
+* Introduce `TreeLocal` component which is react "context". A single `TreeLocal` can be represented using react 16.4's
+  static context field. Multiple `TreeLocal` instances on a component may need to be represented by a chain of
+  components the pass down context as props. This may be overly complex so perhaps we could just remove that possibility.
 
-* Should generate an error when any method or field has an Arez annotation when not an arez component
+* Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
+  (See TODOs in Generator.java) with the enhancers.
 
-* Collections returned from props should be made immutable.
-
-* Should be possible to mark a prop as immutable and if it changes it is a new component. This is essentially
-  deriving the key from the props. Maybe we should have a mechanisms for generating a key from immutable props.
-  Props would be marked as immutable and if they change it would result in a new key? The key would be synthesized
-  at construction time. Primitive types and known wrapper types could be handled explicitly while other types would
-  be expected to implement a set of of interfaces to get key component (i.e. `arez.component.Identifiable`,
-  `react4j.KeyPart`). If any Key contributing props exist then it would not be possible to explicitly set key.
-
-* Howto: Offscreen rendering?
+* Add additional `@ReacComponent.type` values `STATELESS|PURE`
+  - `STATELESS` => inlined into caller without a component in production mode. No fields, arez element and no lifecycle methods.
+  - `PURE` => Generate `shouldComponentUpdate()` assuming equal props implies no re-render. Alternatively we should just
+    always generate `shouldComponentUpdate()` for `STATEFUL` components and this would have identical behaviour. It would mean
+    that by default react4j never re-renders unless props change... 
 
 * Generate documentation for components from annotations. This documentation could use the prop types to give
   basic documentation overview and then use special annotations to give extended documentation and/or reference
@@ -50,59 +41,12 @@
   examples will continue to work as the library is evolved. There is a few examples like this in react world ...
   stylguidist??
 
-* Consider adding a `type=STATELESS|PURE|STATEFUL|AREZ|AUTODETECT` to component.
-  - `STATELESS` => inlined into caller without a component in production mode.
-  - `PURE` => autogenerate SCU assuming `Js.isTripleEqual()` for props implies no re-render.
-  - `STATEFUL` => can use fields or lifecycle methods. Can also use `scheduleRender()`
-  - `AREZ` => `STATEFUL` + can use `@Observable`, `@Memoize`, `@Observe`.
-  - `AUTODETECT` will be `STATELESS` if no fields, lifecycle methods or `@Observe`/`@Memoize` annotated methods
-    and no prop is an arez component. `AUTODETECT` will be `PURE` if it satisfies `STATELESS` and all props are
-    primitives or the processor knows shallow comparison works. It will be `AREZ` if it has an arez annotation and/or
-    anty props are arez components. Otherwise it is `STATEFUL`.
-
-    For `STATELESS|PURE` components we could add an invariant check to ensure props are not invoked out of render.
-    When inlining the `build()` method in builder will access static singleton instance of component, set
-    props and call render. Alternatively we could require the users to write it as a static method somewhere.
-
-* Add `@DisposeOnUnmount` which is functionally equivalent to `@CascadeDispose` but available on normal react components
-
-* Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
-
-* Introduce `TreeLocal` component which is react "context". A single `TreeLocal` can be represented using react 16.4's
-  static context field. Multiple `TreeLocal` instances on a component may need to be represented by a chain of
-  components the pass down context as props. This may be overly complex so perhaps we could just remove that possibility.
-
-### Very High Priority
-
-* Add helper to autoload js assets
-
-* Make the name of the assets based off the version of the underlying react library. i.e. Name them `react-16.5.0.js`
-  rather than `react.js` so cache is never in conflict.
-
-- EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
-  schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
-  this lower down in the react stack.
-- EventHandlers should probably start profiler "interactions" by default with the ability to disable
-
-* Start to add javascript tests - starting with braincheck ala
-  https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
-
-* Add `Observer` react component that is just an arez component that performs change tracking for render prop.
-
-* Migrate to React 16.5.0 features
-  - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
-  - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
-  - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
-    production js produced. - https://github.com/facebook/react/issues/13634
-
-### High Priorities
-
-* Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
-  (See TODOs in Generator.java) with the enhancers.
-
-* Consider separating Arez react component infrastructure into a mixin with default methods.
-
 ### Medium Priorities
+
+* Reactor the way the `dom` library creates host `ReactElement` instances to avoid copying props and adding
+  special handling for `ref`, `key` and `children` and instead creating elements directly.
+
+* Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
 * Figure out a way to define dom factories in java that are optimized away in production such that
   `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
@@ -115,7 +59,23 @@
   - https://www.w3schools.com/tags/ref_standardattributes.asp
   - Consider typed refs that bind to underlying Elemental2 element.
 
+* Migrate to React 16.5.0 features
+  - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
+  - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
+  - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
+    production js produced. - https://github.com/facebook/react/issues/13634
+
 ### Low Priorities
+
+* Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
+
+- EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
+  schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
+  this lower down in the react stack.
+- EventHandlers should probably start profiler "interactions" by default with the ability to disable
+
+* Start to add javascript tests - starting with braincheck ala
+  https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
 
 * Animation/Transition capabilities are getting more urgent.
   - https://github.com/reactjs/react-transition-group/blob/master/src/Transition.js
@@ -130,16 +90,19 @@
 
 * Consider renaming `@Prop` to `@Input`
 
-* If we were to ever re-implement the component model at a basic level, an interesting approach would be to
-  allow individual components to register actions to occur at each lifecycle stage. We could also use the
-  strategies in [ivi](https://github.com/localvoid/ivi) or whatever is winning the
-  [uibench](https://localvoid.github.io/uibench/) benchmark at the time. [Nerv](https://github.com/NervJS/nerv)
-  has some interesting benchmarks at https://github.com/NervJS/nerv/tree/master/benchmarks
+* Add `Observer` react component that is just an arez component that performs change tracking for render prop.
 
-* Investigate feasibility of https://github.com/sokra/rawact which compiles react components into native
-  browser interactions in attempt to eliminate overhead of library. A similar framework is imba @ http://imba.io/
-  which can learn about in https://scrimba.com/p/c6B9rAM - actually imba + Embers AOT template compiler seem
-  like a very very very interesting approach.
+* Howto: Offscreen rendering?
+
+* Add some way to define effects which is just method called after render that returns a disposable to stop action.
+  Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
+  method that calls dispose on previous return if any. (From react 17)
+
+* Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
+  will push the call into a task that is invoked at a later time. Roughly we want to be able to take an effect and
+  push it outside the commit phase of react rendering and have it run later
+
+* Collections returned from props should be made immutable.
 
 #### Documentation
 
@@ -157,9 +120,6 @@
 
 * Or most excellent image from https://medium.freecodecamp.org/why-react16-is-a-blessing-to-react-developers-31433bfc210a
 
-* Add notes regarding fiber like - https://github.com/acdlite/react-fiber-architecture
-  Also useful to extract notes from https://www.youtube.com/watch?v=ZCuYPiUIONs&app=desktop
-
 * Create a jsbin-alike to display GWT code
   - https://github.com/jsbin/jsbin
   - http://jsbin.com/?html,css,js,console,output
@@ -170,14 +130,25 @@
   - See egghead training videos as well.
   - https://www.youtube.com/playlist?list=PLV5CVI1eNcJhc9Lxu83Zp4uyqP2yKV4xl&app=desktop
 
-* Consider using the React4j component model (a.k.a. annotations) and seeing if it can be used to generate
-  a custom-element based component such as via Stencil.js.
+#### Sample Applications
+
+Applications to build and help asses react4j going forward.
 
 * Port https://github.com/realityforge/Piano-Trainer across to react4j
 
 * Port https://github.com/kenwheeler/hooks-drum-machine across to react4j
 
+* Consider a Metronome - https://daveceddia.com/react-practice-projects/#metronome & https://github.com/cwilso/metronome
+
+* Port Minesweeper
+  - https://medium.com/@tdelev/minesweeper-in-typescript-and-react-f5f8a5d57383
+  - https://github.com/tdelev/minesweeper-react
+  - https://delev.me/minesweeper-react/
+
 * Port https://github.com/benawad/slack-clone-client/tree/53_code_splitting across to react4j. Good way to experiment with GraphQL and few other interesting elements.
+
+* Another app to build is a YouTube clone ala https://github.com/productioncoder/youtube-react
+  It seems relatively advanced and may require a router to be in place prior to starting.
 
 ### Spritz Integration
 
@@ -189,3 +160,29 @@ Vue integration that uses a similar thing inside template language is described 
 
 Another integration approach is to add a "<Stream/>" component that takes a stream as a prop and has a render prop
 that has output of stream as parameter. See [react-streams](https://github.com/johnlindquist/react-streams/) for inspiration.
+
+### Fiber Reimplementation
+
+It seems that at some point there may be a demand to re-implement the underlying react reconciliation layer. If
+we ever do this here is a list of helpful links that could provide useful
+
+* [react-fiber-implement](https://github.com/tranbathanhtung/react-fiber-implement) A simplified implementation some one is using to learn how fiber works
+* [Implementation notes on react's scheduling model](https://gist.github.com/Jessidhia/49d0915b7e722dc5b49ab9779b5906e8)
+* Add notes regarding fiber like - https://github.com/acdlite/react-fiber-architecture
+* Also useful to extract notes from https://www.youtube.com/watch?v=ZCuYPiUIONs&app=desktop
+
+#### Additional Capabilities
+
+* If we were to ever re-implement the component model at a basic level, an interesting approach would be to
+  allow individual components to register actions to occur at each lifecycle stage. We could also use the
+  strategies in [ivi](https://github.com/localvoid/ivi) or whatever is winning the
+  [uibench](https://localvoid.github.io/uibench/) benchmark at the time. [Nerv](https://github.com/NervJS/nerv)
+  has some interesting benchmarks at https://github.com/NervJS/nerv/tree/master/benchmarks
+
+* Consider using the React4j component model (a.k.a. annotations) and seeing if it can be used to generate
+  a custom-element based component such as via Stencil.js.
+
+* Investigate feasibility of https://github.com/sokra/rawact which compiles react components into native
+  browser interactions in attempt to eliminate overhead of library. A similar framework is imba @ http://imba.io/
+  which can learn about in https://scrimba.com/p/c6B9rAM - actually imba + Embers AOT template compiler seem
+  like a very very very interesting approach.

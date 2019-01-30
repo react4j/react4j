@@ -35,12 +35,11 @@ import javax.lang.model.type.TypeMirror;
 @SuppressWarnings( "Duplicates" )
 final class Generator
 {
-  private static final ClassName INJECT_CLASSNAME = ClassName.get( "javax.inject", "Inject" );
-  private static final ClassName PROVIDER_CLASSNAME = ClassName.get( "javax.inject", "Provider" );
   private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   private static final ClassName AREZ_CLASSNAME = ClassName.get( "arez", "Arez" );
+  private static final ClassName OBSERVER_CLASSNAME = ClassName.get( "arez", "Observer" );
   private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "ObservableValue" );
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
@@ -49,15 +48,19 @@ final class Generator
     ClassName.get( "arez.annotations", "InjectMode" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
+  private static final ClassName PER_INSTANCE_CLASSNAME = ClassName.get( "arez.annotations", "PerInstance" );
   private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
   private static final ClassName EXECUTOR_CLASSNAME = ClassName.get( "arez.annotations", "Executor" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
+  private static final ClassName OBSERVER_REF_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "ObserverRef" );
   private static final ClassName OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
+  private static final ClassName IDENTIFIABLE_CLASSNAME =
+    ClassName.get( "arez.component", "Identifiable" );
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
   private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
@@ -66,10 +69,10 @@ final class Generator
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
+  private static final ClassName KEYED_CLASSNAME = ClassName.get( "react4j", "Keyed" );
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
   private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
-  private static final ClassName COMPONENT_CLASSNAME = ClassName.get( "react4j", "Component" );
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j.internal", "ComponentConstructorFunction" );
   private static final ClassName ON_COMPONENT_DID_MOUNT_CLASSNAME =
@@ -83,17 +86,21 @@ final class Generator
   private static final ClassName ON_COMPONENT_SHOULD_UPDATE_CLASSNAME =
     ClassName.get( "react4j.internal", "OnShouldComponentUpdate" );
   private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
-    ClassName.get( "react4j.internal", "componentDidCatch" );
-  private static final ClassName REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME =
-    ClassName.get( "react4j.internal", "NativeAdapterComponent" );
+    ClassName.get( "react4j.internal", "OnComponentDidCatch" );
   private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeComponent" );
-  private static final String INTERNAL_METHOD_PREFIX = "$$react4j$$_";
-  private static final String SHOULD_COMPONENT_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "shouldComponentUpdate";
-  private static final String COMPONENT_PRE_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentPreUpdate";
-  private static final String COMPONENT_DID_UPDATE_METHOD = INTERNAL_METHOD_PREFIX + "componentDidUpdate";
-  private static final String COMPONENT_DID_MOUNT_METHOD = INTERNAL_METHOD_PREFIX + "componentDidMount";
-  private static final String COMPONENT_WILL_UNMOUNT_METHOD = INTERNAL_METHOD_PREFIX + "componentWillUnmount";
+  private static final ClassName COMPONENT_STATE_CLASSNAME = ClassName.get( "react4j.internal.arez", "ComponentState" );
+  private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "SchedulerUtil" );
+  private static final ClassName INTROSPECT_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "IntrospectUtil" );
+  private static final String FRAMEWORK_INTERNAL_PREFIX = "$$react4j$$_";
+  private static final String SHOULD_COMPONENT_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "shouldComponentUpdate";
+  private static final String COMPONENT_PRE_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentPreUpdate";
+  private static final String COMPONENT_DID_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidUpdate";
+  private static final String COMPONENT_DID_MOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidMount";
+  private static final String COMPONENT_WILL_UNMOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentWillUnmount";
+  private static final String VALIDATE_PROPS_METHOD = FRAMEWORK_INTERNAL_PREFIX + "validatePropValues";
+  private static final String COMPONENT_STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
+  private static final String COMPONENT_FIELD = FRAMEWORK_INTERNAL_PREFIX + "component";
 
   private Generator()
   {
@@ -118,11 +125,16 @@ final class Generator
       builder.addType( buildBuilderStepInterface( descriptor, step ) );
     }
 
-    // key step
-    buildStaticStepMethodMethods( descriptor, builder, steps.get( 0 ) );
+    int index = 0;
+    if ( !descriptor.hasSyntheticKey() )
+    {
+      // key step
+      buildStaticStepMethodMethods( descriptor, builder, steps.get( index ) );
+      index++;
+    }
 
     // first step which may be required prop, optional props, or build terminal step.
-    buildStaticStepMethodMethods( descriptor, builder, steps.get( 1 ) );
+    buildStaticStepMethodMethods( descriptor, builder, steps.get( index ) );
 
     builder.addType( buildBuilder( descriptor, builderDescriptor ) );
 
@@ -300,6 +312,7 @@ final class Generator
     method.addAnnotation( Override.class );
     method.addAnnotation( NONNULL_CLASSNAME );
 
+    final PropDescriptor prop = stepMethod.getProp();
     final ExecutableType propMethodType = stepMethod.getPropMethodType();
     if ( null != propMethodType )
     {
@@ -320,10 +333,33 @@ final class Generator
 
     boolean returnHandled = false;
 
+    if ( null != prop && prop.isImmutable() && 1 == descriptor.syntheticKeyComponents() )
+    {
+      final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
+      if ( ImmutablePropKeyStrategy.KEYED == strategy )
+      {
+        method.addStatement( "_element.setKey( $N.getKey() )", stepMethod.getName() );
+      }
+      else if ( ImmutablePropKeyStrategy.IS_STRING == strategy )
+      {
+        method.addStatement( "_element.setKey( $N )", stepMethod.getName() );
+      }
+      else if ( ImmutablePropKeyStrategy.TO_STRING == strategy )
+      {
+        method.addStatement( "_element.setKey( String.valueOf( $N ) )", stepMethod.getName() );
+      }
+      else
+      {
+        assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
+        method.addStatement( "_element.setKey( String.valueOf( $T.<Object>getArezId( $N ) ) )",
+                             IDENTIFIABLE_CLASSNAME,
+                             stepMethod.getName() );
+      }
+    }
+
     if ( stepMethod.isChildrenIntrinsic() )
     {
       method.varargs();
-      final PropDescriptor prop = stepMethod.getProp();
       assert null != prop;
       method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $N ) )",
                            descriptor.getEnhancedClassName(),
@@ -338,9 +374,8 @@ final class Generator
     else if ( stepMethod.isChildIntrinsic() )
     {
       assert null != propMethod;
-      final PropDescriptor prop = stepMethod.getProp();
       assert null != prop;
-      if ( isNonnull( propMethod ) )
+      if ( ProcessorUtil.isNonnull( propMethod ) )
       {
         method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $T.requireNonNull( $N ) ) )",
                              descriptor.getEnhancedClassName(),
@@ -374,11 +409,10 @@ final class Generator
       }
       else
       {
-        if ( ( null != propMethod && isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
+        if ( ( null != propMethod && ProcessorUtil.isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
         {
           method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
         }
-        final PropDescriptor prop = stepMethod.getProp();
         assert null != prop;
         method.addStatement( "_element.props().set( $T.Props.$N, $N )",
                              descriptor.getEnhancedClassName(),
@@ -403,21 +437,65 @@ final class Generator
     return method.build();
   }
 
-  private static boolean isNonnull( @Nonnull final ExecutableElement method )
-  {
-    return null != ProcessorUtil.findAnnotationByType( method, Constants.NONNULL_ANNOTATION_CLASSNAME );
-  }
-
   @Nonnull
-  private static MethodSpec buildBuildStepImpl()
+  private static MethodSpec buildBuildStepImpl( @Nonnull final ComponentDescriptor descriptor )
   {
-    return MethodSpec.methodBuilder( "build" )
+    final MethodSpec.Builder method = MethodSpec
+      .methodBuilder( "build" )
       .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
-      .addAnnotation( NONNULL_CLASSNAME )
+      .addAnnotation( NONNULL_CLASSNAME );
+    final List<PropDescriptor> syntheticProps =
+      descriptor.getProps().stream().filter( PropDescriptor::isImmutable ).collect( Collectors.toList() );
+    if ( syntheticProps.size() > 1 )
+    {
+      final StringBuilder sb = new StringBuilder();
+      sb.append( "_element.setKey( " );
+      final ArrayList<Object> params = new ArrayList<>();
+      boolean firstProp = true;
+      for ( final PropDescriptor prop : syntheticProps )
+      {
+        if ( !firstProp )
+        {
+          sb.append( " + \"-\" + " );
+        }
+        firstProp = false;
+        final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
+        if ( ImmutablePropKeyStrategy.KEYED == strategy )
+        {
+          sb.append( "( ($T) _element.props().get( $T.Props.$N ) ).getKey()" );
+          params.add( KEYED_CLASSNAME );
+          params.add( descriptor.getEnhancedClassName() );
+          params.add( prop.getConstantName() );
+        }
+        else if ( ImmutablePropKeyStrategy.IS_STRING == strategy )
+        {
+          sb.append( "_element.props().get( $T.Props.$N )" );
+          params.add( descriptor.getEnhancedClassName() );
+          params.add( prop.getConstantName() );
+        }
+        else if ( ImmutablePropKeyStrategy.TO_STRING == strategy )
+        {
+          sb.append( "String.valueOf( _element.props().get( $T.Props.$N ) )" );
+          params.add( descriptor.getEnhancedClassName() );
+          params.add( prop.getConstantName() );
+        }
+        else
+        {
+          assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
+          sb.append( "String.valueOf( $T.<Object>getArezId( _element.props().get( $T.Props.$N ) ) )" );
+          params.add( IDENTIFIABLE_CLASSNAME );
+          params.add( descriptor.getEnhancedClassName() );
+          params.add( prop.getConstantName() );
+        }
+      }
+      sb.append( " )" );
+      method.addStatement( sb.toString(), params.toArray() );
+    }
+    method
       .addStatement( "_element.complete()" )
       .addStatement( "return _element" )
-      .returns( REACT_NODE_CLASSNAME )
-      .build();
+      .returns( REACT_NODE_CLASSNAME );
+    return method.build();
   }
 
   @Nonnull
@@ -485,7 +563,7 @@ final class Generator
     }
     builder.addField( field.build() );
 
-    builder.addMethod( buildBuildStepImpl() );
+    builder.addMethod( buildBuildStepImpl( descriptor ) );
 
     return builder.build();
   }
@@ -513,43 +591,47 @@ final class Generator
 
     builder.superclass( descriptor.getComponentType() );
 
-    if ( descriptor.isArezComponent() )
+    final AnnotationSpec.Builder arezAnnotation =
+      AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
+        addMember( "name", "$S", descriptor.getName() ).
+        addMember( "disposeTrackable", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
+    if ( !descriptor.trackRender() )
     {
-      final AnnotationSpec.Builder annotation =
-        AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
-          addMember( "name", "$S", descriptor.getName() ).
-          addMember( "disposeTrackable", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
-      if ( descriptor.shouldRunArezScheduler() )
-      {
-        annotation.addMember( "deferSchedule", "true" );
-      }
-      if ( descriptor.needsInjection() )
-      {
-        annotation.addMember( "inject", "$T.CONSUME", AREZ_INJECT_MODE_CLASSNAME );
-        annotation.addMember( "dagger", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
-      }
-      builder.addAnnotation( annotation.build() );
-      builder.addModifiers( Modifier.ABSTRACT );
+      arezAnnotation.addMember( "allowEmpty", "true" );
     }
+    if ( descriptor.needsInjection() )
+    {
+      arezAnnotation.addMember( "inject", "$T.CONSUME", AREZ_INJECT_MODE_CLASSNAME );
+    }
+    else
+    {
+      arezAnnotation.addMember( "inject", "$T.NONE", AREZ_INJECT_MODE_CLASSNAME );
+    }
+    builder.addAnnotation( arezAnnotation.build() );
+    builder.addModifiers( Modifier.ABSTRACT );
 
     addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
-    if ( !descriptor.needsInjection() )
+    final ParameterSpec.Builder parameter =
+      ParameterSpec
+        .builder( REACT_NATIVE_COMPONENT_CLASSNAME, "nativeComponent", Modifier.FINAL )
+        .addAnnotation( NONNULL_CLASSNAME );
+    if ( descriptor.needsInjection() )
     {
-      final MethodSpec.Builder ctor = MethodSpec.constructorBuilder();
-      ctor.addParameter( ParameterSpec.builder( REACT_NATIVE_COMPONENT_CLASSNAME, "nativeComponent", Modifier.FINAL )
-                           .addAnnotation( NONNULL_CLASSNAME )
-                           .build() );
-      ctor.addStatement( "bindComponent( nativeComponent )" );
-      builder.addMethod( ctor.build() );
+      parameter.addAnnotation( PER_INSTANCE_CLASSNAME );
+    }
+    final MethodSpec.Builder ctor = MethodSpec.constructorBuilder()
+      .addParameter( parameter.build() )
+      .addStatement( "bindComponent( nativeComponent )" );
+    builder.addMethod( ctor.build() );
+
+    if ( descriptor.trackRender() )
+    {
+      builder.addField( FieldSpec.builder( TypeName.INT, COMPONENT_STATE_FIELD, Modifier.PRIVATE ).build() );
     }
 
     builder.addType( buildFactory() );
-    if ( descriptor.needsInjection() )
-    {
-      builder.addType( buildInjectSupport( descriptor ) );
-    }
     if ( !descriptor.getProps().isEmpty() )
     {
       builder.addType( buildPropsType( descriptor ) );
@@ -560,7 +642,7 @@ final class Generator
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
       builder.addMethod( buildPropMethod( descriptor, prop ).build() );
-      if ( descriptor.isArezComponent() && prop.isObservable() )
+      if ( prop.isObservable() )
       {
         builder.addMethod( buildPropObservableValueRefMethod( prop ).build() );
       }
@@ -592,28 +674,17 @@ final class Generator
       builder.addMethod( buildComponentWillUnmount( descriptor ).build() );
     }
 
-    if ( descriptor.isArezComponent() )
+    if ( descriptor.trackRender() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable ) )
     {
-      builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
       builder.addMethod( buildRender( descriptor ).build() );
     }
 
-    if ( descriptor.needsInjection() && !descriptor.isArezComponent() )
+    if ( descriptor.trackRender() )
     {
-      builder.addMethod( MethodSpec.constructorBuilder().addAnnotation( INJECT_CLASSNAME ).build() );
-    }
+      builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
+      builder.addMethod( buildGetRenderObserver( descriptor ).build() );
+      builder.addMethod( buildPopulateDebugData( descriptor ).build() );
 
-    if ( descriptor.shouldRunArezScheduler() && descriptor.isArezComponent() )
-    {
-      builder.addMethod( MethodSpec.methodBuilder( "triggerScheduler" ).
-        addAnnotation( Override.class ).
-        addModifiers( Modifier.PROTECTED, Modifier.FINAL ).
-        addStatement( "getContext().triggerScheduler()" ).
-        build() );
-    }
-
-    if ( descriptor.isArezComponent() )
-    {
       for ( final MethodDescriptor method : descriptor.getMemoizeMethods() )
       {
         builder.addMethod( buildMemoizeWrapperMethod( method ).build() );
@@ -761,7 +832,7 @@ final class Generator
 
     method.addAnnotation( Override.class );
 
-    if ( descriptor.isArezComponent() && prop.isObservable() )
+    if ( prop.isObservable() )
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
@@ -772,7 +843,7 @@ final class Generator
     }
     final String convertMethodName = getConverter( returnType, methodElement );
     final TypeKind resultKind = methodElement.getReturnType().getKind();
-    if ( !resultKind.isPrimitive() && !isNonnull( methodElement ) )
+    if ( !resultKind.isPrimitive() && !ProcessorUtil.isNonnull( methodElement ) )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
@@ -888,7 +959,7 @@ final class Generator
         requireComma = true;
         final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
         final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
-        if ( !resultKind.isPrimitive() && !isNonnull( prop.getMethod() ) )
+        if ( !resultKind.isPrimitive() && !ProcessorUtil.isNonnull( prop.getMethod() ) )
         {
           sb.append( "$T.uncheckedCast( props.getAny( Props.$N ) )" );
           params.add( JS_CLASSNAME );
@@ -968,7 +1039,7 @@ final class Generator
     {
       final CodeBlock.Builder validateBlock = CodeBlock.builder();
       validateBlock.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CLASSNAME );
-      validateBlock.addStatement( "validatePropValues( nextProps )" );
+      validateBlock.addStatement( "$N( nextProps )", VALIDATE_PROPS_METHOD );
       validateBlock.endControlFlow();
       method.addCode( validateBlock.build() );
     }
@@ -984,9 +1055,9 @@ final class Generator
 
     if ( observableProps.isEmpty() && updateOnChangeProps.isEmpty() )
     {
-      if ( descriptor.isArezComponent() )
+      if ( descriptor.trackRender() )
       {
-        method.addStatement( "return hasRenderDepsChanged()" );
+        method.addStatement( "return $T.SCHEDULED == $N", COMPONENT_STATE_CLASSNAME, COMPONENT_STATE_FIELD );
       }
       else
       {
@@ -1034,9 +1105,11 @@ final class Generator
       }
       if ( hasObservablePropsToUpdateOnChange )
       {
-        if ( descriptor.isArezComponent() )
+        if ( descriptor.trackRender() )
         {
-          method.addStatement( "return modified || hasRenderDepsChanged()" );
+          method.addStatement( "return modified || $T.SCHEDULED == $N",
+                               COMPONENT_STATE_CLASSNAME,
+                               COMPONENT_STATE_FIELD );
         }
         else
         {
@@ -1045,9 +1118,9 @@ final class Generator
       }
       else
       {
-        if ( descriptor.isArezComponent() )
+        if ( descriptor.trackRender() )
         {
-          method.addStatement( "return hasRenderDepsChanged()" );
+          method.addStatement( "return $T.SCHEDULED == $N", COMPONENT_STATE_CLASSNAME, COMPONENT_STATE_FIELD );
         }
         else
         {
@@ -1135,22 +1208,21 @@ final class Generator
         .methodBuilder( COMPONENT_WILL_UNMOUNT_METHOD )
         .addModifiers( Modifier.PRIVATE );
 
-    final ExecutableElement preUnmount = descriptor.getPreUnmount();
-    if ( null != preUnmount )
+    if ( descriptor.trackRender() )
     {
-      method.addStatement( "$N()", preUnmount.getSimpleName().toString() );
+      method.addStatement( "$N = $T.UNMOUNTED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
     }
-    if ( descriptor.isArezComponent() )
-    {
-      method.addStatement( "$T.dispose( this )", DISPOSABLE_CLASSNAME );
-    }
+    // We always dispose here rather than checking hasArezElements()
+    // as this code path is only invoked when there are Arez elements, when we are in non-production
+    // mode (and thus this makes debugging easier). Thus no need to have a guard
+    method.addStatement( "(($T) this).dispose()", descriptor.getArezClassName() );
     return method;
   }
 
   @Nonnull
   private static MethodSpec.Builder buildRender( @Nonnull final ComponentDescriptor descriptor )
   {
-    assert descriptor.isArezComponent();
+    assert descriptor.trackRender() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable );
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "render" )
       .addAnnotation( Override.class )
@@ -1158,22 +1230,25 @@ final class Generator
       .addModifiers( Modifier.PROTECTED )
       .returns( REACT_NODE_CLASSNAME );
 
-    final AnnotationSpec.Builder observe =
-      AnnotationSpec
-        .builder( OBSERVE_ANNOTATION_CLASSNAME )
-        .addMember( "name", "$S", "render" )
-        .addMember( "priority", "$T.LOW", PRIORITY_CLASSNAME )
-        .addMember( "executor", "$T.EXTERNAL", EXECUTOR_CLASSNAME )
-        .addMember( "observeLowerPriorityDependencies", "true" )
-        .addMember( "reportResult", "false" );
-    if ( descriptor.allowNoArezDeps() )
+    if ( descriptor.trackRender() )
     {
-      observe.addMember( "depType", "$T.AREZ_OR_NONE", DEP_TYPE_CLASSNAME );
-    }
-    method.addAnnotation( observe.build() );
+      final AnnotationSpec.Builder observe =
+        AnnotationSpec
+          .builder( OBSERVE_ANNOTATION_CLASSNAME )
+          .addMember( "name", "$S", "render" )
+          .addMember( "priority", "$T.LOW", PRIORITY_CLASSNAME )
+          .addMember( "executor", "$T.EXTERNAL", EXECUTOR_CLASSNAME )
+          .addMember( "observeLowerPriorityDependencies", "true" )
+          .addMember( "reportResult", "false" );
+      if ( ComponentType.MAYBE_TRACKING == descriptor.getType() )
+      {
+        observe.addMember( "depType", "$T.AREZ_OR_NONE", DEP_TYPE_CLASSNAME );
+      }
+      method.addAnnotation( observe.build() );
 
-    method.addStatement( "clearRenderDepsChanged()" );
-    method.addStatement( "pauseArezSchedulerUntilRenderLoopComplete()" );
+      method.addStatement( "$N = $T.IDLE", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
+      method.addStatement( "$T.pauseUntilRenderLoopComplete()", SCHEDULER_UTIL_CLASSNAME );
+    }
     method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
     final List<PropDescriptor> disposableProps =
@@ -1200,7 +1275,7 @@ final class Generator
       method.addCode( block.build() );
     }
 
-    if ( !descriptor.allowNoArezDeps() )
+    if ( ComponentType.TRACKING == descriptor.getType() )
     {
       method.addStatement( "final $T result = super.render()", REACT_NODE_CLASSNAME );
 
@@ -1209,7 +1284,7 @@ final class Generator
                                       AREZ_CLASSNAME,
                                       AREZ_CLASSNAME );
       depCheckBlock.addStatement(
-        "$T.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> \"ReactArezComponent render completed on '\" + this + \"' but the component does not have any Arez dependencies. This component should extend react4j.Component instead.\" )",
+        "$T.invariant( () -> !getRenderObserver().getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> \"ReactArezComponent render completed on '\" + this + \"' but the component does not have any Arez dependencies. This component should extend react4j.Component instead.\" )",
         GUARDS_CLASSNAME );
       depCheckBlock.endControlFlow();
       method.addCode( depCheckBlock.build() );
@@ -1223,22 +1298,68 @@ final class Generator
   }
 
   @Nonnull
+  private static MethodSpec.Builder buildGetRenderObserver( @Nonnull final ComponentDescriptor descriptor )
+  {
+    assert descriptor.trackRender();
+    return MethodSpec
+      .methodBuilder( "getRenderObserver" )
+      .addAnnotation( NONNULL_CLASSNAME )
+      .addAnnotation( OBSERVER_REF_ANNOTATION_CLASSNAME )
+      .addModifiers( Modifier.ABSTRACT )
+      .returns( OBSERVER_CLASSNAME );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildPopulateDebugData( @Nonnull final ComponentDescriptor descriptor )
+  {
+    assert descriptor.trackRender();
+    final MethodSpec.Builder method = MethodSpec
+      .methodBuilder( "populateDebugData" )
+      .addAnnotation( Override.class )
+      .addModifiers( Modifier.FINAL, Modifier.PROTECTED )
+      .addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "data", Modifier.FINAL )
+                       .addAnnotation( NONNULL_CLASSNAME )
+                       .build() );
+    final CodeBlock.Builder block = CodeBlock.builder();
+    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() && $T.areSpiesEnabled() )",
+                            REACT_CLASSNAME,
+                            AREZ_CLASSNAME );
+    block.addStatement( "$T.collectDependencyDebugData( getRenderObserver(), data )", INTROSPECT_UTIL_CLASSNAME );
+    block.endControlFlow();
+    method.addCode( block.build() );
+    return method;
+  }
+
+  @Nonnull
   private static MethodSpec.Builder buildOnRenderDepsChange( @Nonnull final ComponentDescriptor descriptor )
   {
-    assert descriptor.isArezComponent();
-    return MethodSpec
+    assert descriptor.trackRender();
+    final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "onRenderDepsChange" )
-      .addModifiers( Modifier.FINAL )
-      .addStatement( "onRenderDepsChange( $N )", String.valueOf( descriptor.hasObservableProps() ) );
+      .addModifiers( Modifier.FINAL );
+
+    final CodeBlock.Builder outer = CodeBlock.builder();
+    outer.beginControlFlow( "if ( $T.IDLE == $N )", COMPONENT_STATE_CLASSNAME, COMPONENT_STATE_FIELD );
+    outer.addStatement( "$N = $T.SCHEDULED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
+    if ( descriptor.hasObservableProps() )
+    {
+      outer.addStatement( "scheduleRender( false )" );
+    }
+    else
+    {
+      outer.addStatement( "scheduleRender()" );
+    }
+    outer.endControlFlow();
+    method.addCode( outer.build() );
+    return method;
   }
 
   @Nonnull
   private static MethodSpec.Builder buildPropValidatorMethod( @Nonnull final ComponentDescriptor descriptor )
   {
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "validatePropValues" ).
-        addAnnotation( Override.class ).
-        addModifiers( Modifier.PROTECTED, Modifier.FINAL ).
+      MethodSpec.methodBuilder( VALIDATE_PROPS_METHOD ).
+        addModifiers( Modifier.PRIVATE ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
           addAnnotation( NONNULL_CLASSNAME ).build() );
 
@@ -1248,7 +1369,7 @@ final class Generator
       final String rawName = "raw$" + name;
       final String typedName = "typed$" + name;
       method.addStatement( "final $T $N = props.get( Props.$N )", Object.class, rawName, prop.getConstantName() );
-      final boolean isNonNull = isNonnull( prop.getMethod() );
+      final boolean isNonNull = ProcessorUtil.isNonnull( prop.getMethod() );
       if ( !prop.isOptional() && isNonNull )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
@@ -1286,50 +1407,61 @@ final class Generator
   private static TypeSpec buildInjectSupport( @Nonnull final ComponentDescriptor descriptor )
   {
     assert descriptor.needsInjection();
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( "InjectSupport" );
+    final TypeSpec.Builder builder =
+      TypeSpec.classBuilder( "InjectSupport" ).addModifiers( Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL );
 
-    //Ensure it can not be subclassed
-    builder.addModifiers( Modifier.FINAL );
-    builder.addModifiers( Modifier.STATIC );
-
-    builder.addField( buildProviderField( descriptor ).build() );
-    builder.addMethod( buildSetProviderMethod( descriptor ).build() );
-    builder.addMethod( buildGetProviderMethod( descriptor ).build() );
+    builder.addField( buildFactoryField( descriptor ).build() );
+    builder.addMethod( buildSetFactoryMethod( descriptor ).build() );
+    builder.addMethod( buildInjectCreateMethod( descriptor ).build() );
 
     return builder.build();
   }
 
-  private static FieldSpec.Builder buildProviderField( @Nonnull final ComponentDescriptor descriptor )
+  private static FieldSpec.Builder buildFactoryField( @Nonnull final ComponentDescriptor descriptor )
   {
-    return FieldSpec.builder( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
-                                                         TypeName.get( descriptor.getDeclaredType() ) ),
-                              "c_provider",
+    return FieldSpec.builder( descriptor.getArezClassName().nestedClass( "Factory" ),
+                              "c_factory",
                               Modifier.STATIC,
                               Modifier.PRIVATE );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildSetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildSetFactoryMethod( @Nonnull final ComponentDescriptor descriptor )
   {
-    return MethodSpec.methodBuilder( "setProvider" ).
-      addModifiers( Modifier.STATIC ).
-      addParameter( ParameterizedTypeName.get( PROVIDER_CLASSNAME,
-                                               TypeName.get( descriptor.getDeclaredType() ) ),
-                    "provider",
-                    Modifier.FINAL ).
-      addStatement( "c_provider = provider" );
+    final MethodSpec.Builder method = MethodSpec
+      .methodBuilder( "setFactory" )
+      .addModifiers( Modifier.STATIC )
+      .addParameter( ParameterSpec
+                       .builder( descriptor.getArezClassName().nestedClass( "Factory" ), "factory", Modifier.FINAL )
+                       .addAnnotation( NONNULL_CLASSNAME ).build() );
+    final CodeBlock.Builder block = CodeBlock.builder();
+    block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+    block.addStatement( "$T.invariant( () -> null == c_factory, () -> \"Attempted to re-initialize the React4j " +
+                        "dependency injection provider for the component named '$N'. Initialization should only " +
+                        "occur a single time.\" )", GUARDS_CLASSNAME, descriptor.getName() );
+    block.endControlFlow();
+    method.addCode( block.build() );
+    method.addStatement( "c_factory = factory" );
+    return method;
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildGetProviderMethod( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildInjectCreateMethod( @Nonnull final ComponentDescriptor descriptor )
   {
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( "getProvider" ).
-      addModifiers( Modifier.PRIVATE, Modifier.STATIC ).
-      returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, TypeName.get( descriptor.getDeclaredType() ) ) );
+    final ParameterSpec.Builder parameter =
+      ParameterSpec
+        .builder( REACT_NATIVE_COMPONENT_CLASSNAME, "nativeComponent", Modifier.FINAL )
+        .addAnnotation( NONNULL_CLASSNAME );
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( "create" )
+        .addModifiers( Modifier.PUBLIC, Modifier.STATIC )
+        .addParameter( parameter.build() )
+        .returns( descriptor.getEnhancedClassName() );
     final CodeBlock.Builder block = CodeBlock.builder();
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
     block.addStatement(
-      "$T.invariant( () -> null != c_provider, () -> \"Attempted to create an instance of the React4j " +
+      "$T.invariant( () -> null != c_factory, () -> \"Attempted to create an instance of the React4j " +
       "component named '$N' before the dependency injection provider has been initialized. Please see " +
       "the documentation at https://react4j.github.io/dependency_injection for directions how to " +
       "configure dependency injection.\" )",
@@ -1337,7 +1469,7 @@ final class Generator
       descriptor.getName() );
     block.endControlFlow();
     method.addCode( block.build() );
-    return method.addStatement( "return c_provider" );
+    return method.addStatement( "return c_factory.create( nativeComponent )" );
   }
 
   @Nonnull
@@ -1432,11 +1564,12 @@ final class Generator
     builder.addModifiers( Modifier.STATIC );
     builder.addModifiers( Modifier.PRIVATE );
 
-    final TypeName superType =
-      ParameterizedTypeName.get( REACT_NATIVE_ADAPTER_COMPONENT_CLASSNAME, descriptor.getComponentType() );
-
-    builder.superclass( superType );
+    builder.superclass( REACT_NATIVE_COMPONENT_CLASSNAME );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
+
+    builder.addField( FieldSpec
+                        .builder( descriptor.getEnhancedClassName(), COMPONENT_FIELD, Modifier.PRIVATE )
+                        .build() );
 
     if ( lite )
     {
@@ -1451,6 +1584,10 @@ final class Generator
       if ( descriptor.generateShouldComponentUpdateInLiteLifecycle() )
       {
         builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
+      }
+      if ( descriptor.generateComponentWillUnmountInLiteLifecycle() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
       }
     }
     else
@@ -1467,18 +1604,18 @@ final class Generator
       {
         builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
       }
+      if ( descriptor.generateComponentWillUnmount() )
+      {
+        builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
+      }
     }
     if ( descriptor.generateComponentPreUpdate() )
     {
       builder.addSuperinterface( ON_GET_SNAPSHOT_BEFORE_UPDATE_CLASSNAME );
     }
-    if ( descriptor.generateComponentWillUnmount() )
-    {
-      builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
-    }
     if ( descriptor.generateComponentDidCatch() )
     {
-      builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
+      builder.addSuperinterface( ON_COMPONENT_DID_CATCH_CLASSNAME );
     }
 
     // build the constructor
@@ -1487,76 +1624,89 @@ final class Generator
         ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
           addAnnotation( NULLABLE_CLASSNAME );
       final MethodSpec.Builder method =
-        MethodSpec.constructorBuilder().
-          addParameter( props.build() );
-      method.addAnnotation( JS_CONSTRUCTOR_CLASSNAME );
+        MethodSpec.constructorBuilder().addParameter( props.build() ).addAnnotation( JS_CONSTRUCTOR_CLASSNAME );
       method.addStatement( "super( props )" );
-      builder.addMethod( method.build() );
-    }
-
-    // build createComponent
-    {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "createComponent" ).
-          addAnnotation( Override.class ).
-          addModifiers( Modifier.PROTECTED ).
-          returns( descriptor.getComponentType() );
       if ( descriptor.needsInjection() )
       {
-        method.addStatement( "return InjectSupport.getProvider().get()" );
+        method.addStatement( "$N = $T.InjectSupport.create( this )",
+                             COMPONENT_FIELD,
+                             descriptor.getDaggerComponentExtensionClassName() );
       }
       else
       {
         final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
-        method.addStatement( "return new $T" + infix + "( this )", descriptor.getClassNameToConstruct() );
+        method.addStatement( "$N = new $T" + infix + "( this )", COMPONENT_FIELD, descriptor.getArezClassName() );
       }
+
+      if ( descriptor.hasValidatedProps() )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CLASSNAME );
+        block.addStatement( "assert null != props" );
+        block.addStatement( "$N.$N( props )", COMPONENT_FIELD, VALIDATE_PROPS_METHOD );
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
+
       builder.addMethod( method.build() );
     }
 
     if ( lite ? descriptor.generateComponentDidMountInLiteLifecycle() : descriptor.generateComponentDidMount() )
     {
       // We add this so the DevTool sees any debug data saved
-      builder.addMethod( buildNativeComponentDidMount( descriptor ).build() );
+      builder.addMethod( buildNativeComponentDidMount().build() );
     }
     if ( lite ? descriptor.generateShouldComponentUpdateInLiteLifecycle() : descriptor.generateShouldComponentUpdate() )
     {
-      builder.addMethod( buildNativeShouldComponentUpdate( descriptor ).build() );
+      builder.addMethod( buildNativeShouldComponentUpdate().build() );
     }
     if ( descriptor.generateComponentPreUpdate() )
     {
-      builder.addMethod( buildNativeComponentPreUpdate( descriptor ).build() );
+      builder.addMethod( buildNativeComponentPreUpdate().build() );
     }
     if ( lite ? descriptor.generateComponentDidUpdateInLiteLifecycle() : descriptor.generateComponentDidUpdate() )
     {
       // We add this for Arez components so the DevTool sees any debug data saved
       builder.addMethod( buildNativeComponentDidUpdate( descriptor ).build() );
     }
-    if ( descriptor.generateComponentWillUnmount() )
+    if ( lite ? descriptor.generateComponentWillUnmountInLiteLifecycle() : descriptor.generateComponentWillUnmount() )
     {
-      builder.addMethod( buildNativeComponentWillUnmount( descriptor ).build() );
+      builder.addMethod( buildNativeComponentWillUnmount().build() );
     }
     if ( descriptor.generateComponentDidCatch() )
     {
-      builder.addMethod( buildNativeComponentDidCatch().build() );
+      builder.addMethod( buildNativeComponentDidCatch( descriptor ).build() );
     }
+
+    builder.addMethod( buildNativeRender().build() );
 
     return builder.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeComponentDidMount( @Nonnull final ComponentDescriptor componentDescriptor )
+  private static MethodSpec.Builder buildNativeRender()
+  {
+    return MethodSpec
+      .methodBuilder( "render" )
+      .addAnnotation( Override.class )
+      .addAnnotation( NULLABLE_CLASSNAME )
+      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .returns( REACT_NODE_CLASSNAME )
+      .addStatement( "return $N.render()", COMPONENT_FIELD );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildNativeComponentDidMount()
   {
     return MethodSpec
       .methodBuilder( "componentDidMount" )
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .addStatement( "(($T) component() ).$N()",
-                     componentDescriptor.getEnhancedClassName(),
-                     COMPONENT_DID_MOUNT_METHOD );
+      .addStatement( "$N.$N()", COMPONENT_FIELD, COMPONENT_DID_MOUNT_METHOD );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeShouldComponentUpdate( @Nonnull final ComponentDescriptor componentDescriptor )
+  private static MethodSpec.Builder buildNativeShouldComponentUpdate()
   {
     return MethodSpec
       .methodBuilder( "shouldComponentUpdate" )
@@ -1567,13 +1717,11 @@ final class Generator
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
-      .addStatement( "return (($T) component() ).$N( nextProps )",
-                     componentDescriptor.getEnhancedClassName(),
-                     SHOULD_COMPONENT_UPDATE_METHOD );
+      .addStatement( "return $N.$N( nextProps )", COMPONENT_FIELD, SHOULD_COMPONENT_UPDATE_METHOD );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeComponentPreUpdate( @Nonnull final ComponentDescriptor componentDescriptor )
+  private static MethodSpec.Builder buildNativeComponentPreUpdate()
   {
     return MethodSpec
       .methodBuilder( "getSnapshotBeforeUpdate" )
@@ -1588,9 +1736,7 @@ final class Generator
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
-      .addStatement( "(($T) component() ).$N( prevProps )",
-                     componentDescriptor.getEnhancedClassName(),
-                     COMPONENT_PRE_UPDATE_METHOD )
+      .addStatement( "$N.$N( prevProps )", COMPONENT_FIELD, COMPONENT_PRE_UPDATE_METHOD )
       .addStatement( "return null" );
   }
 
@@ -1607,45 +1753,53 @@ final class Generator
                        .build() );
     if ( descriptor.hasPostUpdateOnPropChange() )
     {
-      return method.addStatement( "(($T) component() ).$N( prevProps )",
-                                  descriptor.getEnhancedClassName(),
-                                  COMPONENT_DID_UPDATE_METHOD );
+      return method.addStatement( "$N.$N( prevProps )", COMPONENT_FIELD, COMPONENT_DID_UPDATE_METHOD );
     }
     else
     {
-      return method.addStatement( "(($T) component() ).$N()",
-                                  descriptor.getEnhancedClassName(),
-                                  COMPONENT_DID_UPDATE_METHOD );
+      return method.addStatement( "$N.$N()", COMPONENT_FIELD, COMPONENT_DID_UPDATE_METHOD );
     }
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeComponentWillUnmount( @Nonnull final ComponentDescriptor componentDescriptor )
+  private static MethodSpec.Builder buildNativeComponentWillUnmount()
   {
     return MethodSpec
       .methodBuilder( "componentWillUnmount" )
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .addStatement( "(($T) component() ).$N()",
-                     componentDescriptor.getEnhancedClassName(),
-                     COMPONENT_WILL_UNMOUNT_METHOD );
+      .addStatement( "$N.$N()", COMPONENT_FIELD, COMPONENT_WILL_UNMOUNT_METHOD );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeComponentDidCatch()
+  private static MethodSpec.Builder buildNativeComponentDidCatch( @Nonnull final ComponentDescriptor descriptor )
   {
-    return MethodSpec
+    final ExecutableElement onError = descriptor.getOnError();
+    assert null != onError;
+    final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "componentDidCatch" )
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .returns( TypeName.get( Object.class ) )
       .addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
       .addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
-                       .build() )
-      .addStatement( "performComponentDidCatch( error, info )" );
+                       .build() );
+
+    final List<? extends VariableElement> parameters = onError.getParameters();
+    final String args =
+      parameters.isEmpty() ?
+      "()" :
+      "( " +
+      parameters.stream()
+        .map( p -> TypeName.get( p.asType() ).toString().equals( Constants.JS_ERROR_CLASSNAME ) ? "error" : "info" )
+        .collect(
+          Collectors.joining( ", " ) ) +
+      " )";
+
+    method.addStatement( "$N.$N" + args, COMPONENT_FIELD, onError.getSimpleName() );
+    return method;
   }
 
   private static String asTypeArgumentsInfix( final DeclaredType declaredType )
@@ -1657,7 +1811,7 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildArezDaggerComponentExtension( @Nonnull final ComponentDescriptor descriptor )
+  static TypeSpec buildDaggerComponentExtension( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerComponentExtensionClassName() );
     final ClassName superClassName = descriptor.getArezDaggerExtensionClassName();
@@ -1670,12 +1824,15 @@ final class Generator
     final MethodSpec.Builder method =
       MethodSpec
         .methodBuilder( "bind" + descriptor.getName() )
-        .addModifiers( Modifier.PUBLIC, Modifier.DEFAULT )
-        .addStatement( "$T.super.$N()", superClassName, "bind" + descriptor.getName() )
-        .addStatement( "$T.InjectSupport.setProvider( () -> ($T) $N().createProvider().get() )",
-                       descriptor.getEnhancedClassName(),
-                       descriptor.getClassName(),
-                       "get" + descriptor.getName() + "DaggerSubcomponent" );
+        .addModifiers( Modifier.PUBLIC, Modifier.DEFAULT );
+
+    if ( descriptor.nonConstructorInjections() )
+    {
+      method.addStatement( "$T.super.$N()", superClassName, "bind" + descriptor.getName() );
+    }
+
+    method.addStatement( "InjectSupport.setFactory( $N().createFactory() )",
+                         "get" + descriptor.getName() + "DaggerSubcomponent" );
 
     builder.addMethod( method.build() );
 
@@ -1689,106 +1846,10 @@ final class Generator
                          .returns( ClassName.bestGuess( "DaggerSubcomponent" ) )
                          .build() );
 
-    return builder.build();
-  }
-
-  @Nonnull
-  static TypeSpec buildDaggerComponentExtension( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerComponentExtensionClassName() );
-    addGeneratedAnnotation( descriptor, builder );
-    addOriginatingTypes( descriptor.getElement(), builder );
-
-    builder.addModifiers( Modifier.PUBLIC );
-
+    if ( descriptor.needsInjection() )
     {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "get" + descriptor.getName() + "DaggerSubcomponent" ).
-          addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT ).
-          returns( ClassName.bestGuess( "DaggerSubcomponent" ) );
-      builder.addMethod( method.build() );
+      builder.addType( buildInjectSupport( descriptor ) );
     }
-    {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "bind" + descriptor.getName() ).
-          addModifiers( Modifier.PUBLIC, Modifier.DEFAULT );
-      if ( descriptor.getElement().getModifiers().contains( Modifier.PUBLIC ) )
-      {
-        method.addStatement( "$T.InjectSupport.setProvider( $N().createProvider() )",
-                             descriptor.getEnhancedClassName(),
-                             "get" + descriptor.getName() + "DaggerSubcomponent" );
-      }
-      else
-      {
-        method.addStatement( "$T.InjectSupport.setProvider( () -> ($T) $N().createProvider().get() )",
-                             descriptor.getEnhancedClassName(),
-                             descriptor.getClassName(),
-                             "get" + descriptor.getName() + "DaggerSubcomponent" );
-      }
-      builder.addMethod( method.build() );
-    }
-
-    builder.addType( buildDaggerModule( descriptor ) );
-    builder.addType( buildDaggerComponent( descriptor ) );
-
-    return builder.build();
-  }
-
-  @Nonnull
-  private static TypeSpec buildDaggerComponent( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "DaggerSubcomponent" );
-
-    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
-    final AnnotationSpec.Builder subcomponent =
-      AnnotationSpec.builder( ClassName.bestGuess( Constants.DAGGER_SUBCOMPONENT_CLASSNAME ) );
-    subcomponent.addMember( "modules", "DaggerModule.class" );
-    builder.addAnnotation( subcomponent.build() );
-
-    if ( descriptor.getElement().getModifiers().contains( Modifier.PUBLIC ) )
-    {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "createProvider" ).
-          addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
-          returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, descriptor.getClassName() ) );
-      builder.addMethod( method.build() );
-    }
-    else
-    {
-      final MethodSpec.Builder method =
-        MethodSpec.methodBuilder( "createProvider" ).
-          addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
-          returns( ParameterizedTypeName.get( PROVIDER_CLASSNAME, COMPONENT_CLASSNAME ) );
-      builder.addMethod( method.build() );
-    }
-
-    return builder.build();
-  }
-
-  @Nonnull
-  private static TypeSpec buildDaggerModule( @Nonnull final ComponentDescriptor descriptor )
-  {
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "DaggerModule" );
-
-    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
-    builder.addAnnotation( ClassName.bestGuess( Constants.DAGGER_MODULE_CLASSNAME ) );
-
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( "bindComponent" ).
-        addAnnotation( ClassName.bestGuess( Constants.DAGGER_BINDS_CLASSNAME ) ).
-        addModifiers( Modifier.ABSTRACT, Modifier.PUBLIC ).
-        addParameter( descriptor.getClassNameToConstruct(), "component" ).
-        returns( descriptor.getClassName() );
-    if ( descriptor.getElement().getModifiers().contains( Modifier.PUBLIC ) )
-    {
-      method.returns( descriptor.getClassName() );
-    }
-    else
-    {
-      method.returns( COMPONENT_CLASSNAME );
-    }
-
-    builder.addMethod( method.build() );
 
     return builder.build();
   }
@@ -1803,11 +1864,14 @@ final class Generator
 
     final int propsSize = props.size();
 
-    // Key step
-    final Step keyStep = builder.addStep();
-    final StepMethodType keyStepMethodType = 0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE;
-    keyStep.addMethod( "key", "key", TypeName.get( String.class ), keyStepMethodType );
-    keyStep.addMethod( "key", "*key_int*", TypeName.INT, keyStepMethodType );
+    if ( !descriptor.hasSyntheticKey() )
+    {
+      // Key step
+      final Step keyStep = builder.addStep();
+      final StepMethodType keyStepMethodType = 0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE;
+      keyStep.addMethod( "key", "key", TypeName.get( String.class ), keyStepMethodType );
+      keyStep.addMethod( "key", "*key_int*", TypeName.INT, keyStepMethodType );
+    }
 
     final boolean hasSingleOptional = props.stream().filter( PropDescriptor::isOptional ).count() == 1;
     boolean hasRequiredAfterOptional = false;

@@ -2,10 +2,12 @@
   <inherits name='org.realityforge.braincheck.BrainCheck'/>
   <inherits name='jsinterop.annotations.Annotations'/>
   <inherits name='elemental2.core.Core'/>
+  <inherits name='elemental2.promise.Promise'/>
+  <inherits name='arez.component.Component'/>
 
   <source path='' includes='*.java'/>
   <source path='annotations' includes='*.java'/>
-  <source path='internal' includes='*.java'/>
+  <source path='internal' includes='**/*.java'/>
 
   <public path='public' includes='*'/>
 

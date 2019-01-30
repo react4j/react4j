@@ -2,10 +2,13 @@ package com.example.arez;
 
 import arez.Arez;
 import arez.Disposable;
+import arez.Observer;
 import arez.annotations.ArezComponent;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
+import arez.annotations.InjectMode;
 import arez.annotations.Observe;
+import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -17,19 +20,23 @@ import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeAdapterComponent;
 import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.arez.ComponentState;
+import react4j.internal.arez.IntrospectUtil;
+import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "AutorunArezReactComponent",
     disposeTrackable = Feature.DISABLE,
-    deferSchedule = true
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_AutorunArezReactComponent extends AutorunArezReactComponent {
+  private int $$react4j$$_state;
+
   React4j_AutorunArezReactComponent(@Nonnull final NativeComponent nativeComponent) {
     bindComponent( nativeComponent );
   }
@@ -56,11 +63,8 @@ abstract class React4j_AutorunArezReactComponent extends AutorunArezReactCompone
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    Disposable.dispose( this );
-  }
-
-  final void onRenderDepsChange() {
-    onRenderDepsChange( false );
+    $$react4j$$_state = ComponentState.UNMOUNTED;
+    ((Arez_React4j_AutorunArezReactComponent) this).dispose();
   }
 
   @Override
@@ -73,66 +77,87 @@ abstract class React4j_AutorunArezReactComponent extends AutorunArezReactCompone
       reportResult = false
   )
   protected ReactNode render() {
-    clearRenderDepsChanged();
-    pauseArezSchedulerUntilRenderLoopComplete();
+    $$react4j$$_state = ComponentState.IDLE;
+    SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
-      Guards.invariant( () -> !getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
+      Guards.invariant( () -> !getRenderObserver().getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "ReactArezComponent render completed on '" + this + "' but the component does not have any Arez dependencies. This component should extend react4j.Component instead." );
     }
     return result;
   }
 
+  final void onRenderDepsChange() {
+    if ( ComponentState.IDLE == $$react4j$$_state ) {
+      $$react4j$$_state = ComponentState.SCHEDULED;
+      scheduleRender();
+    }
+  }
+
+  @Nonnull
+  @ObserverRef
+  abstract Observer getRenderObserver();
+
   @Override
-  protected final void triggerScheduler() {
-    getContext().triggerScheduler();
+  protected final void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
+    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
+      IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
+    }
   }
 
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class LiteNativeReactComponent extends NativeAdapterComponent<AutorunArezReactComponent> implements OnComponentWillUnmount {
+  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentWillUnmount {
+    private React4j_AutorunArezReactComponent $$react4j$$_component;
+
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-    }
-
-    @Override
-    protected AutorunArezReactComponent createComponent() {
-      return new Arez_React4j_AutorunArezReactComponent( this );
+      $$react4j$$_component = new Arez_React4j_AutorunArezReactComponent( this );
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((React4j_AutorunArezReactComponent) component() ).$$react4j$$_componentWillUnmount();
-    }
-  }
-
-  private static final class NativeReactComponent extends NativeAdapterComponent<AutorunArezReactComponent> implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
-    @JsConstructor
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
     @Override
-    protected AutorunArezReactComponent createComponent() {
-      return new Arez_React4j_AutorunArezReactComponent( this );
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
+    }
+  }
+
+  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
+    private React4j_AutorunArezReactComponent $$react4j$$_component;
+
+    @JsConstructor
+    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+      super( props );
+      $$react4j$$_component = new Arez_React4j_AutorunArezReactComponent( this );
     }
 
     @Override
     public final void componentDidMount() {
-      ((React4j_AutorunArezReactComponent) component() ).$$react4j$$_componentDidMount();
+      $$react4j$$_component.$$react4j$$_componentDidMount();
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      ((React4j_AutorunArezReactComponent) component() ).$$react4j$$_componentDidUpdate();
+      $$react4j$$_component.$$react4j$$_componentDidUpdate();
     }
 
     @Override
     public final void componentWillUnmount() {
-      ((React4j_AutorunArezReactComponent) component() ).$$react4j$$_componentWillUnmount();
+      $$react4j$$_component.$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    @Nullable
+    public final ReactNode render() {
+      return $$react4j$$_component.render();
     }
   }
 }

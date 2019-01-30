@@ -16,56 +16,63 @@ public class BuildStatsTest
   public void raw()
     throws Exception
   {
-    compareSizesForBranch( "raw" );
+    compareSizesForBranch( "raw", true );
   }
 
   @Test
   public void arez()
     throws Exception
   {
-    compareSizesForBranch( "arez" );
+    compareSizesForBranch( "arez", true );
   }
 
   @Test
   public void dagger()
     throws Exception
   {
-    compareSizesForBranch( "dagger" );
+    compareSizesForBranch( "dagger", true );
   }
 
   @Test
   public void raw_j2cl()
     throws Exception
   {
-    compareSizesForBranch( "raw_maven_j2cl" );
+    compareSizesForBranch( "raw_maven_j2cl", true );
   }
 
   @Test
   public void arez_j2cl()
     throws Exception
   {
-    compareSizesForBranch( "arez_maven_j2cl" );
+    compareSizesForBranch( "arez_maven_j2cl", true );
   }
 
   @Test
   public void dagger_j2cl()
     throws Exception
   {
-    compareSizesForBranch( "dagger_maven_j2cl" );
+    compareSizesForBranch( "dagger_maven_j2cl", true );
   }
 
-  private void compareSizesForBranch( @Nonnull final String branch )
+  @Test
+  public void sithtracker()
+    throws Exception
+  {
+    compareSizesForBranch( "sithtracker", false );
+  }
+
+  private void compareSizesForBranch( @Nonnull final String branch, final boolean includeBranchInFixtureKey )
     throws Exception
   {
     final Properties buildStatistics = loadBuildStatistics();
     final Properties fixtureStatistics = loadFixtureStatistics();
 
     final long nextVersionFixtureSize =
-      extractSize( fixtureStatistics, getNextVersion() + "." + branch );
+      extractSize( fixtureStatistics, getNextVersion() + ( includeBranchInFixtureKey ? "." + branch : "" ) );
     final long currentVersionFixtureSize =
-      extractSize( fixtureStatistics, getCurrentVersion() + "." + branch );
-    final String beforeBuild = branch + ".before";
-    final String afterBuild = branch + ".after";
+      extractSize( fixtureStatistics, getCurrentVersion() + ( includeBranchInFixtureKey ? "." + branch : "" ) );
+    final String beforeBuild = branch + "." + "before";
+    final String afterBuild = branch + "." + "after";
     final long beforeSize = extractSize( buildStatistics, beforeBuild );
     final long afterSize = extractSize( buildStatistics, afterBuild );
     final boolean j2cl = branch.endsWith( "_j2cl" );

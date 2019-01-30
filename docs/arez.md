@@ -2,6 +2,8 @@
 title: Arez
 ---
 
+**WARNING**: This document is no longer up to date. We hope to fix this in the medium term.
+
 The combination of [Arez](https://arez.github.io) and React4j creates a powerful toolkit. Arez manages
 the application state and React4j transforms the application state into a view. The React4jArez library provides
 the mechanisms for synchronizing the application state with the view. Both React4j and Arez are based on functional
@@ -20,7 +22,7 @@ developer controls the scope of the re-render by controlling the size of the com
 ## Getting Started
 
 The simplest approach to defining an Arez enabled component is simply to extend
-{@api_url: arez.ReactArezComponent}. This will result in the `render()` method being invoked
+`ReactArezComponent`. This will result in the `render()` method being invoked
 within the scope of a read-only, tracking (Arez) transaction. Changes to the observable state accessed within the
 scope of the `render()` will schedule the component for re-rendering.
 

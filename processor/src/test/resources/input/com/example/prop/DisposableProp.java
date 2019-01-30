@@ -1,15 +1,15 @@
 package com.example.prop;
 
 import javax.annotation.Nullable;
+import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Feature;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
-import react4j.arez.ReactArezComponent;
 
-@ReactComponent
+@ReactComponent( type = ReactComponent.Type.TRACKING )
 abstract class DisposableProp
-  extends ReactArezComponent
+  extends Component
 {
   @Prop( disposable = Feature.ENABLE )
   protected abstract Object getValue();
