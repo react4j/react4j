@@ -25,11 +25,8 @@ complete as there is too much un-said.
 * Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
   (See TODOs in Generator.java) with the enhancers.
 
-* Add additional `@ReacComponent.type` values `STATELESS|PURE`
+* Add additional `@ReacComponent.type` values `STATELESS`
   - `STATELESS` => inlined into caller without a component in production mode. No fields, arez element and no lifecycle methods.
-  - `PURE` => Generate `shouldComponentUpdate()` assuming equal props implies no re-render. Alternatively we should just
-    always generate `shouldComponentUpdate()` for `STATEFUL` components and this would have identical behaviour. It would mean
-    that by default react4j never re-renders unless props change...
 
 * Generate documentation for components from annotations. This documentation could use the prop types to give
   basic documentation overview and then use special annotations to give extended documentation and/or reference
