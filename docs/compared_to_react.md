@@ -2,6 +2,8 @@
 title: Compared to React
 ---
 
+**WARNING**: This document is no longer up to date. We hope to fix this in the medium term.
+
 React4j is based on [React](https://reactjs.org) so it is natural to ask how they compare and
 what are the differences between the two libraries. React4j is written in Java rather than
 javascript so there are some features thar just don't make sense to implement in a Java
