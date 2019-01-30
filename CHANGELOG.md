@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.114](https://github.com/react4j/react4j/tree/v0.114) (2019-01-30)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.113...v0.114)
 
 * **\[core\]** Merge the `react4j-arez` artifact into `react4j-core` as the `react4j-core` artifact has never
   been used without also using `react4j-arez` in any production application.
