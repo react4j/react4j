@@ -26,8 +26,8 @@ import react4j.internal.OnShouldComponentUpdate;
 @Generated("react4j.processor.ReactProcessor")
 abstract class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {
   NestedCompleteComponent_React4j_BasicReactComponent(
-      @Nonnull @PerInstance final NativeComponent nativeComponent) {
-    bindComponent( nativeComponent );
+      @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent) {
+    bindComponent( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

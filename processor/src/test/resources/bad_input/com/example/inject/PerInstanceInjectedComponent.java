@@ -1,14 +1,15 @@
-package com.example.component;
+package com.example.inject;
 
+import arez.annotations.PerInstance;
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class ConstructorWithParamComponent
+abstract class PerInstanceInjectedComponent
   extends Component
 {
-  public ConstructorWithParamComponent( final String ignored )
+  PerInstanceInjectedComponent( @PerInstance final String someParam )
   {
   }
 

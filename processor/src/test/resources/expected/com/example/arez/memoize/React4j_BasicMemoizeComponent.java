@@ -39,8 +39,8 @@ import react4j.internal.arez.SchedulerUtil;
 abstract class React4j_BasicMemoizeComponent extends BasicMemoizeComponent {
   private int $$react4j$$_state;
 
-  React4j_BasicMemoizeComponent(@Nonnull final NativeComponent nativeComponent) {
-    bindComponent( nativeComponent );
+  React4j_BasicMemoizeComponent(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+    bindComponent( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

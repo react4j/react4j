@@ -5,6 +5,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,6 +35,8 @@ final class ComponentDescriptor
   @Nonnull
   private final ComponentType _type;
   private final boolean _nonConstructorInjections;
+  @Nonnull
+  private final ExecutableElement _constructor;
   @Nullable
   private ExecutableElement _preUpdate;
   @Nullable
@@ -103,12 +106,44 @@ final class ComponentDescriptor
       filter( m -> m.getKind() == ElementKind.CONSTRUCTOR ).
       map( m -> (ExecutableElement) m ).
       collect( Collectors.toList() );
-    if ( !( 1 == constructors.size() &&
-            constructors.get( 0 ).getParameters().isEmpty() &&
-            !constructors.get( 0 ).getModifiers().contains( Modifier.PRIVATE ) ) )
+    if ( 1 != constructors.size() )
     {
-      throw new ReactProcessorException( "@ReactComponent target must have a single non-private, no-argument " +
-                                         "constructor or the default constructor", element );
+      throw new ReactProcessorException( "@ReactComponent target must have a single constructor or the " +
+                                         "default constructor", element );
+    }
+    _constructor = constructors.get( 0 );
+    if ( !isConstructorValid( _constructor ) )
+    {
+      throw new ReactProcessorException( "@ReactComponent target must have a single package access constructor " +
+                                         "or the default constructor", element );
+    }
+    for ( final VariableElement parameter : _constructor.getParameters() )
+    {
+      if ( ProcessorUtil.hasAnnotationOfType( parameter, Constants.PER_INSTANCE_ANNOTATION_CLASSNAME ) )
+      {
+        throw new ReactProcessorException( "@ReactComponent target has a constructor with a parameter named '" +
+                                           parameter.getSimpleName().toString() + "' that is incorrectly annotated " +
+                                           "with the " + Constants.PER_INSTANCE_ANNOTATION_CLASSNAME + " annotation.",
+                                           element );
+      }
+    }
+  }
+
+  private boolean isConstructorValid( @Nonnull final ExecutableElement ctor )
+  {
+    final List<? extends VariableElement> parameters = ctor.getParameters();
+    final Set<Modifier> modifiers = ctor.getModifiers();
+    if ( parameters.isEmpty() )
+    {
+      return !modifiers.contains( Modifier.PROTECTED ) &&
+             !modifiers.contains( Modifier.PRIVATE );
+    }
+    else
+    {
+      return
+        !modifiers.contains( Modifier.PRIVATE ) &&
+        !modifiers.contains( Modifier.PUBLIC ) &&
+        !modifiers.contains( Modifier.PROTECTED );
     }
   }
 
@@ -116,6 +151,17 @@ final class ComponentDescriptor
   Elements getElements()
   {
     return _elements;
+  }
+
+  @Nonnull
+  ExecutableElement getConstructor()
+  {
+    return _constructor;
+  }
+
+  boolean hasConstructorParams()
+  {
+    return !_constructor.getParameters().isEmpty();
   }
 
   @Nonnull

@@ -24,8 +24,8 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ImmutablePropTypeString extends ImmutablePropTypeString {
-  React4j_ImmutablePropTypeString(@Nonnull final NativeComponent nativeComponent) {
-    bindComponent( nativeComponent );
+  React4j_ImmutablePropTypeString(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+    bindComponent( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

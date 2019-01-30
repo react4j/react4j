@@ -25,8 +25,9 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_InjectTrueComponent extends InjectTrueComponent {
-  React4j_InjectTrueComponent(@Nonnull @PerInstance final NativeComponent nativeComponent) {
-    bindComponent( nativeComponent );
+  React4j_InjectTrueComponent(
+      @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent) {
+    bindComponent( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

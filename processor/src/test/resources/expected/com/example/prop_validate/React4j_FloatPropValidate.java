@@ -24,8 +24,8 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_FloatPropValidate extends FloatPropValidate {
-  React4j_FloatPropValidate(@Nonnull final NativeComponent nativeComponent) {
-    bindComponent( nativeComponent );
+  React4j_FloatPropValidate(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+    bindComponent( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

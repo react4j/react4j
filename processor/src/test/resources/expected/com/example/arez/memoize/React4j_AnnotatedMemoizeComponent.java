@@ -39,8 +39,8 @@ import react4j.internal.arez.SchedulerUtil;
 abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeComponent {
   private int $$react4j$$_state;
 
-  React4j_AnnotatedMemoizeComponent(@Nonnull final NativeComponent nativeComponent) {
-    bindComponent( nativeComponent );
+  React4j_AnnotatedMemoizeComponent(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+    bindComponent( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

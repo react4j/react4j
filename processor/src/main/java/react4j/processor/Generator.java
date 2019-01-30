@@ -613,18 +613,7 @@ final class Generator
     addGeneratedAnnotation( descriptor, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
-    final ParameterSpec.Builder parameter =
-      ParameterSpec
-        .builder( REACT_NATIVE_COMPONENT_CLASSNAME, "nativeComponent", Modifier.FINAL )
-        .addAnnotation( NONNULL_CLASSNAME );
-    if ( descriptor.needsInjection() )
-    {
-      parameter.addAnnotation( PER_INSTANCE_CLASSNAME );
-    }
-    final MethodSpec.Builder ctor = MethodSpec.constructorBuilder()
-      .addParameter( parameter.build() )
-      .addStatement( "bindComponent( nativeComponent )" );
-    builder.addMethod( ctor.build() );
+    builder.addMethod( buildConstructor( descriptor ).build() );
 
     if ( descriptor.trackRender() )
     {
@@ -698,6 +687,47 @@ final class Generator
     builder.addType( buildNativeComponent( descriptor, false ) );
 
     return builder.build();
+  }
+
+  private static MethodSpec.Builder buildConstructor( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final String componentParameterName = FRAMEWORK_INTERNAL_PREFIX + "nativeComponent";
+    final ParameterSpec.Builder componentParameter =
+      ParameterSpec
+        .builder( REACT_NATIVE_COMPONENT_CLASSNAME, componentParameterName, Modifier.FINAL )
+        .addAnnotation( NONNULL_CLASSNAME );
+    if ( descriptor.needsInjection() )
+    {
+      componentParameter.addAnnotation( PER_INSTANCE_CLASSNAME );
+    }
+    final MethodSpec.Builder ctor = MethodSpec.constructorBuilder();
+    ctor.addParameter( componentParameter.build() );
+
+    final List<? extends VariableElement> parameters = descriptor.getConstructor().getParameters();
+    if ( !parameters.isEmpty() )
+    {
+      final StringBuilder sb = new StringBuilder();
+      final ArrayList<Object> params = new ArrayList<>();
+      sb.append( "super( " );
+      boolean first = true;
+      for ( final VariableElement element : parameters )
+      {
+        if ( !first )
+        {
+          sb.append( ", " );
+        }
+        first = false;
+        sb.append( "$N" );
+        final String name = element.getSimpleName().toString();
+        params.add( name );
+        ctor.addParameter( ParameterSpec.builder( TypeName.get( element.asType() ), name, Modifier.FINAL ).build() );
+      }
+      sb.append( " )" );
+      ctor.addStatement( sb.toString(), params.toArray() );
+    }
+
+    ctor.addStatement( "bindComponent( $N )", componentParameterName );
+    return ctor;
   }
 
   private static FieldSpec.Builder buildPropKeyConstantField( @Nonnull final PropDescriptor descriptor,

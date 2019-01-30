@@ -38,8 +38,9 @@ import react4j.internal.arez.SchedulerUtil;
 abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPrioritizedMemoizeComponent {
   private int $$react4j$$_state;
 
-  React4j_AlreadyPrioritizedMemoizeComponent(@Nonnull final NativeComponent nativeComponent) {
-    bindComponent( nativeComponent );
+  React4j_AlreadyPrioritizedMemoizeComponent(
+      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+    bindComponent( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

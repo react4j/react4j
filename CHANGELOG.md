@@ -15,6 +15,8 @@
   props every time their container was re-rendered.
 * **\[processor\]** Add missing type parameters in generated component class to avoid `unchecked` compiler warning.
 * **\[dom\]** Add explicit cast in generated `DOM` factory to avoid varargs compiler warning.
+* **\[processor\]** Add support for defining react components with constructors that take parameters. These
+  parameters are injected into the component similarly to `@Inject` annotated fields.
 
 ### [v0.114](https://github.com/react4j/react4j/tree/v0.114) (2019-01-30)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.113...v0.114)

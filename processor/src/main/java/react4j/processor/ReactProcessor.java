@@ -1091,7 +1091,8 @@ public final class ReactProcessor
       }
     }
 
-    final boolean needsInjection = isInjectionRequired( typeElement );
+    final boolean needsInjection =
+      isInjectionRequired( typeElement, descriptor.hasConstructorParams(), descriptor.nonConstructorInjections() );
     if ( needsInjection && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
       throw new ReactProcessorException( "@ReactComponent target has enabled injection integration but the class " +
@@ -1260,7 +1261,9 @@ public final class ReactProcessor
     }
   }
 
-  private boolean isInjectionRequired( @Nonnull final TypeElement typeElement )
+  private boolean isInjectionRequired( @Nonnull final TypeElement typeElement,
+                                       final boolean hasConstructorParams,
+                                       final boolean nonConstructorInjections )
   {
     final VariableElement parameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
@@ -1272,11 +1275,15 @@ public final class ReactProcessor
       case "ENABLE":
         return true;
       case "DISABLE":
+        if ( hasConstructorParams )
+        {
+          throw new ReactProcessorException( "@ReactComponent target has specified both inject=DISABLE " +
+                                             "but has a constructor with parameters that requires injection.",
+                                             typeElement );
+        }
         return false;
       default:
-        return ProcessorUtil.getFieldElements( typeElement ).stream().anyMatch( ProcessorUtil::hasInjectAnnotation ) ||
-               getMethods( typeElement ).
-                 stream().anyMatch( ProcessorUtil::hasInjectAnnotation );
+        return hasConstructorParams || nonConstructorInjections;
     }
   }
 

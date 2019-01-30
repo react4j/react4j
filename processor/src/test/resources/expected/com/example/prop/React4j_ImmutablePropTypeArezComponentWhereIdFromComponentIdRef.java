@@ -26,8 +26,8 @@ import react4j.internal.OnShouldComponentUpdate;
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef extends ImmutablePropTypeArezComponentWhereIdFromComponentIdRef {
   React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef(
-      @Nonnull final NativeComponent nativeComponent) {
-    bindComponent( nativeComponent );
+      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+    bindComponent( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

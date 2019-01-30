@@ -25,8 +25,9 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.ReactProcessor")
 abstract class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposablePropOnComponent {
-  React4j_ImplicitDisposablePropOnComponent(@Nonnull final NativeComponent nativeComponent) {
-    bindComponent( nativeComponent );
+  React4j_ImplicitDisposablePropOnComponent(
+      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+    bindComponent( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
