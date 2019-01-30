@@ -785,7 +785,7 @@ public final class ReactProcessor
     final boolean immutable = isPropImmutable( method );
     final boolean shouldUpdateOnChange = shouldUpdateOnChange( method, immutable );
     final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange, immutable );
-    final boolean disposable = null != propType && isPropDisposable( descriptor, method, propType );
+    final boolean disposable = null != propType && isPropDisposable( method, propType );
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() &&
          ProcessorUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
@@ -1240,9 +1240,7 @@ public final class ReactProcessor
                                                        "immutable" ).getValue();
   }
 
-  private boolean isPropDisposable( @Nonnull final ComponentDescriptor descriptor,
-                                    @Nonnull final ExecutableElement method,
-                                    @Nonnull final Element propType )
+  private boolean isPropDisposable( @Nonnull final ExecutableElement method, @Nonnull final Element propType )
   {
     final VariableElement parameter = (VariableElement)
       ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
