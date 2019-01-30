@@ -25,8 +25,9 @@ complete as there is too much un-said.
 * Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
   (See TODOs in Generator.java) with the enhancers.
 
-* Add additional `@ReacComponent.type` values `STATELESS`
-  - `STATELESS` => inlined into caller without a component in production mode. No fields, arez element and no lifecycle methods.
+* Add additional `@ReacComponent.type` value `STATELESS` that would result in render being inlined into caller
+  without a component in production mode. Component must have no fields, arez elements and no lifecycle methods.
+  The `shouldComponentUpdate()` is skippe dfor this scenario.
 
 * Generate documentation for components from annotations. This documentation could use the prop types to give
   basic documentation overview and then use special annotations to give extended documentation and/or reference
