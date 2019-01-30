@@ -8,11 +8,11 @@ import react4j.annotations.ReactComponent;
 abstract class MultipleConstructorsComponent
   extends Component
 {
-  public MultipleConstructorsComponent( final String ignored )
+  MultipleConstructorsComponent( final String ignored )
   {
   }
 
-  public MultipleConstructorsComponent()
+  MultipleConstructorsComponent()
   {
   }
 

@@ -106,17 +106,12 @@ final class ComponentDescriptor
       filter( m -> m.getKind() == ElementKind.CONSTRUCTOR ).
       map( m -> (ExecutableElement) m ).
       collect( Collectors.toList() );
-    if ( 1 != constructors.size() )
+    if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
     {
-      throw new ReactProcessorException( "@ReactComponent target must have a single constructor or the " +
-                                         "default constructor", element );
-    }
-    _constructor = constructors.get( 0 );
-    if ( !isConstructorValid( _constructor ) )
-    {
-      throw new ReactProcessorException( "@ReactComponent target must have a single package access constructor " +
+      throw new ReactProcessorException( "@ReactComponent target must have a single, package-access constructor " +
                                          "or the default constructor", element );
     }
+    _constructor = constructors.get( 0 );
     for ( final VariableElement parameter : _constructor.getParameters() )
     {
       if ( ProcessorUtil.hasAnnotationOfType( parameter, Constants.PER_INSTANCE_ANNOTATION_CLASSNAME ) )
