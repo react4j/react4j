@@ -58,13 +58,6 @@ public @interface ReactComponent
   Feature inject() default Feature.AUTODETECT;
 
   /**
-   * React components that are arez enabled will generate an error if they observe no arez dependencies and this parameter is false.
-   *
-   * @return true to avoid arez components generating invariant failures if they observe no reactive components.
-   */
-  boolean allowNoArezDeps() default false;
-
-  /**
    * Enum indicating the capabilities of the component.
    * See the {@link Type} enum for further details.
    *
