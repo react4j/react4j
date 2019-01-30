@@ -4,10 +4,11 @@ import arez.annotations.Observe;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
- * Annotation used to specify a React component.
+ * Annotation used to annotate a React component.
  */
 @Documented
 @Target( ElementType.TYPE )
@@ -20,15 +21,21 @@ public @interface ReactComponent
   {
     /**
      * The component can store state in fields, can declared lifecycle methods and may invoke scheduleRender() method.
+     * The component will be scheduled to re-render if the components container re-renders and any props with
+     * {@link Prop#shouldUpdateOnChange()} set to <code>true</code> has changed value from last render. A prop
+     * is considered changed if when the new value and the old value are passed to
+     * {@link Objects#equals(Object, Object)} and that method returns <code>false</code>. A component will also
+     * be scheduled to re-render if the component invokes {@code Component.scheduleRender()}.
      */
     STATEFUL,
     /**
-     * The component can use the capabilities of a {@link #STATEFUL} component and will re-render the component if any dependencies change.
-     * The framework uses the {@link Observe} annotation to track Arez dependencies.
+     * The component is a {@link #STATEFUL} component <b>and</b> will re-render the component if any Arez
+     * dependencies change. The framework uses the {@link Observe} annotation to track Arez dependencies.
      */
     TRACKING,
     /**
-     * The component can use the capabilities of a {@link #TRACKING} component but it will not generate an invariant failure if a render results in zero dependencies.
+     * The component is a {@link #TRACKING} component but it will not generate an invariant failure if a
+     * render results in zero Arez dependencies.
      */
     MAYBE_TRACKING
   }
