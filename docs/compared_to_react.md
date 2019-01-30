@@ -58,6 +58,16 @@ class. This method is called when the component constructor function is created 
 props for the component. The method must be static, non-private, have no parameters, throw no exceptions and must
 return a value that is compatible with the prop type for the component.
 
+### Automatic shouldComponentUpdate lifecycle
+
+In React4j, the equivalent of react's `shouldComponentUpdate()` lifecycle method is generated unless the component
+is marked as `STATELESS`. A {@api_url: STATEFUL::annotations.ReactComponent.Type::STATEFUL} component will
+re-render if the components container re-renders and passes a prop with a different value from the previous render.
+A {@api_url: STATEFUL::annotations.ReactComponent.Type::STATEFUL} component will also re-render if the component
+explicitly invokes `scheduleRender()`. A {@api_url: TRACKING::annotations.ReactComponent.Type::TRACKING} or
+{@api_url: MAYBE_TRACKING::annotations.ReactComponent.Type::MAYBE_TRACKING} component will also re-render if
+any Arez dependency accessed during the previous render is changed.
+
 ### JSX
 
 Most react code uses [JSX](https://facebook.github.io/jsx/) to build component hierarchies. JSX is an xml-like
