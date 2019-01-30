@@ -4,6 +4,10 @@ This document is essentially a list of shorthand notes describing work yet to co
 Unfortunately it is not complete enough for other people to pick work off the list and
 complete as there is too much un-said.
 
+### Current Release
+
+* Support @Inject through parameters in React4j components?
+
 ### Very High Priority
 
 * Add `react4j-drumloop` into build tests
