@@ -31,8 +31,8 @@ React4j looks like.
         <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=raw" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
       </a>
     </td>
-    <td><a href="/todomvc/raw"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
-    <td><a href="/todomvc/raw/dev.html"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
+    <td><a href="/todomvc/raw/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
+    <td><a href="/todomvc/raw/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
     <td>
       <ul>
         <li>Build System: <a href="https://buildr.apache.org">Buildr</a></li>
@@ -61,8 +61,8 @@ React4j looks like.
         <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=arez" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
       </a>
     </td>
-    <td><a href="/todomvc/arez"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
-    <td><a href="/todomvc/arez/dev.html"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
+    <td><a href="/todomvc/arez/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
+    <td><a href="/todomvc/arez/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
     <td>
       <ul>
         <li>State Management: <a href="https://arez.github.io">Arez</a></li>
@@ -93,8 +93,8 @@ React4j looks like.
         <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=dagger" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
       </a>
     </td>
-    <td><a href="/todomvc/dagger"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
-    <td><a href="/todomvc/dagger/dev.html"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
+    <td><a href="/todomvc/dagger/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
+    <td><a href="/todomvc/dagger/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
     <td>
       <ul>
         <li>Dependency Injection: <a href="https://google.github.io/dagger">Dagger2</a></li>
