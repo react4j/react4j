@@ -6,6 +6,9 @@ complete as there is too much un-said.
 
 ### Very High Priority
 
+* The message that indicates prop does not match immutable constraints should say exactly why. (i.e. Is not
+  primitive, Arez component nor implements Keyed or if an ArezComponent indicate it needs a requireId=ENABLE etc)
+
 * Add `react4j-drumloop` into build tests
 
 * Change the way we process `@Memoize` so that instead we use the "new" feature of Arez (when it is implemented)
@@ -60,6 +63,10 @@ complete as there is too much un-said.
     production js produced. - https://github.com/facebook/react/issues/13634
 
 ### Low Priorities
+
+* If we access a non-immutable prop inside `postConstruct()` and do not have a corresponding `onPropChange` for
+  property then we should generate a invariant failure. To do this we probably need to track access behind a compile
+  time flag so that it is optimized out in production.
 
 * Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
 
@@ -143,6 +150,8 @@ Applications to build and help asses react4j going forward.
 
 * Another app to build is a YouTube clone ala https://github.com/productioncoder/youtube-react
   It seems relatively advanced and may require a router to be in place prior to starting.
+  - Blog Series starts here - https://productioncoder.com/build-youtube-in-react-part-1/ thru to https://productioncoder.com/build-youtube-in-react-part-11/
+  - Final demo https://www.youtube.com/watch?v=E7wJTI-1dvQ
 
 * [Maze Game](https://github.com/TheCodeDepository/PickleRick-MazeGame)
 
