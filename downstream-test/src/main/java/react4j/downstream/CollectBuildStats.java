@@ -116,6 +116,18 @@ public final class CollectBuildStats
     }
     else if ( isj2cl )
     {
+      // Clean any artifacts hanging around that are not cleaned by clean maven action
+      final Path currentDirectory = FileUtil.getCurrentDirectory();
+      FileUtil.inDirectory( currentDirectory, () -> {
+        final Path appJs = currentDirectory.resolve( "out" ).resolve( "app.js" );
+        if ( appJs.toFile().exists() )
+        {
+          //noinspection ResultOfMethodCallIgnored
+          appJs.toFile().delete();
+        }
+        FileUtil.deleteDirIfExists( currentDirectory.resolve( "jsZipCache" ) );
+        FileUtil.deleteDirIfExists( currentDirectory.resolve( "out" ).resolve( "sources" ) );
+      } );
       // Assume maven
       Exec.system( "mvn", "clean", "package", "-Pdevmode" );
 
