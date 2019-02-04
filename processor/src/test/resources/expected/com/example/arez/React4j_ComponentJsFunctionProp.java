@@ -4,6 +4,7 @@ import arez.Arez;
 import arez.Disposable;
 import arez.Observer;
 import arez.annotations.ArezComponent;
+import arez.annotations.DepType;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
@@ -93,6 +94,7 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
       name = "render",
       priority = Priority.LOW,
       executor = Executor.EXTERNAL,
+      depType = DepType.AREZ_OR_NONE,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )

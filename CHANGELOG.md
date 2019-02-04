@@ -8,6 +8,8 @@
   via implementing an interface that extended `Keyed`. This has been fixed by delegating the decision
   of whether a type is assignable to `Keyed` to the compiler.
 * **\[processor\]** Add support for enum typed immutable props.
+* **\[processor\]** Ensure that the render method allows zero dependencies in the scenario where the
+  first disposable prop is disposed and thus render terminates without observing any dependencies.
 
 ### [v0.116](https://github.com/react4j/react4j/tree/v0.116) (2019-01-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.115...v0.116)

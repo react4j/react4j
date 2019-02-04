@@ -1272,12 +1272,11 @@ final class Generator
           .addMember( "name", "$S", "render" )
           .addMember( "priority", "$T.LOW", PRIORITY_CLASSNAME )
           .addMember( "executor", "$T.EXTERNAL", EXECUTOR_CLASSNAME )
+          // Needs AREZ_OR_NONE in scenario where all props are disposed and component
+          // thus accesses no dependencies before exiting render
+          .addMember( "depType", "$T.AREZ_OR_NONE", DEP_TYPE_CLASSNAME )
           .addMember( "observeLowerPriorityDependencies", "true" )
           .addMember( "reportResult", "false" );
-      if ( ComponentType.MAYBE_TRACKING == descriptor.getType() )
-      {
-        observe.addMember( "depType", "$T.AREZ_OR_NONE", DEP_TYPE_CLASSNAME );
-      }
       method.addAnnotation( observe.build() );
 
       method.addStatement( "$N = $T.IDLE", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );

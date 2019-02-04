@@ -80,9 +80,9 @@ abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
       name = "render",
       priority = Priority.LOW,
       executor = Executor.EXTERNAL,
+      depType = DepType.AREZ_OR_NONE,
       observeLowerPriorityDependencies = true,
-      reportResult = false,
-      depType = DepType.AREZ_OR_NONE
+      reportResult = false
   )
   protected ReactNode render() {
     $$react4j$$_state = ComponentState.IDLE;

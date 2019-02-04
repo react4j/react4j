@@ -83,6 +83,7 @@ abstract class React4j_ParameterizedMemoizeComponent extends ParameterizedMemoiz
       name = "render",
       priority = Priority.LOW,
       executor = Executor.EXTERNAL,
+      depType = DepType.AREZ_OR_NONE,
       observeLowerPriorityDependencies = true,
       reportResult = false
   )
