@@ -56,10 +56,7 @@ public final class CollectFluxChallengeBuildStats
       buildAndRecordStatistics( context.appDirectory, archiveDir );
     }, () -> {
       final Path dir = WorkspaceUtil.getArchiveDir( context.workingDirectory, context.branch + ".after" );
-      if ( dir.toFile().exists() )
-      {
-        FileUtil.deleteDir( dir );
-      }
+      FileUtil.deleteDirIfExists( dir );
     } );
   }
 
