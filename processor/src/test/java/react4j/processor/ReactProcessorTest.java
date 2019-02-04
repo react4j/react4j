@@ -127,6 +127,8 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.ImmutablePropTypeKeyed", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeKeyedInherited", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeKeyedInterface", false },
+        new Object[]{ "com.example.prop.ImmutablePropTypeKeyedMultiStepInherited", false },
+        new Object[]{ "com.example.prop.ImmutablePropTypeKeyedViaInheritanceInterface", false },
         new Object[]{ "com.example.prop.ImmutablePropTypePrimitiveBoolean", false },
         new Object[]{ "com.example.prop.ImmutablePropTypePrimitiveByte", false },
         new Object[]{ "com.example.prop.ImmutablePropTypePrimitiveChar", false },

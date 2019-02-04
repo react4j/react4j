@@ -834,27 +834,16 @@ public final class ReactProcessor
       {
         return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
       }
-      else if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
-                implementsKeyed( (TypeElement) element ) )
+      else if ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() )
       {
-        return ImmutablePropKeyStrategy.KEYED;
+        final TypeElement keyedType = processingEnv.getElementUtils().getTypeElement( Constants.KEYED_CLASSNAME );
+        if ( processingEnv.getTypeUtils().isAssignable( element.asType(), keyedType.asType() ) )
+        {
+          return ImmutablePropKeyStrategy.KEYED;
+        }
       }
     }
     return null;
-  }
-
-  private boolean implementsKeyed( @Nonnull final TypeElement element )
-  {
-
-    return isKeyedDeclared( element ) ||
-           ProcessorUtil.getSuperTypes( element ).stream().anyMatch( this::isKeyedDeclared );
-  }
-
-  private boolean isKeyedDeclared( @Nonnull final TypeElement element )
-  {
-    return element.getInterfaces()
-      .stream()
-      .anyMatch( i -> i.toString().equals( Constants.KEYED_CLASSNAME ) );
   }
 
   /**

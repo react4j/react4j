@@ -4,6 +4,9 @@
 
 * **\[core\]** Upgrade the `com.google.elemental2:*` libraries to version `1.0.0-b15-7a28038`
   released under groupId `org.realityforge.com.google.elemental2`.
+* **\[processor\]** Immutable `@Prop` methods were unable to identify props that implemented `Keyed`
+  via implementing an interface that extended `Keyed`. This has been fixed by delegating the decision
+  of whether a type is assignable to `Keyed` to the compiler.
 
 ### [v0.116](https://github.com/react4j/react4j/tree/v0.116) (2019-01-31)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.115...v0.116)
