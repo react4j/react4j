@@ -348,6 +348,10 @@ final class Generator
       {
         method.addStatement( "_element.setKey( String.valueOf( $N ) )", stepMethod.getName() );
       }
+      else if ( ImmutablePropKeyStrategy.ENUM == strategy )
+      {
+        method.addStatement( "_element.setKey( $N.name() )", stepMethod.getName() );
+      }
       else
       {
         assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
@@ -467,7 +471,7 @@ final class Generator
           params.add( descriptor.getEnhancedClassName() );
           params.add( prop.getConstantName() );
         }
-        else if ( ImmutablePropKeyStrategy.IS_STRING == strategy )
+        else if ( ImmutablePropKeyStrategy.IS_STRING == strategy || ImmutablePropKeyStrategy.ENUM == strategy )
         {
           sb.append( "_element.props().get( $T.Props.$N )" );
           params.add( descriptor.getEnhancedClassName() );

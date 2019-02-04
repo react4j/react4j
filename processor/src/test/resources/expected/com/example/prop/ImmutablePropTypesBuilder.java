@@ -34,10 +34,15 @@ class ImmutablePropTypesBuilder {
 
   public interface Step4 {
     @Nonnull
-    ReactNode BobsProp(ImmutablePropTypes.KeyedComponent BobsProp);
+    Step5 BobsProp(ImmutablePropTypes.KeyedComponent BobsProp);
   }
 
-  private static class Builder implements Step1, Step2, Step3, Step4 {
+  public interface Step5 {
+    @Nonnull
+    ReactNode someProp(ImmutablePropTypes.Foo someProp);
+  }
+
+  private static class Builder implements Step1, Step2, Step3, Step4, Step5 {
     private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypes.Factory.TYPE );
 
     @Override
@@ -63,14 +68,21 @@ class ImmutablePropTypesBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode BobsProp(final ImmutablePropTypes.KeyedComponent BobsProp) {
+    public final Step5 BobsProp(final ImmutablePropTypes.KeyedComponent BobsProp) {
       _element.props().set( React4j_ImmutablePropTypes.Props.BobsProp, BobsProp );
+      return this;
+    }
+
+    @Override
+    @Nonnull
+    public final ReactNode someProp(final ImmutablePropTypes.Foo someProp) {
+      _element.props().set( React4j_ImmutablePropTypes.Props.someProp, someProp );
       return build();
     }
 
     @Nonnull
     public final ReactNode build() {
-      _element.setKey( String.valueOf( Identifiable.<Object>getArezId( _element.props().get( React4j_ImmutablePropTypes.Props.myProp ) ) ) + "-" + _element.props().get( React4j_ImmutablePropTypes.Props.myOtherProp ) + "-" + String.valueOf( _element.props().get( React4j_ImmutablePropTypes.Props.stillAnotherProp ) ) + "-" + ( (Keyed) _element.props().get( React4j_ImmutablePropTypes.Props.BobsProp ) ).getKey() );
+      _element.setKey( String.valueOf( Identifiable.<Object>getArezId( _element.props().get( React4j_ImmutablePropTypes.Props.myProp ) ) ) + "-" + _element.props().get( React4j_ImmutablePropTypes.Props.myOtherProp ) + "-" + String.valueOf( _element.props().get( React4j_ImmutablePropTypes.Props.stillAnotherProp ) ) + "-" + ( (Keyed) _element.props().get( React4j_ImmutablePropTypes.Props.BobsProp ) ).getKey() + "-" + _element.props().get( React4j_ImmutablePropTypes.Props.someProp ) );
       _element.complete();
       return _element;
     }

@@ -124,6 +124,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop.ImmutablePropTypeBoxedInteger", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeBoxedLong", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeBoxedShort", false },
+        new Object[]{ "com.example.prop.ImmutablePropTypeEnum", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeKeyed", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeKeyedInherited", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeKeyedInterface", false },

@@ -5,5 +5,6 @@ enum ImmutablePropKeyStrategy
   KEYED,
   IS_STRING,
   TO_STRING,
+  ENUM,
   AREZ_IDENTIFIABLE
 }

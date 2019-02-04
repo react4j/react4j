@@ -842,6 +842,10 @@ public final class ReactProcessor
           return ImmutablePropKeyStrategy.KEYED;
         }
       }
+      else if ( ElementKind.ENUM == element.getKind() )
+      {
+        return ImmutablePropKeyStrategy.ENUM;
+      }
     }
     return null;
   }

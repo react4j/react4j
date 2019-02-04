@@ -34,6 +34,11 @@ abstract class ImmutablePropTypes
     }
   }
 
+  enum Foo
+  {
+    A, B, C
+  }
+
   @Prop( immutable = true )
   protected abstract MyComponent getMyProp();
 
@@ -45,6 +50,9 @@ abstract class ImmutablePropTypes
 
   @Prop( immutable = true )
   protected abstract KeyedComponent BobsProp();
+
+  @Prop( immutable = true )
+  protected abstract Foo getSomeProp();
 
   @Nullable
   @Override
