@@ -30,7 +30,7 @@ complete as there is too much un-said.
 
 * Add additional `@ReacComponent.type` value `STATELESS` that would result in render being inlined into caller
   without a component in production mode. Component must have no fields, arez elements and no lifecycle methods.
-  The `shouldComponentUpdate()` is skippe dfor this scenario.
+  The `shouldComponentUpdate()` is skipped for this scenario.
 
 * Generate documentation for components from annotations. This documentation could use the prop types to give
   basic documentation overview and then use special annotations to give extended documentation and/or reference
