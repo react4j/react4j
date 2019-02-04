@@ -37,21 +37,30 @@ public class BuildStatsTest
   public void raw_j2cl()
     throws Exception
   {
-    compareSizesForBranch( "raw_maven_j2cl", true );
+    if ( WorkspaceUtil.buildJ2clBuilds() )
+    {
+      compareSizesForBranch( "raw_maven_j2cl", true );
+    }
   }
 
   @Test
   public void arez_j2cl()
     throws Exception
   {
-    compareSizesForBranch( "arez_maven_j2cl", true );
+    if ( WorkspaceUtil.buildJ2clBuilds() )
+    {
+      compareSizesForBranch( "arez_maven_j2cl", true );
+    }
   }
 
   @Test
   public void dagger_j2cl()
     throws Exception
   {
-    compareSizesForBranch( "dagger_maven_j2cl", true );
+    if ( WorkspaceUtil.buildJ2clBuilds() )
+    {
+      compareSizesForBranch( "dagger_maven_j2cl", true );
+    }
   }
 
   @Test
