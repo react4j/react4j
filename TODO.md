@@ -143,6 +143,8 @@ Applications to build and help asses react4j going forward.
 
 * realworld-example - https://github.com/gothinkster/react-mobx-realworld-example-app
 
+* WhatsApp clone - https://medium.com/the-guild/whatsapp-clone-using-react-hooks-suspense-graphql-apollo-typescript-and-postgresql-de1840c27d21
+
 * Port Minesweeper
   - https://medium.com/@tdelev/minesweeper-in-typescript-and-react-f5f8a5d57383
   - https://github.com/tdelev/minesweeper-react
