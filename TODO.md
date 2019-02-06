@@ -141,6 +141,8 @@ Applications to build and help asses react4j going forward.
 
 * Consider a Metronome - https://daveceddia.com/react-practice-projects/#metronome & https://github.com/cwilso/metronome
 
+* realworld-example - https://github.com/gothinkster/react-mobx-realworld-example-app
+
 * Port Minesweeper
   - https://medium.com/@tdelev/minesweeper-in-typescript-and-react-f5f8a5d57383
   - https://github.com/tdelev/minesweeper-react
