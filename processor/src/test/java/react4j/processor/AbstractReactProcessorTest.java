@@ -213,7 +213,7 @@ abstract class AbstractReactProcessorTest
       that( inputs ).
       processedWith( new ArezProcessor(), new ReactProcessor() ).
       failsToCompile().
-      withErrorContaining( errorMessageFragment );
+      withWarningContaining( errorMessageFragment );
   }
 
   @Nonnull

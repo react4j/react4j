@@ -3,6 +3,19 @@
 ### Unreleased
 
 * **\[arez\]** Update the `org.realityforge.arez` dependencies to version `0.128`.
+* **\[processor\]** Changed the way that the annotation processor generates errors. Previously if an error was
+  detected, it was reported as a fatal error and the annotation processor halted the compile after the current
+  processing round. This made development painful where one annotation processor consumed artifacts produced by
+  another annotation processor or used multiple processing rounds to generate the required source as many errors
+  would be produced due to missing artifacts that were completely unrelated to the original problem. Within React4j
+  this scenario was common if dagger injection was enabled and React4j generated artifacts that were expected to be
+  passed into the dagger annotation processor. Due to limitations imposed by the annotation processor framework,
+  issues need to be reported in the round in which they are generated to avoid omitting diagnostic information
+  about the error such as source location *but* reporting the issue as an error terminates the annotation
+  processing rounds. To work around these limitations, React4j now reports all issues as `MANDATORY_WARNING` issues
+  and adds a flag so that on the last round an error is generated if any of the `MANDATORY_WARNING` issues were
+  generated. This is not ideal but is the best outcome we could find within the current annotation processing
+  framework.
 
 ### [v0.117](https://github.com/react4j/react4j/tree/v0.117) (2019-02-04)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.116...v0.117)
