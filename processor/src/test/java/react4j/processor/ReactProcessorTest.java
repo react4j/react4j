@@ -239,7 +239,6 @@ public class ReactProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "com.example.arez.MemoizeOnPrivateComponent", "@Memoize target must not be private" },
         new Object[]{ "com.example.component.ConcreteComponent", "@ReactComponent target must be abstract" },
         new Object[]{ "com.example.component.BadNameComponent",
                       "@ReactComponent target specified an invalid name '-abc'. The name must be a valid java identifier." },
