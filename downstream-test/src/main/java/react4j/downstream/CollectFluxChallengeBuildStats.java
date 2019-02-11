@@ -6,7 +6,6 @@ import gir.ruby.Buildr;
 import gir.ruby.Ruby;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
 
 public final class CollectFluxChallengeBuildStats
@@ -29,12 +28,11 @@ public final class CollectFluxChallengeBuildStats
     throws Exception
   {
     Gir.go( () -> {
-      final List<String> branches = Collections.singletonList( "master" );
       WorkspaceUtil.forEachBranch( "react4j-flux-challenge",
                                    "https://github.com/react4j/react4j-flux-challenge.git",
-                                   branches,
+                                   Collections.singletonList( "master" ),
                                    context -> buildBranch( context, WorkspaceUtil.getVersion() ) );
-      WorkspaceUtil.collectStatistics( branches, branch -> true, false );
+      WorkspaceUtil.collectStatistics( Collections.singletonList( "sithtracker" ), build -> true, false );
     } );
   }
 
@@ -43,19 +41,17 @@ public final class CollectFluxChallengeBuildStats
   {
 
     final boolean initialBuildSuccess = WorkspaceUtil.runBeforeBuild( context, () -> {
-      final String prefix = context.branch + ".before";
-      final Path archiveDir = WorkspaceUtil.getArchiveDir( context.workingDirectory, prefix );
+      final Path archiveDir = WorkspaceUtil.getArchiveDir( context.workingDirectory, "sithtracker.before" );
       buildAndRecordStatistics( context.appDirectory, archiveDir );
     } );
 
     WorkspaceUtil.runAfterBuild( context, initialBuildSuccess, () -> {
       Buildr.patchBuildYmlDependency( context.appDirectory, "org.realityforge.react4j", version );
 
-      final String prefix = context.branch + ".after";
-      final Path archiveDir = WorkspaceUtil.getArchiveDir( context.workingDirectory, prefix );
+      final Path archiveDir = WorkspaceUtil.getArchiveDir( context.workingDirectory, "sithtracker.after" );
       buildAndRecordStatistics( context.appDirectory, archiveDir );
     }, () -> {
-      final Path dir = WorkspaceUtil.getArchiveDir( context.workingDirectory, context.branch + ".after" );
+      final Path dir = WorkspaceUtil.getArchiveDir( context.workingDirectory, "sithtracker.after" );
       FileUtil.deleteDirIfExists( dir );
     } );
   }
