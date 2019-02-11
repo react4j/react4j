@@ -22,7 +22,7 @@ to this page.
 There is also a few sample projects that you can look at to see how different types of applications can be
 built using React4j.
 
-* [react-drumploop](https://github.com/react4j/react4j-drumploop) A rewrite of the [hooks-drum-machine](https://github.com/kenwheeler/hooks-drum-machine)
+* [react-drumploop](https://github.com/react4j/react4j-drumloop) A rewrite of the [hooks-drum-machine](https://github.com/kenwheeler/hooks-drum-machine)
   project presented as part of a talk. It was originally written in `react.js` using hooks and suspense. This
   was ported to react4j and continues to use the experimental suspense support and `react-cache`.
 * [react-sithtracker](https://github.com/react4j/react4j-flux-challenge) An solution for the problem presented
