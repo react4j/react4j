@@ -16,3 +16,16 @@ to this page.
 * [react-windowportal](https://github.com/react4j/react4j-windowportal) The library provides a portal that
   renders into a Window.
   <span style="font-size: smaller">**[API Docs](https://react4j.github.io/windowportal) · [GitHub Project](https://github.com/react4j/react4j-windowportal)**</span>
+
+### Sample Projects
+
+There is also a few sample projects that you can look at to see how different types of applications can be
+built using React4j.
+
+* [react-drumploop](https://github.com/react4j/react4j-drumploop) A rewrite of the [hooks-drum-machine](https://github.com/kenwheeler/hooks-drum-machine)
+  project presented as part of a talk. It was originally written in `react.js` using hooks and suspense. This
+  was ported to react4j and continues to use the experimental suspense support and `react-cache`.
+* [react-sithtracker](https://github.com/react4j/react4j-flux-challenge) An solution for the problem presented
+  in the [flux challenge](https://github.com/staltz/flux-challenge) using Arez and React4j.
+* [react-todomvc](https://github.com/react4j/react4j-todomvc) Several implementations of the [TodoMVC](todomvc.md)
+  application rewritten using react4j and other supporting technologies.
