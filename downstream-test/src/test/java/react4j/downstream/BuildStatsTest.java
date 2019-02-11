@@ -70,6 +70,13 @@ public class BuildStatsTest
     compareSizesForBranch( "sithtracker", false );
   }
 
+  @Test
+  public void drumloop()
+    throws Exception
+  {
+    compareSizesForBranch( "drumloop", false );
+  }
+
   private void compareSizesForBranch( @Nonnull final String branch, final boolean includeBranchInFixtureKey )
     throws Exception
   {

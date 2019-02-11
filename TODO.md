@@ -9,8 +9,6 @@ complete as there is too much un-said.
 * The message that indicates prop does not match immutable constraints should say exactly why. (i.e. Is not
   primitive, Arez component nor implements Keyed or if an ArezComponent indicate it needs a requireId=ENABLE etc)
 
-* Add `react4j-drumloop` into build tests
-
 * Change the way we process `@Memoize` so that instead we use the "new" feature of Arez (when it is implemented)
   to override the priority from within hook methods.
 

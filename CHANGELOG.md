@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Add the `react4j-drumloop` sample application into set off used to track code size changes over time.
+
 ### [v0.118](https://github.com/react4j/react4j/tree/v0.118) (2019-02-08)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.117...v0.118)
 
