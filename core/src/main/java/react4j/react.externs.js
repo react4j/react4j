@@ -41,10 +41,9 @@ React.Component.prototype.forceUpdate = function(callback) {};
 React.Component.prototype.setState = function(nextState, callback) {};
 
 /**
- * @param {Element} element
  * @protected
  */
-React.Component.prototype.componentDidMount = function(element) {};
+React.Component.prototype.componentDidMount = function() {};
 
 /**
  * @param {Object} nextProps
@@ -57,10 +56,9 @@ React.Component.prototype.shouldComponentUpdate = function(nextProps, nextState)
 /**
  * @param {Object} prevProps
  * @param {Object} prevState
- * @param {Element} rootNode
  * @protected
  */
-React.Component.prototype.componentDidUpdate = function(prevProps, prevState, rootNode) {};
+React.Component.prototype.componentDidUpdate = function(prevProps, prevState) {};
 
 /**
  * @protected
@@ -442,12 +440,6 @@ React.SyntheticEvent.prototype.preventDefault;
  * @type {Function}
  */
 React.SyntheticEvent.prototype.stopPropagation;
-
-/**
- * @type {Object}
- * @const
- */
-React.DOM = {};
 
 /**
  * React event system creates plugins and event properties dynamically.
