@@ -19,6 +19,8 @@ complete as there is too much un-said.
 
 ### High Priorities
 
+* Implement react-cache and update react4j-drumloop
+
 * Introduce `TreeLocal` component which is react "context". A single `TreeLocal` can be represented using react 16.4's
   static context field. Multiple `TreeLocal` instances on a component may need to be represented by a chain of
   components the pass down context as props. This may be overly complex so perhaps we could just remove that possibility.
