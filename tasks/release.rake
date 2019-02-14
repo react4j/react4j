@@ -162,6 +162,13 @@ HEADER
         puts "Completed remote branch react4j-flux-challenge/#{full_branch}. Removed." if 0 == $?.exitstatus
       end
 
+      sh 'cd archive/downstream/react4j-drumloop && git push --all'
+      %w(master).each do |branch|
+        full_branch = "#{branch}-ArezUpgrade-#{ENV['PRODUCT_VERSION']}"
+        `cd archive/downstream/react4j-drumloop && git push origin :#{full_branch} 2>&1`
+        puts "Completed remote branch react4j-drumloop/#{full_branch}. Removed." if 0 == $?.exitstatus
+      end
+
       DOWNSTREAM_PROJECTS.each do |downstream|
         # Need to extract the version from that project
         downstream_version = IO.read("archive/downstream/#{downstream}/CHANGELOG.md")[/^### \[v(\d+\.\d+)\]/, 1]
