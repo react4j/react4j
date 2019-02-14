@@ -135,6 +135,8 @@ complete as there is too much un-said.
 
 Applications to build and help asses react4j going forward.
 
+* Port https://github.com/RxJS-CN/react-rxjs-todos using Spritz as base.
+
 * Port https://github.com/realityforge/Piano-Trainer across to react4j
 
 * Port https://github.com/kenwheeler/hooks-drum-machine across to react4j
