@@ -148,25 +148,14 @@ HEADER
       # Push the changes that have been made locally in downstream projects.
       # Artifacts have been pushed to staging repository by this time so they should build
       # even if it has not made it through the Maven release process
-      sh 'cd archive/downstream/react4j-todomvc && git push --all'
-      %w(raw raw_maven arez arez_maven dagger dagger_maven raw_maven_j2cl arez_maven_j2cl dagger_maven_j2cl).each do |branch|
-        full_branch = "#{branch}-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
-        `cd archive/downstream/react4j-todomvc && git push origin :#{full_branch} 2>&1`
-        puts "Completed remote branch react4j-todomvc/#{full_branch}. Removed." if 0 == $?.exitstatus
-      end
 
-      sh 'cd archive/downstream/react4j-flux-challenge && git push --all'
-      %w(master).each do |branch|
-        full_branch = "#{branch}-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
-        `cd archive/downstream/react4j-flux-challenge && git push origin :#{full_branch} 2>&1`
-        puts "Completed remote branch react4j-flux-challenge/#{full_branch}. Removed." if 0 == $?.exitstatus
-      end
-
-      sh 'cd archive/downstream/react4j-drumloop && git push --all'
-      %w(master).each do |branch|
-        full_branch = "#{branch}-ArezUpgrade-#{ENV['PRODUCT_VERSION']}"
-        `cd archive/downstream/react4j-drumloop && git push origin :#{full_branch} 2>&1`
-        puts "Completed remote branch react4j-drumloop/#{full_branch}. Removed." if 0 == $?.exitstatus
+      DOWNSTREAM_EXAMPLES.each_pair do |downstream_example, branches|
+        sh "cd archive/downstream/#{downstream_example} && git push --all"
+        branches.each do |branch|
+          full_branch = "#{branch}-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
+          `cd archive/downstream/#{downstream_example} && git push origin :#{full_branch} 2>&1`
+          puts "Completed remote branch #{downstream_example}/#{full_branch}. Removed." if 0 == $?.exitstatus
+        end
       end
 
       DOWNSTREAM_PROJECTS.each do |downstream|
