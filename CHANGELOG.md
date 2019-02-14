@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.119](https://github.com/react4j/react4j/tree/v0.119) (2019-02-14)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.118...v0.119)
 
 * Add the `react4j-drumloop` sample application into set off used to track code size changes over time.
 * Cleanup the react closure externs by removing `React.DOM` definition as well as historic parameters to
