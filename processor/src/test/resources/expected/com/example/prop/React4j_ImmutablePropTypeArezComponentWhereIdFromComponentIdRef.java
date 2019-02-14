@@ -19,7 +19,7 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "ImmutablePropTypeArezComponentWhereIdFromComponentIdRef",
-    disposeTrackable = Feature.DISABLE,
+    disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )

@@ -19,7 +19,7 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "PublicReactComponent",
-    disposeTrackable = Feature.DISABLE,
+    disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.CONSUME
 )

@@ -33,7 +33,7 @@ import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "KeepAliveMemoizeArezReactComponent",
-    disposeTrackable = Feature.DISABLE,
+    disposeNotifier = Feature.DISABLE,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")

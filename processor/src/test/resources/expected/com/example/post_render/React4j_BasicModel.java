@@ -20,7 +20,7 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "BasicModel",
-    disposeTrackable = Feature.DISABLE,
+    disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )

@@ -18,7 +18,7 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "LongPropValidate",
-    disposeTrackable = Feature.DISABLE,
+    disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )

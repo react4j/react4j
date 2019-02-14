@@ -18,7 +18,7 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "MultiPropComponent3",
-    disposeTrackable = Feature.DISABLE,
+    disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )

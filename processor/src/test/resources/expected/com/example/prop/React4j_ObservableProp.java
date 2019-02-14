@@ -36,7 +36,7 @@ import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
     name = "ObservableProp",
-    disposeTrackable = Feature.DISABLE,
+    disposeNotifier = Feature.DISABLE,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
