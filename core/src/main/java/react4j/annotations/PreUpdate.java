@@ -10,6 +10,12 @@ import java.lang.annotation.Target;
  * This method is invoked in the "commit" phase using reacts <code>getSnapshotBeforeUpdate()</code>
  * lifecycle method.
  *
+ * <p>This method is used to get access to the DOM prior to it being updated. This is useful if there is
+ * state stored on the DOM that is not present in the VirtualDOM. The method annotated with {@link PreUpdate}
+ * can query the DOM and then apply the necessary changes in {@link PostRender}. Scroll position is an example
+ * of data stored on the DOM but not present in the VirtualDOM and implementing auto-scrolling to new content
+ * would require use of this lifecycle method to calculate the new offset.</p>
+ *
  * <p>The method must also conform to the following constraints:</p>
  * <ul>
  * <li>Must not be annotated with any other react4j annotation</li>
