@@ -34,7 +34,7 @@ artifacts:
   javax_inject: javax.inject:javax.inject:jar:1
   javax_inject_sources: javax.inject:javax.inject:jar:sources:1
 
-  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.96
+  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.98
 
   autoservice: com.google.auto.service:auto-service:jar:1.0-rc3
   autocommon: com.google.auto:auto-common:jar:0.10
