@@ -139,8 +139,6 @@ Applications to build and help asses react4j going forward.
 
 * Port https://github.com/realityforge/Piano-Trainer across to react4j
 
-* Port https://github.com/kenwheeler/hooks-drum-machine across to react4j
-
 * Consider a Metronome - https://daveceddia.com/react-practice-projects/#metronome & https://github.com/cwilso/metronome
 
 * realworld-example - https://github.com/gothinkster/react-mobx-realworld-example-app
