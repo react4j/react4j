@@ -22,9 +22,9 @@ artifacts:
 
   jsinterop_base: com.google.jsinterop:base:jar:1.0.0-RC1
 
-  elemental2_core: org.realityforge.com.google.elemental2:elemental2-core:jar:1.0.0-b16-6897368
-  elemental2_dom: org.realityforge.com.google.elemental2:elemental2-dom:jar:1.0.0-b16-6897368
-  elemental2_promise: org.realityforge.com.google.elemental2:elemental2-promise:jar:1.0.0-b16-6897368
+  elemental2_core: org.realityforge.com.google.elemental2:elemental2-core:jar:1.0.0-b17-6897368
+  elemental2_dom: org.realityforge.com.google.elemental2:elemental2-dom:jar:1.0.0-b17-6897368
+  elemental2_promise: org.realityforge.com.google.elemental2:elemental2-promise:jar:1.0.0-b17-6897368
 
   arez_core: org.realityforge.arez:arez-core:jar:0.130
   arez_processor: org.realityforge.arez:arez-processor:jar:0.130
@@ -34,7 +34,7 @@ artifacts:
   javax_inject: javax.inject:javax.inject:jar:1
   javax_inject_sources: javax.inject:javax.inject:jar:sources:1
 
-  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.96
+  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.98
 
   autoservice: com.google.auto.service:auto-service:jar:1.0-rc3
   autocommon: com.google.auto:auto-common:jar:0.10

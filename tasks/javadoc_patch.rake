@@ -1,4 +1,4 @@
-raise 'Patch already integrated into buildr code' unless Buildr::VERSION.to_s == '1.5.6'
+raise 'Patch already integrated into buildr code' unless Buildr::VERSION.to_s == '1.5.7'
 
 module Buildr
   module JavadocPatch

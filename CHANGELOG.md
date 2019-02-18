@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `1.0.0-b17-6897368`.
+
 ### [v0.119](https://github.com/react4j/react4j/tree/v0.119) (2019-02-14)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.118...v0.119)
 
