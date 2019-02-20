@@ -106,6 +106,10 @@ complete as there is too much un-said.
 
 * Collections returned from props should be made immutable.
 
+* Consider replacing the "backend" of the component model with hooks. The advantages are:
+  - We could access multiple `TreeLocal` / context values.
+  - The DevTools could be updated to present Arez debug data in nested block.
+
 #### Documentation
 
 * Add graph reflecting size of TodoMVC over time
