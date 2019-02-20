@@ -20,6 +20,8 @@ complete as there is too much un-said.
 ### High Priorities
 
 * Implement react-cache and update react4j-drumloop
+  It should be noted that when the `react-cache` instances throws a `Promise` it must be the same
+  instance for the same entry. Suspense uses the promise as a key into maps to dedupe listeners etc.
 
 * Introduce `TreeLocal` component which is react "context". A single `TreeLocal` can be represented using react 16.4's
   static context field. Multiple `TreeLocal` instances on a component may need to be represented by a chain of
