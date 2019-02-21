@@ -272,7 +272,7 @@ define 'react4j' do
                               :name => "GWT: #{key}",
                               :gwt_module => gwt_module,
                               :start_javascript_debugger => false,
-                              :vm_parameters => "-Xmx2G -Djava.io.tmpdir=#{_('tmp/gwt')}",
+                              :vm_parameters => '-Xmx2G',
                               :shell_parameters => "-port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
   end
 end
