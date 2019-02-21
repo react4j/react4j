@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.120](https://github.com/react4j/react4j/tree/v0.120) (2019-02-21)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.119...v0.120)
 
 * Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `1.0.0-b17-6897368`.
 * **\[processor\]** Fix the error message when a `type=TRACKING` component fails to access an arez
