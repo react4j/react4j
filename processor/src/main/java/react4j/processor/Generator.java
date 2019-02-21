@@ -1316,9 +1316,13 @@ final class Generator
       depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
                                       AREZ_CLASSNAME,
                                       AREZ_CLASSNAME );
-      depCheckBlock.addStatement(
-        "$T.invariant( () -> !getRenderObserver().getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> \"ReactArezComponent render completed on '\" + this + \"' but the component does not have any Arez dependencies. This component should extend react4j.Component instead.\" )",
-        GUARDS_CLASSNAME );
+      depCheckBlock.addStatement( "$T.invariant( () -> !getRenderObserver().getContext().getSpy()." +
+                                  "asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), " +
+                                  "() -> \"Component render completed on '\" + this + \"' without accessing " +
+                                  "any Arez dependencies but has a type set to TRACKING. The render method " +
+                                  "needs to access an Arez dependency or the type should be changed to " +
+                                  "STATEFUL or MAYBE_TRACKING.\" )",
+                                  GUARDS_CLASSNAME );
       depCheckBlock.endControlFlow();
       method.addCode( depCheckBlock.build() );
       method.addStatement( "return result" );
