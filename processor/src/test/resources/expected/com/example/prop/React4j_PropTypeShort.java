@@ -39,7 +39,7 @@ abstract class React4j_PropTypeShort extends PropTypeShort {
 
   @Override
   protected short getMyProp() {
-    return props().getAny( Props.myProp ).asShort();
+    return props().getAsAny( Props.myProp ).asShort();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

@@ -39,7 +39,7 @@ abstract class React4j_CharPropValidate extends CharPropValidate {
 
   @Override
   protected char getMyProp() {
-    return props().getAny( Props.myProp ).asChar();
+    return props().getAsAny( Props.myProp ).asChar();
   }
 
   private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {

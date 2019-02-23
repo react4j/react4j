@@ -40,27 +40,27 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   @Override
   protected String getMyRequiredProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myRequiredProp ) ? props().getAny( Props.myRequiredProp ).asString() : null;
+      return null != props().getAsAny( Props.myRequiredProp ) ? props().getAsAny( Props.myRequiredProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myRequiredProp ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myRequiredProp ) );
     }
   }
 
   @Override
   protected String getMyOptionalProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myOptionalProp ) ? props().getAny( Props.myOptionalProp ).asString() : null;
+      return null != props().getAsAny( Props.myOptionalProp ) ? props().getAsAny( Props.myOptionalProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myOptionalProp ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myOptionalProp ) );
     }
   }
 
   @Override
   protected String getMyOtherOptionalProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myOtherOptionalProp ) ? props().getAny( Props.myOtherOptionalProp ).asString() : null;
+      return null != props().getAsAny( Props.myOtherOptionalProp ) ? props().getAsAny( Props.myOtherOptionalProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myOtherOptionalProp ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myOtherOptionalProp ) );
     }
   }
 

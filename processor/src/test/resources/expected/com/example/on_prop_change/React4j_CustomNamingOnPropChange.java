@@ -40,21 +40,21 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
 
   @Override
   protected boolean getMyProp1() {
-    return props().getAny( Props.myProp1 ).asBoolean();
+    return props().getAsAny( Props.myProp1 ).asBoolean();
   }
 
   @Override
   protected String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myProp2 ) ? props().getAny( Props.myProp2 ).asString() : null;
+      return null != props().getAsAny( Props.myProp2 ) ? props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myProp2 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myProp2 ) );
     }
   }
 
   @Override
   protected int getMyProp3() {
-    return props().getAny( Props.myProp3 ).asInt();
+    return props().getAsAny( Props.myProp3 ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -80,13 +80,13 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
       final boolean myProp2 = !Js.isTripleEqual( props.get( Props.myProp2 ), prevProps.get( Props.myProp2 ) );
       final boolean myProp3 = !Js.isTripleEqual( props.get( Props.myProp3 ), prevProps.get( Props.myProp3 ) );
       if ( myProp1 ) {
-        onPropChange( props.getAny( Props.myProp1 ).asBoolean() );
+        onPropChange( props.getAsAny( Props.myProp1 ).asBoolean() );
       }
       if ( myProp2 ) {
-        onPropChange( Js.uncheckedCast( props.getAny( Props.myProp2 ) ) );
+        onPropChange( Js.uncheckedCast( props.getAsAny( Props.myProp2 ) ) );
       }
       if ( myProp3 ) {
-        onPropChange( props.getAny( Props.myProp3 ).asInt() );
+        onPropChange( props.getAsAny( Props.myProp3 ).asInt() );
       }
     }
   }

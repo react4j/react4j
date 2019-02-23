@@ -39,7 +39,7 @@ abstract class React4j_IntPropValidate extends IntPropValidate {
 
   @Override
   protected int getMyProp() {
-    return props().getAny( Props.myProp ).asInt();
+    return props().getAsAny( Props.myProp ).asInt();
   }
 
   private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {

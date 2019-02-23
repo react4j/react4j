@@ -39,7 +39,7 @@ abstract class React4j_PropTypeByte extends PropTypeByte {
 
   @Override
   protected byte getMyProp() {
-    return props().getAny( Props.myProp ).asByte();
+    return props().getAsAny( Props.myProp ).asByte();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

@@ -40,7 +40,7 @@ abstract class React4j_DoubleOnPropChange extends DoubleOnPropChange {
 
   @Override
   protected double getMyProp() {
-    return props().getAny( Props.myProp ).asDouble();
+    return props().getAsAny( Props.myProp ).asDouble();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -58,7 +58,7 @@ abstract class React4j_DoubleOnPropChange extends DoubleOnPropChange {
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
-        onMyPropChange( props.getAny( Props.myProp ).asDouble() );
+        onMyPropChange( props.getAsAny( Props.myProp ).asDouble() );
       }
     }
   }

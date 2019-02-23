@@ -39,7 +39,7 @@ abstract class React4j_PropTypeBoolean extends PropTypeBoolean {
 
   @Override
   protected boolean getMyProp() {
-    return props().getAny( Props.myProp ).asBoolean();
+    return props().getAsAny( Props.myProp ).asBoolean();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

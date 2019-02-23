@@ -41,9 +41,9 @@ abstract class React4j_CollectionPropComponent extends CollectionPropComponent {
   @Override
   protected Collection<String> getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).cast() : null;
+      return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myProp ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myProp ) );
     }
   }
 

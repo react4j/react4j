@@ -57,9 +57,9 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
   @Override
   protected Object getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.value ) ? props().getAny( Props.value ).cast() : null;
+      return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.value ) );
+      return Js.uncheckedCast( props().getAsAny( Props.value ) );
     }
   }
 

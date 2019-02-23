@@ -55,18 +55,18 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   @Override
   protected String getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.value ) ? props().getAny( Props.value ).asString() : null;
+      return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.value ) );
+      return Js.uncheckedCast( props().getAsAny( Props.value ) );
     }
   }
 
   @Override
   protected ComponentWithDependency.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.model ) ? props().getAny( Props.model ).cast() : null;
+      return null != props().getAsAny( Props.model ) ? props().getAsAny( Props.model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.model ) );
+      return Js.uncheckedCast( props().getAsAny( Props.model ) );
     }
   }
 

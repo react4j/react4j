@@ -40,9 +40,9 @@ abstract class React4j_CustomNameProp extends CustomNameProp {
   @Override
   protected String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.foo ) ? props().getAny( Props.foo ).asString() : null;
+      return null != props().getAsAny( Props.foo ) ? props().getAsAny( Props.foo ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.foo ) );
+      return Js.uncheckedCast( props().getAsAny( Props.foo ) );
     }
   }
 

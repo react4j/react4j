@@ -39,7 +39,7 @@ abstract class React4j_PropTypeFloat extends PropTypeFloat {
 
   @Override
   protected float getMyProp() {
-    return props().getAny( Props.myProp ).asFloat();
+    return props().getAsAny( Props.myProp ).asFloat();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

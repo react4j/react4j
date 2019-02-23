@@ -40,7 +40,7 @@ abstract class React4j_LongOnPropChange extends LongOnPropChange {
 
   @Override
   protected long getMyProp() {
-    return props().getAny( Props.myProp ).asLong();
+    return props().getAsAny( Props.myProp ).asLong();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -58,7 +58,7 @@ abstract class React4j_LongOnPropChange extends LongOnPropChange {
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
-        onMyPropChange( props.getAny( Props.myProp ).asLong() );
+        onMyPropChange( props.getAsAny( Props.myProp ).asLong() );
       }
     }
   }

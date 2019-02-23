@@ -40,16 +40,16 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
   @Nonnull
   @Override
   protected String getMyProp() {
-    return props().getAny( Props.myProp ).asString();
+    return props().getAsAny( Props.myProp ).asString();
   }
 
   @Nullable
   @Override
   protected String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myProp2 ) ? props().getAny( Props.myProp2 ).asString() : null;
+      return null != props().getAsAny( Props.myProp2 ) ? props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myProp2 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myProp2 ) );
     }
   }
 

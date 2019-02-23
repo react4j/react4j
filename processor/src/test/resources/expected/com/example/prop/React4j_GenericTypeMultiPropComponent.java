@@ -41,18 +41,18 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
   @Override
   protected T getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.value ) ? props().getAny( Props.value ).cast() : null;
+      return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.value ) );
+      return Js.uncheckedCast( props().getAsAny( Props.value ) );
     }
   }
 
   @Override
   protected String getValue2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.value2 ) ? props().getAny( Props.value2 ).asString() : null;
+      return null != props().getAsAny( Props.value2 ) ? props().getAsAny( Props.value2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.value2 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.value2 ) );
     }
   }
 
@@ -60,9 +60,9 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
   @Override
   protected String getValue3() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.value3 ) ? props().getAny( Props.value3 ).asString() : null;
+      return null != props().getAsAny( Props.value3 ) ? props().getAsAny( Props.value3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.value3 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.value3 ) );
     }
   }
 
@@ -70,9 +70,9 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
   @Override
   protected String getValue4() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.value4 ) ? props().getAny( Props.value4 ).asString() : null;
+      return null != props().getAsAny( Props.value4 ) ? props().getAsAny( Props.value4 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.value4 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.value4 ) );
     }
   }
 

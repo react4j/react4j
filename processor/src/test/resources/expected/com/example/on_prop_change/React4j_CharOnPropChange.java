@@ -40,7 +40,7 @@ abstract class React4j_CharOnPropChange extends CharOnPropChange {
 
   @Override
   protected char getMyProp() {
-    return props().getAny( Props.myProp ).asChar();
+    return props().getAsAny( Props.myProp ).asChar();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -58,7 +58,7 @@ abstract class React4j_CharOnPropChange extends CharOnPropChange {
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
-        onMyPropChange( props.getAny( Props.myProp ).asChar() );
+        onMyPropChange( props.getAsAny( Props.myProp ).asChar() );
       }
     }
   }

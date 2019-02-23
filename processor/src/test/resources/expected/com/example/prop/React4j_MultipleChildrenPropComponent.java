@@ -41,9 +41,9 @@ abstract class React4j_MultipleChildrenPropComponent extends MultipleChildrenPro
   @Override
   protected ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.children ) ? props().getAny( Props.children ).cast() : null;
+      return null != props().getAsAny( Props.children ) ? props().getAsAny( Props.children ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.children ) );
+      return Js.uncheckedCast( props().getAsAny( Props.children ) );
     }
   }
 

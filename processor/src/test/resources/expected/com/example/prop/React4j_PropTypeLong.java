@@ -39,7 +39,7 @@ abstract class React4j_PropTypeLong extends PropTypeLong {
 
   @Override
   protected long getMyProp() {
-    return props().getAny( Props.myProp ).asLong();
+    return props().getAsAny( Props.myProp ).asLong();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

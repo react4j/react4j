@@ -41,7 +41,7 @@ abstract class React4j_NonnullOnPropChange extends NonnullOnPropChange {
   @Nonnull
   @Override
   protected String getMyProp() {
-    return props().getAny( Props.myProp ).asString();
+    return props().getAsAny( Props.myProp ).asString();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -59,7 +59,7 @@ abstract class React4j_NonnullOnPropChange extends NonnullOnPropChange {
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
-        onMyPropChange( props.getAny( Props.myProp ).asString() );
+        onMyPropChange( props.getAsAny( Props.myProp ).asString() );
       }
     }
   }

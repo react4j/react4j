@@ -40,7 +40,7 @@ abstract class React4j_BooleanOnPropChange extends BooleanOnPropChange {
 
   @Override
   protected boolean getMyProp() {
-    return props().getAny( Props.myProp ).asBoolean();
+    return props().getAsAny( Props.myProp ).asBoolean();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -58,7 +58,7 @@ abstract class React4j_BooleanOnPropChange extends BooleanOnPropChange {
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
-        onMyPropChange( props.getAny( Props.myProp ).asBoolean() );
+        onMyPropChange( props.getAsAny( Props.myProp ).asBoolean() );
       }
     }
   }

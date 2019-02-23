@@ -39,7 +39,7 @@ abstract class React4j_CustomPropsReactComponent extends CustomPropsReactCompone
 
   @Override
   boolean isSomeField() {
-    return props().getAny( Props.someField ).asBoolean();
+    return props().getAsAny( Props.someField ).asBoolean();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

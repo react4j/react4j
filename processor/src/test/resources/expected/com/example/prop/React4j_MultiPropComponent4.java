@@ -40,9 +40,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).asString() : null;
+      return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myProp ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myProp ) );
     }
   }
 
@@ -50,9 +50,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myProp2 ) ? props().getAny( Props.myProp2 ).asString() : null;
+      return null != props().getAsAny( Props.myProp2 ) ? props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myProp2 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myProp2 ) );
     }
   }
 
@@ -60,9 +60,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp3() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myProp3 ) ? props().getAny( Props.myProp3 ).asString() : null;
+      return null != props().getAsAny( Props.myProp3 ) ? props().getAsAny( Props.myProp3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myProp3 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myProp3 ) );
     }
   }
 
@@ -70,9 +70,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected String getMyProp4() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myProp4 ) ? props().getAny( Props.myProp4 ).asString() : null;
+      return null != props().getAsAny( Props.myProp4 ) ? props().getAsAny( Props.myProp4 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myProp4 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myProp4 ) );
     }
   }
 
@@ -80,9 +80,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   protected ReactNode getChild() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.child ) ? props().getAny( Props.child ).cast() : null;
+      return null != props().getAsAny( Props.child ) ? props().getAsAny( Props.child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.child ) );
+      return Js.uncheckedCast( props().getAsAny( Props.child ) );
     }
   }
 

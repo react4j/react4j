@@ -39,7 +39,7 @@ abstract class React4j_PropTypeChar extends PropTypeChar {
 
   @Override
   protected char getMyProp() {
-    return props().getAny( Props.myProp ).asChar();
+    return props().getAsAny( Props.myProp ).asChar();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

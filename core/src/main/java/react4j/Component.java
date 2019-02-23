@@ -159,8 +159,8 @@ public abstract class Component
           boolean newStateHasChanges = false;
           for ( final String key : JsObject.keys( Js.uncheckedCast( newState ) ) )
           {
-            final Any newValue = currentState.getAny( key );
-            final Any existingValue = newState.getAny( key );
+            final Any newValue = currentState.getAsAny( key );
+            final Any existingValue = newState.getAsAny( key );
             if ( !Objects.equals( newValue, existingValue ) )
             {
               newStateHasChanges = true;

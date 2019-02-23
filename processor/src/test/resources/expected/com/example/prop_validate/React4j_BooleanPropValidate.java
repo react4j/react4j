@@ -39,7 +39,7 @@ abstract class React4j_BooleanPropValidate extends BooleanPropValidate {
 
   @Override
   protected boolean getMyProp() {
-    return props().getAny( Props.myProp ).asBoolean();
+    return props().getAsAny( Props.myProp ).asBoolean();
   }
 
   private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {

@@ -41,25 +41,25 @@ abstract class React4j_NullablePropAndNonnullChildComponent extends NullableProp
   @Nonnull
   @Override
   protected String getMyProp() {
-    return props().getAny( Props.myProp ).asString();
+    return props().getAsAny( Props.myProp ).asString();
   }
 
   @Nullable
   @Override
   protected String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myProp2 ) ? props().getAny( Props.myProp2 ).asString() : null;
+      return null != props().getAsAny( Props.myProp2 ) ? props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myProp2 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myProp2 ) );
     }
   }
 
   @Override
   protected ReactNode getChild() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.child ) ? props().getAny( Props.child ).cast() : null;
+      return null != props().getAsAny( Props.child ) ? props().getAsAny( Props.child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.child ) );
+      return Js.uncheckedCast( props().getAsAny( Props.child ) );
     }
   }
 

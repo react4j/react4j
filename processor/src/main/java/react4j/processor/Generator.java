@@ -881,12 +881,12 @@ final class Generator
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-      block.addStatement( "return null != props().getAny( Props.$N ) ? props().getAny( Props.$N ).$N() : null",
+      block.addStatement( "return null != props().getAsAny( Props.$N ) ? props().getAsAny( Props.$N ).$N() : null",
                           prop.getConstantName(),
                           prop.getConstantName(),
                           convertMethodName );
       block.nextControlFlow( "else" );
-      block.addStatement( "return $T.uncheckedCast( props().getAny( Props.$N ) )",
+      block.addStatement( "return $T.uncheckedCast( props().getAsAny( Props.$N ) )",
                           JS_CLASSNAME,
                           prop.getConstantName() );
       block.endControlFlow();
@@ -894,7 +894,7 @@ final class Generator
     }
     else
     {
-      method.addStatement( "return props().getAny( Props.$N ).$N()", prop.getConstantName(), convertMethodName );
+      method.addStatement( "return props().getAsAny( Props.$N ).$N()", prop.getConstantName(), convertMethodName );
     }
     return method;
   }
@@ -995,13 +995,13 @@ final class Generator
         final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
         if ( !resultKind.isPrimitive() && !ProcessorUtil.isNonnull( prop.getMethod() ) )
         {
-          sb.append( "$T.uncheckedCast( props.getAny( Props.$N ) )" );
+          sb.append( "$T.uncheckedCast( props.getAsAny( Props.$N ) )" );
           params.add( JS_CLASSNAME );
           params.add( prop.getConstantName() );
         }
         else
         {
-          sb.append( "props.getAny( Props.$N ).$N()" );
+          sb.append( "props.getAsAny( Props.$N ).$N()" );
           params.add( prop.getConstantName() );
           params.add( convertMethodName );
         }

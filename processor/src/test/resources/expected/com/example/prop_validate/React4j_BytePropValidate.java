@@ -39,7 +39,7 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
 
   @Override
   protected byte getMyProp() {
-    return props().getAny( Props.myProp ).asByte();
+    return props().getAsAny( Props.myProp ).asByte();
   }
 
   private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {

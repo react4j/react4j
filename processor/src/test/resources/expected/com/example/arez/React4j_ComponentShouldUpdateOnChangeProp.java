@@ -56,18 +56,18 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
   @Override
   protected String getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.value ) ? props().getAny( Props.value ).asString() : null;
+      return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.value ) );
+      return Js.uncheckedCast( props().getAsAny( Props.value ) );
     }
   }
 
   @Override
   protected String getOther() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.other ) ? props().getAny( Props.other ).asString() : null;
+      return null != props().getAsAny( Props.other ) ? props().getAsAny( Props.other ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.other ) );
+      return Js.uncheckedCast( props().getAsAny( Props.other ) );
     }
   }
 

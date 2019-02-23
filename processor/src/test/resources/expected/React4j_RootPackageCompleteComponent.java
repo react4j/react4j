@@ -40,7 +40,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
 
   @Override
   int getMyProp() {
-    return props().getAny( Props.myProp ).asInt();
+    return props().getAsAny( Props.myProp ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -65,7 +65,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
-        onMyPropChange( props.getAny( Props.myProp ).asInt() );
+        onMyPropChange( props.getAsAny( Props.myProp ).asInt() );
       }
     }
     preUpdate();

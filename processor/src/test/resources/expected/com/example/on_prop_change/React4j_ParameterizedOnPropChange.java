@@ -42,9 +42,9 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
   @Override
   protected ArrayList<String> getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myProp ) ? props().getAny( Props.myProp ).cast() : null;
+      return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myProp ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myProp ) );
     }
   }
 
@@ -63,7 +63,7 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
-        onMyPropChange( Js.uncheckedCast( props.getAny( Props.myProp ) ) );
+        onMyPropChange( Js.uncheckedCast( props.getAsAny( Props.myProp ) ) );
       }
     }
   }

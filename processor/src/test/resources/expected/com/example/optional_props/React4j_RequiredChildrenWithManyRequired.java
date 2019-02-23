@@ -41,36 +41,36 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
   @Override
   protected String getMyRequiredProp1() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myRequiredProp1 ) ? props().getAny( Props.myRequiredProp1 ).asString() : null;
+      return null != props().getAsAny( Props.myRequiredProp1 ) ? props().getAsAny( Props.myRequiredProp1 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myRequiredProp1 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myRequiredProp1 ) );
     }
   }
 
   @Override
   protected String getMyRequiredProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myRequiredProp2 ) ? props().getAny( Props.myRequiredProp2 ).asString() : null;
+      return null != props().getAsAny( Props.myRequiredProp2 ) ? props().getAsAny( Props.myRequiredProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myRequiredProp2 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myRequiredProp2 ) );
     }
   }
 
   @Override
   protected String getMyRequiredProp3() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.myRequiredProp3 ) ? props().getAny( Props.myRequiredProp3 ).asString() : null;
+      return null != props().getAsAny( Props.myRequiredProp3 ) ? props().getAsAny( Props.myRequiredProp3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.myRequiredProp3 ) );
+      return Js.uncheckedCast( props().getAsAny( Props.myRequiredProp3 ) );
     }
   }
 
   @Override
   protected ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAny( Props.children ) ? props().getAny( Props.children ).cast() : null;
+      return null != props().getAsAny( Props.children ) ? props().getAsAny( Props.children ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAny( Props.children ) );
+      return Js.uncheckedCast( props().getAsAny( Props.children ) );
     }
   }
 

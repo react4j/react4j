@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
 
   @Override
   protected float getMyProp() {
-    return props().getAny( Props.myProp ).asFloat();
+    return props().getAsAny( Props.myProp ).asFloat();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

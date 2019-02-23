@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypePrimitiveByte extends ImmutablePropTypeP
 
   @Override
   protected byte getMyProp() {
-    return props().getAny( Props.myProp ).asByte();
+    return props().getAsAny( Props.myProp ).asByte();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

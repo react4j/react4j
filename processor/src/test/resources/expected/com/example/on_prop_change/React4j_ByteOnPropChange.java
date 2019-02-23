@@ -40,7 +40,7 @@ abstract class React4j_ByteOnPropChange extends ByteOnPropChange {
 
   @Override
   protected byte getMyProp() {
-    return props().getAny( Props.myProp ).asByte();
+    return props().getAsAny( Props.myProp ).asByte();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -58,7 +58,7 @@ abstract class React4j_ByteOnPropChange extends ByteOnPropChange {
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
-        onMyPropChange( props.getAny( Props.myProp ).asByte() );
+        onMyPropChange( props.getAsAny( Props.myProp ).asByte() );
       }
     }
   }

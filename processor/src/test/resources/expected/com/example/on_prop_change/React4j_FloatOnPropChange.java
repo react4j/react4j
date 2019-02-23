@@ -40,7 +40,7 @@ abstract class React4j_FloatOnPropChange extends FloatOnPropChange {
 
   @Override
   protected float getMyProp() {
-    return props().getAny( Props.myProp ).asFloat();
+    return props().getAsAny( Props.myProp ).asFloat();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -58,7 +58,7 @@ abstract class React4j_FloatOnPropChange extends FloatOnPropChange {
       final JsPropertyMap<Object> props = props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
-        onMyPropChange( props.getAny( Props.myProp ).asFloat() );
+        onMyPropChange( props.getAsAny( Props.myProp ).asFloat() );
       }
     }
   }

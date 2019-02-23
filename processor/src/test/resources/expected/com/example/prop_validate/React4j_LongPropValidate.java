@@ -39,7 +39,7 @@ abstract class React4j_LongPropValidate extends LongPropValidate {
 
   @Override
   protected long getMyProp() {
-    return props().getAny( Props.myProp ).asLong();
+    return props().getAsAny( Props.myProp ).asLong();
   }
 
   private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
