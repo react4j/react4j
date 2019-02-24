@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.121](https://github.com/react4j/react4j/tree/v0.121) (2019-02-24)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.120...v0.121)
 
 * Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `1.0.0-b18-f3472e7`.
 * **\[core\]** Upgrade the `com.google.jsinterop:base:jar` library to version `1.0.0-b2-e6d791f`
