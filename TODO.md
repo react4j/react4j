@@ -146,6 +146,8 @@ Applications to build and help asses react4j going forward.
 
 * Port https://github.com/realityforge/Piano-Trainer across to react4j
 
+* https://github.com/Swizec/react-fractals
+
 * https://github.com/rwieruch/favesound-mobx
 
 * Consider a Metronome - https://daveceddia.com/react-practice-projects/#metronome & https://github.com/cwilso/metronome
