@@ -160,6 +160,13 @@ Applications to build and help asses react4j going forward.
   - https://medium.com/@tdelev/minesweeper-in-typescript-and-react-f5f8a5d57383
   - https://github.com/tdelev/minesweeper-react
   - https://delev.me/minesweeper-react/
+  - https://github.com/hinsxd/react-minesweeper
+
+* https://github.com/hinsxd/react-snake
+
+* Tetris clone
+  - https://github.com/hinsxd/react-tetris
+  - https://tetris.wiki/SRS
 
 * Port https://github.com/benawad/slack-clone-client/tree/53_code_splitting across to react4j. Good way to experiment with GraphQL and few other interesting elements.
 
