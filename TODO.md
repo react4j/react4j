@@ -207,7 +207,8 @@ we ever do this here is a list of helpful links that could provide useful
   has some interesting benchmarks at https://github.com/NervJS/nerv/tree/master/benchmarks
 
 * Consider using the React4j component model (a.k.a. annotations) and seeing if it can be used to generate
-  a custom-element based component such as via Stencil.js.
+  a custom-element based component such as via Stencil.js. Ideals could also be incorporated from
+  [lit-html](https://lit-html.polymer-project.org/) and/or [lit-element](https://lit-element.polymer-project.org/).
 
 * Investigate feasibility of https://github.com/sokra/rawact which compiles react components into native
   browser interactions in attempt to eliminate overhead of library. A similar framework is imba @ http://imba.io/
