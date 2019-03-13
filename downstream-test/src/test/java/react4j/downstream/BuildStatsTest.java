@@ -27,6 +27,13 @@ public class BuildStatsTest
   }
 
   @Test
+  public void spritz()
+    throws Exception
+  {
+    compareSizesForBranch( "spritz", true );
+  }
+
+  @Test
   public void dagger()
     throws Exception
   {
