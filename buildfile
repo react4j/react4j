@@ -228,8 +228,7 @@ define 'react4j' do
     test.exclude '*BuildOutputTest' if ENV['BUILD_STATS'] == 'no'
 
     test.using :testng
-    test.compile.with :guiceyloops,
-                      project('gwt-output-qa').package(:jar),
+    test.compile.with project('gwt-output-qa').package(:jar),
                       project('gwt-output-qa').compile.dependencies
   end
 
