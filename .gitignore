@@ -5,6 +5,7 @@
 /Gemfile.lock
 /_buildr.rb
 /archive
+/bazel-*
 /generated
 /node_modules
 /reports
