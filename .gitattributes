@@ -19,6 +19,8 @@
 .gitignore text
 .node-version text
 .ruby-version text
+BUILD text
 Gemfile text
 LICENSE text
+WORKSPACE text
 buildfile text
