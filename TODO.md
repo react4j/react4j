@@ -6,6 +6,10 @@ complete as there is too much un-said.
 
 ### Very High Priority
 
+* Bazel integration. Also build processor somehow. WIll also need some mechanism for keeping the build
+  artifacts inline. Maybe should have a tool that generates a snippet from build.yaml that can be included
+  in WORKSPACE which would mean it always aligns.
+
 * The message that indicates prop does not match immutable constraints should say exactly why. (i.e. Is not
   primitive, Arez component nor implements Keyed or if an ArezComponent indicate it needs a requireId=ENABLE etc)
 
