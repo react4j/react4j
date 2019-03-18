@@ -153,7 +153,7 @@ final class ComponentDescriptor
     return _constructor;
   }
 
-  boolean hasConstructorParams()
+  private boolean hasConstructorParams()
   {
     return !_constructor.getParameters().isEmpty();
   }
