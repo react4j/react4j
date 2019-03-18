@@ -48,11 +48,11 @@ j2cl_library(
         "@org_realityforge_com_google_elemental2_promise//jar",
         "@org_realityforge_javax_annotation//jar",
     ],
+    plugins = [
+        "arez_processor",
+    ],
     deps = [
         ":com_google_jsinterop_annotations-j2cl",
         ":gwt-javaemul-internal-annotations-j2cl",
-    ],
-    plugins = [
-        "arez_processor",
     ],
 )
