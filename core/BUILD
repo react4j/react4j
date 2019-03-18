@@ -1,4 +1,4 @@
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//visibility:private"])
 
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_application", "j2cl_import", "j2cl_library")
 
@@ -51,6 +51,7 @@ j2cl_library(
     plugins = [
         "arez_processor",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         ":com_google_jsinterop_annotations-j2cl",
         ":gwt-javaemul-internal-annotations-j2cl",
