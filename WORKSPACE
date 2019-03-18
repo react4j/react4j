@@ -9,11 +9,12 @@ http_archive(
 )
 
 load("@com_google_j2cl//build_defs:repository.bzl", "load_j2cl_repo_deps")
+
 load_j2cl_repo_deps()
 
 load("@com_google_j2cl//build_defs:rules.bzl", "setup_j2cl_workspace")
-setup_j2cl_workspace()
 
+setup_j2cl_workspace()
 
 maven_jar(
     name = "org_realityforge_javax_annotation",
