@@ -63,3 +63,40 @@ maven_jar(
     artifact = "org.realityforge.braincheck:braincheck:1.13.0",
     sha1 = "8e3e425e52766cd28d1563116be190ad18195c04",
 )
+
+maven_jar(
+    name = "javax_annotation",
+    artifact = "com.google.code.findbugs:jsr305:3.0.2",
+)
+
+maven_jar(
+    name = "Xcom_google_auto_service",
+    artifact = "com.google.auto.service:auto-service:1.0-rc3",
+)
+
+maven_jar(
+    name = "Xcom_google_auto_common",
+    artifact = "com.google.auto:auto-common:0.10",
+)
+
+maven_jar(
+    name = "Xcom_squareup_javapoet",
+    artifact = "com.squareup:javapoet:1.11.1",
+)
+
+maven_jar(
+    name = "Xcom_google_guava",
+    artifact = "com.google.guava:guava:25.0-jre",
+)
+
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
+git_repository(
+    name = "com_github_johnynek_bazel_jar_jar",
+    commit = "16e48f319048e090a2fe7fd39a794312d191fc6f",
+    remote = "git://github.com/johnynek/bazel_jar_jar.git",
+)
+
+load("@com_github_johnynek_bazel_jar_jar//:jar_jar.bzl", "jar_jar_repositories")
+
+jar_jar_repositories()
