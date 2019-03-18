@@ -292,9 +292,9 @@ final class ComponentDescriptor
     _memoizeMethods = Objects.requireNonNull( memoizeMethods );
   }
 
-  boolean hasSyntheticKey()
+  boolean hasNoSyntheticKey()
   {
-    return getProps().stream().anyMatch( PropDescriptor::isImmutable );
+    return getProps().stream().noneMatch( PropDescriptor::isImmutable );
   }
 
   int syntheticKeyComponents()

@@ -126,7 +126,7 @@ final class Generator
     }
 
     int index = 0;
-    if ( !descriptor.hasSyntheticKey() )
+    if ( descriptor.hasNoSyntheticKey() )
     {
       // key step
       buildStaticStepMethodMethods( descriptor, builder, steps.get( index ) );
@@ -1913,7 +1913,7 @@ final class Generator
 
     final int propsSize = props.size();
 
-    if ( !descriptor.hasSyntheticKey() )
+    if ( descriptor.hasNoSyntheticKey() )
     {
       // Key step
       final Step keyStep = builder.addStep();
