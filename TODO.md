@@ -6,7 +6,7 @@ complete as there is too much un-said.
 
 ### Very High Priority
 
-* Bazel integration. Also build processor somehow. WIll also need some mechanism for keeping the build
+* Bazel integration. Also build processor somehow. Will also need some mechanism for keeping the build
   artifacts inline. Maybe should have a tool that generates a snippet from build.yaml that can be included
   in WORKSPACE which would mean it always aligns.
 
