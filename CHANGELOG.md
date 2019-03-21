@@ -2,7 +2,8 @@
 
 ### Unreleased
 
-* Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `1.0.0-b19-fb227e3`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.133`.
+* Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `1.0.0-b20-bfe6e22`.
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.13.0`.
 * Start building `spritz` branch in `react4j-todomvc` as part of build and release cycle.
 * **\[core\]** Correct the pom so dependencies are accurately recorded. This pom ceased to be
