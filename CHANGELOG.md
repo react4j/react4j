@@ -5,6 +5,9 @@
 * Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `1.0.0-b19-fb227e3`.
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.13.0`.
 * Start building `spritz` branch in `react4j-todomvc` as part of build and release cycle.
+* **\[core\]** Correct the pom so dependencies are accurately recorded. This pom ceased to be
+  accurate after the `jsinterop` and `elemental2` moved group ids and the `arez` dependency
+  was added directly to the `react-core` module.
 
 ### [v0.121](https://github.com/react4j/react4j/tree/v0.121) (2019-02-24)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.120...v0.121)

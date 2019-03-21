@@ -27,11 +27,10 @@ define 'react4j' do
   desc 'React4j core binding'
   define 'core' do
     pom.include_transitive_dependencies << artifact(:javax_annotation)
-    pom.include_transitive_dependencies << artifact(:jsinterop_base)
-    pom.include_transitive_dependencies << artifact(:elemental2_core)
     pom.include_transitive_dependencies << artifact(:elemental2_promise)
     pom.include_transitive_dependencies << artifact(:arez_core)
-    pom.dependency_filter = Proc.new {|dep| dep[:id].to_s != 'jsinterop-annotations' && dep[:scope].to_s != 'test' && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-component') && dep[:group].to_s != 'org.jetbrains' && dep[:scope].to_s != 'test'}
+    pom.include_transitive_dependencies << artifact(:braincheck)
+    pom.dependency_filter = Proc.new {|dep| dep[:group].to_s != 'org.realityforge.com.google.jsinterop' && dep[:group].to_s != 'com.google.jsinterop' && dep[:scope].to_s != 'test' && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-core') && (dep[:group].to_s != 'org.realityforge.com.google.elemental2' || dep[:id].to_s == 'elemental2-promise') && dep[:group].to_s != 'org.realityforge.org.jetbrains.annotations' && dep[:scope].to_s != 'test'}
 
     js_assets(project, :core)
 
