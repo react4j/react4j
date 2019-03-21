@@ -10,6 +10,8 @@ complete as there is too much un-said.
   artifacts inline. Maybe should have a tool that generates a snippet from build.yaml that can be included
   in WORKSPACE which would mean it always aligns.
 
+* Pull techniques for Bazel/Closure integration and probably externs from https://github.com/tadeegan/react-closure-sample
+
 * The message that indicates prop does not match immutable constraints should say exactly why. (i.e. Is not
   primitive, Arez component nor implements Keyed or if an ArezComponent indicate it needs a requireId=ENABLE etc)
 
