@@ -120,6 +120,8 @@ complete as there is too much un-said.
   - We could access multiple `TreeLocal` / context values.
   - The DevTools could be updated to present Arez debug data in nested block.
 
+* Integrate [React.warn](https://github.com/facebook/react/pull/15170) when it ships.
+
 #### Documentation
 
 * Add graph reflecting size of TodoMVC over time
