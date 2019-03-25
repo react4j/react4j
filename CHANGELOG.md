@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.gir` artifact to version `0.08`.
+
 ### [v0.122](https://github.com/react4j/react4j/tree/v0.122) (2019-03-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.121...v0.122)
 
