@@ -530,54 +530,54 @@ React.Context.prototype.Provider = function() {};
 React.Context.prototype.Consumer = function() {};
 
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.Fragment = undefined;
+React.Fragment;
 
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.StrictMode = undefined;
+React.StrictMode;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.unstable_ConcurrentMode = undefined;
+React.unstable_ConcurrentMode;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.Suspense = undefined;
+React.Suspense;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.unstable_Profiler = undefined;
+React.unstable_Profiler;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.Portal = undefined;
+React.Portal;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.Element = undefined;
+React.Element;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.Provider = undefined;
+React.Provider;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.Consumer = undefined;
+React.Consumer;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.ForwardRef = undefined;
+React.ForwardRef;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.Memo = undefined;
+React.Memo;
 /**
- * @type {symbol}
+ * @const {symbol}
  */
-React.Lazy = undefined;
+React.Lazy;
 
 // https://github.com/facebook/react/blob/master/packages/shared/isTextInputElement.js#L13-L29
 // Closure will rename these properties during optimization
