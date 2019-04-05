@@ -29,13 +29,15 @@ React.Component.prototype.props;
 React.Component.prototype.state;
 
 /**
- * @param {Function=} callback
+ * @param {function(): void=} callback
+ * @return {void}
  */
 React.Component.prototype.forceUpdate = function(callback) {};
 
 /**
  * @param {Object} nextState
- * @param {Function=} callback
+ * @param {(function(): void)=} callback
+ * @return {void}
  */
 React.Component.prototype.setState = function(nextState, callback) {};
 
