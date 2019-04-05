@@ -4,6 +4,8 @@
 
 * Upgrade the `org.realityforge.gir` artifact to version `0.08`.
 * **\[core\]** Use `const` rather than `let` for module import to avoid closure compiler warning.
+* **\[core\]** Improve the `react.externs.js` so that it generates no errors when closure compiler
+  processes the file with ` --jscomp_error '*'` setting enabled.
 
 ### [v0.122](https://github.com/react4j/react4j/tree/v0.122) (2019-03-21)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.121...v0.122)
