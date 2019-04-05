@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.123](https://github.com/react4j/react4j/tree/v0.123) (2019-04-05)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.122...v0.123)
 
 * Upgrade the `org.realityforge.gir` artifact to version `0.08`.
 * **\[core\]** Use `const` rather than `let` for module import to avoid closure compiler warning.
