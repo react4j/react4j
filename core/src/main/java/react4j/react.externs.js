@@ -416,30 +416,52 @@ React.ReactAttribute.onTransitionEnd;
 
 React.ReactAttribute.onToggle;
 
-/**
- * @interface
- */
+/** @record @struct */
 React.SyntheticEvent = function() {};
+ /** @type {boolean} */
+React.SyntheticEvent.prototype.bubbles;
+ /** @type {?} */
+React.SyntheticEvent.prototype.currentTarget;
+ /** @type {boolean} */
+React.SyntheticEvent.prototype.cancelable;
+ /** @type {boolean} */
+React.SyntheticEvent.prototype.defaultPrevented;
+ /** @type {number} */
+React.SyntheticEvent.prototype.eventPhase;
+ /** @type {boolean} */
+React.SyntheticEvent.prototype.isTrusted;
+ /** @type {!Event} */
+React.SyntheticEvent.prototype.nativeEvent;
+ /** @type {!EventTarget} */
+React.SyntheticEvent.prototype.target;
+ /** @type {!Date} */
+React.SyntheticEvent.prototype.timeStamp;
+ /** @type {string} */
+React.SyntheticEvent.prototype.type;
+/**
+ * @return {void}
+ */
+React.SyntheticEvent.prototype.preventDefault = function() {};
 
 /**
  * @return {boolean}
  */
+React.SyntheticEvent.prototype.isDefaultPrevented = function() {};
+
+/**
+ * @return {void}
+ */
+React.SyntheticEvent.prototype.stopPropagation = function() {};
+
+/**
+ * @return {boolean}
+ */
+React.SyntheticEvent.prototype.isPropagationStopped = function() {};
+
+/**
+ * @return {void}
+ */
 React.SyntheticEvent.prototype.persist = function() {};
-
-/**
- * @type {Object}
- */
-React.SyntheticEvent.prototype.nativeEvent;
-
-/**
- * @type {Function}
- */
-React.SyntheticEvent.prototype.preventDefault;
-
-/**
- * @type {Function}
- */
-React.SyntheticEvent.prototype.stopPropagation;
 
 /**
  * React event system creates plugins and event properties dynamically.
