@@ -640,7 +640,7 @@ var ReactDOM = {};
 /**
  * @param {React.Component} container
  * @param {Element} mountPoint
- * @param {Function=} opt_callback
+ * @param {(function(): void)=} opt_callback
  * @return {React.Component}
  */
 ReactDOM.render = function(container, mountPoint, opt_callback) {};
@@ -655,7 +655,7 @@ ReactDOM.unmountComponentAtNode = function(container) {};
  * Call the provided function in a context within which calls to `setState`
  * and friends are batched such that components aren't updated unnecessarily.
  *
- * @param {Function} callback Function which calls `setState`, `forceUpdate`, etc.
+ * @param {(function(): void)} callback Function which calls `setState`, `forceUpdate`, etc.
  */
 ReactDOM.unstable_batchedUpdates = function(callback) {};
 
@@ -668,12 +668,12 @@ React.ReactRoot = function() {};
 
 /**
  * @param {React.Component} child
- * @param {Function=} opt_callback
+ * @param {(function(): void)=} opt_callback
  */
 React.ReactRoot.prototype.render = function(child, opt_callback) {};
 
 /**
- * @param {Function=} opt_callback
+ * @param {(function(): void)=} opt_callback
  */
 React.ReactRoot.prototype.unmount = function(opt_callback) {};
 
