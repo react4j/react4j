@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Update the release process so that once react4j reaches 1.0, the releases will not be marked
+  as pre-releases  on Github.
+
 ### [v0.123](https://github.com/react4j/react4j/tree/v0.123) (2019-04-05)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.122...v0.123)
 
