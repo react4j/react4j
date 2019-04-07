@@ -17,6 +17,9 @@ def stage(stage_name, description, options = {})
   elsif !ENV['STAGE'].nil?
     puts "Skipping Stage: #{stage_name} - #{description}"
   end
+  if ENV['LAST_STAGE'] == stage_name
+    ENV['STAGE'] = ENV['LAST_STAGE']
+  end
 end
 
 desc 'Perform a release'
@@ -207,6 +210,10 @@ HEADER
   end
 
   if ENV['STAGE']
-    raise "Invalid STAGE specified '#{ENV['STAGE']}' that did not match any stage"
+    if ENV['LAST_STAGE'] == ENV['STAGE']
+      puts "LAST_STAGE specified '#{ENV['LAST_STAGE']}', later stages were skipped"
+    else
+      raise "Invalid STAGE specified '#{ENV['STAGE']}' that did not match any stage"
+    end
   end
 end
