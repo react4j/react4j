@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.124](https://github.com/react4j/react4j/tree/v0.124) (2019-04-07)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.123...v0.124)
 
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.15.0`.
 * Update the release process so that once react4j reaches 1.0, the releases will not be marked
