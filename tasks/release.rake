@@ -25,12 +25,12 @@ task 'perform_release' do
   in_dir(WORKSPACE_DIR) do
     stage('ExtractVersion', 'Extract the last version from CHANGELOG.md and derive next version unless specified', :always_run => true) do
       changelog = IO.read('CHANGELOG.md')
-      ENV['PREVIOUS_PRODUCT_VERSION'] ||= changelog[/^### \[v(\d+\.\d+)\]/, 1] || '0.00'
+      ENV['PREVIOUS_PRODUCT_VERSION'] ||= changelog[/^### \[v(\d+\.\d+\.\d+)\]/, 1] || '0.00'
 
       next_version = ENV['PRODUCT_VERSION']
       unless next_version
         version_parts = ENV['PREVIOUS_PRODUCT_VERSION'].split('.')
-        next_version = "#{version_parts[0]}.#{sprintf('%02d', version_parts[1].to_i + 1)}"
+        next_version = "#{version_parts[0]}.#{sprintf('%02d', version_parts[1].to_i + 1)}#{version_parts.length > 2 ? ".#{version_parts[2]}" : ''}"
         ENV['PRODUCT_VERSION'] = next_version
       end
 
