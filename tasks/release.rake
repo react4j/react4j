@@ -186,7 +186,7 @@ HEADER
 
       tag = "v#{ENV['PRODUCT_VERSION']}"
 
-      version_parts = ENV['PRODUCT_VERSION'].split
+      version_parts = ENV['PRODUCT_VERSION'].split('.')
       prerelease = '0' == version_parts[0]
 
       require 'octokit'
