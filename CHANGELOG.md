@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.braincheck` artifact to version `1.15.0`.
 * Update the release process so that once react4j reaches 1.0, the releases will not be marked
   as pre-releases  on Github.
 
