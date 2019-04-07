@@ -179,6 +179,7 @@ HEADER
       start = changelog.index("\n", start + 1)
 
       end_index = changelog.index('### [v', start)
+      end_index = changelog.length if end_index.nil?
 
       changes = changelog[start, end_index - start]
 
