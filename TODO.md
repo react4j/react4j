@@ -206,6 +206,10 @@ we ever do this here is a list of helpful links that could provide useful
 * Add notes regarding fiber like - https://github.com/acdlite/react-fiber-architecture
 * Also useful to extract notes from https://www.youtube.com/watch?v=ZCuYPiUIONs&app=desktop
 
+* Consider a web-worker based implementation that ships commands to main GUI thread. Would need to rpc from main
+  thread to work to perform some of the other commands (i.e. myelement.focus()) although maybe refs could be magic-ed
+  up such that they use [worker-dom](https://github.com/ampproject/worker-dom)
+
 #### Additional Capabilities
 
 * If we were to ever re-implement the component model at a basic level, an interesting approach would be to
