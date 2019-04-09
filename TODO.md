@@ -122,6 +122,11 @@ complete as there is too much un-said.
 
 * Integrate [React.warn](https://github.com/facebook/react/pull/15170) when it ships.
 
+* Consider a Css toolkit that reads a config like in [Tailwind CSS](https://tailwindcss.com/docs/what-is-tailwind/)
+  and generates a java factory class. This would use the develoepr affordances of Tailwind and either generate
+  inline css or css class names where unused classes can be stripped. THis may require a compiler pass in Closure
+  to work.
+
 #### Documentation
 
 * Add graph reflecting size of TodoMVC over time
