@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.125](https://github.com/react4j/react4j/tree/v0.125) (2019-04-16)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.124...v0.125)
 
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.16.0`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.136`.
