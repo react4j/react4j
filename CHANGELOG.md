@@ -5,6 +5,7 @@
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.16.0`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.136`.
 * Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `1.0.0-b21-6a027d2`.
+* Improve the way defines are handled in closure by assigning the results of `goog.define` to a module local variable.
 
 ### [v0.124](https://github.com/react4j/react4j/tree/v0.124) (2019-04-07)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.123...v0.124)
