@@ -25,18 +25,12 @@ public final class OrderedProperties
     return properties;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public synchronized Enumeration<Object> keys()
   {
     return Collections.enumeration( keySet() );
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public Set<Object> keySet()
   {
