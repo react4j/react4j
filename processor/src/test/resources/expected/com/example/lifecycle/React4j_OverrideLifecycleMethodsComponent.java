@@ -51,7 +51,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
   }
 
   private void $$react4j$$_componentDidMount() {
-    postRender();
+    postMountOrUpdate();
     postMount();
     if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
@@ -63,7 +63,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
   }
 
   private void $$react4j$$_componentDidUpdate() {
-    postRender();
+    postMountOrUpdate();
     postUpdate();
     if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();

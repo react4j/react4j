@@ -1010,7 +1010,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_RENDER_ANNOTATION_CLASSNAME ) )
+      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostRender( method );
       }

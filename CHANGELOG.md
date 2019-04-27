@@ -6,6 +6,7 @@
 * Remove `{@inheritDoc}` as it only explicitly indicates that the default behaviour at the expense of significant visual clutter.
 * Remove intrinsic prop named `key`. End-users can specify a immutable prop which will synthesize a key to be passed
   to react runtime.
+* Rename `@PostRender` annotation to to `@PostMountOrUpdate`.
 
 ### [v0.125](https://github.com/react4j/react4j/tree/v0.125) (2019-04-16)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.124...v0.125)

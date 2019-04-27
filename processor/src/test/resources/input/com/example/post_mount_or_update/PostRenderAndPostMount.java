@@ -1,23 +1,22 @@
-package com.example.post_render;
+package com.example.post_mount_or_update;
 
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.PostMount;
-import react4j.annotations.PostRender;
-import react4j.annotations.PostUpdate;
+import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class PostRenderAndPostUpdate
+abstract class PostRenderAndPostMount
   extends Component
 {
-  @PostRender
-  void postRender()
+  @PostMountOrUpdate
+  void postMountOrUpdate()
   {
   }
 
-  @PostUpdate
-  void postUpdate()
+  @PostMount
+  void postMount()
   {
   }
 

@@ -27,6 +27,6 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Target( ElementType.METHOD )
-public @interface PostRender
+public @interface PostMountOrUpdate
 {
 }

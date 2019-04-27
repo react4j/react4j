@@ -392,11 +392,11 @@ final class ComponentDescriptor
   void setPostRender( @Nonnull final ExecutableElement postRender )
     throws ReactProcessorException
   {
-    MethodChecks.mustBeLifecycleHook( getElement(), Constants.POST_RENDER_ANNOTATION_CLASSNAME, postRender );
+    MethodChecks.mustBeLifecycleHook( getElement(), Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME, postRender );
 
     if ( null != _postRender )
     {
-      throw new ReactProcessorException( "@PostRender target duplicates existing method named " +
+      throw new ReactProcessorException( "@PostMountOrUpdate target duplicates existing method named " +
                                          _postRender.getSimpleName(), postRender );
     }
     else

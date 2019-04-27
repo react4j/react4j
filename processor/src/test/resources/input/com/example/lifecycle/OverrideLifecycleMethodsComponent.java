@@ -7,7 +7,7 @@ import react4j.ReactErrorInfo;
 import react4j.ReactNode;
 import react4j.annotations.OnError;
 import react4j.annotations.PostMount;
-import react4j.annotations.PostRender;
+import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.ReactComponent;
@@ -32,8 +32,8 @@ abstract class OverrideLifecycleMethodsComponent
   {
   }
 
-  @PostRender
-  final void postRender()
+  @PostMountOrUpdate
+  final void postMountOrUpdate()
   {
   }
 
