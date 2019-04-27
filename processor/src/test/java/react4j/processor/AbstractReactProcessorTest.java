@@ -172,11 +172,7 @@ abstract class AbstractReactProcessorTest
     }
     final JavaFileObject firstExpected = fixture( outputs.get( 0 ) );
     final JavaFileObject[] restExpected =
-      outputs
-        .stream()
-        .skip( 1 )
-        .map( this::fixture )
-        .toArray( JavaFileObject[]::new );
+      outputs.stream().skip( 1 ).map( this::fixture ).toArray( JavaFileObject[]::new );
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( inputs ).
       withCompilerOptions( "-parameters" ).
