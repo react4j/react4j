@@ -12,7 +12,7 @@ abstract class ImmutablePropTypeEnum
 {
   enum Foo
   {
-    A,B,C
+    A, B, C
   }
 
   @Prop( immutable = true )
