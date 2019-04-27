@@ -8,6 +8,7 @@ import com.google.testing.compile.JavaFileObjects;
 import com.google.testing.compile.JavaSourcesSubjectFactory;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -147,6 +148,19 @@ abstract class AbstractReactProcessorTest
         }
         if ( Files.exists( target ) )
         {
+          final byte[] existing = Files.readAllBytes( target );
+          final InputStream generated = fileObject.openInputStream();
+          final byte[] data = new byte[ generated.available() ];
+          assertEquals( generated.read( data ), data.length );
+          if ( Arrays.equals( existing, data ) )
+          {
+            /*
+             * If the data on the filesystem is identical to data generated then do not write
+             * to filesystem. The writing can be slow and it can also trigger the IDE or other
+             * tools to recompile code which is problematic.
+             */
+            continue;
+          }
           Files.delete( target );
         }
 
