@@ -292,11 +292,6 @@ final class ComponentDescriptor
     _memoizeMethods = Objects.requireNonNull( memoizeMethods );
   }
 
-  boolean hasNoSyntheticKey()
-  {
-    return getProps().stream().noneMatch( PropDescriptor::isImmutable );
-  }
-
   int syntheticKeyComponents()
   {
     return (int) getProps().stream().filter( PropDescriptor::isImmutable ).count();

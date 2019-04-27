@@ -823,12 +823,7 @@ public final class ReactProcessor
                                                            Constants.PROP_ANNOTATION_CLASSNAME,
                                                            method );
     final TypeMirror returnType = method.getReturnType();
-    if ( "key".equals( name ) )
-    {
-      throw new ReactProcessorException( "@Prop named 'key' is invalid as the name references value used in the " +
-                                         "reconciliation process.", method );
-    }
-    else if ( "build".equals( name ) )
+    if ( "build".equals( name ) )
     {
       throw new ReactProcessorException( "@Prop named 'build' is invalid as it conflicts with the method named " +
                                          "build() that is used in the generated Builder classes",

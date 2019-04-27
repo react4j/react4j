@@ -1,7 +1,6 @@
 package com.example.optional_props;
 
 import elemental2.core.JsArray;
-import java.util.Objects;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -14,32 +13,22 @@ class RequiredChildrenWithManyOptionalBuilder {
   }
 
   @Nonnull
-  static Step2 key(@Nonnull final String key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Step2 key(final int key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Step2 myPropA(final String myPropA) {
+  static Step1 myPropA(final String myPropA) {
     return new Builder().myPropA( myPropA );
   }
 
   @Nonnull
-  static Step2 myPropB(final String myPropB) {
+  static Step1 myPropB(final String myPropB) {
     return new Builder().myPropB( myPropB );
   }
 
   @Nonnull
-  static Step2 myPropC(final String myPropC) {
+  static Step1 myPropC(final String myPropC) {
     return new Builder().myPropC( myPropC );
   }
 
   @Nonnull
-  static Step2 myPropD(final String myPropD) {
+  static Step1 myPropD(final String myPropD) {
     return new Builder().myPropD( myPropD );
   }
 
@@ -55,24 +44,16 @@ class RequiredChildrenWithManyOptionalBuilder {
 
   public interface Step1 {
     @Nonnull
-    Step2 key(@Nonnull String key);
+    Step1 myPropA(String myPropA);
 
     @Nonnull
-    Step2 key(@Nonnull int key);
-  }
-
-  public interface Step2 {
-    @Nonnull
-    Step2 myPropA(String myPropA);
+    Step1 myPropB(String myPropB);
 
     @Nonnull
-    Step2 myPropB(String myPropB);
+    Step1 myPropC(String myPropC);
 
     @Nonnull
-    Step2 myPropC(String myPropC);
-
-    @Nonnull
-    Step2 myPropD(String myPropD);
+    Step1 myPropD(String myPropD);
 
     @Nonnull
     ReactNode children(ReactNode... children);
@@ -81,7 +62,7 @@ class RequiredChildrenWithManyOptionalBuilder {
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
   }
 
-  public interface Step3 {
+  public interface Step2 {
     @Nonnull
     ReactNode children(ReactNode... children);
 
@@ -92,7 +73,7 @@ class RequiredChildrenWithManyOptionalBuilder {
     ReactNode build();
   }
 
-  private static class Builder implements Step1, Step2, Step3 {
+  private static class Builder implements Step1, Step2 {
     private final ReactElement _element;
 
     Builder() {
@@ -105,41 +86,28 @@ class RequiredChildrenWithManyOptionalBuilder {
 
     @Override
     @Nonnull
-    public final Step2 key(@Nonnull final String key) {
-      _element.setKey( Objects.requireNonNull( key ) );
-      return this;
-    }
-
-    @Override
-    @Nonnull
-    public final Step2 key(@Nonnull final int key) {
-      return key( String.valueOf( key ) );
-    }
-
-    @Override
-    @Nonnull
-    public final Step2 myPropA(final String myPropA) {
+    public final Step1 myPropA(final String myPropA) {
       _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropA, myPropA );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Step2 myPropB(final String myPropB) {
+    public final Step1 myPropB(final String myPropB) {
       _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropB, myPropB );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Step2 myPropC(final String myPropC) {
+    public final Step1 myPropC(final String myPropC) {
       _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropC, myPropC );
       return this;
     }
 
     @Override
     @Nonnull
-    public final Step2 myPropD(final String myPropD) {
+    public final Step1 myPropD(final String myPropD) {
       _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropD, myPropD );
       return this;
     }

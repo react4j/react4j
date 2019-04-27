@@ -12,7 +12,6 @@ import javax.lang.model.type.ExecutableType;
  * but the rest are driven by Prop annotation details. The intrinsics are as follows:
  *
  * <ul>
- * <li>name = key: key intrinsic. Standard implementation but does not come from a @Prop annotated method..</li>
  * <li>name = build: no parameters returns ReactNode and terminates build. This has custom code in implementation.</li>
  * <li>name = child, key = child: This is for single child components and the implementation caches child and returns build().</li>
  * <li>name = children: This is for multi child components and the implementation creates JsArray if null and adds all supplied non-null children to array before invoking build().</li>
@@ -111,11 +110,6 @@ final class StepMethod
   boolean isBuildIntrinsic()
   {
     return getName().equals( "build" );
-  }
-
-  boolean isKeyIntrinsic()
-  {
-    return getName().equals( "key" );
   }
 
   boolean isChildIntrinsic()

@@ -1,6 +1,5 @@
 package com.example.arez;
 
-import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import react4j.ReactElement;
@@ -12,57 +11,26 @@ class ComponentShouldUpdateOnChangePropBuilder {
   }
 
   @Nonnull
-  static Step2 key(@Nonnull final String key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Step2 key(final int key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Step3 value(final String value) {
+  static Step2 value(final String value) {
     return new Builder().value( value );
   }
 
   public interface Step1 {
     @Nonnull
-    Step2 key(@Nonnull String key);
-
-    @Nonnull
-    Step2 key(@Nonnull int key);
+    Step2 value(String value);
   }
 
   public interface Step2 {
     @Nonnull
-    Step3 value(String value);
-  }
-
-  public interface Step3 {
-    @Nonnull
     ReactNode other(String other);
   }
 
-  private static class Builder implements Step1, Step2, Step3 {
+  private static class Builder implements Step1, Step2 {
     private final ReactElement _element = ReactElement.createComponentElement( React4j_ComponentShouldUpdateOnChangeProp.Factory.TYPE );
 
     @Override
     @Nonnull
-    public final Step2 key(@Nonnull final String key) {
-      _element.setKey( Objects.requireNonNull( key ) );
-      return this;
-    }
-
-    @Override
-    @Nonnull
-    public final Step2 key(@Nonnull final int key) {
-      return key( String.valueOf( key ) );
-    }
-
-    @Override
-    @Nonnull
-    public final Step3 value(final String value) {
+    public final Step2 value(final String value) {
       _element.props().set( React4j_ComponentShouldUpdateOnChangeProp.Props.value, value );
       return this;
     }

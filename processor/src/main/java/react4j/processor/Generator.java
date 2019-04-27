@@ -125,16 +125,8 @@ final class Generator
       builder.addType( buildBuilderStepInterface( descriptor, step ) );
     }
 
-    int index = 0;
-    if ( descriptor.hasNoSyntheticKey() )
-    {
-      // key step
-      buildStaticStepMethodMethods( descriptor, builder, steps.get( index ) );
-      index++;
-    }
-
     // first step which may be required prop, optional props, or build terminal step.
-    buildStaticStepMethodMethods( descriptor, builder, steps.get( index ) );
+    buildStaticStepMethodMethods( descriptor, builder, steps.get( 0 ) );
 
     builder.addType( buildBuilder( descriptor, builderDescriptor ) );
 
@@ -188,10 +180,6 @@ final class Generator
         ProcessorUtil.copyWhitelistedAnnotations( propMethod, parameter );
       }
       else if ( stepMethod.isChildrenStreamIntrinsic() )
-      {
-        parameter.addAnnotation( NONNULL_CLASSNAME );
-      }
-      else if ( stepMethod.isKeyIntrinsic() && !stepMethod.getKey().equals( "*key_int*" ) )
       {
         parameter.addAnnotation( NONNULL_CLASSNAME );
       }
@@ -290,7 +278,7 @@ final class Generator
           {
             ProcessorUtil.copyWhitelistedAnnotations( propMethod, parameter );
           }
-          else if ( stepMethod.isKeyIntrinsic() || stepMethod.isChildrenStreamIntrinsic() )
+          else if ( stepMethod.isChildrenStreamIntrinsic() )
           {
             parameter.addAnnotation( NONNULL_CLASSNAME );
           }
@@ -325,13 +313,11 @@ final class Generator
     {
       ProcessorUtil.copyWhitelistedAnnotations( propMethod, parameter );
     }
-    else if ( stepMethod.isKeyIntrinsic() || stepMethod.isChildrenStreamIntrinsic() )
+    else if ( stepMethod.isChildrenStreamIntrinsic() )
     {
       parameter.addAnnotation( NONNULL_CLASSNAME );
     }
     method.addParameter( parameter.build() );
-
-    boolean returnHandled = false;
 
     if ( null != prop && prop.isImmutable() && 1 == descriptor.syntheticKeyComponents() )
     {
@@ -397,44 +383,26 @@ final class Generator
                              stepMethod.getName() );
       }
     }
-    else if ( stepMethod.getKey().equals( "*key_int*" ) )
+    else
     {
-      returnHandled = true;
-      // TODO: Handle this by prop enhancer ?
-      method.addStatement( "return key( $T.valueOf( $N ) )", TypeName.get( String.class ), stepMethod.getName() );
+      if ( ( null != propMethod && ProcessorUtil.isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
+      {
+        method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
+      }
+      assert null != prop;
+      method.addStatement( "_element.props().set( $T.Props.$N, $N )",
+                           descriptor.getEnhancedClassName(),
+                           prop.getConstantName(),
+                           stepMethod.getName() );
+    }
+
+    if ( StepMethodType.TERMINATE == stepMethod.getStepMethodType() )
+    {
+      method.addStatement( "return build()" );
     }
     else
     {
-      if ( stepMethod.isKeyIntrinsic() )
-      {
-        method.addStatement( "_element.setKey( $T.requireNonNull( $N ) )",
-                             TypeName.get( Objects.class ),
-                             stepMethod.getName() );
-      }
-      else
-      {
-        if ( ( null != propMethod && ProcessorUtil.isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
-        {
-          method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
-        }
-        assert null != prop;
-        method.addStatement( "_element.props().set( $T.Props.$N, $N )",
-                             descriptor.getEnhancedClassName(),
-                             prop.getConstantName(),
-                             stepMethod.getName() );
-      }
-    }
-
-    if ( !returnHandled )
-    {
-      if ( StepMethodType.TERMINATE == stepMethod.getStepMethodType() )
-      {
-        method.addStatement( "return build()" );
-      }
-      else
-      {
-        method.addStatement( "return this" );
-      }
+      method.addStatement( "return this" );
     }
     configureStepMethodReturns( descriptor, method, step, stepMethod.getStepMethodType() );
 
@@ -634,7 +602,7 @@ final class Generator
 
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
-      builder.addMethod( buildPropMethod( descriptor, prop ).build() );
+      builder.addMethod( buildPropMethod( prop ).build() );
       if ( prop.isObservable() )
       {
         builder.addMethod( buildPropObservableValueRefMethod( prop ).build() );
@@ -851,8 +819,7 @@ final class Generator
     return annotation;
   }
 
-  private static MethodSpec.Builder buildPropMethod( @Nonnull final ComponentDescriptor descriptor,
-                                                     @Nonnull final PropDescriptor prop )
+  private static MethodSpec.Builder buildPropMethod( @Nonnull final PropDescriptor prop )
   {
     final ExecutableElement methodElement = prop.getMethod();
     final ExecutableType methodType = prop.getMethodType();
@@ -1913,15 +1880,6 @@ final class Generator
 
     final int propsSize = props.size();
 
-    if ( descriptor.hasNoSyntheticKey() )
-    {
-      // Key step
-      final Step keyStep = builder.addStep();
-      final StepMethodType keyStepMethodType = 0 == propsSize ? StepMethodType.TERMINATE : StepMethodType.ADVANCE;
-      keyStep.addMethod( "key", "key", TypeName.get( String.class ), keyStepMethodType );
-      keyStep.addMethod( "key", "*key_int*", TypeName.INT, keyStepMethodType );
-    }
-
     final boolean hasSingleOptional = props.stream().filter( PropDescriptor::isOptional ).count() == 1;
     boolean hasRequiredAfterOptional = false;
     for ( int i = 0; i < propsSize; i++ )
@@ -1980,7 +1938,7 @@ final class Generator
    */
   private static void addBuildStep( @Nonnull final Step step )
   {
-    step.addMethod( "build", "build", REACT_NODE_CLASSNAME, StepMethodType.TERMINATE );
+    step.addTerminalMethod( "build", "build", REACT_NODE_CLASSNAME );
   }
 
   /**
@@ -1992,10 +1950,10 @@ final class Generator
       ParameterizedTypeName.get( ClassName.get( Stream.class ), WildcardTypeName.subtypeOf( REACT_NODE_CLASSNAME ) );
 
     //TODO: Replace this with prop enhancer
-    step.addMethod( "children",
-                    "*children_stream*",
-                    typeName,
-                    StepMethodType.TERMINATE );
+    step.addTerminalMethod( "children",
+                            "*children_stream*",
+                            typeName
+    );
   }
 
   private static void addPropStepMethod( @Nonnull final Step step,

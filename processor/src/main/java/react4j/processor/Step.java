@@ -24,12 +24,9 @@ final class Step
     getMethods().add( new StepMethod( prop, stepMethodType ) );
   }
 
-  void addMethod( @Nonnull final String name,
-                  @Nonnull final String key,
-                  @Nonnull final TypeName type,
-                  @Nonnull final StepMethodType stepMethodType )
+  void addTerminalMethod( @Nonnull final String name, @Nonnull final String key, @Nonnull final TypeName type )
   {
-    getMethods().add( new StepMethod( name, key, type, null, stepMethodType ) );
+    getMethods().add( new StepMethod( name, key, type, null, StepMethodType.TERMINATE ) );
   }
 
   ArrayList<StepMethod> getMethods()

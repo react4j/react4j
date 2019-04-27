@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import react4j.ReactElement;
@@ -12,57 +11,26 @@ class MultiPropComponentBuilder {
   }
 
   @Nonnull
-  static Step2 key(@Nonnull final String key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Step2 key(final int key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Step3 myProp(final String myProp) {
+  static Step2 myProp(final String myProp) {
     return new Builder().myProp( myProp );
   }
 
   public interface Step1 {
     @Nonnull
-    Step2 key(@Nonnull String key);
-
-    @Nonnull
-    Step2 key(@Nonnull int key);
+    Step2 myProp(String myProp);
   }
 
   public interface Step2 {
     @Nonnull
-    Step3 myProp(String myProp);
-  }
-
-  public interface Step3 {
-    @Nonnull
     ReactNode myProp2(String myProp2);
   }
 
-  private static class Builder implements Step1, Step2, Step3 {
+  private static class Builder implements Step1, Step2 {
     private final ReactElement _element = ReactElement.createComponentElement( React4j_MultiPropComponent.Factory.TYPE );
 
     @Override
     @Nonnull
-    public final Step2 key(@Nonnull final String key) {
-      _element.setKey( Objects.requireNonNull( key ) );
-      return this;
-    }
-
-    @Override
-    @Nonnull
-    public final Step2 key(@Nonnull final int key) {
-      return key( String.valueOf( key ) );
-    }
-
-    @Override
-    @Nonnull
-    public final Step3 myProp(final String myProp) {
+    public final Step2 myProp(final String myProp) {
       _element.props().set( React4j_MultiPropComponent.Props.myProp, myProp );
       return this;
     }

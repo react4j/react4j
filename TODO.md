@@ -23,8 +23,6 @@ complete as there is too much un-said.
 * Make the name of the assets based off the version of the underlying react library. i.e. Name them `react-16.5.0.js`
   rather than `react.js` so cache is never in conflict.
 
-* Remove `key()` completely as users should always specify immutable props.
-
 ### High Priorities
 
 * Implement react-cache and update react4j-drumloop

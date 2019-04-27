@@ -14,34 +14,16 @@ class NullablePropAndNonnullChildComponentBuilder {
   }
 
   @Nonnull
-  static Step2 key(@Nonnull final String key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Step2 key(final int key) {
-    return new Builder().key( key );
-  }
-
-  @Nonnull
-  static Step3 myProp(@Nonnull final String myProp) {
+  static Step2 myProp(@Nonnull final String myProp) {
     return new Builder().myProp( myProp );
   }
 
   public interface Step1 {
     @Nonnull
-    Step2 key(@Nonnull String key);
-
-    @Nonnull
-    Step2 key(@Nonnull int key);
+    Step2 myProp(@Nonnull String myProp);
   }
 
   public interface Step2 {
-    @Nonnull
-    Step3 myProp(@Nonnull String myProp);
-  }
-
-  public interface Step3 {
     @Nonnull
     ReactNode myProp2(@Nullable String myProp2);
 
@@ -49,30 +31,17 @@ class NullablePropAndNonnullChildComponentBuilder {
     ReactNode child(ReactNode child);
   }
 
-  public interface Step4 {
+  public interface Step3 {
     @Nonnull
     ReactNode child(ReactNode child);
   }
 
-  private static class Builder implements Step1, Step2, Step3, Step4 {
+  private static class Builder implements Step1, Step2, Step3 {
     private final ReactElement _element = ReactElement.createComponentElement( React4j_NullablePropAndNonnullChildComponent.Factory.TYPE );
 
     @Override
     @Nonnull
-    public final Step2 key(@Nonnull final String key) {
-      _element.setKey( Objects.requireNonNull( key ) );
-      return this;
-    }
-
-    @Override
-    @Nonnull
-    public final Step2 key(@Nonnull final int key) {
-      return key( String.valueOf( key ) );
-    }
-
-    @Override
-    @Nonnull
-    public final Step3 myProp(@Nonnull final String myProp) {
+    public final Step2 myProp(@Nonnull final String myProp) {
       Objects.requireNonNull( myProp );
       _element.props().set( React4j_NullablePropAndNonnullChildComponent.Props.myProp, myProp );
       return this;
