@@ -2,6 +2,7 @@ package com.example.default_props;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import jsinterop.base.JsPropertyMap;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -33,7 +34,8 @@ class ExplicitNameMethodPropDefaultBuilder {
 
     Builder() {
       _element = ReactElement.createComponentElement( React4j_ExplicitNameMethodPropDefault.Factory.TYPE );
-      _element.props().set( React4j_ExplicitNameMethodPropDefault.Props.myProp, ExplicitNameMethodPropDefault.zoooooooooooooom() );
+      final JsPropertyMap<Object> props = _element.props();
+      props.set( React4j_ExplicitNameMethodPropDefault.Props.myProp, ExplicitNameMethodPropDefault.zoooooooooooooom() );
     }
 
     @Override

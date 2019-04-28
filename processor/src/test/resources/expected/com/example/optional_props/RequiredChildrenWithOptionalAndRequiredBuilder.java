@@ -4,6 +4,7 @@ import elemental2.core.JsArray;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import jsinterop.base.JsPropertyMap;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -49,7 +50,8 @@ class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     Builder() {
       _element = ReactElement.createComponentElement( React4j_RequiredChildrenWithOptionalAndRequired.Factory.TYPE );
-      _element.props().set( React4j_RequiredChildrenWithOptionalAndRequired.Props.myProp, RequiredChildrenWithOptionalAndRequired.DEFAULT_MY_PROP );
+      final JsPropertyMap<Object> props = _element.props();
+      props.set( React4j_RequiredChildrenWithOptionalAndRequired.Props.myProp, RequiredChildrenWithOptionalAndRequired.DEFAULT_MY_PROP );
     }
 
     @Override

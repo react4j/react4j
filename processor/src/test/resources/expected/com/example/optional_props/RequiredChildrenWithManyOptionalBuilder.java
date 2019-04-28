@@ -4,6 +4,7 @@ import elemental2.core.JsArray;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import jsinterop.base.JsPropertyMap;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -78,10 +79,11 @@ class RequiredChildrenWithManyOptionalBuilder {
 
     Builder() {
       _element = ReactElement.createComponentElement( React4j_RequiredChildrenWithManyOptional.Factory.TYPE );
-      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropA, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_A );
-      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropB, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_B );
-      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropC, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_C );
-      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropD, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_D );
+      final JsPropertyMap<Object> props = _element.props();
+      props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropA, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_A );
+      props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropB, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_B );
+      props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropC, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_C );
+      props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropD, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_D );
     }
 
     @Override

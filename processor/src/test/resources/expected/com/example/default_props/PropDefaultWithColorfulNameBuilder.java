@@ -2,6 +2,7 @@ package com.example.default_props;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import jsinterop.base.JsPropertyMap;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -33,7 +34,8 @@ class PropDefaultWithColorfulNameBuilder {
 
     Builder() {
       _element = ReactElement.createComponentElement( React4j_PropDefaultWithColorfulName.Factory.TYPE );
-      _element.props().set( React4j_PropDefaultWithColorfulName.Props.myProp12$23, PropDefaultWithColorfulName.DEFAULT_MY_PROP12$23 );
+      final JsPropertyMap<Object> props = _element.props();
+      props.set( React4j_PropDefaultWithColorfulName.Props.myProp12$23, PropDefaultWithColorfulName.DEFAULT_MY_PROP12$23 );
     }
 
     @Override

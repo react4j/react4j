@@ -1,5 +1,6 @@
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import jsinterop.base.JsPropertyMap;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -31,7 +32,8 @@ class RootPackageCompleteComponentBuilder {
 
     Builder() {
       _element = ReactElement.createComponentElement( React4j_RootPackageCompleteComponent.Factory.TYPE );
-      _element.props().set( React4j_RootPackageCompleteComponent.Props.myProp, RootPackageCompleteComponent.MY_PROP );
+      final JsPropertyMap<Object> props = _element.props();
+      props.set( React4j_RootPackageCompleteComponent.Props.myProp, RootPackageCompleteComponent.MY_PROP );
     }
 
     @Override

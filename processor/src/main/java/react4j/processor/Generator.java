@@ -502,9 +502,10 @@ final class Generator
       method.addStatement( "_element = $T.createComponentElement( $T.Factory.TYPE )",
                            REACT_ELEMENT_CLASSNAME,
                            descriptor.getEnhancedClassName() );
+      method.addStatement( "final $T props = _element.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
       for ( final PropDescriptor prop : propsWithDefaults )
       {
-        method.addStatement( "_element.props().set( $T.Props.$N, $T.$N" +
+        method.addStatement( "props.set( $T.Props.$N, $T.$N" +
                              ( prop.hasDefaultField() ? "" : "()" ) + " )",
                              descriptor.getEnhancedClassName(),
                              prop.getConstantName(),
