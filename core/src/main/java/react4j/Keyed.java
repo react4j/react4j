@@ -15,4 +15,16 @@ public interface Keyed
    */
   @Nonnull
   String getKey();
+
+  /**
+   * Invoked {@link #getKey()} on specified parameter.
+   *
+   * @param object the object on which to call {@link #getKey()}.
+   * @return the value used to form key.
+   */
+  @Nonnull
+  static String getKey( @Nonnull final Object object )
+  {
+    return ( (Keyed) object ).getKey();
+  }
 }
