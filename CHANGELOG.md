@@ -8,6 +8,7 @@
   to react runtime.
 * Rename `@PostRender` annotation to to `@PostMountOrUpdate`.
 * Add `Keyed.getKey(Object)` utility method.
+* Fix bug where a null value for a `@Prop(immutable=true)` that had a type that was `Keyed` could generate a null pointer at runtime.
 
 ### [v0.125](https://github.com/react4j/react4j/tree/v0.125) (2019-04-16)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.124...v0.125)

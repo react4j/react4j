@@ -434,7 +434,7 @@ final class Generator
         final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
         if ( ImmutablePropKeyStrategy.KEYED == strategy )
         {
-          sb.append( "( ($T) _element.props().get( $T.Props.$N ) ).getKey()" );
+          sb.append( "$T.getKey( props.get( $T.Props.$N ) )" );
           params.add( KEYED_CLASSNAME );
           params.add( descriptor.getEnhancedClassName() );
           params.add( prop.getConstantName() );
