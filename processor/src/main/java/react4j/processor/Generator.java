@@ -420,6 +420,8 @@ final class Generator
       descriptor.getProps().stream().filter( PropDescriptor::isImmutable ).collect( Collectors.toList() );
     if ( syntheticProps.size() > 1 )
     {
+      method.addStatement( "final $T props = _element.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+
       final StringBuilder sb = new StringBuilder();
       sb.append( "_element.setKey( " );
       final ArrayList<Object> params = new ArrayList<>();
@@ -434,28 +436,34 @@ final class Generator
         final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
         if ( ImmutablePropKeyStrategy.KEYED == strategy )
         {
-          sb.append( "$T.getKey( props.get( $T.Props.$N ) )" );
+          sb.append( "$T.getKey( ($T) props.get( $T.Props.$N ) )" );
           params.add( KEYED_CLASSNAME );
+          params.add( prop.getMethodType().getReturnType() );
           params.add( descriptor.getEnhancedClassName() );
           params.add( prop.getConstantName() );
         }
         else if ( ImmutablePropKeyStrategy.IS_STRING == strategy || ImmutablePropKeyStrategy.ENUM == strategy )
         {
-          sb.append( "_element.props().get( $T.Props.$N )" );
+          sb.append( "( ($T) props.get( $T.Props.$N ) )" );
+          params.add( prop.getMethodType().getReturnType() );
           params.add( descriptor.getEnhancedClassName() );
           params.add( prop.getConstantName() );
         }
         else if ( ImmutablePropKeyStrategy.TO_STRING == strategy )
         {
-          sb.append( "String.valueOf( _element.props().get( $T.Props.$N ) )" );
+          sb.append( "$T.valueOf( ($T) props.get( $T.Props.$N ) )" );
+          params.add( String.class );
+          params.add( prop.getMethodType().getReturnType() );
           params.add( descriptor.getEnhancedClassName() );
           params.add( prop.getConstantName() );
         }
         else
         {
           assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
-          sb.append( "String.valueOf( $T.<Object>getArezId( _element.props().get( $T.Props.$N ) ) )" );
+          sb.append( "$T.valueOf( $T.<Object>getArezId( ($T) props.get( $T.Props.$N ) ) )" );
+          params.add( String.class );
           params.add( IDENTIFIABLE_CLASSNAME );
+          params.add( prop.getMethodType().getReturnType() );
           params.add( descriptor.getEnhancedClassName() );
           params.add( prop.getConstantName() );
         }

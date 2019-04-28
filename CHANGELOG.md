@@ -9,6 +9,8 @@
 * Rename `@PostRender` annotation to to `@PostMountOrUpdate`.
 * Add `Keyed.getKey(Object)` utility method.
 * Fix bug where a null value for a `@Prop(immutable=true)` that had a type that was `Keyed` could generate a null pointer at runtime.
+* Extract props variable to optimize code generation when a key is synthesized from multiple `@Prop(immutable=true)` props.
+* Insert casts to improve code optimization opportunities when a key is synthesized from immutable props.
 
 ### [v0.125](https://github.com/react4j/react4j/tree/v0.125) (2019-04-16)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.124...v0.125)

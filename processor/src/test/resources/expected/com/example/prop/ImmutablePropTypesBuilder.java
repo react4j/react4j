@@ -3,6 +3,7 @@ package com.example.prop;
 import arez.component.Identifiable;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import jsinterop.base.JsPropertyMap;
 import react4j.Keyed;
 import react4j.ReactElement;
 import react4j.ReactNode;
@@ -82,7 +83,8 @@ class ImmutablePropTypesBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.setKey( String.valueOf( Identifiable.<Object>getArezId( _element.props().get( React4j_ImmutablePropTypes.Props.myProp ) ) ) + "-" + _element.props().get( React4j_ImmutablePropTypes.Props.myOtherProp ) + "-" + String.valueOf( _element.props().get( React4j_ImmutablePropTypes.Props.stillAnotherProp ) ) + "-" + ( (Keyed) _element.props().get( React4j_ImmutablePropTypes.Props.BobsProp ) ).getKey() + "-" + _element.props().get( React4j_ImmutablePropTypes.Props.someProp ) );
+      final JsPropertyMap<Object> props = _element.props();
+      _element.setKey( String.valueOf( Identifiable.<Object>getArezId( (ImmutablePropTypes.MyComponent) props.get( React4j_ImmutablePropTypes.Props.myProp ) ) ) + "-" + ( (String) props.get( React4j_ImmutablePropTypes.Props.myOtherProp ) ) + "-" + String.valueOf( (int) props.get( React4j_ImmutablePropTypes.Props.stillAnotherProp ) ) + "-" + Keyed.getKey( (ImmutablePropTypes.KeyedComponent) props.get( React4j_ImmutablePropTypes.Props.BobsProp ) ) + "-" + ( (ImmutablePropTypes.Foo) props.get( React4j_ImmutablePropTypes.Props.someProp ) ) );
       _element.complete();
       return _element;
     }
