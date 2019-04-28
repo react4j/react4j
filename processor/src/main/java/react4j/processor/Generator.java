@@ -504,7 +504,6 @@ final class Generator
                            descriptor.getEnhancedClassName() );
       for ( final PropDescriptor prop : propsWithDefaults )
       {
-
         method.addStatement( "_element.props().set( $T.Props.$N, $T.$N" +
                              ( prop.hasDefaultField() ? "" : "()" ) + " )",
                              descriptor.getEnhancedClassName(),
