@@ -1,6 +1,7 @@
 package react4j;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import react4j.annotations.Prop;
 
 /**
@@ -17,14 +18,21 @@ public interface Keyed
   String getKey();
 
   /**
-   * Invoked {@link #getKey()} on specified parameter.
+   * Invoked {@link #getKey()} on specified parameter if the parameter implements {@link Keyed} otherwise return null.
    *
    * @param object the object on which to call {@link #getKey()}.
-   * @return the value used to form key.
+   * @return the value used to form key, else null.
    */
-  @Nonnull
-  static String getKey( @Nonnull final Object object )
+  @Nullable
+  static String getKey( @Nullable final Object object )
   {
-    return ( (Keyed) object ).getKey();
+    if ( object instanceof Keyed )
+    {
+      return ( (Keyed) object ).getKey();
+    }
+    else
+    {
+      return null;
+    }
   }
 }

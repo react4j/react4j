@@ -19,7 +19,7 @@ public class KeyedTest
   @Test
   public void getKey_onNonKeyed()
   {
-    assertThrows( ClassCastException.class, () -> Keyed.getKey( "XXXX" ) );
+    assertNull( Keyed.getKey( "XXXX" ) );
   }
 
   private static class TestKeyed
