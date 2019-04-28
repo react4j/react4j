@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import react4j.Keyed;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -28,7 +29,7 @@ class ImmutablePropTypeKeyedViaInheritanceInterfaceBuilder {
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp) {
-      _element.setKey( myProp.getKey() );
+      _element.setKey( Keyed.getKey( myProp ) );
       _element.props().set( React4j_ImmutablePropTypeKeyedViaInheritanceInterface.Props.myProp, myProp );
       return build();
     }

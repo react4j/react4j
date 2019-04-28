@@ -324,7 +324,7 @@ final class Generator
       final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
       if ( ImmutablePropKeyStrategy.KEYED == strategy )
       {
-        method.addStatement( "_element.setKey( $N.getKey() )", stepMethod.getName() );
+        method.addStatement( "_element.setKey( $T.getKey( $N ) )", KEYED_CLASSNAME, stepMethod.getName() );
       }
       else if ( ImmutablePropKeyStrategy.IS_STRING == strategy )
       {
