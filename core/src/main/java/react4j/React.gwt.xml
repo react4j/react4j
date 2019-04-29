@@ -1,4 +1,5 @@
 <module>
+  <inherits name='com.google.gwt.resources.Resources'/>
   <inherits name='org.realityforge.braincheck.BrainCheck'/>
   <inherits name='jsinterop.annotations.Annotations'/>
   <inherits name='elemental2.core.Core'/>

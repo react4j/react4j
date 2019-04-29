@@ -41,6 +41,7 @@ define 'react4j' do
                  :jsinterop_annotations,
                  :braincheck,
                  :arez_core,
+                 :gwt_user,
                  :jetbrains_annotations
     compile.options[:other] = %w(-parameters)
 
