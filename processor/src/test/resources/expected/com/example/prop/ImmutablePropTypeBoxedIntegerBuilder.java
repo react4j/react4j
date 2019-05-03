@@ -26,7 +26,7 @@ class ImmutablePropTypeBoxedIntegerBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Integer myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypeBoxedInteger.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypeBoxedInteger.Props.myProp, myProp );
       return build();
     }

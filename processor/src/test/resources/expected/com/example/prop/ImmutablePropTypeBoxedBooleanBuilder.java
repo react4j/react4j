@@ -26,7 +26,7 @@ class ImmutablePropTypeBoxedBooleanBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Boolean myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypeBoxedBoolean.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypeBoxedBoolean.Props.myProp, myProp );
       return build();
     }

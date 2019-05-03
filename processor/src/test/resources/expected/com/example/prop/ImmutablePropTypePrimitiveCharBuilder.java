@@ -26,7 +26,7 @@ class ImmutablePropTypePrimitiveCharBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final char myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypePrimitiveChar.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypePrimitiveChar.Props.myProp, myProp );
       return build();
     }

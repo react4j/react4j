@@ -26,7 +26,7 @@ class ImmutablePropTypeBoxedDoubleBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Double myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypeBoxedDouble.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypeBoxedDouble.Props.myProp, myProp );
       return build();
     }

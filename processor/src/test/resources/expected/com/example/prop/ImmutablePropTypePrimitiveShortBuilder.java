@@ -26,7 +26,7 @@ class ImmutablePropTypePrimitiveShortBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final short myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypePrimitiveShort.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypePrimitiveShort.Props.myProp, myProp );
       return build();
     }

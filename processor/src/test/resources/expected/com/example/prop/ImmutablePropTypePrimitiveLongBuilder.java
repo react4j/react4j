@@ -26,7 +26,7 @@ class ImmutablePropTypePrimitiveLongBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final long myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypePrimitiveLong.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypePrimitiveLong.Props.myProp, myProp );
       return build();
     }

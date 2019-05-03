@@ -29,7 +29,7 @@ class ImmutablePropTypeArezComponentWhereIdFromComponentIdBuilder {
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeArezComponentWhereIdFromComponentId.MyComponent myProp) {
-      _element.setKey( String.valueOf( Identifiable.<Object>getArezId( myProp ) ) );
+      _element.setKey( ImmutablePropTypeArezComponentWhereIdFromComponentId.class.getName() + Identifiable.<Object>getArezId( myProp ) );
       _element.props().set( React4j_ImmutablePropTypeArezComponentWhereIdFromComponentId.Props.myProp, myProp );
       return build();
     }

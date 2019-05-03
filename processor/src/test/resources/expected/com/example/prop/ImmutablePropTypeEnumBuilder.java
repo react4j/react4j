@@ -26,7 +26,7 @@ class ImmutablePropTypeEnumBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeEnum.Foo myProp) {
-      _element.setKey( myProp.name() );
+      _element.setKey( ImmutablePropTypeEnum.class.getName() + myProp.name() );
       _element.props().set( React4j_ImmutablePropTypeEnum.Props.myProp, myProp );
       return build();
     }

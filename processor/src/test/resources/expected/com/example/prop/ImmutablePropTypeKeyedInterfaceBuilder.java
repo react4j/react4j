@@ -27,7 +27,7 @@ class ImmutablePropTypeKeyedInterfaceBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeKeyedInterface.KeyedInterface myProp) {
-      _element.setKey( Keyed.getKey( myProp ) );
+      _element.setKey( ImmutablePropTypeKeyedInterface.class.getName() + Keyed.getKey( myProp ) );
       _element.props().set( React4j_ImmutablePropTypeKeyedInterface.Props.myProp, myProp );
       return build();
     }

@@ -26,7 +26,7 @@ class ImmutablePropTypeStringBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.setKey( myProp );
+      _element.setKey( ImmutablePropTypeString.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypeString.Props.myProp, myProp );
       return build();
     }

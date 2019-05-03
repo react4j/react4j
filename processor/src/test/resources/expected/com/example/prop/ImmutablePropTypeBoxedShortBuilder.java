@@ -26,7 +26,7 @@ class ImmutablePropTypeBoxedShortBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Short myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypeBoxedShort.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypeBoxedShort.Props.myProp, myProp );
       return build();
     }

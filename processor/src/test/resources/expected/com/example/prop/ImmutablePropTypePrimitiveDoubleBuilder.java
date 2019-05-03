@@ -26,7 +26,7 @@ class ImmutablePropTypePrimitiveDoubleBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final double myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypePrimitiveDouble.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypePrimitiveDouble.Props.myProp, myProp );
       return build();
     }

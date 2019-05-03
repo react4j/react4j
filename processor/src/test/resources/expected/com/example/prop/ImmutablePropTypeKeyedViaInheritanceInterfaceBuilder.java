@@ -29,7 +29,7 @@ class ImmutablePropTypeKeyedViaInheritanceInterfaceBuilder {
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp) {
-      _element.setKey( Keyed.getKey( myProp ) );
+      _element.setKey( ImmutablePropTypeKeyedViaInheritanceInterface.class.getName() + Keyed.getKey( myProp ) );
       _element.props().set( React4j_ImmutablePropTypeKeyedViaInheritanceInterface.Props.myProp, myProp );
       return build();
     }

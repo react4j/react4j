@@ -26,7 +26,7 @@ class ImmutablePropTypePrimitiveFloatBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final float myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypePrimitiveFloat.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypePrimitiveFloat.Props.myProp, myProp );
       return build();
     }

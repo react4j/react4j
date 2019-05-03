@@ -26,7 +26,7 @@ class ImmutablePropTypeBoxedByteBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Byte myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypeBoxedByte.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypeBoxedByte.Props.myProp, myProp );
       return build();
     }

@@ -28,7 +28,7 @@ class ImmutablePropTypeKeyedMultiStepInheritedBuilder {
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp) {
-      _element.setKey( Keyed.getKey( myProp ) );
+      _element.setKey( ImmutablePropTypeKeyedMultiStepInherited.class.getName() + Keyed.getKey( myProp ) );
       _element.props().set( React4j_ImmutablePropTypeKeyedMultiStepInherited.Props.myProp, myProp );
       return build();
     }

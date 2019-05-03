@@ -26,7 +26,7 @@ class ImmutablePropTypePrimitiveIntBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final int myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypePrimitiveInt.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypePrimitiveInt.Props.myProp, myProp );
       return build();
     }

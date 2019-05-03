@@ -26,7 +26,7 @@ class ImmutablePropTypeBoxedCharacterBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Character myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypeBoxedCharacter.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypeBoxedCharacter.Props.myProp, myProp );
       return build();
     }

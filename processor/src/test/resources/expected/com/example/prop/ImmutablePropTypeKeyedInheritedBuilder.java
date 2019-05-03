@@ -27,7 +27,7 @@ class ImmutablePropTypeKeyedInheritedBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
-      _element.setKey( Keyed.getKey( myProp ) );
+      _element.setKey( ImmutablePropTypeKeyedInherited.class.getName() + Keyed.getKey( myProp ) );
       _element.props().set( React4j_ImmutablePropTypeKeyedInherited.Props.myProp, myProp );
       return build();
     }

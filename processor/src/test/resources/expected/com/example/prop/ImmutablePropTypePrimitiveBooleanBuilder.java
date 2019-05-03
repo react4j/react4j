@@ -26,7 +26,7 @@ class ImmutablePropTypePrimitiveBooleanBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final boolean myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypePrimitiveBoolean.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypePrimitiveBoolean.Props.myProp, myProp );
       return build();
     }

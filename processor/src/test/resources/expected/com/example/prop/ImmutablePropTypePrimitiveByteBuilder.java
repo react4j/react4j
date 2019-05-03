@@ -26,7 +26,7 @@ class ImmutablePropTypePrimitiveByteBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final byte myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypePrimitiveByte.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypePrimitiveByte.Props.myProp, myProp );
       return build();
     }

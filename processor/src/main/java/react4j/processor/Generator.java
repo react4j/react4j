@@ -324,24 +324,34 @@ final class Generator
       final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
       if ( ImmutablePropKeyStrategy.KEYED == strategy )
       {
-        method.addStatement( "_element.setKey( $T.getKey( $N ) )", KEYED_CLASSNAME, stepMethod.getName() );
+        method.addStatement( "_element.setKey( $T.class.getName() + $T.getKey( $N ) )",
+                             descriptor.getClassName(),
+                             KEYED_CLASSNAME,
+                             stepMethod.getName() );
       }
       else if ( ImmutablePropKeyStrategy.IS_STRING == strategy )
       {
-        method.addStatement( "_element.setKey( $N )", stepMethod.getName() );
+        method.addStatement( "_element.setKey( $T.class.getName() + $N )",
+                             descriptor.getClassName(),
+                             stepMethod.getName() );
       }
       else if ( ImmutablePropKeyStrategy.TO_STRING == strategy )
       {
-        method.addStatement( "_element.setKey( String.valueOf( $N ) )", stepMethod.getName() );
+        method.addStatement( "_element.setKey( $T.class.getName() + $N )",
+                             descriptor.getClassName(),
+                             stepMethod.getName() );
       }
       else if ( ImmutablePropKeyStrategy.ENUM == strategy )
       {
-        method.addStatement( "_element.setKey( $N.name() )", stepMethod.getName() );
+        method.addStatement( "_element.setKey( $T.class.getName() + $N.name() )",
+                             descriptor.getClassName(),
+                             stepMethod.getName() );
       }
       else
       {
         assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
-        method.addStatement( "_element.setKey( String.valueOf( $T.<Object>getArezId( $N ) ) )",
+        method.addStatement( "_element.setKey( $T.class.getName() + $T.<Object>getArezId( $N ) )",
+                             descriptor.getClassName(),
                              IDENTIFIABLE_CLASSNAME,
                              stepMethod.getName() );
       }
@@ -423,16 +433,12 @@ final class Generator
       method.addStatement( "final $T props = _element.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
 
       final StringBuilder sb = new StringBuilder();
-      sb.append( "_element.setKey( " );
+      sb.append( "_element.setKey( $T.class.getName()" );
       final ArrayList<Object> params = new ArrayList<>();
-      boolean firstProp = true;
+      params.add( descriptor.getClassName() );
       for ( final PropDescriptor prop : syntheticProps )
       {
-        if ( !firstProp )
-        {
-          sb.append( " + \"-\" + " );
-        }
-        firstProp = false;
+        sb.append( " + \"-\" + " );
         final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
         if ( ImmutablePropKeyStrategy.KEYED == strategy )
         {

@@ -26,7 +26,7 @@ class ImmutablePropTypeBoxedLongBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Long myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypeBoxedLong.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypeBoxedLong.Props.myProp, myProp );
       return build();
     }

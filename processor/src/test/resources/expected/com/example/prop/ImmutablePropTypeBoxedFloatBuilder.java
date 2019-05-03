@@ -26,7 +26,7 @@ class ImmutablePropTypeBoxedFloatBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Float myProp) {
-      _element.setKey( String.valueOf( myProp ) );
+      _element.setKey( ImmutablePropTypeBoxedFloat.class.getName() + myProp );
       _element.props().set( React4j_ImmutablePropTypeBoxedFloat.Props.myProp, myProp );
       return build();
     }
