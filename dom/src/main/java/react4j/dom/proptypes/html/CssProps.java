@@ -8,7 +8,7 @@ import react4j.dom.proptypes.cssPropertyTypes.AnimationFillMode;
 import react4j.dom.proptypes.cssPropertyTypes.Visibility;
 
 /**
- * This class represents propeties of the CSS style object.
+ * This class represents properties of the CSS style object.
  *
  * NOTE: this is very much a work in progress. Further refinements will include
  * defining enumerations for many of the properties
