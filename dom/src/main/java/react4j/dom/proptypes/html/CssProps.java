@@ -224,10 +224,10 @@ public class CssProps
     return this;
   }
 
-  @JsProperty
+  @JsProperty( name = "zIndex" )
   public native double getZIndex();
 
-  @JsProperty
+  @JsProperty( name = "zIndex" )
   public native void setZIndex( double zIndex );
 
   @JsOverlay

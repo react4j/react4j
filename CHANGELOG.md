@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Explicitly specify the name of the `CssProps.zIndex` property as jsinterop was incorrectly identifying the
+  native property as `ZIndex`.
+
 ### [v0.127](https://github.com/react4j/react4j/tree/v0.127) (2019-05-03)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.126...v0.127)
 
