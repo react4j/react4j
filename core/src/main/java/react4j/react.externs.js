@@ -568,10 +568,6 @@ React.StrictMode;
 /**
  * @const {symbol}
  */
-React.unstable_ConcurrentMode;
-/**
- * @const {symbol}
- */
 React.Suspense;
 /**
  * @const {symbol}

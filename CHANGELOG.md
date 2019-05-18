@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+* Remove `React.ConcurrentMode` as `React` has removed the symbol in a later version. See
+  [facebook/react#15532](https://github.com/facebook/react/pull/15532). The reason is because it is
+  not practical to opt a particular subtree into Concurrent Mode without opting in the entire root.
+  The recommendation is to use createRoot instead.
+
 ### [v0.128](https://github.com/react4j/react4j/tree/v0.128) (2019-05-08)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.127...v0.128)
 

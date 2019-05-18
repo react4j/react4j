@@ -105,11 +105,6 @@ public final class React
   @JsProperty( name = "StrictMode" )
   public static Object StrictMode;
   /**
-   * The Symbol type for ConcurrentMode.
-   */
-  @JsProperty( name = "unstable_ConcurrentMode" )
-  public static Object ConcurrentMode;
-  /**
    * The Symbol type for Suspense.
    */
   @JsProperty( name = "Suspense" )
