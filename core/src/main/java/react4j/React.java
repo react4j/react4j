@@ -96,7 +96,6 @@ public final class React
   /**
    * The Symbol type for Fragments.
    */
-  @SuppressWarnings( "unused" )
   @JsProperty( name = "Fragment" )
   public static Object Fragment;
   /**
