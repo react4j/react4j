@@ -6,6 +6,8 @@
   [facebook/react#15532](https://github.com/facebook/react/pull/15532). The reason is because it is
   not practical to opt a particular subtree into Concurrent Mode without opting in the entire root.
   The recommendation is to use createRoot instead.
+* Stop patching `react.js` to export the symbols `Portal`, `Consumer`, `ForwardRef`, `Memo` and `Lazy`
+  on the `React` type as they are never used.
 
 ### [v0.128](https://github.com/react4j/react4j/tree/v0.128) (2019-05-08)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.127...v0.128)

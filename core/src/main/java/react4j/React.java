@@ -114,11 +114,6 @@ public final class React
   @JsProperty( name = "unstable_Profiler" )
   public static Object Profiler;
   /**
-   * The Symbol type for Portal.
-   */
-  @JsProperty( name = "Portal" )
-  public static Object Portal;
-  /**
    * The Symbol type for Element.
    */
   @JsProperty( name = "Element" )
@@ -128,28 +123,6 @@ public final class React
    */
   @JsProperty( name = "Provider" )
   public static Object Provider;
-  /**
-   * The Symbol type for Consumer.
-   */
-  @JsProperty( name = "Consumer" )
-  public static Object Consumer;
-  /**
-   * The Symbol type for ForwardRef.
-   */
-  @JsProperty( name = "ForwardRef" )
-  public static Object ForwardRef;
-  /**
-   * The Symbol type for Memo.
-   */
-  @SuppressWarnings( "unused" )
-  @JsProperty( name = "Memo" )
-  public static Object Memo;
-  /**
-   * The Symbol type for Lazy.
-   */
-  @SuppressWarnings( "unused" )
-  @JsProperty( name = "Lazy" )
-  public static Object Lazy;
 
   /**
    * Creates a context with specified default value.
