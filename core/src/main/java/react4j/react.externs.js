@@ -576,31 +576,11 @@ React.unstable_Profiler;
 /**
  * @const {symbol}
  */
-React.Portal;
-/**
- * @const {symbol}
- */
 React.Element;
 /**
  * @const {symbol}
  */
 React.Provider;
-/**
- * @const {symbol}
- */
-React.Consumer;
-/**
- * @const {symbol}
- */
-React.ForwardRef;
-/**
- * @const {symbol}
- */
-React.Memo;
-/**
- * @const {symbol}
- */
-React.Lazy;
 
 // https://github.com/facebook/react/blob/master/packages/shared/isTextInputElement.js#L13-L29
 // Closure will rename these properties during optimization
