@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `2.24`.
 * Remove `React.ConcurrentMode` as `React` has removed the symbol in a later version. See
   [facebook/react#15532](https://github.com/facebook/react/pull/15532). The reason is because it is
   not practical to opt a particular subtree into Concurrent Mode without opting in the entire root.
