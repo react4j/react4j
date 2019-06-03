@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.129](https://github.com/react4j/react4j/tree/v0.129) (2019-06-03)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.128...v0.129)
 
 * Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `2.24`.
 * Remove `React.ConcurrentMode` as `React` has removed the symbol in a later version. See
