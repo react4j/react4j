@@ -1,6 +1,6 @@
 repositories:
   remote:
-   - https://repo1.maven.org/maven2
+   - https://repo.maven.apache.org/maven2
    - https://stocksoftware.jfrog.io/stocksoftware/public
    - https://stocksoftware.jfrog.io/stocksoftware/oss
    - https://stocksoftware.jfrog.io/stocksoftware/thirdparty-local
