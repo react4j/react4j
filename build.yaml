@@ -54,7 +54,7 @@ artifacts:
   googlejavaformat: com.google.googlejavaformat:google-java-format:jar:1.5
   errorprone: com.google.errorprone:javac-shaded:jar:9-dev-r4023-3
 
-  gir: org.realityforge.gir:gir-core:jar:0.08
+  gir: org.realityforge.gir:gir-core:jar:0.10
 
   javacsv: net.sourceforge.javacsv:javacsv:jar:2.1
 
