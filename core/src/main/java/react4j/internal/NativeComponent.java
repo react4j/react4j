@@ -30,7 +30,7 @@ public abstract class NativeComponent
 
   @JsMethod
   @Nullable
-  public abstract ReactNode render();
+  protected abstract ReactNode render();
 
   @JsOverlay
   @Nullable
@@ -46,7 +46,21 @@ public abstract class NativeComponent
     return state;
   }
 
-  public final native void setState( @Nonnull JsPropertyMap<Object> state );
+  @JsOverlay
+  public final void setState( @Nonnull final JsPropertyMap<Object> state )
+  {
+    _setState( state );
+  }
 
-  public final native void forceUpdate();
+  @JsMethod( name = "setState" )
+  protected final native void _setState( @Nonnull JsPropertyMap<Object> state );
+
+  @JsOverlay
+  public final void forceUpdate()
+  {
+    _forceUpdate();
+  }
+
+  @JsMethod( name = "forceUpdate" )
+  protected final native void _forceUpdate();
 }

@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
@@ -23,10 +24,6 @@ import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
-import react4j.internal.OnComponentDidMount;
-import react4j.internal.OnComponentDidUpdate;
-import react4j.internal.OnComponentWillUnmount;
-import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.arez.ComponentState;
 import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
@@ -141,7 +138,7 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+  private static final class LiteNativeReactComponent extends NativeComponent {
     private React4j_NotObservableAsNotUpdateOnChangeProp $$react4j$$_component;
 
     @JsConstructor
@@ -150,24 +147,24 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
       $$react4j$$_component = new Arez_React4j_NotObservableAsNotUpdateOnChangeProp( this );
     }
 
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+    @JsMethod
+    protected final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
-    @Override
-    public final void componentWillUnmount() {
+    @JsMethod
+    protected final void componentWillUnmount() {
       $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
-    @Override
+    @JsMethod
     @Nullable
-    public final ReactNode render() {
+    protected final ReactNode render() {
       return $$react4j$$_component.render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent {
     private React4j_NotObservableAsNotUpdateOnChangeProp $$react4j$$_component;
 
     @JsConstructor
@@ -176,29 +173,29 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
       $$react4j$$_component = new Arez_React4j_NotObservableAsNotUpdateOnChangeProp( this );
     }
 
-    @Override
-    public final void componentDidMount() {
+    @JsMethod
+    protected final void componentDidMount() {
       $$react4j$$_component.$$react4j$$_componentDidMount();
     }
 
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+    @JsMethod
+    protected final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
-    @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    @JsMethod
+    protected final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
       $$react4j$$_component.$$react4j$$_componentDidUpdate();
     }
 
-    @Override
-    public final void componentWillUnmount() {
+    @JsMethod
+    protected final void componentWillUnmount() {
       $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
-    @Override
+    @JsMethod
     @Nullable
-    public final ReactNode render() {
+    protected final ReactNode render() {
       return $$react4j$$_component.render();
     }
   }

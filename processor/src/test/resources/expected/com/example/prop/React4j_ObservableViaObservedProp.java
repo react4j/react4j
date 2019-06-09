@@ -11,14 +11,13 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.ComponentConstructorFunction;
 import react4j.internal.NativeComponent;
-import react4j.internal.OnComponentWillUnmount;
-import react4j.internal.OnShouldComponentUpdate;
 
 @ArezComponent(
     name = "ObservableViaObservedProp",
@@ -85,7 +84,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+  private static final class NativeReactComponent extends NativeComponent {
     private React4j_ObservableViaObservedProp $$react4j$$_component;
 
     @JsConstructor
@@ -94,19 +93,19 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       $$react4j$$_component = new Arez_React4j_ObservableViaObservedProp( this );
     }
 
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
+    @JsMethod
+    protected final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
       return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
-    @Override
-    public final void componentWillUnmount() {
+    @JsMethod
+    protected final void componentWillUnmount() {
       $$react4j$$_component.$$react4j$$_componentWillUnmount();
     }
 
-    @Override
+    @JsMethod
     @Nullable
-    public final ReactNode render() {
+    protected final ReactNode render() {
       return $$react4j$$_component.render();
     }
   }
