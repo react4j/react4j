@@ -46,7 +46,6 @@ public class JDependTest
 
     react4jInternal.dependsUpon( jsinteropAnnotations );
     react4jInternal.dependsUpon( jsinteropBase );
-    react4jInternal.dependsUpon( elemental2Core );
     react4jInternal.dependsUpon( react4j );
 
     react4jInternalArez.dependsUpon( jsinteropBase );

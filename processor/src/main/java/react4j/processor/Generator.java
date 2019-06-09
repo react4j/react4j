@@ -64,6 +64,7 @@ final class Generator
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
   private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
+  private static final ClassName JS_METHOD_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsMethod" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
@@ -75,18 +76,6 @@ final class Generator
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
   private static final ClassName COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j.internal", "ComponentConstructorFunction" );
-  private static final ClassName ON_COMPONENT_DID_MOUNT_CLASSNAME =
-    ClassName.get( "react4j.internal", "OnComponentDidMount" );
-  private static final ClassName ON_COMPONENT_DID_UPDATE_CLASSNAME =
-    ClassName.get( "react4j.internal", "OnComponentDidUpdate" );
-  private static final ClassName ON_COMPONENT_WILL_UNMOUNT_CLASSNAME =
-    ClassName.get( "react4j.internal", "OnComponentWillUnmount" );
-  private static final ClassName ON_GET_SNAPSHOT_BEFORE_UPDATE_CLASSNAME =
-    ClassName.get( "react4j.internal", "OnGetSnapshotBeforeUpdate" );
-  private static final ClassName ON_COMPONENT_SHOULD_UPDATE_CLASSNAME =
-    ClassName.get( "react4j.internal", "OnShouldComponentUpdate" );
-  private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
-    ClassName.get( "react4j.internal", "OnComponentDidCatch" );
   private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeComponent" );
   private static final ClassName COMPONENT_STATE_CLASSNAME = ClassName.get( "react4j.internal.arez", "ComponentState" );
@@ -1334,7 +1323,7 @@ final class Generator
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "populateDebugData" )
       .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PROTECTED )
+      .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
       .addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "data", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() );
@@ -1601,53 +1590,6 @@ final class Generator
                         .builder( componentFieldType, COMPONENT_FIELD, Modifier.PRIVATE )
                         .build() );
 
-    if ( lite )
-    {
-      if ( descriptor.generateComponentDidMountInLiteLifecycle() )
-      {
-        builder.addSuperinterface( ON_COMPONENT_DID_MOUNT_CLASSNAME );
-      }
-      if ( descriptor.generateComponentDidUpdateInLiteLifecycle() )
-      {
-        builder.addSuperinterface( ON_COMPONENT_DID_UPDATE_CLASSNAME );
-      }
-      if ( descriptor.generateShouldComponentUpdateInLiteLifecycle() )
-      {
-        builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
-      }
-      if ( descriptor.generateComponentWillUnmountInLiteLifecycle() )
-      {
-        builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
-      }
-    }
-    else
-    {
-      if ( descriptor.generateComponentDidMount() )
-      {
-        builder.addSuperinterface( ON_COMPONENT_DID_MOUNT_CLASSNAME );
-      }
-      if ( descriptor.generateComponentDidUpdate() )
-      {
-        builder.addSuperinterface( ON_COMPONENT_DID_UPDATE_CLASSNAME );
-      }
-      if ( descriptor.generateShouldComponentUpdate() )
-      {
-        builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
-      }
-      if ( descriptor.generateComponentWillUnmount() )
-      {
-        builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
-      }
-    }
-    if ( descriptor.generateComponentPreUpdate() )
-    {
-      builder.addSuperinterface( ON_GET_SNAPSHOT_BEFORE_UPDATE_CLASSNAME );
-    }
-    if ( descriptor.generateComponentDidCatch() )
-    {
-      builder.addSuperinterface( ON_COMPONENT_DID_CATCH_CLASSNAME );
-    }
-
     // build the constructor
     {
       final ParameterSpec.Builder props =
@@ -1718,9 +1660,9 @@ final class Generator
   {
     return MethodSpec
       .methodBuilder( "render" )
-      .addAnnotation( Override.class )
+      .addAnnotation( JS_METHOD_CLASSNAME )
       .addAnnotation( NULLABLE_CLASSNAME )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
       .returns( REACT_NODE_CLASSNAME )
       .addStatement( "return $N.render()", COMPONENT_FIELD );
   }
@@ -1730,8 +1672,8 @@ final class Generator
   {
     return MethodSpec
       .methodBuilder( "componentDidMount" )
-      .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addAnnotation( JS_METHOD_CLASSNAME )
+      .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
       .addStatement( "$N.$N()", COMPONENT_FIELD, COMPONENT_DID_MOUNT_METHOD );
   }
 
@@ -1740,8 +1682,8 @@ final class Generator
   {
     return MethodSpec
       .methodBuilder( "shouldComponentUpdate" )
-      .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addAnnotation( JS_METHOD_CLASSNAME )
+      .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
       .returns( TypeName.BOOLEAN )
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL )
@@ -1755,8 +1697,8 @@ final class Generator
   {
     return MethodSpec
       .methodBuilder( "getSnapshotBeforeUpdate" )
-      .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addAnnotation( JS_METHOD_CLASSNAME )
+      .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
       .returns( TypeName.get( Object.class ) )
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
@@ -1775,8 +1717,8 @@ final class Generator
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "componentDidUpdate" )
-      .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addAnnotation( JS_METHOD_CLASSNAME )
+      .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
@@ -1796,8 +1738,8 @@ final class Generator
   {
     return MethodSpec
       .methodBuilder( "componentWillUnmount" )
-      .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addAnnotation( JS_METHOD_CLASSNAME )
+      .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
       .addStatement( "$N.$N()", COMPONENT_FIELD, COMPONENT_WILL_UNMOUNT_METHOD );
   }
 
@@ -1808,8 +1750,8 @@ final class Generator
     assert null != onError;
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "componentDidCatch" )
-      .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+      .addAnnotation( JS_METHOD_CLASSNAME )
+      .addModifiers( Modifier.PROTECTED, Modifier.FINAL )
       .addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error", Modifier.FINAL )
                        .addAnnotation( NONNULL_CLASSNAME )
                        .build() )
