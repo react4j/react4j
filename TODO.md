@@ -92,6 +92,7 @@ complete as there is too much un-said.
   https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
 
 * Animation/Transition capabilities are getting more urgent.
+  - https://react-simple-animate.now.sh/ (Seems like the best easy option)
   - https://www.npmjs.com/package/@nearform/react-animation
   - https://github.com/reactjs/react-transition-group/blob/master/src/Transition.js
   - https://popmotion.io/pose/
