@@ -4,6 +4,7 @@
 
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.19.0`.
 * Upgrade the `org.realityforge.gir` artifact to version `0.10`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.140`.
 
 ### [v0.129](https://github.com/react4j/react4j/tree/v0.129) (2019-06-03)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.128...v0.129)
