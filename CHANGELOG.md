@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.braincheck` artifact to version `1.20.0`.
+
 ### [v0.130](https://github.com/react4j/react4j/tree/v0.130) (2019-07-01)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.129...v0.130)
 
