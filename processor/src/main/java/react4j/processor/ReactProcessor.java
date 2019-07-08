@@ -1220,14 +1220,15 @@ public final class ReactProcessor
             parameters.contains( "keepAlive" ) &&
             parameters.contains( "reportResult" ) &&
             parameters.contains( "observeLowerPriorityDependencies" ) &&
+            parameters.contains( "readOutsideTransaction" ) &&
             parameters.contains( "depType" ) &&
-            6 == parameters.size() ) )
+            7 == parameters.size() ) )
     {
       throw new ReactProcessorException( "The @" + Constants.MEMOIZE_ANNOTATION_CLASSNAME + " annotation was " +
                                          "expected to have the parameters name, priority, keepAlive, reportResult, " +
-                                         "depType and observeLowerPriorityDependencies but has " + parameters +
-                                         ". The react4j annotation processor needs to be updated to " +
-                                         "handle the change in parameters.", typeElement );
+                                         "depType, readOutsideTransaction and observeLowerPriorityDependencies but " +
+                                         "has " + parameters + ". The react4j annotation processor needs to be " +
+                                         "updated to handle the change in parameters.", typeElement );
 
     }
   }
