@@ -22,6 +22,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.arez.memoize.GenericsReturnMemoizeComponent", false },
         new Object[]{ "com.example.arez.memoize.ParameterizedMemoizeComponent", false },
         new Object[]{ "com.example.arez.memoize.ParameterizedReturnMemoizeComponent", false },
+        new Object[]{ "com.example.arez.memoize.PriorityOverrideMemoizeComponent", false },
         new Object[]{ "com.example.arez.memoize.PropAndMemoizeComponent", false },
         new Object[]{ "com.example.arez.memoize.ProtectedMemoizeComponent", false },
         new Object[]{ "com.example.arez.memoize.PublicMemoizeComponent", false },

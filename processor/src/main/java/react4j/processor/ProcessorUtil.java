@@ -40,6 +40,7 @@ final class ProcessorUtil
   static final Pattern LAST_PROP_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
   static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
   static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
+  static final Pattern PRIORITY_OVERRIDE_PATTERN = Pattern.compile( "^(.*)Priority$" );
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
   private static final String SENTINEL_NAME = "<default>";
 
@@ -300,20 +301,6 @@ final class ProcessorUtil
     }
   }
 
-  @SuppressWarnings( "SameParameterValue" )
-  @Nullable
-  static AnnotationValue findDeclaredAnnotationValue( @Nonnull final Element typeElement,
-                                                      @Nonnull final String annotationClassName,
-                                                      @Nonnull final String parameterName )
-  {
-    final AnnotationMirror mirror = findAnnotationByType( typeElement, annotationClassName );
-    assert null != mirror;
-    final Map<? extends ExecutableElement, ? extends AnnotationValue> values = mirror.getElementValues();
-    final ExecutableElement annotationKey = values.keySet().stream().
-      filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
-    return values.get( annotationKey );
-  }
-
   @Nullable
   static AnnotationMirror findAnnotationByType( @Nonnull final Element typeElement,
                                                 @Nonnull final String annotationClassName )
@@ -336,10 +323,5 @@ final class ProcessorUtil
   static boolean isNonnull( @Nonnull final ExecutableElement method )
   {
     return hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME );
-  }
-
-  static boolean hasInjectAnnotation( final Element method )
-  {
-    return hasAnnotationOfType( method, Constants.INJECT_ANNOTATION_CLASSNAME );
   }
 }

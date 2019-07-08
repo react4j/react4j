@@ -23,6 +23,7 @@ final class Constants
   static final String COMPONENT_ID_REF_ANNOTATION_CLASSNAME = "arez.annotations.ComponentIdRef";
   static final String OBSERVE_ANNOTATION_CLASSNAME = "arez.annotations.Observe";
   static final String MEMOIZE_ANNOTATION_CLASSNAME = "arez.annotations.Memoize";
+  static final String PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME = "arez.annotations.PriorityOverride";
   static final String COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME = "arez.annotations.ComponentDependency";
   static final String CASCADE_DISPOSE_ANNOTATION_CLASSNAME = "arez.annotations.CascadeDispose";
   static final String PER_INSTANCE_ANNOTATION_CLASSNAME = "arez.annotations.PerInstance";

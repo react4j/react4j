@@ -1192,9 +1192,7 @@ public final class ReactProcessor
 
     descriptor.setHasArezElements( hasArezElements );
 
-    ensureMemoizeMatchesExpectations( typeElement );
-
-    descriptor.setMemoizeMethods( getMemoizeMethods( typeElement ) );
+    descriptor.setPriorityOverrides( getPriorityOverrides( typeElement ) );
   }
 
   private ComponentType extractComponentType( @Nonnull final TypeElement typeElement )
@@ -1205,32 +1203,6 @@ public final class ReactProcessor
                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                         "type" ).getValue();
     return ComponentType.valueOf( declaredTypeEnum.getSimpleName().toString() );
-  }
-
-  private void ensureMemoizeMatchesExpectations( @Nonnull final TypeElement typeElement )
-  {
-    final TypeElement computedElement =
-      processingEnv.getElementUtils().getTypeElement( Constants.MEMOIZE_ANNOTATION_CLASSNAME );
-    final Set<String> parameters = computedElement.getEnclosedElements()
-      .stream()
-      .map( e -> e.getSimpleName().toString() )
-      .collect( Collectors.toSet() );
-    if ( !( parameters.contains( "name" ) &&
-            parameters.contains( "priority" ) &&
-            parameters.contains( "keepAlive" ) &&
-            parameters.contains( "reportResult" ) &&
-            parameters.contains( "observeLowerPriorityDependencies" ) &&
-            parameters.contains( "readOutsideTransaction" ) &&
-            parameters.contains( "depType" ) &&
-            7 == parameters.size() ) )
-    {
-      throw new ReactProcessorException( "The @" + Constants.MEMOIZE_ANNOTATION_CLASSNAME + " annotation was " +
-                                         "expected to have the parameters name, priority, keepAlive, reportResult, " +
-                                         "depType, readOutsideTransaction and observeLowerPriorityDependencies but " +
-                                         "has " + parameters + ". The react4j annotation processor needs to be " +
-                                         "updated to handle the change in parameters.", typeElement );
-
-    }
   }
 
   private boolean shouldUpdateOnChange( @Nonnull final ExecutableElement method,
@@ -1322,13 +1294,13 @@ public final class ReactProcessor
   }
 
   /**
-   * Return @Memoize that have not had the priority parameter explicitly set.
+   * Return @Memoize name that have not had the priority parameter explicitly set and do not have associated @PriorityOverride.
    */
   @Nonnull
-  private List<MethodDescriptor> getMemoizeMethods( @Nonnull final TypeElement typeElement )
+  private List<String> getPriorityOverrides( @Nonnull final TypeElement typeElement )
   {
-    final DeclaredType type = (DeclaredType) typeElement.asType();
-    return getMethods( typeElement )
+    final List<ExecutableElement> methods = getMethods( typeElement );
+    return methods
       .stream()
       .filter( method -> !method.getModifiers().contains( Modifier.PRIVATE ) )
       .filter( method -> {
@@ -1338,8 +1310,50 @@ public final class ReactProcessor
                mirror.getElementValues().keySet().stream()
                  .noneMatch( v -> "priority".equals( v.getSimpleName().toString() ) );
       } )
-      .map( m -> new MethodDescriptor( m, (ExecutableType) processingEnv.getTypeUtils().asMemberOf( type, m ) ) )
+      .map( this::deriveMemoizeName )
+      .filter( name -> noPriorityOverrideWithName( methods, name ) )
       .collect( Collectors.toList() );
+  }
+
+  private boolean noPriorityOverrideWithName( @Nonnull final List<ExecutableElement> methods,
+                                              @Nonnull final String name )
+  {
+    return methods.stream()
+      .noneMatch( m -> null != ProcessorUtil.findAnnotationByType( m,
+                                                                   Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME ) &&
+                       name.equals( derivePriorityOverrideName( m ) ) );
+  }
+
+  @Nonnull
+  private String deriveMemoizeName( @Nonnull final ExecutableElement method )
+    throws ReactProcessorException
+  {
+    final String name =
+      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                 method,
+                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
+                                                 "name" ).getValue();
+    return ProcessorUtil.isSentinelName( name ) ? ProcessorUtil.getPropertyAccessorName( method, name ) : name;
+  }
+
+  @Nonnull
+  private String derivePriorityOverrideName( @Nonnull final ExecutableElement method )
+  {
+    final String declaredName =
+      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
+                                                 method,
+                                                 Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME,
+                                                 "name" ).getValue();
+    if ( ProcessorUtil.isSentinelName( declaredName ) )
+    {
+      final String name = ProcessorUtil.deriveName( method, ProcessorUtil.PRIORITY_OVERRIDE_PATTERN, declaredName );
+      assert null != name;
+      return name;
+    }
+    else
+    {
+      return declaredName;
+    }
   }
 
   private void verifyNoDuplicateAnnotations( @Nonnull final ExecutableElement method )

@@ -1,8 +1,7 @@
-package com.example.arez;
+package com.example.arez.memoize;
 
 import arez.Arez;
 import arez.Disposable;
-import arez.Flags;
 import arez.Observer;
 import arez.annotations.ArezComponent;
 import arez.annotations.DepType;
@@ -12,7 +11,6 @@ import arez.annotations.InjectMode;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
-import arez.annotations.PriorityOverride;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,15 +31,15 @@ import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
 
 @ArezComponent(
-    name = "KeepAliveMemoizeArezReactComponent",
+    name = "PriorityOverrideMemoizeComponent",
     disposeNotifier = Feature.DISABLE,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoizeArezReactComponent {
+abstract class React4j_PriorityOverrideMemoizeComponent extends PriorityOverrideMemoizeComponent {
   private int $$react4j$$_state;
 
-  React4j_KeepAliveMemoizeArezReactComponent(
+  React4j_PriorityOverrideMemoizeComponent(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );
   }
@@ -50,7 +48,7 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "KeepAliveMemoizeArezReactComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "PriorityOverrideMemoizeComponent" );
     }
     return componentConstructor;
   }
@@ -75,7 +73,7 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
 
   private void $$react4j$$_componentWillUnmount() {
     $$react4j$$_state = ComponentState.UNMOUNTED;
-    ((Arez_React4j_KeepAliveMemoizeArezReactComponent) this).dispose();
+    ((Arez_React4j_PriorityOverrideMemoizeComponent) this).dispose();
   }
 
   @Override
@@ -117,22 +115,17 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
     }
   }
 
-  @PriorityOverride
-  final int myAutorunPriority() {
-    return Flags.PRIORITY_LOWEST;
-  }
-
   static final class Factory {
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    private React4j_KeepAliveMemoizeArezReactComponent $$react4j$$_component;
+    private React4j_PriorityOverrideMemoizeComponent $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_KeepAliveMemoizeArezReactComponent( this );
+      $$react4j$$_component = new Arez_React4j_PriorityOverrideMemoizeComponent( this );
     }
 
     @Override
@@ -153,12 +146,12 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
-    private React4j_KeepAliveMemoizeArezReactComponent $$react4j$$_component;
+    private React4j_PriorityOverrideMemoizeComponent $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_KeepAliveMemoizeArezReactComponent( this );
+      $$react4j$$_component = new Arez_React4j_PriorityOverrideMemoizeComponent( this );
     }
 
     @Override

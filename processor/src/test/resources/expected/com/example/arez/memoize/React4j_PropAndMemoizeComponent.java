@@ -2,6 +2,7 @@ package com.example.arez.memoize;
 
 import arez.Arez;
 import arez.Disposable;
+import arez.Flags;
 import arez.ObservableValue;
 import arez.Observer;
 import arez.annotations.Action;
@@ -10,12 +11,12 @@ import arez.annotations.DepType;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
-import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
+import arez.annotations.PriorityOverride;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -145,12 +146,9 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
     }
   }
 
-  @Override
-  @Memoize(
-      priority = Priority.LOWEST
-  )
-  public boolean isActive() {
-    return super.isActive();
+  @PriorityOverride
+  final int activePriority() {
+    return Flags.PRIORITY_LOWEST;
   }
 
   static final class Factory {

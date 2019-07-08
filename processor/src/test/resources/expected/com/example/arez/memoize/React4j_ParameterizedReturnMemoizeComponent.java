@@ -2,17 +2,17 @@ package com.example.arez.memoize;
 
 import arez.Arez;
 import arez.Disposable;
+import arez.Flags;
 import arez.Observer;
 import arez.annotations.ArezComponent;
 import arez.annotations.DepType;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
-import arez.annotations.Memoize;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
-import java.util.function.Consumer;
+import arez.annotations.PriorityOverride;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -117,12 +117,9 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
     }
   }
 
-  @Override
-  @Memoize(
-      priority = Priority.LOWEST
-  )
-  <T> Consumer<T> getIcon(final String key) {
-    return super.getIcon(key);
+  @PriorityOverride
+  final int iconPriority() {
+    return Flags.PRIORITY_LOWEST;
   }
 
   static final class Factory {

@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Upgrade the `org.realityforge.arez` artifacts to version `0.141`.
+* Refactor the mechanisms via which `@Memoize` annotated methods have their priority modified to use the new `@PriorityOverride` annotation from Arez. React4j will generated a `@PriorityOverride` annotated method unless the user explicitly specifies a priority for an `@Memoize` annotated method or there is an existing `@PriorityOverride` annotated method associated with the `@Memoize` annotated method. This change is intended to reduce the coupling between React4j and Arez as prior to this change, any changes in the way `@Memoize` was implemented by Arez could result in a corresponding set of changes in React4j.
 
 ### [v0.130](https://github.com/react4j/react4j/tree/v0.130) (2019-07-01)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.129...v0.130)

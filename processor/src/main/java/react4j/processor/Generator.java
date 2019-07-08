@@ -18,10 +18,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -39,6 +37,7 @@ final class Generator
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   private static final ClassName AREZ_CLASSNAME = ClassName.get( "arez", "Arez" );
+  private static final ClassName FLAGS_CLASSNAME = ClassName.get( "arez", "Flags" );
   private static final ClassName OBSERVER_CLASSNAME = ClassName.get( "arez", "Observer" );
   private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "ObservableValue" );
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
@@ -49,8 +48,8 @@ final class Generator
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
   private static final ClassName PER_INSTANCE_CLASSNAME = ClassName.get( "arez.annotations", "PerInstance" );
-  private static final ClassName MEMOIZE_CLASSNAME = ClassName.get( "arez.annotations", "Memoize" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
+  private static final ClassName PRIORITY_OVERRIDE_CLASSNAME = ClassName.get( "arez.annotations", "PriorityOverride" );
   private static final ClassName EXECUTOR_CLASSNAME = ClassName.get( "arez.annotations", "Executor" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
@@ -660,9 +659,9 @@ final class Generator
       builder.addMethod( buildGetRenderObserver( descriptor ).build() );
       builder.addMethod( buildPopulateDebugData( descriptor ).build() );
 
-      for ( final MethodDescriptor method : descriptor.getMemoizeMethods() )
+      for ( final String priorityOverride : descriptor.getPriorityOverrides() )
       {
-        builder.addMethod( buildMemoizeWrapperMethod( method ).build() );
+        builder.addMethod( buildPriorityOverrideMethod( priorityOverride ).build() );
       }
     }
 
@@ -673,6 +672,16 @@ final class Generator
     builder.addType( buildNativeComponent( descriptor, false ) );
 
     return builder.build();
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildPriorityOverrideMethod( @Nonnull final String priorityOverride )
+  {
+    return MethodSpec.methodBuilder( priorityOverride + "Priority" )
+      .addAnnotation( PRIORITY_OVERRIDE_CLASSNAME )
+      .addModifiers( Modifier.FINAL )
+      .returns( TypeName.INT )
+      .addStatement( "return $T.PRIORITY_LOWEST", FLAGS_CLASSNAME );
   }
 
   private static MethodSpec.Builder buildConstructor( @Nonnull final ComponentDescriptor descriptor )
@@ -737,100 +746,6 @@ final class Generator
                                 Character.toString( (char) ( 'a' + index ) ),
                                 name );
     }
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildMemoizeWrapperMethod( @Nonnull final MethodDescriptor descriptor )
-  {
-    return generateOverrideMethod( descriptor ).addAnnotation( buildMemoizeAnnotation( descriptor ).build() );
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder generateOverrideMethod( final @Nonnull MethodDescriptor descriptor )
-  {
-    final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( descriptor.getMethod().getSimpleName().toString() ).
-        addAnnotation( Override.class ).
-        returns( TypeName.get( descriptor.getMethodType().getReturnType() ) );
-    ProcessorUtil.copyTypeParameters( descriptor.getMethodType(), method );
-    ProcessorUtil.copyAccessModifiers( descriptor.getMethod(), method );
-    ProcessorUtil.copyWhitelistedAnnotations( descriptor.getMethod(), method );
-
-    final int paramCount = descriptor.getMethod().getParameters().size();
-    for ( int i = 0; i < paramCount; i++ )
-    {
-      final TypeMirror paramType = descriptor.getMethodType().getParameterTypes().get( i );
-      final VariableElement param = descriptor.getMethod().getParameters().get( i );
-      final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( TypeName.get( paramType ), param.getSimpleName().toString(), Modifier.FINAL );
-      ProcessorUtil.copyWhitelistedAnnotations( param, parameter );
-      method.addParameter( parameter.build() );
-    }
-    final String params =
-      0 == paramCount ?
-      "" :
-      IntStream.range( 0, paramCount )
-        .mapToObj( i -> descriptor.getMethod().getParameters().get( i ).getSimpleName().toString() )
-        .collect( Collectors.joining( "," ) );
-
-    final boolean isVoid = descriptor.getMethodType().getReturnType().getKind() == TypeKind.VOID;
-
-    method.addStatement( ( isVoid ? "" : "return " ) + "super.$N(" + params + ")",
-                         descriptor.getMethod().getSimpleName() );
-    return method;
-  }
-
-  @Nonnull
-  private static AnnotationSpec.Builder buildMemoizeAnnotation( @Nonnull final MethodDescriptor descriptor )
-  {
-    final AnnotationSpec.Builder annotation =
-      AnnotationSpec.builder( MEMOIZE_CLASSNAME ).
-        addMember( "priority", "$T.LOWEST", PRIORITY_CLASSNAME );
-    final AnnotationValue nameValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                                 "name" );
-    if ( null != nameValue )
-    {
-      annotation.addMember( "name", "$S", nameValue.getValue().toString() );
-    }
-    final AnnotationValue keepAliveValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                                 "keepAlive" );
-    if ( null != keepAliveValue )
-    {
-      annotation.addMember( "keepAlive", "$N", keepAliveValue.getValue().toString() );
-    }
-    final AnnotationValue reportResultValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                                 "reportResult" );
-    if ( null != reportResultValue )
-    {
-      annotation.addMember( "reportResult", "$N", reportResultValue.getValue().toString() );
-    }
-
-    final AnnotationValue depTypeValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                                 "depType" );
-    if ( null != depTypeValue )
-    {
-      annotation.addMember( "depType", "$T.$N", DEP_TYPE_CLASSNAME, depTypeValue.getValue().toString() );
-    }
-
-    final AnnotationValue observeLowerPriorityDependenciesValue =
-      ProcessorUtil.findDeclaredAnnotationValue( descriptor.getMethod(),
-                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                                 "observeLowerPriorityDependencies" );
-    if ( null != observeLowerPriorityDependenciesValue )
-    {
-      annotation.addMember( "observeLowerPriorityDependencies",
-                            "$N",
-                            observeLowerPriorityDependenciesValue.getValue().toString() );
-    }
-    return annotation;
   }
 
   private static MethodSpec.Builder buildPropMethod( @Nonnull final PropDescriptor prop )

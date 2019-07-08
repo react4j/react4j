@@ -60,10 +60,10 @@ final class ComponentDescriptor
   @Nullable
   private List<OnPropChangeDescriptor> _onPropChangeDescriptors;
   /**
-   * Methods annotated with arez's @Memoize annotation. Should be null if not an arez component
+   * Names of elements that require a priority override to be generated.
    */
   @Nullable
-  private List<MethodDescriptor> _memoizeMethods;
+  private List<String> _priorityOverrides;
   private Boolean _hasValidatedProps;
   private boolean _hasArezElements;
 
@@ -281,15 +281,15 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  List<MethodDescriptor> getMemoizeMethods()
+  List<String> getPriorityOverrides()
   {
-    assert null != _memoizeMethods;
-    return _memoizeMethods;
+    assert null != _priorityOverrides;
+    return _priorityOverrides;
   }
 
-  void setMemoizeMethods( @Nonnull final List<MethodDescriptor> memoizeMethods )
+  void setPriorityOverrides( @Nonnull final List<String> priorityOverrides )
   {
-    _memoizeMethods = Objects.requireNonNull( memoizeMethods );
+    _priorityOverrides = Objects.requireNonNull( priorityOverrides );
   }
 
   int syntheticKeyComponents()
@@ -354,6 +354,11 @@ final class ComponentDescriptor
   boolean hasObservableProps()
   {
     return getProps().stream().anyMatch( PropDescriptor::isObservable );
+  }
+
+  private boolean hasUpdateOnChangeProps()
+  {
+    return getProps().stream().anyMatch( PropDescriptor::shouldUpdateOnChange );
   }
 
   @Nullable
