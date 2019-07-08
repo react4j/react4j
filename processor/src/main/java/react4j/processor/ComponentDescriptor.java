@@ -356,11 +356,6 @@ final class ComponentDescriptor
     return getProps().stream().anyMatch( PropDescriptor::isObservable );
   }
 
-  private boolean hasUpdateOnChangeProps()
-  {
-    return getProps().stream().anyMatch( PropDescriptor::shouldUpdateOnChange );
-  }
-
   @Nullable
   ExecutableElement getPreUpdate()
   {
