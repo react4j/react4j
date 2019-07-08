@@ -29,7 +29,7 @@ artifacts:
   arez_core: org.realityforge.arez:arez-core:jar:0.141
   arez_processor: org.realityforge.arez:arez-processor:jar:0.141
 
-  braincheck: org.realityforge.braincheck:braincheck:jar:1.19.0
+  braincheck: org.realityforge.braincheck:braincheck:jar:1.20.0
 
   javax_inject: javax.inject:javax.inject:jar:1
   javax_inject_sources: javax.inject:javax.inject:jar:sources:1
