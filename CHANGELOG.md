@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `au.com.stocksoftware.idea.codestyle` artifact to version `1.14`.
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.20.0`.
 
 ### [v0.131](https://github.com/react4j/react4j/tree/v0.131) (2019-07-09)
