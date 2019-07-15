@@ -24,6 +24,10 @@ define 'react4j' do
 
   project.version = ENV['PRODUCT_VERSION'] if ENV['PRODUCT_VERSION']
 
+  pom.add_apache_v2_license
+  pom.add_github_project('react4j/react4j')
+  pom.add_developer('realityforge', 'Peter Donald')
+
   desc 'React4j core binding'
   define 'core' do
     pom.include_transitive_dependencies << artifact(:javax_annotation)
