@@ -278,4 +278,5 @@ end
 
 Buildr.projects.each do |project|
   project.jacoco.enabled = false unless project.name == 'react4j:processor'
+  project.doc.options.merge!('subpackages' => 'react4j.*')
 end
