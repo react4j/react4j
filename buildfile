@@ -258,7 +258,7 @@ define 'react4j' do
             'DOM Packages' => 'react4j.dom*',
             'Annotation Packages' => 'react4j.annotations*:react4j.processor*'
           }
-    )
+    ).sourcepath = project('core').compile.sources + project('dom').compile.sources + project('processor').compile.sources
 
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
@@ -278,5 +278,4 @@ end
 
 Buildr.projects.each do |project|
   project.jacoco.enabled = false unless project.name == 'react4j:processor'
-  project.doc.options.merge!('subpackages' => 'react4j.*')
 end
