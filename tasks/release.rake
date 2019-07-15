@@ -120,7 +120,7 @@ CONTENT
     end
 
     stage('BuildWebsite', 'Build the website to ensure site still builds') do
-      sh "bundle exec buildr clean site:build TEST=no GWT=react4j:doc-examples#{Buildr.application.options.trace ? ' --trace' : ''}"
+      sh "bundle exec buildr clean react4j:dom:reactgen site:build TEST=no GWT=react4j:doc-examples#{Buildr.application.options.trace ? ' --trace' : ''}"
       task('site:link_check').invoke
     end
 
