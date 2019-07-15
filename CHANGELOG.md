@@ -1,6 +1,7 @@
 # Change Log
 
-### Unreleased
+### [v0.132](https://github.com/react4j/react4j/tree/v0.132) (2019-07-15)
+[Full Changelog](https://github.com/react4j/react4j/compare/v0.131...v0.132)
 
 * Upgrade the `au.com.stocksoftware.idea.codestyle` artifact to version `1.14`.
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.20.0`.
