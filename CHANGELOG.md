@@ -5,6 +5,7 @@
 * Upgrade the `au.com.stocksoftware.idea.codestyle` artifact to version `1.14`.
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.20.0`.
 * Explicitly declare `gwt-user` dependency in core module rather than relying on automatic inclusion due to the presence of the gwt addon. Exclude to `gwt-user` dependency from the generated pom file so as not to include it in j2cl projects.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.142`.
 
 ### [v0.131](https://github.com/react4j/react4j/tree/v0.131) (2019-07-09)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.130...v0.131)

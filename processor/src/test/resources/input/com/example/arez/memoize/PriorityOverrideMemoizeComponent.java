@@ -1,6 +1,6 @@
 package com.example.arez.memoize;
 
-import arez.Flags;
+import arez.Observer;
 import arez.annotations.Memoize;
 import arez.annotations.PriorityOverride;
 import javax.annotation.Nullable;
@@ -28,6 +28,6 @@ abstract class PriorityOverrideMemoizeComponent
   @PriorityOverride
   final int iconPriority()
   {
-    return Flags.PRIORITY_HIGH;
+    return Observer.Flags.PRIORITY_HIGH;
   }
 }

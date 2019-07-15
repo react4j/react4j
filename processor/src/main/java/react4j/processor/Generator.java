@@ -37,7 +37,7 @@ final class Generator
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   private static final ClassName AREZ_CLASSNAME = ClassName.get( "arez", "Arez" );
-  private static final ClassName FLAGS_CLASSNAME = ClassName.get( "arez", "Flags" );
+  private static final ClassName OBSERVER_FLAGS_CLASSNAME = ClassName.get( "arez", "Observer", "Flags" );
   private static final ClassName OBSERVER_CLASSNAME = ClassName.get( "arez", "Observer" );
   private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "ObservableValue" );
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
@@ -681,7 +681,7 @@ final class Generator
       .addAnnotation( PRIORITY_OVERRIDE_CLASSNAME )
       .addModifiers( Modifier.FINAL )
       .returns( TypeName.INT )
-      .addStatement( "return $T.PRIORITY_LOWEST", FLAGS_CLASSNAME );
+      .addStatement( "return $T.PRIORITY_LOWEST", OBSERVER_FLAGS_CLASSNAME );
   }
 
   private static MethodSpec.Builder buildConstructor( @Nonnull final ComponentDescriptor descriptor )

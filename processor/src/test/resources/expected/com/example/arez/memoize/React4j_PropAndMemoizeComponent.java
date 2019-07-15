@@ -2,7 +2,6 @@ package com.example.arez.memoize;
 
 import arez.Arez;
 import arez.Disposable;
-import arez.Flags;
 import arez.ObservableValue;
 import arez.Observer;
 import arez.annotations.Action;
@@ -148,7 +147,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
 
   @PriorityOverride
   final int activePriority() {
-    return Flags.PRIORITY_LOWEST;
+    return Observer.Flags.PRIORITY_LOWEST;
   }
 
   static final class Factory {
