@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.guiceyloops` artifact to version `0.102`.
+
 ### Unreleased
 
 ### [v0.132](https://github.com/react4j/react4j/tree/v0.132) (2019-07-15)
