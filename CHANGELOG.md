@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.guiceyloops` artifact to version `0.102`.
+
 ### Unreleased
 
 * Upgrade the `org.realityforge.arez` artifacts to version `0.143`.
