@@ -6,7 +6,7 @@
 * Upgrade the `org.realityforge.javax.annotation` artifact to version `1.0.1`.
 * Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `2.25`.
 * Upgrade the `org.realityforge.guiceyloops` artifact to version `0.102`.
-* Upgrade the `org.realityforge.arez` artifacts to version `0.143`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.146`.
 
 ### [v0.132](https://github.com/react4j/react4j/tree/v0.132) (2019-07-15)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.131...v0.132)
