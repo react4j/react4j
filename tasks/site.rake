@@ -44,6 +44,16 @@ task 'site:favicons' do
   cp_r Dir["#{favicons_dir}/*.ico"], SITE_DIR
 end
 
+desc 'Copy the api diff reports to website'
+task 'site:apidiff' do
+  mkdir_p SITE_DIR
+  cp_r "#{WORKSPACE_DIR}/assets/api-diff", "#{SITE_DIR}/api-diff"
+  source_dir = "#{WORKSPACE_DIR}/api-test/src/test/resources/fixtures"
+  target_dir = "#{SITE_DIR}/api-diff/data/react4j"
+  mkdir_p target_dir
+  cp_r Dir["#{source_dir}/*.json"], target_dir
+end
+
 desc 'Build the website'
 task 'site:build' do
   rm_rf SITE_DIR
@@ -52,6 +62,7 @@ task 'site:build' do
   mv "#{WORKSPACE_DIR}/website/build/react4j", SITE_DIR
   task('site:javadocs').invoke
   task('site:favicons').invoke
+  task('site:apidiff').invoke
   task('site:examples').invoke
 end
 

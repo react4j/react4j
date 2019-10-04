@@ -10,6 +10,7 @@
 * Add the `@react4j.annotations.SuppressReact4jWarnings` annotation as an alternative to `@java.lang.SuppressWarnings` if the suppression occurs on a base class that is present in library and not necessarily compiled in the same compiler instances as the React4j component.
 * Generate an invariant failure if a non-immutable `@Prop` annotated method is invoked from inside  a `@PostConstruct` annotated method and there is not a `@OnPropChange` annotated method that covers the `@Prop`. This is considered an error as the prop iss used in the `@PostConstruct` method presumably to drive the component behaviour but when the prop changes no changes are made to the component. This invariant can be suppressed by adding a `@SuppressWarnings( "React4j:MutablePropAccessedInPostConstruct" )` annotation to either the `@Prop` annotated method or the containing class. This check is designed in such a way that it is optimized out at compile time.
 * Archive the `react4j-windowportal` library as there is no desire or need to continue supporting it. The library was never completed to a high enough standard to make it worthwhile to continue supporting the library.
+* Start to record a report describing API differences between releases so that they are easier to minimize and track over time. The API differences will be added to the CHANGELOG, the Github Release description and website release notice.
 
 ### [v0.132](https://github.com/react4j/react4j/tree/v0.132) (2019-07-15)
 [Full Changelog](https://github.com/react4j/react4j/compare/v0.131...v0.132)

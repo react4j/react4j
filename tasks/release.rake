@@ -71,12 +71,46 @@ task 'perform_release' do
     stage('PatchChangelog', 'Patch the changelog to update from previous release') do
       changelog = IO.read('CHANGELOG.md')
       from = '0.00' == ENV['PREVIOUS_PRODUCT_VERSION'] ? `git rev-list --max-parents=0 HEAD`.strip : "v#{ENV['PREVIOUS_PRODUCT_VERSION']}"
-      changelog = changelog.gsub("### Unreleased\n", <<HEADER)
+
+      changelog_header = <<HEADER
 ### [v#{ENV['PRODUCT_VERSION']}](https://github.com/react4j/react4j/tree/v#{ENV['PRODUCT_VERSION']}) (#{ENV['RELEASE_DATE']})
 [Full Changelog](https://github.com/react4j/react4j/compare/#{from}...v#{ENV['PRODUCT_VERSION']})
 HEADER
-      IO.write('CHANGELOG.md', changelog)
 
+      api_diff_filename = "#{WORKSPACE_DIR}/api-test/src/test/resources/fixtures/#{ENV['PREVIOUS_PRODUCT_VERSION']}-#{ENV['PRODUCT_VERSION']}.json"
+      if File.exist?(api_diff_filename)
+        changelog_header += <<HEADER
+[API Diff](https://react4j.github.io/api-diff?key=react4j&old=#{ENV['PREVIOUS_PRODUCT_VERSION']}&new=#{ENV['PRODUCT_VERSION']})
+HEADER
+        changes = JSON.parse(IO.read(api_diff_filename))
+        non_breaking_changes = changes.select {|j| j['classification']['SOURCE'] == 'NON_BREAKING'}.size
+        potentially_breaking_changes = changes.select {|j| j['classification']['SOURCE'] == 'POTENTIALLY_BREAKING'}.size
+        breaking_changes = changes.select {|j| j['classification']['SOURCE'] == 'BREAKING'}.size
+        change_descriptions = []
+        change_descriptions << "#{non_breaking_changes} non breaking API change#{1 == non_breaking_changes ? '' : 's'}" unless 0 == non_breaking_changes
+        change_descriptions << "#{potentially_breaking_changes} potentially breaking API change#{1 == potentially_breaking_changes ? '' : 's'}" unless 0 == potentially_breaking_changes
+        change_descriptions << "#{breaking_changes} breaking API change#{1 == breaking_changes ? '' : 's'}" unless 0 == breaking_changes
+
+        if change_descriptions.size > 0
+          description = "The release includes "
+          if 1 == change_descriptions.size
+            description += "#{change_descriptions[0]}"
+          elsif 2 == change_descriptions.size
+            description += "#{change_descriptions[0]} and #{change_descriptions[0]}"
+          else
+            description += "#{change_descriptions[0]}, #{change_descriptions[1]} and #{change_descriptions[2]}"
+          end
+
+          changelog_header += "\n#{description}.\n"
+        end
+      end
+
+      changelog_header += <<CONTENT
+
+Changes in this release:
+CONTENT
+
+      IO.write('CHANGELOG.md', changelog.gsub("### Unreleased\n", changelog_header))
       sh 'git reset 2>&1 1> /dev/null'
       sh 'git add CHANGELOG.md'
       sh 'git commit -m "Update CHANGELOG.md in preparation for release"'
@@ -90,8 +124,7 @@ HEADER
 
       end_index = changelog.index("### [v#{ENV['PREVIOUS_PRODUCT_VERSION']}]", start_index)
 
-      filename = "website/blog/#{ENV['RELEASE_DATE']}-version-#{ENV['PRODUCT_VERSION']}-release.md"
-      IO.write(filename, <<CONTENT)
+      release_description = <<CONTENT
 ---
 title: React4j #{ENV['PRODUCT_VERSION']} released
 author: React4j Project
@@ -99,11 +132,20 @@ authorURL: https://github.com/react4j
 ---
 
 [Full Changelog](https://github.com/react4j/react4j/compare/v#{ENV['PREVIOUS_PRODUCT_VERSION']}...v#{ENV['PRODUCT_VERSION']})
-
-Changes in this release:
+CONTENT
+      api_diff_filename = "#{WORKSPACE_DIR}/api-test/src/test/resources/fixtures/#{ENV['PREVIOUS_PRODUCT_VERSION']}-#{ENV['PRODUCT_VERSION']}.json"
+      if File.exist?(api_diff_filename)
+        release_description += <<HEADER
+[API Diff](https://react4j.github.io/api-diff?key=react4j&old=#{ENV['PREVIOUS_PRODUCT_VERSION']}&new=#{ENV['PRODUCT_VERSION']})
+HEADER
+      end
+      release_description += <<CONTENT
 
 #{changelog[start_index, end_index - start_index].gsub('https://react4j.github.io', '')}
 CONTENT
+
+      filename = "website/blog/#{ENV['RELEASE_DATE']}-version-#{ENV['PRODUCT_VERSION']}-release.md"
+      IO.write(filename, release_description)
       setup_filename = 'docs/project_setup.md'
       IO.write(setup_filename, IO.read(setup_filename).
         gsub("<version>#{ENV['PREVIOUS_PRODUCT_VERSION']}</version>", "<version>#{ENV['PRODUCT_VERSION']}</version>"))

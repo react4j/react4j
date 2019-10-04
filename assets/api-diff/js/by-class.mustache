@@ -1,0 +1,59 @@
+{{#packages}}
+  <div class="row left">
+    <span class="title-package-name">{{packageName}}</span>
+  </div>
+  {{#types}}
+    <div data-role="class" data-max-severity="{{maxSeverity}}" data-className="{{className}}"
+         data-package-name="{{packageName}}">
+      <div class="row left">
+        <span class="title-class-name">{{className}}</span>
+      </div>
+      {{#differences}}
+        <div class="row difference" data-role="difference" data-binary-severity="{{classification.BINARY}}" data-source-severity="{{classification.SOURCE}}"
+             data-semantic-severity="{{classification.SEMANTIC}}" data-max-severity="{{maxSeverity}}" data-old-module="{{oldElementModule}}" data-new-module="{{newElementModule}}">
+          <table width="100%">
+            <tbody>
+            {{#element}}
+              <tr>
+                <th>Element</th>
+                <td class="element">{{{element}}}</td>
+              </tr>
+            {{/element}}
+            {{#oldElement}}
+              <tr>
+                <th>Old Element</th>
+                <td class="element">{{{oldElement}}}</td>
+              </tr>
+            {{/oldElement}}
+            {{#newElement}}
+              <tr>
+                <th>New Element</th>
+                <td class="element">{{{newElement}}}</td>
+              </tr>
+            {{/newElement}}
+            <tr>
+              <th>Description</th>
+              <td width="100%">{{description}}</td>
+            </tr>
+            <tr>
+              <th>Classification</th>
+              <td width="100%">
+                {{#classification.SOURCE}}
+                  <b>Source</b>: {{classification.SOURCE}}
+                {{/classification.SOURCE}}
+                {{#classification.BINARY}}
+                               , <b>Binary</b>: {{classification.BINARY}}
+                {{/classification.BINARY}}
+                {{#classification.SEMANTIC}}
+                               , <b>Semantic</b>: {{classification.SEMANTIC}}
+                {{/classification.SEMANTIC}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <hr>
+        </div>
+      {{/differences}}
+    </div>
+  {{/types}}
+{{/packages}}
