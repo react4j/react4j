@@ -1,0 +1,17 @@
+[
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.SuppressReact4jWarnings",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.SuppressReact4jWarnings",
+      "classSimpleName": "SuppressReact4jWarnings",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  }
+]

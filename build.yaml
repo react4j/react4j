@@ -31,6 +31,8 @@ artifacts:
 
   braincheck: org.realityforge.braincheck:braincheck:jar:1.23.0
 
+  javax_json: org.glassfish:javax.json:jar:1.1
+
   javax_inject: javax.inject:javax.inject:jar:1
   javax_inject_sources: javax.inject:javax.inject:jar:sources:1
 
@@ -63,3 +65,5 @@ artifacts:
   testng: org.testng:testng:jar:6.11
 
   jdepend: guru.nidi:jdepend:jar:2.9.5
+
+  revapi_diff: org.realityforge.revapi.diff:revapi-diff:jar:all:0.08

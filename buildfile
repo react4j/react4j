@@ -90,6 +90,41 @@ define 'react4j' do
     package(:javadoc)
   end
 
+  desc 'Test React4j API'
+  define 'api-test' do
+    test.compile.with :javax_annotation,
+                      :javax_json,
+                      :gir
+
+    test.options[:properties] =
+      {
+        'react4j.api_test.store_api_diff' => ENV['STORE_API_DIFF'] == 'true',
+        'react4j.prev.version' => ENV['PREVIOUS_PRODUCT_VERSION'],
+        'react4j.prev.core.jar' => artifact("org.realityforge.react4j:react4j-core:jar:#{ENV['PREVIOUS_PRODUCT_VERSION'] || project.version}").to_s,
+        'react4j.prev.dom.jar' => artifact("org.realityforge.react4j:react4j-dom:jar:#{ENV['PREVIOUS_PRODUCT_VERSION'] || project.version}").to_s,
+        'react4j.next.version' => ENV['PRODUCT_VERSION'],
+        'react4j.next.core.jar' => project('core').package(:jar).to_s,
+        'react4j.next.dom.jar' => project('dom').package(:jar).to_s,
+        'react4j.api_test.fixture_dir' => _('src/test/resources/fixtures').to_s,
+        'react4j.revapi.jar' => artifact(:revapi_diff).to_s
+      }
+    test.options[:java_args] = ['-ea']
+    test.using :testng
+
+    test.compile.enhance do
+      mkdir_p _('src/test/resources/fixtures')
+      artifact("org.realityforge.react4j:react4j-core:jar:#{ENV['PREVIOUS_PRODUCT_VERSION']}").invoke
+      artifact("org.realityforge.react4j:react4j-dom:jar:#{ENV['PREVIOUS_PRODUCT_VERSION']}").invoke
+      project('core').package(:jar).invoke
+      project('dom').package(:jar).invoke
+      artifact(:revapi_diff).invoke
+    end unless ENV['TEST'] == 'no' || ENV['PRODUCT_VERSION'].nil? || ENV['PREVIOUS_PRODUCT_VERSION'].nil?
+
+    test.exclude '*ApiDiffTest' if ENV['PRODUCT_VERSION'].nil? || ENV['PREVIOUS_PRODUCT_VERSION'].nil?
+
+    project.jacoco.enabled = false
+  end
+
   desc 'The Annotation processor'
   define 'processor' do
     pom.dependency_filter = Proc.new {|_| false}
