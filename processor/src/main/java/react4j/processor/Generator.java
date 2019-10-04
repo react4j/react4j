@@ -725,6 +725,7 @@ final class Generator
     return ctor;
   }
 
+  @Nonnull
   private static FieldSpec.Builder buildPropKeyConstantField( @Nonnull final PropDescriptor descriptor,
                                                               final int index )
   {
