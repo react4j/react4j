@@ -18,6 +18,7 @@ final class Constants
   static final String POST_UPDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PostUpdate";
   static final String POST_MOUNT_ANNOTATION_CLASSNAME = "react4j.annotations.PostMount";
   static final String INJECT_ANNOTATION_CLASSNAME = "javax.inject.Inject";
+  static final String ACT_AS_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ActAsComponent";
   static final String AREZ_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ArezComponent";
   static final String REPOSITORY_ANNOTATION_CLASSNAME = "arez.annotations.Repository";
   static final String COMPONENT_ID_ANNOTATION_CLASSNAME = "arez.annotations.ComponentId";

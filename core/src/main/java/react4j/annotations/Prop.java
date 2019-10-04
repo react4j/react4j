@@ -79,7 +79,7 @@ public @interface Prop
    * prior to rendering. If the value is disposed then the render method will exit early and return null.
    * If this parameter is set to {@link Feature#AUTODETECT} then the annotation processor will inspect the
    * type of the prop and treat it as {@link Feature#ENABLE} if the type is annotated with the {@link ArezComponent}
-   * annotation.
+   * annotation or the {@link arez.annotations.ActAsComponent} annotation.
    *
    * @return an enum indicating whether the component should check whether the value of the prop is disposed prior to rendering.
    */
@@ -96,6 +96,7 @@ public @interface Prop
    * <li>primitive types (i.e. boolean, short etc) and their corresponding boxed types (i.e. {@link java.lang.Boolean}, {@link java.lang.Short} etc).</li>
    * <li>the {@link java.lang.String} type</li>
    * <li>any class that is annotated with {@link ArezComponent} where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
+   * <li>any class or interface that is annotated with {@link arez.annotations.ActAsComponent}. It is assumed that every implementation is an Arez component where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
    * <li>any class that implements {@link Keyed}</li>
    * </ul>
    *
