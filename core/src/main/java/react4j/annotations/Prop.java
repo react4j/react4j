@@ -79,7 +79,7 @@ public @interface Prop
    * prior to rendering. If the value is disposed then the render method will exit early and return null.
    * If this parameter is set to {@link Feature#AUTODETECT} then the annotation processor will inspect the
    * type of the prop and treat it as {@link Feature#ENABLE} if the type is annotated with the {@link ArezComponent}
-   * annotation.
+   * annotation or the {@link arez.annotations.ActAsComponent} annotation.
    *
    * @return an enum indicating whether the component should check whether the value of the prop is disposed prior to rendering.
    */

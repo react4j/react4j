@@ -1309,8 +1309,15 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        return ElementKind.CLASS == propType.getKind() &&
-               ProcessorUtil.hasAnnotationOfType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME );
+        return
+          (
+            ElementKind.CLASS == propType.getKind() &&
+            ProcessorUtil.hasAnnotationOfType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME )
+          ) ||
+          (
+            ( ElementKind.CLASS == propType.getKind() || ElementKind.INTERFACE == propType.getKind() ) &&
+            ProcessorUtil.hasAnnotationOfType( propType, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME )
+          );
     }
   }
 
