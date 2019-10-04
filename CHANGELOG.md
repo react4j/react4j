@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.133](https://github.com/react4j/react4j/tree/v0.133) (2019-10-04) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.132...v0.133) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.132&new=0.133)
+
+The release includes 1 non breaking API change.
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.25.0`.
 * Upgrade the `org.realityforge.javax.annotation` artifact to version `1.0.1`.
