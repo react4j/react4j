@@ -748,6 +748,7 @@ final class Generator
     }
   }
 
+  @Nonnull
   private static MethodSpec.Builder buildPropMethod( @Nonnull final PropDescriptor prop )
   {
     final ExecutableElement methodElement = prop.getMethod();
