@@ -48,6 +48,23 @@ final class ProcessorUtil
   {
   }
 
+  static boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
+  {
+    final SuppressWarnings annotation = element.getAnnotation( SuppressWarnings.class );
+    if ( null != annotation )
+    {
+      for ( final String suppression : annotation.value() )
+      {
+        if ( warning.equals( suppression ) )
+        {
+          return true;
+        }
+      }
+    }
+    final Element enclosingElement = element.getEnclosingElement();
+    return null != enclosingElement && isWarningSuppressed( enclosingElement, warning );
+  }
+
   @Nonnull
   static List<TypeElement> getSuperTypes( @Nonnull final TypeElement element )
   {
