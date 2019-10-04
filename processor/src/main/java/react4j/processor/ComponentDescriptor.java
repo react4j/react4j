@@ -35,6 +35,7 @@ final class ComponentDescriptor
   @Nonnull
   private final ComponentType _type;
   private final boolean _nonConstructorInjections;
+  private final boolean _hasPostConstruct;
   @Nonnull
   private final ExecutableElement _constructor;
   @Nullable
@@ -73,7 +74,8 @@ final class ComponentDescriptor
                        @Nonnull final PackageElement packageElement,
                        @Nonnull final TypeElement element,
                        @Nonnull final ComponentType type,
-                       final boolean nonConstructorInjections )
+                       final boolean nonConstructorInjections,
+                       final boolean hasPostConstruct )
   {
     _elements = Objects.requireNonNull( elements );
     _sourceVersion = Objects.requireNonNull( sourceVersion );
@@ -82,6 +84,7 @@ final class ComponentDescriptor
     _element = Objects.requireNonNull( element );
     _type = Objects.requireNonNull( type );
     _nonConstructorInjections = nonConstructorInjections;
+    _hasPostConstruct = hasPostConstruct;
 
     if ( ElementKind.CLASS != element.getKind() )
     {
@@ -156,6 +159,11 @@ final class ComponentDescriptor
   private boolean hasConstructorParams()
   {
     return !_constructor.getParameters().isEmpty();
+  }
+
+  boolean hasPostConstruct()
+  {
+    return _hasPostConstruct;
   }
 
   @Nonnull

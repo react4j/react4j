@@ -54,6 +54,8 @@ final class Generator
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
   private static final ClassName OBSERVER_REF_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "ObserverRef" );
+  private static final ClassName COMPONENT_STATE_REF_ANNOTATION_CLASSNAME =
+    ClassName.get( "arez.annotations", "ComponentStateRef" );
   private static final ClassName OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
@@ -100,6 +102,7 @@ final class Generator
   private static final String VALIDATE_PROPS_METHOD = FRAMEWORK_INTERNAL_PREFIX + "validatePropValues";
   private static final String COMPONENT_STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
   private static final String COMPONENT_FIELD = FRAMEWORK_INTERNAL_PREFIX + "component";
+  private static final String IS_READY_METHOD = FRAMEWORK_INTERNAL_PREFIX + "isReady";
 
   private Generator()
   {
@@ -613,6 +616,11 @@ final class Generator
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
+    if ( descriptor.getProps().stream().anyMatch( PropDescriptor::needsMutablePropAccessedInPostConstructInvariant ) )
+    {
+      builder.addMethod( buildIsReadyMethod().build() );
+    }
+
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
       builder.addMethod( buildPropMethod( prop ).build() );
@@ -774,6 +782,27 @@ final class Generator
           addMember( "readOutsideTransaction", "true" );
       method.addAnnotation( annotation.build() );
     }
+
+    if ( prop.needsMutablePropAccessedInPostConstructInvariant() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+      block.addStatement( "$T.apiInvariant( () -> $N(), " +
+                          "() -> \"The component '\" + this + \"' accessed the prop named '" + prop.getName() +
+                          "' before the component is ready (possibly in a @PostConstruct annotated method?) and " +
+                          "does not have a @OnPropChange annotated method to cover the prop and reflect changes " +
+                          "of the prop onto the component. This is considered a likely bug and the @Prop should be " +
+                          "made immutable or an @OnPropChange method added to cover the prop. Alternatively this " +
+                          "invariant check can be suppressed by adding @SuppressWarnings( \\\"" +
+                          Constants.MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION + "\\\" ) or " +
+                          "@SuppressReact4jWarnings( \\\"" +
+                          Constants.MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION + "\\\" ) to the method.\" )",
+                          GUARDS_CLASSNAME,
+                          IS_READY_METHOD );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+
     final String convertMethodName = getConverter( returnType, methodElement );
     final TypeKind resultKind = methodElement.getReturnType().getKind();
     if ( !resultKind.isPrimitive() && !ProcessorUtil.isNonnull( methodElement ) )
@@ -1288,6 +1317,15 @@ final class Generator
     outer.endControlFlow();
     method.addCode( outer.build() );
     return method;
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildIsReadyMethod()
+  {
+    return MethodSpec.methodBuilder( IS_READY_METHOD ).
+      addModifiers( Modifier.ABSTRACT ).
+      returns( TypeName.BOOLEAN ).
+      addAnnotation( COMPONENT_STATE_REF_ANNOTATION_CLASSNAME );
   }
 
   @Nonnull
