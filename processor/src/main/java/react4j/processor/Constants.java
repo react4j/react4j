@@ -6,6 +6,7 @@ final class Constants
   static final String ERROR_INFO_CLASSNAME = "react4j.ReactErrorInfo";
   static final String KEYED_CLASSNAME = "react4j.Keyed";
   static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";
+  static final String SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME = "react4j.annotations.SuppressReact4jWarnings";
   static final String PROP_REF_ANNOTATION_CLASSNAME = "react4j.annotations.PropRef";
   static final String PROP_DEFAULT_ANNOTATION_CLASSNAME = "react4j.annotations.PropDefault";
   static final String PROP_VALIDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PropValidate";
@@ -24,6 +25,7 @@ final class Constants
   static final String OBSERVE_ANNOTATION_CLASSNAME = "arez.annotations.Observe";
   static final String MEMOIZE_ANNOTATION_CLASSNAME = "arez.annotations.Memoize";
   static final String PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME = "arez.annotations.PriorityOverride";
+  static final String POST_CONSTRUCT_ANNOTATION_CLASSNAME = "arez.annotations.PostConstruct";
   static final String COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME = "arez.annotations.ComponentDependency";
   static final String CASCADE_DISPOSE_ANNOTATION_CLASSNAME = "arez.annotations.CascadeDispose";
   static final String PER_INSTANCE_ANNOTATION_CLASSNAME = "arez.annotations.PerInstance";
@@ -31,6 +33,8 @@ final class Constants
   static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
   static final String DEPRECATED_ANNOTATION_CLASSNAME = "java.lang.Deprecated";
   static final String JS_ERROR_CLASSNAME = "elemental2.core.JsError";
+
+  static final String MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION = "React4j:MutablePropAccessedInPostConstruct";
 
   private Constants()
   {

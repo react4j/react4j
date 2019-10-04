@@ -272,6 +272,16 @@ public final class ReactProcessor
              .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) );
   }
 
+  /**
+   * Return true if there is any injection points that are not through the constructor.
+   */
+  private boolean hasPostConstruct( @Nonnull final TypeElement typeElement )
+  {
+    return getMethods( typeElement )
+      .stream()
+      .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_ANNOTATION_CLASSNAME ) );
+  }
+
   @Nonnull
   private ComponentDescriptor parse( @Nonnull final TypeElement typeElement )
   {
@@ -279,6 +289,7 @@ public final class ReactProcessor
     final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
     final ComponentType type = extractComponentType( typeElement );
     final boolean nonConstructorInjections = nonConstructorInjections( typeElement );
+    final boolean hasPostConstruct = hasPostConstruct( typeElement );
     final ComponentDescriptor descriptor =
       new ComponentDescriptor( processingEnv.getElementUtils(),
                                processingEnv.getSourceVersion(),
@@ -286,7 +297,8 @@ public final class ReactProcessor
                                packageElement,
                                typeElement,
                                type,
-                               nonConstructorInjections );
+                               nonConstructorInjections,
+                               hasPostConstruct );
 
     determineComponentCapabilities( descriptor, typeElement );
     determineRenderMethod( typeElement, descriptor );
@@ -875,14 +887,23 @@ public final class ReactProcessor
                                          "the @Prop annotation.",
                                          method );
     }
-    return new PropDescriptor( descriptor,
-                               name,
-                               method,
-                               methodType,
-                               shouldUpdateOnChange,
-                               observable,
-                               disposable,
-                               strategy );
+    final PropDescriptor propDescriptor =
+      new PropDescriptor( descriptor,
+                          name,
+                          method,
+                          methodType,
+                          shouldUpdateOnChange,
+                          observable,
+                          disposable,
+                          strategy );
+    if ( propDescriptor.mayNeedMutablePropAccessedInPostConstructInvariant() )
+    {
+      if ( ProcessorUtil.isWarningSuppressed( method, Constants.MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION ) )
+      {
+        propDescriptor.suppressMutablePropAccessedInPostConstruct();
+      }
+    }
+    return propDescriptor;
   }
 
   @Nullable

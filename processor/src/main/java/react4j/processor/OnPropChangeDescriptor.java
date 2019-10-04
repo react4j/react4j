@@ -23,6 +23,7 @@ final class OnPropChangeDescriptor
     _method = Objects.requireNonNull( method );
     _props = Objects.requireNonNull( props );
     _preUpdate = preUpdate;
+    _props.forEach( PropDescriptor::markAsOnChangePresent );
   }
 
   @Nonnull

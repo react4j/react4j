@@ -74,10 +74,6 @@ complete as there is too much un-said.
 
 ### Low Priorities
 
-* If we access a non-immutable prop inside `postConstruct()` and do not have a corresponding `onPropChange` for
-  property then we should generate a invariant failure. To do this we probably need to track access behind a compile
-  time flag so that it is optimized out in production.
-
 * Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
 
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and

@@ -21,6 +21,8 @@ final class PropDescriptor
   private final boolean _shouldUpdateOnChange;
   private final boolean _observable;
   private final boolean _disposable;
+  private boolean _onChangePresent;
+  private boolean _suppressMutablePropAccessedInPostConstruct;
   @Nullable
   private final ImmutablePropKeyStrategy _immutablePropKeyStrategy;
   @Nullable
@@ -89,6 +91,26 @@ final class PropDescriptor
   boolean isImmutable()
   {
     return null != _immutablePropKeyStrategy;
+  }
+
+  void markAsOnChangePresent()
+  {
+    _onChangePresent = true;
+  }
+
+  void suppressMutablePropAccessedInPostConstruct()
+  {
+    _suppressMutablePropAccessedInPostConstruct = true;
+  }
+
+  boolean needsMutablePropAccessedInPostConstructInvariant()
+  {
+    return !_suppressMutablePropAccessedInPostConstruct && mayNeedMutablePropAccessedInPostConstructInvariant();
+  }
+
+  boolean mayNeedMutablePropAccessedInPostConstructInvariant()
+  {
+    return !isImmutable() && !_onChangePresent && _descriptor.hasPostConstruct();
   }
 
   @Nonnull

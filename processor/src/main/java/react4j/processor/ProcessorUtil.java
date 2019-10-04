@@ -48,6 +48,42 @@ final class ProcessorUtil
   {
   }
 
+  @SuppressWarnings( "unchecked" )
+  static boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
+  {
+    final AnnotationMirror suppress =
+      ProcessorUtil.findAnnotationByType( element, Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
+    if ( null != suppress )
+    {
+      final AnnotationValue value = findAnnotationValueNoDefaults( suppress, "value" );
+      if ( null != value )
+      {
+        final List<AnnotationValue> warnings = (List<AnnotationValue>) value.getValue();
+        for ( final AnnotationValue suppression : warnings )
+        {
+          if ( warning.equals( suppression.getValue() ) )
+          {
+            return true;
+          }
+        }
+      }
+    }
+
+    final SuppressWarnings annotation = element.getAnnotation( SuppressWarnings.class );
+    if ( null != annotation )
+    {
+      for ( final String suppression : annotation.value() )
+      {
+        if ( warning.equals( suppression ) )
+        {
+          return true;
+        }
+      }
+    }
+    final Element enclosingElement = element.getEnclosingElement();
+    return null != enclosingElement && isWarningSuppressed( enclosingElement, warning );
+  }
+
   @Nonnull
   static List<TypeElement> getSuperTypes( @Nonnull final TypeElement element )
   {
@@ -299,6 +335,17 @@ final class ProcessorUtil
         filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
       return values.get( annotationKey );
     }
+  }
+
+  @SuppressWarnings( "SameParameterValue" )
+  @Nullable
+  static AnnotationValue findAnnotationValueNoDefaults( @Nonnull final AnnotationMirror annotation,
+                                                        @Nonnull final String parameterName )
+  {
+    final Map<? extends ExecutableElement, ? extends AnnotationValue> values = annotation.getElementValues();
+    final ExecutableElement annotationKey = values.keySet().stream().
+      filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
+    return values.get( annotationKey );
   }
 
   @Nullable
