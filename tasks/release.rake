@@ -121,7 +121,7 @@ CONTENT
 
       end_index = changelog.index("### [v#{ENV['PREVIOUS_PRODUCT_VERSION']}]", start_index)
 
-      release_description = <<CONTENT
+      content = <<CONTENT
 ---
 title: React4j #{ENV['PRODUCT_VERSION']} released
 author: React4j Project
@@ -132,17 +132,17 @@ authorURL: https://github.com/react4j
 CONTENT
       api_diff_filename = "#{WORKSPACE_DIR}/api-test/src/test/resources/fixtures/#{ENV['PREVIOUS_PRODUCT_VERSION']}-#{ENV['PRODUCT_VERSION']}.json"
       if File.exist?(api_diff_filename)
-        release_description += <<HEADER
+        content += <<HEADER
 [API Differences](https://react4j.github.io/api-diff?key=react4j&old=#{ENV['PREVIOUS_PRODUCT_VERSION']}&new=#{ENV['PRODUCT_VERSION']})
 HEADER
       end
-      release_description += <<CONTENT
+      content += <<CONTENT
 
 #{changelog[start_index, end_index - start_index].gsub('https://react4j.github.io', '')}
 CONTENT
 
       filename = "website/blog/#{ENV['RELEASE_DATE']}-version-#{ENV['PRODUCT_VERSION']}-release.md"
-      IO.write(filename, release_description)
+      IO.write(filename, content)
       setup_filename = 'docs/project_setup.md'
       IO.write(setup_filename, IO.read(setup_filename).
         gsub("<version>#{ENV['PREVIOUS_PRODUCT_VERSION']}</version>", "<version>#{ENV['PRODUCT_VERSION']}</version>"))
