@@ -262,7 +262,7 @@ final class ComponentDescriptor
     _hasArezElements = hasArezElements;
   }
 
-  public ComponentType getType()
+  ComponentType getType()
   {
     return _type;
   }
