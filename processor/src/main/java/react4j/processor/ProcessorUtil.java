@@ -318,6 +318,17 @@ final class ProcessorUtil
     }
   }
 
+  @SuppressWarnings( "SameParameterValue" )
+  @Nullable
+  static AnnotationValue findAnnotationValueNoDefaults( @Nonnull final AnnotationMirror annotation,
+                                                        @Nonnull final String parameterName )
+  {
+    final Map<? extends ExecutableElement, ? extends AnnotationValue> values = annotation.getElementValues();
+    final ExecutableElement annotationKey = values.keySet().stream().
+      filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
+    return values.get( annotationKey );
+  }
+
   @Nullable
   static AnnotationMirror findAnnotationByType( @Nonnull final Element typeElement,
                                                 @Nonnull final String annotationClassName )
