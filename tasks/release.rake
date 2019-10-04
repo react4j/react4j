@@ -73,8 +73,7 @@ task 'perform_release' do
       from = '0.00' == ENV['PREVIOUS_PRODUCT_VERSION'] ? `git rev-list --max-parents=0 HEAD`.strip : "v#{ENV['PREVIOUS_PRODUCT_VERSION']}"
 
       changelog_header = <<HEADER
-### [v#{ENV['PRODUCT_VERSION']}](https://github.com/react4j/react4j/tree/v#{ENV['PRODUCT_VERSION']}) (#{ENV['RELEASE_DATE']})
-[Full Changelog](https://github.com/react4j/react4j/compare/#{from}...v#{ENV['PRODUCT_VERSION']})
+### [v#{ENV['PRODUCT_VERSION']}](https://github.com/react4j/react4j/tree/v#{ENV['PRODUCT_VERSION']}) (#{ENV['RELEASE_DATE']}) · [Full Changelog](https://github.com/react4j/react4j/compare/#{from}...v#{ENV['PRODUCT_VERSION']})
 HEADER
 
       api_diff_filename = "#{WORKSPACE_DIR}/api-test/src/test/resources/fixtures/#{ENV['PREVIOUS_PRODUCT_VERSION']}-#{ENV['PRODUCT_VERSION']}.json"
