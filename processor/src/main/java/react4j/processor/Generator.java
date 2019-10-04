@@ -684,6 +684,7 @@ final class Generator
       .addStatement( "return $T.PRIORITY_LOWEST", OBSERVER_FLAGS_CLASSNAME );
   }
 
+  @Nonnull
   private static MethodSpec.Builder buildConstructor( @Nonnull final ComponentDescriptor descriptor )
   {
     final String componentParameterName = FRAMEWORK_INTERNAL_PREFIX + "nativeComponent";
