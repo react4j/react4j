@@ -29,7 +29,7 @@ public final class BuildDownstream
   private static void run()
     throws Exception
   {
-    Gir.go( () -> Stream.of( "react4j-windowportal" )
+    Gir.go( () -> Stream.<String>empty()
       .forEach( name -> WorkspaceUtil.forEachBranch( name,
                                                      "https://github.com/react4j/" + name + ".git",
                                                      Collections.singletonList( "master" ),
