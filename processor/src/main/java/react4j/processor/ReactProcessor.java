@@ -926,6 +926,11 @@ public final class ReactProcessor
       {
         return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
       }
+      else if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
+                ProcessorUtil.hasAnnotationOfType( element, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME ) )
+      {
+        return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
+      }
       else if ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() )
       {
         final TypeElement keyedType = processingEnv.getElementUtils().getTypeElement( Constants.KEYED_CLASSNAME );

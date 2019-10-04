@@ -96,6 +96,7 @@ public @interface Prop
    * <li>primitive types (i.e. boolean, short etc) and their corresponding boxed types (i.e. {@link java.lang.Boolean}, {@link java.lang.Short} etc).</li>
    * <li>the {@link java.lang.String} type</li>
    * <li>any class that is annotated with {@link ArezComponent} where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
+   * <li>any class or interface that is annotated with {@link arez.annotations.ActAsComponent}. It is assumed that every implementation is an Arez component where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
    * <li>any class that implements {@link Keyed}</li>
    * </ul>
    *

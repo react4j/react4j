@@ -12,6 +12,7 @@
 * Archive the `react4j-windowportal` library as there is no desire or need to continue supporting it. The library was never completed to a high enough standard to make it worthwhile to continue supporting the library.
 * Start to record a report describing API differences between releases so that they are easier to minimize and track over time. The API differences will be added to the CHANGELOG, the Github Release description and website release notice.
 * The behaviour of the `@Prop.disposable` parameter when set to `ENABLE` will now default to `ENABLE` if the type of the prop is annotated with the new Arez annotation `@ActAsComponent`.
+* The `@Prop.immutable` parameter can now be set to true if the type of the prop is annotated with the new Arez annotation `@ActAsComponent`.
 
 ### [v0.132](https://github.com/react4j/react4j/tree/v0.132) (2019-07-15) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.131...v0.132)
 
