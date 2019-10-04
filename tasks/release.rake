@@ -72,15 +72,11 @@ task 'perform_release' do
       changelog = IO.read('CHANGELOG.md')
       from = '0.00' == ENV['PREVIOUS_PRODUCT_VERSION'] ? `git rev-list --max-parents=0 HEAD`.strip : "v#{ENV['PREVIOUS_PRODUCT_VERSION']}"
 
-      changelog_header = <<HEADER
-### [v#{ENV['PRODUCT_VERSION']}](https://github.com/react4j/react4j/tree/v#{ENV['PRODUCT_VERSION']}) (#{ENV['RELEASE_DATE']}) · [Full Changelog](https://github.com/react4j/react4j/compare/#{from}...v#{ENV['PRODUCT_VERSION']})
-HEADER
+      changelog_header = "### [v#{ENV['PRODUCT_VERSION']}](https://github.com/react4j/react4j/tree/v#{ENV['PRODUCT_VERSION']}) (#{ENV['RELEASE_DATE']}) · [Full Changelog](https://github.com/react4j/react4j/compare/#{from}...v#{ENV['PRODUCT_VERSION']})"
 
       api_diff_filename = "#{WORKSPACE_DIR}/api-test/src/test/resources/fixtures/#{ENV['PREVIOUS_PRODUCT_VERSION']}-#{ENV['PRODUCT_VERSION']}.json"
       if File.exist?(api_diff_filename)
-        changelog_header += <<HEADER
-[API Differences](https://react4j.github.io/api-diff?key=react4j&old=#{ENV['PREVIOUS_PRODUCT_VERSION']}&new=#{ENV['PRODUCT_VERSION']})
-HEADER
+        changelog_header += " · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=#{ENV['PREVIOUS_PRODUCT_VERSION']}&new=#{ENV['PRODUCT_VERSION']})"
 
         changes = JSON.parse(IO.read(api_diff_filename))
         non_breaking_changes = changes.select {|j| j['classification']['SOURCE'] == 'NON_BREAKING'}.size
@@ -101,9 +97,10 @@ HEADER
             description += "#{change_descriptions[0]}, #{change_descriptions[1]} and #{change_descriptions[2]}"
           end
 
-          changelog_header += "\n#{description}.\n"
+          changelog_header += "\n\n#{description}."
         end
       end
+      changelog_header += "\n"
 
       changelog_header += <<CONTENT
 
