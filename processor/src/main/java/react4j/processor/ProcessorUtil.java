@@ -48,8 +48,27 @@ final class ProcessorUtil
   {
   }
 
+  @SuppressWarnings( "unchecked" )
   static boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
   {
+    final AnnotationMirror suppress =
+      ProcessorUtil.findAnnotationByType( element, Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
+    if ( null != suppress )
+    {
+      final AnnotationValue value = findAnnotationValueNoDefaults( suppress, "value" );
+      if ( null != value )
+      {
+        final List<AnnotationValue> warnings = (List<AnnotationValue>) value.getValue();
+        for ( final AnnotationValue suppression : warnings )
+        {
+          if ( warning.equals( suppression.getValue() ) )
+          {
+            return true;
+          }
+        }
+      }
+    }
+
     final SuppressWarnings annotation = element.getAnnotation( SuppressWarnings.class );
     if ( null != annotation )
     {
