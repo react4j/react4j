@@ -130,8 +130,7 @@ authorURL: https://github.com/react4j
 
 [Full Changelog](https://github.com/react4j/react4j/compare/v#{ENV['PREVIOUS_PRODUCT_VERSION']}...v#{ENV['PRODUCT_VERSION']})
 CONTENT
-      api_diff_filename = "#{WORKSPACE_DIR}/api-test/src/test/resources/fixtures/#{ENV['PREVIOUS_PRODUCT_VERSION']}-#{ENV['PRODUCT_VERSION']}.json"
-      if File.exist?(api_diff_filename)
+      if File.exist?("#{WORKSPACE_DIR}/api-test/src/test/resources/fixtures/#{ENV['PREVIOUS_PRODUCT_VERSION']}-#{ENV['PRODUCT_VERSION']}.json")
         content += <<HEADER
 [API Differences](https://react4j.github.io/api-diff?key=react4j&old=#{ENV['PREVIOUS_PRODUCT_VERSION']}&new=#{ENV['PRODUCT_VERSION']})
 HEADER
