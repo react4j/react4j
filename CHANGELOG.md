@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Upgrade the `org.realityforge.braincheck` artifact to version `1.23.0`.
+* Upgrade the `org.realityforge.braincheck` artifact to version `1.24.0`.
 * Upgrade the `org.realityforge.javax.annotation` artifact to version `1.0.1`.
 * Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `2.25`.
 * Upgrade the `org.realityforge.guiceyloops` artifact to version `0.102`.
