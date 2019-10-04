@@ -14,8 +14,8 @@ to this page.
   renders a React4j element. This project has been archived as there is no desire to continue supporting
   this architecture although it should still be possible.
 * [react-windowportal](https://github.com/react4j/react4j-windowportal) The library provides a portal that
-  renders into a Window.
-  <span style="font-size: smaller">**[API Docs](https://react4j.github.io/windowportal) · [GitHub Project](https://github.com/react4j/react4j-windowportal)**</span>
+  renders into a Window. This project has been archived as the component was not completed to a high enough
+  standard to make continuing support of the project a worthwhile investment.
 
 ### Sample Projects
 

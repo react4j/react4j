@@ -1,6 +1,6 @@
 WORKSPACE_DIR = File.expand_path(File.dirname(__FILE__) + '/..')
 
-DOWNSTREAM_PROJECTS=%w(react4j-windowportal)
+DOWNSTREAM_PROJECTS=%w()
 
 # Project -> [Branch1, Branch2, ...]
 DOWNSTREAM_EXAMPLES =
