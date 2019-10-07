@@ -95,8 +95,6 @@ complete as there is too much un-said.
 
 * build in https://github.com/maicki/why-did-you-update
 
-* Consider renaming `@Prop` to `@Input`
-
 * Add `Observer` react component that is just an arez component that performs change tracking for render prop.
 
 * Howto: Offscreen rendering?
