@@ -22,13 +22,9 @@ public class ReactElement
 {
   @JsProperty( name = "$$typeof" )
   private Object typeof;
-  @Nonnull
   private Object type;
-  @Nullable
   private String key;
-  @Nullable
   private Object ref;
-  @Nonnull
   private JsPropertyMap<Object> props;
   // The component responsible for creating this element.
   // can be null if create happens outside of a render method (i.e. at the top level).
