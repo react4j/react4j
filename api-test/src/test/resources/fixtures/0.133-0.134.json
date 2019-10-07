@@ -1,0 +1,20 @@
+[
+  {
+    "code": "java.method.visibilityReduced",
+    "description": "visibility reduced",
+    "element": "method react4j.ReactElement react4j.ReactElement::createRawElement(java.lang.Object, java.lang.String, java.lang.Object, jsinterop.base.JsPropertyMap<java.lang.Object>)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "createRawElement",
+      "newVisibility": "private",
+      "oldVisibility": "public",
+      "package": "react4j"
+    }
+  }
+]

@@ -89,10 +89,10 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
-  public static ReactElement createRawElement( @Nonnull final Object type,
-                                               @Nullable final String key,
-                                               @Nullable final Object ref,
-                                               @Nonnull final JsPropertyMap<Object> props )
+  private static ReactElement createRawElement( @Nonnull final Object type,
+                                                @Nullable final String key,
+                                                @Nullable final Object ref,
+                                                @Nonnull final JsPropertyMap<Object> props )
   {
     final ReactElement element = create( type );
     element.key = key;
