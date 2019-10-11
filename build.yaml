@@ -60,7 +60,7 @@ artifacts:
 
   javacsv: net.sourceforge.javacsv:javacsv:jar:2.1
 
-  gwt_symbolmap: org.realityforge.gwt.symbolmap:gwt-symbolmap:jar:0.08
+  gwt_symbolmap: org.realityforge.gwt.symbolmap:gwt-symbolmap:jar:0.09
 
   testng: org.testng:testng:jar:6.11
 
