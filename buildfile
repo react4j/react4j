@@ -44,6 +44,7 @@ define 'react4j' do
                  :jsinterop_base,
                  :jsinterop_annotations,
                  :braincheck,
+                 :grim_annotations,
                  :arez_core,
                  :gwt_user,
                  :jetbrains_annotations
