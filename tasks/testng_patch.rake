@@ -44,4 +44,3 @@ class Buildr::TestNG < TestFramework::Java
     end
   end
 end
-
