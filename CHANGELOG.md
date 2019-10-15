@@ -4,6 +4,7 @@
 
 * Upgrade the `org.realityforge.gwt.symbolmap` artifact to version `0.09`.
 * Remove the method `ReactElement.createRawElement(...)` from the public interface by making the method private. The method was never used outside the class.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.148`.
 
 ### [v0.133](https://github.com/react4j/react4j/tree/v0.133) (2019-10-04) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.132...v0.133) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.132&new=0.133)
 
