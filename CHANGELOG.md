@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.134](https://github.com/react4j/react4j/tree/v0.134) (2019-10-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.133...v0.134) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.133&new=0.134)
+
+The release includes 1 breaking API change.
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.grim` artifacts to version `0.03`.
 * Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.1.0`.
