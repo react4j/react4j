@@ -1,7 +1,7 @@
 /**
  * Core React4j API.
  */
-@OmitPattern( symbol = "^\\$clinit$" )
+@OmitPattern( type = "^react4j\\.[^\\.]+$", symbol = "^\\$clinit$" )
 package react4j;
 
 import grim.annotations.OmitPattern;
