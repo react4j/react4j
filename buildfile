@@ -194,8 +194,8 @@ define 'react4j' do
 
     test.options[:properties] =
       {
-        'react4j.prev.core.jar' => artifact("org.realityforge.react4j:react4j-core:jar:#{ENV['PREVIOUS_PRODUCT_VERSION'] || project.version}").to_s,
-        'react4j.prev.dom.jar' => artifact("org.realityforge.react4j:react4j-dom:jar:#{ENV['PREVIOUS_PRODUCT_VERSION'] || project.version}").to_s,
+        'react4j.next.core.jar' => project('core').package(:jar).to_s,
+        'react4j.next.dom.jar' => project('dom').package(:jar).to_s,
         'react4j.current.version' => ENV['PREVIOUS_PRODUCT_VERSION'] || project.version,
         'react4j.next.version' => ENV['PRODUCT_VERSION'] || project.version,
         'react4j.build_j2cl_variants' => (ENV['J2CL'] != 'no'),
