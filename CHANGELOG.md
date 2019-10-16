@@ -2,9 +2,11 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.grim` artifacts to version `0.03`.
+* Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.1.0`.
 * Upgrade the `org.realityforge.gwt.symbolmap` artifact to version `0.09`.
 * Remove the method `ReactElement.createRawElement(...)` from the public interface by making the method private. The method was never used outside the class.
-* Upgrade the `org.realityforge.arez` artifacts to version `0.148`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.150`.
 * Use the `org.realityforge.grim` library to perform validation that output emitted by the GWT compiler has stripped the symbols that are not expected to be present. This involved annotating the symbols in the `core` and `dom` modules that should be omitted in different contexts and removing the `gwt-output-qa` module. The `core` and `dom` modules now ship with the required grim rules/metadata as part of the jar. See the `META-INF/grim/*` files included in the `react4j-core` and `react4j-dom` archives for more details.
 
 ### [v0.133](https://github.com/react4j/react4j/tree/v0.133) (2019-10-04) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.132...v0.133) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.132&new=0.133)
