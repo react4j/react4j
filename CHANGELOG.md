@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.grim` artifacts to version `0.02`.
 * Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.1.0`.
 * Upgrade the `org.realityforge.gwt.symbolmap` artifact to version `0.09`.
 * Remove the method `ReactElement.createRawElement(...)` from the public interface by making the method private. The method was never used outside the class.
