@@ -3,8 +3,8 @@ package react4j;
 import arez.Arez;
 import arez.annotations.ComponentIdRef;
 import arez.annotations.ComponentNameRef;
-import elemental2.core.JsError;
 import elemental2.core.JsObject;
+import grim.annotations.OmitSymbol;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -120,6 +120,7 @@ public abstract class Component
    * This is only done if {@link React#shouldStoreDebugDataAsState()} returns true and is primarily
    * done to make it easy to debug the component from within React DevTools.
    */
+  @OmitSymbol( unless = "react4j.store_debug_data_as_state" )
   protected final void storeDebugDataAsState()
   {
     if ( React.shouldStoreDebugDataAsState() )
@@ -203,6 +204,7 @@ public abstract class Component
    *
    * @param data the property map to populate with debug data.
    */
+  @OmitSymbol( unless = "react4j.store_debug_data_as_state" )
   protected void populateDebugData( @Nonnull final JsPropertyMap<Object> data )
   {
   }

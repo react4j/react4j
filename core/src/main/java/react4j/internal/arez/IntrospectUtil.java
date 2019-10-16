@@ -4,6 +4,7 @@ import arez.Arez;
 import arez.Observer;
 import arez.spy.ObservableValueInfo;
 import arez.spy.ObserverInfo;
+import grim.annotations.OmitType;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,6 +14,7 @@ import jsinterop.base.JsPropertyMap;
 /**
  * Utilities for introspecting the Arez components and runtime.
  */
+@OmitType( unless = "react4j.store_debug_data_as_state" )
 public final class IntrospectUtil
 {
   private IntrospectUtil()

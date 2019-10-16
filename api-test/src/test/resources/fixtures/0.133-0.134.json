@@ -1,5 +1,23 @@
 [
   {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'grim.annotations.OmitType'.",
+    "element": "class react4j.internal.arez.IntrospectUtil",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@grim.annotations.OmitType(unless = \"react4j.store_debug_data_as_state\")",
+      "annotationType": "grim.annotations.OmitType",
+      "classQualifiedName": "react4j.internal.arez.IntrospectUtil",
+      "classSimpleName": "IntrospectUtil",
+      "elementKind": "class",
+      "package": "react4j.internal.arez"
+    }
+  },
+  {
     "code": "java.method.visibilityReduced",
     "description": "visibility reduced",
     "element": "method react4j.ReactElement react4j.ReactElement::createRawElement(java.lang.Object, java.lang.String, java.lang.Object, jsinterop.base.JsPropertyMap<java.lang.Object>)",
@@ -14,6 +32,44 @@
       "methodName": "createRawElement",
       "newVisibility": "private",
       "oldVisibility": "public",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'grim.annotations.OmitSymbol'.",
+    "element": "method void react4j.Component::populateDebugData(jsinterop.base.JsPropertyMap<java.lang.Object>)",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@grim.annotations.OmitSymbol(unless = \"react4j.store_debug_data_as_state\")",
+      "annotationType": "grim.annotations.OmitSymbol",
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "populateDebugData",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'grim.annotations.OmitSymbol'.",
+    "element": "method void react4j.Component::storeDebugDataAsState()",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@grim.annotations.OmitSymbol(unless = \"react4j.store_debug_data_as_state\")",
+      "annotationType": "grim.annotations.OmitSymbol",
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "storeDebugDataAsState",
       "package": "react4j"
     }
   }

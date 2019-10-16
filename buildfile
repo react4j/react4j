@@ -36,6 +36,8 @@ define 'react4j' do
     pom.include_transitive_dependencies << artifact(:braincheck)
     pom.dependency_filter = Proc.new {|dep| dep[:group].to_s != 'com.google.gwt' && dep[:group].to_s != 'com.google.jsinterop' && dep[:scope].to_s != 'test' && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-core') && (dep[:group].to_s != 'org.realityforge.com.google.elemental2' || dep[:id].to_s == 'elemental2-promise') && dep[:group].to_s != 'org.realityforge.org.jetbrains.annotations' && dep[:scope].to_s != 'test'}
 
+    project.processorpath << artifacts(:grim_processor, :javax_json)
+
     js_assets(project, :core)
 
     compile.with :javax_annotation,
@@ -67,6 +69,8 @@ define 'react4j' do
     pom.include_transitive_dependencies << project('core').package(:jar)
     pom.include_transitive_dependencies << artifact(:elemental2_dom)
     pom.dependency_filter = Proc.new {|dep| !project('core').compile.dependencies.include?(dep[:artifact]) && dep[:id].to_s != 'elemental2-promise' && dep[:scope].to_s != 'test'}
+
+    project.processorpath << artifacts(:grim_processor, :javax_json)
 
     js_assets(project, :dom)
 
@@ -183,22 +187,6 @@ define 'react4j' do
     iml.test_source_directories << _('src/test/resources/bad_input')
   end
 
-  desc 'Utilities to output of GWT when compiling React4j applications'
-  define 'gwt-output-qa' do
-    pom.include_transitive_dependencies << artifact(:gwt_symbolmap)
-    pom.dependency_filter = Proc.new {|dep| %w(org.realityforge.gwt.symbolmap).include?(dep[:group].to_s)}
-
-    compile.with :javax_annotation,
-                 :javacsv,
-                 :gwt_symbolmap,
-                 :testng
-    compile.options[:other] = %w(-parameters)
-
-    package(:jar)
-    package(:sources)
-    package(:javadoc)
-  end
-
   desc 'Test React4j in downstream projects'
   define 'downstream-test' do
     compile.with :gir,
@@ -206,6 +194,8 @@ define 'react4j' do
 
     test.options[:properties] =
       {
+        'react4j.prev.core.jar' => artifact("org.realityforge.react4j:react4j-core:jar:#{ENV['PREVIOUS_PRODUCT_VERSION'] || project.version}").to_s,
+        'react4j.prev.dom.jar' => artifact("org.realityforge.react4j:react4j-dom:jar:#{ENV['PREVIOUS_PRODUCT_VERSION'] || project.version}").to_s,
         'react4j.current.version' => ENV['PREVIOUS_PRODUCT_VERSION'] || project.version,
         'react4j.next.version' => ENV['PRODUCT_VERSION'] || project.version,
         'react4j.build_j2cl_variants' => (ENV['J2CL'] != 'no'),
@@ -268,8 +258,12 @@ define 'react4j' do
     test.exclude '*BuildOutputTest' if ENV['BUILD_STATS'] == 'no'
 
     test.using :testng
-    test.compile.with project('gwt-output-qa').package(:jar),
-                      project('gwt-output-qa').compile.dependencies
+    test.compile.with :javax_annotation,
+                      :javacsv,
+                      :grim_asserts,
+                      :javax_json,
+                      :gwt_symbolmap,
+                      :testng
   end
 
   desc 'Examples that are only used to illustrate ideas in documentation'
