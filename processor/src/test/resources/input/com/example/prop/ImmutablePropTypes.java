@@ -3,6 +3,7 @@ package com.example.prop;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Repository;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.Keyed;
@@ -27,6 +28,7 @@ abstract class ImmutablePropTypes
   static class KeyedComponent
     implements Keyed
   {
+    @Nonnull
     @Override
     public String getKey()
     {

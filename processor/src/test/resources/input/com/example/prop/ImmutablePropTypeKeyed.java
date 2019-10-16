@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.Keyed;
@@ -14,6 +15,7 @@ abstract class ImmutablePropTypeKeyed
   static class KeyedComponent
     implements Keyed
   {
+    @Nonnull
     @Override
     public String getKey()
     {
