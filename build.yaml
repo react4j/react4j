@@ -31,7 +31,7 @@ artifacts:
 
   braincheck: org.realityforge.braincheck:braincheck:jar:1.25.0
 
-  grim_annotations: org.realityforge.grim:grim-annotations:jar:0.02
+  grim_annotations: org.realityforge.grim:grim-annotations:jar:0.03
 
   javax_json: org.glassfish:javax.json:jar:1.1
 
