@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 public final class InputType
 {
+  @Nonnull
   public static final String button = "button";
   @Nonnull
   public static final String checkbox = "checkbox";
