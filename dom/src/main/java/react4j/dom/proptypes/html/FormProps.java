@@ -81,17 +81,9 @@ public class FormProps
 
   @JsOverlay
   @Nonnull
-  public final FormProps formTarget( Target t )
+  public final FormProps formTarget( @Nonnull @MagicConstant( valuesFromClass = Target.class ) final String t )
   {
-    setFormTarget( t.name() );
-    return self();
-  }
-
-  @JsOverlay
-  @Nonnull
-  public final FormProps formTarget( String s )
-  {
-    setFormTarget( s );
+    setFormTarget( t );
     return self();
   }
 

@@ -1,21 +1,19 @@
 package react4j.dom.proptypes.html.attributeTypes;
 
-public enum Target
+import javax.annotation.Nonnull;
+
+public final class Target
 {
-  blank( "_blank" ),
-  self( "_self" ),
-  parent( "_parent" ),
-  top( "_top" );
+  @Nonnull
+  public static final String blank = "_blank";
+  @Nonnull
+  public static final String self = "_self";
+  @Nonnull
+  public static final String parent = "_parent";
+  @Nonnull
+  public static final String top = "_top";
 
-  private String val;
-
-  Target( String val )
+  private Target()
   {
-    this.val = val;
-  }
-
-  String getVal()
-  {
-    return val;
   }
 }
