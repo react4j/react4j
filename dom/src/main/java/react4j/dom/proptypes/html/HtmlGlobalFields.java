@@ -9,6 +9,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.intellij.lang.annotations.MagicConstant;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.dom.events.ClipboardEventHandler;
@@ -22,6 +23,7 @@ import react4j.dom.events.ReactEventHandler;
 import react4j.dom.events.TouchEventHandler;
 import react4j.dom.events.UIEventHandler;
 import react4j.dom.events.WheelEventHandler;
+import react4j.dom.proptypes.html.attributeTypes.InputType;
 import react4j.dom.proptypes.html.attributeTypes.YesNo;
 import static org.realityforge.braincheck.Guards.*;
 
@@ -909,7 +911,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getType();
 
   @JsProperty
-  protected native void setType( String type );
+  protected native void setType( @Nonnull @MagicConstant( valuesFromClass = InputType.class ) String type );
 
   @JsProperty
   public native String getTranslate();
