@@ -1,6 +1,15 @@
 package react4j.dom.proptypes.html.attributeTypes;
 
-public enum FormMethod
+import javax.annotation.Nonnull;
+
+public final class FormMethod
 {
-  get, post
+  @Nonnull
+  public static final String get = "get";
+  @Nonnull
+  public static final String post = "post";
+
+  private FormMethod()
+  {
+  }
 }

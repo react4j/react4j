@@ -12,7 +12,7 @@ import react4j.dom.events.FormEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
 import react4j.dom.events.MouseEventHandler;
 import react4j.dom.events.TouchEventHandler;
-import react4j.dom.proptypes.html.attributeTypes.FormMethod;
+import react4j.dom.proptypes.html.attributeTypes.ButtonType;
 import react4j.dom.proptypes.html.attributeTypes.OnOff;
 import react4j.dom.proptypes.html.attributeTypes.Target;
 
@@ -57,9 +57,9 @@ public class FormProps
 
   @JsOverlay
   @Nonnull
-  public final FormProps formMethod( FormMethod s )
+  public final FormProps formMethod( @Nonnull @MagicConstant( valuesFromClass = ButtonType.class ) final String s )
   {
-    setFormMethod( s.name() );
+    setFormMethod( s );
     return self();
   }
 
