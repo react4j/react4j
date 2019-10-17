@@ -48,9 +48,9 @@ public class InputProps
 
   @JsOverlay
   @Nonnull
-  public final InputProps autoComplete( OnOff s )
+  public final InputProps autoComplete( @Nonnull @MagicConstant( valuesFromClass = OnOff.class ) final String s )
   {
-    setAutoComplete( s.name() );
+    setAutoComplete( s );
     return self();
   }
 

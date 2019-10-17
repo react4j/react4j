@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.intellij.lang.annotations.MagicConstant;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.FormEventHandler;
@@ -23,9 +24,9 @@ public class TextAreaProps
 {
   @JsOverlay
   @Nonnull
-  public final TextAreaProps autoComplete( OnOff s )
+  public final TextAreaProps autoComplete( @Nonnull @MagicConstant( valuesFromClass = OnOff.class ) final String s )
   {
-    setAutoComplete( s.name() );
+    setAutoComplete( s );
     return self();
   }
 

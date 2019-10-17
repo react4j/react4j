@@ -1,6 +1,15 @@
 package react4j.dom.proptypes.html.attributeTypes;
 
-public enum OnOff
+import javax.annotation.Nonnull;
+
+public final class OnOff
 {
-  on, off
+  @Nonnull
+  public static final String on = "on";
+  @Nonnull
+  public static final String off = "off";
+
+  private OnOff()
+  {
+  }
 }
