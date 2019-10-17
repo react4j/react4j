@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -23,7 +24,7 @@ public class CssProps
   public native void setAnimationFillMode( String mode );
 
   @JsOverlay
-  public final CssProps animationFillMode( AnimationFillMode mode )
+  public final CssProps animationFillMode( @Nonnull final AnimationFillMode mode )
   {
     setAnimationFillMode( mode.name() );
     return this;
@@ -36,6 +37,7 @@ public class CssProps
   public native void setBackgroundColor( String color );
 
   @JsOverlay
+  @Nonnull
   public final CssProps backgroundColor( String color )
   {
     setBackgroundColor( color );
@@ -49,6 +51,7 @@ public class CssProps
   public native void setBoxFlex( int boxFlex );
 
   @JsOverlay
+  @Nonnull
   public final CssProps boxFlex( int boxFlex )
   {
     setBoxFlex( boxFlex );
@@ -62,6 +65,7 @@ public class CssProps
   public native void setBoxFlexGroup( int boxFlexGroup );
 
   @JsOverlay
+  @Nonnull
   public final CssProps boxFlexGroup( int boxFlexGroup )
   {
     setBoxFlexGroup( boxFlexGroup );
@@ -75,6 +79,7 @@ public class CssProps
   public native void setBottom( String bottom );
 
   @JsOverlay
+  @Nonnull
   public final CssProps bottom( String bottom )
   {
     setBottom( bottom );
@@ -88,6 +93,7 @@ public class CssProps
   public native void setColumnCount( int columnCount );
 
   @JsOverlay
+  @Nonnull
   public final CssProps columnCount( int columnCount )
   {
     setColumnCount( columnCount );
@@ -101,6 +107,7 @@ public class CssProps
   public native void setFlex( int flex );
 
   @JsOverlay
+  @Nonnull
   public final CssProps flex( int flex )
   {
     setFlex( flex );
@@ -114,6 +121,7 @@ public class CssProps
   public native void setFlexGrow( int flexGrow );
 
   @JsOverlay
+  @Nonnull
   public final CssProps flexGrow( int flexGrow )
   {
     setFlexGrow( flexGrow );
@@ -127,6 +135,7 @@ public class CssProps
   public native void setFlexShrink( int flexShrink );
 
   @JsOverlay
+  @Nonnull
   public final CssProps flexShrink( int flexShrink )
   {
     setFlexShrink( flexShrink );
@@ -140,6 +149,7 @@ public class CssProps
   public native void setFontWeight( double fontWeight );
 
   @JsOverlay
+  @Nonnull
   public final CssProps fontWeight( double fontWeight )
   {
     setFontWeight( fontWeight );
@@ -153,6 +163,7 @@ public class CssProps
   public native void setLineClamp( double lineClamp );
 
   @JsOverlay
+  @Nonnull
   public final CssProps lineClamp( double lineClamp )
   {
     setLineClamp( lineClamp );
@@ -166,6 +177,7 @@ public class CssProps
   public native void setLineHeight( String lineHeight );
 
   @JsOverlay
+  @Nonnull
   public final CssProps lineHeight( String lineHeight )
   {
     setLineHeight( lineHeight );
@@ -179,6 +191,7 @@ public class CssProps
   public native void setOpacity( double opacity );
 
   @JsOverlay
+  @Nonnull
   public final CssProps opacity( double opacity )
   {
     setOpacity( opacity );
@@ -192,6 +205,7 @@ public class CssProps
   public native void setOrder( int order );
 
   @JsOverlay
+  @Nonnull
   public final CssProps order( int order )
   {
     setOrder( order );
@@ -205,6 +219,7 @@ public class CssProps
   public native void setOrphans( int orphans );
 
   @JsOverlay
+  @Nonnull
   public final CssProps orphans( int orphans )
   {
     setOrphans( orphans );
@@ -218,6 +233,7 @@ public class CssProps
   public native void setWidows( int widows );
 
   @JsOverlay
+  @Nonnull
   public final CssProps widows( int widows )
   {
     setWidows( widows );
@@ -231,6 +247,7 @@ public class CssProps
   public native void setZIndex( double zIndex );
 
   @JsOverlay
+  @Nonnull
   public final CssProps zIndex( double zIndex )
   {
     setZIndex( zIndex );
@@ -244,6 +261,7 @@ public class CssProps
   public native void setZoom( double zoom );
 
   @JsOverlay
+  @Nonnull
   public final CssProps zoom( double zoom )
   {
     setZoom( zoom );
@@ -257,6 +275,7 @@ public class CssProps
   public native void setFontSize( String fontSize );
 
   @JsOverlay
+  @Nonnull
   public final CssProps fontSize( String fontSize )
   {
     setFontSize( fontSize );
@@ -272,6 +291,7 @@ public class CssProps
   public native void setFillOpacity( double fillOpacity );
 
   @JsOverlay
+  @Nonnull
   public final CssProps fillOpacity( double fillOpacity )
   {
     setFillOpacity( fillOpacity );
@@ -285,6 +305,7 @@ public class CssProps
   public native void setStrokeOpacity( double strokeOpacity );
 
   @JsOverlay
+  @Nonnull
   public final CssProps strokeOpacity( double strokeOpacity )
   {
     setStrokeOpacity( strokeOpacity );
@@ -298,6 +319,7 @@ public class CssProps
   public native void setStrokeWidth( double strokeWidth );
 
   @JsOverlay
+  @Nonnull
   public final CssProps strokeWidth( double strokeWidth )
   {
     setStrokeWidth( strokeWidth );
@@ -315,6 +337,7 @@ public class CssProps
    * cross-axis, similar to how justify-content aligns individual items within the main-axis.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps alignContent( String alignContent )
   {
     setAlignContent( alignContent );
@@ -333,6 +356,7 @@ public class CssProps
    * the main axis.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps alignItems( String alignItems )
   {
     setAlignItems( alignItems );
@@ -349,6 +373,7 @@ public class CssProps
    * Allows the default alignment to be overridden for individual flex items.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps alignSelf( String alignSelf )
   {
     setAlignSelf( alignSelf );
@@ -369,6 +394,7 @@ public class CssProps
    * alignment point for each glyph within a textual element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps alignmentAdjust( String alignmentAdjust )
   {
     setAlignmentAdjust( alignmentAdjust );
@@ -382,6 +408,7 @@ public class CssProps
   public native void setAlignmentBaseline( String alignmentBaseline );
 
   @JsOverlay
+  @Nonnull
   public final CssProps alignmentBaseline( String alignmentBaseline )
   {
     setAlignmentBaseline( alignmentBaseline );
@@ -399,6 +426,7 @@ public class CssProps
    * begin execution some time after it is applied.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps animationDelay( String animationDelay )
   {
     setAnimationDelay( animationDelay );
@@ -415,6 +443,7 @@ public class CssProps
    * Defines whether an animation should run in reverse on some or all cycles.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps animationDirection( String animationDirection )
   {
     setAnimationDirection( animationDirection );
@@ -431,6 +460,7 @@ public class CssProps
    * Specifies how many times an animation cycle should play.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps animationIterationCount( String animationIterationCount )
   {
     setAnimationIterationCount( animationIterationCount );
@@ -447,6 +477,7 @@ public class CssProps
    * Defines the list of animations that apply to the element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps animationName( String animationName )
   {
     setAnimationName( animationName );
@@ -463,6 +494,7 @@ public class CssProps
    * Defines whether an animation is running or paused.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps animationPlayState( String animationPlayState )
   {
     setAnimationPlayState( animationPlayState );
@@ -479,6 +511,7 @@ public class CssProps
    * Allows changing the style of any element to platform-based interface elements or vice versa.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps appearance( String appearance )
   {
     setAppearance( appearance );
@@ -496,6 +529,7 @@ public class CssProps
    * the viewer.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps backfaceVisibility( String backfaceVisibility )
   {
     setBackfaceVisibility( backfaceVisibility );
@@ -517,6 +551,7 @@ public class CssProps
    * values until there are enough.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps backgroundBlendMode( String backgroundBlendMode )
   {
     setBackgroundBlendMode( backgroundBlendMode );
@@ -530,6 +565,7 @@ public class CssProps
   public native void setBackgroundComposite( String backgroundComposite );
 
   @JsOverlay
+  @Nonnull
   public final CssProps backgroundComposite( String backgroundComposite )
   {
     setBackgroundComposite( backgroundComposite );
@@ -547,6 +583,7 @@ public class CssProps
    * including url() paths to image files or CSS gradients.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps backgroundImage( String backgroundImage )
   {
     setBackgroundImage( backgroundImage );
@@ -563,6 +600,7 @@ public class CssProps
    * Specifies what the background-position property is relative to.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps backgroundOrigin( String backgroundOrigin )
   {
     setBackgroundOrigin( backgroundOrigin );
@@ -579,6 +617,7 @@ public class CssProps
    * Sets the horizontal position of a background image.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps backgroundPositionX( String backgroundPositionX )
   {
     setBackgroundPositionX( backgroundPositionX );
@@ -596,6 +635,7 @@ public class CssProps
    * been sized and positioned
    */
   @JsOverlay
+  @Nonnull
   public final CssProps backgroundRepeat( String backgroundRepeat )
   {
     setBackgroundRepeat( backgroundRepeat );
@@ -614,6 +654,7 @@ public class CssProps
    * border-color, or a subset of these.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps border( String border )
   {
     setBorder( border );
@@ -630,6 +671,7 @@ public class CssProps
    * Defines the shape of the border of the bottom-left corner.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderBottomLeftRadius( String borderBottomLeftRadius )
   {
     setBorderBottomLeftRadius( borderBottomLeftRadius );
@@ -646,6 +688,7 @@ public class CssProps
    * Defines the shape of the border of the bottom-right corner.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderBottomRightRadius( String borderBottomRightRadius )
   {
     setBorderBottomRightRadius( borderBottomRightRadius );
@@ -664,6 +707,7 @@ public class CssProps
    * border-right-width, border-bottom-width, and border-left-width.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderBottomWidth( String borderBottomWidth )
   {
     setBorderBottomWidth( borderBottomWidth );
@@ -680,6 +724,7 @@ public class CssProps
    * Border-collapse can be used for collapsing the borders between table cells
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderCollapse( String borderCollapse )
   {
     setBorderCollapse( borderCollapse );
@@ -705,6 +750,7 @@ public class CssProps
    * order.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderColor( String borderColor )
   {
     setBorderColor( borderColor );
@@ -723,6 +769,7 @@ public class CssProps
    * corner effect.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderCornerShape( String borderCornerShape )
   {
     setBorderCornerShape( borderCornerShape );
@@ -740,6 +787,7 @@ public class CssProps
    * style. If this is set to none the border-style is used instead.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderImageSource( String borderImageSource )
   {
     setBorderImageSource( borderImageSource );
@@ -759,6 +807,7 @@ public class CssProps
    * represent inward distance from the top, right, bottom, and left edges.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderImageWidth( String borderImageWidth )
   {
     setBorderImageWidth( borderImageWidth );
@@ -778,6 +827,7 @@ public class CssProps
    * border: border-left-width, border-left-style and border-left-color.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderLeft( String borderLeft )
   {
     setBorderLeft( borderLeft );
@@ -797,6 +847,7 @@ public class CssProps
    * Colors can be defined several ways. For more information, see Usage.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderLeftColor( String borderLeftColor )
   {
     setBorderLeftColor( borderLeftColor );
@@ -815,6 +866,7 @@ public class CssProps
    * border-top-style, border-right-style, border-bottom-style, border-left-style.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderLeftStyle( String borderLeftStyle )
   {
     setBorderLeftStyle( borderLeftStyle );
@@ -833,6 +885,7 @@ public class CssProps
    * border-right-width, border-bottom-width, and border-left-width.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderLeftWidth( String borderLeftWidth )
   {
     setBorderLeftWidth( borderLeftWidth );
@@ -852,6 +905,7 @@ public class CssProps
    * border-right-width, border-right-style and border-right-color.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderRight( String borderRight )
   {
     setBorderRight( borderRight );
@@ -871,6 +925,7 @@ public class CssProps
    * Colors can be defined several ways. For more information, see Usage.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderRightColor( String borderRightColor )
   {
     setBorderRightColor( borderRightColor );
@@ -889,6 +944,7 @@ public class CssProps
    * border-top-style, border-right-style, border-bottom-style, border-left-style.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderRightStyle( String borderRightStyle )
   {
     setBorderRightStyle( borderRightStyle );
@@ -907,6 +963,7 @@ public class CssProps
    * border-top-width, border-right-width, border-bottom-width, and border-left-width.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderRightWidth( String borderRightWidth )
   {
     setBorderRightWidth( borderRightWidth );
@@ -923,6 +980,7 @@ public class CssProps
    * Specifies the distance between the borders of adjacent cells.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderSpacing( String borderSpacing )
   {
     setBorderSpacing( borderSpacing );
@@ -942,6 +1000,7 @@ public class CssProps
    * border-bottom-style, border-left-style, where each border style may be assigned a separate value.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderStyle( String borderStyle )
   {
     setBorderStyle( borderStyle );
@@ -961,6 +1020,7 @@ public class CssProps
    * border-top-width, border-top-style and border-top-color.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderTop( String borderTop )
   {
     setBorderTop( borderTop );
@@ -980,6 +1040,7 @@ public class CssProps
    * Colors can be defined several ways. For more information, see Usage.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderTopColor( String borderTopColor )
   {
     setBorderTopColor( borderTopColor );
@@ -996,6 +1057,7 @@ public class CssProps
    * Sets the rounding of the top-left corner of the element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderTopLeftRadius( String borderTopLeftRadius )
   {
     setBorderTopLeftRadius( borderTopLeftRadius );
@@ -1012,6 +1074,7 @@ public class CssProps
    * Sets the rounding of the top-right corner of the element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderTopRightRadius( String borderTopRightRadius )
   {
     setBorderTopRightRadius( borderTopRightRadius );
@@ -1030,6 +1093,7 @@ public class CssProps
    * border-top-style, border-right-style, border-bottom-style, border-left-style.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderTopStyle( String borderTopStyle )
   {
     setBorderTopStyle( borderTopStyle );
@@ -1048,6 +1112,7 @@ public class CssProps
    * border-top-style, border-right-style, border-bottom-style, border-left-style.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderTopWidth( String borderTopWidth )
   {
     setBorderTopWidth( borderTopWidth );
@@ -1066,6 +1131,7 @@ public class CssProps
    * border-right-width, border-bottom-width, and border-left-width.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps borderWidth( String borderWidth )
   {
     setBorderWidth( borderWidth );
@@ -1084,6 +1150,7 @@ public class CssProps
    * line break.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps boxDecorationBreak( String boxDecorationBreak )
   {
     setBoxDecorationBreak( boxDecorationBreak );
@@ -1102,6 +1169,7 @@ public class CssProps
    * the value of box-lines is set to multiple.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps boxLineProgression( String boxLineProgression )
   {
     setBoxLineProgression( boxLineProgression );
@@ -1120,6 +1188,7 @@ public class CssProps
    * columns based on the space available in the object.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps boxLines( String boxLines )
   {
     setBoxLines( boxLines );
@@ -1139,6 +1208,7 @@ public class CssProps
    * for the group.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps boxOrdinalGroup( String boxOrdinalGroup )
   {
     setBoxOrdinalGroup( boxOrdinalGroup );
@@ -1159,6 +1229,7 @@ public class CssProps
    * If there is no generated box, the property is ignored.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps breakAfter( String breakAfter )
   {
     setBreakAfter( breakAfter );
@@ -1175,6 +1246,7 @@ public class CssProps
    * Control page/column/region breaks that fall above a block of content
    */
   @JsOverlay
+  @Nonnull
   public final CssProps breakBefore( String breakBefore )
   {
     setBreakBefore( breakBefore );
@@ -1191,6 +1263,7 @@ public class CssProps
    * Control page/column/region breaks that fall within a block of content
    */
   @JsOverlay
+  @Nonnull
   public final CssProps breakInside( String breakInside )
   {
     setBreakInside( breakInside );
@@ -1208,6 +1281,7 @@ public class CssProps
    * positioned below the floating elements that precede it in the markup.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps clear( String clear )
   {
     setClear( clear );
@@ -1226,6 +1300,7 @@ public class CssProps
    * or algorithm, to use when filling the different parts of a graphics.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps clipRule( String clipRule )
   {
     setClipRule( clipRule );
@@ -1243,6 +1318,7 @@ public class CssProps
    * accepting any standard CSS color from keywords and hex values to RGB(a) and HSL(a).
    */
   @JsOverlay
+  @Nonnull
   public final CssProps color( String color )
   {
     this.setColor( color );
@@ -1259,6 +1335,7 @@ public class CssProps
    * Specifies how to fill columns (balanced or sequential).
    */
   @JsOverlay
+  @Nonnull
   public final CssProps columnFill( String columnFill )
   {
     setColumnFill( columnFill );
@@ -1276,6 +1353,7 @@ public class CssProps
    * elements.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps columnGap( String columnGap )
   {
     setColumnGap( columnGap );
@@ -1292,6 +1370,7 @@ public class CssProps
    * Sets the width, style, and color of the rule between columns.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps columnRule( String columnRule )
   {
     setColumnRule( columnRule );
@@ -1308,6 +1387,7 @@ public class CssProps
    * Specifies the color of the rule between columns.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps columnRuleColor( String columnRuleColor )
   {
     setColumnRuleColor( columnRuleColor );
@@ -1324,6 +1404,7 @@ public class CssProps
    * Specifies the width of the rule between columns.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps columnRuleWidth( String columnRuleWidth )
   {
     setColumnRuleWidth( columnRuleWidth );
@@ -1342,6 +1423,7 @@ public class CssProps
    * spanning element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps columnSpan( String columnSpan )
   {
     setColumnSpan( columnSpan );
@@ -1358,6 +1440,7 @@ public class CssProps
    * Specifies the width of columns in multi-column elements.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps columnWidth( String columnWidth )
   {
     setColumnWidth( columnWidth );
@@ -1374,6 +1457,7 @@ public class CssProps
    * This property is a shorthand property for setting column-width and/or column-count.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps columns( String columns )
   {
     setColumns( columns );
@@ -1393,6 +1477,7 @@ public class CssProps
    * invoked).
    */
   @JsOverlay
+  @Nonnull
   public final CssProps counterIncrement( String counterIncrement )
   {
     setCounterIncrement( counterIncrement );
@@ -1412,6 +1497,7 @@ public class CssProps
    * integer.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps counterReset( String counterReset )
   {
     setCounterReset( counterReset );
@@ -1432,6 +1518,7 @@ public class CssProps
    * The icon files may also be set separately with the cue-before and cue-after properties.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps cue( String cue )
   {
     setCue( cue );
@@ -1451,6 +1538,7 @@ public class CssProps
    * for both before and after the element is presented.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps cueAfter( String cueAfter )
   {
     setCueAfter( cueAfter );
@@ -1468,6 +1556,7 @@ public class CssProps
    * used for Hebrew or Arabic text, the ltr is for other languages.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps direction( String direction )
   {
     setDirection( direction );
@@ -1485,6 +1574,7 @@ public class CssProps
    * property for many other display properties.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps display( String display )
   {
     setDisplay( display );
@@ -1505,6 +1595,7 @@ public class CssProps
    * geometric outline of a shape is included in the area to be painted.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fill( String fill )
   {
     setFill( fill );
@@ -1526,6 +1617,7 @@ public class CssProps
    * The "fill-rule" property provides two options for how the inside of a shape is determined:
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fillRule( String fillRule )
   {
     setFillRule( fillRule );
@@ -1543,6 +1635,7 @@ public class CssProps
    * Compatibility section for more information.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps filter( String filter )
   {
     setFilter( filter );
@@ -1561,6 +1654,7 @@ public class CssProps
    * (flex-grow and flex-shrink).
    */
   @JsOverlay
+  @Nonnull
   public final CssProps flexBasis( String flexBasis )
   {
     setFlexBasis( flexBasis );
@@ -1578,6 +1672,7 @@ public class CssProps
    * by setting the direction of the flex container's main axis.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps flexDirection( String flexDirection )
   {
     setFlexDirection( flexDirection );
@@ -1595,6 +1690,7 @@ public class CssProps
    * shorthand property for the flex-direction and flex-wrap properties.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps flexFlow( String flexFlow )
   {
     setFlexFlow( flexFlow );
@@ -1613,6 +1709,7 @@ public class CssProps
    * of child elements of the object.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps flexItemAlign( String flexItemAlign )
   {
     setFlexItemAlign( flexItemAlign );
@@ -1630,6 +1727,7 @@ public class CssProps
    * This ordinal value identifies the display order for the group.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps flexOrder( String flexOrder )
   {
     setFlexOrder( flexOrder );
@@ -1650,6 +1748,7 @@ public class CssProps
    * as long as there is room.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps cssFloat( String cssFloat )
   {
     setCssFloat( cssFloat );
@@ -1667,6 +1766,7 @@ public class CssProps
    * elements to form a dynamic chain of layout regions.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps flowFrom( String flowFrom )
   {
     setFlowFrom( flowFrom );
@@ -1685,6 +1785,7 @@ public class CssProps
    * keywords to adopt a system font setting.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps font( String font )
   {
     setFont( font );
@@ -1704,6 +1805,7 @@ public class CssProps
    * available glyph for that character.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fontFamily( String fontFamily )
   {
     setFontFamily( fontFamily );
@@ -1723,6 +1825,7 @@ public class CssProps
    * yet.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fontKerning( String fontKerning )
   {
     setFontKerning( fontKerning );
@@ -1741,6 +1844,7 @@ public class CssProps
    * the readability of the text when fallback happens.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fontSizeAdjust( String fontSizeAdjust )
   {
     setFontSizeAdjust( fontSizeAdjust );
@@ -1757,6 +1861,7 @@ public class CssProps
    * Allows you to expand or condense the widths for a normal, condensed, or expanded font face.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fontStretch( String fontStretch )
   {
     setFontStretch( fontStretch );
@@ -1776,6 +1881,7 @@ public class CssProps
    * of the regular face.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fontStyle( String fontStyle )
   {
     setFontStyle( fontStyle );
@@ -1793,6 +1899,7 @@ public class CssProps
    * faces when a font family lacks bold or italic faces.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fontSynthesis( String fontSynthesis )
   {
     setFontSynthesis( fontSynthesis );
@@ -1809,6 +1916,7 @@ public class CssProps
    * The font-variant property enables you to select the small-caps font within a font family.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fontVariant( String fontVariant )
   {
     setFontVariant( fontVariant );
@@ -1826,6 +1934,7 @@ public class CssProps
    * property provides control over the selection of these alternate glyphs.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps fontVariantAlternates( String fontVariantAlternates )
   {
     setFontVariantAlternates( fontVariantAlternates );
@@ -1844,6 +1953,7 @@ public class CssProps
    * declaration.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridArea( String gridArea )
   {
     setGridArea( gridArea );
@@ -1861,6 +1971,7 @@ public class CssProps
    * Shorthand for setting grid-column-start and grid-column-end in a single declaration.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridColumn( String gridColumn )
   {
     setGridColumn( gridColumn );
@@ -1879,6 +1990,7 @@ public class CssProps
    * determines a grid item's placement by specifying the grid lines of a grid item's grid area.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridColumnEnd( String gridColumnEnd )
   {
     setGridColumnEnd( gridColumnEnd );
@@ -1897,6 +2009,7 @@ public class CssProps
    * span. See also ( grid-row-start, grid-row-end, and grid-column-end)
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridColumnStart( String gridColumnStart )
   {
     setGridColumnStart( gridColumnStart );
@@ -1914,6 +2027,7 @@ public class CssProps
    * Shorthand for setting grid-row-start and grid-row-end in a single declaration.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridRow( String gridRow )
   {
     setGridRow( gridRow );
@@ -1933,6 +2047,7 @@ public class CssProps
    * placement by specifying the grid lines of a grid item's grid area.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridRowEnd( String gridRowEnd )
   {
     setGridRowEnd( gridRowEnd );
@@ -1950,6 +2065,7 @@ public class CssProps
    * css/properties/grid-row is used as short-hand for grid-row-position and grid-row-position
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridRowPosition( String gridRowPosition )
   {
     setGridRowPosition( gridRowPosition );
@@ -1963,6 +2079,7 @@ public class CssProps
   public native void setGridRowSpan( String gridRowSpan );
 
   @JsOverlay
+  @Nonnull
   public final CssProps gridRowSpan( String gridRowSpan )
   {
     setGridRowSpan( gridRowSpan );
@@ -1982,6 +2099,7 @@ public class CssProps
    * layout of the grid container easier to understand.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridTemplateAreas( String gridTemplateAreas )
   {
     setGridTemplateAreas( gridTemplateAreas );
@@ -2001,6 +2119,7 @@ public class CssProps
    * space in the grid.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridTemplateColumns( String gridTemplateColumns )
   {
     setGridTemplateColumns( gridTemplateColumns );
@@ -2020,6 +2139,7 @@ public class CssProps
    * fraction of the free space in the grid.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps gridTemplateRows( String gridTemplateRows )
   {
     setGridTemplateRows( gridTemplateRows );
@@ -2037,6 +2157,7 @@ public class CssProps
    * the padding, border, and margin of the element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps height( String height )
   {
     setHeight( height );
@@ -2053,6 +2174,7 @@ public class CssProps
    * Specifies the minimum number of characters in a hyphenated word
    */
   @JsOverlay
+  @Nonnull
   public final CssProps hyphenateLimitChars( String hyphenateLimitChars )
   {
     setHyphenateLimitChars( hyphenateLimitChars );
@@ -2070,6 +2192,7 @@ public class CssProps
    * value means that there is no limit.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps hyphenateLimitLines( String hyphenateLimitLines )
   {
     setHyphenateLimitLines( hyphenateLimitLines );
@@ -2088,6 +2211,7 @@ public class CssProps
    * line back up into the current one.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps hyphenateLimitZone( String hyphenateLimitZone )
   {
     setHyphenateLimitZone( hyphenateLimitZone );
@@ -2105,6 +2229,7 @@ public class CssProps
    * automatic hyphenation mechanism.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps hyphens( String hyphens )
   {
     setHyphens( hyphens );
@@ -2118,6 +2243,7 @@ public class CssProps
   public native void setImeMode( String imeMode );
 
   @JsOverlay
+  @Nonnull
   public final CssProps imeMode( String imeMode )
   {
     setImeMode( imeMode );
@@ -2131,6 +2257,7 @@ public class CssProps
   public native void setLayoutGrid( String layoutGrid );
 
   @JsOverlay
+  @Nonnull
   public final CssProps layoutGrid( String layoutGrid )
   {
     setLayoutGrid( layoutGrid );
@@ -2144,6 +2271,7 @@ public class CssProps
   public native void setLayoutGridChar( String layoutGridChar );
 
   @JsOverlay
+  @Nonnull
   public final CssProps layoutGridChar( String layoutGridChar )
   {
     setLayoutGridChar( layoutGridChar );
@@ -2157,6 +2285,7 @@ public class CssProps
   public native void setLayoutGridLine( String layoutGridLine );
 
   @JsOverlay
+  @Nonnull
   public final CssProps layoutGridLine( String layoutGridLine )
   {
     setLayoutGridLine( layoutGridLine );
@@ -2170,6 +2299,7 @@ public class CssProps
   public native void setLayoutGridMode( String layoutGridMode );
 
   @JsOverlay
+  @Nonnull
   public final CssProps layoutGridMode( String layoutGridMode )
   {
     setLayoutGridMode( layoutGridMode );
@@ -2183,6 +2313,7 @@ public class CssProps
   public native void setLayoutGridType( String layoutGridType );
 
   @JsOverlay
+  @Nonnull
   public final CssProps layoutGridType( String layoutGridType )
   {
     setLayoutGridType( layoutGridType );
@@ -2199,6 +2330,7 @@ public class CssProps
    * Sets the left edge of an element
    */
   @JsOverlay
+  @Nonnull
   public final CssProps left( String left )
   {
     setLeft( left );
@@ -2215,6 +2347,7 @@ public class CssProps
    * The letter-spacing CSS property specifies the spacing behavior between text characters.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps letterSpacing( String letterSpacing )
   {
     setLetterSpacing( letterSpacing );
@@ -2232,6 +2365,7 @@ public class CssProps
    * properties in one declaration.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps listStyle( String listStyle )
   {
     setListStyle( listStyle );
@@ -2251,6 +2385,7 @@ public class CssProps
    * list-style-property
    */
   @JsOverlay
+  @Nonnull
   public final CssProps listStyleImage( String listStyleImage )
   {
     setListStyleImage( listStyleImage );
@@ -2267,6 +2402,7 @@ public class CssProps
    * Specifies if the list-item markers should appear inside or outside the content flow.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps listStylePosition( String listStylePosition )
   {
     setListStylePosition( listStylePosition );
@@ -2283,6 +2419,7 @@ public class CssProps
    * Specifies the type of list-item marker in a list.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps listStyleType( String listStyleType )
   {
     setListStyleType( listStyleType );
@@ -2301,6 +2438,7 @@ public class CssProps
    * margin-left. Negative values are also allowed.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps margin( String margin )
   {
     setMargin( margin );
@@ -2317,6 +2455,7 @@ public class CssProps
    * margin-bottom sets the bottom margin of an element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps marginBottom( String marginBottom )
   {
     setMarginBottom( marginBottom );
@@ -2333,6 +2472,7 @@ public class CssProps
    * margin-left sets the left margin of an element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps marginLeft( String marginLeft )
   {
     setMarginLeft( marginLeft );
@@ -2349,6 +2489,7 @@ public class CssProps
    * margin-right sets the right margin of an element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps marginRight( String marginRight )
   {
     setMarginRight( marginRight );
@@ -2365,6 +2506,7 @@ public class CssProps
    * margin-top sets the top margin of an element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps marginTop( String marginTop )
   {
     setMarginTop( marginTop );
@@ -2383,6 +2525,7 @@ public class CssProps
    * original properties' initial values.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps mask( String mask )
   {
     setMask( mask );
@@ -2401,6 +2544,7 @@ public class CssProps
    * their original properties' initial values.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maskBorder( String maskBorder )
   {
     setMaskBorder( maskBorder );
@@ -2420,6 +2564,7 @@ public class CssProps
    * same as the first, similar to the CSS border-image-repeat property.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maskBorderRepeat( String maskBorderRepeat )
   {
     setMaskBorderRepeat( maskBorderRepeat );
@@ -2440,6 +2585,7 @@ public class CssProps
    * order, similar to the CSS border-image-slice property.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maskBorderSlice( String maskBorderSlice )
   {
     setMaskBorderSlice( maskBorderSlice );
@@ -2457,6 +2603,7 @@ public class CssProps
    * non-existent, or cannot be displayed is ignored and does not mask the element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maskBorderSource( String maskBorderSource )
   {
     setMaskBorderSource( maskBorderSource );
@@ -2474,6 +2621,7 @@ public class CssProps
    * property.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maskBorderWidth( String maskBorderWidth )
   {
     setMaskBorderWidth( maskBorderWidth );
@@ -2491,6 +2639,7 @@ public class CssProps
    * The painted content of an element may be restricted to this area.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maskClip( String maskClip )
   {
     setMaskClip( maskClip );
@@ -2510,6 +2659,7 @@ public class CssProps
    * area(s).
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maskOrigin( String maskOrigin )
   {
     setMaskOrigin( maskOrigin );
@@ -2529,6 +2679,7 @@ public class CssProps
    * fit line content.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maxFontSize( String maxFontSize )
   {
     setMaxFontSize( maxFontSize );
@@ -2547,6 +2698,7 @@ public class CssProps
    * is overridden.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maxHeight( String maxHeight )
   {
     setMaxHeight( maxHeight );
@@ -2564,6 +2716,7 @@ public class CssProps
    * value specified in max-width.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps maxWidth( String maxWidth )
   {
     setMaxWidth( maxWidth );
@@ -2582,6 +2735,7 @@ public class CssProps
    * height.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps minHeight( String minHeight )
   {
     setMinHeight( minHeight );
@@ -2599,6 +2753,7 @@ public class CssProps
    * than the value specified in min-width.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps minWidth( String minWidth )
   {
     setMinWidth( minWidth );
@@ -2623,6 +2778,7 @@ public class CssProps
    * non-rectangular shape around a construct.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps outline( String outline )
   {
     setOutline( outline );
@@ -2640,6 +2796,7 @@ public class CssProps
    * line that is drawn around elements, outside the border edge, to make the element stand out.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps outlineColor( String outlineColor )
   {
     setOutlineColor( outlineColor );
@@ -2656,6 +2813,7 @@ public class CssProps
    * The outline-offset property offsets the outline and draw it beyond the border edge.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps outlineOffset( String outlineOffset )
   {
     setOutlineOffset( outlineOffset );
@@ -2674,6 +2832,7 @@ public class CssProps
    * height, to eliminate text-induced page distortion.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps overflow( String overflow )
   {
     setOverflow( overflow );
@@ -2690,6 +2849,7 @@ public class CssProps
    * Specifies the preferred scrolling methods for elements that overflow.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps overflowStyle( String overflowStyle )
   {
     setOverflowStyle( overflowStyle );
@@ -2707,6 +2867,7 @@ public class CssProps
    * how extra content exceeding the x-axis of the bounding box of an element is rendered.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps overflowX( String overflowX )
   {
     setOverflowX( overflowX );
@@ -2728,6 +2889,7 @@ public class CssProps
    * padding-right, padding-bottom, padding-left).
    */
   @JsOverlay
+  @Nonnull
   public final CssProps padding( String padding )
   {
     setPadding( padding );
@@ -2747,6 +2909,7 @@ public class CssProps
    * invalid.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps paddingBottom( String paddingBottom )
   {
     setPaddingBottom( paddingBottom );
@@ -2765,6 +2928,7 @@ public class CssProps
    * its border. Contrary to margin-left values, negative values of padding-left are invalid.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps paddingLeft( String paddingLeft )
   {
     setPaddingLeft( paddingLeft );
@@ -2783,6 +2947,7 @@ public class CssProps
    * its border. Contrary to margin-right values, negative values of padding-right are invalid.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps paddingRight( String paddingRight )
   {
     setPaddingRight( paddingRight );
@@ -2801,6 +2966,7 @@ public class CssProps
    * border. Contrary to margin-top values, negative values of padding-top are invalid.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps paddingTop( String paddingTop )
   {
     setPaddingTop( paddingTop );
@@ -2819,6 +2985,7 @@ public class CssProps
    * breaks for all CSS box fragmentation.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps pageBreakAfter( String pageBreakAfter )
   {
     setPageBreakAfter( pageBreakAfter );
@@ -2837,6 +3004,7 @@ public class CssProps
    * breaks for all CSS box fragmentation.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps pageBreakBefore( String pageBreakBefore )
   {
     setPageBreakBefore( pageBreakBefore );
@@ -2855,6 +3023,7 @@ public class CssProps
    * for all CSS box fragmentation.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps pageBreakInside( String pageBreakInside )
   {
     setPageBreakInside( pageBreakInside );
@@ -2872,6 +3041,7 @@ public class CssProps
    * presenting an element. It is a shorthand for the pause-before and pause-after properties.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps pause( String pause )
   {
     setPause( pause );
@@ -2890,6 +3060,7 @@ public class CssProps
    * pause time before and after.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps pauseAfter( String pauseAfter )
   {
     setPauseAfter( pauseAfter );
@@ -2908,6 +3079,7 @@ public class CssProps
    * pause time before and after.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps pauseBefore( String pauseBefore )
   {
     setPauseBefore( pauseBefore );
@@ -2935,6 +3107,7 @@ public class CssProps
    * virtual environments, this flat surface is called a projection plane.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps perspective( String perspective )
   {
     setPerspective( perspective );
@@ -2964,6 +3137,7 @@ public class CssProps
    * toward the bottom right angle.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps perspectiveOrigin( String perspectiveOrigin )
   {
     setPerspectiveOrigin( perspectiveOrigin );
@@ -2981,6 +3155,7 @@ public class CssProps
    * for the pointing device (e.g, mouse, pen) events.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps pointerEvents( String pointerEvents )
   {
     setPointerEvents( pointerEvents );
@@ -2999,6 +3174,7 @@ public class CssProps
    * example the position property of parent elements.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps position( String position )
   {
     setPosition( position );
@@ -3015,6 +3191,7 @@ public class CssProps
    * Sets the type of quotation marks for embedded quotations.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps quotes( String quotes )
   {
     setQuotes( quotes );
@@ -3033,6 +3210,7 @@ public class CssProps
    * if it were flowing into a subsequent region.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps regionFragment( String regionFragment )
   {
     setRegionFragment( regionFragment );
@@ -3051,6 +3229,7 @@ public class CssProps
    * It may be replaced by the shorthand property rest, which sets rest time before and after.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps restAfter( String restAfter )
   {
     setRestAfter( restAfter );
@@ -3070,6 +3249,7 @@ public class CssProps
    * and after.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps restBefore( String restBefore )
   {
     setRestBefore( restBefore );
@@ -3086,6 +3266,7 @@ public class CssProps
    * Specifies the position an element in relation to the right side of the containing element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps right( String right )
   {
     setRight( right );
@@ -3099,6 +3280,7 @@ public class CssProps
   public native void setRubyAlign( String rubyAlign );
 
   @JsOverlay
+  @Nonnull
   public final CssProps rubyAlign( String rubyAlign )
   {
     setRubyAlign( rubyAlign );
@@ -3112,6 +3294,7 @@ public class CssProps
   public native void setRubyPosition( String rubyPosition );
 
   @JsOverlay
+  @Nonnull
   public final CssProps rubyPosition( String rubyPosition )
   {
     setRubyPosition( rubyPosition );
@@ -3130,6 +3313,7 @@ public class CssProps
    * enclose all the pixels that are more than 50% opaque.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps shapeImageThreshold( String shapeImageThreshold )
   {
     setShapeImageThreshold( shapeImageThreshold );
@@ -3147,6 +3331,7 @@ public class CssProps
    * shape to wrap content within the element. See Editor's Draft
    */
   @JsOverlay
+  @Nonnull
   public final CssProps shapeInside( String shapeInside )
   {
     setShapeInside( shapeInside );
@@ -3168,6 +3353,7 @@ public class CssProps
    * non-negative values.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps shapeMargin( String shapeMargin )
   {
     setShapeMargin( shapeMargin );
@@ -3186,6 +3372,7 @@ public class CssProps
    * changes the geometry of a float element's float area.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps shapeOutside( String shapeOutside )
   {
     setShapeOutside( shapeOutside );
@@ -3203,6 +3390,7 @@ public class CssProps
    * the contents of an element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps speak( String speak )
   {
     setSpeak( speak );
@@ -3221,6 +3409,7 @@ public class CssProps
    * sequence of digits, punctuation as pauses in speech or named punctuation characters.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps speakAs( String speakAs )
   {
     setSpeakAs( speakAs );
@@ -3237,6 +3426,7 @@ public class CssProps
    * The tab-size CSS property is used to customise the width of a tab (U+0009) character.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps tabSize( String tabSize )
   {
     setTabSize( tabSize );
@@ -3254,6 +3444,7 @@ public class CssProps
    * rows, and columns.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps tableLayout( String tableLayout )
   {
     setTableLayout( tableLayout );
@@ -3272,6 +3463,7 @@ public class CssProps
    * elements itself, only their inline content.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textAlign( String textAlign )
   {
     setTextAlign( textAlign );
@@ -3289,6 +3481,7 @@ public class CssProps
    * a line before line break is aligned in its parent block element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textAlignLast( String textAlignLast )
   {
     setTextAlignLast( textAlignLast );
@@ -3308,6 +3501,7 @@ public class CssProps
    * underline and overline decorations are positioned under the text, line-through over it.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textDecoration( String textDecoration )
   {
     setTextDecoration( textDecoration );
@@ -3324,6 +3518,7 @@ public class CssProps
    * Sets the color of any text decoration, such as underlines, overlines, and strike throughs.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textDecorationColor( String textDecorationColor )
   {
     setTextDecorationColor( textDecorationColor );
@@ -3340,6 +3535,7 @@ public class CssProps
    * Sets what kind of line decorations are added to an element, such as underlines, overlines, etc.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textDecorationLine( String textDecorationLine )
   {
     setTextDecorationLine( textDecorationLine );
@@ -3353,6 +3549,7 @@ public class CssProps
   public native void setTextDecorationLineThrough( String textDecorationLineThrough );
 
   @JsOverlay
+  @Nonnull
   public final CssProps textDecorationLineThrough( String textDecorationLineThrough )
   {
     setTextDecorationLineThrough( textDecorationLineThrough );
@@ -3366,6 +3563,7 @@ public class CssProps
   public native void setTextDecorationNone( String textDecorationNone );
 
   @JsOverlay
+  @Nonnull
   public final CssProps textDecorationNone( String textDecorationNone )
   {
     setTextDecorationNone( textDecorationNone );
@@ -3379,6 +3577,7 @@ public class CssProps
   public native void setTextDecorationOverline( String textDecorationOverline );
 
   @JsOverlay
+  @Nonnull
   public final CssProps textDecorationOverline( String textDecorationOverline )
   {
     setTextDecorationOverline( textDecorationOverline );
@@ -3395,6 +3594,7 @@ public class CssProps
    * Specifies what parts of an element's content are skipped over when applying any text decoration.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textDecorationSkip( String textDecorationSkip )
   {
     setTextDecorationSkip( textDecorationSkip );
@@ -3412,6 +3612,7 @@ public class CssProps
    * The intended meaning for the values are the same as those of the border-style-properties.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textDecorationStyle( String textDecorationStyle )
   {
     setTextDecorationStyle( textDecorationStyle );
@@ -3425,6 +3626,7 @@ public class CssProps
   public native void setTextDecorationUnderline( String textDecorationUnderline );
 
   @JsOverlay
+  @Nonnull
   public final CssProps textDecorationUnderline( String textDecorationUnderline )
   {
     setTextDecorationUnderline( textDecorationUnderline );
@@ -3444,6 +3646,7 @@ public class CssProps
    * text-emphasis-color.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textEmphasis( String textEmphasis )
   {
     setTextEmphasis( textEmphasis );
@@ -3460,6 +3663,7 @@ public class CssProps
    * The text-emphasis-color property specifies the foreground color of the emphasis marks.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textEmphasisColor( String textEmphasisColor )
   {
     setTextEmphasisColor( textEmphasisColor );
@@ -3476,6 +3680,7 @@ public class CssProps
    * The text-emphasis-style property applies special emphasis marks to an element's text.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textEmphasisStyle( String textEmphasisStyle )
   {
     setTextEmphasisStyle( textEmphasisStyle );
@@ -3496,6 +3701,7 @@ public class CssProps
    * padding, border and margin for the element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textHeight( String textHeight )
   {
     setTextHeight( textHeight );
@@ -3514,6 +3720,7 @@ public class CssProps
    * is in respect to the left edge of the containing block box.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textIndent( String textIndent )
   {
     setTextIndent( textIndent );
@@ -3527,6 +3734,7 @@ public class CssProps
   public native void setTextJustifyTrim( String textJustifyTrim );
 
   @JsOverlay
+  @Nonnull
   public final CssProps textJustifyTrim( String textJustifyTrim )
   {
     setTextJustifyTrim( textJustifyTrim );
@@ -3540,6 +3748,7 @@ public class CssProps
   public native void setTextKashidaSpace( String textKashidaSpace );
 
   @JsOverlay
+  @Nonnull
   public final CssProps textKashidaSpace( String textKashidaSpace )
   {
     setTextKashidaSpace( textKashidaSpace );
@@ -3556,6 +3765,7 @@ public class CssProps
    * Specifies the line width for the line-through text decoration.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textLineThroughWidth( String textLineThroughWidth )
   {
     setTextLineThroughWidth( textLineThroughWidth );
@@ -3575,6 +3785,7 @@ public class CssProps
    * properties text-overflow-mode and text-overflow-ellipsis
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textOverflow( String textOverflow )
   {
     setTextOverflow( textOverflow );
@@ -3592,6 +3803,7 @@ public class CssProps
    * text-overline-width, text-overline-color, and text-overline-mode properties.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textOverline( String textOverline )
   {
     setTextOverline( textOverline );
@@ -3608,6 +3820,7 @@ public class CssProps
    * Specifies the line color for the overline text decoration.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textOverlineColor( String textOverlineColor )
   {
     setTextOverlineColor( textOverlineColor );
@@ -3625,6 +3838,7 @@ public class CssProps
    * affects the space characters or not.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textOverlineMode( String textOverlineMode )
   {
     setTextOverlineMode( textOverlineMode );
@@ -3641,6 +3855,7 @@ public class CssProps
    * Specifies the line style for overline text decoration.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textOverlineStyle( String textOverlineStyle )
   {
     setTextOverlineStyle( textOverlineStyle );
@@ -3657,6 +3872,7 @@ public class CssProps
    * Specifies the line width for the overline text decoration.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textOverlineWidth( String textOverlineWidth )
   {
     setTextOverlineWidth( textOverlineWidth );
@@ -3674,6 +3890,7 @@ public class CssProps
    * when rendering text. Options are: legibility, speed or geometric precision.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textRendering( String textRendering )
   {
     setTextRendering( textRendering );
@@ -3692,6 +3909,7 @@ public class CssProps
    * along with optional color and blur radius values.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textShadow( String textShadow )
   {
     setTextShadow( textShadow );
@@ -3709,6 +3927,7 @@ public class CssProps
    * content.)
    */
   @JsOverlay
+  @Nonnull
   public final CssProps textTransform( String textTransform )
   {
     setTextTransform( textTransform );
@@ -3728,6 +3947,7 @@ public class CssProps
    * position in the normal flow, then offset from that position according to these properties).
    */
   @JsOverlay
+  @Nonnull
   public final CssProps top( String top )
   {
     setTop( top );
@@ -3745,6 +3965,7 @@ public class CssProps
    * such as panning or zooming.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps touchAction( String touchAction )
   {
     setTouchAction( touchAction );
@@ -3763,6 +3984,7 @@ public class CssProps
    * and skewed. The value list may consist of 2D and/or 3D transform values.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps transform( String transform )
   {
     setTransform( transform );
@@ -3780,6 +4002,7 @@ public class CssProps
    * which the transformation is applied.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps transformOrigin( String transformOrigin )
   {
     setTransformOrigin( transformOrigin );
@@ -3797,6 +4020,7 @@ public class CssProps
    * grid along the z-axis.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps transformOriginZ( String transformOriginZ )
   {
     setTransformOriginZ( transformOriginZ );
@@ -3813,6 +4037,7 @@ public class CssProps
    * This property specifies how nested elements are rendered in 3D space relative to their parent.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps transformStyle( String transformStyle )
   {
     setTransformStyle( transformStyle );
@@ -3831,6 +4056,7 @@ public class CssProps
    * the transition between two states of an element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps transition( String transition )
   {
     setTransition( transition );
@@ -3849,6 +4075,7 @@ public class CssProps
    * moment the property is changed, and the transition will delay execution by that offset.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps transitionDelay( String transitionDelay )
   {
     setTransitionDelay( transitionDelay );
@@ -3866,6 +4093,7 @@ public class CssProps
    * takes to complete.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps transitionDuration( String transitionDuration )
   {
     setTransitionDuration( transitionDuration );
@@ -3883,6 +4111,7 @@ public class CssProps
    * transition is applied.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps transitionProperty( String transitionProperty )
   {
     setTransitionProperty( transitionProperty );
@@ -3899,6 +4128,7 @@ public class CssProps
    * Sets the pace of action within a transition
    */
   @JsOverlay
+  @Nonnull
   public final CssProps transitionTimingFunction( String transitionTimingFunction )
   {
     setTransitionTimingFunction( transitionTimingFunction );
@@ -3916,6 +4146,7 @@ public class CssProps
   public native void setUnicodeBidi( String unicodeBidi );
 
   @JsOverlay
+  @Nonnull
   public final CssProps unicodeBidi( String unicodeBidi )
   {
     setUnicodeBidi( unicodeBidi );
@@ -3933,6 +4164,7 @@ public class CssProps
    * font (embedded using @font-face) and made available for use on the current page.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps unicodeRange( String unicodeRange )
   {
     setUnicodeRange( unicodeRange );
@@ -3949,6 +4181,7 @@ public class CssProps
    * This is for all the high level UX stuff.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps userFocus( String userFocus )
   {
     setUserFocus( userFocus );
@@ -3965,6 +4198,7 @@ public class CssProps
    * For inputing user content
    */
   @JsOverlay
+  @Nonnull
   public final CssProps userInput( String userInput )
   {
     setUserInput( userInput );
@@ -3983,6 +4217,7 @@ public class CssProps
    * alignment of content of the table cell.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps verticalAlign( String verticalAlign )
   {
     setVerticalAlign( verticalAlign );
@@ -3999,7 +4234,8 @@ public class CssProps
    * The visibility property specifies whether the boxes generated by an element are rendered.
    */
   @JsOverlay
-  public final CssProps visibility( Visibility visibility )
+  @Nonnull
+  public final CssProps visibility( @Nonnull final Visibility visibility )
   {
     setVisibility( visibility.name() );
     return this;
@@ -4016,6 +4252,7 @@ public class CssProps
    * voice for spoken media.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps voiceBalance( String voiceBalance )
   {
     setVoiceBalance( voiceBalance );
@@ -4035,6 +4272,7 @@ public class CssProps
    * takes to read the content is determined by the content itself and the voice-rate property.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps voiceDuration( String voiceDuration )
   {
     setVoiceDuration( voiceDuration );
@@ -4056,6 +4294,7 @@ public class CssProps
    * cannot synthesize the requested combination of generic properties.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps voiceFamily( String voiceFamily )
   {
     setVoiceFamily( voiceFamily );
@@ -4074,6 +4313,7 @@ public class CssProps
    * for the voice-family used to read the text.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps voicePitch( String voicePitch )
   {
     setVoicePitch( voicePitch );
@@ -4094,6 +4334,7 @@ public class CssProps
    * speech, while small ranges are associated with flat or mechanical speech.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps voiceRange( String voiceRange )
   {
     setVoiceRange( voiceRange );
@@ -4111,6 +4352,7 @@ public class CssProps
    * agent will read content.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps voiceRate( String voiceRate )
   {
     setVoiceRate( voiceRate );
@@ -4128,6 +4370,7 @@ public class CssProps
    * speech reading the element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps voiceStress( String voiceStress )
   {
     setVoiceStress( voiceStress );
@@ -4145,6 +4388,7 @@ public class CssProps
    * the deprecated volume property.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps voiceVolume( String voiceVolume )
   {
     setVoiceVolume( voiceVolume );
@@ -4162,6 +4406,7 @@ public class CssProps
    * collapsed, and whether lines may wrap at unforced "soft wrap" opportunities.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps whiteSpace( String whiteSpace )
   {
     setWhiteSpace( whiteSpace );
@@ -4179,6 +4424,7 @@ public class CssProps
    * width does not include the padding, border, and margin of the element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps width( String width )
   {
     setWidth( width );
@@ -4198,6 +4444,7 @@ public class CssProps
    * breaking of the layout as it could extend past the parent element.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps wordBreak( String wordBreak )
   {
     setWordBreak( wordBreak );
@@ -4214,6 +4461,7 @@ public class CssProps
    * The word-spacing CSS property specifies the spacing behavior between "words".
    */
   @JsOverlay
+  @Nonnull
   public final CssProps wordSpacing( String wordSpacing )
   {
     setWordSpacing( wordSpacing );
@@ -4231,6 +4479,7 @@ public class CssProps
    * the content exceeds the boundaries of its container.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps wordWrap( String wordWrap )
   {
     setWordWrap( wordWrap );
@@ -4248,6 +4497,7 @@ public class CssProps
    * out their inline content in their content area but wrap around exclusion areas.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps wrapFlow( String wrapFlow )
   {
     setWrapFlow( wrapFlow );
@@ -4265,6 +4515,7 @@ public class CssProps
    * content that intersects a shape with this property will be pushed by this shape's margin.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps wrapMargin( String wrapMargin )
   {
     setWrapMargin( wrapMargin );
@@ -4282,6 +4533,7 @@ public class CssProps
    * direction which lines of text and blocks progress.
    */
   @JsOverlay
+  @Nonnull
   public final CssProps writingMode( String writingMode )
   {
     setWritingMode( writingMode );
@@ -4297,6 +4549,7 @@ public class CssProps
   public native void setWebKitMask( String mask );
 
   @JsOverlay
+  @Nonnull
   public final CssProps webkitMask( String mask )
   {
     setWebKitMask( mask );
@@ -4310,6 +4563,7 @@ public class CssProps
   public native void setWebKitMaskSize( String mask );
 
   @JsOverlay
+  @Nonnull
   public final CssProps webkitMaskSize( String mask )
   {
     setWebKitMaskSize( mask );
