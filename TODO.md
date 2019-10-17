@@ -81,9 +81,6 @@ complete as there is too much un-said.
   this lower down in the react stack.
 - EventHandlers should probably start profiler "interactions" by default with the ability to disable
 
-* Start to add javascript tests - starting with braincheck ala
-  https://github.com/google/jsinterop-base/commit/7d0380758b6bef74bd947e284521619b6826346f
-
 * Animation/Transition capabilities are getting more urgent.
   - https://react-simple-animate.now.sh/ (Seems like the best easy option)
   - https://www.npmjs.com/package/@nearform/react-animation
