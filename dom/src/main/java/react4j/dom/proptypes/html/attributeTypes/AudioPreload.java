@@ -1,6 +1,17 @@
 package react4j.dom.proptypes.html.attributeTypes;
 
-public enum AudioPreload
+import javax.annotation.Nonnull;
+
+public final class AudioPreload
 {
-  auto, metadata, none
+  @Nonnull
+  public static final String auto = "auto";
+  @Nonnull
+  public static final String metadata = "metadata";
+  @Nonnull
+  public static final String none = "none";
+
+  private AudioPreload()
+  {
+  }
 }
