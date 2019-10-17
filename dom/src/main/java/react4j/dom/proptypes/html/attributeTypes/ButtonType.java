@@ -1,6 +1,17 @@
 package react4j.dom.proptypes.html.attributeTypes;
 
-public enum ButtonType
+import javax.annotation.Nonnull;
+
+public final class ButtonType
 {
-  button, reset, submit
+  @Nonnull
+  public static final String button = "button";
+  @Nonnull
+  public static final String reset = "reset";
+  @Nonnull
+  public static final String submit = "submit";
+
+  private ButtonType()
+  {
+  }
 }

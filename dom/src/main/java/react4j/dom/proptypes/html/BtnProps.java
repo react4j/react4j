@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.intellij.lang.annotations.MagicConstant;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.FormEventHandler;
@@ -94,9 +95,9 @@ public class BtnProps
 
   @JsOverlay
   @Nonnull
-  public final BtnProps type( ButtonType t )
+  public final BtnProps type( @Nonnull @MagicConstant( valuesFromClass = ButtonType.class ) final String t )
   {
-    setType( t.name() );
+    setType( t );
     return self();
   }
 
