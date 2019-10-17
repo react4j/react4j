@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -18,6 +19,7 @@ public class ColProps
   extends HtmlGlobalFields<ColProps>
 {
   @JsOverlay
+  @Nonnull
   public final ColProps span( int i )
   {
     setSpan( i );
@@ -28,6 +30,7 @@ public class ColProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final ColProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -35,6 +38,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -43,6 +47,7 @@ public class ColProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final ColProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -50,6 +55,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -57,6 +63,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -64,6 +71,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -71,6 +79,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -78,6 +87,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -85,6 +95,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -92,6 +103,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -99,6 +111,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -106,6 +119,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -113,6 +127,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -120,6 +135,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -127,6 +143,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -134,6 +151,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -141,6 +159,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -148,6 +167,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -155,6 +175,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -162,6 +183,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -169,6 +191,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -176,6 +199,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -183,6 +207,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -191,6 +216,7 @@ public class ColProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final ColProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -198,6 +224,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -205,6 +232,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -212,6 +240,7 @@ public class ColProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ColProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
