@@ -1,6 +1,21 @@
 package react4j.dom.proptypes.cssPropertyTypes;
 
-public enum Visibility
+import javax.annotation.Nonnull;
+
+public final class Visibility
 {
-  hidden, visible, collapse, initial, inherit
+  @Nonnull
+  public static final String hidden = "hidden";
+  @Nonnull
+  public static final String visible = "visible";
+  @Nonnull
+  public static final String collapse = "collapse";
+  @Nonnull
+  public static final String initial = "initial";
+  @Nonnull
+  public static final String inherit = "inherit";
+
+  private Visibility()
+  {
+  }
 }
