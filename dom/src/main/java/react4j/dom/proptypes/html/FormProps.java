@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -22,6 +23,7 @@ public class FormProps
   extends HtmlGlobalFields<FormProps>
 {
   @JsOverlay
+  @Nonnull
   public final FormProps acceptCharset( String s )
   {
     setAcceptCharset( s );
@@ -29,6 +31,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps action( String s )
   {
     setAction( s );
@@ -36,6 +39,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps autoComplete( OnOff s )
   {
     setAutoComplete( s.name() );
@@ -43,6 +47,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps formEncType( String s )
   {
     setFormEncType( s );
@@ -50,6 +55,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps formMethod( FormMethod s )
   {
     setFormMethod( s.name() );
@@ -57,6 +63,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps name( String s )
   {
     setName( s );
@@ -64,6 +71,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps formNoValidate( boolean b )
   {
     setFormNoValidate( b );
@@ -71,6 +79,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps formTarget( Target t )
   {
     setFormTarget( t.name() );
@@ -78,6 +87,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps formTarget( String s )
   {
     setFormTarget( s );
@@ -88,6 +98,7 @@ public class FormProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final FormProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -95,6 +106,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -103,6 +115,7 @@ public class FormProps
 
   // Form Events
   @JsOverlay
+  @Nonnull
   public final FormProps onChange( @Nullable final FormEventHandler handler )
   {
     setOnChange( handler );
@@ -110,6 +123,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onInput( @Nullable final FormEventHandler handler )
   {
     setOnInput( handler );
@@ -117,6 +131,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onSubmit( @Nullable final FormEventHandler handler )
   {
     setOnSubmit( handler );
@@ -125,6 +140,7 @@ public class FormProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final FormProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -132,6 +148,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -139,6 +156,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -146,6 +164,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -153,6 +172,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -160,6 +180,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -167,6 +188,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -174,6 +196,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -181,6 +204,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -188,6 +212,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -195,6 +220,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -202,6 +228,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -209,6 +236,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -216,6 +244,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -223,6 +252,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -230,6 +260,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -237,6 +268,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -244,6 +276,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -251,6 +284,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -258,6 +292,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -265,6 +300,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -273,6 +309,7 @@ public class FormProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final FormProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -280,6 +317,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -287,6 +325,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -294,6 +333,7 @@ public class FormProps
   }
 
   @JsOverlay
+  @Nonnull
   public final FormProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
