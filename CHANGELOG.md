@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Transform several java enum classes within the `react4j-dom` module to classes containing string constants. GWT and J2CL will no optimize out unused constants or the `values()` method of the enum class which can result in some increased code-size while using string constants means applications pay for the values that they use. To keep the developer experience, the methods have been annotated with the `@MagicConstant` annotation so that IntelliJ will highlight incorrect values and provide an almost equivalent developer experience when using the associated classes.
 * Add some additional nullability annotations to the props objects defined in the `react4j-dom` module.
 
 ### [v0.134](https://github.com/react4j/react4j/tree/v0.134) (2019-10-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.133...v0.134) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.133&new=0.134)
