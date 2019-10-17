@@ -263,8 +263,6 @@ public class InputProps
     return self();
   }
 
-  ;
-
   @JsOverlay
   @Nonnull
   public final InputProps defaultValue( String s )
