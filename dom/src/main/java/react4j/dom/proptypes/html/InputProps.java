@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -21,6 +22,7 @@ public class InputProps
   extends HtmlGlobalFields<InputProps>
 {
   @JsOverlay
+  @Nonnull
   public final InputProps accept( String s )
   {
     setAccept( s );
@@ -28,6 +30,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps alt( String s )
   {
     setAlt( s );
@@ -35,6 +38,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps async( boolean b )
   {
     setAsync( b );
@@ -42,6 +46,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps autoComplete( OnOff s )
   {
     setAutoComplete( s.name() );
@@ -49,6 +54,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps autoFocus( boolean b )
   {
     setAutoFocus( b );
@@ -56,6 +62,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps checked( boolean b )
   {
     setChecked( b );
@@ -63,6 +70,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps disabled( boolean b )
   {
     setDisabled( b );
@@ -70,6 +78,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps form( String s )
   {
     setForm( s );
@@ -77,6 +86,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps formAction( String s )
   {
     setFormAction( s );
@@ -84,6 +94,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps formEncType( String s )
   {
     setFormEncType( s );
@@ -91,6 +102,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps formMethod( String s )
   {
     setFormMethod( s );
@@ -98,6 +110,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps formNoValidate( boolean b )
   {
     setFormNoValidate( b );
@@ -105,6 +118,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps formTarget( String s )
   {
     setFormTarget( s );
@@ -112,6 +126,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps height( String s )
   {
     setHeight( s );
@@ -119,6 +134,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps list( String s )
   {
     setList( s );
@@ -126,6 +142,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps max( String s )
   {
     setMax( s );
@@ -133,6 +150,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps maxLength( int b )
   {
     setMaxLength( b );
@@ -140,6 +158,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps min( String s )
   {
     setMin( s );
@@ -147,6 +166,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps multiple( boolean b )
   {
     setMultiple( b );
@@ -154,6 +174,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps name( String s )
   {
     setName( s );
@@ -161,6 +182,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps placeHolder( String s )
   {
     setPlaceholder( s );
@@ -168,6 +190,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps readonly( boolean b )
   {
     setReadOnly( b );
@@ -175,6 +198,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps required( boolean b )
   {
     setRequired( b );
@@ -182,6 +206,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps size( int b )
   {
     setSize( b );
@@ -189,6 +214,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps src( String s )
   {
     setSrc( s );
@@ -196,6 +222,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps step( String s )
   {
     setStep( s );
@@ -203,6 +230,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps type( InputType t )
   {
     setType( t.name() );
@@ -210,6 +238,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps value( String s )
   {
     setValue( s );
@@ -217,6 +246,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps width( int i )
   {
     setWidth( Integer.toString( i ) );
@@ -226,6 +256,7 @@ public class InputProps
   //React Specific
 
   @JsOverlay
+  @Nonnull
   public final InputProps defaultChecked( boolean b )
   {
     setDefaultChecked( b );
@@ -235,6 +266,7 @@ public class InputProps
   ;
 
   @JsOverlay
+  @Nonnull
   public final InputProps defaultValue( String s )
   {
     setDefaultValue( s );
@@ -245,6 +277,7 @@ public class InputProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final InputProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -252,6 +285,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -260,6 +294,7 @@ public class InputProps
 
   // Form Events
   @JsOverlay
+  @Nonnull
   public final InputProps onChange( @Nullable final FormEventHandler handler )
   {
     setOnChange( handler );
@@ -268,6 +303,7 @@ public class InputProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final InputProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -275,6 +311,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -282,6 +319,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -289,6 +327,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -296,6 +335,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -303,6 +343,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -310,6 +351,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -317,6 +359,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -324,6 +367,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -331,6 +375,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -338,6 +383,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -345,6 +391,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -352,6 +399,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -359,6 +407,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -366,6 +415,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -373,6 +423,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -380,6 +431,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -387,6 +439,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -394,6 +447,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -401,6 +455,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -408,6 +463,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -416,6 +472,7 @@ public class InputProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final InputProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -423,6 +480,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -430,6 +488,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -437,6 +496,7 @@ public class InputProps
   }
 
   @JsOverlay
+  @Nonnull
   public final InputProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
