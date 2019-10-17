@@ -26,9 +26,10 @@ public class CssProps
   public native void setAnimationFillMode( String mode );
 
   @JsOverlay
-  public final CssProps animationFillMode( @Nonnull final AnimationFillMode mode )
+  @Nonnull
+  public final CssProps animationFillMode( @Nonnull @MagicConstant( valuesFromClass = AnimationFillMode.class ) final String mode )
   {
-    setAnimationFillMode( mode.name() );
+    setAnimationFillMode( mode );
     return this;
   }
 
