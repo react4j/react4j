@@ -918,9 +918,9 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
 
   @JsOverlay
   @Nonnull
-  public final T translate( @Nonnull final YesNo s )
+  public final T translate( @Nonnull @MagicConstant( valuesFromClass = YesNo.class ) final String s )
   {
-    setTranslate( s.name() );
+    setTranslate( s );
     return self();
   }
 

@@ -1,6 +1,15 @@
 package react4j.dom.proptypes.html.attributeTypes;
 
-public enum YesNo
+import javax.annotation.Nonnull;
+
+public final class YesNo
 {
-  yes, no
+  @Nonnull
+  public static final String yes = "yes";
+  @Nonnull
+  public static final String no = "no";
+
+  private YesNo()
+  {
+  }
 }
