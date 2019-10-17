@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -12,6 +13,7 @@ public class SourceProps
   extends HtmlGlobalFields<SourceProps>
 {
   @JsOverlay
+  @Nonnull
   public final SourceProps media( String s )
   {
     setMedia( s );
@@ -19,6 +21,7 @@ public class SourceProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SourceProps src( String s )
   {
     setSrc( s );
@@ -26,6 +29,7 @@ public class SourceProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SourceProps type( String s )
   {
     setType( s );

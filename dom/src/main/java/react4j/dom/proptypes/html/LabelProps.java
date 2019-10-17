@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -18,6 +19,7 @@ public class LabelProps
   extends HtmlGlobalFields<LabelProps>
 {
   @JsOverlay
+  @Nonnull
   public final LabelProps htmlFor( String s )
   {
     setHtmlFor( s );
@@ -25,6 +27,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps form( String s )
   {
     setForm( s );
@@ -36,6 +39,7 @@ public class LabelProps
   //TODO Refine
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final LabelProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -43,6 +47,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -51,6 +56,7 @@ public class LabelProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final LabelProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -58,6 +64,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -65,6 +72,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -72,6 +80,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -79,6 +88,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -86,6 +96,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -93,6 +104,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -100,6 +112,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -107,6 +120,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -114,6 +128,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -121,6 +136,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -128,6 +144,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -135,6 +152,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -142,6 +160,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -149,6 +168,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -156,6 +176,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -163,6 +184,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -170,6 +192,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -177,6 +200,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -184,6 +208,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -191,6 +216,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -199,6 +225,7 @@ public class LabelProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final LabelProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -206,6 +233,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -213,6 +241,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -220,6 +249,7 @@ public class LabelProps
   }
 
   @JsOverlay
+  @Nonnull
   public final LabelProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );

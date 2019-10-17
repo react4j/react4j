@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -21,6 +22,7 @@ public class TextAreaProps
   extends HtmlGlobalFields<TextAreaProps>
 {
   @JsOverlay
+  @Nonnull
   public final TextAreaProps autoComplete( OnOff s )
   {
     setAutoComplete( s.name() );
@@ -28,6 +30,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps autoFocus( boolean b )
   {
     setAutoFocus( b );
@@ -35,6 +38,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps cols( int b )
   {
     setCols( b );
@@ -42,6 +46,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps disabled( boolean b )
   {
     setDisabled( b );
@@ -49,6 +54,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps form( String s )
   {
     setForm( s );
@@ -56,6 +62,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps maxLength( int l )
   {
     setMaxLength( l );
@@ -63,6 +70,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps minLength( int l )
   {
     setMinLength( l );
@@ -70,6 +78,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps name( String s )
   {
     setName( s );
@@ -77,6 +86,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps placeHolder( String s )
   {
     setPlaceholder( s );
@@ -84,6 +94,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps readonly( boolean b )
   {
     setReadOnly( b );
@@ -91,6 +102,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps required( boolean b )
   {
     setRequired( b );
@@ -98,6 +110,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps rows( int l )
   {
     setRows( l );
@@ -105,6 +118,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps value( String s )
   {
     setValue( s );
@@ -114,6 +128,7 @@ public class TextAreaProps
   //React Specific
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps defaultValue( String s )
   {
     setDefaultValue( s );
@@ -124,6 +139,7 @@ public class TextAreaProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -131,6 +147,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -139,6 +156,7 @@ public class TextAreaProps
 
   // Form Events
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onChange( @Nullable final FormEventHandler handler )
   {
     setOnChange( handler );
@@ -147,6 +165,7 @@ public class TextAreaProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -154,6 +173,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -161,6 +181,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -168,6 +189,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -175,6 +197,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -182,6 +205,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -189,6 +213,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -196,6 +221,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -203,6 +229,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -210,6 +237,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -217,6 +245,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -224,6 +253,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -231,6 +261,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -238,6 +269,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -245,6 +277,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -252,6 +285,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -259,6 +293,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -266,6 +301,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -273,6 +309,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -280,6 +317,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -287,6 +325,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -295,6 +334,7 @@ public class TextAreaProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -302,6 +342,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -309,6 +350,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -316,6 +358,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
@@ -323,6 +366,7 @@ public class TextAreaProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TextAreaProps onScroll( @Nullable final UIEventHandler onScroll )
   {
     setOnScroll( onScroll );

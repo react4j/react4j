@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -12,6 +13,7 @@ public class OptGroupProps
   extends HtmlGlobalFields<OptGroupProps>
 {
   @JsOverlay
+  @Nonnull
   public final OptGroupProps disabled( boolean b )
   {
     setDisabled( b );
@@ -19,6 +21,7 @@ public class OptGroupProps
   }
 
   @JsOverlay
+  @Nonnull
   public final OptGroupProps label( String s )
   {
     setLabel( s );

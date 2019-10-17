@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -19,6 +20,7 @@ public class AudioProps
   extends HtmlGlobalFields<AudioProps>
 {
   @JsOverlay
+  @Nonnull
   public final AudioProps autoPlay( boolean b )
   {
     setAutoPlay( b );
@@ -26,6 +28,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps controls( boolean b )
   {
     setControls( b );
@@ -33,6 +36,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps loop( boolean b )
   {
     setLoop( b );
@@ -40,6 +44,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps muted( boolean b )
   {
     setMuted( b );
@@ -47,6 +52,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps preLoad( AudioPreload s )
   {
     setPreload( s.name() );
@@ -54,6 +60,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps src( String s )
   {
     setSrc( s );
@@ -64,6 +71,7 @@ public class AudioProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final AudioProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -71,6 +79,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -79,6 +88,7 @@ public class AudioProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final AudioProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -86,6 +96,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -93,6 +104,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -100,6 +112,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -107,6 +120,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -114,6 +128,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -121,6 +136,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -128,6 +144,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -135,6 +152,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -142,6 +160,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -149,6 +168,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -156,6 +176,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -163,6 +184,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -170,6 +192,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -177,6 +200,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -184,6 +208,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -191,6 +216,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -198,6 +224,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -205,6 +232,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -212,6 +240,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -219,6 +248,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -227,6 +257,7 @@ public class AudioProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final AudioProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -234,6 +265,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -241,6 +273,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -248,6 +281,7 @@ public class AudioProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AudioProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );

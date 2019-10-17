@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -18,6 +19,7 @@ public class AnchorProps
   extends HtmlGlobalFields<AnchorProps>
 {
   @JsOverlay
+  @Nonnull
   public final AnchorProps download( String s )
   {
     setDownload( s );
@@ -25,6 +27,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps href( String s )
   {
     setHref( s );
@@ -32,6 +35,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps hrefLang( String s )
   {
     setHrefLang( s );
@@ -39,6 +43,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps media( String s )
   {
     setMedia( s );
@@ -46,6 +51,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps rel( String s )
   {
     setRel( s );
@@ -53,6 +59,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps referrerPolicy( String s )
   {
     setReferrerPolicy( s );
@@ -60,6 +67,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps target( String s )
   {
     setTarget( s );
@@ -67,6 +75,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps type( String t )
   {
     setType( t );
@@ -77,6 +86,7 @@ public class AnchorProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final AnchorProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -84,6 +94,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -92,6 +103,7 @@ public class AnchorProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final AnchorProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -99,6 +111,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -106,6 +119,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -113,6 +127,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -120,6 +135,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -127,6 +143,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -134,6 +151,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -141,6 +159,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -148,6 +167,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -155,6 +175,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -162,6 +183,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -169,6 +191,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -176,6 +199,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -183,6 +207,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -190,6 +215,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -197,6 +223,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -204,6 +231,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -211,6 +239,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -218,6 +247,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -225,6 +255,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -232,6 +263,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -240,6 +272,7 @@ public class AnchorProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final AnchorProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -247,6 +280,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -254,6 +288,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -261,6 +296,7 @@ public class AnchorProps
   }
 
   @JsOverlay
+  @Nonnull
   public final AnchorProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );

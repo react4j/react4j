@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -20,6 +21,7 @@ public class BtnProps
   extends HtmlGlobalFields<BtnProps>
 {
   @JsOverlay
+  @Nonnull
   public final BtnProps autoFocus( boolean b )
   {
     setAutoFocus( b );
@@ -27,6 +29,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps disabled( boolean b )
   {
     setDisabled( b );
@@ -34,6 +37,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps from( String s )
   {
     setForm( s );
@@ -41,6 +45,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps formAction( String s )
   {
     setFormAction( s );
@@ -48,6 +53,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps formEncType( String s )
   {
     setFormEncType( s );
@@ -55,6 +61,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps formMethod( String s )
   {
     setFormMethod( s );
@@ -62,6 +69,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps formNoValidate( boolean b )
   {
     setFormNoValidate( b );
@@ -69,6 +77,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps formTarget( String s )
   {
     setFormTarget( s );
@@ -76,6 +85,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps name( String s )
   {
     setName( s );
@@ -83,6 +93,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps type( ButtonType t )
   {
     setType( t.name() );
@@ -90,6 +101,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps value( String s )
   {
     setValue( s );
@@ -99,6 +111,7 @@ public class BtnProps
   //React Specific
 
   @JsOverlay
+  @Nonnull
   public final BtnProps defaultChecked( boolean b )
   {
     setDefaultChecked( b );
@@ -106,6 +119,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps defaultValue( String s )
   {
     setDefaultValue( s );
@@ -116,6 +130,7 @@ public class BtnProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final BtnProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -123,6 +138,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -131,6 +147,7 @@ public class BtnProps
 
   // Form Events
   @JsOverlay
+  @Nonnull
   public final BtnProps onSubmit( @Nullable final FormEventHandler handler )
   {
     setOnSubmit( handler );
@@ -139,6 +156,7 @@ public class BtnProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final BtnProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -146,6 +164,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -153,6 +172,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -160,6 +180,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -167,6 +188,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -174,6 +196,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -181,6 +204,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -188,6 +212,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -195,6 +220,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -202,6 +228,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -209,6 +236,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -216,6 +244,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -223,6 +252,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -230,6 +260,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -237,6 +268,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -244,6 +276,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -251,6 +284,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -258,6 +292,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -265,6 +300,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -272,6 +308,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -279,6 +316,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -287,6 +325,7 @@ public class BtnProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final BtnProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -294,6 +333,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -301,6 +341,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -308,6 +349,7 @@ public class BtnProps
   }
 
   @JsOverlay
+  @Nonnull
   public final BtnProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );

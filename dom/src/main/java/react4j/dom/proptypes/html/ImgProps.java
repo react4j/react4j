@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -19,6 +20,7 @@ public class ImgProps
   extends HtmlGlobalFields<ImgProps>
 {
   @JsOverlay
+  @Nonnull
   public final ImgProps alt( String s )
   {
     setAlt( s );
@@ -26,6 +28,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps crossOrigin( String s )
   {
     setCrossOrigin( s );
@@ -33,6 +36,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps height( int i )
   {
     setHeight( Integer.toString( i ) );
@@ -40,6 +44,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps src( String s )
   {
     setSrc( s );
@@ -47,6 +52,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps useMap( String s )
   {
     setUseMap( s );
@@ -54,6 +60,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps width( int i )
   {
     setWidth( Integer.toString( i ) );
@@ -64,6 +71,7 @@ public class ImgProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final ImgProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -71,6 +79,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -79,6 +88,7 @@ public class ImgProps
 
   // Image Events
   @JsOverlay
+  @Nonnull
   public final ImgProps onLoad( @Nullable final ReactEventHandler handler )
   {
     setOnLoad( handler );
@@ -86,6 +96,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onError( @Nullable final ReactEventHandler handler )
   {
     setOnError( handler );
@@ -94,6 +105,7 @@ public class ImgProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final ImgProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -101,6 +113,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -108,6 +121,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -116,6 +130,7 @@ public class ImgProps
 
   // Media Events
   @JsOverlay
+  @Nonnull
   public final ImgProps onAbort( @Nullable final ReactEventHandler handler )
   {
     setOnAbort( handler );
@@ -123,6 +138,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onCanPlay( @Nullable final ReactEventHandler handler )
   {
     setOnCanPlay( handler );
@@ -130,6 +146,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onCanPlayThrough( @Nullable final ReactEventHandler handler )
   {
     setOnCanPlayThrough( handler );
@@ -137,6 +154,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDurationChange( @Nullable final ReactEventHandler handler )
   {
     setOnDurationChange( handler );
@@ -144,6 +162,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onEmptied( @Nullable final ReactEventHandler handler )
   {
     setOnEmptied( handler );
@@ -151,6 +170,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onEncrypted( @Nullable final ReactEventHandler handler )
   {
     setOnEncrypted( handler );
@@ -158,6 +178,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onEnded( @Nullable final ReactEventHandler handler )
   {
     setOnEnded( handler );
@@ -165,6 +186,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onLoadedData( @Nullable final ReactEventHandler handler )
   {
     setOnLoadedData( handler );
@@ -172,6 +194,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onLoadedMetadata( @Nullable final ReactEventHandler handler )
   {
     setOnLoadedMetadata( handler );
@@ -179,6 +202,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onLoadStart( @Nullable final ReactEventHandler handler )
   {
     setOnLoadStart( handler );
@@ -186,6 +210,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onPause( @Nullable final ReactEventHandler handler )
   {
     setOnPause( handler );
@@ -193,6 +218,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onPlay( @Nullable final ReactEventHandler handler )
   {
     setOnPlay( handler );
@@ -200,6 +226,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onPlaying( @Nullable final ReactEventHandler handler )
   {
     setOnPlaying( handler );
@@ -207,6 +234,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onProgress( @Nullable final ReactEventHandler handler )
   {
     setOnProgress( handler );
@@ -214,6 +242,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onRateChange( @Nullable final ReactEventHandler handler )
   {
     setOnRateChange( handler );
@@ -221,6 +250,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onSeeked( @Nullable final ReactEventHandler handler )
   {
     setOnSeeked( handler );
@@ -228,6 +258,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onSeeking( @Nullable final ReactEventHandler handler )
   {
     setOnSeeking( handler );
@@ -235,6 +266,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onStalled( @Nullable final ReactEventHandler handler )
   {
     setOnStalled( handler );
@@ -242,6 +274,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onSuspend( @Nullable final ReactEventHandler handler )
   {
     setOnSuspend( handler );
@@ -249,6 +282,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onTimeUpdate( @Nullable final ReactEventHandler handler )
   {
     setOnTimeUpdate( handler );
@@ -256,6 +290,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onVolumeChange( @Nullable final ReactEventHandler handler )
   {
     setOnVolumeChange( handler );
@@ -263,6 +298,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onWaiting( @Nullable final ReactEventHandler handler )
   {
     setOnWaiting( handler );
@@ -271,6 +307,7 @@ public class ImgProps
 
   // MouseEvents
   @JsOverlay
+  @Nonnull
   public final ImgProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -278,6 +315,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -285,6 +323,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -292,6 +331,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -299,6 +339,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -306,6 +347,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -313,6 +355,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -320,6 +363,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -327,6 +371,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -334,6 +379,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -341,6 +387,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -348,6 +395,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -355,6 +403,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -362,6 +411,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -369,6 +419,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -376,6 +427,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -383,6 +435,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -390,6 +443,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -398,6 +452,7 @@ public class ImgProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final ImgProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -405,6 +460,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -412,6 +468,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -419,6 +476,7 @@ public class ImgProps
   }
 
   @JsOverlay
+  @Nonnull
   public final ImgProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );

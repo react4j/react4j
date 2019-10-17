@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -18,6 +19,7 @@ public class TdProps
   extends HtmlGlobalFields<TdProps>
 {
   @JsOverlay
+  @Nonnull
   public final TdProps colSpan( int i )
   {
     setColSpan( i );
@@ -25,6 +27,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps headers( String s )
   {
     setHeaders( s );
@@ -32,6 +35,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps rowSpan( int i )
   {
     setRowSpan( i );
@@ -42,6 +46,7 @@ public class TdProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final TdProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -49,6 +54,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -57,6 +63,7 @@ public class TdProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final TdProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -64,6 +71,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -71,6 +79,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -78,6 +87,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -85,6 +95,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -92,6 +103,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -99,6 +111,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -106,6 +119,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -113,6 +127,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -120,6 +135,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -127,6 +143,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -134,6 +151,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -141,6 +159,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -148,6 +167,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -155,6 +175,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -162,6 +183,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -169,6 +191,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -176,6 +199,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -183,6 +207,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -190,6 +215,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -197,6 +223,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -205,6 +232,7 @@ public class TdProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final TdProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -212,6 +240,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -219,6 +248,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -226,6 +256,7 @@ public class TdProps
   }
 
   @JsOverlay
+  @Nonnull
   public final TdProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );

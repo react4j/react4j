@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -19,6 +20,7 @@ public class HtmlProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final HtmlProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -26,6 +28,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -34,6 +37,7 @@ public class HtmlProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final HtmlProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -41,6 +45,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -48,6 +53,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -55,6 +61,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -62,6 +69,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -69,6 +77,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -76,6 +85,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -83,6 +93,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -90,6 +101,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -97,6 +109,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -104,6 +117,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -111,6 +125,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -118,6 +133,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -125,6 +141,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -132,6 +149,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -139,6 +157,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -146,6 +165,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -153,6 +173,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -160,6 +181,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -167,6 +189,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -174,6 +197,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -182,6 +206,7 @@ public class HtmlProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final HtmlProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -189,6 +214,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -196,6 +222,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -203,6 +230,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
@@ -210,6 +238,7 @@ public class HtmlProps
   }
 
   @JsOverlay
+  @Nonnull
   public final HtmlProps onScroll( @Nullable final UIEventHandler onScroll )
   {
     setOnScroll( onScroll );

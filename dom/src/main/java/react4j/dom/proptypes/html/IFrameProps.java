@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -18,6 +19,7 @@ public class IFrameProps
   extends HtmlGlobalFields<IFrameProps>
 {
   @JsOverlay
+  @Nonnull
   public final IFrameProps height( int i )
   {
     setHeight( Integer.toString( i ) );
@@ -25,6 +27,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps name( String s )
   {
     setName( s );
@@ -32,6 +35,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps src( String s )
   {
     setSrc( s );
@@ -39,6 +43,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps sandbox( String s )
   {
     setSandbox( s );
@@ -46,6 +51,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps width( int i )
   {
     setWidth( Integer.toString( i ) );
@@ -57,6 +63,7 @@ public class IFrameProps
   //TODO refine
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final IFrameProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -64,6 +71,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -72,6 +80,7 @@ public class IFrameProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final IFrameProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -79,6 +88,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -86,6 +96,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -93,6 +104,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -100,6 +112,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -107,6 +120,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -114,6 +128,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -121,6 +136,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -128,6 +144,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -135,6 +152,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -142,6 +160,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -149,6 +168,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -156,6 +176,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -163,6 +184,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -170,6 +192,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -177,6 +200,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -184,6 +208,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -191,6 +216,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -198,6 +224,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -205,6 +232,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -212,6 +240,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -220,6 +249,7 @@ public class IFrameProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final IFrameProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -227,6 +257,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -234,6 +265,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -241,6 +273,7 @@ public class IFrameProps
   }
 
   @JsOverlay
+  @Nonnull
   public final IFrameProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );

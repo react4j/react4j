@@ -1,5 +1,6 @@
 package react4j.dom.proptypes.html;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -20,6 +21,7 @@ public class SelectProps
   extends HtmlGlobalFields<SelectProps>
 {
   @JsOverlay
+  @Nonnull
   public final SelectProps autoFocus( boolean b )
   {
     setAutoFocus( b );
@@ -27,6 +29,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps disabled( boolean b )
   {
     setDisabled( b );
@@ -34,6 +37,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps form( String s )
   {
     setForm( s );
@@ -41,6 +45,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps multiple( boolean b )
   {
     setMultiple( b );
@@ -48,6 +53,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps name( String s )
   {
     setName( s );
@@ -55,6 +61,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps required( boolean b )
   {
     setRequired( b );
@@ -62,6 +69,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps size( int b )
   {
     setSize( b );
@@ -69,6 +77,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps value( String s )
   {
     setValue( s );
@@ -76,6 +85,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps defaultValue( String s )
   {
     setDefaultValue( s );
@@ -86,6 +96,7 @@ public class SelectProps
 
   // Focus Events
   @JsOverlay
+  @Nonnull
   public final SelectProps onBlur( @Nullable final FocusEventHandler handler )
   {
     setOnBlur( handler );
@@ -93,6 +104,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onFocus( @Nullable final FocusEventHandler handler )
   {
     setOnFocus( handler );
@@ -101,6 +113,7 @@ public class SelectProps
 
   // Form Events
   @JsOverlay
+  @Nonnull
   public final SelectProps onChange( @Nullable final FormEventHandler handler )
   {
     setOnChange( handler );
@@ -109,6 +122,7 @@ public class SelectProps
 
   // Keyboard Events
   @JsOverlay
+  @Nonnull
   public final SelectProps onKeyDown( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyDown( handler );
@@ -116,6 +130,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onKeyPress( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyPress( handler );
@@ -123,6 +138,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onKeyUp( @Nullable final KeyboardEventHandler handler )
   {
     setOnKeyUp( handler );
@@ -130,6 +146,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onClick( @Nullable final MouseEventHandler handler )
   {
     setOnClick( handler );
@@ -137,6 +154,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onContextMenu( @Nullable final MouseEventHandler handler )
   {
     setOnContextMenu( handler );
@@ -144,6 +162,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onDoubleClick( @Nullable final MouseEventHandler handler )
   {
     setOnDoubleClick( handler );
@@ -151,6 +170,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onDrag( @Nullable final DragEventHandler handler )
   {
     setOnDrag( handler );
@@ -158,6 +178,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onDragEnd( @Nullable final DragEventHandler handler )
   {
     setOnDragEnd( handler );
@@ -165,6 +186,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onDragEnter( @Nullable final DragEventHandler handler )
   {
     setOnDragEnter( handler );
@@ -172,6 +194,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onDragExit( @Nullable final DragEventHandler handler )
   {
     setOnDragExit( handler );
@@ -179,6 +202,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onDragLeave( @Nullable final DragEventHandler handler )
   {
     setOnDragLeave( handler );
@@ -186,6 +210,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onDragOver( @Nullable final DragEventHandler handler )
   {
     setOnDragOver( handler );
@@ -193,6 +218,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onDragStart( @Nullable final DragEventHandler handler )
   {
     setOnDragStart( handler );
@@ -200,6 +226,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onDrop( @Nullable final DragEventHandler handler )
   {
     setOnDrop( handler );
@@ -207,6 +234,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onMouseDown( @Nullable final MouseEventHandler handler )
   {
     setOnMouseDown( handler );
@@ -214,6 +242,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onMouseEnter( @Nullable final MouseEventHandler handler )
   {
     setOnMouseEnter( handler );
@@ -221,6 +250,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onMouseLeave( @Nullable final MouseEventHandler handler )
   {
     setOnMouseLeave( handler );
@@ -228,6 +258,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onMouseMove( @Nullable final MouseEventHandler handler )
   {
     setOnMouseMove( handler );
@@ -235,6 +266,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onMouseOut( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOut( handler );
@@ -242,6 +274,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onMouseOver( @Nullable final MouseEventHandler handler )
   {
     setOnMouseOver( handler );
@@ -249,6 +282,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onMouseUp( @Nullable final MouseEventHandler handler )
   {
     setOnMouseUp( handler );
@@ -257,6 +291,7 @@ public class SelectProps
 
   // Touch Events
   @JsOverlay
+  @Nonnull
   public final SelectProps onTouchCancel( @Nullable final TouchEventHandler handler )
   {
     setOnTouchCancel( handler );
@@ -264,6 +299,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onTouchEnd( @Nullable final TouchEventHandler handler )
   {
     setOnTouchEnd( handler );
@@ -271,6 +307,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onTouchMove( @Nullable final TouchEventHandler handler )
   {
     setOnTouchMove( handler );
@@ -278,6 +315,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onTouchStart( @Nullable final TouchEventHandler handler )
   {
     setOnTouchStart( handler );
@@ -285,6 +323,7 @@ public class SelectProps
   }
 
   @JsOverlay
+  @Nonnull
   public final SelectProps onScroll( @Nullable final UIEventHandler onScroll )
   {
     setOnScroll( onScroll );
