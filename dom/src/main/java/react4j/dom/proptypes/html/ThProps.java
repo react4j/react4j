@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.intellij.lang.annotations.MagicConstant;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.KeyboardEventHandler;
@@ -45,9 +46,9 @@ public class ThProps
 
   @JsOverlay
   @Nonnull
-  public final ThProps scope( HeaderScope s )
+  public final ThProps scope( @Nonnull @MagicConstant( valuesFromClass = HeaderScope.class ) final String s )
   {
-    setScope( s.name() );
+    setScope( s );
     return self();
   }
 

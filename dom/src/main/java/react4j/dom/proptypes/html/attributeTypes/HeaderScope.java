@@ -1,6 +1,19 @@
 package react4j.dom.proptypes.html.attributeTypes;
 
-public enum HeaderScope
+import javax.annotation.Nonnull;
+
+public final class HeaderScope
 {
-  col, colgroup, row, rowgroup
+  @Nonnull
+  public static final String col = "col";
+  @Nonnull
+  public static final String colgroup = "colgroup";
+  @Nonnull
+  public static final String row = "row";
+  @Nonnull
+  public static final String rowgroup = "rowgroup";
+
+  private HeaderScope()
+  {
+  }
 }
