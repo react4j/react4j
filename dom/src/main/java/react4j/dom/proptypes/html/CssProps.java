@@ -412,8 +412,8 @@ public class CssProps
   public native void setAnimationDirection( String animationDirection );
 
   /*
-     * Defines whether an animation should run in reverse on some or all cycles.
-    */
+   * Defines whether an animation should run in reverse on some or all cycles.
+   */
   @JsOverlay
   public final CssProps animationDirection( String animationDirection )
   {
