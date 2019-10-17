@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.arez` artifacts to version `0.151`.
 * Add some additional nullability annotations to the props objects defined in the `react4j-dom` module.
 
 ### [v0.134](https://github.com/react4j/react4j/tree/v0.134) (2019-10-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.133...v0.134) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.133&new=0.134)
