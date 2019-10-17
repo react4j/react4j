@@ -25,6 +25,7 @@ import react4j.dom.events.WheelEventHandler;
 import react4j.dom.proptypes.html.attributeTypes.YesNo;
 import static org.realityforge.braincheck.Guards.*;
 
+@SuppressWarnings( "unused" )
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class HtmlGlobalFields<T extends HtmlGlobalFields>
 {
@@ -36,6 +37,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public RefConsumer ref;
 
   @JsOverlay
+  @Nonnull
   public final T ref( @Nonnull final RefConsumer callback )
   {
     ref = callback;
@@ -43,12 +45,14 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsOverlay
+  @Nonnull
   public final T key( final int value )
   {
     return key( String.valueOf( value ) );
   }
 
   @JsOverlay
+  @Nonnull
   public final T key( @Nonnull final String value )
   {
     key = value;
@@ -56,19 +60,15 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   }
 
   @JsOverlay
+  @Nonnull
   public final T dangerouslySetInnerHTML( @Nonnull final String html )
   {
-    setDangerouslyInnerHTML( html );
+    setDangerouslySetInnerHTML( JsPropertyMap.of( "__html", html ) );
     return self();
   }
 
   @JsOverlay
-  private void setDangerouslyInnerHTML( @Nonnull final String html )
-  {
-    setDangerouslySetInnerHTML( JsPropertyMap.of( "__html", html ) );
-  }
-
-  @JsOverlay
+  @Nonnull
   public final T prop( @Nonnull final String key, @Nullable final Any value )
   {
     Js.asPropertyMap( this ).set( key, value );
@@ -108,6 +108,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getAccessKey();
 
   @JsOverlay
+  @Nonnull
   public final T accessKey( String accessKey )
   {
     setAccessKey( accessKey );
@@ -212,6 +213,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
 
   @SuppressWarnings( "StringConcatenationInLoop" )
   @JsOverlay
+  @Nonnull
   public final T className( final String... elements )
   {
     String className = null;
@@ -270,6 +272,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native boolean isContentEditable();
 
   @JsOverlay
+  @Nonnull
   public final T contentEditable( boolean contentEditable )
   {
     setContentEditable( contentEditable );
@@ -283,6 +286,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getContextMenu();
 
   @JsOverlay
+  @Nonnull
   public final T contextMenu( String contextMenu )
   {
     setContextMenu( contextMenu );
@@ -335,6 +339,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getDir();
 
   @JsOverlay
+  @Nonnull
   public final T dir( String dir )
   {
     setDir( dir );
@@ -360,6 +365,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native boolean isDraggable();
 
   @JsOverlay
+  @Nonnull
   public final T draggable( boolean draggable )
   {
     setDraggable( draggable );
@@ -433,6 +439,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native boolean isHidden();
 
   @JsOverlay
+  @Nonnull
   public final T hidden( boolean hidden )
   {
     setHidden( hidden );
@@ -482,6 +489,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getId();
 
   @JsOverlay
+  @Nonnull
   public final T id( String id )
   {
     setId( id );
@@ -537,6 +545,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getLang();
 
   @JsOverlay
+  @Nonnull
   public final T lang( String lang )
   {
     setLang( lang );
@@ -796,6 +805,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native boolean isSpellCheck();
 
   @JsOverlay
+  @Nonnull
   public final T spellCheck( boolean spellCheck )
   {
     setSpellCheck( spellCheck );
@@ -845,6 +855,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native CssProps getStyle();
 
   @JsOverlay
+  @Nonnull
   public final T style( CssProps style )
   {
     setStyle( style );
@@ -864,6 +875,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native int getTabIndex();
 
   @JsOverlay
+  @Nonnull
   public final T tabIndex( int tabIndex )
   {
     setTabIndex( tabIndex );
@@ -883,6 +895,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getTitle();
 
   @JsOverlay
+  @Nonnull
   public final T title( String title )
   {
     setTitle( title );
@@ -902,7 +915,8 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   public native String getTranslate();
 
   @JsOverlay
-  public final T translate( YesNo s )
+  @Nonnull
+  public final T translate( @Nonnull final YesNo s )
   {
     setTranslate( s.name() );
     return self();
@@ -1528,6 +1542,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields>
   protected native void setOnWheel( WheelEventHandler onWheel );
 
   @JsOverlay
+  @Nonnull
   public final T onWheel( @Nullable final WheelEventHandler onWheel )
   {
     setOnWheel( onWheel );
