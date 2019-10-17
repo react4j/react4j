@@ -14,6 +14,7 @@ import react4j.dom.proptypes.cssPropertyTypes.Visibility;
  * NOTE: this is very much a work in progress. Further refinements will include
  * defining enumerations for many of the properties
  */
+@SuppressWarnings( "unused" )
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class CssProps
 {
