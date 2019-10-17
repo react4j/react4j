@@ -127,7 +127,7 @@ complete as there is too much un-said.
   - VueGWT - https://axellience.github.io/vue-gwt/introduction/
   - https://fblitho.com/
 
-* Incorporate many of the ideas of Litho. Inadvertantly we seem to have created something that looks similar with
+* Incorporate many of the ideas of Litho. Inadvertently we seem to have created something that looks similar with
   slight differences. Probably because both libraries try to use idiomatic java patterns with a react-like engine.
 
 * Add lifecycle image from https://twitter.com/dan_abramov/status/981712092611989509 and credit author
