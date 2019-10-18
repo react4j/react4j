@@ -22,6 +22,11 @@ def stage(stage_name, description, options = {})
   end
 end
 
+def calc_next_version(version)
+  version_parts = version.split('.')
+  "#{version_parts[0]}.#{sprintf('%02d', version_parts[1].to_i + 1)}#{version_parts.length > 2 ? ".#{version_parts[2]}" : ''}"
+end
+
 desc 'Perform a release'
 task 'perform_release' do
 
@@ -29,13 +34,7 @@ task 'perform_release' do
     stage('ExtractVersion', 'Extract the last version from CHANGELOG.md and derive next version unless specified', :always_run => true) do
       changelog = IO.read('CHANGELOG.md')
       ENV['PREVIOUS_PRODUCT_VERSION'] ||= changelog[/^### \[v(\d+\.\d+(\.\d+)?)\]/, 1] || '0.00'
-
-      next_version = ENV['PRODUCT_VERSION']
-      unless next_version
-        version_parts = ENV['PREVIOUS_PRODUCT_VERSION'].split('.')
-        next_version = "#{version_parts[0]}.#{sprintf('%02d', version_parts[1].to_i + 1)}#{version_parts.length > 2 ? ".#{version_parts[2]}" : ''}"
-        ENV['PRODUCT_VERSION'] = next_version
-      end
+      ENV['PRODUCT_VERSION'] ||= calc_next_version(ENV['PREVIOUS_PRODUCT_VERSION'])
 
       # Also initialize release date if required
       ENV['RELEASE_DATE'] ||= Time.now.strftime('%Y-%m-%d')
@@ -182,6 +181,24 @@ HEADER
       `bundle exec zapwhite`
       sh 'git add CHANGELOG.md'
       sh 'git commit -m "Update CHANGELOG.md in preparation for next development iteration"'
+    end
+
+    stage('PatchStatisticsPostRelease', 'Copy the statistics forward to prepare for next development iteration') do
+      filename = 'downstream-test/src/test/resources/fixtures/statistics.properties'
+      current_version = ENV['PRODUCT_VERSION']
+      next_version = calc_next_version(ENV['PRODUCT_VERSION'])
+      pattern = /^#{current_version}\./
+
+      lines = IO.read(filename).split("\n")
+      lines +=
+        lines
+          .select{|line| line =~ pattern}
+          .collect{|line| line.gsub("#{current_version}.","#{next_version}.")}
+
+      IO.write(filename, lines.sort.uniq.join("\n") + "\n")
+
+      sh "git add #{filename}"
+      sh 'git commit -m "Update statistics in preparation for next development iteration"'
     end
 
     stage('PushChanges', 'Push changes to git repository') do
