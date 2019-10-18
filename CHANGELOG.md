@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.135](https://github.com/react4j/react4j/tree/v0.135) (2019-10-18) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.134...v0.135) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.134&new=0.135)
+
+The release includes 1 potentially breaking API change and 1 potentially breaking API change.
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.arez` artifacts to version `0.151`.
 * Add some additional nullability annotations to the props objects defined in the `react4j-dom` module.
