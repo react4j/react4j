@@ -3,7 +3,7 @@ package com.example.on_prop_change;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
-import java.util.ArrayList;
+import java.util.BitSet;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,7 +40,7 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
   }
 
   @Override
-  protected ArrayList getMyProp() {
+  protected BitSet getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

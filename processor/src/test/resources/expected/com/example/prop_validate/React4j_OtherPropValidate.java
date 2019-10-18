@@ -3,7 +3,7 @@ package com.example.prop_validate;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
-import java.util.ArrayList;
+import java.util.BitSet;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +39,7 @@ abstract class React4j_OtherPropValidate extends OtherPropValidate {
   }
 
   @Override
-  protected ArrayList getMyProp() {
+  protected BitSet getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {
@@ -50,7 +50,7 @@ abstract class React4j_OtherPropValidate extends OtherPropValidate {
   private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
     final Object raw$myProp = props.get( Props.myProp );
     if ( null != raw$myProp ) {
-      final ArrayList typed$myProp = Js.cast( raw$myProp );
+      final BitSet typed$myProp = Js.cast( raw$myProp );
       validateMyProp( typed$myProp );
     }
   }

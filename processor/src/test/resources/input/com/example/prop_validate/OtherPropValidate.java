@@ -1,6 +1,7 @@
 package com.example.prop_validate;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
@@ -12,12 +13,12 @@ abstract class OtherPropValidate
   extends Component
 {
   @PropValidate
-  void validateMyProp( ArrayList prop )
+  void validateMyProp( BitSet prop )
   {
   }
 
   @Prop
-  protected abstract ArrayList getMyProp();
+  protected abstract BitSet getMyProp();
 
   @Override
   protected ReactNode render()

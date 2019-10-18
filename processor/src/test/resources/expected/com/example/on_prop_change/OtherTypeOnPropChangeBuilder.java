@@ -1,6 +1,6 @@
 package com.example.on_prop_change;
 
-import java.util.ArrayList;
+import java.util.BitSet;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import react4j.ReactElement;
@@ -12,13 +12,13 @@ class OtherTypeOnPropChangeBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(final ArrayList myProp) {
+  static ReactNode myProp(final BitSet myProp) {
     return new Builder().myProp( myProp );
   }
 
   public interface Step1 {
     @Nonnull
-    ReactNode myProp(ArrayList myProp);
+    ReactNode myProp(BitSet myProp);
   }
 
   private static class Builder implements Step1 {
@@ -26,7 +26,7 @@ class OtherTypeOnPropChangeBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(final ArrayList myProp) {
+    public final ReactNode myProp(final BitSet myProp) {
       _element.props().set( React4j_OtherTypeOnPropChange.Props.myProp, myProp );
       return build();
     }

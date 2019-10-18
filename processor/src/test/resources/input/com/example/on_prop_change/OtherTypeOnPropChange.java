@@ -1,6 +1,6 @@
 package com.example.on_prop_change;
 
-import java.util.ArrayList;
+import java.util.BitSet;
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
@@ -12,12 +12,12 @@ abstract class OtherTypeOnPropChange
   extends Component
 {
   @OnPropChange
-  void onMyPropChange( ArrayList myProp )
+  void onMyPropChange( BitSet myProp )
   {
   }
 
   @Prop
-  protected abstract ArrayList getMyProp();
+  protected abstract BitSet getMyProp();
 
   @Override
   protected ReactNode render()
