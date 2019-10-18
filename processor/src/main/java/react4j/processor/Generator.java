@@ -874,7 +874,7 @@ final class Generator
       addModifiers( Modifier.PROTECTED, Modifier.ABSTRACT ).
       addAnnotation( NONNULL_CLASSNAME ).
       addAnnotation( OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME ).
-      returns( OBSERVABLE_CLASSNAME );
+      returns( ParameterizedTypeName.get( OBSERVABLE_CLASSNAME, WildcardTypeName.subtypeOf( TypeName.OBJECT ) ) );
   }
 
   @Nonnull

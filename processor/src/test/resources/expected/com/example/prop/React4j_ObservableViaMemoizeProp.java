@@ -57,7 +57,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
 
   @Nonnull
   @ObservableValueRef
-  protected abstract ObservableValue getValueObservableValue();
+  protected abstract ObservableValue<?> getValueObservableValue();
 
   @Action(
       verifyRequired = false
