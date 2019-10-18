@@ -34,7 +34,7 @@ define 'react4j' do
     pom.include_transitive_dependencies << artifact(:elemental2_promise)
     pom.include_transitive_dependencies << artifact(:arez_core)
     pom.include_transitive_dependencies << artifact(:braincheck)
-    pom.dependency_filter = Proc.new {|dep| dep[:group].to_s != 'com.google.gwt' && dep[:group].to_s != 'com.google.jsinterop' && dep[:scope].to_s != 'test' && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-core') && (dep[:group].to_s != 'org.realityforge.com.google.elemental2' || dep[:id].to_s == 'elemental2-promise') && dep[:group].to_s != 'org.realityforge.org.jetbrains.annotations' && dep[:scope].to_s != 'test'}
+    pom.dependency_filter = Proc.new { |dep| dep[:group].to_s != 'com.google.gwt' && dep[:group].to_s != 'com.google.jsinterop' && dep[:scope].to_s != 'test' && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-core') && (dep[:group].to_s != 'org.realityforge.com.google.elemental2' || dep[:id].to_s == 'elemental2-promise') && dep[:group].to_s != 'org.realityforge.org.jetbrains.annotations' && dep[:scope].to_s != 'test' }
 
     project.processorpath << artifacts(:grim_processor, :javax_json)
 
@@ -68,7 +68,7 @@ define 'react4j' do
   define 'dom' do
     pom.include_transitive_dependencies << project('core').package(:jar)
     pom.include_transitive_dependencies << artifact(:elemental2_dom)
-    pom.dependency_filter = Proc.new {|dep| !project('core').compile.dependencies.include?(dep[:artifact]) && dep[:id].to_s != 'elemental2-promise' && dep[:scope].to_s != 'test'}
+    pom.dependency_filter = Proc.new { |dep| !project('core').compile.dependencies.include?(dep[:artifact]) && dep[:id].to_s != 'elemental2-promise' && dep[:scope].to_s != 'test' }
 
     project.processorpath << artifacts(:grim_processor, :javax_json)
 
@@ -132,7 +132,7 @@ define 'react4j' do
 
   desc 'The Annotation processor'
   define 'processor' do
-    pom.dependency_filter = Proc.new {|_| false}
+    pom.dependency_filter = Proc.new { |_| false }
 
     project.enable_annotation_processor = true
 
@@ -311,6 +311,36 @@ define 'react4j' do
                               :start_javascript_debugger => false,
                               :vm_parameters => '-Xmx2G',
                               :shell_parameters => "-port 8888 -codeServerPort 8889 -bindAddress 0.0.0.0 -war #{_(:generated, 'gwt-export')}/")
+  end
+
+  ipr.add_component('JavaProjectCodeInsightSettings') do |xml|
+    xml.tag!('excluded-names') do
+      xml << '<name>com.sun.istack.internal.NotNull</name>'
+      xml << '<name>com.sun.istack.internal.Nullable</name>'
+      xml << '<name>org.jetbrains.annotations.Nullable</name>'
+      xml << '<name>org.jetbrains.annotations.NotNull</name>'
+      xml << '<name>org.testng.AssertJUnit</name>'
+    end
+  end
+  ipr.add_component('NullableNotNullManager') do |component|
+    component.option :name => 'myDefaultNullable', :value => 'javax.annotation.Nullable'
+    component.option :name => 'myDefaultNotNull', :value => 'javax.annotation.Nonnull'
+    component.option :name => 'myNullables' do |option|
+      option.value do |value|
+        value.list :size => '2' do |list|
+          list.item :index => '0', :class => 'java.lang.String', :itemvalue => 'org.jetbrains.annotations.Nullable'
+          list.item :index => '1', :class => 'java.lang.String', :itemvalue => 'javax.annotation.Nullable'
+        end
+      end
+    end
+    component.option :name => 'myNotNulls' do |option|
+      option.value do |value|
+        value.list :size => '2' do |list|
+          list.item :index => '0', :class => 'java.lang.String', :itemvalue => 'org.jetbrains.annotations.NotNull'
+          list.item :index => '1', :class => 'java.lang.String', :itemvalue => 'javax.annotation.Nonnull'
+        end
+      end
+    end
   end
 end
 
