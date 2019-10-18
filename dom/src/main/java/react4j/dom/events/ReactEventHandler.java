@@ -6,5 +6,5 @@ import jsinterop.annotations.JsFunction;
 @FunctionalInterface
 public interface ReactEventHandler
 {
-  void onReactEvent( SyntheticEvent event );
+  void onReactEvent( SyntheticEvent<?> event );
 }

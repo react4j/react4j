@@ -27,7 +27,7 @@ import static org.realityforge.braincheck.Guards.*;
 
 @SuppressWarnings( "unused" )
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-public class HtmlGlobalFields<T extends HtmlGlobalFields>
+public class HtmlGlobalFields<T extends HtmlGlobalFields<T>>
 {
   @Nullable
   public ReactNode children;
