@@ -6,7 +6,7 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-public class PublicReactComponentBuilder {
+public final class PublicReactComponentBuilder {
   private PublicReactComponentBuilder() {
   }
 

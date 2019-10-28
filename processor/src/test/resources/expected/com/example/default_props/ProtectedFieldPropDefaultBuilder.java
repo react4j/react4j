@@ -7,7 +7,7 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class ProtectedFieldPropDefaultBuilder {
+final class ProtectedFieldPropDefaultBuilder {
   private ProtectedFieldPropDefaultBuilder() {
   }
 

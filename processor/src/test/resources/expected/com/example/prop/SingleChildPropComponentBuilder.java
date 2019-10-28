@@ -7,7 +7,7 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class SingleChildPropComponentBuilder {
+final class SingleChildPropComponentBuilder {
   private SingleChildPropComponentBuilder() {
   }
 

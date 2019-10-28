@@ -6,7 +6,7 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class ExplicitNameOnPropChangeBuilder {
+final class ExplicitNameOnPropChangeBuilder {
   private ExplicitNameOnPropChangeBuilder() {
   }
 

@@ -113,7 +113,7 @@ final class Generator
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
     addGeneratedAnnotation( descriptor, builder );
-
+    builder.addModifiers( Modifier.FINAL );
     ProcessorUtil.copyAccessModifiers( descriptor.getElement(), builder );
 
     // Private constructor so can not instantiate

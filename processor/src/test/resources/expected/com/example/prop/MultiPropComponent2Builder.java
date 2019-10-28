@@ -8,7 +8,7 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class MultiPropComponent2Builder {
+final class MultiPropComponent2Builder {
   private MultiPropComponent2Builder() {
   }
 

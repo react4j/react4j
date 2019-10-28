@@ -6,7 +6,7 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class PropTypeShortBuilder {
+final class PropTypeShortBuilder {
   private PropTypeShortBuilder() {
   }
 

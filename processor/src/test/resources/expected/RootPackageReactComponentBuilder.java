@@ -4,7 +4,7 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class RootPackageReactComponentBuilder {
+final class RootPackageReactComponentBuilder {
   private RootPackageReactComponentBuilder() {
   }
 

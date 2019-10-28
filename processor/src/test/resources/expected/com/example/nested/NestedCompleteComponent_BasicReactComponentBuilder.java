@@ -6,7 +6,7 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-class NestedCompleteComponent_BasicReactComponentBuilder {
+final class NestedCompleteComponent_BasicReactComponentBuilder {
   private NestedCompleteComponent_BasicReactComponentBuilder() {
   }
 
