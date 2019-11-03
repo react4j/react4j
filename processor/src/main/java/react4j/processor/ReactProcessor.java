@@ -49,7 +49,7 @@ import static javax.tools.Diagnostic.Kind.*;
  */
 @SuppressWarnings( "Duplicates" )
 @AutoService( Processor.class )
-@SupportedAnnotationTypes( { "react4j.annotations.*" } )
+@SupportedAnnotationTypes( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME )
 @SupportedSourceVersion( SourceVersion.RELEASE_8 )
 public final class ReactProcessor
   extends AbstractProcessor
