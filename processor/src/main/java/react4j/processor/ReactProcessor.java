@@ -1,7 +1,6 @@
 package react4j.processor;
 
 import com.google.auto.common.SuperficialValidation;
-import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -48,7 +46,6 @@ import static javax.tools.Diagnostic.Kind.*;
  * Annotation processor that analyzes React annotated source and generates models from the annotations.
  */
 @SuppressWarnings( "Duplicates" )
-@AutoService( Processor.class )
 @SupportedAnnotationTypes( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME )
 @SupportedSourceVersion( SourceVersion.RELEASE_8 )
 public final class ReactProcessor

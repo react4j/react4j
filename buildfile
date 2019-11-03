@@ -136,8 +136,7 @@ define 'react4j' do
 
     project.enable_annotation_processor = true
 
-    compile.with :autoservice,
-                 :autocommon,
+    compile.with :autocommon,
                  :javapoet,
                  :guava,
                  :javax_annotation
