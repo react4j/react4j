@@ -31,6 +31,8 @@ define 'react4j' do
   desc 'React4j core binding'
   define 'core' do
     pom.include_transitive_dependencies << artifact(:javax_annotation)
+    pom.include_transitive_dependencies << artifact(:jetbrains_annotations)
+    pom.include_transitive_dependencies << artifact(:grim_annotations)
     pom.include_transitive_dependencies << artifact(:elemental2_promise)
     pom.include_transitive_dependencies << artifact(:elemental2_core)
     pom.include_transitive_dependencies << artifact(:arez_core)

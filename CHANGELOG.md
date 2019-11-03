@@ -6,6 +6,7 @@
 * Restrict the annotation processor so that it only processes classes annotated with `react4j.annotations.ReactComponent` rather than any classes annotated with `react4j.annotations.*`. This produces a small speedup when base react4j annotated classes intended for extension are included in the compile.
 * Remove the `com.google.auto.service:auto-service` dependency as it offers little value given that it only automates the generation of a single 1 line file that has been stable over the entire lifetime of the product.
 * Add the `elemental-core` dependency to the `react4j-core` pom. The new `j2cl-maven-plugin` under development requires that dependencies be explicitly declared.
+* Avoid excluding transitive dependencies of the `org.realityforge.grim:grim-annotations` and the `org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations` dependencies when defining the `react4j-core` pom.
 
 ### [v0.135](https://github.com/react4j/react4j/tree/v0.135) (2019-10-18) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.134...v0.135) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.134&new=0.135)
 
