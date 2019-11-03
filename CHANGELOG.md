@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.2.0`.
 * Make the generated `*Builder` class final.
 * Restrict the annotation processor so that it only processes classes annotated with `react4j.annotations.ReactComponent` rather than any classes annotated with `react4j.annotations.*`. This produces a small speedup when base react4j annotated classes intended for extension are included in the compile.
 * Remove the `com.google.auto.service:auto-service` dependency as it offers little value given that it only automates the generation of a single 1 line file that has been stable over the entire lifetime of the product.
