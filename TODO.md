@@ -6,6 +6,10 @@ complete as there is too much un-said.
 
 ### Very High Priority
 
+* Add example with native react component
+
+* Add maven j2cl plugin build variant of `react4j-todomvc` back into build cycle.
+
 * Bazel integration. Also build processor somehow. Will also need some mechanism for keeping the build
   artifacts inline. Maybe should have a tool that generates a snippet from build.yaml that can be included
   in WORKSPACE which would mean it always aligns.
