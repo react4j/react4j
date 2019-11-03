@@ -42,8 +42,8 @@ React.Component.prototype.forceUpdate = function(callback) {};
 React.Component.prototype.setState = function(nextState, callback) {};
 
 /**
- * @protected
  * @return {void}
+ * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.componentDidMount = function() {};
 
@@ -51,7 +51,7 @@ React.Component.prototype.componentDidMount = function() {};
  * @param {Object} nextProps
  * @param {Object} nextState
  * @return {boolean}
- * @protected
+ * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.shouldComponentUpdate = function(nextProps, nextState) {};
 
@@ -59,30 +59,30 @@ React.Component.prototype.shouldComponentUpdate = function(nextProps, nextState)
  * @param {Object} prevProps
  * @param {Object} prevState
  * @return {void}
- * @protected
+ * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.componentDidUpdate = function(prevProps, prevState) {};
 
 /**
- * @protected
  * @return {void}
+ * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.componentWillUnmount = function() {};
 
 /**
- * @protected
  * @return {void}
+ * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.componentDidCatch = function() {};
 
 /**
- * @protected
+ * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.getSnapshotBeforeUpdate = function() {};
 
 /**
  * @return {React.Component}
- * @protected
+ * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.render = function() {};
 
