@@ -1,0 +1,59 @@
+[
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'jsinterop.annotations.JsOverlay'.",
+    "element": "method java.lang.Object react4j.dom.ReactDOM::render(react4j.ReactNode, elemental2.dom.Element, react4j.dom.ReactDOM.RenderCallbackFn)",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@jsinterop.annotations.JsOverlay",
+      "annotationType": "jsinterop.annotations.JsOverlay",
+      "classQualifiedName": "react4j.dom.ReactDOM",
+      "classSimpleName": "ReactDOM",
+      "elementKind": "method",
+      "methodName": "render",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.annotation.removed",
+    "description": "Element no longer annotated with 'jsinterop.annotations.JsMethod'.",
+    "element": "method java.lang.Object react4j.dom.ReactDOM::render(react4j.ReactNode, elemental2.dom.Element, react4j.dom.ReactDOM.RenderCallbackFn)",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@jsinterop.annotations.JsMethod",
+      "annotationType": "jsinterop.annotations.JsMethod",
+      "classQualifiedName": "react4j.dom.ReactDOM",
+      "classSimpleName": "ReactDOM",
+      "elementKind": "method",
+      "methodName": "render",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "method react4j.ReactNode react4j.ReactElement::createStrictMode(react4j.ReactNode[])",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "createStrictMode",
+      "package": "react4j"
+    }
+  }
+]
