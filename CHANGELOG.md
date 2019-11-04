@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.arez` artifacts to version `0.152`.
 * Ensure that whitelisted annotations on constructor parameters to react components are copied to the generated subclass. The whitelisted annotations consist of `@Deprecated`, `@Nonnull` and `@Nullable`.
 * Upgrade dagger to version `2.25.2`.
 * Add `@java.lang.SuppressWarnings` to the list of whitelisted annotations that are copied to the generated methods, the generated constructors, the generated method parameters and the generated constructor parameters. This enables suppression of deprecation and raw type warnings to propagate to the generated code.
