@@ -6,9 +6,15 @@ complete as there is too much un-said.
 
 ### Very High Priority
 
-* Add example with native react component
+* Add example with native react component.
+  See https://github.com/GWTReact/gwt-react-examples/blob/master/src/gwt/react/js_react_component_interop/client/App.java
+  for an example with `gwt-react`
 
-* Add maven j2cl plugin build variant of `react4j-todomvc` back into build cycle.
+* Add maven j2cl plugin build variant of `react4j-todomvc` back into build cycle. Consider basing work off
+  https://github.com/Vertispan/connected/blob/j2cl/pom.xml
+
+* Add to build process so that every published packaged is attempted to be built using bazel to
+  ensure it's dependencies align.
 
 * Bazel integration. Also build processor somehow. Will also need some mechanism for keeping the build
   artifacts inline. Maybe should have a tool that generates a snippet from build.yaml that can be included
