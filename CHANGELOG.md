@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Update the `ReactDOM.render(...)` method so that it always wraps the supplied component using `<StrictMode>` component when invariant checking is enabled.
+* Re-enable compilation against j2cl to ensure that the library stays compatible going forward.
 
 ### [v0.136](https://github.com/react4j/react4j/tree/v0.136) (2019-11-04) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.135...v0.136)
 
