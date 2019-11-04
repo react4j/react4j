@@ -12,9 +12,6 @@ EXAMPLES = {
   'hello_world' => 'react4j.examples.hello_world.HelloWorld'
 }
 
-# Disable testing against J2CL until the build infrastructure can be upgraded
-ENV['J2CL'] = 'no'
-
 desc 'React4j: An opinionated Java binding for React'
 define 'react4j' do
   project.group = 'org.realityforge.react4j'

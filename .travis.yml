@@ -26,6 +26,3 @@ after_success:
 - bash <(curl -s https://codecov.io/bash)
 git:
   depth: false
-env:
-  global:
-  - J2CL=no
