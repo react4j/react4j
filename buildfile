@@ -6,7 +6,22 @@ require 'buildr/jacoco'
 require 'buildr/top_level_generate_dir'
 
 DAGGER_RUNTIME_DEPS = [:javax_inject, :dagger_core]
-DAGGER_PROCESSOR_DEPS = [:javax_inject, :dagger_core, :dagger_spi, :dagger_producers, :dagger_compiler, :googlejavaformat, :errorprone, :javapoet, :guava]
+DAGGER_PROCESSOR_DEPS =
+  [
+    :javax_inject,
+    :dagger_core,
+    :dagger_producers,
+    :dagger_spi,
+    :dagger_compiler,
+    :guava_failureaccess,
+    :kotlinx_metadata_jvm,
+    :kotlin_stdlib,
+    :kotlin_stdlib_common,
+    :googlejavaformat,
+    :errorprone,
+    :javapoet,
+    :guava
+  ]
 
 EXAMPLES = {
   'hello_world' => 'react4j.examples.hello_world.HelloWorld'
