@@ -101,7 +101,7 @@ abstract class AbstractReactProcessorTest
     {
       final Compilation compilation =
         Compiler.javac()
-          .withOptions( Collections.singletonList( "-parameters" ) )
+          .withOptions( Arrays.asList( "-Xlint:all,-processing", "-implicit:none", "-parameters" ) )
           .withProcessors( new ReactProcessor(), new ArezProcessor() )
           .compile( inputs );
 
@@ -189,9 +189,9 @@ abstract class AbstractReactProcessorTest
       outputs.stream().skip( 1 ).map( this::fixture ).toArray( JavaFileObject[]::new );
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( inputs ).
-      withCompilerOptions( "-parameters" ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-parameters" ).
       processedWith( new ReactProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
+      compilesWithoutWarnings().
       and().
       generatesSources( firstExpected, restExpected );
   }
