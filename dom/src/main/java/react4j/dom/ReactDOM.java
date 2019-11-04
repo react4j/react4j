@@ -8,6 +8,8 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import react4j.React;
+import react4j.ReactElement;
 import react4j.ReactNode;
 
 /**
@@ -90,10 +92,19 @@ public class ReactDOM
    * @return a reference to the created React Component, DOM Node, Portal or null (stateless components).
    */
   @Nullable
-  @JsMethod
-  public static native Object render( @Nonnull ReactNode node,
-                                      @Nonnull Element container,
-                                      @Nullable RenderCallbackFn onUpdate );
+  @JsOverlay
+  public static Object render( @Nonnull final ReactNode node,
+                               @Nonnull final Element container,
+                               @Nullable final RenderCallbackFn onUpdate )
+  {
+    return _render( React.shouldCheckInvariants() ? ReactElement.createStrictMode( node ) : node, container, onUpdate );
+  }
+
+  @Nullable
+  @JsMethod( name = "render" )
+  private static native Object _render( @Nonnull ReactNode node,
+                                        @Nonnull Element container,
+                                        @Nullable RenderCallbackFn onUpdate );
 
   /**
    * Render a React element into the DOM in the supplied container.
