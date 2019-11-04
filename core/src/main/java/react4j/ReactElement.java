@@ -123,6 +123,7 @@ public class ReactElement
    * @return a new React.StrictMode component.
    */
   @JsOverlay
+  @Nonnull
   public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
   {
     return ReactElement.createRawElement( React.StrictMode,
