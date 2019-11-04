@@ -6,10 +6,6 @@ complete as there is too much un-said.
 
 ### Very High Priority
 
-* Add example with native react component.
-  See https://github.com/GWTReact/gwt-react-examples/blob/master/src/gwt/react/js_react_component_interop/client/App.java
-  for an example with `gwt-react`
-
 * Add maven j2cl plugin build variant of `react4j-todomvc` back into build cycle. Consider basing work off
   https://github.com/Vertispan/connected/blob/j2cl/pom.xml
 
