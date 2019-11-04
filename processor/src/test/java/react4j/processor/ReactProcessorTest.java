@@ -57,6 +57,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.default_props.PublicMethodPropDefault", false },
         new Object[]{ "com.example.inject.BasicReactComponent", true },
         new Object[]{ "com.example.inject.ConstructorInjectComponent", true },
+        new Object[]{ "com.example.inject.ConstructorInjectRawTypeComponent", true },
         new Object[]{ "com.example.inject.MixedInjectComponent", true },
         new Object[]{ "com.example.inject.PublicReactComponent", true },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent", false },

@@ -199,6 +199,18 @@ final class ProcessorUtil
   }
 
   static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                          @Nonnull final TypeSpec.Builder builder )
+  {
+    for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )
+    {
+      if ( shouldCopyAnnotation( annotation.getAnnotationType().toString() ) )
+      {
+        builder.addAnnotation( AnnotationSpec.get( annotation ) );
+      }
+    }
+  }
+
+  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
                                           @Nonnull final MethodSpec.Builder builder )
   {
     for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )

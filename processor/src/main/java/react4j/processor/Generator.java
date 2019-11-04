@@ -576,6 +576,7 @@ final class Generator
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getEnhancedClassName() );
     builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
+    ProcessorUtil.copyWhitelistedAnnotations( descriptor.getElement(), builder );
 
     builder.superclass( descriptor.getComponentType() );
 

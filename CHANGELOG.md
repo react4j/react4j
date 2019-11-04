@@ -5,6 +5,7 @@
 * Ensure that whitelisted annotations on constructor parameters to react components are copied to the generated subclass. The whitelisted annotations consist of `@Deprecated`, `@Nonnull` and `@Nullable`.
 * Upgrade dagger to version `2.25.2`.
 * Add `@java.lang.SuppressWarnings` to the list of whitelisted annotations that are copied to the generated methods, the generated constructors, the generated method parameters and the generated constructor parameters. This enables suppression of deprecation and raw type warnings to propagate to the generated code.
+* Copy whitelisted annotations from types to generated subtype and from the constructors to the paired constructor in the generated subtype. This makes it possible to suppress certain type errors in generated subclasses.
 
 ### [v0.137](https://github.com/react4j/react4j/tree/v0.137) (2019-11-04) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.136...v0.137) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.136&new=0.137)
 
