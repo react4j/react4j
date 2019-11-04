@@ -27,7 +27,7 @@ import react4j.internal.OnShouldComponentUpdate;
 abstract class React4j_MixedInjectComponent extends MixedInjectComponent {
   React4j_MixedInjectComponent(
       @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent,
-      final Integer anotherParam, final String blah) {
+      @Nonnull final Integer anotherParam, final String blah) {
     super( anotherParam, blah );
     bindComponent( $$react4j$$_nativeComponent );
   }

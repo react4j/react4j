@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Ensure that whitelisted annotations on constructor parameters to react components are copied to the generated subclass. The whitelisted annotations consist of `@Deprecated`, `@Nonnull` and `@Nullable`.
+
 ### [v0.137](https://github.com/react4j/react4j/tree/v0.137) (2019-11-04) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.136...v0.137) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.136&new=0.137)
 
 Changes in this release:

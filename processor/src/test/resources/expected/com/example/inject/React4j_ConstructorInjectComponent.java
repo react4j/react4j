@@ -27,7 +27,7 @@ import react4j.internal.OnShouldComponentUpdate;
 abstract class React4j_ConstructorInjectComponent extends ConstructorInjectComponent {
   React4j_ConstructorInjectComponent(
       @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent,
-      final String someParam) {
+      @Nonnull final String someParam) {
     super( someParam );
     bindComponent( $$react4j$$_nativeComponent );
   }

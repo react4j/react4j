@@ -724,7 +724,10 @@ final class Generator
         sb.append( "$N" );
         final String name = element.getSimpleName().toString();
         params.add( name );
-        ctor.addParameter( ParameterSpec.builder( TypeName.get( element.asType() ), name, Modifier.FINAL ).build() );
+        final ParameterSpec.Builder ctorParameter =
+          ParameterSpec.builder( TypeName.get( element.asType() ), name, Modifier.FINAL );
+        ProcessorUtil.copyWhitelistedAnnotations( element, ctorParameter );
+        ctor.addParameter( ctorParameter.build() );
       }
       sb.append( " )" );
       ctor.addStatement( sb.toString(), params.toArray() );

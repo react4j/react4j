@@ -1,5 +1,6 @@
 package com.example.inject;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import react4j.Component;
 import react4j.ReactNode;
@@ -12,7 +13,7 @@ abstract class MixedInjectComponent
   @Inject
   String someParam;
 
-  MixedInjectComponent( final Integer anotherParam, String blah )
+  MixedInjectComponent( @Nonnull final Integer anotherParam, String blah )
   {
   }
 
