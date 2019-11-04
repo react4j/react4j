@@ -38,6 +38,7 @@ abstract class React4j_MutablePropAndPostConstructWithSuppressComponent extends 
     return componentConstructor;
   }
 
+  @SuppressWarnings("React4j:MutablePropAccessedInPostConstruct")
   @Override
   protected String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
