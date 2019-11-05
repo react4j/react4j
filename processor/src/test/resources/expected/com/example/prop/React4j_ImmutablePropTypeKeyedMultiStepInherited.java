@@ -58,6 +58,7 @@ abstract class React4j_ImmutablePropTypeKeyedMultiStepInherited extends Immutabl
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

@@ -77,6 +77,7 @@ abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreU
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

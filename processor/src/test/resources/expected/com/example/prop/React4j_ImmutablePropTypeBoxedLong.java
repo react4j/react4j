@@ -57,6 +57,7 @@ abstract class React4j_ImmutablePropTypeBoxedLong extends ImmutablePropTypeBoxed
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

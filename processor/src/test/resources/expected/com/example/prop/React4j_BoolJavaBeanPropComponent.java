@@ -57,6 +57,7 @@ abstract class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropCompone
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

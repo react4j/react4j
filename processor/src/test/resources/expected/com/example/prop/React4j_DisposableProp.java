@@ -132,6 +132,7 @@ abstract class React4j_DisposableProp extends DisposableProp {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

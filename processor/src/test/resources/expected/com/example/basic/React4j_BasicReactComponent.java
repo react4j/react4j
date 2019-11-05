@@ -48,6 +48,7 @@ abstract class React4j_BasicReactComponent extends BasicReactComponent {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

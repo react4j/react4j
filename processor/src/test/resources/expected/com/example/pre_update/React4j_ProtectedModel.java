@@ -53,6 +53,7 @@ abstract class React4j_ProtectedModel extends ProtectedModel {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

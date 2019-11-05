@@ -68,6 +68,7 @@ abstract class React4j_DoubleOnPropChange extends DoubleOnPropChange {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

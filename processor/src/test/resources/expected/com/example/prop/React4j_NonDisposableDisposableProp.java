@@ -128,6 +128,7 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

@@ -56,6 +56,7 @@ abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

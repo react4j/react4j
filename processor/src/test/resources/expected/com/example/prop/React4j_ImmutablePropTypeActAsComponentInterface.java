@@ -70,6 +70,7 @@ abstract class React4j_ImmutablePropTypeActAsComponentInterface extends Immutabl
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

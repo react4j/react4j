@@ -49,6 +49,7 @@ abstract class NestedReactComponent_React4j_BasicReactComponent extends NestedRe
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

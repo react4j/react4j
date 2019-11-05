@@ -57,6 +57,7 @@ abstract class React4j_ImmutablePropTypeBoxedFloat extends ImmutablePropTypeBoxe
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

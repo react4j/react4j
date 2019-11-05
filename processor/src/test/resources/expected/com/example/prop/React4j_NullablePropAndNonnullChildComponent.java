@@ -84,6 +84,7 @@ abstract class React4j_NullablePropAndNonnullChildComponent extends NullableProp
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

@@ -70,6 +70,7 @@ abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef e
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

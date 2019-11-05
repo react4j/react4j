@@ -57,6 +57,7 @@ abstract class React4j_ImmutablePropTypeBoxedDouble extends ImmutablePropTypeBox
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

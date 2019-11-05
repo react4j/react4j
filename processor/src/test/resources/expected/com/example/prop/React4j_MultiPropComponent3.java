@@ -85,6 +85,7 @@ abstract class React4j_MultiPropComponent3 extends MultiPropComponent3 {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

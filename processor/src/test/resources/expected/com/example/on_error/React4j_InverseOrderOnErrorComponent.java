@@ -51,6 +51,7 @@ abstract class React4j_InverseOrderOnErrorComponent extends InverseOrderOnErrorC
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

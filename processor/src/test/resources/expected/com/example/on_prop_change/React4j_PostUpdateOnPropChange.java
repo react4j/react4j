@@ -75,6 +75,7 @@ abstract class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

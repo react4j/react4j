@@ -51,6 +51,7 @@ abstract class React4j_InfoOnlyOnErrorComponent extends InfoOnlyOnErrorComponent
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

@@ -138,6 +138,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

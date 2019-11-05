@@ -115,6 +115,7 @@ abstract class React4j_TrackingComponent extends TrackingComponent {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

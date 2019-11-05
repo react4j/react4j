@@ -58,6 +58,7 @@ abstract class React4j_ImmutablePropTypeKeyedInherited extends ImmutablePropType
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

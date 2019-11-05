@@ -54,6 +54,7 @@ abstract class React4j_ImmutablePropTypePrimitiveChar extends ImmutablePropTypeP
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

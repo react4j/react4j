@@ -121,6 +121,7 @@ abstract class React4j_PublicMemoizeComponent extends PublicMemoizeComponent {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

@@ -122,6 +122,7 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

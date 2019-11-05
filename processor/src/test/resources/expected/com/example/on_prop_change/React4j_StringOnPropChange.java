@@ -72,6 +72,7 @@ abstract class React4j_StringOnPropChange extends StringOnPropChange {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

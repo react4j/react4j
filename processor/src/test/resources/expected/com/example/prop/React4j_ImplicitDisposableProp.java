@@ -132,6 +132,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

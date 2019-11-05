@@ -100,6 +100,7 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

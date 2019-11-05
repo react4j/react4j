@@ -61,6 +61,7 @@ abstract class React4j_CustomNameProp extends CustomNameProp {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

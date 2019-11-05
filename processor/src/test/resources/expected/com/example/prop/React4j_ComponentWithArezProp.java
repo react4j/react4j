@@ -144,6 +144,7 @@ abstract class React4j_ComponentWithArezProp extends ComponentWithArezProp {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

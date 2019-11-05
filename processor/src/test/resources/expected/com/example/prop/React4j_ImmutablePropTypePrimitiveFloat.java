@@ -54,6 +54,7 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

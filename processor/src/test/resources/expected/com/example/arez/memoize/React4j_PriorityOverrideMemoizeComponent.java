@@ -116,6 +116,7 @@ abstract class React4j_PriorityOverrideMemoizeComponent extends PriorityOverride
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

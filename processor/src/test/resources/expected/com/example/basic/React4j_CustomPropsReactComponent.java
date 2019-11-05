@@ -57,6 +57,7 @@ abstract class React4j_CustomPropsReactComponent extends CustomPropsReactCompone
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

@@ -151,6 +151,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

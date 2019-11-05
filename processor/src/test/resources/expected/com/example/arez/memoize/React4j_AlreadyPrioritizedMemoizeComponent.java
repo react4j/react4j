@@ -116,6 +116,7 @@ abstract class React4j_AlreadyPrioritizedMemoizeComponent extends AlreadyPriorit
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

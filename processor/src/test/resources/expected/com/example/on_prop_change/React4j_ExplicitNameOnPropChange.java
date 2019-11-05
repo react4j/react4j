@@ -68,6 +68,7 @@ abstract class React4j_ExplicitNameOnPropChange extends ExplicitNameOnPropChange
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

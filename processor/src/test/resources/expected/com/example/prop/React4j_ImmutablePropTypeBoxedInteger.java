@@ -58,6 +58,7 @@ abstract class React4j_ImmutablePropTypeBoxedInteger extends ImmutablePropTypeBo
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

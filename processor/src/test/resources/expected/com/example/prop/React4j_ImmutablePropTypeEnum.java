@@ -57,6 +57,7 @@ abstract class React4j_ImmutablePropTypeEnum extends ImmutablePropTypeEnum {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

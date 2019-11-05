@@ -73,6 +73,7 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

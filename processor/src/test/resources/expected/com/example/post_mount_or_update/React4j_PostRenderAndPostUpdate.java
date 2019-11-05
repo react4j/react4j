@@ -65,6 +65,7 @@ abstract class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

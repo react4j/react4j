@@ -1524,11 +1524,10 @@ final class Generator
     // This field has been moved to a separate class to avoid a <clinit> on containing class as that forces
     // every call to React_MyComponent to first check <clinit> has been invoked.
     final FieldSpec.Builder field =
-      FieldSpec.builder( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME,
-                         "TYPE",
-                         Modifier.STATIC,
-                         Modifier.FINAL ).
-        initializer( "getConstructorFunction()" );
+      FieldSpec
+        .builder( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME, "TYPE", Modifier.STATIC, Modifier.FINAL )
+        .addAnnotation( NONNULL_CLASSNAME )
+        .initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
     return builder.build();

@@ -68,6 +68,7 @@ abstract class React4j_ByteOnPropChange extends ByteOnPropChange {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

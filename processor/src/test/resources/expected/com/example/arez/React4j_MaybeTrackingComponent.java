@@ -110,6 +110,7 @@ abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

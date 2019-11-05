@@ -61,6 +61,7 @@ abstract class React4j_ProtectedMethodPropDefault extends ProtectedMethodPropDef
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

@@ -69,6 +69,7 @@ abstract class React4j_NonnullOnPropChange extends NonnullOnPropChange {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

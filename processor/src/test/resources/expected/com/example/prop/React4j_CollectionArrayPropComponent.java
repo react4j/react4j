@@ -61,6 +61,7 @@ abstract class React4j_CollectionArrayPropComponent extends CollectionArrayPropC
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

@@ -98,6 +98,7 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

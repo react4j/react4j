@@ -115,6 +115,7 @@ abstract class React4j_BasicArezReactComponent extends BasicArezReactComponent {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

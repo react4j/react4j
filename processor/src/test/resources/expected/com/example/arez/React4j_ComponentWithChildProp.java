@@ -128,6 +128,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

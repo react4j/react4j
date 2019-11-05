@@ -49,6 +49,7 @@ abstract class React4j_NonArezHasArezFieldAnnotation extends NonArezHasArezField
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

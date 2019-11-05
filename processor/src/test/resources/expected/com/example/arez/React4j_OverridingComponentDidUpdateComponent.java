@@ -117,6 +117,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

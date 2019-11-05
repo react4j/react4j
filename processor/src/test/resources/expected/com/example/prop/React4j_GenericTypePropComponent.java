@@ -61,6 +61,7 @@ abstract class React4j_GenericTypePropComponent<T> extends GenericTypePropCompon
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

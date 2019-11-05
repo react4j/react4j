@@ -63,6 +63,7 @@ abstract class React4j_CollectionHashSetPropComponent extends CollectionHashSetP
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

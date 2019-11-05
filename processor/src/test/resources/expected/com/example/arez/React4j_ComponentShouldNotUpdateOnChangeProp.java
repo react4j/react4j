@@ -125,6 +125,7 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

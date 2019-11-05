@@ -122,6 +122,7 @@ abstract class React4j_KeepAliveMemoizeArezReactComponent extends KeepAliveMemoi
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

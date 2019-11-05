@@ -61,6 +61,7 @@ abstract class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

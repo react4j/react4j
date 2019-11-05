@@ -85,6 +85,7 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

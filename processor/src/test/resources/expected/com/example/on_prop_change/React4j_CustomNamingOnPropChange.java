@@ -96,6 +96,7 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

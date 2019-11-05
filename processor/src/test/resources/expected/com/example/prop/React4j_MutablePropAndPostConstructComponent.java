@@ -70,6 +70,7 @@ abstract class React4j_MutablePropAndPostConstructComponent extends MutablePropA
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

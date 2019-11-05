@@ -129,6 +129,7 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

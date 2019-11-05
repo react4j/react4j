@@ -61,6 +61,7 @@ abstract class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorf
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

@@ -68,6 +68,7 @@ abstract class React4j_FloatOnPropChange extends FloatOnPropChange {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

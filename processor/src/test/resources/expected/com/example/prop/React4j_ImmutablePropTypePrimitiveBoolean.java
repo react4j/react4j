@@ -54,6 +54,7 @@ abstract class React4j_ImmutablePropTypePrimitiveBoolean extends ImmutablePropTy
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

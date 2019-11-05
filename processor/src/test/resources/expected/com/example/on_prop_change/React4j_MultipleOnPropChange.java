@@ -90,6 +90,7 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 

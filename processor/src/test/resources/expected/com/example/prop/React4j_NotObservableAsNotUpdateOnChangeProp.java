@@ -131,6 +131,7 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
   }
 
   static final class Factory {
+    @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
