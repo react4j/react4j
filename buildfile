@@ -193,12 +193,12 @@ define 'react4j' do
     end
 
     test.using :testng
-    test.options[:properties] = { 'react4j.fixture_dir' => _('src/test/resources') }
+    test.options[:properties] = { 'react4j.fixture_dir' => _('src/test/fixtures') }
     test.options[:java_args] = ['-ea']
 
-    iml.test_source_directories << _('src/test/resources/input')
-    iml.test_source_directories << _('src/test/resources/expected')
-    iml.test_source_directories << _('src/test/resources/bad_input')
+    iml.test_source_directories << _('src/test/fixtures/input')
+    iml.test_source_directories << _('src/test/fixtures/expected')
+    iml.test_source_directories << _('src/test/fixtures/bad_input')
   end
 
   desc 'Test React4j in downstream projects'
@@ -311,7 +311,7 @@ define 'react4j' do
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
 
-  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/resources -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes")
+  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/fixtures -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes")
   ipr.add_component_from_artifact(:idea_codestyle)
 
   ipr.add_component('JavacSettings') do |xml|
