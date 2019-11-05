@@ -83,6 +83,7 @@ abstract class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate {
+    @Nonnull
     private React4j_PostUpdateOnPropChange $$react4j$$_component;
 
     @JsConstructor
@@ -109,6 +110,7 @@ abstract class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private React4j_PostUpdateOnPropChange $$react4j$$_component;
 
     @JsConstructor

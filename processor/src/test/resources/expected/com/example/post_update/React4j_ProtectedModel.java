@@ -60,6 +60,7 @@ abstract class React4j_ProtectedModel extends ProtectedModel {
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate {
+    @Nonnull
     private React4j_ProtectedModel $$react4j$$_component;
 
     @JsConstructor
@@ -86,6 +87,7 @@ abstract class React4j_ProtectedModel extends ProtectedModel {
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private React4j_ProtectedModel $$react4j$$_component;
 
     @JsConstructor

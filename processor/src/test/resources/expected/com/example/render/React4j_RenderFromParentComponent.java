@@ -52,6 +52,7 @@ abstract class React4j_RenderFromParentComponent extends RenderFromParentCompone
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
+    @Nonnull
     private React4j_RenderFromParentComponent $$react4j$$_component;
 
     @JsConstructor
@@ -73,6 +74,7 @@ abstract class React4j_RenderFromParentComponent extends RenderFromParentCompone
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private React4j_RenderFromParentComponent $$react4j$$_component;
 
     @JsConstructor

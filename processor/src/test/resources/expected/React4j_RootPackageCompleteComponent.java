@@ -91,6 +91,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
+    @Nonnull
     private React4j_RootPackageCompleteComponent $$react4j$$_component;
 
     @JsConstructor
@@ -129,6 +130,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
+    @Nonnull
     private React4j_RootPackageCompleteComponent $$react4j$$_component;
 
     @JsConstructor

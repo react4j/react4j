@@ -85,6 +85,7 @@ abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreU
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
+    @Nonnull
     private React4j_OnPropChangeAndPreUpdateModel $$react4j$$_component;
 
     @JsConstructor
@@ -118,6 +119,7 @@ abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreU
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
+    @Nonnull
     private React4j_OnPropChangeAndPreUpdateModel $$react4j$$_component;
 
     @JsConstructor

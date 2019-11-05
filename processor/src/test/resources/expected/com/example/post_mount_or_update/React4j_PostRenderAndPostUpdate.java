@@ -69,6 +69,7 @@ abstract class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate {
+    @Nonnull
     private React4j_PostRenderAndPostUpdate $$react4j$$_component;
 
     @JsConstructor
@@ -100,6 +101,7 @@ abstract class React4j_PostRenderAndPostUpdate extends PostRenderAndPostUpdate {
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private React4j_PostRenderAndPostUpdate $$react4j$$_component;
 
     @JsConstructor

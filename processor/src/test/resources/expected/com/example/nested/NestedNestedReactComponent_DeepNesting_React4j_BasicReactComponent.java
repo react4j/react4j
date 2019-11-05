@@ -53,6 +53,7 @@ abstract class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponen
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
+    @Nonnull
     private NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent $$react4j$$_component;
 
     @JsConstructor
@@ -74,6 +75,7 @@ abstract class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponen
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent $$react4j$$_component;
 
     @JsConstructor

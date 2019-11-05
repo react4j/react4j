@@ -1561,6 +1561,7 @@ final class Generator
 
     builder.addField( FieldSpec
                         .builder( componentFieldType, COMPONENT_FIELD, Modifier.PRIVATE )
+                        .addAnnotation( NONNULL_CLASSNAME )
                         .build() );
 
     if ( lite )

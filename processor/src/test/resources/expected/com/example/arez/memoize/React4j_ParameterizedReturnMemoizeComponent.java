@@ -126,6 +126,7 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private React4j_ParameterizedReturnMemoizeComponent $$react4j$$_component;
 
     @JsConstructor
@@ -152,6 +153,7 @@ abstract class React4j_ParameterizedReturnMemoizeComponent extends Parameterized
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private React4j_ParameterizedReturnMemoizeComponent $$react4j$$_component;
 
     @JsConstructor

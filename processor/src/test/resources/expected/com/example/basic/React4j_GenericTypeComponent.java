@@ -52,6 +52,7 @@ abstract class React4j_GenericTypeComponent<T> extends GenericTypeComponent<T> {
   }
 
   private static final class LiteNativeReactComponent<T> extends NativeComponent implements OnShouldComponentUpdate {
+    @Nonnull
     private React4j_GenericTypeComponent<T> $$react4j$$_component;
 
     @JsConstructor
@@ -73,6 +74,7 @@ abstract class React4j_GenericTypeComponent<T> extends GenericTypeComponent<T> {
   }
 
   private static final class NativeReactComponent<T> extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private React4j_GenericTypeComponent<T> $$react4j$$_component;
 
     @JsConstructor

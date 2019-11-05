@@ -80,6 +80,7 @@ abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
+    @Nonnull
     private React4j_ProtectedPropValidate $$react4j$$_component;
 
     @JsConstructor
@@ -105,6 +106,7 @@ abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private React4j_ProtectedPropValidate $$react4j$$_component;
 
     @JsConstructor

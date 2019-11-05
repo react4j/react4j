@@ -53,6 +53,7 @@ abstract class React4j_NonArezHasArezFieldAnnotation extends NonArezHasArezField
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private React4j_NonArezHasArezFieldAnnotation $$react4j$$_component;
 
     @JsConstructor

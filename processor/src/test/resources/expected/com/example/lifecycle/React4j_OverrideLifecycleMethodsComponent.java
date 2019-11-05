@@ -79,6 +79,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
   }
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate, OnComponentDidCatch {
+    @Nonnull
     private React4j_OverrideLifecycleMethodsComponent $$react4j$$_component;
 
     @JsConstructor
@@ -123,6 +124,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
   }
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate, OnComponentDidCatch {
+    @Nonnull
     private React4j_OverrideLifecycleMethodsComponent $$react4j$$_component;
 
     @JsConstructor
