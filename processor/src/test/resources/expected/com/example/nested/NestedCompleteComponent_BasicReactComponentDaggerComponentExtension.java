@@ -26,6 +26,7 @@ public interface NestedCompleteComponent_BasicReactComponentDaggerComponentExten
       c_factory = factory;
     }
 
+    @Nonnull
     public static NestedCompleteComponent_React4j_BasicReactComponent create(
         @Nonnull final NativeComponent nativeComponent) {
       if ( React.shouldCheckInvariants() ) {

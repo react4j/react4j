@@ -1436,6 +1436,7 @@ final class Generator
         .methodBuilder( "create" )
         .addModifiers( Modifier.PUBLIC, Modifier.STATIC )
         .addParameter( parameter.build() )
+        .addAnnotation( NONNULL_CLASSNAME )
         .returns( descriptor.getEnhancedClassName() );
     final CodeBlock.Builder block = CodeBlock.builder();
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );

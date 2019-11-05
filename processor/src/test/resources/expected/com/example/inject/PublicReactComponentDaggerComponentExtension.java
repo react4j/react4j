@@ -25,6 +25,7 @@ public interface PublicReactComponentDaggerComponentExtension extends React4j_Pu
       c_factory = factory;
     }
 
+    @Nonnull
     public static React4j_PublicReactComponent create(
         @Nonnull final NativeComponent nativeComponent) {
       if ( React.shouldCheckInvariants() ) {

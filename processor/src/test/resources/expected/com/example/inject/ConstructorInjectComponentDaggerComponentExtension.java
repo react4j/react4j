@@ -25,6 +25,7 @@ public interface ConstructorInjectComponentDaggerComponentExtension extends Reac
       c_factory = factory;
     }
 
+    @Nonnull
     public static React4j_ConstructorInjectComponent create(
         @Nonnull final NativeComponent nativeComponent) {
       if ( React.shouldCheckInvariants() ) {
