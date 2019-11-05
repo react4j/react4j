@@ -1395,6 +1395,7 @@ final class Generator
     return builder.build();
   }
 
+  @Nonnull
   private static FieldSpec.Builder buildFactoryField( @Nonnull final ComponentDescriptor descriptor )
   {
     return FieldSpec.builder( descriptor.getArezClassName().nestedClass( "Factory" ),
