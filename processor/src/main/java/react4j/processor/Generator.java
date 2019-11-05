@@ -1560,7 +1560,7 @@ final class Generator
     }
 
     builder.addField( FieldSpec
-                        .builder( componentFieldType, COMPONENT_FIELD, Modifier.PRIVATE )
+                        .builder( componentFieldType, COMPONENT_FIELD, Modifier.PRIVATE, Modifier.FINAL )
                         .addAnnotation( NONNULL_CLASSNAME )
                         .build() );
 

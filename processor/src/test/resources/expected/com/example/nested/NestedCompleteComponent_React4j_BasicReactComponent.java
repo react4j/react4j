@@ -73,7 +73,7 @@ abstract class NestedCompleteComponent_React4j_BasicReactComponent extends Neste
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     @Nonnull
-    private NestedCompleteComponent_React4j_BasicReactComponent $$react4j$$_component;
+    private final NestedCompleteComponent_React4j_BasicReactComponent $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
@@ -95,7 +95,7 @@ abstract class NestedCompleteComponent_React4j_BasicReactComponent extends Neste
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private NestedCompleteComponent_React4j_BasicReactComponent $$react4j$$_component;
+    private final NestedCompleteComponent_React4j_BasicReactComponent $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

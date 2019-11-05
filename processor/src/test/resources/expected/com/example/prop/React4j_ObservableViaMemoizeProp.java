@@ -87,7 +87,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private React4j_ObservableViaMemoizeProp $$react4j$$_component;
+    private final React4j_ObservableViaMemoizeProp $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {

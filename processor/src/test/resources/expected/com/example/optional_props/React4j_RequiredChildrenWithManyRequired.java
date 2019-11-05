@@ -113,7 +113,7 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     @Nonnull
-    private React4j_RequiredChildrenWithManyRequired $$react4j$$_component;
+    private final React4j_RequiredChildrenWithManyRequired $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
@@ -135,7 +135,7 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private React4j_RequiredChildrenWithManyRequired $$react4j$$_component;
+    private final React4j_RequiredChildrenWithManyRequired $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
