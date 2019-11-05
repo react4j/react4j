@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.arez` artifacts to version `0.153`.
 * Upgrade the `org.realityforge.gir` artifact to version `0.11`.
 
 ### [v0.138](https://github.com/react4j/react4j/tree/v0.138) (2019-11-05) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.137...v0.138)
