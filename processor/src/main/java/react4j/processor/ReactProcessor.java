@@ -1349,8 +1349,7 @@ public final class ReactProcessor
                                               @Nonnull final String name )
   {
     return methods.stream()
-      .noneMatch( m -> null != ProcessorUtil.findAnnotationByType( m,
-                                                                   Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME ) &&
+      .noneMatch( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME ) &&
                        name.equals( derivePriorityOverrideName( m ) ) );
   }
 
