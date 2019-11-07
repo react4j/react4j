@@ -274,14 +274,7 @@ final class ComponentDescriptor
   @Nonnull
   private String getNestedClassPrefix()
   {
-    final StringBuilder name = new StringBuilder();
-    TypeElement t = getElement();
-    while ( NestingKind.TOP_LEVEL != t.getNestingKind() )
-    {
-      t = (TypeElement) t.getEnclosingElement();
-      name.insert( 0, t.getSimpleName() + "_" );
-    }
-    return name.toString();
+    return GeneratorUtil.getNestedClassPrefix( getElement() );
   }
 
   @Nonnull
