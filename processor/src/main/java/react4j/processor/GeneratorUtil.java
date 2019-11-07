@@ -18,8 +18,13 @@ final class GeneratorUtil
                                           @Nonnull final String prefix,
                                           @Nonnull final String postfix )
   {
-    return ClassName.get( getPackageElement( element ).getQualifiedName().toString(),
-                          getGeneratedSimpleClassName( element, prefix, postfix ) );
+    return ClassName.get( getQualifiedPackageName( element ), getGeneratedSimpleClassName( element, prefix, postfix ) );
+  }
+
+  @Nonnull
+  static String getQualifiedPackageName( @Nonnull final TypeElement element )
+  {
+    return getPackageElement( element ).getQualifiedName().toString();
   }
 
   @Nonnull

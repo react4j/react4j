@@ -170,7 +170,7 @@ final class ComponentDescriptor
   @Nonnull
   String getPackageName()
   {
-    return GeneratorUtil.getPackageElement( _element ).getQualifiedName().toString();
+    return GeneratorUtil.getQualifiedPackageName( _element );
   }
 
   @Nonnull
