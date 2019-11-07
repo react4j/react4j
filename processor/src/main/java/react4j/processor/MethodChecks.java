@@ -164,8 +164,9 @@ final class MethodChecks
 
     if ( isPackageAccess )
     {
-      final PackageElement packageElement = getPackageElement( component );
-      final PackageElement methodPackageElement = getPackageElement( (TypeElement) method.getEnclosingElement() );
+      final PackageElement packageElement = GeneratorUtil.getPackageElement( component );
+      final PackageElement methodPackageElement =
+        GeneratorUtil.getPackageElement( (TypeElement) method.getEnclosingElement() );
       if ( !Objects.equals( packageElement.getQualifiedName(), methodPackageElement.getQualifiedName() ) )
       {
         throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
@@ -173,21 +174,6 @@ final class MethodChecks
                                            "package from the @ReactComponent", method );
       }
     }
-  }
-
-  @Nonnull
-  private static PackageElement getPackageElement( @Nonnull final TypeElement element )
-  {
-    Element enclosingElement = element.getEnclosingElement();
-    while ( null != enclosingElement )
-    {
-      if ( enclosingElement instanceof PackageElement )
-      {
-        return (PackageElement) enclosingElement;
-      }
-      enclosingElement = enclosingElement.getEnclosingElement();
-    }
-    throw new IllegalStateException();
   }
 
   /**
