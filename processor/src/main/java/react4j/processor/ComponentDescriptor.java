@@ -14,7 +14,6 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -28,8 +27,6 @@ final class ComponentDescriptor
   private final SourceVersion _sourceVersion;
   @Nonnull
   private final String _name;
-  @Nonnull
-  private final PackageElement _packageElement;
   @Nonnull
   private final TypeElement _element;
   @Nonnull
@@ -71,7 +68,6 @@ final class ComponentDescriptor
   ComponentDescriptor( @Nonnull final Elements elements,
                        @Nonnull final SourceVersion sourceVersion,
                        @Nonnull final String name,
-                       @Nonnull final PackageElement packageElement,
                        @Nonnull final TypeElement element,
                        @Nonnull final ComponentType type,
                        final boolean nonConstructorInjections,
@@ -80,7 +76,6 @@ final class ComponentDescriptor
     _elements = Objects.requireNonNull( elements );
     _sourceVersion = Objects.requireNonNull( sourceVersion );
     _name = Objects.requireNonNull( name );
-    _packageElement = Objects.requireNonNull( packageElement );
     _element = Objects.requireNonNull( element );
     _type = Objects.requireNonNull( type );
     _nonConstructorInjections = nonConstructorInjections;
@@ -175,7 +170,7 @@ final class ComponentDescriptor
   @Nonnull
   String getPackageName()
   {
-    return _packageElement.getQualifiedName().toString();
+    return ProcessorUtil.getPackageElement( _element ).getQualifiedName().toString();
   }
 
   @Nonnull

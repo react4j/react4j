@@ -283,7 +283,6 @@ public final class ReactProcessor
   private ComponentDescriptor parse( @Nonnull final TypeElement typeElement )
   {
     final String name = deriveComponentName( typeElement );
-    final PackageElement packageElement = processingEnv.getElementUtils().getPackageOf( typeElement );
     final ComponentType type = extractComponentType( typeElement );
     final boolean nonConstructorInjections = nonConstructorInjections( typeElement );
     final boolean hasPostConstruct = hasPostConstruct( typeElement );
@@ -291,7 +290,6 @@ public final class ReactProcessor
       new ComponentDescriptor( processingEnv.getElementUtils(),
                                processingEnv.getSourceVersion(),
                                name,
-                               packageElement,
                                typeElement,
                                type,
                                nonConstructorInjections,
