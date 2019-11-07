@@ -1,6 +1,5 @@
 package react4j.processor;
 
-import com.google.auto.common.MoreElements;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -22,7 +21,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -48,13 +46,6 @@ final class ProcessorUtil
 
   private ProcessorUtil()
   {
-  }
-
-  @SuppressWarnings( "UnstableApiUsage" )
-  @Nonnull
-  static PackageElement getPackageElement( @Nonnull final TypeElement element )
-  {
-    return MoreElements.getPackage( element );
   }
 
   @SuppressWarnings( "unchecked" )

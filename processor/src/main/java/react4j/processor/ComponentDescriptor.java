@@ -170,7 +170,7 @@ final class ComponentDescriptor
   @Nonnull
   String getPackageName()
   {
-    return ProcessorUtil.getPackageElement( _element ).getQualifiedName().toString();
+    return GeneratorUtil.getPackageElement( _element ).getQualifiedName().toString();
   }
 
   @Nonnull
@@ -205,33 +205,31 @@ final class ComponentDescriptor
   @Nonnull
   ClassName getEnhancedClassName()
   {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + "React4j_" + _element.getSimpleName() );
+    return GeneratorUtil.getGeneratedClassName( _element, "React4j_", "" );
   }
 
   @Nonnull
   ClassName getBuilderClassName()
   {
-    return ClassName.get( getPackageName(), getNestedClassPrefix() + _element.getSimpleName() + "Builder" );
+    return GeneratorUtil.getGeneratedClassName( _element, "", "Builder" );
   }
 
   @Nonnull
   ClassName getDaggerComponentExtensionClassName()
   {
-    return ClassName.get( getPackageName(),
-                          getNestedClassPrefix() + _element.getSimpleName() + "DaggerComponentExtension" );
+    return GeneratorUtil.getGeneratedClassName( _element, "", "DaggerComponentExtension" );
   }
 
   @Nonnull
   ClassName getArezDaggerExtensionClassName()
   {
-    return ClassName.get( getPackageName(),
-                          getNestedClassPrefix() + "React4j_" + _element.getSimpleName() + "DaggerComponentExtension" );
+    return GeneratorUtil.getGeneratedClassName( _element, "React4j_", "DaggerComponentExtension" );
   }
 
   @Nonnull
   ClassName getArezClassName()
   {
-    final String simpleName = "Arez_" + getNestedClassPrefix() + "React4j_" + _element.getSimpleName();
+    final String simpleName = "Arez_" + GeneratorUtil.getGeneratedSimpleClassName( _element, "React4j_", "" );
     return ClassName.get( getPackageName(), simpleName );
   }
 
@@ -269,12 +267,6 @@ final class ComponentDescriptor
   ComponentType getType()
   {
     return _type;
-  }
-
-  @Nonnull
-  private String getNestedClassPrefix()
-  {
-    return GeneratorUtil.getNestedClassPrefix( getElement() );
   }
 
   @Nonnull
