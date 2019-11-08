@@ -453,7 +453,6 @@ public class ReactProcessorTest
       {
         new Object[]{ "Prop", "Prop" },
         new Object[]{ "PropDefault", "PropDefault" },
-        new Object[]{ "PropDefault", "PropDefaultField" },
         new Object[]{ "PostUpdate", "PostUpdate" },
         new Object[]{ "PreUpdate", "PreUpdate" },
         new Object[]{ "PropValidate", "PropValidate" }
@@ -470,6 +469,30 @@ public class ReactProcessorTest
       fixture( "bad_input/com/example/package_access/" + name + "Model.java" );
     assertFailedCompileResource( Arrays.asList( source1, source2 ),
                                  "@" + annotation + " target must not be package access if " +
-                                 "the method is in a different package from the @ReactComponent" );
+                                 "the method is in a different package from the type annotated with the " +
+                                 "@ReactComponent annotation" );
+  }
+
+  @DataProvider( name = "packageAccessFieldInDifferentPackage" )
+  public Object[][] packageAccessFieldInDifferentPackage()
+  {
+    return new Object[][]
+      {
+        new Object[]{ "PropDefault", "PropDefaultField" }
+      };
+  }
+
+  @Test( dataProvider = "packageAccessFieldInDifferentPackage" )
+  public void processFailedCompileInheritedPackageAccessFieldInDifferentPackage( @Nonnull final String annotation,
+                                                                                 @Nonnull final String name )
+  {
+    final JavaFileObject source1 =
+      fixture( "bad_input/com/example/package_access/other/Base" + name + "Model.java" );
+    final JavaFileObject source2 =
+      fixture( "bad_input/com/example/package_access/" + name + "Model.java" );
+    assertFailedCompileResource( Arrays.asList( source1, source2 ),
+                                 "@" + annotation + " target must not be package access if " +
+                                 "the field is in a different package from the type annotated with the " +
+                                 "@ReactComponent annotation" );
   }
 }

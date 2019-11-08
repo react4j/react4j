@@ -354,7 +354,11 @@ final class ComponentDescriptor
   void setPreUpdate( @Nonnull final ExecutableElement preUpdate )
     throws ProcessorException
   {
-    MemberChecks.mustBeLifecycleHook( getElement(), Constants.PRE_UPDATE_ANNOTATION_CLASSNAME, preUpdate );
+    MemberChecks.mustBeLifecycleHook( getElement(),
+                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                      Constants.PRE_UPDATE_ANNOTATION_CLASSNAME,
+                                      preUpdate );
+    MemberChecks.mustNotBePublic( Constants.PRE_UPDATE_ANNOTATION_CLASSNAME, preUpdate );
 
     if ( null != _preUpdate )
     {
@@ -376,7 +380,11 @@ final class ComponentDescriptor
   void setPostRender( @Nonnull final ExecutableElement postRender )
     throws ProcessorException
   {
-    MemberChecks.mustBeLifecycleHook( getElement(), Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME, postRender );
+    MemberChecks.mustBeLifecycleHook( getElement(),
+                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                      Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME,
+                                      postRender );
+    MemberChecks.mustNotBePublic( Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME, postRender );
 
     if ( null != _postRender )
     {
@@ -398,7 +406,11 @@ final class ComponentDescriptor
   void setPostUpdate( @Nonnull final ExecutableElement postUpdate )
     throws ProcessorException
   {
-    MemberChecks.mustBeLifecycleHook( getElement(), Constants.POST_UPDATE_ANNOTATION_CLASSNAME, postUpdate );
+    MemberChecks.mustBeLifecycleHook( getElement(),
+                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                      Constants.POST_UPDATE_ANNOTATION_CLASSNAME,
+                                      postUpdate );
+    MemberChecks.mustNotBePublic( Constants.POST_UPDATE_ANNOTATION_CLASSNAME, postUpdate );
 
     if ( null != _postUpdate )
     {
@@ -420,7 +432,11 @@ final class ComponentDescriptor
   void setPostMount( @Nonnull final ExecutableElement postMount )
     throws ProcessorException
   {
-    MemberChecks.mustBeLifecycleHook( getElement(), Constants.POST_MOUNT_ANNOTATION_CLASSNAME, postMount );
+    MemberChecks.mustBeLifecycleHook( getElement(),
+                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                      Constants.POST_MOUNT_ANNOTATION_CLASSNAME,
+                                      postMount );
+    MemberChecks.mustNotBePublic( Constants.POST_MOUNT_ANNOTATION_CLASSNAME, postMount );
 
     if ( null != _postMount )
     {
@@ -444,8 +460,11 @@ final class ComponentDescriptor
   {
     MemberChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
     MemberChecks.mustNotBePublic( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
-    MemberChecks.mustBeSubclassCallable( getElement(), Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
-    MemberChecks.mustNotReturnAValue( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
+    MemberChecks.mustBeSubclassCallable( getElement(),
+                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                         Constants.ON_ERROR_ANNOTATION_CLASSNAME,
+                                         onError );
+    MemberChecks.mustNotReturnAnyValue( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
     MemberChecks.mustNotThrowAnyExceptions( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
 
     boolean infoFound = false;

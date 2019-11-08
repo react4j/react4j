@@ -157,10 +157,11 @@ final class PropDescriptor
   void setValidateMethod( @Nonnull final ExecutableElement method )
   {
     MemberChecks.mustBeSubclassCallable( _descriptor.getElement(),
+                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                          Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
                                          method );
     MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
-    MemberChecks.mustNotReturnAValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotReturnAnyValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
     MemberChecks.mustNotBePublic( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
 
     final VariableElement param = method.getParameters().get( 0 );

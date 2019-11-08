@@ -447,10 +447,11 @@ public final class ReactProcessor
       final List<? extends TypeMirror> parameterTypes = methodType.getParameterTypes();
 
       MemberChecks.mustBeSubclassCallable( descriptor.getElement(),
+                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                            Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
                                            method );
       MemberChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-      MemberChecks.mustNotReturnAValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotReturnAnyValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
       MemberChecks.mustNotBePublic( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
 
       final int parameterCount = parameters.size();
@@ -635,6 +636,7 @@ public final class ReactProcessor
                                       "return type of the associated @Prop annotated method.", method );
       }
       MemberChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
+                                                     Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                      method );
       prop.setDefaultMethod( method );
@@ -663,6 +665,7 @@ public final class ReactProcessor
                                       "return type of the associated @Prop annotated method.", field );
       }
       MemberChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
+                                                     Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                      field );
       prop.setDefaultField( field );
@@ -827,6 +830,7 @@ public final class ReactProcessor
     MemberChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MemberChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
+                                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                                            Constants.PROP_ANNOTATION_CLASSNAME,
                                                            method );
     final TypeMirror returnType = method.getReturnType();
