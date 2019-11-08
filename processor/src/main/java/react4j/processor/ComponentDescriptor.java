@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -17,14 +16,9 @@ import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.util.Elements;
 
 final class ComponentDescriptor
 {
-  @Nonnull
-  private final Elements _elements;
-  @Nonnull
-  private final SourceVersion _sourceVersion;
   @Nonnull
   private final String _name;
   @Nonnull
@@ -65,16 +59,12 @@ final class ComponentDescriptor
   private Boolean _hasValidatedProps;
   private boolean _hasArezElements;
 
-  ComponentDescriptor( @Nonnull final Elements elements,
-                       @Nonnull final SourceVersion sourceVersion,
-                       @Nonnull final String name,
+  ComponentDescriptor( @Nonnull final String name,
                        @Nonnull final TypeElement element,
                        @Nonnull final ComponentType type,
                        final boolean nonConstructorInjections,
                        final boolean hasPostConstruct )
   {
-    _elements = Objects.requireNonNull( elements );
-    _sourceVersion = Objects.requireNonNull( sourceVersion );
     _name = Objects.requireNonNull( name );
     _element = Objects.requireNonNull( element );
     _type = Objects.requireNonNull( type );
@@ -140,12 +130,6 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  Elements getElements()
-  {
-    return _elements;
-  }
-
-  @Nonnull
   ExecutableElement getConstructor()
   {
     return _constructor;
@@ -159,12 +143,6 @@ final class ComponentDescriptor
   boolean hasPostConstruct()
   {
     return _hasPostConstruct;
-  }
-
-  @Nonnull
-  SourceVersion getSourceVersion()
-  {
-    return _sourceVersion;
   }
 
   @Nonnull

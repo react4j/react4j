@@ -239,11 +239,11 @@ public final class ReactProcessor
     throws IOException, ProcessorException
   {
     final ComponentDescriptor descriptor = parse( element );
-    emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
-    emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( descriptor ) );
+    emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( processingEnv, descriptor ) );
+    emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( processingEnv, descriptor ) );
     if ( descriptor.needsInjection() )
     {
-      emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerComponentExtension( descriptor ) );
+      emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerComponentExtension( processingEnv, descriptor ) );
     }
   }
 
@@ -287,13 +287,7 @@ public final class ReactProcessor
     final boolean nonConstructorInjections = nonConstructorInjections( typeElement );
     final boolean hasPostConstruct = hasPostConstruct( typeElement );
     final ComponentDescriptor descriptor =
-      new ComponentDescriptor( processingEnv.getElementUtils(),
-                               processingEnv.getSourceVersion(),
-                               name,
-                               typeElement,
-                               type,
-                               nonConstructorInjections,
-                               hasPostConstruct );
+      new ComponentDescriptor( name, typeElement, type, nonConstructorInjections, hasPostConstruct );
 
     determineComponentCapabilities( descriptor, typeElement );
     determineRenderMethod( typeElement, descriptor );
@@ -514,7 +508,7 @@ public final class ReactProcessor
                                          @Nonnull final VariableElement parameter )
   {
     final AnnotationValue value =
-      ProcessorUtil.findAnnotationValue( descriptor.getElements(),
+      ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
                                          parameter,
                                          Constants.PROP_REF_ANNOTATION_CLASSNAME,
                                          "value" );
