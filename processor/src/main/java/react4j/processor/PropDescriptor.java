@@ -122,9 +122,9 @@ final class PropDescriptor
 
   void setDefaultMethod( @Nonnull final ExecutableElement method )
   {
-    MethodChecks.mustNotHaveAnyParameters( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustReturnAValue( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotHaveAnyParameters( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustReturnAValue( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
 
     if ( null != _defaultMethod )
     {
@@ -156,12 +156,12 @@ final class PropDescriptor
 
   void setValidateMethod( @Nonnull final ExecutableElement method )
   {
-    MethodChecks.mustBeSubclassCallable( _descriptor.getElement(),
+    MemberChecks.mustBeSubclassCallable( _descriptor.getElement(),
                                          Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
                                          method );
-    MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotReturnAValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotBePublic( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotReturnAValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotBePublic( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
 
     final VariableElement param = method.getParameters().get( 0 );
     final boolean mismatchedNullability =
@@ -193,7 +193,7 @@ final class PropDescriptor
 
   void setDefaultField( @Nonnull final VariableElement field )
   {
-    MethodChecks.mustBeFinal( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
+    MemberChecks.mustBeFinal( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
 
     if ( null != _defaultMethod )
     {

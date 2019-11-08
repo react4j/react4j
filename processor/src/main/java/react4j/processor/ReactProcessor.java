@@ -446,12 +446,12 @@ public final class ReactProcessor
       final ExecutableType methodType = resolveMethodType( descriptor, method );
       final List<? extends TypeMirror> parameterTypes = methodType.getParameterTypes();
 
-      MethodChecks.mustBeSubclassCallable( descriptor.getElement(),
+      MemberChecks.mustBeSubclassCallable( descriptor.getElement(),
                                            Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
                                            method );
-      MethodChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-      MethodChecks.mustNotReturnAValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-      MethodChecks.mustNotBePublic( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotReturnAValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotBePublic( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
 
       final int parameterCount = parameters.size();
       if ( 0 == parameterCount )
@@ -634,7 +634,7 @@ public final class ReactProcessor
         throw new ProcessorException( "@PropDefault target has a return type that is not assignable to the " +
                                       "return type of the associated @Prop annotated method.", method );
       }
-      MethodChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
+      MemberChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                      method );
       prop.setDefaultMethod( method );
@@ -662,7 +662,7 @@ public final class ReactProcessor
         throw new ProcessorException( "@PropDefault target has a type that is not assignable to the " +
                                       "return type of the associated @Prop annotated method.", field );
       }
-      MethodChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
+      MemberChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                      field );
       prop.setDefaultField( field );
@@ -821,12 +821,12 @@ public final class ReactProcessor
     final ExecutableType methodType = resolveMethodType( descriptor, method );
 
     verifyNoDuplicateAnnotations( method );
-    MethodChecks.mustBeAbstract( Constants.PROP_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotBePublic( Constants.PROP_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotHaveAnyParameters( Constants.PROP_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
-    MethodChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
+    MemberChecks.mustBeAbstract( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotBePublic( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotHaveAnyParameters( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
                                                            Constants.PROP_ANNOTATION_CLASSNAME,
                                                            method );
     final TypeMirror returnType = method.getReturnType();

@@ -11,9 +11,9 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 
 @SuppressWarnings( "SameParameterValue" )
-final class MethodChecks
+final class MemberChecks
 {
-  private MethodChecks()
+  private MemberChecks()
   {
   }
 
