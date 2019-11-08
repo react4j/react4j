@@ -391,7 +391,7 @@ public final class ReactProcessor
       for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
       {
         final String classname = mirror.getAnnotationType().toString();
-        if ( isArezAnnotation( classname ) )
+        if ( classname.startsWith( "arez.annotations." ) )
         {
           throw new ProcessorException( "@Prop target must not be annotated with any arez annotations but " +
                                         "is annotated by '" + classname + "'.", method );
@@ -1376,10 +1376,5 @@ public final class ReactProcessor
   private List<ExecutableElement> getMethods( @Nonnull final TypeElement typeElement )
   {
     return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() );
-  }
-
-  private boolean isArezAnnotation( @Nonnull final String classname )
-  {
-    return classname.startsWith( "arez.annotations." );
   }
 }
