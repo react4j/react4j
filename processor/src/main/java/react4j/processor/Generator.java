@@ -1807,7 +1807,8 @@ final class Generator
   }
 
   @Nonnull
-  static TypeSpec buildDaggerComponentExtension( @Nonnull final ProcessingEnvironment processingEnv, @Nonnull final ComponentDescriptor descriptor )
+  static TypeSpec buildDaggerComponentExtension( @Nonnull final ProcessingEnvironment processingEnv,
+                                                 @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerComponentExtensionClassName() );
     final ClassName superClassName = descriptor.getArezDaggerExtensionClassName();
