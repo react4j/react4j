@@ -1,11 +1,13 @@
 package react4j.processor;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 final class BuilderDescriptor
 {
-  private final ArrayList<Step> _steps = new ArrayList<>();
+  @Nonnull
+  private final List<Step> _steps = new ArrayList<>();
 
   BuilderDescriptor()
   {
@@ -19,7 +21,8 @@ final class BuilderDescriptor
     return step;
   }
 
-  ArrayList<Step> getSteps()
+  @Nonnull
+  List<Step> getSteps()
   {
     return _steps;
   }

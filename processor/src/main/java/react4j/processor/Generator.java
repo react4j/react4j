@@ -124,7 +124,7 @@ final class Generator
 
     final BuilderDescriptor builderDescriptor = buildBuilderDescriptor( descriptor );
 
-    final ArrayList<Step> steps = builderDescriptor.getSteps();
+    final List<Step> steps = builderDescriptor.getSteps();
     for ( final Step step : steps )
     {
       builder.addType( buildBuilderStepInterface( descriptor, step ) );
@@ -496,7 +496,7 @@ final class Generator
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "Builder" );
     ProcessorUtil.copyTypeParameters( descriptor.getElement(), builder );
     builder.addModifiers( Modifier.PRIVATE, Modifier.STATIC );
-    final ArrayList<Step> steps = builderDescriptor.getSteps();
+    final List<Step> steps = builderDescriptor.getSteps();
     for ( int i = 0; i < steps.size(); i++ )
     {
       builder.addSuperinterface( getParameterizedTypeName( descriptor, ClassName.bestGuess( "Step" + ( i + 1 ) ) ) );
