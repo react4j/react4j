@@ -72,12 +72,6 @@ final class StepMethod
   }
 
   @Nonnull
-  String getKey()
-  {
-    return _key;
-  }
-
-  @Nonnull
   TypeName getType()
   {
     return _type;
@@ -114,16 +108,16 @@ final class StepMethod
 
   boolean isChildIntrinsic()
   {
-    return getName().equals( "child" ) && getKey().equals( "child" );
+    return getName().equals( "child" ) && _key.equals( "child" );
   }
 
   boolean isChildrenIntrinsic()
   {
-    return getName().equals( "children" ) && getKey().equals( "children" );
+    return getName().equals( "children" ) && _key.equals( "children" );
   }
 
   boolean isChildrenStreamIntrinsic()
   {
-    return getName().equals( "children" ) && getKey().equals( "*children_stream*" );
+    return getName().equals( "children" ) && _key.equals( "*children_stream*" );
   }
 }
