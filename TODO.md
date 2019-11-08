@@ -12,6 +12,9 @@ complete as there is too much un-said.
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
 
+* The `MUST NOT BE PUBLIC` rules in annotation processor should be turned into warnings, made suppressable
+  and propagated to Arez for theiry lifecycle hooks.
+
 ### Enhancements
 
 * Generate documentation for components from annotations. This documentation could use the prop types to give
