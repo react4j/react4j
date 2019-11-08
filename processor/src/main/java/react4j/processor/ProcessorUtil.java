@@ -374,12 +374,6 @@ final class ProcessorUtil
     return null != findAnnotationByType( typeElement, annotationClassName );
   }
 
-  @Nonnull
-  static String toSimpleName( @Nonnull final String annotationName )
-  {
-    return annotationName.replaceAll( ".*\\.", "" );
-  }
-
   static boolean isNonnull( @Nonnull final ExecutableElement method )
   {
     return hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME );
