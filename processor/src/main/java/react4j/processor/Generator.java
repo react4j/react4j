@@ -112,6 +112,7 @@ final class Generator
   static TypeSpec buildComponentBuilder( @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
+    addOriginatingTypes( descriptor.getElement(), builder );
     addGeneratedAnnotation( descriptor, builder );
     builder.addModifiers( Modifier.FINAL );
     ProcessorUtil.copyAccessModifiers( descriptor.getElement(), builder );
