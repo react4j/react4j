@@ -451,7 +451,7 @@ public final class ReactProcessor
       for ( int i = 0; i < parameterCount; i++ )
       {
         final VariableElement parameter = parameters.get( i );
-        final String name = deriveOnPropChangeName( descriptor, parameter );
+        final String name = deriveOnPropChangeName( parameter );
         final PropDescriptor prop = descriptor.findPropNamed( name );
         if ( null == prop )
         {
@@ -498,8 +498,7 @@ public final class ReactProcessor
   }
 
   @Nonnull
-  private String deriveOnPropChangeName( @Nonnull final ComponentDescriptor descriptor,
-                                         @Nonnull final VariableElement parameter )
+  private String deriveOnPropChangeName( @Nonnull final VariableElement parameter )
   {
     final AnnotationValue value =
       ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
