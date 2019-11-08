@@ -48,21 +48,21 @@ public final class ReactProcessor
 {
   @Nonnull
   @Override
-  String getRootAnnotationClassname()
+  protected final String getRootAnnotationClassname()
   {
     return Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME;
   }
 
   @Override
   @Nonnull
-  final String getIssueTrackerURL()
+  protected final String getIssueTrackerURL()
   {
     return "https://github.com/react4j/react4j/issues";
   }
 
   @Nonnull
   @Override
-  String getOptionPrefix()
+  protected final String getOptionPrefix()
   {
     return "react4j";
   }

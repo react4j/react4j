@@ -22,7 +22,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import static javax.tools.Diagnostic.Kind.*;
 
-abstract class AbstractStandardProcessor
+public abstract class AbstractStandardProcessor
   extends AbstractProcessor
 {
   @Nonnull
@@ -69,13 +69,13 @@ abstract class AbstractStandardProcessor
   }
 
   @Nonnull
-  abstract String getRootAnnotationClassname();
+  protected abstract String getRootAnnotationClassname();
 
   @Nonnull
-  abstract String getIssueTrackerURL();
+  protected abstract String getIssueTrackerURL();
 
   @Nonnull
-  abstract String getOptionPrefix();
+  protected abstract String getOptionPrefix();
 
   private void processingErrorMessage( @Nonnull final RoundEnvironment env, @Nonnull final TypeElement target )
   {
@@ -221,6 +221,6 @@ abstract class AbstractStandardProcessor
     return result;
   }
 
-  abstract void process( @Nonnull final TypeElement element )
+  protected abstract void process( @Nonnull final TypeElement element )
     throws IOException, ProcessorException;
 }
