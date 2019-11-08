@@ -128,8 +128,8 @@ final class PropDescriptor
 
     if ( null != _defaultMethod )
     {
-      throw new ReactProcessorException( "@PropDefault target duplicates existing method named " +
-                                         _defaultMethod.getSimpleName(), method );
+      throw new ProcessorException( "@PropDefault target duplicates existing method named " +
+                                    _defaultMethod.getSimpleName(), method );
     }
     else
     {
@@ -175,15 +175,15 @@ final class PropDescriptor
 
     if ( mismatchedNullability )
     {
-      throw new ReactProcessorException( "@PropValidate target has a parameter that has a nullability annotation " +
-                                         "incompatible with the associated @Prop method named " +
-                                         _method.getSimpleName(), method );
+      throw new ProcessorException( "@PropValidate target has a parameter that has a nullability annotation " +
+                                    "incompatible with the associated @Prop method named " +
+                                    _method.getSimpleName(), method );
     }
 
     if ( null != _validateMethod )
     {
-      throw new ReactProcessorException( "@PropValidate target duplicates existing method named " +
-                                         _validateMethod.getSimpleName(), method );
+      throw new ProcessorException( "@PropValidate target duplicates existing method named " +
+                                    _validateMethod.getSimpleName(), method );
     }
     else
     {
@@ -197,13 +197,13 @@ final class PropDescriptor
 
     if ( null != _defaultMethod )
     {
-      throw new ReactProcessorException( "@PropDefault target duplicates existing method named " +
-                                         _defaultMethod.getSimpleName(), field );
+      throw new ProcessorException( "@PropDefault target duplicates existing method named " +
+                                    _defaultMethod.getSimpleName(), field );
     }
     else if ( null != _defaultField )
     {
-      throw new ReactProcessorException( "@PropDefault target duplicates existing field named " +
-                                         _defaultField.getSimpleName(), field );
+      throw new ProcessorException( "@PropDefault target duplicates existing field named " +
+                                    _defaultField.getSimpleName(), field );
     }
     else
     {

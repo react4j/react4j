@@ -160,7 +160,7 @@ public final class ReactProcessor
       {
         reportError( ioe.getMessage(), element );
       }
-      catch ( final ReactProcessorException e )
+      catch ( final ProcessorException e )
       {
         final Element errorLocation = e.getElement();
         final Element outerElement = getOuterElement( errorLocation );
@@ -236,7 +236,7 @@ public final class ReactProcessor
   }
 
   private void process( @Nonnull final TypeElement element )
-    throws IOException, ReactProcessorException
+    throws IOException, ProcessorException
   {
     final ComponentDescriptor descriptor = parse( element );
     emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( descriptor ) );
@@ -342,9 +342,9 @@ public final class ReactProcessor
         {
           if ( 1 == typeArguments.size() && isArezComponent( typeArguments.get( 0 ) ) )
           {
-            throw new ReactProcessorException( "@Prop target is a collection that contains Arez components. " +
-                                               "This is not a safe pattern when the arez components can be disposed.",
-                                               method );
+            throw new ProcessorException( "@Prop target is a collection that contains Arez components. " +
+                                          "This is not a safe pattern when the arez components can be disposed.",
+                                          method );
           }
         }
         else if ( isMap( declaredType ) )
@@ -353,9 +353,9 @@ public final class ReactProcessor
                ( isArezComponent( typeArguments.get( 0 ) ) ||
                  isArezComponent( typeArguments.get( 1 ) ) ) )
           {
-            throw new ReactProcessorException( "@Prop target is a collection that contains Arez components. " +
-                                               "This is not a safe pattern when the arez components can be disposed.",
-                                               method );
+            throw new ProcessorException( "@Prop target is a collection that contains Arez components. " +
+                                          "This is not a safe pattern when the arez components can be disposed.",
+                                          method );
           }
         }
       }
@@ -364,9 +364,9 @@ public final class ReactProcessor
         final ArrayType arrayType = (ArrayType) returnType;
         if ( isArezComponent( arrayType.getComponentType() ) )
         {
-          throw new ReactProcessorException( "@Prop target is an array that contains Arez components. " +
-                                             "This is not a safe pattern when the arez components can be disposed.",
-                                             method );
+          throw new ProcessorException( "@Prop target is an array that contains Arez components. " +
+                                        "This is not a safe pattern when the arez components can be disposed.",
+                                        method );
         }
       }
     }
@@ -418,8 +418,8 @@ public final class ReactProcessor
         final String classname = mirror.getAnnotationType().toString();
         if ( isArezAnnotation( classname ) )
         {
-          throw new ReactProcessorException( "@Prop target must not be annotated with any arez annotations but " +
-                                             "is annotated by '" + classname + "'.", method );
+          throw new ProcessorException( "@Prop target must not be annotated with any arez annotations but " +
+                                        "is annotated by '" + classname + "'.", method );
         }
       }
     }
@@ -456,7 +456,7 @@ public final class ReactProcessor
       final int parameterCount = parameters.size();
       if ( 0 == parameterCount )
       {
-        throw new ReactProcessorException( "@OnPropChange target must have at least 1 parameter.", method );
+        throw new ProcessorException( "@OnPropChange target must have at least 1 parameter.", method );
       }
       final ArrayList<PropDescriptor> propDescriptors = new ArrayList<>( parameterCount );
       for ( int i = 0; i < parameterCount; i++ )
@@ -466,18 +466,18 @@ public final class ReactProcessor
         final PropDescriptor prop = descriptor.findPropNamed( name );
         if ( null == prop )
         {
-          throw new ReactProcessorException( "@OnPropChange target has a parameter named '" +
-                                             parameter.getSimpleName() + "' and the parameter is associated with a " +
-                                             "@Prop named '" + name + "' but there is no corresponding @Prop " +
-                                             "annotated method.", parameter );
+          throw new ProcessorException( "@OnPropChange target has a parameter named '" +
+                                        parameter.getSimpleName() + "' and the parameter is associated with a " +
+                                        "@Prop named '" + name + "' but there is no corresponding @Prop " +
+                                        "annotated method.", parameter );
         }
         final Types typeUtils = processingEnv.getTypeUtils();
         if ( !typeUtils.isAssignable( parameterTypes.get( i ), prop.getMethodType().getReturnType() ) )
         {
-          throw new ReactProcessorException( "@OnPropChange target has a parameter named '" +
-                                             parameter.getSimpleName() + "' and the parameter type is not " +
-                                             "assignable to the return type of the associated @Prop annotated method.",
-                                             method );
+          throw new ProcessorException( "@OnPropChange target has a parameter named '" +
+                                        parameter.getSimpleName() + "' and the parameter type is not " +
+                                        "assignable to the return type of the associated @Prop annotated method.",
+                                        method );
         }
         final boolean mismatchedNullability =
           (
@@ -490,16 +490,16 @@ public final class ReactProcessor
 
         if ( mismatchedNullability )
         {
-          throw new ReactProcessorException( "@OnPropChange target has a parameter named '" +
-                                             parameter.getSimpleName() + "' that has a nullability annotation " +
-                                             "incompatible with the associated @Prop method named " +
-                                             method.getSimpleName(), method );
+          throw new ProcessorException( "@OnPropChange target has a parameter named '" +
+                                        parameter.getSimpleName() + "' that has a nullability annotation " +
+                                        "incompatible with the associated @Prop method named " +
+                                        method.getSimpleName(), method );
         }
         if ( prop.isImmutable() )
         {
-          throw new ReactProcessorException( "@OnPropChange target has a parameter named '" +
-                                             parameter.getSimpleName() + "' that is associated with a @Prop " +
-                                             "annotated method and the prop is specified as immutable.", method );
+          throw new ProcessorException( "@OnPropChange target has a parameter named '" +
+                                        parameter.getSimpleName() + "' that is associated with a @Prop " +
+                                        "annotated method and the prop is specified as immutable.", method );
         }
         propDescriptors.add( prop );
       }
@@ -536,10 +536,10 @@ public final class ReactProcessor
       }
       else
       {
-        throw new ReactProcessorException( "@OnPropChange target has a parameter named '" + parameterName +
-                                           "' is not explicitly associated with a prop using @PropRef nor does it " +
-                                           "follow required naming conventions 'prev[MyProp]', 'last[MyProp]' or " +
-                                           "'[myProp]'.", parameter );
+        throw new ProcessorException( "@OnPropChange target has a parameter named '" + parameterName +
+                                      "' is not explicitly associated with a prop using @PropRef nor does it " +
+                                      "follow required naming conventions 'prev[MyProp]', 'last[MyProp]' or " +
+                                      "'[myProp]'.", parameter );
       }
     }
   }
@@ -557,19 +557,19 @@ public final class ReactProcessor
       final PropDescriptor prop = descriptor.findPropNamed( name );
       if ( null == prop )
       {
-        throw new ReactProcessorException( "@PropValidate target for prop named '" + name + "' has no corresponding " +
-                                           "@Prop annotated method.", method );
+        throw new ProcessorException( "@PropValidate target for prop named '" + name + "' has no corresponding " +
+                                      "@Prop annotated method.", method );
       }
       if ( 1 != method.getParameters().size() )
       {
-        throw new ReactProcessorException( "@PropValidate target must have exactly 1 parameter", method );
+        throw new ProcessorException( "@PropValidate target must have exactly 1 parameter", method );
       }
       final ExecutableType methodType = resolveMethodType( descriptor, method );
       if ( !processingEnv.getTypeUtils().isAssignable( methodType.getParameterTypes().get( 0 ),
                                                        prop.getMethodType().getReturnType() ) )
       {
-        throw new ReactProcessorException( "@PropValidate target has a parameter type that is not assignable to the " +
-                                           "return type of the associated @Prop annotated method.", method );
+        throw new ProcessorException( "@PropValidate target has a parameter type that is not assignable to the " +
+                                      "return type of the associated @Prop annotated method.", method );
       }
       prop.setValidateMethod( method );
     }
@@ -577,7 +577,7 @@ public final class ReactProcessor
 
   @Nonnull
   private String derivePropValidateName( @Nonnull final Element element )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     final String name =
       (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
@@ -590,8 +590,8 @@ public final class ReactProcessor
       final String deriveName = ProcessorUtil.deriveName( element, ProcessorUtil.VALIDATE_PROP_PATTERN, name );
       if ( null == deriveName )
       {
-        throw new ReactProcessorException( "@PropValidate target has not specified name nor is it named according " +
-                                           "to the convention 'validate[Name]Prop'.", element );
+        throw new ProcessorException( "@PropValidate target has not specified name nor is it named according " +
+                                      "to the convention 'validate[Name]Prop'.", element );
       }
       return deriveName;
     }
@@ -599,13 +599,13 @@ public final class ReactProcessor
     {
       if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ReactProcessorException( "@PropValidate target specified an invalid name '" + name + "'. The " +
-                                           "name must be a valid java identifier.", element );
+        throw new ProcessorException( "@PropValidate target specified an invalid name '" + name + "'. The " +
+                                      "name must be a valid java identifier.", element );
       }
       else if ( SourceVersion.isKeyword( name ) )
       {
-        throw new ReactProcessorException( "@PropValidate target specified an invalid name '" + name + "'. The " +
-                                           "name must not be a java keyword.", element );
+        throw new ProcessorException( "@PropValidate target specified an invalid name '" + name + "'. The " +
+                                      "name must not be a java keyword.", element );
       }
       return name;
     }
@@ -624,15 +624,15 @@ public final class ReactProcessor
       final PropDescriptor prop = descriptor.findPropNamed( name );
       if ( null == prop )
       {
-        throw new ReactProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
-                                           "@Prop annotated method.", method );
+        throw new ProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
+                                      "@Prop annotated method.", method );
       }
       final ExecutableType methodType = resolveMethodType( descriptor, method );
       if ( !processingEnv.getTypeUtils().isAssignable( methodType.getReturnType(),
                                                        prop.getMethodType().getReturnType() ) )
       {
-        throw new ReactProcessorException( "@PropDefault target has a return type that is not assignable to the " +
-                                           "return type of the associated @Prop annotated method.", method );
+        throw new ProcessorException( "@PropDefault target has a return type that is not assignable to the " +
+                                      "return type of the associated @Prop annotated method.", method );
       }
       MethodChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
@@ -654,13 +654,13 @@ public final class ReactProcessor
       final PropDescriptor prop = descriptor.findPropNamed( name );
       if ( null == prop )
       {
-        throw new ReactProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
-                                           "@Prop annotated method.", field );
+        throw new ProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
+                                      "@Prop annotated method.", field );
       }
       if ( !processingEnv.getTypeUtils().isAssignable( field.asType(), prop.getMethodType().getReturnType() ) )
       {
-        throw new ReactProcessorException( "@PropDefault target has a type that is not assignable to the " +
-                                           "return type of the associated @Prop annotated method.", field );
+        throw new ProcessorException( "@PropDefault target has a type that is not assignable to the " +
+                                      "return type of the associated @Prop annotated method.", field );
       }
       MethodChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
@@ -671,7 +671,7 @@ public final class ReactProcessor
 
   @Nonnull
   private String derivePropDefaultName( @Nonnull final Element element )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     final String name =
       (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
@@ -686,8 +686,8 @@ public final class ReactProcessor
         final String deriveName = ProcessorUtil.deriveName( element, ProcessorUtil.DEFAULT_GETTER_PATTERN, name );
         if ( null == deriveName )
         {
-          throw new ReactProcessorException( "@PropDefault target has not specified name nor is it named according " +
-                                             "to the convention 'get[Name]Default'.", element );
+          throw new ProcessorException( "@PropDefault target has not specified name nor is it named according " +
+                                        "to the convention 'get[Name]Default'.", element );
         }
         return deriveName;
       }
@@ -723,8 +723,8 @@ public final class ReactProcessor
         }
         else
         {
-          throw new ReactProcessorException( "@PropDefault target has not specified name nor is it named according " +
-                                             "to the convention 'DEFAULT_[NAME]'.", element );
+          throw new ProcessorException( "@PropDefault target has not specified name nor is it named according " +
+                                        "to the convention 'DEFAULT_[NAME]'.", element );
         }
       }
     }
@@ -732,13 +732,13 @@ public final class ReactProcessor
     {
       if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ReactProcessorException( "@PropDefault target specified an invalid name '" + name + "'. The " +
-                                           "name must be a valid java identifier.", element );
+        throw new ProcessorException( "@PropDefault target specified an invalid name '" + name + "'. The " +
+                                      "name must be a valid java identifier.", element );
       }
       else if ( SourceVersion.isKeyword( name ) )
       {
-        throw new ReactProcessorException( "@PropDefault target specified an invalid name '" + name + "'. The " +
-                                           "name must not be a java keyword.", element );
+        throw new ProcessorException( "@PropDefault target specified an invalid name '" + name + "'. The " +
+                                      "name must not be a java keyword.", element );
       }
       return name;
     }
@@ -784,10 +784,10 @@ public final class ReactProcessor
       props.stream().filter( p -> p.getName().equals( "child" ) ).findAny().orElse( null );
     if ( null != childrenProp && null != childProp )
     {
-      throw new ReactProcessorException( "Multiple candidate children @Prop annotated methods: " +
-                                         childrenProp.getMethod().getSimpleName() + " and " +
-                                         childProp.getMethod().getSimpleName(),
-                                         childrenProp.getMethod() );
+      throw new ProcessorException( "Multiple candidate children @Prop annotated methods: " +
+                                    childrenProp.getMethod().getSimpleName() + " and " +
+                                    childProp.getMethod().getSimpleName(),
+                                    childrenProp.getMethod() );
     }
 
     descriptor.setProps( props );
@@ -832,19 +832,19 @@ public final class ReactProcessor
     final TypeMirror returnType = method.getReturnType();
     if ( "build".equals( name ) )
     {
-      throw new ReactProcessorException( "@Prop named 'build' is invalid as it conflicts with the method named " +
-                                         "build() that is used in the generated Builder classes",
-                                         method );
+      throw new ProcessorException( "@Prop named 'build' is invalid as it conflicts with the method named " +
+                                    "build() that is used in the generated Builder classes",
+                                    method );
     }
     else if ( "child".equals( name ) &&
               ( returnType.getKind() != TypeKind.DECLARED && !"react4j.ReactNode".equals( returnType.toString() ) ) )
     {
-      throw new ReactProcessorException( "@Prop named 'child' should be of type react4j.ReactNode", method );
+      throw new ProcessorException( "@Prop named 'child' should be of type react4j.ReactNode", method );
     }
     else if ( "children".equals( name ) &&
               ( returnType.getKind() != TypeKind.DECLARED && !"react4j.ReactNode[]".equals( returnType.toString() ) ) )
     {
-      throw new ReactProcessorException( "@Prop named 'children' should be of type react4j.ReactNode[]", method );
+      throw new ProcessorException( "@Prop named 'children' should be of type react4j.ReactNode[]", method );
     }
 
     if ( returnType instanceof TypeVariable )
@@ -854,8 +854,8 @@ public final class ReactProcessor
       List<? extends TypeParameterElement> typeParameters = method.getTypeParameters();
       if ( typeParameters.stream().anyMatch( p -> p.getSimpleName().toString().equals( typeVariableName ) ) )
       {
-        throw new ReactProcessorException( "@Prop named '" + name + "' is has a type variable as a return type " +
-                                           "that is declared on the method.", method );
+        throw new ProcessorException( "@Prop named '" + name + "' is has a type variable as a return type " +
+                                      "that is declared on the method.", method );
       }
     }
 
@@ -868,19 +868,19 @@ public final class ReactProcessor
     if ( typeName.isBoxedPrimitive() &&
          ProcessorUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
-      throw new ReactProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
-                                         "@Nonnull annotation. The return type should be the primitive type.",
-                                         method );
+      throw new ProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
+                                    "@Nonnull annotation. The return type should be the primitive type.",
+                                    method );
     }
     final ImmutablePropKeyStrategy strategy = immutable ? getImmutablePropKeyStrategy( typeName, propType ) : null;
     if ( immutable && null == strategy )
     {
-      throw new ReactProcessorException( "@Prop named '" + name + "' has specified the 'immutable' parameter as " +
-                                         "true but the annotation processor can not extract a key part from the " +
-                                         "type. This is because the type is not recognized as conforming to the " +
-                                         "rules as documented in the javadocs for the immutable parameter of " +
-                                         "the @Prop annotation.",
-                                         method );
+      throw new ProcessorException( "@Prop named '" + name + "' has specified the 'immutable' parameter as " +
+                                    "true but the annotation processor can not extract a key part from the " +
+                                    "type. This is because the type is not recognized as conforming to the " +
+                                    "rules as documented in the javadocs for the immutable parameter of " +
+                                    "the @Prop annotation.",
+                                    method );
     }
     final PropDescriptor propDescriptor =
       new PropDescriptor( descriptor,
@@ -977,7 +977,7 @@ public final class ReactProcessor
 
   @Nonnull
   private String derivePropName( @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     final String specifiedName =
       (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
@@ -988,13 +988,13 @@ public final class ReactProcessor
     final String name = ProcessorUtil.getPropertyAccessorName( method, specifiedName );
     if ( !SourceVersion.isIdentifier( name ) )
     {
-      throw new ReactProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
-                                         "name must be a valid java identifier.", method );
+      throw new ProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
+                                    "name must be a valid java identifier.", method );
     }
     else if ( SourceVersion.isKeyword( name ) )
     {
-      throw new ReactProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
-                                         "name must not be a java keyword.", method );
+      throw new ProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
+                                    "name must not be a java keyword.", method );
     }
     else
     {
@@ -1092,7 +1092,7 @@ public final class ReactProcessor
 
     if ( null == overriddenRenderMethod )
     {
-      throw new ReactProcessorException( "The react component does not override the render method.", typeElement );
+      throw new ProcessorException( "The react component does not override the render method.", typeElement );
     }
   }
 
@@ -1113,13 +1113,13 @@ public final class ReactProcessor
     {
       if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ReactProcessorException( "@ReactComponent target specified an invalid name '" + name + "'. The " +
-                                           "name must be a valid java identifier.", typeElement );
+        throw new ProcessorException( "@ReactComponent target specified an invalid name '" + name + "'. The " +
+                                      "name must be a valid java identifier.", typeElement );
       }
       else if ( SourceVersion.isKeyword( name ) )
       {
-        throw new ReactProcessorException( "@ReactComponent target specified an invalid name '" + name + "'. The " +
-                                           "name must not be a java keyword.", typeElement );
+        throw new ProcessorException( "@ReactComponent target specified an invalid name '" + name + "'. The " +
+                                      "name must not be a java keyword.", typeElement );
       }
       return name;
     }
@@ -1160,8 +1160,8 @@ public final class ReactProcessor
 
     if ( !isComponent )
     {
-      throw new ReactProcessorException( "@ReactComponent target must be a subclass of react4j.Component",
-                                         typeElement );
+      throw new ProcessorException( "@ReactComponent target must be a subclass of react4j.Component",
+                                    typeElement );
     }
     else
     {
@@ -1170,17 +1170,17 @@ public final class ReactProcessor
         findAny().orElse( null );
       if ( null != arezAnnotation )
       {
-        throw new ReactProcessorException( "@ReactComponent target should not be annotated with the " +
-                                           "arez.annotations.ArezComponent as React4j will add the annotation.",
-                                           typeElement );
+        throw new ProcessorException( "@ReactComponent target should not be annotated with the " +
+                                      "arez.annotations.ArezComponent as React4j will add the annotation.",
+                                      typeElement );
       }
     }
 
     if ( descriptor.needsInjection() && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
-      throw new ReactProcessorException( "@ReactComponent target has enabled injection integration but the class " +
-                                         "has type arguments which is incompatible with injection integration.",
-                                         typeElement );
+      throw new ProcessorException( "@ReactComponent target has enabled injection integration but the class " +
+                                    "has type arguments which is incompatible with injection integration.",
+                                    typeElement );
     }
 
     final boolean hasArezElements =
@@ -1239,9 +1239,9 @@ public final class ReactProcessor
       case "ENABLE":
         if ( immutable )
         {
-          throw new ReactProcessorException( "@Prop target has specified both immutable=true and " +
-                                             "shouldUpdateOnChange=ENABLE which is an invalid combination.",
-                                             method );
+          throw new ProcessorException( "@Prop target has specified both immutable=true and " +
+                                        "shouldUpdateOnChange=ENABLE which is an invalid combination.",
+                                        method );
         }
         return true;
       case "DISABLE":
@@ -1266,9 +1266,9 @@ public final class ReactProcessor
       case "ENABLE":
         if ( immutable )
         {
-          throw new ReactProcessorException( "@Prop target has specified both immutable=true and " +
-                                             "observable=ENABLE which is an invalid combination.",
-                                             method );
+          throw new ProcessorException( "@Prop target has specified both immutable=true and " +
+                                        "observable=ENABLE which is an invalid combination.",
+                                        method );
         }
         return true;
       case "DISABLE":
@@ -1353,7 +1353,7 @@ public final class ReactProcessor
 
   @Nonnull
   private String deriveMemoizeName( @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     final String name =
       (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
@@ -1384,7 +1384,7 @@ public final class ReactProcessor
   }
 
   private void verifyNoDuplicateAnnotations( @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     final String[] annotationTypes =
       new String[]{ Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
@@ -1406,7 +1406,7 @@ public final class ReactProcessor
             final String message =
               "Method can not be annotated with both @" + ProcessorUtil.toSimpleName( type1 ) +
               " and @" + ProcessorUtil.toSimpleName( type2 );
-            throw new ReactProcessorException( message, method );
+            throw new ProcessorException( message, method );
           }
         }
       }

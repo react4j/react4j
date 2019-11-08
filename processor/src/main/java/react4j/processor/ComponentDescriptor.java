@@ -83,20 +83,20 @@ final class ComponentDescriptor
 
     if ( ElementKind.CLASS != element.getKind() )
     {
-      throw new ReactProcessorException( "@ReactComponent target must be a class", element );
+      throw new ProcessorException( "@ReactComponent target must be a class", element );
     }
     else if ( element.getModifiers().contains( Modifier.FINAL ) )
     {
-      throw new ReactProcessorException( "@ReactComponent target must not be final", element );
+      throw new ProcessorException( "@ReactComponent target must not be final", element );
     }
     else if ( !element.getModifiers().contains( Modifier.ABSTRACT ) )
     {
-      throw new ReactProcessorException( "@ReactComponent target must be abstract", element );
+      throw new ProcessorException( "@ReactComponent target must be abstract", element );
     }
     else if ( NestingKind.TOP_LEVEL != element.getNestingKind() &&
               !element.getModifiers().contains( Modifier.STATIC ) )
     {
-      throw new ReactProcessorException( "@ReactComponent target must not be a non-static nested class", element );
+      throw new ProcessorException( "@ReactComponent target must not be a non-static nested class", element );
     }
 
     final List<ExecutableElement> constructors = element.getEnclosedElements().stream().
@@ -105,18 +105,18 @@ final class ComponentDescriptor
       collect( Collectors.toList() );
     if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
     {
-      throw new ReactProcessorException( "@ReactComponent target must have a single, package-access constructor " +
-                                         "or the default constructor", element );
+      throw new ProcessorException( "@ReactComponent target must have a single, package-access constructor " +
+                                    "or the default constructor", element );
     }
     _constructor = constructors.get( 0 );
     for ( final VariableElement parameter : _constructor.getParameters() )
     {
       if ( ProcessorUtil.hasAnnotationOfType( parameter, Constants.PER_INSTANCE_ANNOTATION_CLASSNAME ) )
       {
-        throw new ReactProcessorException( "@ReactComponent target has a constructor with a parameter named '" +
-                                           parameter.getSimpleName().toString() + "' that is incorrectly annotated " +
-                                           "with the " + Constants.PER_INSTANCE_ANNOTATION_CLASSNAME + " annotation.",
-                                           element );
+        throw new ProcessorException( "@ReactComponent target has a constructor with a parameter named '" +
+                                      parameter.getSimpleName().toString() + "' that is incorrectly annotated " +
+                                      "with the " + Constants.PER_INSTANCE_ANNOTATION_CLASSNAME + " annotation.",
+                                      element );
       }
     }
   }
@@ -352,14 +352,14 @@ final class ComponentDescriptor
   }
 
   void setPreUpdate( @Nonnull final ExecutableElement preUpdate )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     MethodChecks.mustBeLifecycleHook( getElement(), Constants.PRE_UPDATE_ANNOTATION_CLASSNAME, preUpdate );
 
     if ( null != _preUpdate )
     {
-      throw new ReactProcessorException( "@PreUpdate target duplicates existing method named " +
-                                         _preUpdate.getSimpleName(), preUpdate );
+      throw new ProcessorException( "@PreUpdate target duplicates existing method named " +
+                                    _preUpdate.getSimpleName(), preUpdate );
     }
     else
     {
@@ -374,14 +374,14 @@ final class ComponentDescriptor
   }
 
   void setPostRender( @Nonnull final ExecutableElement postRender )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     MethodChecks.mustBeLifecycleHook( getElement(), Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME, postRender );
 
     if ( null != _postRender )
     {
-      throw new ReactProcessorException( "@PostMountOrUpdate target duplicates existing method named " +
-                                         _postRender.getSimpleName(), postRender );
+      throw new ProcessorException( "@PostMountOrUpdate target duplicates existing method named " +
+                                    _postRender.getSimpleName(), postRender );
     }
     else
     {
@@ -396,14 +396,14 @@ final class ComponentDescriptor
   }
 
   void setPostUpdate( @Nonnull final ExecutableElement postUpdate )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     MethodChecks.mustBeLifecycleHook( getElement(), Constants.POST_UPDATE_ANNOTATION_CLASSNAME, postUpdate );
 
     if ( null != _postUpdate )
     {
-      throw new ReactProcessorException( "@PostUpdate target duplicates existing method named " +
-                                         _postUpdate.getSimpleName(), postUpdate );
+      throw new ProcessorException( "@PostUpdate target duplicates existing method named " +
+                                    _postUpdate.getSimpleName(), postUpdate );
     }
     else
     {
@@ -418,14 +418,14 @@ final class ComponentDescriptor
   }
 
   void setPostMount( @Nonnull final ExecutableElement postMount )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     MethodChecks.mustBeLifecycleHook( getElement(), Constants.POST_MOUNT_ANNOTATION_CLASSNAME, postMount );
 
     if ( null != _postMount )
     {
-      throw new ReactProcessorException( "@PostMount target duplicates existing method named " +
-                                         _postMount.getSimpleName(), postMount );
+      throw new ProcessorException( "@PostMount target duplicates existing method named " +
+                                    _postMount.getSimpleName(), postMount );
     }
     else
     {
@@ -440,7 +440,7 @@ final class ComponentDescriptor
   }
 
   void setOnError( @Nonnull final ExecutableElement onError )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     MethodChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
     MethodChecks.mustNotBePublic( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
@@ -457,9 +457,9 @@ final class ComponentDescriptor
       {
         if ( infoFound )
         {
-          throw new ReactProcessorException( "@OnError target has multiple parameters of type " +
-                                             Constants.ERROR_INFO_CLASSNAME,
-                                             onError );
+          throw new ProcessorException( "@OnError target has multiple parameters of type " +
+                                        Constants.ERROR_INFO_CLASSNAME,
+                                        onError );
         }
         infoFound = true;
       }
@@ -467,24 +467,24 @@ final class ComponentDescriptor
       {
         if ( errorFound )
         {
-          throw new ReactProcessorException( "@OnError target has multiple parameters of type " +
-                                             Constants.JS_ERROR_CLASSNAME,
-                                             onError );
+          throw new ProcessorException( "@OnError target has multiple parameters of type " +
+                                        Constants.JS_ERROR_CLASSNAME,
+                                        onError );
         }
         errorFound = true;
       }
       else
       {
-        throw new ReactProcessorException( "@OnError target has parameter of invalid type named " +
-                                           parameter.getSimpleName().toString(),
-                                           parameter );
+        throw new ProcessorException( "@OnError target has parameter of invalid type named " +
+                                      parameter.getSimpleName().toString(),
+                                      parameter );
       }
     }
 
     if ( null != _onError )
     {
-      throw new ReactProcessorException( "@OnError target duplicates existing method named " + _onError.getSimpleName(),
-                                         onError );
+      throw new ProcessorException( "@OnError target duplicates existing method named " + _onError.getSimpleName(),
+                                    onError );
     }
     else
     {

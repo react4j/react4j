@@ -18,112 +18,112 @@ final class MethodChecks
   }
 
   static void mustBeAbstract( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( !method.getModifiers().contains( Modifier.ABSTRACT ) )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must be abstract", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must be abstract", method );
     }
   }
 
   private static void mustBeStatic( @Nonnull final String annotationName, @Nonnull final Element method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( !method.getModifiers().contains( Modifier.STATIC ) )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must be static", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must be static", method );
     }
   }
 
   private static void mustNotBeStatic( @Nonnull final String annotationName, @Nonnull final Element method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( method.getModifiers().contains( Modifier.STATIC ) )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must not be static", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must not be static", method );
     }
   }
 
   static void mustBeFinal( @Nonnull final String annotationName, @Nonnull final Element method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( !method.getModifiers().contains( Modifier.FINAL ) )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must be final", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must be final", method );
     }
   }
 
   private static void mustNotBePrivate( @Nonnull final String annotationName, @Nonnull final Element method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( method.getModifiers().contains( Modifier.PRIVATE ) )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must not be private", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must not be private", method );
     }
   }
 
   static void mustNotBePublic( @Nonnull final String annotationName, @Nonnull final Element method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( method.getModifiers().contains( Modifier.PUBLIC ) )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must not be public", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must not be public", method );
     }
   }
 
   static void mustNotHaveAnyParameters( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( !method.getParameters().isEmpty() )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must not have any parameters", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must not have any parameters", method );
     }
   }
 
   static void mustReturnAValue( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( TypeKind.VOID == method.getReturnType().getKind() )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must return a value", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must return a value", method );
     }
   }
 
   static void mustNotReturnAValue( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( TypeKind.VOID != method.getReturnType().getKind() )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must not return a value", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must not return a value", method );
     }
   }
 
   static void mustNotThrowAnyExceptions( @Nonnull final String annotationName, @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( !method.getThrownTypes().isEmpty() )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must not throw any exceptions", method );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must not throw any exceptions", method );
     }
   }
 
   static void mustNotBeAbstract( @Nonnull final String annotationName, @Nonnull final Element element )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( element.getModifiers().contains( Modifier.ABSTRACT ) )
     {
-      throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                         " target must not be abstract", element );
+      throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                    " target must not be abstract", element );
     }
   }
 
@@ -134,7 +134,7 @@ final class MethodChecks
   static void mustBeSubclassCallable( @Nonnull final TypeElement targetType,
                                       @Nonnull final String annotationName,
                                       @Nonnull final Element method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     mustNotBeStatic( annotationName, method );
     mustNotBePrivate( annotationName, method );
@@ -144,7 +144,7 @@ final class MethodChecks
   static void mustBeStaticallySubclassCallable( @Nonnull final TypeElement targetType,
                                                 @Nonnull final String annotationName,
                                                 @Nonnull final Element method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     mustBeStatic( annotationName, method );
     mustNotBePrivate( annotationName, method );
@@ -154,7 +154,7 @@ final class MethodChecks
   static void mustNotBePackageAccessInDifferentPackage( @Nonnull final TypeElement component,
                                                         @Nonnull final String annotationName,
                                                         @Nonnull final Element method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     final Set<Modifier> modifiers = method.getModifiers();
     final boolean isPackageAccess =
@@ -169,9 +169,9 @@ final class MethodChecks
         GeneratorUtil.getPackageElement( (TypeElement) method.getEnclosingElement() );
       if ( !Objects.equals( packageElement.getQualifiedName(), methodPackageElement.getQualifiedName() ) )
       {
-        throw new ReactProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
-                                           " target must not be package access if the method is in a different " +
-                                           "package from the @ReactComponent", method );
+        throw new ProcessorException( "@" + ProcessorUtil.toSimpleName( annotationName ) +
+                                      " target must not be package access if the method is in a different " +
+                                      "package from the @ReactComponent", method );
       }
     }
   }
@@ -185,7 +185,7 @@ final class MethodChecks
   static void mustBeLifecycleHook( @Nonnull final TypeElement targetType,
                                    @Nonnull final String annotationName,
                                    @Nonnull final ExecutableElement method )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     mustNotBeAbstract( annotationName, method );
     mustNotBePublic( annotationName, method );

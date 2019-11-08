@@ -268,7 +268,7 @@ final class ProcessorUtil
 
   @Nonnull
   static String getPropertyAccessorName( @Nonnull final ExecutableElement method, @Nonnull final String specifiedName )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     String name = ProcessorUtil.deriveName( method, GETTER_PATTERN, specifiedName );
     if ( null != name )
@@ -290,7 +290,7 @@ final class ProcessorUtil
   static String deriveName( @Nonnull final Element method,
                             @Nonnull final Pattern pattern,
                             @Nonnull final String name )
-    throws ReactProcessorException
+    throws ProcessorException
   {
     if ( isSentinelName( name ) )
     {

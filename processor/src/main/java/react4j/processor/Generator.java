@@ -866,8 +866,8 @@ final class Generator
       case ARRAY:
         return "cast";
       default:
-        throw new ReactProcessorException( "Return type of @Prop method is not yet " +
-                                           "handled. Type: " + type.getKind(), element );
+        throw new ProcessorException( "Return type of @Prop method is not yet " +
+                                      "handled. Type: " + type.getKind(), element );
     }
   }
 
