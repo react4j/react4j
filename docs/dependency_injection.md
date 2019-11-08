@@ -7,7 +7,7 @@ title: Dependency Injection
 We hope to fix this in the medium term.
 
 React4j can be integrated with dependency injection frameworks such as [Dagger2](https://google.github.io/dagger)
-and [GIN](https://code.google.com/archive/p/google-gin/). The dependency injection framework is responsible
+and [Gin](https://code.google.com/archive/p/google-gin/). The dependency injection framework is responsible
 for creating the component and injecting the required dependencies.
 
 The author declares the dependencies of a React4j component by annotating fields or setter methods with
