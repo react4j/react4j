@@ -2,12 +2,14 @@ package react4j.processor;
 
 import com.squareup.javapoet.TypeName;
 import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 final class Step
 {
   private final int _index;
-  private final ArrayList<StepMethod> _methods = new ArrayList<>();
+  @Nonnull
+  private final List<StepMethod> _methods = new ArrayList<>();
 
   Step( final int index )
   {
@@ -29,7 +31,8 @@ final class Step
     getMethods().add( new StepMethod( name, key, type, null, StepMethodType.TERMINATE ) );
   }
 
-  ArrayList<StepMethod> getMethods()
+  @Nonnull
+  List<StepMethod> getMethods()
   {
     return _methods;
   }
