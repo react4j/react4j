@@ -115,7 +115,7 @@ final class Generator
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
     addOriginatingTypes( descriptor.getElement(), builder );
-    addGeneratedAnnotation( processingEnv, descriptor, builder );
+    addGeneratedAnnotation( processingEnv, builder );
     builder.addModifiers( Modifier.FINAL );
     ProcessorUtil.copyAccessModifiers( descriptor.getElement(), builder );
 
@@ -603,7 +603,7 @@ final class Generator
     builder.addAnnotation( arezAnnotation.build() );
     builder.addModifiers( Modifier.ABSTRACT );
 
-    addGeneratedAnnotation( processingEnv, descriptor, builder );
+    addGeneratedAnnotation( processingEnv, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addMethod( buildConstructor( descriptor ).build() );
@@ -1812,7 +1812,7 @@ final class Generator
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( descriptor.getDaggerComponentExtensionClassName() );
     final ClassName superClassName = descriptor.getArezDaggerExtensionClassName();
     builder.addSuperinterface( superClassName );
-    addGeneratedAnnotation( processingEnv, descriptor, builder );
+    addGeneratedAnnotation( processingEnv, builder );
     addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addModifiers( Modifier.PUBLIC );
@@ -1950,7 +1950,6 @@ final class Generator
   }
 
   private static void addGeneratedAnnotation( @Nonnull final ProcessingEnvironment processingEnv,
-                                              @Nonnull final ComponentDescriptor descriptor,
                                               @Nonnull final TypeSpec.Builder builder )
   {
     GeneratedAnnotationSpecs
