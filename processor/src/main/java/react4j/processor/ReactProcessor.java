@@ -1,9 +1,7 @@
 package react4j.processor;
 
 import com.google.auto.common.SuperficialValidation;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -18,6 +16,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -239,21 +238,16 @@ public final class ReactProcessor
     throws IOException, ProcessorException
   {
     final ComponentDescriptor descriptor = parse( element );
-    emitTypeSpec( descriptor.getPackageName(), Generator.buildEnhancedComponent( processingEnv, descriptor ) );
-    emitTypeSpec( descriptor.getPackageName(), Generator.buildComponentBuilder( processingEnv, descriptor ) );
+    final String packageName = descriptor.getPackageName();
+    final Filer filer = processingEnv.getFiler();
+    GeneratorUtil.emitJavaType( packageName, Generator.buildEnhancedComponent( processingEnv, descriptor ), filer );
+    GeneratorUtil.emitJavaType( packageName, Generator.buildComponentBuilder( processingEnv, descriptor ), filer );
     if ( descriptor.needsInjection() )
     {
-      emitTypeSpec( descriptor.getPackageName(), Generator.buildDaggerComponentExtension( processingEnv, descriptor ) );
+      GeneratorUtil.emitJavaType( packageName,
+                                  Generator.buildDaggerComponentExtension( processingEnv, descriptor ),
+                                  filer );
     }
-  }
-
-  private void emitTypeSpec( @Nonnull final String packageName, @Nonnull final TypeSpec typeSpec )
-    throws IOException
-  {
-    JavaFile.builder( packageName, typeSpec ).
-      skipJavaLangImports( true ).
-      build().
-      writeTo( processingEnv.getFiler() );
   }
 
   /**
