@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1362,31 +1364,12 @@ public final class ReactProcessor
   private void verifyNoDuplicateAnnotations( @Nonnull final ExecutableElement method )
     throws ProcessorException
   {
-    final String[] annotationTypes =
-      new String[]{ Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
-                    Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
-                    Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
-                    Constants.PROP_ANNOTATION_CLASSNAME };
-    for ( int i = 0; i < annotationTypes.length; i++ )
-    {
-      final String type1 = annotationTypes[ i ];
-      final Object annotation1 = ProcessorUtil.findAnnotationByType( method, type1 );
-      if ( null != annotation1 )
-      {
-        for ( int j = i + 1; j < annotationTypes.length; j++ )
-        {
-          final String type2 = annotationTypes[ j ];
-          final Object annotation2 = ProcessorUtil.findAnnotationByType( method, type2 );
-          if ( null != annotation2 )
-          {
-            final String message =
-              "Method can not be annotated with both @" + ProcessorUtil.toSimpleName( type1 ) +
-              " and @" + ProcessorUtil.toSimpleName( type2 );
-            throw new ProcessorException( message, method );
-          }
-        }
-      }
-    }
+    final List<String> annotations =
+      Arrays.asList( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
+                     Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
+                     Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
+                     Constants.PROP_ANNOTATION_CLASSNAME );
+    MemberChecks.verifyNoOverlappingAnnotations( method, annotations, Collections.emptyMap() );
   }
 
   @Nonnull
