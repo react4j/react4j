@@ -253,19 +253,6 @@ public final class ReactProcessor
   /**
    * Return true if there is any injection points that are not through the constructor.
    */
-  private boolean nonConstructorInjections( @Nonnull final TypeElement typeElement )
-  {
-    return getMethods( typeElement )
-             .stream()
-             .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) ) ||
-           ProcessorUtil.getFieldElements( typeElement )
-             .stream()
-             .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.INJECT_ANNOTATION_CLASSNAME ) );
-  }
-
-  /**
-   * Return true if there is any injection points that are not through the constructor.
-   */
   private boolean hasPostConstruct( @Nonnull final TypeElement typeElement )
   {
     return getMethods( typeElement )
@@ -278,10 +265,8 @@ public final class ReactProcessor
   {
     final String name = deriveComponentName( typeElement );
     final ComponentType type = extractComponentType( typeElement );
-    final boolean nonConstructorInjections = nonConstructorInjections( typeElement );
     final boolean hasPostConstruct = hasPostConstruct( typeElement );
-    final ComponentDescriptor descriptor =
-      new ComponentDescriptor( name, typeElement, type, nonConstructorInjections, hasPostConstruct );
+    final ComponentDescriptor descriptor = new ComponentDescriptor( name, typeElement, type, hasPostConstruct );
 
     determineComponentCapabilities( descriptor, typeElement );
     determineRenderMethod( typeElement, descriptor );

@@ -25,7 +25,6 @@ final class ComponentDescriptor
   private final TypeElement _element;
   @Nonnull
   private final ComponentType _type;
-  private final boolean _nonConstructorInjections;
   private final boolean _hasPostConstruct;
   @Nonnull
   private final ExecutableElement _constructor;
@@ -62,13 +61,11 @@ final class ComponentDescriptor
   ComponentDescriptor( @Nonnull final String name,
                        @Nonnull final TypeElement element,
                        @Nonnull final ComponentType type,
-                       final boolean nonConstructorInjections,
                        final boolean hasPostConstruct )
   {
     _name = Objects.requireNonNull( name );
     _element = Objects.requireNonNull( element );
     _type = Objects.requireNonNull( type );
-    _nonConstructorInjections = nonConstructorInjections;
     _hasPostConstruct = hasPostConstruct;
 
     if ( ElementKind.CLASS != element.getKind() )
@@ -157,11 +154,6 @@ final class ComponentDescriptor
     return _name;
   }
 
-  boolean nonConstructorInjections()
-  {
-    return _nonConstructorInjections;
-  }
-
   @Nonnull
   ClassName getClassName()
   {
@@ -228,7 +220,7 @@ final class ComponentDescriptor
 
   boolean needsInjection()
   {
-    return nonConstructorInjections() || hasConstructorParams();
+    return hasConstructorParams();
   }
 
   boolean trackRender()

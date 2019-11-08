@@ -1823,11 +1823,6 @@ final class Generator
         .methodBuilder( "bind" + descriptor.getName() )
         .addModifiers( Modifier.PUBLIC, Modifier.DEFAULT );
 
-    if ( descriptor.nonConstructorInjections() )
-    {
-      method.addStatement( "$T.super.$N()", superClassName, "bind" + descriptor.getName() );
-    }
-
     method.addStatement( "InjectSupport.setFactory( $N().createFactory() )",
                          "get" + descriptor.getName() + "DaggerSubcomponent" );
 
