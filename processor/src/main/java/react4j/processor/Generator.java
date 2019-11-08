@@ -142,8 +142,7 @@ final class Generator
                                                     @Nonnull final TypeSpec.Builder builder,
                                                     @Nonnull final Step step )
   {
-    final ArrayList<StepMethod> methods = step.getMethods();
-    for ( final StepMethod method : methods )
+    for ( final StepMethod method : step.getMethods() )
     {
       builder.addMethod( buildStaticStepMethodMethod( descriptor, step, method ) );
     }
