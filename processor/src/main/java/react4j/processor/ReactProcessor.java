@@ -1,10 +1,7 @@
 package react4j.processor;
 
-import com.google.auto.common.SuperficialValidation;
 import com.squareup.javapoet.TypeName;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,10 +14,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
-import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
@@ -29,7 +25,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -40,7 +35,6 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Types;
-import static javax.tools.Diagnostic.Kind.*;
 
 /**
  * Annotation processor that analyzes React annotated source and generates models from the annotations.
@@ -48,187 +42,33 @@ import static javax.tools.Diagnostic.Kind.*;
 @SuppressWarnings( "Duplicates" )
 @SupportedAnnotationTypes( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME )
 @SupportedSourceVersion( SourceVersion.RELEASE_8 )
+@SupportedOptions( { "react4j.defer.unresolved", "react4j.defer.errors" } )
 public final class ReactProcessor
-  extends AbstractProcessor
+  extends AbstractStandardProcessor
 {
-  /**
-   * Elements that were unresolved and have been deferred to a later compilation cycle.
-   */
   @Nonnull
-  private HashSet<TypeElement> _deferred = new HashSet<>();
-  private int _invalidTypeCount;
-  private RoundEnvironment _env;
+  @Override
+  String getRootAnnotationClassname()
+  {
+    return Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME;
+  }
 
   @Override
-  public boolean process( final Set<? extends TypeElement> annotations, final RoundEnvironment env )
+  @Nonnull
+  final String getIssueTrackerURL()
   {
-    _env = env;
-
-    final TypeElement annotation =
-      processingEnv.getElementUtils().getTypeElement( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME );
-    final Set<? extends Element> elements = env.getElementsAnnotatedWith( annotation );
-    final Collection<Element> elementsToProcess = getElementsToProcess( elements );
-    processElements( elementsToProcess );
-    if ( env.getRootElements().isEmpty() && !_deferred.isEmpty() )
-    {
-      _deferred.forEach( this::processingErrorMessage );
-      _deferred.clear();
-    }
-    if ( _env.processingOver() )
-    {
-      if ( 0 != _invalidTypeCount )
-      {
-        processingEnv
-          .getMessager()
-          .printMessage( ERROR, "ReactProcessor failed to process " + _invalidTypeCount +
-                                " types. See earlier warnings for further details." );
-      }
-      _invalidTypeCount = 0;
-    }
-    _env = null;
-    return true;
-  }
-
-  private void processingErrorMessage( @Nonnull final TypeElement target )
-  {
-    reportError( "ReactProcessor unable to process " + target.getQualifiedName() +
-                 " because not all of its dependencies could be resolved. Check for " +
-                 "compilation errors or a circular dependency with generated code.",
-                 target );
-  }
-
-  private void reportError( @Nonnull final String message, @Nullable final Element element )
-  {
-    _invalidTypeCount++;
-    if ( _env.errorRaised() || _env.processingOver() )
-    {
-      processingEnv.getMessager().printMessage( ERROR, message, element );
-    }
-    else
-    {
-      processingEnv.getMessager().printMessage( MANDATORY_WARNING, message, element );
-    }
+    return "https://github.com/react4j/react4j/issues";
   }
 
   @Nonnull
-  private Collection<Element> getElementsToProcess( @Nonnull final Set<? extends Element> elements )
+  @Override
+  String getOptionPrefix()
   {
-    final List<TypeElement> deferred = _deferred
-      .stream()
-      .map( e -> processingEnv.getElementUtils().getTypeElement( e.getQualifiedName() ) )
-      .collect( Collectors.toList() );
-    _deferred = new HashSet<>();
-
-    final ArrayList<Element> elementsToProcess = new ArrayList<>();
-    collectElementsToProcess( elements, elementsToProcess );
-    collectElementsToProcess( deferred, elementsToProcess );
-    return elementsToProcess;
+    return "react4j";
   }
 
-  private void collectElementsToProcess( @Nonnull final Collection<? extends Element> elements,
-                                         @Nonnull final ArrayList<Element> elementsToProcess )
-  {
-    for ( final Element element : elements )
-    {
-      if ( SuperficialValidation.validateElement( element ) )
-      {
-        elementsToProcess.add( element );
-      }
-      else
-      {
-        _deferred.add( (TypeElement) element );
-      }
-    }
-  }
-
-  private void processElements( @Nonnull final Collection<? extends Element> elements )
-  {
-    for ( final Element element : elements )
-    {
-      try
-      {
-        process( (TypeElement) element );
-      }
-      catch ( final IOException ioe )
-      {
-        reportError( ioe.getMessage(), element );
-      }
-      catch ( final ProcessorException e )
-      {
-        final Element errorLocation = e.getElement();
-        final Element outerElement = getOuterElement( errorLocation );
-        if ( !_env.getRootElements().contains( outerElement ) )
-        {
-          final String location;
-          if ( errorLocation instanceof ExecutableElement )
-          {
-            final ExecutableElement executableElement = (ExecutableElement) errorLocation;
-            final TypeElement typeElement = (TypeElement) executableElement.getEnclosingElement();
-            location = typeElement.getQualifiedName() + "." + executableElement.getSimpleName();
-          }
-          else if ( errorLocation instanceof VariableElement )
-          {
-            final VariableElement variableElement = (VariableElement) errorLocation;
-            final TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();
-            location = typeElement.getQualifiedName() + "." + variableElement.getSimpleName();
-          }
-          else
-          {
-            assert errorLocation instanceof TypeElement;
-            final TypeElement typeElement = (TypeElement) errorLocation;
-            location = typeElement.getQualifiedName().toString();
-          }
-
-          final StringWriter sw = new StringWriter();
-          processingEnv.getElementUtils().printElements( sw, errorLocation );
-          sw.flush();
-
-          final String message =
-            "An error was generated processing the element " + element.getSimpleName() +
-            " but the error was triggered by code not currently being compiled but inherited or " +
-            "implemented by the element and may not be highlighted by your tooling or IDE. The " +
-            "error occurred at " + location + " and may look like:\n" + sw.toString();
-
-          reportError( e.getMessage(), element );
-          reportError( message, null );
-        }
-        reportError( e.getMessage(), e.getElement() );
-      }
-      catch ( final Throwable e )
-      {
-        final StringWriter sw = new StringWriter();
-        e.printStackTrace( new PrintWriter( sw ) );
-        sw.flush();
-
-        final String message =
-          "Unexpected error running the " + getClass().getName() + " processor. This has " +
-          "resulted in a failure to process the code and has left the compiler in an invalid " +
-          "state. Please report the failure to the developers so that it can be fixed.\n" +
-          " Report the error at: https://github.com/react4j/react4j/issues\n" +
-          "\n\n" +
-          sw.toString();
-        reportError( message, element );
-      }
-    }
-  }
-
-  /**
-   * Return the outer enclosing element.
-   * This is either the top-level class, interface, enum, etc within a package.
-   * This helps identify the top level compilation units.
-   */
-  @Nonnull
-  private Element getOuterElement( @Nonnull final Element element )
-  {
-    Element result = element;
-    while ( !( result.getEnclosingElement() instanceof PackageElement ) )
-    {
-      result = result.getEnclosingElement();
-    }
-    return result;
-  }
-
-  private void process( @Nonnull final TypeElement element )
+  @Override
+  protected void process( @Nonnull final TypeElement element )
     throws IOException, ProcessorException
   {
     final ComponentDescriptor descriptor = parse( element );
