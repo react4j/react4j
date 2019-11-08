@@ -441,7 +441,7 @@ public class ReactProcessorTest
         new Object[]{ "com.example.prop_validate.TooManyParamsPropValidate",
                       "@PropValidate target must have exactly 1 parameter" },
         new Object[]{ "com.example.render.MissingRenderComponent",
-                      "The react component does not override the render method." }
+                      "@ArezComponent target has an abstract method not implemented by framework. The method is named render" }
       };
   }
 
