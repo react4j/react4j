@@ -3,6 +3,7 @@ package react4j;
 import arez.Arez;
 import arez.annotations.ComponentIdRef;
 import arez.annotations.ComponentNameRef;
+import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import grim.annotations.OmitSymbol;
 import java.util.Objects;
@@ -149,7 +150,8 @@ public abstract class Component
          */
         if ( null != currentState )
         {
-          for ( final String key : JsObject.keys( Js.uncheckedCast( currentState ) ) )
+          final JsArray<String> currentStateKeys = JsObject.keys( Js.uncheckedCast( currentState ) );
+          for ( final String key : currentStateKeys.asArray( new String[ currentStateKeys.length ] ) )
           {
             if ( !newState.has( key ) )
             {
@@ -158,7 +160,8 @@ public abstract class Component
           }
 
           boolean newStateHasChanges = false;
-          for ( final String key : JsObject.keys( Js.uncheckedCast( newState ) ) )
+          final JsArray<String> newStateKeys = JsObject.keys( Js.uncheckedCast( currentState ) );
+          for ( final String key : newStateKeys.asArray( new String[ newStateKeys.length ] ) )
           {
             final Any newValue = currentState.getAsAny( key );
             final Any existingValue = newState.getAsAny( key );

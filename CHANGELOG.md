@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.com.google.elemental2` artifacts to version `2.27`. This is a backwards incompatible change that forces the usage of a modern version of GWT such as the unofficial `2.8.2-v20191108` release.
+
 ### [v0.140](https://github.com/react4j/react4j/tree/v0.140) (2019-11-11) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.139...v0.140)
 
 Changes in this release:
