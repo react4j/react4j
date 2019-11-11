@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.140](https://github.com/react4j/react4j/tree/v0.140) (2019-11-11) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.139...v0.140)
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.arez` artifacts to version `0.154`.
 * Declare the originating types for generated `*Builder` class to make it easier for tooling to determine when to re-run annotation processor to generate builder class.
