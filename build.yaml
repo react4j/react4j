@@ -18,7 +18,7 @@ artifacts:
   gwt_user: org.realityforge.com.google.gwt:gwt-user:jar:2.8.2-v20191108
   gwt_dev: org.realityforge.com.google.gwt:gwt-dev:jar:2.8.2-v20191108
 
-  jsinterop_annotations: com.google.jsinterop:jsinterop-annotations:jar:1.0.2
+  jsinterop_annotations: org.realityforge.com.google.jsinterop:jsinterop-annotations:jar:2.8.2-v20191108
 
   jsinterop_base: com.google.jsinterop:base:jar:1.0.0
 
