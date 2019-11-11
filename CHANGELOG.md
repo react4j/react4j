@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.arez` artifacts to version `0.154`.
 * Declare the originating types for generated `*Builder` class to make it easier for tooling to determine when to re-run annotation processor to generate builder class.
 * Arez removed support for using non-constructor based injection of services in version `0.153` propagated the same restrictions to React4j. The annotation processor code to support field and method injections within React4j has now been removed to bring it inline
 
