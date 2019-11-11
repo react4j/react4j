@@ -4,6 +4,7 @@
 
   <entry-point class='react4j.examples.hello_world.HelloWorld'/>
   <source path=''/>
+  <public path='public'/>
 
   <set-property name="jre.checks.checkLevel" value="MINIMAL"/>
   <collapse-all-properties/>
