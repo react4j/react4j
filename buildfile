@@ -49,7 +49,7 @@ define 'react4j' do
     pom.include_transitive_dependencies << artifact(:elemental2_core)
     pom.include_transitive_dependencies << artifact(:arez_core)
     pom.include_transitive_dependencies << artifact(:braincheck)
-    pom.dependency_filter = Proc.new { |dep| dep[:group].to_s != 'com.google.gwt' && dep[:group].to_s != 'com.google.jsinterop' && dep[:scope].to_s != 'test' && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-core') && (dep[:group].to_s != 'org.realityforge.com.google.elemental2' || %w(elemental2-promise elemental2-core).include?(dep[:id].to_s)) && dep[:group].to_s != 'org.realityforge.org.jetbrains.annotations' && dep[:scope].to_s != 'test' }
+    pom.dependency_filter = Proc.new { |dep| dep[:group].to_s != 'org.realityforge.com.google.gwt' && dep[:group].to_s != 'com.google.jsinterop' && dep[:scope].to_s != 'test' && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-core') && (dep[:group].to_s != 'org.realityforge.com.google.elemental2' || %w(elemental2-promise elemental2-core).include?(dep[:id].to_s)) && dep[:group].to_s != 'org.realityforge.org.jetbrains.annotations' && dep[:scope].to_s != 'test' }
 
     project.processorpath << artifacts(:grim_processor, :javax_json)
 
