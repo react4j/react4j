@@ -15,8 +15,8 @@ artifacts:
   jetbrains_annotations: org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.2.0
 
   # GWT deps
-  gwt_user: com.google.gwt:gwt-user:jar:2.8.2
-  gwt_dev: com.google.gwt:gwt-dev:jar:2.8.2
+  gwt_user: org.realityforge.com.google.gwt:gwt-user:jar:2.8.2-v20191108
+  gwt_dev: org.realityforge.com.google.gwt:gwt-dev:jar:2.8.2-v20191108
 
   jsinterop_annotations: com.google.jsinterop:jsinterop-annotations:jar:1.0.2
 
