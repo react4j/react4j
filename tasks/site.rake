@@ -18,8 +18,9 @@ task 'site:examples' do
   mkdir_p SITE_DIR
   rm_rf "#{SITE_DIR}/examples"
   cp_r examples_dir, "#{SITE_DIR}/examples"
-  rm_f Dir["#{SITE_DIR}/examples/**/*.devmode.js"]
-  rm_f Dir["#{SITE_DIR}/examples/**/compilation-mappings.txt"]
+  rm_f Dir["#{SITE_DIR}/examples/*/*.devmode.js"]
+  rm_f Dir["#{SITE_DIR}/examples/*/index.html"]
+  rm_f Dir["#{SITE_DIR}/examples/*/compilation-mappings.txt"]
   rm_rf "#{SITE_DIR}/examples/WEB-INF"
 
   public_js = Dir["#{SITE_DIR}/examples/*/*.js"].select do |filename|
@@ -28,8 +29,8 @@ task 'site:examples' do
   mv public_js, "#{SITE_DIR}/examples"
 
   EXAMPLES.keys.each do |name|
-    content = IO.read(project._("src/main/webapp/#{name}.html"))
-    content = content.gsub("http://127.0.0.1:8888/#{name}/dev/", '').gsub('http://127.0.0.1:8888/', '')
+    content = IO.read(project._("src/main/java/react4j/examples/#{name}/public/index.html"))
+    content = content.gsub("\"dev/", '"').gsub("/recompile-requester/#{name}", "#{name}/#{name}.nocache.js")
     IO.write("#{SITE_DIR}/examples/#{name}.html", content)
   end
 end
