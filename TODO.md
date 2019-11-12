@@ -15,6 +15,12 @@ complete as there is too much un-said.
 * The `MUST NOT BE PUBLIC` rules in annotation processor should be turned into warnings, made suppressable
   and propagated to Arez for theiry lifecycle hooks.
 
+* Generate a compile warning if public methods are declared in a react class or any parent class (unless they
+  are implementations of an interface). This warnings should be able to be suppressed.
+ 
+* Generate a compile warning if protected methods are declared in a react class. This warnings should be able
+  to be suppressed.
+
 ### Enhancements
 
 * Generate documentation for components from annotations. This documentation could use the prop types to give
@@ -69,8 +75,6 @@ complete as there is too much un-said.
   - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
   - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
     production js produced. - https://github.com/facebook/react/issues/13634
-
-* Generate a compile error if public methods and protected in actual react class .. unless they implement an interface?
 
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
   schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
