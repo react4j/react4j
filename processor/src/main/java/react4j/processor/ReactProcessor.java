@@ -85,7 +85,7 @@ public final class ReactProcessor
   }
 
   /**
-   * Return true if there is any injection points that are not through the constructor.
+   * Return true if there is any method annotated with @PostConstruct.
    */
   private boolean hasPostConstruct( @Nonnull final TypeElement typeElement )
   {
