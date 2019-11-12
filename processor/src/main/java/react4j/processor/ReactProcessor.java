@@ -974,6 +974,7 @@ public final class ReactProcessor
     descriptor.setPriorityOverrides( getPriorityOverrides( typeElement ) );
   }
 
+  @Nonnull
   private ComponentType extractComponentType( @Nonnull final TypeElement typeElement )
   {
     final VariableElement declaredTypeEnum = (VariableElement)
