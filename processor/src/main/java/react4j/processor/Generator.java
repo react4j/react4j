@@ -165,9 +165,9 @@ final class Generator
     final ExecutableType propMethodType = stepMethod.getPropMethodType();
     if ( null != propMethodType )
     {
-      ProcessorUtil.copyTypeParameters( propMethodType, method );
+      GeneratorUtil.copyTypeParameters( propMethodType, method );
     }
-    ProcessorUtil.copyTypeParameters( descriptor.getElement(), method );
+    GeneratorUtil.copyTypeParameters( descriptor.getElement(), method );
 
     if ( stepMethod.isBuildIntrinsic() )
     {
@@ -270,7 +270,7 @@ final class Generator
           final ExecutableType propMethodType = stepMethod.getPropMethodType();
           if ( null != propMethodType )
           {
-            ProcessorUtil.copyTypeParameters( propMethodType, m );
+            GeneratorUtil.copyTypeParameters( propMethodType, m );
           }
           if ( stepMethod.isChildrenIntrinsic() )
           {
@@ -308,7 +308,7 @@ final class Generator
     final ExecutableType propMethodType = stepMethod.getPropMethodType();
     if ( null != propMethodType )
     {
-      ProcessorUtil.copyTypeParameters( propMethodType, method );
+      GeneratorUtil.copyTypeParameters( propMethodType, method );
     }
     final ParameterSpec.Builder parameter =
       ParameterSpec.builder( stepMethod.getType(), stepMethod.getName(), Modifier.FINAL );
@@ -493,7 +493,7 @@ final class Generator
                                         @Nonnull final BuilderDescriptor builderDescriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "Builder" );
-    ProcessorUtil.copyTypeParameters( descriptor.getElement(), builder );
+    GeneratorUtil.copyTypeParameters( descriptor.getElement(), builder );
     builder.addModifiers( Modifier.PRIVATE, Modifier.STATIC );
     final List<Step> steps = builderDescriptor.getSteps();
     for ( int i = 0; i < steps.size(); i++ )
@@ -774,7 +774,7 @@ final class Generator
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( methodElement.getSimpleName().toString() ).
         returns( TypeName.get( returnType ) );
-    ProcessorUtil.copyTypeParameters( methodType, method );
+    GeneratorUtil.copyTypeParameters( methodType, method );
     GeneratorUtil.copyAccessModifiers( methodElement, method );
     ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
 

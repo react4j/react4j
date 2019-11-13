@@ -17,6 +17,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
@@ -131,6 +132,22 @@ final class GeneratorUtil
   static void copyTypeParameters( @Nonnull final ExecutableType action, @Nonnull final MethodSpec.Builder builder )
   {
     for ( final TypeVariable typeParameter : action.getTypeVariables() )
+    {
+      builder.addTypeVariable( TypeVariableName.get( typeParameter ) );
+    }
+  }
+
+  static void copyTypeParameters( @Nonnull final TypeElement element, @Nonnull final MethodSpec.Builder builder )
+  {
+    for ( final TypeParameterElement typeParameter : element.getTypeParameters() )
+    {
+      builder.addTypeVariable( TypeVariableName.get( typeParameter ) );
+    }
+  }
+
+  static void copyTypeParameters( @Nonnull final TypeElement element, @Nonnull final TypeSpec.Builder builder )
+  {
+    for ( final TypeParameterElement typeParameter : element.getTypeParameters() )
     {
       builder.addTypeVariable( TypeVariableName.get( typeParameter ) );
     }

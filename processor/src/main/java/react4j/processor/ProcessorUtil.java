@@ -4,7 +4,6 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.TypeVariableName;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,13 +19,11 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
@@ -209,30 +206,6 @@ final class ProcessorUtil
            Constants.NULLABLE_ANNOTATION_CLASSNAME.equals( classname ) ||
            SuppressWarnings.class.getName().equals( classname ) ||
            Constants.DEPRECATED_ANNOTATION_CLASSNAME.equals( classname );
-  }
-
-  static void copyTypeParameters( @Nonnull final ExecutableType action, @Nonnull final MethodSpec.Builder builder )
-  {
-    for ( final TypeVariable typeParameter : action.getTypeVariables() )
-    {
-      builder.addTypeVariable( TypeVariableName.get( typeParameter ) );
-    }
-  }
-
-  static void copyTypeParameters( @Nonnull final TypeElement element, @Nonnull final MethodSpec.Builder builder )
-  {
-    for ( final TypeParameterElement typeParameter : element.getTypeParameters() )
-    {
-      builder.addTypeVariable( TypeVariableName.get( typeParameter ) );
-    }
-  }
-
-  static void copyTypeParameters( @Nonnull final TypeElement element, @Nonnull final TypeSpec.Builder builder )
-  {
-    for ( final TypeParameterElement typeParameter : element.getTypeParameters() )
-    {
-      builder.addTypeVariable( TypeVariableName.get( typeParameter ) );
-    }
   }
 
   @Nonnull
