@@ -514,7 +514,6 @@ final class Generator
     if ( !propsWithDefaults.isEmpty() )
     {
       final MethodSpec.Builder method = MethodSpec.constructorBuilder();
-      //TODO: Should we enforce the non-presence of _element field so we guarantee the wrapper class is eliminated?
       method.addStatement( "_element = $T.createComponentElement( $T.Factory.TYPE )",
                            REACT_ELEMENT_CLASSNAME,
                            descriptor.getEnhancedClassName() );
