@@ -1876,14 +1876,14 @@ final class Generator
         {
           addChildrenStreamPropStepMethod( optionalPropStep );
         }
-        addPropStepMethod( optionalPropStep, prop, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY );
+        optionalPropStep.addMethod( prop, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY );
       }
       else
       {
         if ( null != optionalPropStep )
         {
           // Need this when we have children magic prop that is required that follows the optional props.
-          addPropStepMethod( optionalPropStep, prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+          optionalPropStep.addMethod( prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
           // This is when children are built up using child steps
           if ( prop.getName().equals( "children" ) )
           {
@@ -1893,7 +1893,7 @@ final class Generator
         }
         // Single method step
         final Step step = builder.addStep();
-        addPropStepMethod( step, prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+        step.addMethod( prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
         if ( prop.getName().equals( "children" ) )
         {
           addChildrenStreamPropStepMethod( step );
@@ -1934,13 +1934,6 @@ final class Generator
                             "*children_stream*",
                             typeName
     );
-  }
-
-  private static void addPropStepMethod( @Nonnull final Step step,
-                                         @Nonnull final PropDescriptor prop,
-                                         @Nonnull final StepMethodType stepMethodType )
-  {
-    step.addMethod( prop, stepMethodType );
   }
 
   private static void addGeneratedAnnotation( @Nonnull final ProcessingEnvironment processingEnv,
