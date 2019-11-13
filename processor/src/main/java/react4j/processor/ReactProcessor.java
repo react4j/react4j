@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,6 +47,14 @@ import javax.lang.model.util.Types;
 public final class ReactProcessor
   extends AbstractStandardProcessor
 {
+  private static final String SENTINEL_NAME = "<default>";
+  private static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
+  private static final Pattern VALIDATE_PROP_PATTERN = Pattern.compile( "^validate([A-Z].*)$" );
+  private static final Pattern LAST_PROP_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
+  private static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
+  private static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
+  private static final Pattern PRIORITY_OVERRIDE_PATTERN = Pattern.compile( "^(.*)Priority$" );
+
   @Nonnull
   @Override
   protected final String getRootAnnotationClassname()
@@ -329,12 +338,12 @@ public final class ReactProcessor
     else
     {
       final String parameterName = parameter.getSimpleName().toString();
-      if ( ProcessorUtil.LAST_PROP_PATTERN.matcher( parameterName ).matches() ||
-           ProcessorUtil.PREV_PROP_PATTERN.matcher( parameterName ).matches() )
+      if ( LAST_PROP_PATTERN.matcher( parameterName ).matches() ||
+           PREV_PROP_PATTERN.matcher( parameterName ).matches() )
       {
         return Character.toLowerCase( parameterName.charAt( 4 ) ) + parameterName.substring( 5 );
       }
-      else if ( ProcessorUtil.PROP_PATTERN.matcher( parameterName ).matches() )
+      else if ( PROP_PATTERN.matcher( parameterName ).matches() )
       {
         return parameterName;
       }
@@ -388,9 +397,9 @@ public final class ReactProcessor
                                                  Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
-    if ( ProcessorUtil.isSentinelName( name ) )
+    if ( isSentinelName( name ) )
     {
-      final String deriveName = ProcessorUtil.deriveName( element, ProcessorUtil.VALIDATE_PROP_PATTERN, name );
+      final String deriveName = ProcessorUtil.deriveName( element, VALIDATE_PROP_PATTERN, name, SENTINEL_NAME );
       if ( null == deriveName )
       {
         throw new ProcessorException( "@PropValidate target has not specified name nor is it named according " +
@@ -483,11 +492,11 @@ public final class ReactProcessor
                                                  Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
-    if ( ProcessorUtil.isSentinelName( name ) )
+    if ( isSentinelName( name ) )
     {
       if ( element instanceof ExecutableElement )
       {
-        final String deriveName = ProcessorUtil.deriveName( element, ProcessorUtil.DEFAULT_GETTER_PATTERN, name );
+        final String deriveName = ProcessorUtil.deriveName( element, DEFAULT_GETTER_PATTERN, name, SENTINEL_NAME );
         if ( null == deriveName )
         {
           throw new ProcessorException( "@PropDefault target has not specified name nor is it named according " +
@@ -787,7 +796,7 @@ public final class ReactProcessor
                                                  Constants.PROP_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
-    final String name = ProcessorUtil.getPropertyAccessorName( method, specifiedName );
+    final String name = ProcessorUtil.getPropertyAccessorName( method, specifiedName, SENTINEL_NAME );
     if ( !SourceVersion.isIdentifier( name ) )
     {
       throw new ProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
@@ -878,7 +887,7 @@ public final class ReactProcessor
                                                  Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
-    if ( ProcessorUtil.isSentinelName( name ) )
+    if ( isSentinelName( name ) )
     {
       return typeElement.getSimpleName().toString();
     }
@@ -1105,7 +1114,9 @@ public final class ReactProcessor
       (String) ProcessorUtil.getAnnotationValue( method,
                                                  Constants.MEMOIZE_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
-    return ProcessorUtil.isSentinelName( name ) ? ProcessorUtil.getPropertyAccessorName( method, name ) : name;
+    return isSentinelName( name ) ?
+           ProcessorUtil.getPropertyAccessorName( method, name, SENTINEL_NAME ) :
+           name;
   }
 
   @Nonnull
@@ -1115,9 +1126,9 @@ public final class ReactProcessor
       (String) ProcessorUtil.getAnnotationValue( method,
                                                  Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
-    if ( ProcessorUtil.isSentinelName( declaredName ) )
+    if ( isSentinelName( declaredName ) )
     {
-      final String name = ProcessorUtil.deriveName( method, ProcessorUtil.PRIORITY_OVERRIDE_PATTERN, declaredName );
+      final String name = ProcessorUtil.deriveName( method, PRIORITY_OVERRIDE_PATTERN, declaredName, SENTINEL_NAME );
       assert null != name;
       return name;
     }
@@ -1144,10 +1155,16 @@ public final class ReactProcessor
     return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() );
   }
 
+  @SuppressWarnings( "SameParameterValue" )
   private boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
   {
     return ProcessorUtil.isWarningSuppressed( element,
                                               warning,
                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
+  }
+
+  private boolean isSentinelName( @Nonnull final String name )
+  {
+    return SENTINEL_NAME.equals( name );
   }
 }

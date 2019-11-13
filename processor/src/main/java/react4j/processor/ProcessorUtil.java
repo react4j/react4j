@@ -23,17 +23,11 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
+@SuppressWarnings( "SameParameterValue" )
 final class ProcessorUtil
 {
   private static final Pattern GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)$" );
-  static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
-  static final Pattern VALIDATE_PROP_PATTERN = Pattern.compile( "^validate([A-Z].*)$" );
-  static final Pattern LAST_PROP_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
-  static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
-  static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
-  static final Pattern PRIORITY_OVERRIDE_PATTERN = Pattern.compile( "^(.*)Priority$" );
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
-  private static final String SENTINEL_NAME = "<default>";
 
   private ProcessorUtil()
   {
@@ -165,17 +159,19 @@ final class ProcessorUtil
   }
 
   @Nonnull
-  static String getPropertyAccessorName( @Nonnull final ExecutableElement method, @Nonnull final String specifiedName )
+  static String getPropertyAccessorName( @Nonnull final ExecutableElement method,
+                                         @Nonnull final String specifiedName,
+                                         @Nonnull final String sentinelName )
     throws ProcessorException
   {
-    String name = deriveName( method, GETTER_PATTERN, specifiedName );
+    String name = deriveName( method, GETTER_PATTERN, specifiedName, sentinelName );
     if ( null != name )
     {
       return name;
     }
     else if ( method.getReturnType().getKind() == TypeKind.BOOLEAN )
     {
-      name = deriveName( method, ISSER_PATTERN, specifiedName );
+      name = deriveName( method, ISSER_PATTERN, specifiedName, sentinelName );
       if ( null != name )
       {
         return name;
@@ -187,10 +183,11 @@ final class ProcessorUtil
   @Nullable
   static String deriveName( @Nonnull final Element method,
                             @Nonnull final Pattern pattern,
-                            @Nonnull final String name )
+                            @Nonnull final String name,
+                            @Nonnull final String sentinelName )
     throws ProcessorException
   {
-    if ( isSentinelName( name ) )
+    if ( sentinelName.equals( name ) )
     {
       final String methodName = method.getSimpleName().toString();
       final Matcher matcher = pattern.matcher( methodName );
@@ -208,11 +205,6 @@ final class ProcessorUtil
     {
       return name;
     }
-  }
-
-  static boolean isSentinelName( @Nonnull final String name )
-  {
-    return SENTINEL_NAME.equals( name );
   }
 
   @SuppressWarnings( "SameParameterValue" )
