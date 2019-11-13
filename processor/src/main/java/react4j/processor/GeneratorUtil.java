@@ -71,7 +71,8 @@ final class GeneratorUtil
   }
 
   static void emitJavaType( @Nonnull final String packageName,
-                            @Nonnull final TypeSpec typeSpec, final Filer filer )
+                            @Nonnull final TypeSpec typeSpec,
+                            @Nonnull final Filer filer )
     throws IOException
   {
     JavaFile.builder( packageName, typeSpec ).
