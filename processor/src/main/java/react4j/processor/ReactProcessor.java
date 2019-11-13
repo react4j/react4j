@@ -242,8 +242,7 @@ public final class ReactProcessor
     for ( final ExecutableElement method : methods )
     {
       final VariableElement phase = (VariableElement)
-        ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                          method,
+        ProcessorUtil.getAnnotationValue( method,
                                           Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
                                           "phase" ).getValue();
       final boolean preUpdate = phase.getSimpleName().toString().equals( "PRE" );
@@ -319,8 +318,7 @@ public final class ReactProcessor
   private String deriveOnPropChangeName( @Nonnull final VariableElement parameter )
   {
     final AnnotationValue value =
-      ProcessorUtil.findAnnotationValue( processingEnv.getElementUtils(),
-                                         parameter,
+      ProcessorUtil.findAnnotationValue( parameter,
                                          Constants.PROP_REF_ANNOTATION_CLASSNAME,
                                          "value" );
 
@@ -386,8 +384,7 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String name =
-      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                 element,
+      (String) ProcessorUtil.getAnnotationValue( element,
                                                  Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
@@ -482,8 +479,7 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String name =
-      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                 element,
+      (String) ProcessorUtil.getAnnotationValue( element,
                                                  Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
@@ -604,8 +600,7 @@ public final class ReactProcessor
   private boolean isPropRequired( @Nonnull final PropDescriptor prop )
   {
     final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        prop.getMethod(),
+      ProcessorUtil.getAnnotationValue( prop.getMethod(),
                                         Constants.PROP_ANNOTATION_CLASSNAME,
                                         "require" ).getValue();
     switch ( parameter.getSimpleName().toString() )
@@ -758,8 +753,7 @@ public final class ReactProcessor
   private boolean isIdRequired( @Nonnull final TypeElement element )
   {
     final VariableElement requireIdParameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        element,
+      ProcessorUtil.getAnnotationValue( element,
                                         Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME,
                                         "requireId" ).getValue();
     switch ( requireIdParameter.getSimpleName().toString() )
@@ -789,8 +783,7 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String specifiedName =
-      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                 method,
+      (String) ProcessorUtil.getAnnotationValue( method,
                                                  Constants.PROP_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
@@ -881,8 +874,7 @@ public final class ReactProcessor
   private String deriveComponentName( @Nonnull final TypeElement typeElement )
   {
     final String name =
-      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                 typeElement,
+      (String) ProcessorUtil.getAnnotationValue( typeElement,
                                                  Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
 
@@ -978,8 +970,7 @@ public final class ReactProcessor
   private ComponentType extractComponentType( @Nonnull final TypeElement typeElement )
   {
     final VariableElement declaredTypeEnum = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        typeElement,
+      ProcessorUtil.getAnnotationValue( typeElement,
                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                         "type" ).getValue();
     return ComponentType.valueOf( declaredTypeEnum.getSimpleName().toString() );
@@ -989,8 +980,7 @@ public final class ReactProcessor
                                         final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        method,
+      ProcessorUtil.getAnnotationValue( method,
                                         Constants.PROP_ANNOTATION_CLASSNAME,
                                         "shouldUpdateOnChange" ).getValue();
     switch ( parameter.getSimpleName().toString() )
@@ -1016,8 +1006,7 @@ public final class ReactProcessor
                                     final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        method,
+      ProcessorUtil.getAnnotationValue( method,
                                         Constants.PROP_ANNOTATION_CLASSNAME,
                                         "observable" ).getValue();
     switch ( parameter.getSimpleName().toString() )
@@ -1048,8 +1037,7 @@ public final class ReactProcessor
 
   private boolean isPropImmutable( @Nonnull final ExecutableElement method )
   {
-    return (Boolean) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                       method,
+    return (Boolean) ProcessorUtil.getAnnotationValue( method,
                                                        Constants.PROP_ANNOTATION_CLASSNAME,
                                                        "immutable" ).getValue();
   }
@@ -1057,8 +1045,7 @@ public final class ReactProcessor
   private boolean isPropDisposable( @Nonnull final ExecutableElement method, @Nonnull final Element propType )
   {
     final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                        method,
+      ProcessorUtil.getAnnotationValue( method,
                                         Constants.PROP_ANNOTATION_CLASSNAME,
                                         "disposable" ).getValue();
     switch ( parameter.getSimpleName().toString() )
@@ -1115,8 +1102,7 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String name =
-      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                 method,
+      (String) ProcessorUtil.getAnnotationValue( method,
                                                  Constants.MEMOIZE_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
     return ProcessorUtil.isSentinelName( name ) ? ProcessorUtil.getPropertyAccessorName( method, name ) : name;
@@ -1126,8 +1112,7 @@ public final class ReactProcessor
   private String derivePriorityOverrideName( @Nonnull final ExecutableElement method )
   {
     final String declaredName =
-      (String) ProcessorUtil.getAnnotationValue( processingEnv.getElementUtils(),
-                                                 method,
+      (String) ProcessorUtil.getAnnotationValue( method,
                                                  Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME,
                                                  "name" ).getValue();
     if ( ProcessorUtil.isSentinelName( declaredName ) )

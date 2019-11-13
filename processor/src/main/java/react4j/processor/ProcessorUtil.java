@@ -1,5 +1,7 @@
 package react4j.processor;
 
+import com.google.auto.common.AnnotationMirrors;
+import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,7 +21,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 final class ProcessorUtil
@@ -212,31 +213,29 @@ final class ProcessorUtil
 
   @SuppressWarnings( "SameParameterValue" )
   @Nonnull
-  static AnnotationValue getAnnotationValue( @Nonnull final Elements elements,
-                                             @Nonnull final Element typeElement,
+  static AnnotationValue getAnnotationValue( @Nonnull final Element typeElement,
                                              @Nonnull final String annotationClassName,
                                              @Nonnull final String parameterName )
   {
-    final AnnotationValue value = findAnnotationValue( elements, typeElement, annotationClassName, parameterName );
+    final AnnotationValue value = findAnnotationValue( typeElement, annotationClassName, parameterName );
     assert null != value;
     return value;
   }
 
   @Nullable
-  static AnnotationValue findAnnotationValue( @Nonnull final Elements elements,
-                                              @Nonnull final Element typeElement,
+  static AnnotationValue findAnnotationValue( @Nonnull final Element typeElement,
                                               @Nonnull final String annotationClassName,
                                               @Nonnull final String parameterName )
   {
-    final AnnotationMirror mirror = findAnnotationByType( typeElement, annotationClassName );
-    if ( null == mirror )
+    final AnnotationMirror annotation = findAnnotationByType( typeElement, annotationClassName );
+    if ( null == annotation )
     {
       return null;
     }
     else
     {
-      final Map<? extends ExecutableElement, ? extends AnnotationValue> values =
-        elements.getElementValuesWithDefaults( mirror );
+      final ImmutableMap<ExecutableElement, AnnotationValue> values =
+        AnnotationMirrors.getAnnotationValuesWithDefaults( annotation );
       final ExecutableElement annotationKey = values.keySet().stream().
         filter( k -> parameterName.equals( k.getSimpleName().toString() ) ).findFirst().orElse( null );
       return values.get( annotationKey );
