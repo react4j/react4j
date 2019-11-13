@@ -210,4 +210,10 @@ final class GeneratorUtil
       }
     }
   }
+
+  static void addOriginatingTypes( @Nonnull final TypeElement element, @Nonnull final TypeSpec.Builder builder )
+  {
+    builder.addOriginatingElement( element );
+    ProcessorUtil.getSuperTypes( element ).forEach( builder::addOriginatingElement );
+  }
 }

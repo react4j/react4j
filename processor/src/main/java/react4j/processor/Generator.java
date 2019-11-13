@@ -26,7 +26,6 @@ import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -122,7 +121,7 @@ final class Generator
                                          @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
-    addOriginatingTypes( descriptor.getElement(), builder );
+    GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
     addGeneratedAnnotation( processingEnv, builder );
     builder.addModifiers( Modifier.FINAL );
     GeneratorUtil.copyAccessModifiers( descriptor.getElement(), builder );
@@ -611,7 +610,7 @@ final class Generator
     builder.addModifiers( Modifier.ABSTRACT );
 
     addGeneratedAnnotation( processingEnv, builder );
-    addOriginatingTypes( descriptor.getElement(), builder );
+    GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addMethod( buildConstructor( descriptor ).build() );
 
@@ -1821,7 +1820,7 @@ final class Generator
     final ClassName superClassName = descriptor.getArezDaggerExtensionClassName();
     builder.addSuperinterface( superClassName );
     addGeneratedAnnotation( processingEnv, builder );
-    addOriginatingTypes( descriptor.getElement(), builder );
+    GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
 
     builder.addModifiers( Modifier.PUBLIC );
 
@@ -1944,12 +1943,6 @@ final class Generator
                                          @Nonnull final StepMethodType stepMethodType )
   {
     step.addMethod( prop, stepMethodType );
-  }
-
-  private static void addOriginatingTypes( @Nonnull final TypeElement element, @Nonnull final TypeSpec.Builder builder )
-  {
-    builder.addOriginatingElement( element );
-    ProcessorUtil.getSuperTypes( element ).forEach( builder::addOriginatingElement );
   }
 
   private static void addGeneratedAnnotation( @Nonnull final ProcessingEnvironment processingEnv,
