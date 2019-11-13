@@ -20,7 +20,8 @@ import java.lang.annotation.Target;
  *
  * <p>This class may be used instead of {@link SuppressWarnings} when the compiler
  * is passed compiled classes. The {@link SuppressWarnings} has a source retention
- * policy and is thus not available when the files are already compiled.</p>
+ * policy and is thus not available when the files are already compiled and is thus
+ * not useful when attempting to suppress warnings in already compiled code.</p>
  */
 @Target( { ElementType.TYPE,
            ElementType.FIELD,
