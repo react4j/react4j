@@ -585,7 +585,7 @@ final class Generator
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getEnhancedClassName() );
     builder.addTypeVariables( GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
-    copyWhitelistedAnnotations( descriptor.getElement(), builder );
+    GeneratorUtil.copyWhitelistedAnnotations( descriptor.getElement(), builder, ANNOTATION_WHITELIST );
 
     builder.superclass( descriptor.getComponentType() );
 
@@ -782,7 +782,7 @@ final class Generator
         returns( TypeName.get( returnType ) );
     GeneratorUtil.copyTypeParameters( methodType, method );
     GeneratorUtil.copyAccessModifiers( methodElement, method );
-    copyWhitelistedAnnotations( methodElement, method );
+    GeneratorUtil.copyWhitelistedAnnotations( methodElement, method, ANNOTATION_WHITELIST );
 
     method.addAnnotation( Override.class );
 
@@ -1947,18 +1947,6 @@ final class Generator
                                               @Nonnull final TypeSpec.Builder builder )
   {
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, ReactProcessor.class.getName() );
-  }
-
-  private static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
-                                                  @Nonnull final TypeSpec.Builder builder )
-  {
-    GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
-  }
-
-  private static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
-                                                  @Nonnull final MethodSpec.Builder builder )
-  {
-    GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
   }
 
   private static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
