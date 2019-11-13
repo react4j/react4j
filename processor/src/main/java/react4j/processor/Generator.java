@@ -13,6 +13,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import com.squareup.javapoet.WildcardTypeName;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -104,6 +106,12 @@ final class Generator
   private static final String COMPONENT_STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
   private static final String COMPONENT_FIELD = FRAMEWORK_INTERNAL_PREFIX + "component";
   private static final String IS_READY_METHOD = FRAMEWORK_INTERNAL_PREFIX + "isReady";
+  @Nonnull
+  private static final List<String> ANNOTATION_WHITELIST =
+    Arrays.asList( Constants.NONNULL_ANNOTATION_CLASSNAME,
+                   Constants.NULLABLE_ANNOTATION_CLASSNAME,
+                   SuppressWarnings.class.getName(),
+                   Constants.DEPRECATED_ANNOTATION_CLASSNAME );
 
   private Generator()
   {
@@ -181,7 +189,7 @@ final class Generator
       final ExecutableElement propMethod = stepMethod.getPropMethod();
       if ( null != propMethod )
       {
-        ProcessorUtil.copyWhitelistedAnnotations( propMethod, parameter );
+        copyWhitelistedAnnotations( propMethod, parameter );
       }
       else if ( stepMethod.isChildrenStreamIntrinsic() )
       {
@@ -280,7 +288,7 @@ final class Generator
           final ExecutableElement propMethod = stepMethod.getPropMethod();
           if ( null != propMethod )
           {
-            ProcessorUtil.copyWhitelistedAnnotations( propMethod, parameter );
+            copyWhitelistedAnnotations( propMethod, parameter );
           }
           else if ( stepMethod.isChildrenStreamIntrinsic() )
           {
@@ -315,7 +323,7 @@ final class Generator
     final ExecutableElement propMethod = stepMethod.getPropMethod();
     if ( null != propMethod )
     {
-      ProcessorUtil.copyWhitelistedAnnotations( propMethod, parameter );
+      copyWhitelistedAnnotations( propMethod, parameter );
     }
     else if ( stepMethod.isChildrenStreamIntrinsic() )
     {
@@ -579,7 +587,7 @@ final class Generator
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getEnhancedClassName() );
     builder.addTypeVariables( GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
-    ProcessorUtil.copyWhitelistedAnnotations( descriptor.getElement(), builder );
+    copyWhitelistedAnnotations( descriptor.getElement(), builder );
 
     builder.superclass( descriptor.getComponentType() );
 
@@ -730,7 +738,7 @@ final class Generator
         params.add( name );
         final ParameterSpec.Builder ctorParameter =
           ParameterSpec.builder( TypeName.get( element.asType() ), name, Modifier.FINAL );
-        ProcessorUtil.copyWhitelistedAnnotations( element, ctorParameter );
+        copyWhitelistedAnnotations( element, ctorParameter );
         ctor.addParameter( ctorParameter.build() );
       }
       sb.append( " )" );
@@ -776,7 +784,7 @@ final class Generator
         returns( TypeName.get( returnType ) );
     GeneratorUtil.copyTypeParameters( methodType, method );
     GeneratorUtil.copyAccessModifiers( methodElement, method );
-    ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
+    copyWhitelistedAnnotations( methodElement, method );
 
     method.addAnnotation( Override.class );
 
@@ -1952,5 +1960,23 @@ final class Generator
                                 processingEnv.getSourceVersion(),
                                 ReactProcessor.class )
       .ifPresent( builder::addAnnotation );
+  }
+
+  private static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                                  @Nonnull final TypeSpec.Builder builder )
+  {
+    GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
+  }
+
+  private static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                                  @Nonnull final MethodSpec.Builder builder )
+  {
+    GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
+  }
+
+  private static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                                  @Nonnull final ParameterSpec.Builder builder )
+  {
+    GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
   }
 }

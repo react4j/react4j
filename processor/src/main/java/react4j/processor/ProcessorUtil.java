@@ -38,10 +38,6 @@ final class ProcessorUtil
   static final Pattern PRIORITY_OVERRIDE_PATTERN = Pattern.compile( "^(.*)Priority$" );
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
   private static final String SENTINEL_NAME = "<default>";
-  private static final List<String> ANNOTATION_WHITELIST = Arrays.asList( Constants.NONNULL_ANNOTATION_CLASSNAME,
-                                                                          Constants.NULLABLE_ANNOTATION_CLASSNAME,
-                                                                          SuppressWarnings.class.getName(),
-                                                                          Constants.DEPRECATED_ANNOTATION_CLASSNAME );
 
   private ProcessorUtil()
   {
@@ -166,24 +162,6 @@ final class ProcessorUtil
         fields.put( member.getSimpleName().toString(), (VariableElement) member );
       }
     }
-  }
-
-  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
-                                          @Nonnull final TypeSpec.Builder builder )
-  {
-    GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
-  }
-
-  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
-                                          @Nonnull final MethodSpec.Builder builder )
-  {
-    GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
-  }
-
-  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
-                                          @Nonnull final ParameterSpec.Builder builder )
-  {
-    GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
   }
 
   @Nonnull
