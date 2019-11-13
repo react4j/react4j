@@ -1929,10 +1929,7 @@ final class Generator
       ParameterizedTypeName.get( ClassName.get( Stream.class ), WildcardTypeName.subtypeOf( REACT_NODE_CLASSNAME ) );
 
     //TODO: Replace this with prop enhancer
-    step.addTerminalMethod( "children",
-                            "*children_stream*",
-                            typeName
-    );
+    step.addTerminalMethod( "children", "*children_stream*", typeName );
   }
 
   private static void addGeneratedAnnotation( @Nonnull final ProcessingEnvironment processingEnv,
