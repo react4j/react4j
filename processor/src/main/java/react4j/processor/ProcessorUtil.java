@@ -39,22 +39,31 @@ final class ProcessorUtil
   {
   }
 
-  @SuppressWarnings( "unchecked" )
   static boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
   {
-    final AnnotationMirror suppress =
-      findAnnotationByType( element, Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
-    if ( null != suppress )
+    return isWarningSuppressed( element, warning, Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
+  }
+
+  @SuppressWarnings( "unchecked" )
+  static boolean isWarningSuppressed( @Nonnull final Element element,
+                                      @Nonnull final String warning,
+                                      @Nullable final String alternativeSuppressWarnings )
+  {
+    if ( null != alternativeSuppressWarnings )
     {
-      final AnnotationValue value = findAnnotationValueNoDefaults( suppress, "value" );
-      if ( null != value )
+      final AnnotationMirror suppress = findAnnotationByType( element, alternativeSuppressWarnings );
+      if ( null != suppress )
       {
-        final List<AnnotationValue> warnings = (List<AnnotationValue>) value.getValue();
-        for ( final AnnotationValue suppression : warnings )
+        final AnnotationValue value = findAnnotationValueNoDefaults( suppress, "value" );
+        if ( null != value )
         {
-          if ( warning.equals( suppression.getValue() ) )
+          final List<AnnotationValue> warnings = (List<AnnotationValue>) value.getValue();
+          for ( final AnnotationValue suppression : warnings )
           {
-            return true;
+            if ( warning.equals( suppression.getValue() ) )
+            {
+              return true;
+            }
           }
         }
       }
@@ -72,7 +81,7 @@ final class ProcessorUtil
       }
     }
     final Element enclosingElement = element.getEnclosingElement();
-    return null != enclosingElement && isWarningSuppressed( enclosingElement, warning );
+    return null != enclosingElement && isWarningSuppressed( enclosingElement, warning, alternativeSuppressWarnings );
   }
 
   @Nonnull
