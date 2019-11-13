@@ -862,6 +862,7 @@ final class Generator
       case SHORT:
         return "asShort";
       case TYPEVAR:
+      case ARRAY:
         return "cast";
       case DECLARED:
         if ( type.toString().equals( "java.lang.String" ) )
@@ -872,8 +873,6 @@ final class Generator
         {
           return "cast";
         }
-      case ARRAY:
-        return "cast";
       default:
         throw new ProcessorException( "Return type of @Prop method is not yet " +
                                       "handled. Type: " + type.getKind(), element );
