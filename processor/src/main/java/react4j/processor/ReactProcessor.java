@@ -697,7 +697,7 @@ public final class ReactProcessor
                           strategy );
     if ( propDescriptor.mayNeedMutablePropAccessedInPostConstructInvariant() )
     {
-      if ( ProcessorUtil.isWarningSuppressed( method, Constants.MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION ) )
+      if ( isWarningSuppressed( method, Constants.MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION ) )
       {
         propDescriptor.suppressMutablePropAccessedInPostConstruct();
       }
@@ -1142,5 +1142,12 @@ public final class ReactProcessor
   private List<ExecutableElement> getMethods( @Nonnull final TypeElement typeElement )
   {
     return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() );
+  }
+
+  private boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
+  {
+    return ProcessorUtil.isWarningSuppressed( element,
+                                              warning,
+                                              Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
   }
 }

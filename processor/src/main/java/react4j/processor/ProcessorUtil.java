@@ -39,11 +39,6 @@ final class ProcessorUtil
   {
   }
 
-  static boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
-  {
-    return isWarningSuppressed( element, warning, Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
-  }
-
   @SuppressWarnings( "unchecked" )
   static boolean isWarningSuppressed( @Nonnull final Element element,
                                       @Nonnull final String warning,
