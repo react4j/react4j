@@ -12,6 +12,11 @@ complete as there is too much un-said.
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
 
+* Generate a suppressable warning if any lifecycle method is public
+
+* Generate a suppressable warning if any lifecycle method is protected and in class
+  annotated with `@ReactComponent`
+
 * The `MUST NOT BE PUBLIC` rules in annotation processor should be turned into warnings, made suppress-able
   and propagated to Arez for their lifecycle hooks.
 
