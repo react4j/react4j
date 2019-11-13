@@ -42,7 +42,7 @@ final class ProcessorUtil
   static boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
   {
     final AnnotationMirror suppress =
-      ProcessorUtil.findAnnotationByType( element, Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
+      findAnnotationByType( element, Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
     if ( null != suppress )
     {
       final AnnotationValue value = findAnnotationValueNoDefaults( suppress, "value" );
@@ -163,14 +163,14 @@ final class ProcessorUtil
   static String getPropertyAccessorName( @Nonnull final ExecutableElement method, @Nonnull final String specifiedName )
     throws ProcessorException
   {
-    String name = ProcessorUtil.deriveName( method, GETTER_PATTERN, specifiedName );
+    String name = deriveName( method, GETTER_PATTERN, specifiedName );
     if ( null != name )
     {
       return name;
     }
     else if ( method.getReturnType().getKind() == TypeKind.BOOLEAN )
     {
-      name = ProcessorUtil.deriveName( method, ISSER_PATTERN, specifiedName );
+      name = deriveName( method, ISSER_PATTERN, specifiedName );
       if ( null != name )
       {
         return name;
