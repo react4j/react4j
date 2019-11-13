@@ -117,7 +117,7 @@ final class Generator
     addOriginatingTypes( descriptor.getElement(), builder );
     addGeneratedAnnotation( processingEnv, builder );
     builder.addModifiers( Modifier.FINAL );
-    ProcessorUtil.copyAccessModifiers( descriptor.getElement(), builder );
+    GeneratorUtil.copyAccessModifiers( descriptor.getElement(), builder );
 
     // Private constructor so can not instantiate
     builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
@@ -227,7 +227,7 @@ final class Generator
       final int returnIndex = step.getIndex() + ( StepMethodType.STAY == stepMethodType ? 0 : 1 );
       final ClassName className = ClassName.bestGuess( "Step" + returnIndex );
       final List<TypeVariableName> variableNames =
-        ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() );
+        GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() );
       if ( variableNames.isEmpty() )
       {
         method.returns( className );
@@ -246,7 +246,7 @@ final class Generator
     final int stepIndex = step.getIndex();
     final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Step" + stepIndex );
     builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
-    builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
+    builder.addTypeVariables( GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
     if ( !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
@@ -578,7 +578,7 @@ final class Generator
                                           @Nonnull final ComponentDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getEnhancedClassName() );
-    builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
+    builder.addTypeVariables( GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
     ProcessorUtil.copyWhitelistedAnnotations( descriptor.getElement(), builder );
 
     builder.superclass( descriptor.getComponentType() );
@@ -775,7 +775,7 @@ final class Generator
       MethodSpec.methodBuilder( methodElement.getSimpleName().toString() ).
         returns( TypeName.get( returnType ) );
     ProcessorUtil.copyTypeParameters( methodType, method );
-    ProcessorUtil.copyAccessModifiers( methodElement, method );
+    GeneratorUtil.copyAccessModifiers( methodElement, method );
     ProcessorUtil.copyWhitelistedAnnotations( methodElement, method );
 
     method.addAnnotation( Override.class );
@@ -1547,7 +1547,7 @@ final class Generator
     builder.addModifiers( Modifier.PRIVATE );
 
     builder.superclass( REACT_NATIVE_COMPONENT_CLASSNAME );
-    builder.addTypeVariables( ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
+    builder.addTypeVariables( GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
     final TypeName componentFieldType;
     if ( descriptor.getElement().getTypeParameters().isEmpty() )
@@ -1557,7 +1557,7 @@ final class Generator
     else
     {
       final TypeName[] typeNames =
-        ProcessorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ).toArray( new TypeName[ 0 ] );
+        GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ).toArray( new TypeName[ 0 ] );
       componentFieldType = ParameterizedTypeName.get( descriptor.getEnhancedClassName(), typeNames );
     }
 

@@ -20,7 +20,6 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -110,15 +109,6 @@ final class ProcessorUtil
   }
 
   @Nonnull
-  static List<TypeVariableName> getTypeArgumentsAsNames( @Nonnull final DeclaredType declaredType )
-  {
-    return declaredType.getTypeArguments()
-      .stream()
-      .map( argument -> TypeVariableName.get( (TypeVariable) argument ) )
-      .collect( Collectors.toList() );
-  }
-
-  @Nonnull
   static List<ExecutableElement> getMethods( @Nonnull final TypeElement element,
                                              @Nonnull final Types typeUtils )
   {
@@ -175,26 +165,6 @@ final class ProcessorUtil
       {
         fields.put( member.getSimpleName().toString(), (VariableElement) member );
       }
-    }
-  }
-
-  static void copyAccessModifiers( @Nonnull final TypeElement element, @Nonnull final TypeSpec.Builder builder )
-  {
-    if ( element.getModifiers().contains( Modifier.PUBLIC ) )
-    {
-      builder.addModifiers( Modifier.PUBLIC );
-    }
-  }
-
-  static void copyAccessModifiers( @Nonnull final ExecutableElement element, @Nonnull final MethodSpec.Builder builder )
-  {
-    if ( element.getModifiers().contains( Modifier.PUBLIC ) )
-    {
-      builder.addModifiers( Modifier.PUBLIC );
-    }
-    else if ( element.getModifiers().contains( Modifier.PROTECTED ) )
-    {
-      builder.addModifiers( Modifier.PROTECTED );
     }
   }
 
