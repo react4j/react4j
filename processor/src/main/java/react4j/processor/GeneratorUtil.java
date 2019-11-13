@@ -3,6 +3,7 @@ package react4j.processor;
 import com.google.auto.common.MoreElements;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -186,6 +187,19 @@ final class GeneratorUtil
 
   static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
                                           @Nonnull final ParameterSpec.Builder builder,
+                                          @Nonnull final List<String> whitelist )
+  {
+    for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )
+    {
+      if ( whitelist.contains( annotation.getAnnotationType().toString() ) )
+      {
+        builder.addAnnotation( AnnotationSpec.get( annotation ) );
+      }
+    }
+  }
+
+  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                          @Nonnull final FieldSpec.Builder builder,
                                           @Nonnull final List<String> whitelist )
   {
     for ( final AnnotationMirror annotation : element.getAnnotationMirrors() )
