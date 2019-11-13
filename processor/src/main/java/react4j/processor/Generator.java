@@ -1,6 +1,5 @@
 package react4j.processor;
 
-import com.google.auto.common.GeneratedAnnotationSpecs;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -1948,11 +1947,7 @@ final class Generator
   private static void addGeneratedAnnotation( @Nonnull final ProcessingEnvironment processingEnv,
                                               @Nonnull final TypeSpec.Builder builder )
   {
-    GeneratedAnnotationSpecs
-      .generatedAnnotationSpec( processingEnv.getElementUtils(),
-                                processingEnv.getSourceVersion(),
-                                ReactProcessor.class )
-      .ifPresent( builder::addAnnotation );
+    GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, ReactProcessor.class.getName() );
   }
 
   private static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
