@@ -266,7 +266,7 @@ final class MemberChecks
     for ( int i = 0; i < annotationTypes.length; i++ )
     {
       final String type1 = annotationTypes[ i ];
-      final Object annotation1 = ProcessorUtil.findAnnotationByType( element, type1 );
+      final Object annotation1 = AnnotationsUtil.findAnnotationByType( element, type1 );
       if ( null != annotation1 )
       {
         for ( int j = i + 1; j < annotationTypes.length; j++ )
@@ -274,7 +274,7 @@ final class MemberChecks
           final String type2 = annotationTypes[ j ];
           if ( !isException( exceptions, type1, type2 ) )
           {
-            final Object annotation2 = ProcessorUtil.findAnnotationByType( element, type2 );
+            final Object annotation2 = AnnotationsUtil.findAnnotationByType( element, type2 );
             if ( null != annotation2 )
             {
               final String message =

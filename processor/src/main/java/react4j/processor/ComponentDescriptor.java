@@ -98,7 +98,7 @@ final class ComponentDescriptor
     _constructor = constructors.get( 0 );
     for ( final VariableElement parameter : _constructor.getParameters() )
     {
-      if ( ProcessorUtil.hasAnnotationOfType( parameter, Constants.PER_INSTANCE_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( parameter, Constants.PER_INSTANCE_ANNOTATION_CLASSNAME ) )
       {
         throw new ProcessorException( "@ReactComponent target has a constructor with a parameter named '" +
                                       parameter.getSimpleName().toString() + "' that is incorrectly annotated " +

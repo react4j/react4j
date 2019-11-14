@@ -100,7 +100,7 @@ public final class ReactProcessor
   {
     return getMethods( typeElement )
       .stream()
-      .anyMatch( e -> ProcessorUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_ANNOTATION_CLASSNAME ) );
+      .anyMatch( e -> AnnotationsUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_ANNOTATION_CLASSNAME ) );
   }
 
   @Nonnull
@@ -244,16 +244,14 @@ public final class ReactProcessor
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     final ArrayList<OnPropChangeDescriptor> onPropChangeDescriptors = new ArrayList<>();
     for ( final ExecutableElement method : methods )
     {
       final VariableElement phase = (VariableElement)
-        ProcessorUtil.getAnnotationValue( method,
-                                          Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
-                                          "phase" ).getValue();
+        AnnotationsUtil.getAnnotationValue( method, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, "phase" ).getValue();
       final boolean preUpdate = phase.getSimpleName().toString().equals( "PRE" );
 
       final List<? extends VariableElement> parameters = method.getParameters();
@@ -296,12 +294,12 @@ public final class ReactProcessor
         }
         final boolean mismatchedNullability =
           (
-            ProcessorUtil.hasAnnotationOfType( parameter, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-            ProcessorUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
+            AnnotationsUtil.hasAnnotationOfType( parameter, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
+            AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
           ) ||
           (
-            ProcessorUtil.hasAnnotationOfType( parameter, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-            ProcessorUtil.hasAnnotationOfType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+            AnnotationsUtil.hasAnnotationOfType( parameter, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
+            AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
 
         if ( mismatchedNullability )
         {
@@ -327,9 +325,7 @@ public final class ReactProcessor
   private String deriveOnPropChangeName( @Nonnull final VariableElement parameter )
   {
     final AnnotationValue value =
-      ProcessorUtil.findAnnotationValue( parameter,
-                                         Constants.PROP_REF_ANNOTATION_CLASSNAME,
-                                         "value" );
+      AnnotationsUtil.findAnnotationValue( parameter, Constants.PROP_REF_ANNOTATION_CLASSNAME, "value" );
 
     if ( null != value )
     {
@@ -361,7 +357,7 @@ public final class ReactProcessor
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final ExecutableElement method : methods )
@@ -393,9 +389,7 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String name =
-      (String) ProcessorUtil.getAnnotationValue( element,
-                                                 Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
-                                                 "name" ).getValue();
+      (String) AnnotationsUtil.getAnnotationValue( element, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, "name" ).getValue();
 
     if ( isSentinelName( name ) )
     {
@@ -427,7 +421,7 @@ public final class ReactProcessor
   {
     final List<ExecutableElement> defaultPropsMethods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final ExecutableElement method : defaultPropsMethods )
@@ -458,7 +452,7 @@ public final class ReactProcessor
   {
     final List<VariableElement> defaultPropsFields =
       ProcessorUtil.getFieldElements( descriptor.getElement() ).stream()
-        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final VariableElement field : defaultPropsFields )
@@ -488,9 +482,7 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String name =
-      (String) ProcessorUtil.getAnnotationValue( element,
-                                                 Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
-                                                 "name" ).getValue();
+      (String) AnnotationsUtil.getAnnotationValue( element, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, "name" ).getValue();
 
     if ( isSentinelName( name ) )
     {
@@ -587,7 +579,7 @@ public final class ReactProcessor
   {
     final List<PropDescriptor> props =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
         .map( m -> createPropDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
 
@@ -609,9 +601,7 @@ public final class ReactProcessor
   private boolean isPropRequired( @Nonnull final PropDescriptor prop )
   {
     final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( prop.getMethod(),
-                                        Constants.PROP_ANNOTATION_CLASSNAME,
-                                        "require" ).getValue();
+      AnnotationsUtil.getAnnotationValue( prop.getMethod(), Constants.PROP_ANNOTATION_CLASSNAME, "require" ).getValue();
     switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
@@ -621,7 +611,7 @@ public final class ReactProcessor
       default:
         return !prop.hasDefaultMethod() &&
                !prop.hasDefaultField() &&
-               !ProcessorUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME );
+               !AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME );
     }
   }
 
@@ -679,7 +669,7 @@ public final class ReactProcessor
     final boolean disposable = null != propType && isPropDisposable( method, propType );
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() &&
-         ProcessorUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+         AnnotationsUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
     {
       throw new ProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
                                     "@Nonnull annotation. The return type should be the primitive type.",
@@ -729,13 +719,13 @@ public final class ReactProcessor
     else if ( null != element )
     {
       if ( ElementKind.CLASS == element.getKind() &&
-           ProcessorUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) &&
+           AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) &&
            isIdRequired( (TypeElement) element ) )
       {
         return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
       }
       else if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
-                ProcessorUtil.hasAnnotationOfType( element, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME ) )
+                AnnotationsUtil.hasAnnotationOfType( element, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME ) )
       {
         return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
       }
@@ -762,9 +752,7 @@ public final class ReactProcessor
   private boolean isIdRequired( @Nonnull final TypeElement element )
   {
     final VariableElement requireIdParameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( element,
-                                        Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME,
-                                        "requireId" ).getValue();
+      AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME, "requireId" ).getValue();
     switch ( requireIdParameter.getSimpleName().toString() )
     {
       case "ENABLE":
@@ -772,7 +760,7 @@ public final class ReactProcessor
       case "DISABLE":
         return false;
       default:
-        if ( ProcessorUtil.hasAnnotationOfType( element, Constants.REPOSITORY_ANNOTATION_CLASSNAME ) )
+        if ( AnnotationsUtil.hasAnnotationOfType( element, Constants.REPOSITORY_ANNOTATION_CLASSNAME ) )
         {
           return true;
         }
@@ -781,8 +769,8 @@ public final class ReactProcessor
           return ProcessorUtil
             .getMethods( element, processingEnv.getTypeUtils() )
             .stream()
-            .anyMatch( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_ANNOTATION_CLASSNAME ) ||
-                            ProcessorUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_REF_ANNOTATION_CLASSNAME ) );
+            .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_ANNOTATION_CLASSNAME ) ||
+                            AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_REF_ANNOTATION_CLASSNAME ) );
         }
     }
   }
@@ -792,9 +780,7 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String specifiedName =
-      (String) ProcessorUtil.getAnnotationValue( method,
-                                                 Constants.PROP_ANNOTATION_CLASSNAME,
-                                                 "name" ).getValue();
+      (String) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "name" ).getValue();
 
     final String name = ProcessorUtil.getPropertyAccessorName( method, specifiedName, SENTINEL_NAME );
     if ( !SourceVersion.isIdentifier( name ) )
@@ -818,7 +804,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPreUpdate( method );
       }
@@ -830,7 +816,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.ON_ERROR_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.ON_ERROR_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setOnError( method );
       }
@@ -842,7 +828,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostRender( method );
       }
@@ -854,7 +840,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostUpdate( method );
       }
@@ -866,7 +852,7 @@ public final class ReactProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( ProcessorUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
       {
         descriptor.setPostMount( method );
       }
@@ -883,9 +869,8 @@ public final class ReactProcessor
   private String deriveComponentName( @Nonnull final TypeElement typeElement )
   {
     final String name =
-      (String) ProcessorUtil.getAnnotationValue( typeElement,
-                                                 Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                                 "name" ).getValue();
+      (String) AnnotationsUtil.getAnnotationValue( typeElement, Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, "name" )
+        .getValue();
 
     if ( isSentinelName( name ) )
     {
@@ -979,9 +964,7 @@ public final class ReactProcessor
   private ComponentType extractComponentType( @Nonnull final TypeElement typeElement )
   {
     final VariableElement declaredTypeEnum = (VariableElement)
-      ProcessorUtil.getAnnotationValue( typeElement,
-                                        Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                        "type" ).getValue();
+      AnnotationsUtil.getAnnotationValue( typeElement, Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, "type" ).getValue();
     return ComponentType.valueOf( declaredTypeEnum.getSimpleName().toString() );
   }
 
@@ -989,9 +972,7 @@ public final class ReactProcessor
                                         final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( method,
-                                        Constants.PROP_ANNOTATION_CLASSNAME,
-                                        "shouldUpdateOnChange" ).getValue();
+      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "shouldUpdateOnChange" ).getValue();
     switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
@@ -1015,9 +996,7 @@ public final class ReactProcessor
                                     final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( method,
-                                        Constants.PROP_ANNOTATION_CLASSNAME,
-                                        "observable" ).getValue();
+      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "observable" ).getValue();
     switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
@@ -1039,24 +1018,20 @@ public final class ReactProcessor
   {
     return getMethods( typeElement )
       .stream()
-      .anyMatch( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
-                      ( ProcessorUtil.hasAnnotationOfType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
+      .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
+                      ( AnnotationsUtil.hasAnnotationOfType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
                         ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
   }
 
   private boolean isPropImmutable( @Nonnull final ExecutableElement method )
   {
-    return (Boolean) ProcessorUtil.getAnnotationValue( method,
-                                                       Constants.PROP_ANNOTATION_CLASSNAME,
-                                                       "immutable" ).getValue();
+    return (Boolean) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "immutable" ).getValue();
   }
 
   private boolean isPropDisposable( @Nonnull final ExecutableElement method, @Nonnull final Element propType )
   {
     final VariableElement parameter = (VariableElement)
-      ProcessorUtil.getAnnotationValue( method,
-                                        Constants.PROP_ANNOTATION_CLASSNAME,
-                                        "disposable" ).getValue();
+      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "disposable" ).getValue();
     switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
@@ -1067,11 +1042,11 @@ public final class ReactProcessor
         return
           (
             ElementKind.CLASS == propType.getKind() &&
-            ProcessorUtil.hasAnnotationOfType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME )
+            AnnotationsUtil.hasAnnotationOfType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME )
           ) ||
           (
             ( ElementKind.CLASS == propType.getKind() || ElementKind.INTERFACE == propType.getKind() ) &&
-            ProcessorUtil.hasAnnotationOfType( propType, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME )
+            AnnotationsUtil.hasAnnotationOfType( propType, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME )
           );
     }
   }
@@ -1088,7 +1063,7 @@ public final class ReactProcessor
       .filter( method -> !method.getModifiers().contains( Modifier.PRIVATE ) )
       .filter( method -> {
         final AnnotationMirror mirror =
-          ProcessorUtil.findAnnotationByType( method, Constants.MEMOIZE_ANNOTATION_CLASSNAME );
+          AnnotationsUtil.findAnnotationByType( method, Constants.MEMOIZE_ANNOTATION_CLASSNAME );
         return null != mirror &&
                mirror.getElementValues().keySet().stream()
                  .noneMatch( v -> "priority".equals( v.getSimpleName().toString() ) );
@@ -1102,7 +1077,7 @@ public final class ReactProcessor
                                               @Nonnull final String name )
   {
     return methods.stream()
-      .noneMatch( m -> ProcessorUtil.hasAnnotationOfType( m, Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME ) &&
+      .noneMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME ) &&
                        name.equals( derivePriorityOverrideName( m ) ) );
   }
 
@@ -1111,9 +1086,7 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String name =
-      (String) ProcessorUtil.getAnnotationValue( method,
-                                                 Constants.MEMOIZE_ANNOTATION_CLASSNAME,
-                                                 "name" ).getValue();
+      (String) AnnotationsUtil.getAnnotationValue( method, Constants.MEMOIZE_ANNOTATION_CLASSNAME, "name" ).getValue();
     return isSentinelName( name ) ?
            ProcessorUtil.getPropertyAccessorName( method, name, SENTINEL_NAME ) :
            name;
@@ -1123,9 +1096,7 @@ public final class ReactProcessor
   private String derivePriorityOverrideName( @Nonnull final ExecutableElement method )
   {
     final String declaredName =
-      (String) ProcessorUtil.getAnnotationValue( method,
-                                                 Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME,
-                                                 "name" ).getValue();
+      (String) AnnotationsUtil.getAnnotationValue( method, Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME, "name" ).getValue();
     if ( isSentinelName( declaredName ) )
     {
       final String name = ProcessorUtil.deriveName( method, PRIORITY_OVERRIDE_PATTERN, declaredName, SENTINEL_NAME );
