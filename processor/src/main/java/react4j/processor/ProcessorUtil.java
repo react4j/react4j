@@ -205,8 +205,4 @@ final class ProcessorUtil
     }
   }
 
-  static boolean isNonnull( @Nonnull final ExecutableElement method )
-  {
-    return AnnotationsUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME );
-  }
 }

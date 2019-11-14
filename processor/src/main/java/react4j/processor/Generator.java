@@ -385,7 +385,7 @@ final class Generator
     {
       assert null != propMethod;
       assert null != prop;
-      if ( ProcessorUtil.isNonnull( propMethod ) )
+      if ( isNonnull( propMethod ) )
       {
         method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $T.requireNonNull( $N ) ) )",
                              descriptor.getEnhancedClassName(),
@@ -405,7 +405,7 @@ final class Generator
     }
     else
     {
-      if ( ( null != propMethod && ProcessorUtil.isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
+      if ( ( null != propMethod && isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
       {
         method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
       }
@@ -817,7 +817,7 @@ final class Generator
 
     final String convertMethodName = getConverter( returnType, methodElement );
     final TypeKind resultKind = methodElement.getReturnType().getKind();
-    if ( !resultKind.isPrimitive() && !ProcessorUtil.isNonnull( methodElement ) )
+    if ( !resultKind.isPrimitive() && !isNonnull( methodElement ) )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
@@ -932,7 +932,7 @@ final class Generator
         requireComma = true;
         final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
         final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
-        if ( !resultKind.isPrimitive() && !ProcessorUtil.isNonnull( prop.getMethod() ) )
+        if ( !resultKind.isPrimitive() && !isNonnull( prop.getMethod() ) )
         {
           sb.append( "$T.uncheckedCast( props.getAsAny( Props.$N ) )" );
           params.add( JS_CLASSNAME );
@@ -1354,7 +1354,7 @@ final class Generator
       final String rawName = "raw$" + name;
       final String typedName = "typed$" + name;
       method.addStatement( "final $T $N = props.get( Props.$N )", Object.class, rawName, prop.getConstantName() );
-      final boolean isNonNull = ProcessorUtil.isNonnull( prop.getMethod() );
+      final boolean isNonNull = isNonnull( prop.getMethod() );
       if ( !prop.isOptional() && isNonNull )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
@@ -1942,5 +1942,10 @@ final class Generator
                                                   @Nonnull final ParameterSpec.Builder builder )
   {
     GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
+  }
+
+  private static boolean isNonnull( @Nonnull final ExecutableElement method )
+  {
+    return AnnotationsUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME );
   }
 }
