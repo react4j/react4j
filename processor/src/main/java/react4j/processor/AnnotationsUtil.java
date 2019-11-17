@@ -10,9 +10,7 @@ import javax.annotation.Nullable;
 import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 @SuppressWarnings( { "SameParameterValue", "WeakerAccess", "unused", "RedundantSuppression" } )
@@ -24,12 +22,12 @@ final class AnnotationsUtil
 
   @SuppressWarnings( "unchecked" )
   @Nonnull
-  static List<TypeMirror> getTypeMirrorsAnnotationParameter( @Nonnull final TypeElement typeElement,
+  static List<TypeMirror> getTypeMirrorsAnnotationParameter( @Nonnull final AnnotatedConstruct annotated,
                                                              @Nonnull final String annotationClassName,
                                                              @Nonnull final String parameterName )
   {
     final AnnotationValue annotationValue =
-      getAnnotationValue( typeElement, annotationClassName, parameterName );
+      getAnnotationValue( annotated, annotationClassName, parameterName );
     return ( (List<AnnotationValue>) annotationValue.getValue() )
       .stream()
       .map( v -> (TypeMirror) v.getValue() ).collect( Collectors.toList() );
@@ -46,9 +44,9 @@ final class AnnotationsUtil
   }
 
   @Nullable
-  static AnnotationValue findAnnotationValue( @Nonnull final AnnotatedConstruct annotated,
-                                              @Nonnull final String annotationClassName,
-                                              @Nonnull final String parameterName )
+  private static AnnotationValue findAnnotationValue( @Nonnull final AnnotatedConstruct annotated,
+                                                      @Nonnull final String annotationClassName,
+                                                      @Nonnull final String parameterName )
   {
     final AnnotationMirror mirror = findAnnotationByType( annotated, annotationClassName );
     return null == mirror ? null : findAnnotationValue( mirror, parameterName );
@@ -85,10 +83,10 @@ final class AnnotationsUtil
   }
 
   @Nonnull
-  static AnnotationMirror getAnnotationByType( @Nonnull final Element typeElement,
+  static AnnotationMirror getAnnotationByType( @Nonnull final AnnotatedConstruct annotated,
                                                @Nonnull final String annotationClassName )
   {
-    AnnotationMirror mirror = findAnnotationByType( typeElement, annotationClassName );
+    AnnotationMirror mirror = findAnnotationByType( annotated, annotationClassName );
     assert null != mirror;
     return mirror;
   }
@@ -101,8 +99,9 @@ final class AnnotationsUtil
       filter( a -> a.getAnnotationType().toString().equals( annotationClassName ) ).findFirst().orElse( null );
   }
 
-  static boolean hasAnnotationOfType( @Nonnull final Element typeElement, @Nonnull final String annotationClassName )
+  static boolean hasAnnotationOfType( @Nonnull final AnnotatedConstruct annotated,
+                                      @Nonnull final String annotationClassName )
   {
-    return null != findAnnotationByType( typeElement, annotationClassName );
+    return null != findAnnotationByType( annotated, annotationClassName );
   }
 }
