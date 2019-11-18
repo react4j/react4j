@@ -44,9 +44,9 @@ final class AnnotationsUtil
   }
 
   @Nullable
-  private static AnnotationValue findAnnotationValue( @Nonnull final AnnotatedConstruct annotated,
-                                                      @Nonnull final String annotationClassName,
-                                                      @Nonnull final String parameterName )
+  static AnnotationValue findAnnotationValue( @Nonnull final AnnotatedConstruct annotated,
+                                              @Nonnull final String annotationClassName,
+                                              @Nonnull final String parameterName )
   {
     final AnnotationMirror mirror = findAnnotationByType( annotated, annotationClassName );
     return null == mirror ? null : findAnnotationValue( mirror, parameterName );
