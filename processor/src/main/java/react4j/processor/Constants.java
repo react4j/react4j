@@ -31,7 +31,6 @@ final class Constants
   static final String PER_INSTANCE_ANNOTATION_CLASSNAME = "arez.annotations.PerInstance";
   static final String NONNULL_ANNOTATION_CLASSNAME = "javax.annotation.Nonnull";
   static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
-  static final String DEPRECATED_ANNOTATION_CLASSNAME = "java.lang.Deprecated";
   static final String JS_ERROR_CLASSNAME = "elemental2.core.JsError";
   static final String MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION =
     "React4j:MutablePropAccessedInPostConstruct";

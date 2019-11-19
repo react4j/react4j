@@ -109,7 +109,7 @@ final class Generator
     Arrays.asList( Constants.NONNULL_ANNOTATION_CLASSNAME,
                    Constants.NULLABLE_ANNOTATION_CLASSNAME,
                    SuppressWarnings.class.getName(),
-                   Constants.DEPRECATED_ANNOTATION_CLASSNAME );
+                   Deprecated.class.getName() );
 
   private Generator()
   {
