@@ -22,7 +22,7 @@ complete as there is too much un-said.
 
 * Generate a compile warning if public methods are declared in a react class or any parent class (unless they
   are implementations of an interface). This warnings should be able to be suppressed.
- 
+
 * Generate a compile warning if protected methods are declared in a react class. This warnings should be able
   to be suppressed.
 
