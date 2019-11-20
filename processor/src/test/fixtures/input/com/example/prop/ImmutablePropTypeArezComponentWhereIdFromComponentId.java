@@ -3,7 +3,6 @@ package com.example.prop;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.ComponentId;
-import arez.annotations.Repository;
 import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.ReactNode;

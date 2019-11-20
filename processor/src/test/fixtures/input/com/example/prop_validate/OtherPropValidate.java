@@ -1,6 +1,5 @@
 package com.example.prop_validate;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import react4j.Component;
 import react4j.ReactNode;
