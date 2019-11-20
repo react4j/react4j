@@ -23,8 +23,8 @@ abstract class ImmutablePropTypeKeyedInherited
     }
   }
 
- static class KeyedComponent
-   extends BaseComponent
+  static class KeyedComponent
+    extends BaseComponent
   {
   }
 

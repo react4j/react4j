@@ -28,8 +28,8 @@ abstract class ImmutablePropTypeKeyedMultiStepInherited
   {
   }
 
- static class KeyedComponent
-   extends MiddleComponent
+  static class KeyedComponent
+    extends MiddleComponent
   {
   }
 
