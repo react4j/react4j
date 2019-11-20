@@ -390,7 +390,8 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String name =
-      (String) AnnotationsUtil.getAnnotationValue( element, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, "name" ).getValue();
+      (String) AnnotationsUtil.getAnnotationValue( element, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, "name" )
+        .getValue();
 
     if ( isSentinelName( name ) )
     {
@@ -483,7 +484,8 @@ public final class ReactProcessor
     throws ProcessorException
   {
     final String name =
-      (String) AnnotationsUtil.getAnnotationValue( element, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, "name" ).getValue();
+      (String) AnnotationsUtil.getAnnotationValue( element, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, "name" )
+        .getValue();
 
     if ( isSentinelName( name ) )
     {
@@ -753,7 +755,8 @@ public final class ReactProcessor
   private boolean isIdRequired( @Nonnull final TypeElement element )
   {
     final VariableElement requireIdParameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME, "requireId" ).getValue();
+      AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME, "requireId" )
+        .getValue();
     switch ( requireIdParameter.getSimpleName().toString() )
     {
       case "ENABLE":
@@ -963,7 +966,9 @@ public final class ReactProcessor
   private ComponentType extractComponentType( @Nonnull final TypeElement typeElement )
   {
     final VariableElement declaredTypeEnum = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( typeElement, Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, "type" ).getValue();
+      AnnotationsUtil
+        .getAnnotationValue( typeElement, Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, "type" )
+        .getValue();
     return ComponentType.valueOf( declaredTypeEnum.getSimpleName().toString() );
   }
 
@@ -971,7 +976,8 @@ public final class ReactProcessor
                                         final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "shouldUpdateOnChange" ).getValue();
+      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "shouldUpdateOnChange" )
+        .getValue();
     switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
@@ -1024,7 +1030,8 @@ public final class ReactProcessor
 
   private boolean isPropImmutable( @Nonnull final ExecutableElement method )
   {
-    return (Boolean) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "immutable" ).getValue();
+    return (Boolean) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "immutable" )
+      .getValue();
   }
 
   private boolean isPropDisposable( @Nonnull final ExecutableElement method, @Nonnull final Element propType )
