@@ -12,7 +12,7 @@ abstract class ObservableViaObservedProp
   extends Component
 {
   @Prop
-  protected abstract Object getValue();
+  abstract Object getValue();
 
   @Observe
   void someValue()

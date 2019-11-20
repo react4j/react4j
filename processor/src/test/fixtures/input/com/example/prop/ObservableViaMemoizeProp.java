@@ -12,7 +12,7 @@ abstract class ObservableViaMemoizeProp
   extends Component
 {
   @Prop
-  protected abstract Object getValue();
+  abstract Object getValue();
 
   @Memoize
   int someValue( int i )

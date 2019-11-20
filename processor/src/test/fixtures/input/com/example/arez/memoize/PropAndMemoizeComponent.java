@@ -12,7 +12,7 @@ abstract class PropAndMemoizeComponent
   extends Component
 {
   @Prop
-  protected abstract String getValue();
+  abstract String getValue();
 
   @Nullable
   @Override

@@ -26,6 +26,7 @@ final class ComponentDescriptor
   @Nonnull
   private final ComponentType _type;
   private final boolean _hasPostConstruct;
+  private final boolean _shouldSetDefaultPriority;
   @Nonnull
   private final ExecutableElement _constructor;
   @Nullable
@@ -50,23 +51,20 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<OnPropChangeDescriptor> _onPropChangeDescriptors;
-  /**
-   * Names of elements that require a priority override to be generated.
-   */
-  @Nullable
-  private List<String> _priorityOverrides;
   private Boolean _hasValidatedProps;
   private boolean _hasArezElements;
 
   ComponentDescriptor( @Nonnull final String name,
                        @Nonnull final TypeElement element,
                        @Nonnull final ComponentType type,
-                       final boolean hasPostConstruct )
+                       final boolean hasPostConstruct,
+                       final boolean shouldSetDefaultPriority )
   {
     _name = Objects.requireNonNull( name );
     _element = Objects.requireNonNull( element );
     _type = Objects.requireNonNull( type );
     _hasPostConstruct = hasPostConstruct;
+    _shouldSetDefaultPriority = shouldSetDefaultPriority;
 
     if ( ElementKind.CLASS != element.getKind() )
     {
@@ -140,6 +138,11 @@ final class ComponentDescriptor
   boolean hasPostConstruct()
   {
     return _hasPostConstruct;
+  }
+
+  boolean shouldSetDefaultPriority()
+  {
+    return _shouldSetDefaultPriority;
   }
 
   @Nonnull
@@ -237,18 +240,6 @@ final class ComponentDescriptor
   ComponentType getType()
   {
     return _type;
-  }
-
-  @Nonnull
-  List<String> getPriorityOverrides()
-  {
-    assert null != _priorityOverrides;
-    return _priorityOverrides;
-  }
-
-  void setPriorityOverrides( @Nonnull final List<String> priorityOverrides )
-  {
-    _priorityOverrides = Objects.requireNonNull( priorityOverrides );
   }
 
   int syntheticKeyComponents()

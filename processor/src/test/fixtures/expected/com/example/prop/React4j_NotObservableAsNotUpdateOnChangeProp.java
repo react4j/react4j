@@ -11,7 +11,6 @@ import arez.annotations.InjectMode;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
-import arez.annotations.PriorityOverride;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,6 +33,7 @@ import react4j.internal.arez.SchedulerUtil;
 @ArezComponent(
     name = "NotObservableAsNotUpdateOnChangeProp",
     disposeNotifier = Feature.DISABLE,
+    defaultPriority = Priority.LOWEST,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
@@ -123,11 +123,6 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
       IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
     }
-  }
-
-  @PriorityOverride
-  final int someValuePriority() {
-    return Observer.Flags.PRIORITY_LOWEST;
   }
 
   static final class Factory {

@@ -33,6 +33,7 @@ import react4j.internal.arez.SchedulerUtil;
 @ArezComponent(
     name = "PriorityOverrideMemoizeComponent",
     disposeNotifier = Feature.DISABLE,
+    defaultPriority = Priority.LOWEST,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")

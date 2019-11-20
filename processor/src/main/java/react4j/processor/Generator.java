@@ -38,7 +38,6 @@ final class Generator
   private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   private static final ClassName AREZ_CLASSNAME = ClassName.get( "arez", "Arez" );
-  private static final ClassName OBSERVER_FLAGS_CLASSNAME = ClassName.get( "arez", "Observer", "Flags" );
   private static final ClassName OBSERVER_CLASSNAME = ClassName.get( "arez", "Observer" );
   private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "ObservableValue" );
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
@@ -50,7 +49,6 @@ final class Generator
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
   private static final ClassName PER_INSTANCE_CLASSNAME = ClassName.get( "arez.annotations", "PerInstance" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
-  private static final ClassName PRIORITY_OVERRIDE_CLASSNAME = ClassName.get( "arez.annotations", "PriorityOverride" );
   private static final ClassName EXECUTOR_CLASSNAME = ClassName.get( "arez.annotations", "Executor" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
@@ -596,6 +594,10 @@ final class Generator
     {
       arezAnnotation.addMember( "allowEmpty", "true" );
     }
+    else if ( descriptor.shouldSetDefaultPriority() )
+    {
+      arezAnnotation.addMember( "defaultPriority", "$T.LOWEST", PRIORITY_CLASSNAME );
+    }
     if ( descriptor.needsInjection() )
     {
       arezAnnotation.addMember( "inject", "$T.CONSUME", AREZ_INJECT_MODE_CLASSNAME );
@@ -675,11 +677,6 @@ final class Generator
       builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
       builder.addMethod( buildGetRenderObserver( descriptor ).build() );
       builder.addMethod( buildPopulateDebugData( descriptor ).build() );
-
-      for ( final String priorityOverride : descriptor.getPriorityOverrides() )
-      {
-        builder.addMethod( buildPriorityOverrideMethod( priorityOverride ).build() );
-      }
     }
 
     if ( descriptor.shouldGenerateLiteLifecycle() )
@@ -689,16 +686,6 @@ final class Generator
     builder.addType( buildNativeComponent( descriptor, false ) );
 
     return builder.build();
-  }
-
-  @Nonnull
-  private static MethodSpec.Builder buildPriorityOverrideMethod( @Nonnull final String priorityOverride )
-  {
-    return MethodSpec.methodBuilder( priorityOverride + "Priority" )
-      .addAnnotation( PRIORITY_OVERRIDE_CLASSNAME )
-      .addModifiers( Modifier.FINAL )
-      .returns( TypeName.INT )
-      .addStatement( "return $T.PRIORITY_LOWEST", OBSERVER_FLAGS_CLASSNAME );
   }
 
   @Nonnull

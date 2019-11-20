@@ -53,7 +53,6 @@ public final class ReactProcessor
   private static final Pattern LAST_PROP_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
   private static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
   private static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
-  private static final Pattern PRIORITY_OVERRIDE_PATTERN = Pattern.compile( "^(.*)Priority$" );
 
   @Nonnull
   @Override
@@ -109,7 +108,9 @@ public final class ReactProcessor
     final String name = deriveComponentName( typeElement );
     final ComponentType type = extractComponentType( typeElement );
     final boolean hasPostConstruct = hasPostConstruct( typeElement );
-    final ComponentDescriptor descriptor = new ComponentDescriptor( name, typeElement, type, hasPostConstruct );
+    final boolean shouldSetDefaultPriority = shouldSetDefaultPriority( typeElement );
+    final ComponentDescriptor descriptor =
+      new ComponentDescriptor( name, typeElement, type, hasPostConstruct, shouldSetDefaultPriority );
 
     determineComponentCapabilities( descriptor, typeElement );
     determineProps( descriptor );
@@ -956,8 +957,6 @@ public final class ReactProcessor
         );
 
     descriptor.setHasArezElements( hasArezElements );
-
-    descriptor.setPriorityOverrides( getPriorityOverrides( typeElement ) );
   }
 
   @Nonnull
@@ -1051,62 +1050,14 @@ public final class ReactProcessor
     }
   }
 
-  /**
-   * Return @Memoize name that have not had the priority parameter explicitly set and do not have associated @PriorityOverride.
-   */
-  @Nonnull
-  private List<String> getPriorityOverrides( @Nonnull final TypeElement typeElement )
+  private boolean shouldSetDefaultPriority( @Nonnull final TypeElement typeElement )
   {
     final List<ExecutableElement> methods = getMethods( typeElement );
     return methods
       .stream()
       .filter( method -> !method.getModifiers().contains( Modifier.PRIVATE ) )
-      .filter( method -> {
-        final AnnotationMirror mirror =
-          AnnotationsUtil.findAnnotationByType( method, Constants.MEMOIZE_ANNOTATION_CLASSNAME );
-        return null != mirror &&
-               mirror.getElementValues().keySet().stream()
-                 .noneMatch( v -> "priority".equals( v.getSimpleName().toString() ) );
-      } )
-      .map( this::deriveMemoizeName )
-      .filter( name -> noPriorityOverrideWithName( methods, name ) )
-      .collect( Collectors.toList() );
-  }
-
-  private boolean noPriorityOverrideWithName( @Nonnull final List<ExecutableElement> methods,
-                                              @Nonnull final String name )
-  {
-    return methods.stream()
-      .noneMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME ) &&
-                       name.equals( derivePriorityOverrideName( m ) ) );
-  }
-
-  @Nonnull
-  private String deriveMemoizeName( @Nonnull final ExecutableElement method )
-    throws ProcessorException
-  {
-    final String name =
-      (String) AnnotationsUtil.getAnnotationValue( method, Constants.MEMOIZE_ANNOTATION_CLASSNAME, "name" ).getValue();
-    return isSentinelName( name ) ?
-           ProcessorUtil.getPropertyAccessorName( method, name, SENTINEL_NAME ) :
-           name;
-  }
-
-  @Nonnull
-  private String derivePriorityOverrideName( @Nonnull final ExecutableElement method )
-  {
-    final String declaredName =
-      (String) AnnotationsUtil.getAnnotationValue( method, Constants.PRIORITY_OVERRIDE_ANNOTATION_CLASSNAME, "name" ).getValue();
-    if ( isSentinelName( declaredName ) )
-    {
-      final String name = ProcessorUtil.deriveName( method, PRIORITY_OVERRIDE_PATTERN, declaredName, SENTINEL_NAME );
-      assert null != name;
-      return name;
-    }
-    else
-    {
-      return declaredName;
-    }
+      .anyMatch( method -> AnnotationsUtil.hasAnnotationOfType( method, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
+                           AnnotationsUtil.hasAnnotationOfType( method, Constants.OBSERVE_ANNOTATION_CLASSNAME ) );
   }
 
   private void verifyNoDuplicateAnnotations( @Nonnull final ExecutableElement method )

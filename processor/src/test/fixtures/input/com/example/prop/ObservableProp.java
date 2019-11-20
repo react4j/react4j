@@ -12,7 +12,7 @@ abstract class ObservableProp
   extends Component
 {
   @Prop( observable = Feature.ENABLE )
-  protected abstract Object getValue();
+  abstract Object getValue();
 
   @Nullable
   @Override
