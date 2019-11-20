@@ -57,7 +57,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
 
   @Nonnull
   @ObservableValueRef
-  protected abstract ObservableValue<?> getValueObservableValue();
+  abstract ObservableValue<?> getValueObservableValue();
 
   @Action(
       verifyRequired = false

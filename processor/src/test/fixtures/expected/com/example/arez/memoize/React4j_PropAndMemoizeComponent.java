@@ -73,7 +73,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
 
   @Nonnull
   @ObservableValueRef
-  protected abstract ObservableValue<?> getValueObservableValue();
+  abstract ObservableValue<?> getValueObservableValue();
 
   @Action(
       verifyRequired = false

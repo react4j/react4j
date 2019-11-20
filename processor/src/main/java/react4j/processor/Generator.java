@@ -869,7 +869,7 @@ final class Generator
   private static MethodSpec.Builder buildPropObservableValueRefMethod( @Nonnull final PropDescriptor prop )
   {
     return MethodSpec.methodBuilder( toObservableValueRefMethodName( prop ) ).
-      addModifiers( Modifier.PROTECTED, Modifier.ABSTRACT ).
+      addModifiers( Modifier.ABSTRACT ).
       addAnnotation( NONNULL_CLASSNAME ).
       addAnnotation( OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME ).
       returns( ParameterizedTypeName.get( OBSERVABLE_CLASSNAME, WildcardTypeName.subtypeOf( TypeName.OBJECT ) ) );
