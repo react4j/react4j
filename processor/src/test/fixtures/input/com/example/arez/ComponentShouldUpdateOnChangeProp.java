@@ -12,10 +12,10 @@ abstract class ComponentShouldUpdateOnChangeProp
   extends Component
 {
   @Prop( shouldUpdateOnChange = Feature.ENABLE )
-  protected abstract String getValue();
+  abstract String getValue();
 
   @Prop( shouldUpdateOnChange = Feature.DISABLE )
-  protected abstract String getOther();
+  abstract String getOther();
 
   @Nullable
   @Override

@@ -18,7 +18,7 @@ abstract class NonnullPropValidate
 
   @Prop
   @Nonnull
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Override
   protected ReactNode render()

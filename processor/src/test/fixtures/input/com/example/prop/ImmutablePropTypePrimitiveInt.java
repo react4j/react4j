@@ -11,7 +11,7 @@ abstract class ImmutablePropTypePrimitiveInt
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract int getMyProp();
+  abstract int getMyProp();
 
   @Nullable
   @Override

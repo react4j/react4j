@@ -39,7 +39,7 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
   }
 
   @Override
-  protected T getValue() {
+  T getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).cast() : null;
     } else {
@@ -48,7 +48,7 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
   }
 
   @Override
-  protected String getValue2() {
+  String getValue2() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value2 ) ? props().getAsAny( Props.value2 ).asString() : null;
     } else {
@@ -58,7 +58,7 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
 
   @Nullable
   @Override
-  protected String getValue3() {
+  String getValue3() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value3 ) ? props().getAsAny( Props.value3 ).asString() : null;
     } else {
@@ -68,7 +68,7 @@ abstract class React4j_GenericTypeMultiPropComponent<T> extends GenericTypeMulti
 
   @Nullable
   @Override
-  protected String getValue4() {
+  String getValue4() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value4 ) ? props().getAsAny( Props.value4 ).asString() : null;
     } else {

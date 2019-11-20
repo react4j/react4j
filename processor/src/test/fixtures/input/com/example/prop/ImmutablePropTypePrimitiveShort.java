@@ -11,7 +11,7 @@ abstract class ImmutablePropTypePrimitiveShort
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract short getMyProp();
+  abstract short getMyProp();
 
   @Nullable
   @Override

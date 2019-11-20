@@ -17,7 +17,7 @@ abstract class ExplicitNameOnPropChange
   }
 
   @Prop
-  protected abstract double getMyProp();
+  abstract double getMyProp();
 
   @Override
   protected ReactNode render()

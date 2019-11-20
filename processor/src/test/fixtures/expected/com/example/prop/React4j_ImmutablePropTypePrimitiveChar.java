@@ -39,7 +39,7 @@ abstract class React4j_ImmutablePropTypePrimitiveChar extends ImmutablePropTypeP
   }
 
   @Override
-  protected char getMyProp() {
+  char getMyProp() {
     return props().getAsAny( Props.myProp ).asChar();
   }
 

@@ -11,7 +11,7 @@ abstract class ImmutablePropTypePrimitiveBoolean
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract boolean getMyProp();
+  abstract boolean getMyProp();
 
   @Nullable
   @Override

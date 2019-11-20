@@ -39,7 +39,7 @@ abstract class React4j_ImmutablePropTypeBoxedBoolean extends ImmutablePropTypeBo
   }
 
   @Override
-  protected Boolean getMyProp() {
+  Boolean getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

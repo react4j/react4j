@@ -11,7 +11,7 @@ abstract class ImmutablePropTypeBoxedLong
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract Long getMyProp();
+  abstract Long getMyProp();
 
   @Nullable
   @Override

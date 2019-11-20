@@ -11,7 +11,7 @@ abstract class PropTypeInt
   extends Component
 {
   @Prop
-  protected abstract int getMyProp();
+  abstract int getMyProp();
 
   @Nullable
   @Override

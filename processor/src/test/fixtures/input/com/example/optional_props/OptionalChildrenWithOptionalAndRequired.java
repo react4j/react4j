@@ -15,13 +15,13 @@ abstract class OptionalChildrenWithOptionalAndRequired
   static final String DEFAULT_MY_PROP = "Foo";
 
   @Prop( require = Feature.DISABLE )
-  protected abstract ReactNode[] getChildren();
+  abstract ReactNode[] getChildren();
 
   @Prop
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Prop
-  protected abstract String getMyRequiredProp();
+  abstract String getMyRequiredProp();
 
   @Override
   protected ReactNode render()

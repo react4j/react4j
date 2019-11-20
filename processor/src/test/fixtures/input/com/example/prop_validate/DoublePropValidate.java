@@ -16,7 +16,7 @@ abstract class DoublePropValidate
   }
 
   @Prop
-  protected abstract double getMyProp();
+  abstract double getMyProp();
 
   @Override
   protected ReactNode render()

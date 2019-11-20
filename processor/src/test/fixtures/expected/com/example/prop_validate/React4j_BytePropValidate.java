@@ -38,7 +38,7 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
   }
 
   @Override
-  protected byte getMyProp() {
+  byte getMyProp() {
     return props().getAsAny( Props.myProp ).asByte();
   }
 

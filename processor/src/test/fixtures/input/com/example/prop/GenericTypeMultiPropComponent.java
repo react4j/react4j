@@ -11,18 +11,18 @@ abstract class GenericTypeMultiPropComponent<T>
   extends Component
 {
   @Prop
-  protected abstract T getValue();
+  abstract T getValue();
 
   @Prop
-  protected abstract String getValue2();
-
-  @Prop
-  @Nullable
-  protected abstract String getValue3();
+  abstract String getValue2();
 
   @Prop
   @Nullable
-  protected abstract String getValue4();
+  abstract String getValue3();
+
+  @Prop
+  @Nullable
+  abstract String getValue4();
 
   @Nullable
   @Override

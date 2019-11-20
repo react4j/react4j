@@ -11,7 +11,7 @@ abstract class BoolJavaBeanPropComponent
   extends Component
 {
   @Prop
-  protected abstract boolean isFoo();
+  abstract boolean isFoo();
 
   @Nullable
   @Override

@@ -11,7 +11,7 @@ abstract class BasicPropComponent
   extends Component
 {
   @Prop
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Nullable
   @Override

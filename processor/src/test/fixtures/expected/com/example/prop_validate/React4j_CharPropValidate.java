@@ -38,7 +38,7 @@ abstract class React4j_CharPropValidate extends CharPropValidate {
   }
 
   @Override
-  protected char getMyProp() {
+  char getMyProp() {
     return props().getAsAny( Props.myProp ).asChar();
   }
 

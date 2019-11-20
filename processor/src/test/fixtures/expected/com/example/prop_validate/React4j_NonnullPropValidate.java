@@ -40,7 +40,7 @@ abstract class React4j_NonnullPropValidate extends NonnullPropValidate {
 
   @Nonnull
   @Override
-  protected String getMyProp() {
+  String getMyProp() {
     return props().getAsAny( Props.myProp ).asString();
   }
 

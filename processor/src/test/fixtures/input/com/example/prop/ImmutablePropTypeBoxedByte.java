@@ -11,7 +11,7 @@ abstract class ImmutablePropTypeBoxedByte
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract Byte getMyProp();
+  abstract Byte getMyProp();
 
   @Nullable
   @Override

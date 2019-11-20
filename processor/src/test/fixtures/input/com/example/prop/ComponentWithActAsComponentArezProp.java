@@ -17,7 +17,7 @@ abstract class ComponentWithActAsComponentArezProp
   }
 
   @Prop
-  protected abstract Model getModel();
+  abstract Model getModel();
 
   @Nullable
   @Override

@@ -38,7 +38,7 @@ abstract class React4j_ImmutablePropTypeBoxedFloat extends ImmutablePropTypeBoxe
   }
 
   @Override
-  protected Float getMyProp() {
+  Float getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

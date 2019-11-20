@@ -24,7 +24,7 @@ abstract class ImmutablePropTypeKeyed
   }
 
   @Prop( immutable = true )
-  protected abstract KeyedComponent getMyProp();
+  abstract KeyedComponent getMyProp();
 
   @Nullable
   @Override

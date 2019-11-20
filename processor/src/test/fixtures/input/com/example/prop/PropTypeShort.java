@@ -11,7 +11,7 @@ abstract class PropTypeShort
   extends Component
 {
   @Prop
-  protected abstract short getMyProp();
+  abstract short getMyProp();
 
   @Nullable
   @Override

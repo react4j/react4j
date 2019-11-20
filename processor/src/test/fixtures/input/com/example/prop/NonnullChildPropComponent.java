@@ -13,7 +13,7 @@ abstract class NonnullChildPropComponent
 {
   @Nonnull
   @Prop
-  protected abstract ReactNode getChild();
+  abstract ReactNode getChild();
 
   @Nullable
   @Override

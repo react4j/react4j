@@ -54,7 +54,7 @@ abstract class React4j_ComponentWithActAsComponentArezProp extends ComponentWith
   }
 
   @Override
-  protected ComponentWithActAsComponentArezProp.Model getModel() {
+  ComponentWithActAsComponentArezProp.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.model ) ? props().getAsAny( Props.model ).cast() : null;
     } else {

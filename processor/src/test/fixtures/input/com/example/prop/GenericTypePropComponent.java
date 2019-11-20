@@ -11,7 +11,7 @@ abstract class GenericTypePropComponent<T>
   extends Component
 {
   @Prop
-  protected abstract T getValue();
+  abstract T getValue();
 
   @Nullable
   @Override

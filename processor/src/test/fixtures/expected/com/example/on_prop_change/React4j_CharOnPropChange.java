@@ -39,7 +39,7 @@ abstract class React4j_CharOnPropChange extends CharOnPropChange {
   }
 
   @Override
-  protected char getMyProp() {
+  char getMyProp() {
     return props().getAsAny( Props.myProp ).asChar();
   }
 

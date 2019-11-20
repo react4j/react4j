@@ -16,7 +16,7 @@ abstract class ImmutablePropTypeEnum
   }
 
   @Prop( immutable = true )
-  protected abstract Foo getMyProp();
+  abstract Foo getMyProp();
 
   @Nullable
   @Override

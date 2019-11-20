@@ -23,7 +23,7 @@ abstract class ImmutablePropTypeArezComponent
   }
 
   @Prop( immutable = true )
-  protected abstract MyComponent getMyProp();
+  abstract MyComponent getMyProp();
 
   @Nullable
   @Override

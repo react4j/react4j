@@ -38,7 +38,7 @@ abstract class React4j_PropTypeDouble extends PropTypeDouble {
   }
 
   @Override
-  protected double getMyProp() {
+  double getMyProp() {
     return props().getAsAny( Props.myProp ).asDouble();
   }
 

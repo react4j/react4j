@@ -16,7 +16,7 @@ abstract class BooleanOnPropChange
   }
 
   @Prop
-  protected abstract boolean getMyProp();
+  abstract boolean getMyProp();
 
   @Override
   protected ReactNode render()

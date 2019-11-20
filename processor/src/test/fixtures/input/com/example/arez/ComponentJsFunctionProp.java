@@ -18,7 +18,7 @@ abstract class ComponentJsFunctionProp
   }
 
   @Prop
-  protected abstract TestFunction getValue();
+  abstract TestFunction getValue();
 
   @Nullable
   @Override

@@ -11,7 +11,7 @@ abstract class CustomNameProp
   extends Component
 {
   @Prop( name = "foo" )
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Nullable
   @Override

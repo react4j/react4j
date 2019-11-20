@@ -13,7 +13,7 @@ abstract class NotObservableAsNotUpdateOnChangeProp
   extends Component
 {
   @Prop( shouldUpdateOnChange = Feature.DISABLE )
-  protected abstract Object getValue();
+  abstract Object getValue();
 
   @Memoize
   int someValue()

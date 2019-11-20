@@ -18,7 +18,7 @@ abstract class OtherPropValidate
   }
 
   @Prop
-  protected abstract BitSet getMyProp();
+  abstract BitSet getMyProp();
 
   @Override
   protected ReactNode render()

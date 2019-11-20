@@ -53,7 +53,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   }
 
   @Override
-  protected ImplicitDisposableProp.Model getModel() {
+  ImplicitDisposableProp.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.model ) ? props().getAsAny( Props.model ).cast() : null;
     } else {

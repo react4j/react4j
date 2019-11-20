@@ -17,7 +17,7 @@ abstract class ComponentFunctionalInterfaceProp
   }
 
   @Prop
-  protected abstract TestFunction getValue();
+  abstract TestFunction getValue();
 
   @Nullable
   @Override

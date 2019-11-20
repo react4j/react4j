@@ -38,7 +38,7 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   }
 
   @Override
-  protected String getMyRequiredProp() {
+  String getMyRequiredProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myRequiredProp ) ? props().getAsAny( Props.myRequiredProp ).asString() : null;
     } else {
@@ -47,7 +47,7 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   }
 
   @Override
-  protected String getMyOptionalProp() {
+  String getMyOptionalProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myOptionalProp ) ? props().getAsAny( Props.myOptionalProp ).asString() : null;
     } else {
@@ -56,7 +56,7 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   }
 
   @Override
-  protected String getMyOtherOptionalProp() {
+  String getMyOtherOptionalProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myOtherOptionalProp ) ? props().getAsAny( Props.myOtherOptionalProp ).asString() : null;
     } else {

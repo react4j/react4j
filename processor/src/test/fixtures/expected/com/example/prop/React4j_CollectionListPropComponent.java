@@ -39,7 +39,7 @@ abstract class React4j_CollectionListPropComponent extends CollectionListPropCom
   }
 
   @Override
-  protected List<String> getMyProp() {
+  List<String> getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

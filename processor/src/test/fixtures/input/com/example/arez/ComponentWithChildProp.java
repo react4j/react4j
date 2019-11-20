@@ -11,7 +11,7 @@ abstract class ComponentWithChildProp
   extends Component
 {
   @Prop
-  protected abstract ReactNode getChild();
+  abstract ReactNode getChild();
 
   @Nullable
   @Override

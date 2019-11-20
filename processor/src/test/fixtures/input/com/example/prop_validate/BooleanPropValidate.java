@@ -16,7 +16,7 @@ abstract class BooleanPropValidate
   }
 
   @Prop
-  protected abstract boolean getMyProp();
+  abstract boolean getMyProp();
 
   @Override
   protected ReactNode render()

@@ -16,7 +16,7 @@ abstract class ShortOnPropChange
   }
 
   @Prop
-  protected abstract short getMyProp();
+  abstract short getMyProp();
 
   @Override
   protected ReactNode render()

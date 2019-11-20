@@ -54,7 +54,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
   }
 
   @Override
-  protected String getValue() {
+  String getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).asString() : null;
     } else {
@@ -63,7 +63,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
   }
 
   @Override
-  protected String getOther() {
+  String getOther() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.other ) ? props().getAsAny( Props.other ).asString() : null;
     } else {

@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromRepository exten
   }
 
   @Override
-  protected ImmutablePropTypeArezComponentWhereIdFromRepository.MyComponent getMyProp() {
+  ImmutablePropTypeArezComponentWhereIdFromRepository.MyComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

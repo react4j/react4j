@@ -11,7 +11,7 @@ abstract class ImmutablePropTypeString
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Nullable
   @Override

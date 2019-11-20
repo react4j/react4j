@@ -11,7 +11,7 @@ abstract class ImmutablePropTypeBoxedDouble
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract Double getMyProp();
+  abstract Double getMyProp();
 
   @Nullable
   @Override

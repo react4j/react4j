@@ -38,7 +38,7 @@ abstract class React4j_FloatPropValidate extends FloatPropValidate {
   }
 
   @Override
-  protected float getMyProp() {
+  float getMyProp() {
     return props().getAsAny( Props.myProp ).asFloat();
   }
 

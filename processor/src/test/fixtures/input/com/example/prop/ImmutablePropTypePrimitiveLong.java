@@ -11,7 +11,7 @@ abstract class ImmutablePropTypePrimitiveLong
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract long getMyProp();
+  abstract long getMyProp();
 
   @Nullable
   @Override

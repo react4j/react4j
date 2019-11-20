@@ -39,7 +39,7 @@ abstract class React4j_ImmutablePropTypeBoxedCharacter extends ImmutablePropType
   }
 
   @Override
-  protected Character getMyProp() {
+  Character getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

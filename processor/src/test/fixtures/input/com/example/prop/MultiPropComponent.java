@@ -11,10 +11,10 @@ abstract class MultiPropComponent
   extends Component
 {
   @Prop
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Prop
-  protected abstract String getMyProp2();
+  abstract String getMyProp2();
 
   @Nullable
   @Override

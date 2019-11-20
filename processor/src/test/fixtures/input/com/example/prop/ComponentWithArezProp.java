@@ -17,10 +17,10 @@ abstract class ComponentWithArezProp
   }
 
   @Prop
-  protected abstract String getValue();
+  abstract String getValue();
 
   @Prop
-  protected abstract Model getModel();
+  abstract Model getModel();
 
   @Nullable
   @Override

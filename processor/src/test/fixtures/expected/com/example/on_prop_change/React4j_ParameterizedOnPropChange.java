@@ -40,7 +40,7 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
   }
 
   @Override
-  protected ArrayList<String> getMyProp() {
+  ArrayList<String> getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

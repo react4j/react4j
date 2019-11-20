@@ -40,7 +40,7 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
   }
 
   @Override
-  protected BitSet getMyProp() {
+  BitSet getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

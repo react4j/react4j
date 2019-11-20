@@ -18,7 +18,7 @@ abstract class NonDisposableDisposableProp
   }
 
   @Prop( disposable = Feature.DISABLE )
-  protected abstract Model getModel();
+  abstract Model getModel();
 
   @Nullable
   @Override

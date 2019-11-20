@@ -39,7 +39,7 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
   }
 
   @Override
-  protected String getMyRequiredProp() {
+  String getMyRequiredProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myRequiredProp ) ? props().getAsAny( Props.myRequiredProp ).asString() : null;
     } else {
@@ -48,7 +48,7 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
   }
 
   @Override
-  protected String getMyProp() {
+  String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).asString() : null;
     } else {
@@ -57,7 +57,7 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
   }
 
   @Override
-  protected ReactNode[] getChildren() {
+  ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.children ) ? props().getAsAny( Props.children ).cast() : null;
     } else {

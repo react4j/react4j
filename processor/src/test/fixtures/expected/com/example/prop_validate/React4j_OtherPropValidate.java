@@ -39,7 +39,7 @@ abstract class React4j_OtherPropValidate extends OtherPropValidate {
   }
 
   @Override
-  protected BitSet getMyProp() {
+  BitSet getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

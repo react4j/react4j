@@ -13,14 +13,14 @@ abstract class NullablePropAndNonnullChildComponent
 {
   @Prop
   @Nonnull
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Prop
   @Nullable
-  protected abstract String getMyProp2();
+  abstract String getMyProp2();
 
   @Prop
-  protected abstract ReactNode getChild();
+  abstract ReactNode getChild();
 
   @Nullable
   @Override

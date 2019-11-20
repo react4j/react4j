@@ -11,7 +11,7 @@ abstract class PropTypeDouble
   extends Component
 {
   @Prop
-  protected abstract double getMyProp();
+  abstract double getMyProp();
 
   @Nullable
   @Override

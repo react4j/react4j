@@ -11,7 +11,7 @@ abstract class ImmutablePropTypePrimitiveDouble
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract double getMyProp();
+  abstract double getMyProp();
 
   @Nullable
   @Override

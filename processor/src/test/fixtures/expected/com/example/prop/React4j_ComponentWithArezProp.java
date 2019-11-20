@@ -53,7 +53,7 @@ abstract class React4j_ComponentWithArezProp extends ComponentWithArezProp {
   }
 
   @Override
-  protected String getValue() {
+  String getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).asString() : null;
     } else {
@@ -62,7 +62,7 @@ abstract class React4j_ComponentWithArezProp extends ComponentWithArezProp {
   }
 
   @Override
-  protected ComponentWithArezProp.Model getModel() {
+  ComponentWithArezProp.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.model ) ? props().getAsAny( Props.model ).cast() : null;
     } else {

@@ -38,7 +38,7 @@ abstract class React4j_ImmutablePropTypeBoxedDouble extends ImmutablePropTypeBox
   }
 
   @Override
-  protected Double getMyProp() {
+  Double getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

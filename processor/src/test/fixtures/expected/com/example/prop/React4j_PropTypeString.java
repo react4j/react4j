@@ -38,7 +38,7 @@ abstract class React4j_PropTypeString extends PropTypeString {
   }
 
   @Override
-  protected String getMyProp() {
+  String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).asString() : null;
     } else {

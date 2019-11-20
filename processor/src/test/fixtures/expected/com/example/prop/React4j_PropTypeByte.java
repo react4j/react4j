@@ -38,7 +38,7 @@ abstract class React4j_PropTypeByte extends PropTypeByte {
   }
 
   @Override
-  protected byte getMyProp() {
+  byte getMyProp() {
     return props().getAsAny( Props.myProp ).asByte();
   }
 

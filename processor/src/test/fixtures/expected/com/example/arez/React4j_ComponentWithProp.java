@@ -53,7 +53,7 @@ abstract class React4j_ComponentWithProp extends ComponentWithProp {
   }
 
   @Override
-  protected String getValue() {
+  String getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).asString() : null;
     } else {

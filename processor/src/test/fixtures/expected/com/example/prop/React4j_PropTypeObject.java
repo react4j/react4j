@@ -38,7 +38,7 @@ abstract class React4j_PropTypeObject extends PropTypeObject {
   }
 
   @Override
-  protected PropTypeObject.MyObject getMyProp() {
+  PropTypeObject.MyObject getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

@@ -12,7 +12,7 @@ abstract class CollectionArrayListPropComponent
   extends Component
 {
   @Prop
-  protected abstract ArrayList<String> getMyProp();
+  abstract ArrayList<String> getMyProp();
 
   @Nullable
   @Override

@@ -38,7 +38,7 @@ abstract class React4j_MultiPropComponent2 extends MultiPropComponent2 {
   }
 
   @Override
-  protected String getMyProp() {
+  String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).asString() : null;
     } else {
@@ -47,7 +47,7 @@ abstract class React4j_MultiPropComponent2 extends MultiPropComponent2 {
   }
 
   @Override
-  protected String getMyProp2() {
+  String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp2 ) ? props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
@@ -56,7 +56,7 @@ abstract class React4j_MultiPropComponent2 extends MultiPropComponent2 {
   }
 
   @Override
-  protected ReactNode[] getChildren() {
+  ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.children ) ? props().getAsAny( Props.children ).cast() : null;
     } else {

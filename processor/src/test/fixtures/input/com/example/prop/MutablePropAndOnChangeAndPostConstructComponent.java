@@ -13,7 +13,7 @@ abstract class MutablePropAndOnChangeAndPostConstructComponent
   extends Component
 {
   @Prop
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @PostConstruct
   void postConstruct()

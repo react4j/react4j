@@ -11,7 +11,7 @@ abstract class ImmutablePropTypePrimitiveFloat
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract float getMyProp();
+  abstract float getMyProp();
 
   @Nullable
   @Override

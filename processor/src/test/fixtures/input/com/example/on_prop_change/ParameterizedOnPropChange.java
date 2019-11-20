@@ -17,7 +17,7 @@ abstract class ParameterizedOnPropChange
   }
 
   @Prop
-  protected abstract ArrayList<String> getMyProp();
+  abstract ArrayList<String> getMyProp();
 
   @Override
   protected ReactNode render()

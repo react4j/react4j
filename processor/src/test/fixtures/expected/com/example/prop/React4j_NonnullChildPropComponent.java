@@ -39,7 +39,7 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
 
   @Nonnull
   @Override
-  protected ReactNode getChild() {
+  ReactNode getChild() {
     return props().getAsAny( Props.child ).cast();
   }
 

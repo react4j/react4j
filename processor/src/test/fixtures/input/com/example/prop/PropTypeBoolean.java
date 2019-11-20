@@ -11,7 +11,7 @@ abstract class PropTypeBoolean
   extends Component
 {
   @Prop
-  protected abstract boolean getMyProp();
+  abstract boolean getMyProp();
 
   @Nullable
   @Override

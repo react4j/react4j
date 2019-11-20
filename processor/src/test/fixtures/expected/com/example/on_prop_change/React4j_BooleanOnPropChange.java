@@ -39,7 +39,7 @@ abstract class React4j_BooleanOnPropChange extends BooleanOnPropChange {
   }
 
   @Override
-  protected boolean getMyProp() {
+  boolean getMyProp() {
     return props().getAsAny( Props.myProp ).asBoolean();
   }
 

@@ -15,7 +15,7 @@ abstract class PropTypeObject
   }
 
   @Prop
-  protected abstract MyObject getMyProp();
+  abstract MyObject getMyProp();
 
   @Nullable
   @Override

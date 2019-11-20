@@ -14,23 +14,23 @@ abstract class MultiPropComponent4
   extends Component
 {
   @Prop
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Prop
   @Nullable
-  protected abstract String getMyProp2();
+  abstract String getMyProp2();
 
   @Prop
   @Nullable
-  protected abstract String getMyProp3();
+  abstract String getMyProp3();
 
   @Prop
   @Nullable
-  protected abstract String getMyProp4();
+  abstract String getMyProp4();
 
   @Prop
   @Nullable
-  protected abstract ReactNode getChild();
+  abstract ReactNode getChild();
 
   @Nullable
   @Override

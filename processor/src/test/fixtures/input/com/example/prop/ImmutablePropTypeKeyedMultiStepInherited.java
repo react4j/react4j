@@ -34,7 +34,7 @@ abstract class ImmutablePropTypeKeyedMultiStepInherited
   }
 
   @Prop( immutable = true )
-  protected abstract KeyedComponent getMyProp();
+  abstract KeyedComponent getMyProp();
 
   @Nullable
   @Override

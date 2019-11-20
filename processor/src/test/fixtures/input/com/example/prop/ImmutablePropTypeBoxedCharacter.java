@@ -11,7 +11,7 @@ abstract class ImmutablePropTypeBoxedCharacter
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract Character getMyProp();
+  abstract Character getMyProp();
 
   @Nullable
   @Override

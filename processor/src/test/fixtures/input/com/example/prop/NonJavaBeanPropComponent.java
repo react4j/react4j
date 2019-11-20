@@ -11,7 +11,7 @@ abstract class NonJavaBeanPropComponent
   extends Component
 {
   @Prop
-  protected abstract String window();
+  abstract String window();
 
   @Nullable
   @Override

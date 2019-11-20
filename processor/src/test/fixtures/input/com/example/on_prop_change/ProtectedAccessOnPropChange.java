@@ -16,7 +16,7 @@ abstract class ProtectedAccessOnPropChange
   }
 
   @Prop
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Override
   protected ReactNode render()

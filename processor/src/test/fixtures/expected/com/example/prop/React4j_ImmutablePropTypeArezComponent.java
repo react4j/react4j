@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypeArezComponent extends ImmutablePropTypeA
   }
 
   @Override
-  protected ImmutablePropTypeArezComponent.MyComponent getMyProp() {
+  ImmutablePropTypeArezComponent.MyComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

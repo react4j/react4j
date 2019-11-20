@@ -11,7 +11,7 @@ abstract class MultipleChildrenPropComponent
   extends Component
 {
   @Prop
-  protected abstract ReactNode[] getChildren();
+  abstract ReactNode[] getChildren();
 
   @Nullable
   @Override

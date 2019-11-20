@@ -16,7 +16,7 @@ abstract class ByteOnPropChange
   }
 
   @Prop
-  protected abstract byte getMyProp();
+  abstract byte getMyProp();
 
   @Override
   protected ReactNode render()

@@ -38,7 +38,7 @@ abstract class React4j_ImmutablePropTypeBoxedLong extends ImmutablePropTypeBoxed
   }
 
   @Override
-  protected Long getMyProp() {
+  Long getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

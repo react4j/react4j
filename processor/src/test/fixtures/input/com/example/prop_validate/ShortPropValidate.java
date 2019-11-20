@@ -16,7 +16,7 @@ abstract class ShortPropValidate
   }
 
   @Prop
-  protected abstract short getMyProp();
+  abstract short getMyProp();
 
   @Override
   protected ReactNode render()

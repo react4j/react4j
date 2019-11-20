@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypeActAsComponentClass extends ImmutablePro
   }
 
   @Override
-  protected ImmutablePropTypeActAsComponentClass.MyComponent getMyProp() {
+  ImmutablePropTypeActAsComponentClass.MyComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

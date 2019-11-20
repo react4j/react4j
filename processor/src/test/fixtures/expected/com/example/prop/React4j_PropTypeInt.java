@@ -38,7 +38,7 @@ abstract class React4j_PropTypeInt extends PropTypeInt {
   }
 
   @Override
-  protected int getMyProp() {
+  int getMyProp() {
     return props().getAsAny( Props.myProp ).asInt();
   }
 

@@ -16,7 +16,7 @@ abstract class FloatPropValidate
   }
 
   @Prop
-  protected abstract float getMyProp();
+  abstract float getMyProp();
 
   @Override
   protected ReactNode render()

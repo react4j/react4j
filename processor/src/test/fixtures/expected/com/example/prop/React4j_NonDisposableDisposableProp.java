@@ -53,7 +53,7 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
   }
 
   @Override
-  protected NonDisposableDisposableProp.Model getModel() {
+  NonDisposableDisposableProp.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.model ) ? props().getAsAny( Props.model ).cast() : null;
     } else {

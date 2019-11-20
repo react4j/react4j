@@ -16,7 +16,7 @@ abstract class IntOnPropChange
   }
 
   @Prop
-  protected abstract int getMyProp();
+  abstract int getMyProp();
 
   @Override
   protected ReactNode render()

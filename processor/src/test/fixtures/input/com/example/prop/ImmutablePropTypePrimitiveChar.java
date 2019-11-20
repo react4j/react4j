@@ -11,7 +11,7 @@ abstract class ImmutablePropTypePrimitiveChar
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract char getMyProp();
+  abstract char getMyProp();
 
   @Nullable
   @Override

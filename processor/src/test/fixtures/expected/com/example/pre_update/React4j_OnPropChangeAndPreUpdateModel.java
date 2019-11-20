@@ -40,7 +40,7 @@ abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreU
   }
 
   @Override
-  protected int getMyProp() {
+  int getMyProp() {
     return props().getAsAny( Props.myProp ).asInt();
   }
 

@@ -11,7 +11,7 @@ abstract class PropTypeChar
   extends Component
 {
   @Prop
-  protected abstract char getMyProp();
+  abstract char getMyProp();
 
   @Nullable
   @Override

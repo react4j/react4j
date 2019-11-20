@@ -39,12 +39,12 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
   }
 
   @Override
-  protected boolean getMyProp1() {
+  boolean getMyProp1() {
     return props().getAsAny( Props.myProp1 ).asBoolean();
   }
 
   @Override
-  protected String getMyProp2() {
+  String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp2 ) ? props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
@@ -53,7 +53,7 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
   }
 
   @Override
-  protected int getMyProp3() {
+  int getMyProp3() {
     return props().getAsAny( Props.myProp3 ).asInt();
   }
 

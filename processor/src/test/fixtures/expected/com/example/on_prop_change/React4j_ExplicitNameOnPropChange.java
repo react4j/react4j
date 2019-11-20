@@ -39,7 +39,7 @@ abstract class React4j_ExplicitNameOnPropChange extends ExplicitNameOnPropChange
   }
 
   @Override
-  protected double getMyProp() {
+  double getMyProp() {
     return props().getAsAny( Props.myProp ).asDouble();
   }
 

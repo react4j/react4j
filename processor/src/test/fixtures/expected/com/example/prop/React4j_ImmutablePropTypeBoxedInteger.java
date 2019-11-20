@@ -39,7 +39,7 @@ abstract class React4j_ImmutablePropTypeBoxedInteger extends ImmutablePropTypeBo
   }
 
   @Override
-  protected Integer getMyProp() {
+  Integer getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

@@ -12,7 +12,7 @@ abstract class ComponentShouldNotUpdateOnChangeProp
   extends Component
 {
   @Prop( shouldUpdateOnChange = Feature.DISABLE )
-  protected abstract String getValue();
+  abstract String getValue();
 
   @Nullable
   @Override

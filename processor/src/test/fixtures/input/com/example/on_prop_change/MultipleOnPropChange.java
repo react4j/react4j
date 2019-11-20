@@ -16,13 +16,13 @@ abstract class MultipleOnPropChange
   }
 
   @Prop
-  protected abstract boolean getMyProp1();
+  abstract boolean getMyProp1();
 
   @Prop
-  protected abstract String getMyProp2();
+  abstract String getMyProp2();
 
   @Prop
-  protected abstract int getMyProp3();
+  abstract int getMyProp3();
 
   @Override
   protected ReactNode render()

@@ -12,7 +12,7 @@ abstract class ImmutablePropAndPostConstructComponent
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @PostConstruct
   void postConstruct()

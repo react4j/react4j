@@ -39,7 +39,7 @@ abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTyp
   }
 
   @Override
-  protected double getMyProp() {
+  double getMyProp() {
     return props().getAsAny( Props.myProp ).asDouble();
   }
 

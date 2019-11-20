@@ -39,7 +39,7 @@ abstract class React4j_ShortOnPropChange extends ShortOnPropChange {
   }
 
   @Override
-  protected short getMyProp() {
+  short getMyProp() {
     return props().getAsAny( Props.myProp ).asShort();
   }
 

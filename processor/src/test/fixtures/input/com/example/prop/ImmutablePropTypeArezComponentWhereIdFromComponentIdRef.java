@@ -26,7 +26,7 @@ abstract class ImmutablePropTypeArezComponentWhereIdFromComponentIdRef
   }
 
   @Prop( immutable = true )
-  protected abstract MyComponent getMyProp();
+  abstract MyComponent getMyProp();
 
   @Nullable
   @Override

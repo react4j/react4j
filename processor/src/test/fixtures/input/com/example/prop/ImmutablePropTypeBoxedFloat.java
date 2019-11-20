@@ -11,7 +11,7 @@ abstract class ImmutablePropTypeBoxedFloat
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract Float getMyProp();
+  abstract Float getMyProp();
 
   @Nullable
   @Override

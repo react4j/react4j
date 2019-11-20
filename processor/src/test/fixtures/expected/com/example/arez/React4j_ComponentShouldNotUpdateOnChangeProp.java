@@ -54,7 +54,7 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
   }
 
   @Override
-  protected String getValue() {
+  String getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).asString() : null;
     } else {

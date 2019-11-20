@@ -38,7 +38,7 @@ abstract class React4j_ImmutablePropTypeBoxedShort extends ImmutablePropTypeBoxe
   }
 
   @Override
-  protected Short getMyProp() {
+  Short getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

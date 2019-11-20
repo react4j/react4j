@@ -13,7 +13,7 @@ abstract class MutablePropAndPostConstructWithSuppressComponent
 {
   @SuppressWarnings( "React4j:MutablePropAccessedInPostConstruct" )
   @Prop
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @PostConstruct
   void postConstruct()

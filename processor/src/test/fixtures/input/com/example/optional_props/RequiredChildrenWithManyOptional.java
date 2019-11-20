@@ -20,19 +20,19 @@ abstract class RequiredChildrenWithManyOptional
   static final String DEFAULT_MY_PROP_D = "Foo";
 
   @Prop
-  protected abstract ReactNode[] getChildren();
+  abstract ReactNode[] getChildren();
 
   @Prop
-  protected abstract String getMyPropA();
+  abstract String getMyPropA();
 
   @Prop
-  protected abstract String getMyPropB();
+  abstract String getMyPropB();
 
   @Prop
-  protected abstract String getMyPropC();
+  abstract String getMyPropC();
 
   @Prop
-  protected abstract String getMyPropD();
+  abstract String getMyPropD();
 
   @Override
   protected ReactNode render()

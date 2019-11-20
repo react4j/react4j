@@ -11,7 +11,7 @@ abstract class ImmutablePropTypeBoxedBoolean
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract Boolean getMyProp();
+  abstract Boolean getMyProp();
 
   @Nullable
   @Override

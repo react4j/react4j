@@ -17,7 +17,7 @@ abstract class ImmutablePropTypeActAsComponentInterface
   }
 
   @Prop( immutable = true )
-  protected abstract MyComponent getMyProp();
+  abstract MyComponent getMyProp();
 
   @Nullable
   @Override

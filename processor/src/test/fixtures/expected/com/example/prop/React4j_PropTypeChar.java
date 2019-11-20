@@ -38,7 +38,7 @@ abstract class React4j_PropTypeChar extends PropTypeChar {
   }
 
   @Override
-  protected char getMyProp() {
+  char getMyProp() {
     return props().getAsAny( Props.myProp ).asChar();
   }
 

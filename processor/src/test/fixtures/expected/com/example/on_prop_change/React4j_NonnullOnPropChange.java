@@ -40,7 +40,7 @@ abstract class React4j_NonnullOnPropChange extends NonnullOnPropChange {
 
   @Nonnull
   @Override
-  protected String getMyProp() {
+  String getMyProp() {
     return props().getAsAny( Props.myProp ).asString();
   }
 

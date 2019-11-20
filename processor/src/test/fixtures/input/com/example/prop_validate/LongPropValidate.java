@@ -16,7 +16,7 @@ abstract class LongPropValidate
   }
 
   @Prop
-  protected abstract long getMyProp();
+  abstract long getMyProp();
 
   @Override
   protected ReactNode render()

@@ -40,7 +40,7 @@ abstract class React4j_CollectionHashSetPropComponent extends CollectionHashSetP
   }
 
   @Override
-  protected HashSet<String> getMyProp() {
+  HashSet<String> getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

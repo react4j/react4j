@@ -11,7 +11,7 @@ abstract class ImmutablePropTypeBoxedShort
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract Short getMyProp();
+  abstract Short getMyProp();
 
   @Nullable
   @Override

@@ -11,7 +11,7 @@ abstract class ImmutablePropTypeBoxedInteger
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract Integer getMyProp();
+  abstract Integer getMyProp();
 
   @Nullable
   @Override

@@ -11,7 +11,7 @@ abstract class PropTypeFloat
   extends Component
 {
   @Prop
-  protected abstract float getMyProp();
+  abstract float getMyProp();
 
   @Nullable
   @Override

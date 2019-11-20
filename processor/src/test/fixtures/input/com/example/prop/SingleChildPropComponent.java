@@ -11,7 +11,7 @@ abstract class SingleChildPropComponent
   extends Component
 {
   @Prop
-  protected abstract ReactNode getChild();
+  abstract ReactNode getChild();
 
   @Nullable
   @Override

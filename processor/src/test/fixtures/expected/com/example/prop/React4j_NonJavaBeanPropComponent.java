@@ -38,7 +38,7 @@ abstract class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent
   }
 
   @Override
-  protected String window() {
+  String window() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.window ) ? props().getAsAny( Props.window ).asString() : null;
     } else {

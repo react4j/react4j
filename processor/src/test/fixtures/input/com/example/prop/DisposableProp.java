@@ -12,7 +12,7 @@ abstract class DisposableProp
   extends Component
 {
   @Prop( disposable = Feature.ENABLE )
-  protected abstract Object getValue();
+  abstract Object getValue();
 
   @Nullable
   @Override

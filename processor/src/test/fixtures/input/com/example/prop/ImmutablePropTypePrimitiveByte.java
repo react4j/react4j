@@ -11,7 +11,7 @@ abstract class ImmutablePropTypePrimitiveByte
   extends Component
 {
   @Prop( immutable = true )
-  protected abstract byte getMyProp();
+  abstract byte getMyProp();
 
   @Nullable
   @Override

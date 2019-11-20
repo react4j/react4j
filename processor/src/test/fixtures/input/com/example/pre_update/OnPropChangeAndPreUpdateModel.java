@@ -12,7 +12,7 @@ abstract class OnPropChangeAndPreUpdateModel
   extends Component
 {
   @Prop
-  protected abstract int getMyProp();
+  abstract int getMyProp();
 
   @OnPropChange( phase = OnPropChange.Phase.PRE )
   void onMyPropChange( int myProp )

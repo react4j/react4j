@@ -12,7 +12,7 @@ abstract class CollectionHashSetPropComponent
   extends Component
 {
   @Prop
-  protected abstract HashSet<String> getMyProp();
+  abstract HashSet<String> getMyProp();
 
   @Nullable
   @Override

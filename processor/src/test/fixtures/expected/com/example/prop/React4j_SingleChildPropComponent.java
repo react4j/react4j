@@ -38,7 +38,7 @@ abstract class React4j_SingleChildPropComponent extends SingleChildPropComponent
   }
 
   @Override
-  protected ReactNode getChild() {
+  ReactNode getChild() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.child ) ? props().getAsAny( Props.child ).cast() : null;
     } else {

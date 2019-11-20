@@ -40,7 +40,7 @@ abstract class React4j_NullableOnPropChange extends NullableOnPropChange {
 
   @Nullable
   @Override
-  protected String getMyProp() {
+  String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).asString() : null;
     } else {

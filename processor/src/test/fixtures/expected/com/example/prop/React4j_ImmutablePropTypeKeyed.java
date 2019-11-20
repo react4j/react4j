@@ -38,7 +38,7 @@ abstract class React4j_ImmutablePropTypeKeyed extends ImmutablePropTypeKeyed {
   }
 
   @Override
-  protected ImmutablePropTypeKeyed.KeyedComponent getMyProp() {
+  ImmutablePropTypeKeyed.KeyedComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

@@ -38,7 +38,7 @@ abstract class React4j_PropTypeShort extends PropTypeShort {
   }
 
   @Override
-  protected short getMyProp() {
+  short getMyProp() {
     return props().getAsAny( Props.myProp ).asShort();
   }
 

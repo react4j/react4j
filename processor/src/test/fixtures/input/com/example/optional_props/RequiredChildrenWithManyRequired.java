@@ -10,16 +10,16 @@ abstract class RequiredChildrenWithManyRequired
   extends Component
 {
   @Prop
-  protected abstract ReactNode[] getChildren();
+  abstract ReactNode[] getChildren();
 
   @Prop
-  protected abstract String getMyRequiredProp1();
+  abstract String getMyRequiredProp1();
 
   @Prop
-  protected abstract String getMyRequiredProp2();
+  abstract String getMyRequiredProp2();
 
   @Prop
-  protected abstract String getMyRequiredProp3();
+  abstract String getMyRequiredProp3();
 
   @Override
   protected ReactNode render()

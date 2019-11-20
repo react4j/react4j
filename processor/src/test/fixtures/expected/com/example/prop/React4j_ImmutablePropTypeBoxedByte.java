@@ -38,7 +38,7 @@ abstract class React4j_ImmutablePropTypeBoxedByte extends ImmutablePropTypeBoxed
   }
 
   @Override
-  protected Byte getMyProp() {
+  Byte getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

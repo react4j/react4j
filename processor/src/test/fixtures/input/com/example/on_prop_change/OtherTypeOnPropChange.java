@@ -17,7 +17,7 @@ abstract class OtherTypeOnPropChange
   }
 
   @Prop
-  protected abstract BitSet getMyProp();
+  abstract BitSet getMyProp();
 
   @Override
   protected ReactNode render()

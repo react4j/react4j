@@ -38,7 +38,7 @@ abstract class React4j_BoolJavaBeanPropComponent extends BoolJavaBeanPropCompone
   }
 
   @Override
-  protected boolean isFoo() {
+  boolean isFoo() {
     return props().getAsAny( Props.foo ).asBoolean();
   }
 

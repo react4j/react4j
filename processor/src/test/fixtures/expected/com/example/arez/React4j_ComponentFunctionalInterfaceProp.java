@@ -54,7 +54,7 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
   }
 
   @Override
-  protected ComponentFunctionalInterfaceProp.TestFunction getValue() {
+  ComponentFunctionalInterfaceProp.TestFunction getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).cast() : null;
     } else {

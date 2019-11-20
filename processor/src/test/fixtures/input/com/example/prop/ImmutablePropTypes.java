@@ -42,19 +42,19 @@ abstract class ImmutablePropTypes
   }
 
   @Prop( immutable = true )
-  protected abstract MyComponent getMyProp();
+  abstract MyComponent getMyProp();
 
   @Prop( immutable = true )
-  protected abstract String getMyOtherProp();
+  abstract String getMyOtherProp();
 
   @Prop( immutable = true )
-  protected abstract int stillAnotherProp();
+  abstract int stillAnotherProp();
 
   @Prop( immutable = true )
-  protected abstract KeyedComponent BobsProp();
+  abstract KeyedComponent BobsProp();
 
   @Prop( immutable = true )
-  protected abstract Foo getSomeProp();
+  abstract Foo getSomeProp();
 
   @Nullable
   @Override

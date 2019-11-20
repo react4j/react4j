@@ -11,13 +11,13 @@ abstract class ExplicitOptional
   extends Component
 {
   @Prop( require = Feature.DISABLE )
-  protected abstract String getMyOptionalProp();
+  abstract String getMyOptionalProp();
 
   @Prop
-  protected abstract String getMyRequiredProp();
+  abstract String getMyRequiredProp();
 
   @Prop( require = Feature.DISABLE )
-  protected abstract String getMyOtherOptionalProp();
+  abstract String getMyOtherOptionalProp();
 
   @Override
   protected ReactNode render()

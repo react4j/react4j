@@ -16,7 +16,7 @@ abstract class CharPropValidate
   }
 
   @Prop
-  protected abstract char getMyProp();
+  abstract char getMyProp();
 
   @Override
   protected ReactNode render()

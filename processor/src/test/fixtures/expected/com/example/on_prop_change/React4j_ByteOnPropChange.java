@@ -39,7 +39,7 @@ abstract class React4j_ByteOnPropChange extends ByteOnPropChange {
   }
 
   @Override
-  protected byte getMyProp() {
+  byte getMyProp() {
     return props().getAsAny( Props.myProp ).asByte();
   }
 

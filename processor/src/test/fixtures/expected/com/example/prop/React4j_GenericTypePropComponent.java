@@ -38,7 +38,7 @@ abstract class React4j_GenericTypePropComponent<T> extends GenericTypePropCompon
   }
 
   @Override
-  protected T getValue() {
+  T getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).cast() : null;
     } else {

@@ -39,7 +39,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
-  protected String getMyPropA() {
+  String getMyPropA() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myPropA ) ? props().getAsAny( Props.myPropA ).asString() : null;
     } else {
@@ -48,7 +48,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
-  protected String getMyPropB() {
+  String getMyPropB() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myPropB ) ? props().getAsAny( Props.myPropB ).asString() : null;
     } else {
@@ -57,7 +57,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
-  protected String getMyPropC() {
+  String getMyPropC() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myPropC ) ? props().getAsAny( Props.myPropC ).asString() : null;
     } else {
@@ -66,7 +66,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
-  protected String getMyPropD() {
+  String getMyPropD() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myPropD ) ? props().getAsAny( Props.myPropD ).asString() : null;
     } else {
@@ -75,7 +75,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
-  protected ReactNode[] getChildren() {
+  ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.children ) ? props().getAsAny( Props.children ).cast() : null;
     } else {

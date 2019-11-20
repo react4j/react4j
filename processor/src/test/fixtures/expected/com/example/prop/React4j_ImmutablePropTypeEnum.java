@@ -38,7 +38,7 @@ abstract class React4j_ImmutablePropTypeEnum extends ImmutablePropTypeEnum {
   }
 
   @Override
-  protected ImmutablePropTypeEnum.Foo getMyProp() {
+  ImmutablePropTypeEnum.Foo getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

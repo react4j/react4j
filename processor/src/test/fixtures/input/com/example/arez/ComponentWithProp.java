@@ -11,7 +11,7 @@ abstract class ComponentWithProp
   extends Component
 {
   @Prop
-  protected abstract String getValue();
+  abstract String getValue();
 
   @Nullable
   @Override

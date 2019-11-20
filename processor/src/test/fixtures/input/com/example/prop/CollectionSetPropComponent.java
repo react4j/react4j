@@ -12,7 +12,7 @@ abstract class CollectionSetPropComponent
   extends Component
 {
   @Prop
-  protected abstract Set<String> getMyProp();
+  abstract Set<String> getMyProp();
 
   @Nullable
   @Override

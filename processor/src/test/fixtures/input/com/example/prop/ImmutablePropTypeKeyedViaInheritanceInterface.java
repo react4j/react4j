@@ -23,7 +23,7 @@ abstract class ImmutablePropTypeKeyedViaInheritanceInterface
   }
 
   @Prop( immutable = true )
-  protected abstract KeyedInterface getMyProp();
+  abstract KeyedInterface getMyProp();
 
   @Nullable
   @Override

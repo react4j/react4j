@@ -39,7 +39,7 @@ abstract class React4j_LongOnPropChange extends LongOnPropChange {
   }
 
   @Override
-  protected long getMyProp() {
+  long getMyProp() {
     return props().getAsAny( Props.myProp ).asLong();
   }
 

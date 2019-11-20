@@ -11,13 +11,13 @@ abstract class ExplicitNameMethodPropDefault
   extends Component
 {
   @PropDefault( name = "myProp" )
-  public static String zoooooooooooooom()
+  static String zoooooooooooooom()
   {
     return "Foo";
   }
 
   @Prop
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Override
   protected ReactNode render()

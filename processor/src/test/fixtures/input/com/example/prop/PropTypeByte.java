@@ -11,7 +11,7 @@ abstract class PropTypeByte
   extends Component
 {
   @Prop
-  protected abstract byte getMyProp();
+  abstract byte getMyProp();
 
   @Nullable
   @Override

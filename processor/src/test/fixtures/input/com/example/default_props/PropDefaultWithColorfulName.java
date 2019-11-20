@@ -14,7 +14,7 @@ abstract class PropDefaultWithColorfulName
   static final String DEFAULT_MY_PROP12$23 = "Foo";
 
   @Prop
-  protected abstract String getMyProp12$23();
+  abstract String getMyProp12$23();
 
   @Override
   protected ReactNode render()

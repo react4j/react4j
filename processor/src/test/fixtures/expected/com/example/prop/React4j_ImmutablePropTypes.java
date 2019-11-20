@@ -39,7 +39,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   }
 
   @Override
-  protected ImmutablePropTypes.MyComponent getMyProp() {
+  ImmutablePropTypes.MyComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {
@@ -48,7 +48,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   }
 
   @Override
-  protected String getMyOtherProp() {
+  String getMyOtherProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myOtherProp ) ? props().getAsAny( Props.myOtherProp ).asString() : null;
     } else {
@@ -57,12 +57,12 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   }
 
   @Override
-  protected int stillAnotherProp() {
+  int stillAnotherProp() {
     return props().getAsAny( Props.stillAnotherProp ).asInt();
   }
 
   @Override
-  protected ImmutablePropTypes.KeyedComponent BobsProp() {
+  ImmutablePropTypes.KeyedComponent BobsProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.BobsProp ) ? props().getAsAny( Props.BobsProp ).cast() : null;
     } else {
@@ -71,7 +71,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   }
 
   @Override
-  protected ImmutablePropTypes.Foo getSomeProp() {
+  ImmutablePropTypes.Foo getSomeProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.someProp ) ? props().getAsAny( Props.someProp ).cast() : null;
     } else {

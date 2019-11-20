@@ -38,7 +38,7 @@ abstract class React4j_PropTypeLong extends PropTypeLong {
   }
 
   @Override
-  protected long getMyProp() {
+  long getMyProp() {
     return props().getAsAny( Props.myProp ).asLong();
   }
 

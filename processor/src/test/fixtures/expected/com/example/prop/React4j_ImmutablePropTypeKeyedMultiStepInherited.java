@@ -39,7 +39,7 @@ abstract class React4j_ImmutablePropTypeKeyedMultiStepInherited extends Immutabl
   }
 
   @Override
-  protected ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent getMyProp() {
+  ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

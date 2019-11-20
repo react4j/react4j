@@ -17,7 +17,7 @@ abstract class ImplicitDisposableProp
   }
 
   @Prop
-  protected abstract Model getModel();
+  abstract Model getModel();
 
   @Nullable
   @Override

@@ -39,7 +39,7 @@ abstract class React4j_ImmutablePropTypeKeyedViaInheritanceInterface extends Imm
   }
 
   @Override
-  protected ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface getMyProp() {
+  ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {

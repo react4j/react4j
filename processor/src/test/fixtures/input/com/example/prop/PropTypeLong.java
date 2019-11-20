@@ -11,7 +11,7 @@ abstract class PropTypeLong
   extends Component
 {
   @Prop
-  protected abstract long getMyProp();
+  abstract long getMyProp();
 
   @Nullable
   @Override

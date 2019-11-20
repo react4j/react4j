@@ -39,7 +39,7 @@ abstract class React4j_FloatOnPropChange extends FloatOnPropChange {
   }
 
   @Override
-  protected float getMyProp() {
+  float getMyProp() {
     return props().getAsAny( Props.myProp ).asFloat();
   }
 
