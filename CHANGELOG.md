@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.142](https://github.com/react4j/react4j/tree/v0.142) (2019-11-20) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.141...v0.142)
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.arez` artifacts to version `0.155`.
 * If a React4j component has a `@Memoize` or `@Observe` annotated method other than render then specify the `defaultPriority` parameter to `Priority.LOWEST` on the `@ArezComponent` annotation in the enhanced class. The replaces the usage of the `@PriorityOveride` annotation from Arez that has now been eliminated. This change also means that the default priority for `@Observe` annotated methods is also `LOWEST`.
