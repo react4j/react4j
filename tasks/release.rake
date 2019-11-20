@@ -91,7 +91,7 @@ task 'perform_release' do
           if 1 == change_descriptions.size
             description += "#{change_descriptions[0]}"
           elsif 2 == change_descriptions.size
-            description += "#{change_descriptions[0]} and #{change_descriptions[0]}"
+            description += "#{change_descriptions[0]} and #{change_descriptions[1]}"
           else
             description += "#{change_descriptions[0]}, #{change_descriptions[1]} and #{change_descriptions[2]}"
           end
