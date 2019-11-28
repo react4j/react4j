@@ -5,12 +5,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.tools.Diagnostic;
 
 @SuppressWarnings( { "SameParameterValue", "WeakerAccess", "unused" } )
 final class MemberChecks
@@ -296,20 +300,114 @@ final class MemberChecks
   }
 
   @Nonnull
-  private static String must( @Nonnull final String annotationName, @Nonnull final String message )
+  static String must( @Nonnull final String annotationName, @Nonnull final String message )
   {
     return toSimpleName( annotationName ) + " target must " + message;
   }
 
   @Nonnull
-  private static String mustNot( @Nonnull final String annotationName, @Nonnull final String message )
+  static String mustNot( @Nonnull final String annotationName, @Nonnull final String message )
   {
     return must( annotationName, "not " + message );
   }
 
   @Nonnull
-  private static String toSimpleName( @Nonnull final String annotationName )
+  static String toSimpleName( @Nonnull final String annotationName )
   {
     return "@" + annotationName.replaceAll( ".*\\.", "" );
+  }
+
+  @Nonnull
+  static String suppressedBy( @Nonnull final String warning,
+                              @Nullable final String alternativeSuppressWarnings )
+  {
+    return "This warning can be suppressed by annotating the element with " +
+           "@SuppressWarnings( \"" + warning + "\" )" +
+           ( null == alternativeSuppressWarnings ?
+             "" :
+             " or " + toSimpleName( alternativeSuppressWarnings ) + "( \"" + warning + "\" )" );
+
+  }
+
+  static void shouldNotBePublic( @Nonnull final ProcessingEnvironment processingEnv,
+                                 @Nonnull final ExecutableElement method,
+                                 @Nonnull final String annotationName,
+                                 @Nonnull final String warning,
+                                 @Nullable final String alternativeSuppressWarnings )
+  {
+    if ( method.getModifiers().contains( Modifier.PUBLIC ) &&
+         !ProcessorUtil.isWarningSuppressed( method, warning, alternativeSuppressWarnings ) )
+    {
+      final String message =
+        toSimpleName( annotationName ) + " target should not be public. " +
+        suppressedBy( warning, alternativeSuppressWarnings );
+      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message );
+    }
+  }
+
+  static void shouldNotBeProtected( @Nonnull final ProcessingEnvironment processingEnv,
+                                    @Nonnull final ExecutableElement method,
+                                    @Nonnull final String annotationName,
+                                    @Nonnull final String warning,
+                                    @Nullable final String alternativeSuppressWarnings )
+  {
+    if ( method.getModifiers().contains( Modifier.PROTECTED ) &&
+         !ProcessorUtil.isWarningSuppressed( method, warning, alternativeSuppressWarnings ) )
+    {
+      final String message =
+        toSimpleName( annotationName ) + " target should not be protected. " +
+        suppressedBy( warning, alternativeSuppressWarnings );
+      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message );
+    }
+  }
+
+  static void mustReturnAnInstanceOf( @Nonnull final ProcessingEnvironment processingEnv,
+                                      @Nonnull final ExecutableElement method,
+                                      @Nonnull final String annotationClassname,
+                                      @Nonnull final String expectedTypename )
+  {
+    final TypeElement typeElement = processingEnv.getElementUtils().getTypeElement( expectedTypename );
+    assert null != typeElement;
+    final TypeMirror expected = typeElement.asType();
+
+    final TypeMirror actual = method.getReturnType();
+    if ( !processingEnv.getTypeUtils().isSameType( actual, expected ) )
+    {
+      final String message = must( annotationClassname, "return an instance of " + expected );
+      throw new ProcessorException( message, method );
+    }
+  }
+
+  static void mustBeInternalMethod( @Nonnull final ProcessingEnvironment processingEnv,
+                                    @Nonnull final TypeElement typeElement,
+                                    @Nonnull final ExecutableElement method,
+                                    @Nonnull final String annotationClassname,
+                                    @Nonnull final String publicWarning,
+                                    @Nonnull final String protectedWarning,
+                                    @Nullable final String alternativeSuppressWarnings )
+  {
+    if ( doesMethodNotOverrideInterfaceMethod( processingEnv, typeElement, method ) )
+    {
+      shouldNotBePublic( processingEnv,
+                         method,
+                         annotationClassname,
+                         publicWarning,
+                         alternativeSuppressWarnings );
+    }
+    if ( Objects.equals( typeElement, method.getEnclosingElement() ) )
+    {
+      shouldNotBeProtected( processingEnv,
+                            method,
+                            annotationClassname,
+                            protectedWarning,
+                            alternativeSuppressWarnings );
+    }
+  }
+
+  private static boolean doesMethodNotOverrideInterfaceMethod( @Nonnull final ProcessingEnvironment processingEnv,
+                                                               @Nonnull final TypeElement typeElement,
+                                                               @Nonnull final ExecutableElement method )
+  {
+    return !ProcessorUtil.doesMethodOverrideInterfaceMethod( processingEnv.getTypeUtils(), typeElement, method );
   }
 }

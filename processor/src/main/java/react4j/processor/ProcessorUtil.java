@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.AnnotationMirror;
@@ -13,6 +14,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -132,6 +134,31 @@ final class ProcessorUtil
   }
 
   @Nonnull
+  static List<TypeElement> getInterfaces( @Nonnull final TypeElement element )
+  {
+    final List<TypeElement> superTypes = new ArrayList<>();
+    enumerateInterfaces( element, superTypes );
+    return superTypes;
+  }
+
+  private static void enumerateInterfaces( @Nonnull final TypeElement element,
+                                           @Nonnull final List<TypeElement> superTypes )
+  {
+    final TypeMirror superclass = element.getSuperclass();
+    if ( TypeKind.NONE != superclass.getKind() )
+    {
+      final TypeElement superclassElement = (TypeElement) ( (DeclaredType) superclass ).asElement();
+      enumerateInterfaces( superclassElement, superTypes );
+    }
+    for ( final TypeMirror interfaceType : element.getInterfaces() )
+    {
+      final TypeElement interfaceElement = (TypeElement) ( (DeclaredType) interfaceType ).asElement();
+      superTypes.add( interfaceElement );
+      enumerateInterfaces( interfaceElement, superTypes );
+    }
+  }
+
+  @Nonnull
   static List<VariableElement> getFieldElements( @Nonnull final TypeElement element )
   {
     final Map<String, VariableElement> methodMap = new LinkedHashMap<>();
@@ -178,6 +205,33 @@ final class ProcessorUtil
     return method.getSimpleName().toString();
   }
 
+  private static boolean isAbstractInterfaceMethod( final @Nonnull ExecutableElement method )
+  {
+    return method.getModifiers().contains( Modifier.ABSTRACT ) &&
+           ElementKind.INTERFACE == method.getEnclosingElement().getKind();
+  }
+
+  private static boolean isSubsignature( @Nonnull final Types typeUtils,
+                                         @Nonnull final TypeElement typeElement,
+                                         @Nonnull final ExecutableType methodType,
+                                         @Nonnull final ExecutableElement candidate )
+  {
+    final ExecutableType candidateType =
+      (ExecutableType) typeUtils.asMemberOf( (DeclaredType) typeElement.asType(), candidate );
+    final boolean isEqual = methodType.equals( candidateType );
+    final boolean isSubsignature = typeUtils.isSubsignature( methodType, candidateType );
+    return isSubsignature || isEqual;
+  }
+
+  @Nonnull
+  static List<ExecutableElement> getConstructors( @Nonnull final TypeElement element )
+  {
+    return element.getEnclosedElements().stream().
+      filter( m -> m.getKind() == ElementKind.CONSTRUCTOR ).
+      map( m -> (ExecutableElement) m ).
+      collect( Collectors.toList() );
+  }
+
   @Nullable
   static String deriveName( @Nonnull final Element method,
                             @Nonnull final Pattern pattern,
@@ -203,5 +257,21 @@ final class ProcessorUtil
     {
       return name;
     }
+  }
+
+  static boolean doesMethodOverrideInterfaceMethod( @Nonnull final Types typeUtils,
+                                                    @Nonnull final TypeElement typeElement,
+                                                    @Nonnull final ExecutableElement method )
+  {
+    return getInterfaces( typeElement ).stream()
+      .flatMap( i -> i.getEnclosedElements().stream() )
+      .filter( e1 -> e1 instanceof ExecutableElement )
+      .map( e1 -> (ExecutableElement) e1 )
+      .collect(
+        Collectors.toList() ).stream()
+      .anyMatch( e -> isSubsignature( typeUtils,
+                                      typeElement,
+                                      (ExecutableType) typeUtils.asMemberOf( (DeclaredType) typeElement.asType(), e ),
+                                      method ) );
   }
 }
