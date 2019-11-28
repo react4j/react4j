@@ -119,7 +119,7 @@ public final class ReactProcessor
     determineDefaultPropsMethods( descriptor );
     determineDefaultPropsFields( descriptor );
     determinePreUpdateMethod( typeElement, descriptor );
-    determinePostRenderMethod( typeElement, descriptor );
+    determinePostMountOrUpdateMethod( typeElement, descriptor );
     determinePostUpdateMethod( typeElement, descriptor );
     determinePostMountMethod( typeElement, descriptor );
     determineOnErrorMethod( typeElement, descriptor );
@@ -873,8 +873,8 @@ public final class ReactProcessor
     }
   }
 
-  private void determinePostRenderMethod( @Nonnull final TypeElement typeElement,
-                                          @Nonnull final ComponentDescriptor descriptor )
+  private void determinePostMountOrUpdateMethod( @Nonnull final TypeElement typeElement,
+                                                 @Nonnull final ComponentDescriptor descriptor )
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
