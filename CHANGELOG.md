@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.143](https://github.com/react4j/react4j/tree/v0.143) (2019-11-28) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.142...v0.143)
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.arez` artifacts to version `0.157`.
 
