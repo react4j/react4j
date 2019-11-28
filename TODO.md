@@ -29,6 +29,10 @@ complete as there is too much un-said.
 * Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props. Make sure immutable props
   favour Keyed over ArezId if type implements/extends `Keyed` and is annotated by `@ActAsComponent`
 
+* Rename `ReactProcessor` to `React4jProcessor`
+
+* Rename `ReactComponent` to `React4jComponent`
+
 * Consider eliminating the need to extend `react4j.Component` as can probably get away with just defining render
   method these days??? Marked via interface and/or annotation? We may also need a way for the component to force
   itself to render. Probably exposed via another annotation.
