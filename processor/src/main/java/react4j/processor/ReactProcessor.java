@@ -699,7 +699,7 @@ public final class ReactProcessor
                           strategy );
     if ( propDescriptor.mayNeedMutablePropAccessedInPostConstructInvariant() )
     {
-      if ( isWarningSuppressed( method, Constants.MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION ) )
+      if ( isWarningSuppressed( method, Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT ) )
       {
         propDescriptor.suppressMutablePropAccessedInPostConstruct();
       }

@@ -814,9 +814,9 @@ final class Generator
                           "of the prop onto the component. This is considered a likely bug and the @Prop should be " +
                           "made immutable or an @OnPropChange method added to cover the prop. Alternatively this " +
                           "invariant check can be suppressed by adding @SuppressWarnings( \\\"" +
-                          Constants.MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION + "\\\" ) or " +
+                          Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT + "\\\" ) or " +
                           "@SuppressReact4jWarnings( \\\"" +
-                          Constants.MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION + "\\\" ) to the method.\" )",
+                          Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT + "\\\" ) to the method.\" )",
                           GUARDS_CLASSNAME,
                           IS_READY_METHOD );
       block.endControlFlow();
