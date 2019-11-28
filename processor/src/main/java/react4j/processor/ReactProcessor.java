@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Filer;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -811,6 +810,11 @@ public final class ReactProcessor
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
       {
+        MemberChecks.mustBeLifecycleHook( typeElement,
+                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.PRE_UPDATE_ANNOTATION_CLASSNAME,
+                                          method );
+        MemberChecks.mustNotBePublic( Constants.PRE_UPDATE_ANNOTATION_CLASSNAME, method );
         descriptor.setPreUpdate( method );
       }
     }
@@ -823,6 +827,47 @@ public final class ReactProcessor
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.ON_ERROR_ANNOTATION_CLASSNAME ) )
       {
+        MemberChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotBePublic( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustBeSubclassCallable( typeElement,
+                                             Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                             Constants.ON_ERROR_ANNOTATION_CLASSNAME,
+                                             method );
+        MemberChecks.mustNotReturnAnyValue( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotThrowAnyExceptions( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
+
+        boolean infoFound = false;
+        boolean errorFound = false;
+        for ( final VariableElement parameter : method.getParameters() )
+        {
+          final TypeName typeName = TypeName.get( parameter.asType() );
+          if ( typeName.toString().equals( Constants.ERROR_INFO_CLASSNAME ) )
+          {
+            if ( infoFound )
+            {
+              throw new ProcessorException( "@OnError target has multiple parameters of type " +
+                                            Constants.ERROR_INFO_CLASSNAME,
+                                            method );
+            }
+            infoFound = true;
+          }
+          else if ( typeName.toString().equals( Constants.JS_ERROR_CLASSNAME ) )
+          {
+            if ( errorFound )
+            {
+              throw new ProcessorException( "@OnError target has multiple parameters of type " +
+                                            Constants.JS_ERROR_CLASSNAME,
+                                            method );
+            }
+            errorFound = true;
+          }
+          else
+          {
+            throw new ProcessorException( "@OnError target has parameter of invalid type named " +
+                                          parameter.getSimpleName().toString(),
+                                          parameter );
+          }
+        }
         descriptor.setOnError( method );
       }
     }
@@ -835,6 +880,11 @@ public final class ReactProcessor
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME ) )
       {
+        MemberChecks.mustBeLifecycleHook( typeElement,
+                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME,
+                                          method );
+        MemberChecks.mustNotBePublic( Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME, method );
         descriptor.setPostRender( method );
       }
     }
@@ -847,6 +897,11 @@ public final class ReactProcessor
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
       {
+        MemberChecks.mustBeLifecycleHook( typeElement,
+                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.POST_UPDATE_ANNOTATION_CLASSNAME,
+                                          method );
+        MemberChecks.mustNotBePublic( Constants.POST_UPDATE_ANNOTATION_CLASSNAME, method );
         descriptor.setPostUpdate( method );
       }
     }
@@ -859,6 +914,12 @@ public final class ReactProcessor
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
       {
+        MemberChecks.mustBeLifecycleHook( typeElement,
+                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.POST_MOUNT_ANNOTATION_CLASSNAME,
+                                          method );
+        MemberChecks.mustNotBePublic( Constants.POST_MOUNT_ANNOTATION_CLASSNAME, method );
+
         descriptor.setPostMount( method );
       }
     }

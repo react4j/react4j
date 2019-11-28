@@ -318,16 +318,10 @@ final class ComponentDescriptor
   void setPreUpdate( @Nonnull final ExecutableElement preUpdate )
     throws ProcessorException
   {
-    MemberChecks.mustBeLifecycleHook( getElement(),
-                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                      Constants.PRE_UPDATE_ANNOTATION_CLASSNAME,
-                                      preUpdate );
-    MemberChecks.mustNotBePublic( Constants.PRE_UPDATE_ANNOTATION_CLASSNAME, preUpdate );
-
     if ( null != _preUpdate )
     {
-      throw new ProcessorException( "@PreUpdate target duplicates existing method named " +
-                                    _preUpdate.getSimpleName(), preUpdate );
+      throw new ProcessorException( "@PreUpdate target duplicates existing method named " + _preUpdate.getSimpleName(),
+                                    preUpdate );
     }
     else
     {
@@ -344,12 +338,6 @@ final class ComponentDescriptor
   void setPostRender( @Nonnull final ExecutableElement postRender )
     throws ProcessorException
   {
-    MemberChecks.mustBeLifecycleHook( getElement(),
-                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                      Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME,
-                                      postRender );
-    MemberChecks.mustNotBePublic( Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME, postRender );
-
     if ( null != _postRender )
     {
       throw new ProcessorException( "@PostMountOrUpdate target duplicates existing method named " +
@@ -370,12 +358,6 @@ final class ComponentDescriptor
   void setPostUpdate( @Nonnull final ExecutableElement postUpdate )
     throws ProcessorException
   {
-    MemberChecks.mustBeLifecycleHook( getElement(),
-                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                      Constants.POST_UPDATE_ANNOTATION_CLASSNAME,
-                                      postUpdate );
-    MemberChecks.mustNotBePublic( Constants.POST_UPDATE_ANNOTATION_CLASSNAME, postUpdate );
-
     if ( null != _postUpdate )
     {
       throw new ProcessorException( "@PostUpdate target duplicates existing method named " +
@@ -396,16 +378,10 @@ final class ComponentDescriptor
   void setPostMount( @Nonnull final ExecutableElement postMount )
     throws ProcessorException
   {
-    MemberChecks.mustBeLifecycleHook( getElement(),
-                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                      Constants.POST_MOUNT_ANNOTATION_CLASSNAME,
-                                      postMount );
-    MemberChecks.mustNotBePublic( Constants.POST_MOUNT_ANNOTATION_CLASSNAME, postMount );
-
     if ( null != _postMount )
     {
-      throw new ProcessorException( "@PostMount target duplicates existing method named " +
-                                    _postMount.getSimpleName(), postMount );
+      throw new ProcessorException( "@PostMount target duplicates existing method named " + _postMount.getSimpleName(),
+                                    postMount );
     }
     else
     {
@@ -422,47 +398,6 @@ final class ComponentDescriptor
   void setOnError( @Nonnull final ExecutableElement onError )
     throws ProcessorException
   {
-    MemberChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
-    MemberChecks.mustNotBePublic( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
-    MemberChecks.mustBeSubclassCallable( getElement(),
-                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                         Constants.ON_ERROR_ANNOTATION_CLASSNAME,
-                                         onError );
-    MemberChecks.mustNotReturnAnyValue( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
-    MemberChecks.mustNotThrowAnyExceptions( Constants.ON_ERROR_ANNOTATION_CLASSNAME, onError );
-
-    boolean infoFound = false;
-    boolean errorFound = false;
-    for ( final VariableElement parameter : onError.getParameters() )
-    {
-      final TypeName typeName = TypeName.get( parameter.asType() );
-      if ( typeName.toString().equals( Constants.ERROR_INFO_CLASSNAME ) )
-      {
-        if ( infoFound )
-        {
-          throw new ProcessorException( "@OnError target has multiple parameters of type " +
-                                        Constants.ERROR_INFO_CLASSNAME,
-                                        onError );
-        }
-        infoFound = true;
-      }
-      else if ( typeName.toString().equals( Constants.JS_ERROR_CLASSNAME ) )
-      {
-        if ( errorFound )
-        {
-          throw new ProcessorException( "@OnError target has multiple parameters of type " +
-                                        Constants.JS_ERROR_CLASSNAME,
-                                        onError );
-        }
-        errorFound = true;
-      }
-      else
-      {
-        throw new ProcessorException( "@OnError target has parameter of invalid type named " +
-                                      parameter.getSimpleName().toString(),
-                                      parameter );
-      }
-    }
 
     if ( null != _onError )
     {
