@@ -27,7 +27,7 @@ complete as there is too much un-said.
   to be suppressed.
 
 * Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props. Make sure immutable props
-  favour Keyed over ArezId if type implements/extends `Keyed` and is annotated by `@ActAsComponent` 
+  favour Keyed over ArezId if type implements/extends `Keyed` and is annotated by `@ActAsComponent`
 
 ### Enhancements
 
