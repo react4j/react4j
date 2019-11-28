@@ -65,7 +65,6 @@ define 'react4j' do
                  :arez_core,
                  :gwt_user,
                  :jetbrains_annotations
-    compile.options[:other] = %w(-parameters)
 
     gwt_enhance(project)
 
@@ -93,7 +92,6 @@ define 'react4j' do
                  project('core').compile.dependencies,
                  :elemental2_dom,
                  :elemental2_promise
-    compile.options[:other] = %w(-parameters)
 
     generate_factory_source(project)
     gwt_enhance(project)
