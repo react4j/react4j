@@ -33,6 +33,8 @@ final class Constants
   static final String JS_ERROR_CLASSNAME = "elemental2.core.JsError";
   static final String MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT_SUPPRESSION =
     "React4j:MutablePropAccessedInPostConstruct";
+  static final String WARNING_PUBLIC_LIFECYCLE_METHOD = "React4j:PublicLifecycleMethod";
+  static final String WARNING_PROTECTED_LIFECYCLE_METHOD = "React4j:ProtectedLifecycleMethod";
 
   private Constants()
   {

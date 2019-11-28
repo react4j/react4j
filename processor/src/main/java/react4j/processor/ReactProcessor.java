@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -1090,6 +1091,19 @@ public final class ReactProcessor
     return ProcessorUtil.isWarningSuppressed( element,
                                               warning,
                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
+  }
+
+  private void mustBeInternalLifecycleMethod( @Nonnull final ComponentDescriptor descriptor,
+                                              @Nonnull final ExecutableElement method,
+                                              @Nonnull final String annotationClassname )
+  {
+    MemberChecks.mustBeInternalMethod( processingEnv,
+                                       descriptor.getElement(),
+                                       method,
+                                       annotationClassname,
+                                       Constants.WARNING_PUBLIC_LIFECYCLE_METHOD,
+                                       Constants.WARNING_PROTECTED_LIFECYCLE_METHOD,
+                                       Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
   }
 
   private boolean isSentinelName( @Nonnull final String name )
