@@ -20,14 +20,14 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "PostRenderAndPostMount",
+    name = "BasicPostMountOrUpdateModel",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.ReactProcessor")
-abstract class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
-  React4j_PostRenderAndPostMount(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+abstract class React4j_BasicPostMountOrUpdateModel extends BasicPostMountOrUpdateModel {
+  React4j_BasicPostMountOrUpdateModel(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );
   }
 
@@ -35,7 +35,7 @@ abstract class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "PostRenderAndPostMount" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicPostMountOrUpdateModel" );
     }
     return componentConstructor;
   }
@@ -48,7 +48,6 @@ abstract class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
 
   private void $$react4j$$_componentDidMount() {
     postMountOrUpdate();
-    postMount();
     if ( React.shouldStoreDebugDataAsState() ) {
       storeDebugDataAsState();
     }
@@ -62,7 +61,7 @@ abstract class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_PostRenderAndPostMount) this).dispose();
+    ((Arez_React4j_BasicPostMountOrUpdateModel) this).dispose();
   }
 
   static final class Factory {
@@ -72,12 +71,12 @@ abstract class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate {
     @Nonnull
-    private final React4j_PostRenderAndPostMount $$react4j$$_component;
+    private final React4j_BasicPostMountOrUpdateModel $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_PostRenderAndPostMount( this );
+      $$react4j$$_component = new Arez_React4j_BasicPostMountOrUpdateModel( this );
     }
 
     @Override
@@ -104,12 +103,12 @@ abstract class React4j_PostRenderAndPostMount extends PostRenderAndPostMount {
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_PostRenderAndPostMount $$react4j$$_component;
+    private final React4j_BasicPostMountOrUpdateModel $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_PostRenderAndPostMount( this );
+      $$react4j$$_component = new Arez_React4j_BasicPostMountOrUpdateModel( this );
     }
 
     @Override

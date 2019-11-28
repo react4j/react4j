@@ -93,9 +93,11 @@ public class ReactProcessorTest
         new Object[]{ "com.example.post_mount.BasicModel", false },
         new Object[]{ "com.example.post_mount.DeprecatedPostMountModel", false },
         new Object[]{ "com.example.post_mount.ProtectedBasicModel", false },
-        new Object[]{ "com.example.post_mount_or_update.BasicModel", false },
-        new Object[]{ "com.example.post_mount_or_update.PostRenderAndPostMount", false },
-        new Object[]{ "com.example.post_mount_or_update.PostRenderAndPostUpdate", false },
+
+        new Object[]{ "com.example.post_mount_or_update.BasicPostMountOrUpdateModel", false },
+        new Object[]{ "com.example.post_mount_or_update.PostMountAndPostMountOrUpdateModel", false },
+        new Object[]{ "com.example.post_mount_or_update.PostUpdateAndPostMountOrUpdateModel", false },
+
         new Object[]{ "com.example.post_update.BasicModel", false },
         new Object[]{ "com.example.post_update.OnPropChangeAndPreUpdateModel", false },
         new Object[]{ "com.example.post_update.ProtectedModel", false },

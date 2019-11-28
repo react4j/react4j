@@ -7,7 +7,7 @@ import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class PostRenderAndPostMount
+abstract class PostMountAndPostMountOrUpdateModel
   extends Component
 {
   @PostMountOrUpdate

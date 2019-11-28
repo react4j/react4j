@@ -6,8 +6,8 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-final class PostRenderAndPostUpdateBuilder {
-  private PostRenderAndPostUpdateBuilder() {
+final class BasicPostMountOrUpdateModelBuilder {
+  private BasicPostMountOrUpdateModelBuilder() {
   }
 
   @Nonnull
@@ -21,7 +21,7 @@ final class PostRenderAndPostUpdateBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_PostRenderAndPostUpdate.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_BasicPostMountOrUpdateModel.Factory.TYPE );
 
     @Nonnull
     public final ReactNode build() {
