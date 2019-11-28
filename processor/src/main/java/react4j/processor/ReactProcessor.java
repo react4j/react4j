@@ -884,7 +884,7 @@ public final class ReactProcessor
                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                           Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
-        MemberChecks.mustNotBePublic( Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME, method );
+        mustBeInternalLifecycleMethod( typeElement, method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME );
         descriptor.setPostRender( method );
       }
     }

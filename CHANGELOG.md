@@ -4,6 +4,8 @@
 
 * If `@Deprecated` appears on the component then propagate it to the enhanced component class and the generated builder.
 * Generate a suppression in the enhanced component class and/or builder if generated artifact may access a deprecated element from the component class.
+* Generate a suppressable warning if a lifecycle or hook method is protected and in the same class that is annotated by `@ReactComponent` or is public and not an implementation of an interface method. These methods are not expected to be invoked from outside the component instance and this warning discourages incorrect usage. If the annotation previously generated an error when the method was public then remove this constraint. This change has been applied to the annotations:
+  * `@PostMountOrUpdate`
 
 ### [v0.143](https://github.com/react4j/react4j/tree/v0.143) (2019-11-28) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.142...v0.143)
 

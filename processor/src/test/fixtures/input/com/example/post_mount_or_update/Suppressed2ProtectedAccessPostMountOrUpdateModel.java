@@ -4,13 +4,16 @@ import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.SuppressReact4jWarnings;
 
 @ReactComponent
-abstract class PublicModel
+abstract class Suppressed2ProtectedAccessPostMountOrUpdateModel
   extends Component
 {
+  // This uses the CLASS retention suppression
+  @SuppressReact4jWarnings( "React4j:ProtectedLifecycleMethod" )
   @PostMountOrUpdate
-  public void postMountOrUpdate()
+  protected void postMountOrUpdate()
   {
   }
 
