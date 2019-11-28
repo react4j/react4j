@@ -1154,12 +1154,12 @@ public final class ReactProcessor
                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
   }
 
-  private void mustBeInternalLifecycleMethod( @Nonnull final ComponentDescriptor descriptor,
+  private void mustBeInternalLifecycleMethod( @Nonnull final TypeElement typeElement,
                                               @Nonnull final ExecutableElement method,
                                               @Nonnull final String annotationClassname )
   {
     MemberChecks.mustBeInternalMethod( processingEnv,
-                                       descriptor.getElement(),
+                                       typeElement,
                                        method,
                                        annotationClassname,
                                        Constants.WARNING_PUBLIC_LIFECYCLE_METHOD,
