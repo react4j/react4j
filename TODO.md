@@ -26,6 +26,9 @@ complete as there is too much un-said.
 * Generate a compile warning if protected methods are declared in a react class. This warnings should be able
   to be suppressed.
 
+* Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props. Make sure immutable props
+  favour Keyed over ArezId if type implements/extends `Keyed` and is annotated by `@ActAsComponent` 
+
 ### Enhancements
 
 * Generate documentation for components from annotations. This documentation could use the prop types to give
