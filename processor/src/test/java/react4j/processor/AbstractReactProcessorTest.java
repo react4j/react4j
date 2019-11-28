@@ -178,7 +178,7 @@ abstract class AbstractReactProcessorTest
         field.setAccessible( true );
         field.set( compilation, status );
 
-        // This next line will generate an error
+        // This next line will generate an error and fail the test
         //noinspection ResultOfMethodCallIgnored
         compilation.generatedSourceFiles();
       }
