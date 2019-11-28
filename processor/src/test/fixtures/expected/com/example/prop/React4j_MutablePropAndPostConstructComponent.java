@@ -47,7 +47,7 @@ abstract class React4j_MutablePropAndPostConstructComponent extends MutablePropA
   @Override
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      Guards.apiInvariant( () -> $$react4j$$_isReady(), () -> "The component '" + this + "' accessed the prop named 'myProp' before the component is ready (possibly in a @PostConstruct annotated method?) and does not have a @OnPropChange annotated method to cover the prop and reflect changes of the prop onto the component. This is considered a likely bug and the @Prop should be made immutable or an @OnPropChange method added to cover the prop. Alternatively this invariant check can be suppressed by adding @SuppressWarnings( \"React4j:MutablePropAccessedInPostConstruct\" ) or @SuppressReact4jWarnings( \"React4j:MutablePropAccessedInPostConstruct\" ) to the method." );
+      Guards.apiInvariant( () -> $$react4j$$_isReady(), () -> "The component '" + this + "' accessed the prop named 'myProp' before the component is ready (possibly in a @PostConstruct annotated method?) and does not have a @OnPropChange annotated method to cover the prop and reflect changes of the prop onto the component. This is considered a likely bug and the @Prop should be made immutable or an @OnPropChange method added to cover the prop. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:MutablePropAccessedInPostConstruct\" ) or @SuppressReact4jWarnings( \"React4j:MutablePropAccessedInPostConstruct\" ) to the @Prop annotated method." );
     }
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).asString() : null;

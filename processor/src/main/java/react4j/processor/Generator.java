@@ -812,11 +812,10 @@ final class Generator
                           "' before the component is ready (possibly in a @PostConstruct annotated method?) and " +
                           "does not have a @OnPropChange annotated method to cover the prop and reflect changes " +
                           "of the prop onto the component. This is considered a likely bug and the @Prop should be " +
-                          "made immutable or an @OnPropChange method added to cover the prop. Alternatively this " +
-                          "invariant check can be suppressed by adding @SuppressWarnings( \\\"" +
-                          Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT + "\\\" ) or " +
-                          "@SuppressReact4jWarnings( \\\"" +
-                          Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT + "\\\" ) to the method.\" )",
+                          "made immutable or an @OnPropChange method added to cover the prop. " +
+                          MemberChecks.suppressedBy( Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT,
+                                                     Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ).
+                            replace( "\"", "\\\"" ) + " to the @Prop annotated method.\" )",
                           GUARDS_CLASSNAME,
                           IS_READY_METHOD );
       block.endControlFlow();

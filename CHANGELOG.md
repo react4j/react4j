@@ -7,6 +7,7 @@
 * Generate a suppressable warning if a lifecycle or hook method is protected and in the same class that is annotated by `@ReactComponent` or is public and not an implementation of an interface method. These methods are not expected to be invoked from outside the component instance and this warning discourages incorrect usage. If the annotation previously generated an error when the method was public then remove this constraint. This change has been applied to the annotations:
   * `@PostMountOrUpdate`
 * When generating the synthetic `key` from immutable props and the type of the prop implements or extends `Keyed` as well as being annotated with either `@ArezComponent` or `@ActAsComponent` then the framework will use the `Keyed` strategy for retrieving the key.
+* Use consistent message describing how to suppress code warnings.
 
 ### [v0.143](https://github.com/react4j/react4j/tree/v0.143) (2019-11-28) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.142...v0.143)
 
