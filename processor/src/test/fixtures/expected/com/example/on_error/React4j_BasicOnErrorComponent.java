@@ -19,6 +19,7 @@ import react4j.internal.OnComponentDidCatch;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 
+@SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
     name = "BasicOnErrorComponent",
     disposeNotifier = Feature.DISABLE,

@@ -586,6 +586,9 @@ final class Generator
 
     builder.superclass( descriptor.getComponentType() );
 
+    builder.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
+                             .addMember( "value", "$S", "Arez:UnnecessaryAllowEmpty" )
+                             .build() );
     final AnnotationSpec.Builder arezAnnotation =
       AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
         addMember( "name", "$S", descriptor.getName() ).
