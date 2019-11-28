@@ -721,9 +721,14 @@ public final class ReactProcessor
     }
     else if ( null != element )
     {
-      if ( ElementKind.CLASS == element.getKind() &&
-           AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) &&
-           isIdRequired( (TypeElement) element ) )
+      if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
+           isAssignableToKeyed( element ) )
+      {
+        return ImmutablePropKeyStrategy.KEYED;
+      }
+      else if ( ElementKind.CLASS == element.getKind() &&
+                AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) &&
+                isIdRequired( (TypeElement) element ) )
       {
         return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
       }
@@ -732,20 +737,18 @@ public final class ReactProcessor
       {
         return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
       }
-      else if ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() )
-      {
-        final TypeElement keyedType = processingEnv.getElementUtils().getTypeElement( Constants.KEYED_CLASSNAME );
-        if ( processingEnv.getTypeUtils().isAssignable( element.asType(), keyedType.asType() ) )
-        {
-          return ImmutablePropKeyStrategy.KEYED;
-        }
-      }
       else if ( ElementKind.ENUM == element.getKind() )
       {
         return ImmutablePropKeyStrategy.ENUM;
       }
     }
     return null;
+  }
+
+  private boolean isAssignableToKeyed( @Nonnull final Element element )
+  {
+    final TypeElement typeElement = processingEnv.getElementUtils().getTypeElement( Constants.KEYED_CLASSNAME );
+    return processingEnv.getTypeUtils().isAssignable( element.asType(), typeElement.asType() );
   }
 
   /**

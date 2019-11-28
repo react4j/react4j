@@ -96,10 +96,14 @@ public @interface Prop
    * <ul>
    * <li>primitive types (i.e. boolean, short etc) and their corresponding boxed types (i.e. {@link java.lang.Boolean}, {@link java.lang.Short} etc).</li>
    * <li>the {@link java.lang.String} type</li>
-   * <li>any class that is annotated with {@link ArezComponent} where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
-   * <li>any class or interface that is annotated with {@link arez.annotations.ActAsComponent}. It is assumed that every implementation is an Arez component where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
    * <li>any class that implements {@link Keyed}</li>
+   * <li>any class that is annotated with {@link ArezComponent} where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
+   * <li>any class or interface that is annotated with {@link ActAsComponent}. It is assumed that every implementation is an Arez component where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
    * </ul>
+   *
+   * <p>It should be noted that if a type implements {@link Keyed} and is annotated with either {@link ArezComponent}
+   * or {@link ActAsComponent} then the annotation processor will assume the {@link Keyed} interface is to used in
+   * preference to other alternative strategies.</p>
    *
    * <p>In the future, the annotation processor may include additional allowable types such as those that implement
    * {@link arez.component.Identifiable} directly or other primitive types within the runtime library. These other
