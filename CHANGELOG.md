@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* If `@Deprecated` appears on the component then propagate it to the enhanced component class and the generated builder.
+* Generate a suppression in the enhanced component class and/or builder if generated artifact may access a deprecated element from the component class.
+
 ### [v0.143](https://github.com/react4j/react4j/tree/v0.143) (2019-11-28) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.142...v0.143)
 
 Changes in this release:

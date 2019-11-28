@@ -13,6 +13,7 @@ import com.squareup.javapoet.TypeVariableName;
 import com.squareup.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -122,6 +123,15 @@ final class Generator
     addGeneratedAnnotation( processingEnv, builder );
     builder.addModifiers( Modifier.FINAL );
     GeneratorUtil.copyAccessModifiers( descriptor.getElement(), builder );
+    GeneratorUtil.copyWhitelistedAnnotations( descriptor.getElement(), builder,
+                                              Collections.singletonList( Deprecated.class.getName() ) );
+
+    if ( descriptor.builderAccessesDeprecatedElements() )
+    {
+      builder.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
+                               .addMember( "value", "$S", "deprecation" )
+                               .build() );
+    }
 
     // Private constructor so can not instantiate
     builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
@@ -582,13 +592,21 @@ final class Generator
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getEnhancedClassName() );
     builder.addTypeVariables( GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
-    GeneratorUtil.copyWhitelistedAnnotations( descriptor.getElement(), builder, ANNOTATION_WHITELIST );
+    GeneratorUtil.copyWhitelistedAnnotations( descriptor.getElement(), builder,
+                                              Collections.singletonList( Deprecated.class.getName() ) );
 
     builder.superclass( descriptor.getComponentType() );
 
-    builder.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
-                             .addMember( "value", "$S", "Arez:UnnecessaryAllowEmpty" )
-                             .build() );
+    final AnnotationSpec.Builder warningsAnnotation = AnnotationSpec.builder( SuppressWarnings.class );
+    if ( descriptor.enhanceComponentAccessesDeprecatedElements() )
+    {
+      warningsAnnotation.addMember( "value", "{ $S, $S }", "Arez:UnnecessaryAllowEmpty", "deprecation" );
+    }
+    else
+    {
+      warningsAnnotation.addMember( "value", "$S", "Arez:UnnecessaryAllowEmpty" );
+    }
+    builder.addAnnotation( warningsAnnotation.build() );
     final AnnotationSpec.Builder arezAnnotation =
       AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
         addMember( "name", "$S", descriptor.getName() ).

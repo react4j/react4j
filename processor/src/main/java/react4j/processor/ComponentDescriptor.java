@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -52,6 +53,8 @@ final class ComponentDescriptor
   @Nullable
   private List<OnPropChangeDescriptor> _onPropChangeDescriptors;
   private Boolean _hasValidatedProps;
+  private Boolean _enhanceComponentAccessesDeprecatedElements;
+  private Boolean _builderAccessesDeprecatedElements;
   private boolean _hasArezElements;
 
   ComponentDescriptor( @Nonnull final String name,
@@ -562,5 +565,42 @@ final class ComponentDescriptor
       _hasValidatedProps = getProps().stream().anyMatch( PropDescriptor::hasValidateMethod );
     }
     return _hasValidatedProps;
+  }
+
+  boolean enhanceComponentAccessesDeprecatedElements()
+  {
+    if ( null == _enhanceComponentAccessesDeprecatedElements )
+    {
+      _enhanceComponentAccessesDeprecatedElements =
+        isDeprecated( _element ) ||
+        isDeprecated( _constructor ) ||
+        isDeprecated( _preUpdate ) ||
+        isDeprecated( _postRender ) ||
+        isDeprecated( _postMount ) ||
+        isDeprecated( _postUpdate ) ||
+        isDeprecated( _onError ) ||
+        getProps().stream()
+          .anyMatch( p -> isDeprecated( p.getMethod() ) ||
+                          p.hasValidateMethod() && isDeprecated( p.getValidateMethod() ) ) ||
+        getPostUpdateOnPropChangeDescriptors().stream().anyMatch( d -> isDeprecated( d.getMethod() ) );
+    }
+    return _enhanceComponentAccessesDeprecatedElements;
+  }
+
+  boolean builderAccessesDeprecatedElements()
+  {
+    if ( null == _builderAccessesDeprecatedElements )
+    {
+      _builderAccessesDeprecatedElements =
+        isDeprecated( _element ) ||
+        getProps().stream().anyMatch( p -> p.hasDefaultMethod() && isDeprecated( p.getDefaultMethod() ) ||
+                                           p.hasDefaultField() && isDeprecated( p.getDefaultField() ) );
+    }
+    return _builderAccessesDeprecatedElements;
+  }
+
+  private boolean isDeprecated( @Nullable final Element element )
+  {
+    return null != element && null != element.getAnnotation( Deprecated.class );
   }
 }
