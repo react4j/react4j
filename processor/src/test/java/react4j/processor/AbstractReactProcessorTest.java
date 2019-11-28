@@ -198,16 +198,22 @@ abstract class AbstractReactProcessorTest
 
   void assertFailedCompile( @Nonnull final String classname, @Nonnull final String errorMessageFragment )
   {
+    assertFailedCompileResource( toFilename( "bad_input", classname ), errorMessageFragment );
+  }
+
+  @Nonnull
+  final String toFilename( @Nonnull final String dir, @Nonnull final String classname )
+  {
     final String[] elements = classname.contains( "." ) ? classname.split( "\\." ) : new String[]{ classname };
     final StringBuilder input = new StringBuilder();
-    input.append( "bad_input" );
+    input.append( dir );
     for ( final String element : elements )
     {
       input.append( '/' );
       input.append( element );
     }
     input.append( ".java" );
-    assertFailedCompileResource( input.toString(), errorMessageFragment );
+    return input.toString();
   }
 
   private void assertFailedCompileResource( @Nonnull final String inputResource,
