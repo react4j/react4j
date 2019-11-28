@@ -146,6 +146,11 @@ abstract class AbstractReactProcessorTest
         {
           continue;
         }
+        final File dir = target.getParent().toFile();
+        if ( !dir.exists() )
+        {
+          assertTrue( dir.mkdirs() );
+        }
         if ( Files.exists( target ) )
         {
           final byte[] existing = Files.readAllBytes( target );
@@ -162,12 +167,6 @@ abstract class AbstractReactProcessorTest
             continue;
           }
           Files.delete( target );
-        }
-
-        final File dir = target.getParent().toFile();
-        if ( !dir.exists() )
-        {
-          assertTrue( dir.mkdirs() );
         }
         Files.copy( fileObject.openInputStream(), target );
       }
