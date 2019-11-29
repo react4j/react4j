@@ -25,8 +25,7 @@ final class Suppressed1PublicAccessPropModelBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(
-        @SuppressWarnings("React4j:PublicMethod") final String myProp) {
+    public final ReactNode myProp(@SuppressWarnings("React4j:PublicMethod") final String myProp) {
       _element.props().set( React4j_Suppressed1PublicAccessPropModel.Props.myProp, myProp );
       return build();
     }

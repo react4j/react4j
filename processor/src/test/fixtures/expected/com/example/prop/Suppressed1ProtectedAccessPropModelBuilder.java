@@ -11,8 +11,7 @@ final class Suppressed1ProtectedAccessPropModelBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(
-      @SuppressWarnings("React4j:ProtectedMethod") final String myProp) {
+  static ReactNode myProp(@SuppressWarnings("React4j:ProtectedMethod") final String myProp) {
     return new Builder().myProp( myProp );
   }
 

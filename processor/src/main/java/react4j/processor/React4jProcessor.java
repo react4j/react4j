@@ -843,7 +843,7 @@ public final class React4jProcessor
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.ON_ERROR_ANNOTATION_CLASSNAME ) )
       {
         MemberChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
-        MemberChecks.mustNotBePublic( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
+        shouldBeInternalMethod( typeElement, method, Constants.ON_ERROR_ANNOTATION_CLASSNAME );
         MemberChecks.mustBeSubclassCallable( typeElement,
                                              Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                              Constants.ON_ERROR_ANNOTATION_CLASSNAME,

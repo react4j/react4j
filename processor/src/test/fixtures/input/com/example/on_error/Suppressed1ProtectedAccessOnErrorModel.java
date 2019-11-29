@@ -9,7 +9,7 @@ import react4j.annotations.OnError;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class PublicOnErrorComponent
+abstract class Suppressed1ProtectedAccessOnErrorModel
   extends Component
 {
   @Override
@@ -18,8 +18,10 @@ abstract class PublicOnErrorComponent
     return null;
   }
 
+  // This uses the SOURCE retention suppression
+  @SuppressWarnings( "React4j:ProtectedMethod" )
   @OnError
-  public void onError( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
+  protected void onError( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
   }
 }

@@ -64,11 +64,17 @@ public class React4jProcessorTest
         new Object[]{ "com.example.inject.ConstructorInjectRawTypeComponent", true },
         new Object[]{ "com.example.inject.PublicReactComponent", true },
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent", false },
+
         new Object[]{ "com.example.on_error.BasicOnErrorComponent", false },
         new Object[]{ "com.example.on_error.ErrorOnlyOnErrorComponent", false },
         new Object[]{ "com.example.on_error.InfoOnlyOnErrorComponent", false },
         new Object[]{ "com.example.on_error.InverseOrderOnErrorComponent", false },
         new Object[]{ "com.example.on_error.MinimalOnErrorComponent", false },
+        new Object[]{ "com.example.on_error.PackageAccessOnErrorModel", false },
+        new Object[]{ "com.example.on_error.Suppressed1ProtectedAccessOnErrorModel", false },
+        new Object[]{ "com.example.on_error.Suppressed1PublicAccessOnErrorModel", false },
+        new Object[]{ "com.example.on_error.Suppressed2ProtectedAccessOnErrorModel", false },
+        new Object[]{ "com.example.on_error.Suppressed2PublicAccessOnErrorModel", false },
 
         new Object[]{ "com.example.on_prop_change.BooleanOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.ByteOnPropChange", false },
@@ -282,6 +288,68 @@ public class React4jProcessorTest
     assertSuccessfulCompile( Arrays.asList( source1, source2 ),
                              Collections.singletonList(
                                "expected/com/example/render/React4j_RenderFromParentComponent.java" ) );
+  }
+
+  @Test
+  public void protectedAccessOnError()
+  {
+    final String filename =
+      toFilename( "input", "com.example.on_error.ProtectedAccessOnErrorModel" );
+    final String messageFragment =
+      "@OnError target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void publicAccessOnError()
+  {
+    final String filename =
+      toFilename( "input", "com.example.on_error.PublicAccessOnErrorModel" );
+    final String messageFragment =
+      "@OnError target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void validProtectedAccessOnError()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.on_error.ProtectedAccessFromBaseOnErrorModel" );
+    final String input2 =
+      toFilename( "input", "com.example.on_error.other.BaseProtectedAccessOnErrorModel" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.on_error.React4j_ProtectedAccessFromBaseOnErrorModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void validPublicAccessViaInterfaceOnError()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.on_error.PublicAccessViaInterfaceOnErrorModel" );
+    final String input2 =
+      toFilename( "input", "com.example.on_error.OnErrorInterface" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.on_error.React4j_PublicAccessViaInterfaceOnErrorModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
   }
 
   @Test
@@ -723,7 +791,6 @@ public class React4jProcessorTest
         new Object[]{ "com.example.on_error.DuplicateOnErrorComponent",
                       "@OnError target duplicates existing method named onError1" },
         new Object[]{ "com.example.on_error.PrivateOnErrorComponent", "@OnError target must not be private" },
-        new Object[]{ "com.example.on_error.PublicOnErrorComponent", "@OnError target must not be public" },
         new Object[]{ "com.example.on_error.ReturnOnErrorComponent", "@OnError target must not return a value" },
         new Object[]{ "com.example.on_error.StaticOnErrorComponent", "@OnError target must not be static" },
         new Object[]{ "com.example.on_error.ThrowsOnErrorComponent", "@OnError target must not throw any exceptions" },

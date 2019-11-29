@@ -13,7 +13,6 @@ complete as there is too much un-said.
   ensure it's dependencies align.
 
 * Add suppressable warnings for unnecessary access to the following annotations:
-  * `OnError`
   * `PropDefault`
   * `PropValidate`
 
