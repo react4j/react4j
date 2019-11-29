@@ -12,19 +12,18 @@ complete as there is too much un-said.
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
 
-* Generate a suppressable warning if any lifecycle method is public
+* Add suppressable warnings for unnecessary access to the following annotations:
+  * `OnError`
+  * `OnPropChange`
+  * `PostMount`
+  * `Prop`
+  * `PropDefault`
+  * `PropValidate`
 
-* Generate a suppressable warning if any lifecycle method is protected and in class
-  annotated with `@ReactComponent`
+* Generate a suppressable warning if any public methods are declared in a react class or any parent class unless they
+  are implementations of an interface.
 
-* The `MUST NOT BE PUBLIC` rules in annotation processor should be turned into warnings, made suppress-able
-  and propagated to Arez for their lifecycle hooks.
-
-* Generate a compile warning if public methods are declared in a react class or any parent class (unless they
-  are implementations of an interface). This warnings should be able to be suppressed.
-
-* Generate a compile warning if protected methods are declared in a react class. This warnings should be able
-  to be suppressed.
+* Generate a suppressable warning if protected methods are declared in a react class.
 
 * Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props. Make sure immutable props
   favour Keyed over ArezId if type implements/extends `Keyed` and is annotated by `@ActAsComponent`
