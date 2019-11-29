@@ -19,14 +19,15 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "ProtectedBasicModel",
+    name = "ProtectedAccessFromBasePostMountModel",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
-  React4j_ProtectedBasicModel(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+abstract class React4j_ProtectedAccessFromBasePostMountModel extends ProtectedAccessFromBasePostMountModel {
+  React4j_ProtectedAccessFromBasePostMountModel(
+      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );
   }
 
@@ -34,7 +35,7 @@ abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedBasicModel" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedAccessFromBasePostMountModel" );
     }
     return componentConstructor;
   }
@@ -53,7 +54,7 @@ abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ProtectedBasicModel) this).dispose();
+    ((Arez_React4j_ProtectedAccessFromBasePostMountModel) this).dispose();
   }
 
   static final class Factory {
@@ -63,12 +64,12 @@ abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnShouldComponentUpdate {
     @Nonnull
-    private final React4j_ProtectedBasicModel $$react4j$$_component;
+    private final React4j_ProtectedAccessFromBasePostMountModel $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ProtectedBasicModel( this );
+      $$react4j$$_component = new Arez_React4j_ProtectedAccessFromBasePostMountModel( this );
     }
 
     @Override
@@ -90,12 +91,12 @@ abstract class React4j_ProtectedBasicModel extends ProtectedBasicModel {
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ProtectedBasicModel $$react4j$$_component;
+    private final React4j_ProtectedAccessFromBasePostMountModel $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ProtectedBasicModel( this );
+      $$react4j$$_component = new Arez_React4j_ProtectedAccessFromBasePostMountModel( this );
     }
 
     @Override

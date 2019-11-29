@@ -859,6 +859,23 @@ public final class React4jProcessor
     }
   }
 
+  private void determinePostMountMethod( @Nonnull final TypeElement typeElement,
+                                         @Nonnull final ComponentDescriptor descriptor )
+  {
+    for ( final ExecutableElement method : getMethods( typeElement ) )
+    {
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
+      {
+        MemberChecks.mustBeLifecycleHook( typeElement,
+                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.POST_MOUNT_ANNOTATION_CLASSNAME,
+                                          method );
+        mustBeInternalLifecycleMethod( typeElement, method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME );
+        descriptor.setPostMount( method );
+      }
+    }
+  }
+
   private void determinePostMountOrUpdateMethod( @Nonnull final TypeElement typeElement,
                                                  @Nonnull final ComponentDescriptor descriptor )
   {
@@ -906,24 +923,6 @@ public final class React4jProcessor
                                           method );
         mustBeInternalLifecycleMethod( typeElement, method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME );
         descriptor.setPreUpdate( method );
-      }
-    }
-  }
-
-  private void determinePostMountMethod( @Nonnull final TypeElement typeElement,
-                                         @Nonnull final ComponentDescriptor descriptor )
-  {
-    for ( final ExecutableElement method : getMethods( typeElement ) )
-    {
-      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
-      {
-        MemberChecks.mustBeLifecycleHook( typeElement,
-                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                          Constants.POST_MOUNT_ANNOTATION_CLASSNAME,
-                                          method );
-        MemberChecks.mustNotBePublic( Constants.POST_MOUNT_ANNOTATION_CLASSNAME, method );
-
-        descriptor.setPostMount( method );
       }
     }
   }

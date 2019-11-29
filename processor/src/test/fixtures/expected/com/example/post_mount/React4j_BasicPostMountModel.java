@@ -19,14 +19,14 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "BasicModel",
+    name = "BasicPostMountModel",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_BasicModel extends BasicModel {
-  React4j_BasicModel(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+abstract class React4j_BasicPostMountModel extends BasicPostMountModel {
+  React4j_BasicPostMountModel(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );
   }
 
@@ -34,7 +34,7 @@ abstract class React4j_BasicModel extends BasicModel {
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicModel" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicPostMountModel" );
     }
     return componentConstructor;
   }
@@ -53,7 +53,7 @@ abstract class React4j_BasicModel extends BasicModel {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_BasicModel) this).dispose();
+    ((Arez_React4j_BasicPostMountModel) this).dispose();
   }
 
   static final class Factory {
@@ -63,12 +63,12 @@ abstract class React4j_BasicModel extends BasicModel {
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnShouldComponentUpdate {
     @Nonnull
-    private final React4j_BasicModel $$react4j$$_component;
+    private final React4j_BasicPostMountModel $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_BasicModel( this );
+      $$react4j$$_component = new Arez_React4j_BasicPostMountModel( this );
     }
 
     @Override
@@ -90,12 +90,12 @@ abstract class React4j_BasicModel extends BasicModel {
 
   private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_BasicModel $$react4j$$_component;
+    private final React4j_BasicPostMountModel $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_BasicModel( this );
+      $$react4j$$_component = new Arez_React4j_BasicPostMountModel( this );
     }
 
     @Override

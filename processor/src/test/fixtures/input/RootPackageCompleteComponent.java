@@ -30,7 +30,7 @@ abstract class RootPackageCompleteComponent
   }
 
   @PostMount
-  protected void postMount()
+  void postMount()
   {
   }
 

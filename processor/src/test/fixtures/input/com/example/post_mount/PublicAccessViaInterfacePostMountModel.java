@@ -6,11 +6,13 @@ import react4j.annotations.PostMount;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class ProtectedBasicModel
+abstract class PublicAccessViaInterfacePostMountModel
   extends Component
+  implements PostMountInterface
 {
+  @Override
   @PostMount
-  protected void postMount()
+  public void postMount()
   {
   }
 

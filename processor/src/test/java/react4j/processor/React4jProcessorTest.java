@@ -93,9 +93,14 @@ public class React4jProcessorTest
         new Object[]{ "com.example.optional_props.RequiredChildrenWithManyOptional", false },
         new Object[]{ "com.example.optional_props.RequiredChildrenWithManyRequired", false },
         new Object[]{ "com.example.optional_props.RequiredChildrenWithOptionalAndRequired", false },
-        new Object[]{ "com.example.post_mount.BasicModel", false },
+
+        new Object[]{ "com.example.post_mount.BasicPostMountModel", false },
         new Object[]{ "com.example.post_mount.DeprecatedPostMountModel", false },
-        new Object[]{ "com.example.post_mount.ProtectedBasicModel", false },
+        new Object[]{ "com.example.post_mount.PackageAccessPostMountModel", false },
+        new Object[]{ "com.example.post_mount.Suppressed1ProtectedAccessPostMountModel", false },
+        new Object[]{ "com.example.post_mount.Suppressed1PublicAccessPostMountModel", false },
+        new Object[]{ "com.example.post_mount.Suppressed2ProtectedAccessPostMountModel", false },
+        new Object[]{ "com.example.post_mount.Suppressed2PublicAccessPostMountModel", false },
 
         new Object[]{ "com.example.post_mount_or_update.BasicPostMountOrUpdateModel", false },
         new Object[]{ "com.example.post_mount_or_update.PackageAccessPostMountOrUpdateModel", false },
@@ -266,6 +271,68 @@ public class React4jProcessorTest
     assertSuccessfulCompile( Arrays.asList( source1, source2 ),
                              Collections.singletonList(
                                "expected/com/example/render/React4j_RenderFromParentComponent.java" ) );
+  }
+
+  @Test
+  public void protectedAccessPostMount()
+  {
+    final String filename =
+      toFilename( "input", "com.example.post_mount.ProtectedAccessPostMountModel" );
+    final String messageFragment =
+      "@PostMount target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void publicAccessPostMount()
+  {
+    final String filename =
+      toFilename( "input", "com.example.post_mount.PublicAccessPostMountModel" );
+    final String messageFragment =
+      "@PostMount target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void validProtectedAccessPostMount()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.post_mount.ProtectedAccessFromBasePostMountModel" );
+    final String input2 =
+      toFilename( "input", "com.example.post_mount.other.BaseProtectedAccessPostMountModel" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.post_mount.React4j_ProtectedAccessFromBasePostMountModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void validPublicAccessViaInterfacePostMount()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.post_mount.PublicAccessViaInterfacePostMountModel" );
+    final String input2 =
+      toFilename( "input", "com.example.post_mount.PostMountInterface" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.post_mount.React4j_PublicAccessViaInterfacePostMountModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
   }
 
   @Test
@@ -548,7 +615,6 @@ public class React4jProcessorTest
                       "@PostMount target duplicates existing method named postMount" },
         new Object[]{ "com.example.post_mount.ParametersModel", "@PostMount target must not have any parameters" },
         new Object[]{ "com.example.post_mount.PrivateModel", "@PostMount target must not be private" },
-        new Object[]{ "com.example.post_mount.PublicModel", "@PostMount target must not be public" },
         new Object[]{ "com.example.post_mount.ReturnsValueModel", "@PostMount target must not return a value" },
         new Object[]{ "com.example.post_mount.StaticModel", "@PostMount target must not be static" },
         new Object[]{ "com.example.post_mount.ThrowsModel", "@PostMount target must not throw any exceptions" },

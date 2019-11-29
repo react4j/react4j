@@ -6,11 +6,13 @@ import react4j.annotations.PostMount;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class PublicModel
+abstract class Suppressed1ProtectedAccessPostMountModel
   extends Component
 {
+  // This uses the SOURCE retention suppression
+  @SuppressWarnings( "React4j:ProtectedLifecycleMethod" )
   @PostMount
-  public void postMount()
+  protected void postMount()
   {
   }
 

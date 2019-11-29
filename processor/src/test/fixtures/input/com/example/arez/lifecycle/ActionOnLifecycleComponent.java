@@ -20,7 +20,7 @@ abstract class ActionOnLifecycleComponent
 
   @Action
   @PostMount
-  protected void postMount()
+  void postMount()
   {
   }
 }
