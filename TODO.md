@@ -20,8 +20,7 @@ complete as there is too much un-said.
 
 * Generate a suppressable warning if protected methods are declared in a react class.
 
-* Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props. Make sure immutable props
-  favour Keyed over ArezId if type implements/extends `Keyed` and is annotated by `@ActAsComponent`
+* Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props
 
 * Avoid copying @SuppressWarnings into generated methods/fields/etc. Add suppress if raw types or deprecated present
 
