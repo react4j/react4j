@@ -1,23 +1,24 @@
 package com.example.prop_validate;
 
-import javax.annotation.Nonnull;
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.PropValidate;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.SuppressReact4jWarnings;
 
 @ReactComponent
-abstract class NonnullPropValidate
+abstract class Suppressed2ProtectedAccessPropValidateModel
   extends Component
 {
+  // This uses the CLASS retention suppression
+  @SuppressReact4jWarnings( "React4j:ProtectedMethod" )
   @PropValidate
-  void validateMyProp( @Nonnull String prop )
+  protected void validateMyProp( String prop )
   {
   }
 
   @Prop
-  @Nonnull
   abstract String getMyProp();
 
   @Override

@@ -7,11 +7,13 @@ import react4j.annotations.PropValidate;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class ProtectedPropValidate
+abstract class PublicAccessViaInterfacePropValidateModel
   extends Component
+  implements PropValidateInterface
 {
+  @Override
   @PropValidate
-  protected void validateMyProp( String prop )
+  public void validateMyProp( String prop )
   {
   }
 

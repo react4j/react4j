@@ -18,14 +18,15 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "ProtectedPropValidate",
+    name = "Suppressed2PublicAccessPropValidateModel",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
-  React4j_ProtectedPropValidate(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+abstract class React4j_Suppressed2PublicAccessPropValidateModel extends Suppressed2PublicAccessPropValidateModel {
+  React4j_Suppressed2PublicAccessPropValidateModel(
+      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );
   }
 
@@ -33,7 +34,7 @@ abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedPropValidate" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "Suppressed2PublicAccessPropValidateModel" );
     }
     return componentConstructor;
   }
@@ -69,7 +70,7 @@ abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ProtectedPropValidate) this).dispose();
+    ((Arez_React4j_Suppressed2PublicAccessPropValidateModel) this).dispose();
   }
 
   static final class Factory {
@@ -83,12 +84,12 @@ abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     @Nonnull
-    private final React4j_ProtectedPropValidate $$react4j$$_component;
+    private final React4j_Suppressed2PublicAccessPropValidateModel $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ProtectedPropValidate( this );
+      $$react4j$$_component = new Arez_React4j_Suppressed2PublicAccessPropValidateModel( this );
       if ( React.shouldValidatePropValues() ) {
         assert null != props;
         $$react4j$$_component.$$react4j$$_validatePropValues( props );
@@ -109,12 +110,12 @@ abstract class React4j_ProtectedPropValidate extends ProtectedPropValidate {
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ProtectedPropValidate $$react4j$$_component;
+    private final React4j_Suppressed2PublicAccessPropValidateModel $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ProtectedPropValidate( this );
+      $$react4j$$_component = new Arez_React4j_Suppressed2PublicAccessPropValidateModel( this );
       if ( React.shouldValidatePropValues() ) {
         assert null != props;
         $$react4j$$_component.$$react4j$$_validatePropValues( props );

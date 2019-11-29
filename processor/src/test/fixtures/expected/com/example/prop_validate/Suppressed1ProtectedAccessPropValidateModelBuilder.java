@@ -6,8 +6,8 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.React4jProcessor")
-final class ProtectedPropValidateBuilder {
-  private ProtectedPropValidateBuilder() {
+final class Suppressed1ProtectedAccessPropValidateModelBuilder {
+  private Suppressed1ProtectedAccessPropValidateModelBuilder() {
   }
 
   @Nonnull
@@ -21,12 +21,12 @@ final class ProtectedPropValidateBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ProtectedPropValidate.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_Suppressed1ProtectedAccessPropValidateModel.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_ProtectedPropValidate.Props.myProp, myProp );
+      _element.props().set( React4j_Suppressed1ProtectedAccessPropValidateModel.Props.myProp, myProp );
       return build();
     }
 

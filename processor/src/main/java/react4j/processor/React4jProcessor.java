@@ -387,7 +387,7 @@ public final class React4jProcessor
                                            method );
       MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
       MemberChecks.mustNotReturnAnyValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
-      MemberChecks.mustNotBePublic( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+      shouldBeInternalMethod( descriptor.getElement(), method, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME );
 
       final VariableElement param = method.getParameters().get( 0 );
       final boolean mismatchedNullability =

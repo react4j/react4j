@@ -235,9 +235,13 @@ public class React4jProcessorTest
         new Object[]{ "com.example.prop_validate.NonnullPropValidate", false },
         new Object[]{ "com.example.prop_validate.OtherPropValidate", false },
         new Object[]{ "com.example.prop_validate.PackageAccessPropValidate", false },
-        new Object[]{ "com.example.prop_validate.ProtectedPropValidate", false },
         new Object[]{ "com.example.prop_validate.ShortPropValidate", false },
         new Object[]{ "com.example.prop_validate.StringPropValidate", false },
+        new Object[]{ "com.example.prop_validate.Suppressed1ProtectedAccessPropValidateModel", false },
+        new Object[]{ "com.example.prop_validate.Suppressed1PublicAccessPropValidateModel", false },
+        new Object[]{ "com.example.prop_validate.Suppressed2ProtectedAccessPropValidateModel", false },
+        new Object[]{ "com.example.prop_validate.Suppressed2PublicAccessPropValidateModel", false },
+
         new Object[]{ "com.example.render.BaseRenderComponent", false },
         new Object[]{ "RootPackageCompleteComponent", false },
         new Object[]{ "RootPackageReactComponent", false }
@@ -724,6 +728,68 @@ public class React4jProcessorTest
                              Collections.singletonList( output ) );
   }
 
+  @Test
+  public void protectedAccessPropValidate()
+  {
+    final String filename =
+      toFilename( "input", "com.example.prop_validate.ProtectedAccessPropValidateModel" );
+    final String messageFragment =
+      "@PropValidate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void publicAccessPropValidate()
+  {
+    final String filename =
+      toFilename( "input", "com.example.prop_validate.PublicAccessPropValidateModel" );
+    final String messageFragment =
+      "@PropValidate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void validProtectedAccessPropValidate()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.prop_validate.ProtectedAccessFromBasePropValidateModel" );
+    final String input2 =
+      toFilename( "input", "com.example.prop_validate.other.BaseProtectedAccessPropValidateModel" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.prop_validate.React4j_ProtectedAccessFromBasePropValidateModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void validPublicAccessViaInterfacePropValidate()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.prop_validate.PublicAccessViaInterfacePropValidateModel" );
+    final String input2 =
+      toFilename( "input", "com.example.prop_validate.PropValidateInterface" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.prop_validate.React4j_PublicAccessViaInterfacePropValidateModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
   @DataProvider( name = "failedCompiles" )
   public Object[][] failedCompiles()
   {
@@ -907,7 +973,6 @@ public class React4jProcessorTest
         new Object[]{ "com.example.prop_validate.NoParamPropValidate",
                       "@PropValidate target must have exactly 1 parameter" },
         new Object[]{ "com.example.prop_validate.PrivatePropValidate", "@PropValidate target must not be private" },
-        new Object[]{ "com.example.prop_validate.PublicPropValidate", "@PropValidate target must not be public" },
         new Object[]{ "com.example.prop_validate.ReturnPropValidate", "@PropValidate target must not return a value" },
         new Object[]{ "com.example.prop_validate.StaticPropValidate", "@PropValidate target must not be static" },
         new Object[]{ "com.example.prop_validate.ThrowsPropValidate",

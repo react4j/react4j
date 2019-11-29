@@ -14,7 +14,6 @@ complete as there is too much un-said.
 
 * Add suppressable warnings for unnecessary access to the following annotations:
   * `PropDefault`
-  * `PropValidate`
 
 * Generate a suppressable warning if any public methods are declared in a react class or any parent class unless they
   are implementations of an interface.
