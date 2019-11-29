@@ -127,21 +127,21 @@ public class React4jProcessorTest
         new Object[]{ "com.example.pre_update.Suppressed2ProtectedAccessPreUpdateModel", false },
         new Object[]{ "com.example.pre_update.Suppressed2PublicAccessPreUpdateModel", false },
 
-        new Object[]{ "com.example.prop.BasicPropComponent", false },
-        new Object[]{ "com.example.prop.BoolJavaBeanPropComponent", false },
-        new Object[]{ "com.example.prop.CollectionArrayListPropComponent", false },
-        new Object[]{ "com.example.prop.CollectionArrayPropComponent", false },
-        new Object[]{ "com.example.prop.CollectionHashSetPropComponent", false },
-        new Object[]{ "com.example.prop.CollectionListPropComponent", false },
-        new Object[]{ "com.example.prop.CollectionPropComponent", false },
-        new Object[]{ "com.example.prop.CollectionSetPropComponent", false },
-        new Object[]{ "com.example.prop.ComponentWithArezProp", false },
-        new Object[]{ "com.example.prop.ComponentWithActAsComponentArezProp", false },
-        new Object[]{ "com.example.prop.CustomNameProp", false },
-        new Object[]{ "com.example.prop.DisposableProp", false },
-        new Object[]{ "com.example.prop.DisposableOptionalProp", false },
-        new Object[]{ "com.example.prop.GenericTypeMultiPropComponent", false },
-        new Object[]{ "com.example.prop.GenericTypePropComponent", false },
+        new Object[]{ "com.example.prop.ActAsComponentPropModel", false },
+        new Object[]{ "com.example.prop.ArezPropModel", false },
+        new Object[]{ "com.example.prop.BasicPropModel", false },
+        new Object[]{ "com.example.prop.BoolJavaBeanPropModel", false },
+        new Object[]{ "com.example.prop.CollectionArrayListPropModel", false },
+        new Object[]{ "com.example.prop.CollectionArrayPropModel", false },
+        new Object[]{ "com.example.prop.CollectionHashSetPropModel", false },
+        new Object[]{ "com.example.prop.CollectionListPropModel", false },
+        new Object[]{ "com.example.prop.CollectionPropModel", false },
+        new Object[]{ "com.example.prop.CollectionSetPropModel", false },
+        new Object[]{ "com.example.prop.CustomNamePropModel", false },
+        new Object[]{ "com.example.prop.DisposablePropModel", false },
+        new Object[]{ "com.example.prop.DisposableOptionalPropModel", false },
+        new Object[]{ "com.example.prop.GenericTypeMultiPropModel", false },
+        new Object[]{ "com.example.prop.GenericTypePropModel", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentWhereIdFromComponentId", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentWhereIdFromComponentIdRef", false },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentWhereIdFromRepository", false },
@@ -195,6 +195,7 @@ public class React4jProcessorTest
         new Object[]{ "com.example.prop.ObservableProp", false },
         new Object[]{ "com.example.prop.ObservableViaMemoizeProp", false },
         new Object[]{ "com.example.prop.ObservableViaObservedProp", false },
+        new Object[]{ "com.example.prop.PackageAccessPropModel", false },
         new Object[]{ "com.example.prop.PropTypeArray", false },
         new Object[]{ "com.example.prop.PropTypeBoolean", false },
         new Object[]{ "com.example.prop.PropTypeByte", false },
@@ -207,6 +208,11 @@ public class React4jProcessorTest
         new Object[]{ "com.example.prop.PropTypeShort", false },
         new Object[]{ "com.example.prop.PropTypeString", false },
         new Object[]{ "com.example.prop.SingleChildPropComponent", false },
+        new Object[]{ "com.example.prop.Suppressed1ProtectedAccessPropModel", false },
+        new Object[]{ "com.example.prop.Suppressed1PublicAccessPropModel", false },
+        new Object[]{ "com.example.prop.Suppressed2ProtectedAccessPropModel", false },
+        new Object[]{ "com.example.prop.Suppressed2PublicAccessPropModel", false },
+
         new Object[]{ "com.example.prop_validate.BooleanPropValidate", false },
         new Object[]{ "com.example.prop_validate.BytePropValidate", false },
         new Object[]{ "com.example.prop_validate.CharPropValidate", false },
@@ -521,6 +527,68 @@ public class React4jProcessorTest
                              Collections.singletonList( output ) );
   }
 
+  @Test
+  public void protectedAccessProp()
+  {
+    final String filename =
+      toFilename( "input", "com.example.prop.ProtectedAccessPropModel" );
+    final String messageFragment =
+      "@Prop target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void publicAccessProp()
+  {
+    final String filename =
+      toFilename( "input", "com.example.prop.PublicAccessPropModel" );
+    final String messageFragment =
+      "@Prop target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void validProtectedAccessProp()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.prop.ProtectedAccessFromBasePropModel" );
+    final String input2 =
+      toFilename( "input", "com.example.prop.other.BaseProtectedAccessPropModel" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.prop.React4j_ProtectedAccessFromBasePropModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void validPublicAccessViaInterfaceProp()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.prop.PublicAccessViaInterfacePropModel" );
+    final String input2 =
+      toFilename( "input", "com.example.prop.PropInterface" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.prop.React4j_PublicAccessViaInterfacePropModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
   @DataProvider( name = "failedCompiles" )
   public Object[][] failedCompiles()
   {
@@ -687,7 +755,6 @@ public class React4jProcessorTest
         new Object[]{ "com.example.prop.PropNoReturnComponent", "@Prop target must return a value" },
         new Object[]{ "com.example.prop.PropNotAbstractComponent", "@Prop target must be abstract" },
         new Object[]{ "com.example.prop.PropThrowsExceptionComponent", "@Prop target must not throw any exceptions" },
-        new Object[]{ "com.example.prop.PublicProp", "@Prop target must not be public" },
         new Object[]{ "com.example.prop_validate.BadName1PropValidate",
                       "@PropValidate target specified an invalid name 'long'. The name must not be a java keyword." },
         new Object[]{ "com.example.prop_validate.BadName2PropValidate",

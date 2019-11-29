@@ -627,7 +627,6 @@ public final class React4jProcessor
 
     verifyNoDuplicateAnnotations( method );
     MemberChecks.mustBeAbstract( Constants.PROP_ANNOTATION_CLASSNAME, method );
-    MemberChecks.mustNotBePublic( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MemberChecks.mustNotHaveAnyParameters( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MemberChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
@@ -652,6 +651,7 @@ public final class React4jProcessor
     {
       throw new ProcessorException( "@Prop named 'children' should be of type react4j.ReactNode[]", method );
     }
+    mustBeInternalLifecycleMethod( descriptor.getElement(), method, Constants.PROP_ANNOTATION_CLASSNAME );
 
     if ( returnType instanceof TypeVariable )
     {
