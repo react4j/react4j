@@ -381,6 +381,30 @@ public final class React4jProcessor
         throw new ProcessorException( "@PropValidate target has a parameter type that is not assignable to the " +
                                       "return type of the associated @Prop annotated method.", method );
       }
+      MemberChecks.mustBeSubclassCallable( descriptor.getElement(),
+                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                           Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
+                                           method );
+      MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotReturnAnyValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotBePublic( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+
+      final VariableElement param = method.getParameters().get( 0 );
+      final boolean mismatchedNullability =
+        (
+          AnnotationsUtil.hasAnnotationOfType( param, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
+          AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
+        ) ||
+        (
+          AnnotationsUtil.hasAnnotationOfType( param, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
+          AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+
+      if ( mismatchedNullability )
+      {
+        throw new ProcessorException( "@PropValidate target has a parameter that has a nullability annotation " +
+                                      "incompatible with the associated @Prop method named " +
+                                      prop.getMethod().getSimpleName(), method );
+      }
       prop.setValidateMethod( method );
     }
   }
@@ -446,6 +470,10 @@ public final class React4jProcessor
                                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                      method );
+      MemberChecks.mustNotHaveAnyParameters( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustReturnAValue( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
+
       prop.setDefaultMethod( method );
     }
   }
@@ -475,6 +503,7 @@ public final class React4jProcessor
                                                      Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                      field );
+      MemberChecks.mustBeFinal( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
       prop.setDefaultField( field );
     }
   }

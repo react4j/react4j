@@ -122,10 +122,6 @@ final class PropDescriptor
 
   void setDefaultMethod( @Nonnull final ExecutableElement method )
   {
-    MemberChecks.mustNotHaveAnyParameters( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
-    MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
-    MemberChecks.mustReturnAValue( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
-
     if ( null != _defaultMethod )
     {
       throw new ProcessorException( "@PropDefault target duplicates existing method named " +
@@ -156,31 +152,6 @@ final class PropDescriptor
 
   void setValidateMethod( @Nonnull final ExecutableElement method )
   {
-    MemberChecks.mustBeSubclassCallable( _descriptor.getElement(),
-                                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                         Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
-                                         method );
-    MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
-    MemberChecks.mustNotReturnAnyValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
-    MemberChecks.mustNotBePublic( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
-
-    final VariableElement param = method.getParameters().get( 0 );
-    final boolean mismatchedNullability =
-      (
-        AnnotationsUtil.hasAnnotationOfType( param, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-        AnnotationsUtil.hasAnnotationOfType( _method, Constants.NULLABLE_ANNOTATION_CLASSNAME )
-      ) ||
-      (
-        AnnotationsUtil.hasAnnotationOfType( param, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-        AnnotationsUtil.hasAnnotationOfType( _method, Constants.NONNULL_ANNOTATION_CLASSNAME ) );
-
-    if ( mismatchedNullability )
-    {
-      throw new ProcessorException( "@PropValidate target has a parameter that has a nullability annotation " +
-                                    "incompatible with the associated @Prop method named " +
-                                    _method.getSimpleName(), method );
-    }
-
     if ( null != _validateMethod )
     {
       throw new ProcessorException( "@PropValidate target duplicates existing method named " +
@@ -194,8 +165,6 @@ final class PropDescriptor
 
   void setDefaultField( @Nonnull final VariableElement field )
   {
-    MemberChecks.mustBeFinal( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
-
     if ( null != _defaultMethod )
     {
       throw new ProcessorException( "@PropDefault target duplicates existing method named " +
