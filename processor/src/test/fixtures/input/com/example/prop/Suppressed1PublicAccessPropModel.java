@@ -11,7 +11,7 @@ abstract class Suppressed1PublicAccessPropModel
   extends Component
 {
   // This uses the SOURCE retention suppression
-  @SuppressWarnings( "React4j:PublicLifecycleMethod" )
+  @SuppressWarnings( "React4j:PublicMethod" )
   @Prop
   public abstract String getMyProp();
 

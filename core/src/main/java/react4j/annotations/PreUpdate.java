@@ -30,13 +30,13 @@ import java.lang.annotation.Target;
  * <li>
  *   Should not be public as not expected to be invoked outside the component. A warning will be generated but can
  *   be suppressed by the {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key
- *   "React4j:PublicLifecycleMethod". This warning is also suppressed by the annotation processor if it is implementing
+ *   "React4j:PublicMethod". This warning is also suppressed by the annotation processor if it is implementing
  *   an interface method.
  * </li>
  * <li>
  *   Should not be protected if in the class annotated with the {@link ReactComponent} annotation as the method is not
  *   expected to be invoked outside the component. A warning will be generated but can be suppressed by the
- *   {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key "React4j:ProtectedLifecycleMethod".
+ *   {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key "React4j:ProtectedMethod".
  * </li>
  * </ul>
  */

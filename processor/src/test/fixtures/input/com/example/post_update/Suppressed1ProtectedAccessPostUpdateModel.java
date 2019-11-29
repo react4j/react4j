@@ -10,7 +10,7 @@ abstract class Suppressed1ProtectedAccessPostUpdateModel
   extends Component
 {
   // This uses the SOURCE retention suppression
-  @SuppressWarnings( "React4j:ProtectedLifecycleMethod" )
+  @SuppressWarnings( "React4j:ProtectedMethod" )
   @PostUpdate
   protected void postUpdate()
   {

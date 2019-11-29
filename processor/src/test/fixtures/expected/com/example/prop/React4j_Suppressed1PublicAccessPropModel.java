@@ -39,7 +39,7 @@ abstract class React4j_Suppressed1PublicAccessPropModel extends Suppressed1Publi
     return componentConstructor;
   }
 
-  @SuppressWarnings("React4j:PublicLifecycleMethod")
+  @SuppressWarnings("React4j:PublicMethod")
   @Override
   public String getMyProp() {
     if ( React.shouldCheckInvariants() ) {

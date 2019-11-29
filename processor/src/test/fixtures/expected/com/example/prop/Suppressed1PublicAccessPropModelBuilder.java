@@ -11,13 +11,13 @@ final class Suppressed1PublicAccessPropModelBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(@SuppressWarnings("React4j:PublicLifecycleMethod") final String myProp) {
+  static ReactNode myProp(@SuppressWarnings("React4j:PublicMethod") final String myProp) {
     return new Builder().myProp( myProp );
   }
 
   public interface Step1 {
     @Nonnull
-    ReactNode myProp(@SuppressWarnings("React4j:PublicLifecycleMethod") String myProp);
+    ReactNode myProp(@SuppressWarnings("React4j:PublicMethod") String myProp);
   }
 
   private static class Builder implements Step1 {
@@ -26,7 +26,7 @@ final class Suppressed1PublicAccessPropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(
-        @SuppressWarnings("React4j:PublicLifecycleMethod") final String myProp) {
+        @SuppressWarnings("React4j:PublicMethod") final String myProp) {
       _element.props().set( React4j_Suppressed1PublicAccessPropModel.Props.myProp, myProp );
       return build();
     }

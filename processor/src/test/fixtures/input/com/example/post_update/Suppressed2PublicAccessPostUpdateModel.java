@@ -11,7 +11,7 @@ abstract class Suppressed2PublicAccessPostUpdateModel
   extends Component
 {
   // This uses the CLASS retention suppression
-  @SuppressReact4jWarnings( "React4j:PublicLifecycleMethod" )
+  @SuppressReact4jWarnings( "React4j:PublicMethod" )
   @PostUpdate
   public void postUpdate()
   {

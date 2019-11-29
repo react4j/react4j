@@ -265,7 +265,7 @@ public final class React4jProcessor
                                            method );
       MemberChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
       MemberChecks.mustNotReturnAnyValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-      mustBeInternalLifecycleMethod( descriptor.getElement(), method, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME );
+      mustBeInternalMethod( descriptor.getElement(), method, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME );
 
       final int parameterCount = parameters.size();
       if ( 0 == parameterCount )
@@ -680,7 +680,7 @@ public final class React4jProcessor
     {
       throw new ProcessorException( "@Prop named 'children' should be of type react4j.ReactNode[]", method );
     }
-    mustBeInternalLifecycleMethod( descriptor.getElement(), method, Constants.PROP_ANNOTATION_CLASSNAME );
+    mustBeInternalMethod( descriptor.getElement(), method, Constants.PROP_ANNOTATION_CLASSNAME );
 
     if ( returnType instanceof TypeVariable )
     {
@@ -899,7 +899,7 @@ public final class React4jProcessor
                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                           Constants.POST_MOUNT_ANNOTATION_CLASSNAME,
                                           method );
-        mustBeInternalLifecycleMethod( typeElement, method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME );
+        mustBeInternalMethod( typeElement, method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME );
         descriptor.setPostMount( method );
       }
     }
@@ -916,7 +916,7 @@ public final class React4jProcessor
                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                           Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
-        mustBeInternalLifecycleMethod( typeElement, method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME );
+        mustBeInternalMethod( typeElement, method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME );
         descriptor.setPostRender( method );
       }
     }
@@ -933,7 +933,7 @@ public final class React4jProcessor
                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                           Constants.POST_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
-        mustBeInternalLifecycleMethod( typeElement, method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME );
+        mustBeInternalMethod( typeElement, method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME );
         descriptor.setPostUpdate( method );
       }
     }
@@ -950,7 +950,7 @@ public final class React4jProcessor
                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                           Constants.PRE_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
-        mustBeInternalLifecycleMethod( typeElement, method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME );
+        mustBeInternalMethod( typeElement, method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME );
         descriptor.setPreUpdate( method );
       }
     }
@@ -1185,16 +1185,16 @@ public final class React4jProcessor
                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
   }
 
-  private void mustBeInternalLifecycleMethod( @Nonnull final TypeElement typeElement,
-                                              @Nonnull final ExecutableElement method,
-                                              @Nonnull final String annotationClassname )
+  private void mustBeInternalMethod( @Nonnull final TypeElement typeElement,
+                                     @Nonnull final ExecutableElement method,
+                                     @Nonnull final String annotationClassname )
   {
     MemberChecks.mustBeInternalMethod( processingEnv,
                                        typeElement,
                                        method,
                                        annotationClassname,
-                                       Constants.WARNING_PUBLIC_LIFECYCLE_METHOD,
-                                       Constants.WARNING_PROTECTED_LIFECYCLE_METHOD,
+                                       Constants.WARNING_PUBLIC_METHOD,
+                                       Constants.WARNING_PROTECTED_METHOD,
                                        Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
   }
 

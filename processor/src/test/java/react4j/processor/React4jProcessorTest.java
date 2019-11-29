@@ -290,7 +290,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.on_prop_change.ProtectedAccessOnPropChangeModel" );
     final String messageFragment =
-      "@OnPropChange target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+      "@OnPropChange target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
@@ -306,7 +306,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.on_prop_change.PublicAccessOnPropChangeModel" );
     final String messageFragment =
-      "@OnPropChange target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+      "@OnPropChange target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
@@ -352,7 +352,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.post_mount.ProtectedAccessPostMountModel" );
     final String messageFragment =
-      "@PostMount target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+      "@PostMount target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
@@ -368,7 +368,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.post_mount.PublicAccessPostMountModel" );
     final String messageFragment =
-      "@PostMount target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+      "@PostMount target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
@@ -414,7 +414,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.post_mount_or_update.ProtectedAccessPostMountOrUpdateModel" );
     final String messageFragment =
-      "@PostMountOrUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+      "@PostMountOrUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
@@ -430,7 +430,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.post_mount_or_update.PublicAccessPostMountOrUpdateModel" );
     final String messageFragment =
-      "@PostMountOrUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+      "@PostMountOrUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
@@ -476,7 +476,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.post_update.ProtectedAccessPostUpdateModel" );
     final String messageFragment =
-      "@PostUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+      "@PostUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
@@ -492,7 +492,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.post_update.PublicAccessPostUpdateModel" );
     final String messageFragment =
-      "@PostUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+      "@PostUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
@@ -538,7 +538,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.pre_update.ProtectedAccessPreUpdateModel" );
     final String messageFragment =
-      "@PreUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+      "@PreUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
@@ -554,7 +554,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.pre_update.PublicAccessPreUpdateModel" );
     final String messageFragment =
-      "@PreUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+      "@PreUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
@@ -600,7 +600,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.prop.ProtectedAccessPropModel" );
     final String messageFragment =
-      "@Prop target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+      "@Prop target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
@@ -616,7 +616,7 @@ public class React4jProcessorTest
     final String filename =
       toFilename( "input", "com.example.prop.PublicAccessPropModel" );
     final String messageFragment =
-      "@Prop target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+      "@Prop target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).

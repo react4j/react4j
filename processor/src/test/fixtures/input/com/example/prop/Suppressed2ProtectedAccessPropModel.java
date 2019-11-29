@@ -12,7 +12,7 @@ abstract class Suppressed2ProtectedAccessPropModel
   extends Component
 {
   // This uses the CLASS retention suppression
-  @SuppressReact4jWarnings( "React4j:ProtectedLifecycleMethod" )
+  @SuppressReact4jWarnings( "React4j:ProtectedMethod" )
   @Prop
   protected abstract String getMyProp();
 

@@ -39,7 +39,7 @@ abstract class React4j_Suppressed1ProtectedAccessPropModel extends Suppressed1Pr
     return componentConstructor;
   }
 
-  @SuppressWarnings("React4j:ProtectedLifecycleMethod")
+  @SuppressWarnings("React4j:ProtectedMethod")
   @Override
   protected String getMyProp() {
     if ( React.shouldCheckInvariants() ) {

@@ -12,7 +12,7 @@ abstract class Suppressed2ProtectedAccessOnPropChangeModel
   extends Component
 {
   // This uses the CLASS retention suppression
-  @SuppressReact4jWarnings( "React4j:ProtectedLifecycleMethod" )
+  @SuppressReact4jWarnings( "React4j:ProtectedMethod" )
   @OnPropChange
   protected void onMyPropChange( String myProp )
   {

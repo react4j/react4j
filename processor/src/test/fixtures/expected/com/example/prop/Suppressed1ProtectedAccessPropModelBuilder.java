@@ -12,13 +12,13 @@ final class Suppressed1ProtectedAccessPropModelBuilder {
 
   @Nonnull
   static ReactNode myProp(
-      @SuppressWarnings("React4j:ProtectedLifecycleMethod") final String myProp) {
+      @SuppressWarnings("React4j:ProtectedMethod") final String myProp) {
     return new Builder().myProp( myProp );
   }
 
   public interface Step1 {
     @Nonnull
-    ReactNode myProp(@SuppressWarnings("React4j:ProtectedLifecycleMethod") String myProp);
+    ReactNode myProp(@SuppressWarnings("React4j:ProtectedMethod") String myProp);
   }
 
   private static class Builder implements Step1 {
@@ -27,7 +27,7 @@ final class Suppressed1ProtectedAccessPropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(
-        @SuppressWarnings("React4j:ProtectedLifecycleMethod") final String myProp) {
+        @SuppressWarnings("React4j:ProtectedMethod") final String myProp) {
       _element.props().set( React4j_Suppressed1ProtectedAccessPropModel.Props.myProp, myProp );
       return build();
     }
