@@ -378,13 +378,13 @@ final class MemberChecks
     }
   }
 
-  static void mustBeInternalMethod( @Nonnull final ProcessingEnvironment processingEnv,
-                                    @Nonnull final TypeElement typeElement,
-                                    @Nonnull final ExecutableElement method,
-                                    @Nonnull final String annotationClassname,
-                                    @Nonnull final String publicWarning,
-                                    @Nonnull final String protectedWarning,
-                                    @Nullable final String alternativeSuppressWarnings )
+  static void shouldBeInternalMethod( @Nonnull final ProcessingEnvironment processingEnv,
+                                      @Nonnull final TypeElement typeElement,
+                                      @Nonnull final ExecutableElement method,
+                                      @Nonnull final String annotationClassname,
+                                      @Nonnull final String publicWarning,
+                                      @Nonnull final String protectedWarning,
+                                      @Nullable final String alternativeSuppressWarnings )
   {
     if ( doesMethodNotOverrideInterfaceMethod( processingEnv, typeElement, method ) )
     {
