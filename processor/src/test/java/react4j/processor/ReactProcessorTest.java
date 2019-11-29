@@ -106,9 +106,14 @@ public class ReactProcessorTest
         new Object[]{ "com.example.post_mount_or_update.Suppressed2ProtectedAccessPostMountOrUpdateModel", false },
         new Object[]{ "com.example.post_mount_or_update.Suppressed2PublicAccessPostMountOrUpdateModel", false },
 
-        new Object[]{ "com.example.post_update.BasicModel", false },
-        new Object[]{ "com.example.post_update.OnPropChangeAndPreUpdateModel", false },
-        new Object[]{ "com.example.post_update.ProtectedModel", false },
+        new Object[]{ "com.example.post_update.BasicPostUpdateModel", false },
+        new Object[]{ "com.example.post_update.OnPropChangeAndPostUpdateModel", false },
+        new Object[]{ "com.example.post_update.PackageAccessPostUpdateModel", false },
+        new Object[]{ "com.example.post_update.Suppressed1ProtectedAccessPostUpdateModel", false },
+        new Object[]{ "com.example.post_update.Suppressed1PublicAccessPostUpdateModel", false },
+        new Object[]{ "com.example.post_update.Suppressed2ProtectedAccessPostUpdateModel", false },
+        new Object[]{ "com.example.post_update.Suppressed2PublicAccessPostUpdateModel", false },
+
         new Object[]{ "com.example.pre_update.BasicModel", false },
         new Object[]{ "com.example.pre_update.OnPropChangeAndPreUpdateModel", false },
         new Object[]{ "com.example.pre_update.ProtectedModel", false },
@@ -320,6 +325,68 @@ public class ReactProcessorTest
                              Collections.singletonList( output ) );
   }
 
+  @Test
+  public void protectedAccessPostUpdate()
+  {
+    final String filename =
+      toFilename( "input", "com.example.post_update.ProtectedAccessPostUpdateModel" );
+    final String messageFragment =
+      "@PostUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
+      processedWith( new ReactProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void publicAccessPostUpdate()
+  {
+    final String filename =
+      toFilename( "input", "com.example.post_update.PublicAccessPostUpdateModel" );
+    final String messageFragment =
+      "@PostUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
+      processedWith( new ReactProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void validProtectedAccessPostUpdate()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.post_update.ProtectedAccessFromBasePostUpdateModel" );
+    final String input2 =
+      toFilename( "input", "com.example.post_update.other.BaseProtectedAccessPostUpdateModel" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.post_update.React4j_ProtectedAccessFromBasePostUpdateModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void validPublicAccessViaInterfacePostUpdate()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.post_update.PublicAccessViaInterfacePostUpdateModel" );
+    final String input2 =
+      toFilename( "input", "com.example.post_update.PostUpdateInterface" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.post_update.React4j_PublicAccessViaInterfacePostUpdateModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
   @DataProvider( name = "failedCompiles" )
   public Object[][] failedCompiles()
   {
@@ -436,7 +503,6 @@ public class ReactProcessorTest
                       "@PostUpdate target duplicates existing method named postUpdate" },
         new Object[]{ "com.example.post_update.ParametersModel", "@PostUpdate target must not have any parameters" },
         new Object[]{ "com.example.post_update.PrivateModel", "@PostUpdate target must not be private" },
-        new Object[]{ "com.example.post_update.PublicModel", "@PostUpdate target must not be public" },
         new Object[]{ "com.example.post_update.ReturnsValueModel", "@PostUpdate target must not return a value" },
         new Object[]{ "com.example.post_update.StaticModel", "@PostUpdate target must not be static" },
         new Object[]{ "com.example.post_update.ThrowsModel", "@PostUpdate target must not throw any exceptions" },

@@ -6,8 +6,8 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-final class ProtectedModelBuilder {
-  private ProtectedModelBuilder() {
+final class Suppressed1ProtectedAccessPostUpdateModelBuilder {
+  private Suppressed1ProtectedAccessPostUpdateModelBuilder() {
   }
 
   @Nonnull
@@ -21,7 +21,7 @@ final class ProtectedModelBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ProtectedModel.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_Suppressed1ProtectedAccessPostUpdateModel.Factory.TYPE );
 
     @Nonnull
     public final ReactNode build() {

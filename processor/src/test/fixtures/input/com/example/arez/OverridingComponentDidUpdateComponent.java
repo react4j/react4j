@@ -20,7 +20,7 @@ abstract class OverridingComponentDidUpdateComponent
 
   @Action
   @PostUpdate
-  protected void postUpdate()
+  void postUpdate()
   {
   }
 }

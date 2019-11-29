@@ -6,8 +6,8 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.ReactProcessor")
-final class OnPropChangeAndPreUpdateModelBuilder {
-  private OnPropChangeAndPreUpdateModelBuilder() {
+final class OnPropChangeAndPostUpdateModelBuilder {
+  private OnPropChangeAndPostUpdateModelBuilder() {
   }
 
   @Nonnull
@@ -21,12 +21,12 @@ final class OnPropChangeAndPreUpdateModelBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_OnPropChangeAndPreUpdateModel.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_OnPropChangeAndPostUpdateModel.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final int myProp) {
-      _element.props().set( React4j_OnPropChangeAndPreUpdateModel.Props.myProp, myProp );
+      _element.props().set( React4j_OnPropChangeAndPostUpdateModel.Props.myProp, myProp );
       return build();
     }
 

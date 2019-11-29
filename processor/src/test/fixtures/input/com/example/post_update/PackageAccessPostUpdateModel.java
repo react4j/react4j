@@ -6,11 +6,11 @@ import react4j.annotations.PostUpdate;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class ProtectedModel
+abstract class PackageAccessPostUpdateModel
   extends Component
 {
   @PostUpdate
-  protected void postUpdate()
+  void postUpdate()
   {
   }
 
