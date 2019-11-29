@@ -6,11 +6,11 @@ import react4j.annotations.PreUpdate;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class PublicModel
+abstract class BasicPreUpdateModel
   extends Component
 {
   @PreUpdate
-  public void preUpdate()
+  void preUpdate()
   {
   }
 

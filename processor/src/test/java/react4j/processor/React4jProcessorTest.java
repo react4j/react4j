@@ -114,9 +114,14 @@ public class React4jProcessorTest
         new Object[]{ "com.example.post_update.Suppressed2ProtectedAccessPostUpdateModel", false },
         new Object[]{ "com.example.post_update.Suppressed2PublicAccessPostUpdateModel", false },
 
-        new Object[]{ "com.example.pre_update.BasicModel", false },
+        new Object[]{ "com.example.pre_update.BasicPreUpdateModel", false },
         new Object[]{ "com.example.pre_update.OnPropChangeAndPreUpdateModel", false },
-        new Object[]{ "com.example.pre_update.ProtectedModel", false },
+        new Object[]{ "com.example.pre_update.PackageAccessPreUpdateModel", false },
+        new Object[]{ "com.example.pre_update.Suppressed1ProtectedAccessPreUpdateModel", false },
+        new Object[]{ "com.example.pre_update.Suppressed1PublicAccessPreUpdateModel", false },
+        new Object[]{ "com.example.pre_update.Suppressed2ProtectedAccessPreUpdateModel", false },
+        new Object[]{ "com.example.pre_update.Suppressed2PublicAccessPreUpdateModel", false },
+
         new Object[]{ "com.example.prop.BasicPropComponent", false },
         new Object[]{ "com.example.prop.BoolJavaBeanPropComponent", false },
         new Object[]{ "com.example.prop.CollectionArrayListPropComponent", false },
@@ -387,6 +392,68 @@ public class React4jProcessorTest
                              Collections.singletonList( output ) );
   }
 
+  @Test
+  public void protectedAccessPreUpdate()
+  {
+    final String filename =
+      toFilename( "input", "com.example.pre_update.ProtectedAccessPreUpdateModel" );
+    final String messageFragment =
+      "@PreUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void publicAccessPreUpdate()
+  {
+    final String filename =
+      toFilename( "input", "com.example.pre_update.PublicAccessPreUpdateModel" );
+    final String messageFragment =
+      "@PreUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void validProtectedAccessPreUpdate()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.pre_update.ProtectedAccessFromBasePreUpdateModel" );
+    final String input2 =
+      toFilename( "input", "com.example.pre_update.other.BaseProtectedAccessPreUpdateModel" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.pre_update.React4j_ProtectedAccessFromBasePreUpdateModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void validPublicAccessViaInterfacePreUpdate()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.pre_update.PublicAccessViaInterfacePreUpdateModel" );
+    final String input2 =
+      toFilename( "input", "com.example.pre_update.PreUpdateInterface" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.pre_update.React4j_PublicAccessViaInterfacePreUpdateModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
   @DataProvider( name = "failedCompiles" )
   public Object[][] failedCompiles()
   {
@@ -511,7 +578,6 @@ public class React4jProcessorTest
                       "@PreUpdate target duplicates existing method named preUpdate" },
         new Object[]{ "com.example.pre_update.ParametersModel", "@PreUpdate target must not have any parameters" },
         new Object[]{ "com.example.pre_update.PrivateModel", "@PreUpdate target must not be private" },
-        new Object[]{ "com.example.pre_update.PublicModel", "@PreUpdate target must not be public" },
         new Object[]{ "com.example.pre_update.ReturnsValueModel", "@PreUpdate target must not return a value" },
         new Object[]{ "com.example.pre_update.StaticModel", "@PreUpdate target must not be static" },
         new Object[]{ "com.example.pre_update.ThrowsModel", "@PreUpdate target must not throw any exceptions" },

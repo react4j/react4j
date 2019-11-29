@@ -806,23 +806,6 @@ public final class React4jProcessor
     }
   }
 
-  private void determinePreUpdateMethod( @Nonnull final TypeElement typeElement,
-                                         @Nonnull final ComponentDescriptor descriptor )
-  {
-    for ( final ExecutableElement method : getMethods( typeElement ) )
-    {
-      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
-      {
-        MemberChecks.mustBeLifecycleHook( typeElement,
-                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                          Constants.PRE_UPDATE_ANNOTATION_CLASSNAME,
-                                          method );
-        MemberChecks.mustNotBePublic( Constants.PRE_UPDATE_ANNOTATION_CLASSNAME, method );
-        descriptor.setPreUpdate( method );
-      }
-    }
-  }
-
   private void determineOnErrorMethod( @Nonnull final TypeElement typeElement,
                                        @Nonnull final ComponentDescriptor descriptor )
   {
@@ -906,6 +889,23 @@ public final class React4jProcessor
                                           method );
         mustBeInternalLifecycleMethod( typeElement, method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME );
         descriptor.setPostUpdate( method );
+      }
+    }
+  }
+
+  private void determinePreUpdateMethod( @Nonnull final TypeElement typeElement,
+                                         @Nonnull final ComponentDescriptor descriptor )
+  {
+    for ( final ExecutableElement method : getMethods( typeElement ) )
+    {
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
+      {
+        MemberChecks.mustBeLifecycleHook( typeElement,
+                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.PRE_UPDATE_ANNOTATION_CLASSNAME,
+                                          method );
+        mustBeInternalLifecycleMethod( typeElement, method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME );
+        descriptor.setPreUpdate( method );
       }
     }
   }

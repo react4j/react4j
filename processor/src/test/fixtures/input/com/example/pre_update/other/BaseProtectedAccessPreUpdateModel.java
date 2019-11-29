@@ -1,16 +1,15 @@
-package com.example.pre_update;
+package com.example.pre_update.other;
 
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.ReactComponent;
 
-@ReactComponent
-abstract class BasicModel
+public abstract class BaseProtectedAccessPreUpdateModel
   extends Component
 {
   @PreUpdate
-  void preUpdate()
+  protected void preUpdate()
   {
   }
 

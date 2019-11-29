@@ -19,14 +19,15 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "ProtectedModel",
+    name = "Suppressed1PublicAccessPreUpdateModel",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ProtectedModel extends ProtectedModel {
-  React4j_ProtectedModel(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+abstract class React4j_Suppressed1PublicAccessPreUpdateModel extends Suppressed1PublicAccessPreUpdateModel {
+  React4j_Suppressed1PublicAccessPreUpdateModel(
+      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );
   }
 
@@ -34,7 +35,7 @@ abstract class React4j_ProtectedModel extends ProtectedModel {
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedModel" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "Suppressed1PublicAccessPreUpdateModel" );
     }
     return componentConstructor;
   }
@@ -50,7 +51,7 @@ abstract class React4j_ProtectedModel extends ProtectedModel {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ProtectedModel) this).dispose();
+    ((Arez_React4j_Suppressed1PublicAccessPreUpdateModel) this).dispose();
   }
 
   static final class Factory {
@@ -60,12 +61,12 @@ abstract class React4j_ProtectedModel extends ProtectedModel {
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
     @Nonnull
-    private final React4j_ProtectedModel $$react4j$$_component;
+    private final React4j_Suppressed1PublicAccessPreUpdateModel $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ProtectedModel( this );
+      $$react4j$$_component = new Arez_React4j_Suppressed1PublicAccessPreUpdateModel( this );
     }
 
     @Override
@@ -89,12 +90,12 @@ abstract class React4j_ProtectedModel extends ProtectedModel {
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
     @Nonnull
-    private final React4j_ProtectedModel $$react4j$$_component;
+    private final React4j_Suppressed1PublicAccessPreUpdateModel $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ProtectedModel( this );
+      $$react4j$$_component = new Arez_React4j_Suppressed1PublicAccessPreUpdateModel( this );
     }
 
     @Override

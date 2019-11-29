@@ -4,13 +4,16 @@ import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.SuppressReact4jWarnings;
 
 @ReactComponent
-abstract class ProtectedModel
+abstract class Suppressed2PublicAccessPreUpdateModel
   extends Component
 {
+  // This uses the CLASS retention suppression
+  @SuppressReact4jWarnings( "React4j:PublicLifecycleMethod" )
   @PreUpdate
-  protected void preUpdate()
+  public void preUpdate()
   {
   }
 
