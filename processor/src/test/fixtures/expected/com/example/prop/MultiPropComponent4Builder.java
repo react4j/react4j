@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 final class MultiPropComponent4Builder {
   private MultiPropComponent4Builder() {
   }

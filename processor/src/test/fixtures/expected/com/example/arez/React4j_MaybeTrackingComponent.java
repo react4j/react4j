@@ -35,7 +35,7 @@ import react4j.internal.arez.SchedulerUtil;
     disposeNotifier = Feature.DISABLE,
     inject = InjectMode.NONE
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
   private int $$react4j$$_state;
 

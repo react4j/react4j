@@ -25,7 +25,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.NONE
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class React4j_Suppressed1PublicAccessPostMountOrUpdateModel extends Suppressed1PublicAccessPostMountOrUpdateModel {
   React4j_Suppressed1PublicAccessPostMountOrUpdateModel(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {

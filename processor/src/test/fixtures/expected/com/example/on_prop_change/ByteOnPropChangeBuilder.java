@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 final class ByteOnPropChangeBuilder {
   private ByteOnPropChangeBuilder() {
   }

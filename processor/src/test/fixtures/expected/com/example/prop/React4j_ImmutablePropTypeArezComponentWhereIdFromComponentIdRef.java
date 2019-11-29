@@ -24,7 +24,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.NONE
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef extends ImmutablePropTypeArezComponentWhereIdFromComponentIdRef {
   React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {

@@ -23,7 +23,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.NONE
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class React4j_DeprecatedMethodPropDefaultModel extends DeprecatedMethodPropDefaultModel {
   React4j_DeprecatedMethodPropDefaultModel(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {

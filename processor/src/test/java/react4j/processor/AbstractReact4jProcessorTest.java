@@ -23,7 +23,7 @@ import static com.google.common.truth.Truth.*;
 import static org.testng.Assert.*;
 
 @SuppressWarnings( "Duplicates" )
-abstract class AbstractReactProcessorTest
+abstract class AbstractReact4jProcessorTest
 {
   void assertSuccessfulCompile( @Nonnull final String classname, final boolean dagger )
     throws Exception
@@ -102,7 +102,7 @@ abstract class AbstractReactProcessorTest
       final Compilation compilation =
         Compiler.javac()
           .withOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" )
-          .withProcessors( new ReactProcessor(), new ArezProcessor() )
+          .withProcessors( new React4jProcessor(), new ArezProcessor() )
           .compile( inputs );
 
       final Compilation.Status status = compilation.status();
@@ -189,7 +189,7 @@ abstract class AbstractReactProcessorTest
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( inputs ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Aarez.defer.errors=false" ).
-      processedWith( new ReactProcessor(), new ArezProcessor() ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
       compilesWithoutWarnings().
       and().
       generatesSources( firstExpected, restExpected );
@@ -226,7 +226,7 @@ abstract class AbstractReactProcessorTest
   {
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( inputs ).
-      processedWith( new ArezProcessor(), new ReactProcessor() ).
+      processedWith( new ArezProcessor(), new React4jProcessor() ).
       failsToCompile().
       withWarningContaining( errorMessageFragment );
   }

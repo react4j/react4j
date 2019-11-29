@@ -10,8 +10,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static com.google.common.truth.Truth.*;
 
-public class ReactProcessorTest
-  extends AbstractReactProcessorTest
+public class React4jProcessorTest
+  extends AbstractReact4jProcessorTest
 {
   @DataProvider( name = "successfulCompiles" )
   public Object[][] successfulCompiles()
@@ -273,7 +273,7 @@ public class ReactProcessorTest
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new ReactProcessor(), new ArezProcessor() ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
       compilesWithoutError().
       withWarningCount( 1 ).
       withWarningContaining( messageFragment );
@@ -289,7 +289,7 @@ public class ReactProcessorTest
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new ReactProcessor(), new ArezProcessor() ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
       compilesWithoutError().
       withWarningCount( 1 ).
       withWarningContaining( messageFragment );
@@ -335,7 +335,7 @@ public class ReactProcessorTest
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new ReactProcessor(), new ArezProcessor() ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
       compilesWithoutError().
       withWarningCount( 1 ).
       withWarningContaining( messageFragment );
@@ -351,7 +351,7 @@ public class ReactProcessorTest
     assert_().about( JavaSourcesSubjectFactory.javaSources() ).
       that( Collections.singletonList( fixture( filename ) ) ).
       withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new ReactProcessor(), new ArezProcessor() ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
       compilesWithoutError().
       withWarningCount( 1 ).
       withWarningContaining( messageFragment );

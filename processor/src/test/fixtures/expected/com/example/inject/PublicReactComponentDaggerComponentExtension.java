@@ -6,7 +6,7 @@ import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.internal.NativeComponent;
 
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 public interface PublicReactComponentDaggerComponentExtension extends React4j_PublicReactComponentDaggerComponentExtension {
   default void bindPublicReactComponent() {
     InjectSupport.setFactory( getPublicReactComponentDaggerSubcomponent().createFactory() );

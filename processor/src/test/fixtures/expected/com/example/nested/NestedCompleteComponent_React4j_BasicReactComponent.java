@@ -24,7 +24,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.CONSUME
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {
   NestedCompleteComponent_React4j_BasicReactComponent(
       @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent, final String value) {

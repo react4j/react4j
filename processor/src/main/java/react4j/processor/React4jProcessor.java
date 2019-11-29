@@ -44,7 +44,7 @@ import javax.lang.model.util.Types;
 @SupportedAnnotationTypes( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME )
 @SupportedSourceVersion( SourceVersion.RELEASE_8 )
 @SupportedOptions( { "react4j.defer.unresolved", "react4j.defer.errors" } )
-public final class ReactProcessor
+public final class React4jProcessor
   extends AbstractStandardProcessor
 {
   private static final String SENTINEL_NAME = "<default>";

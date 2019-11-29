@@ -23,7 +23,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.NONE
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends NestedNestedReactComponent.DeepNesting.BasicReactComponent {
   NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {

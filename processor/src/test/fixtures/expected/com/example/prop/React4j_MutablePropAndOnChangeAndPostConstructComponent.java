@@ -24,7 +24,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.NONE
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class React4j_MutablePropAndOnChangeAndPostConstructComponent extends MutablePropAndOnChangeAndPostConstructComponent {
   React4j_MutablePropAndOnChangeAndPostConstructComponent(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {

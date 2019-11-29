@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 final class Suppressed1PublicAccessPostUpdateModelBuilder {
   private Suppressed1PublicAccessPostUpdateModelBuilder() {
   }

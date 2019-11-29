@@ -9,6 +9,7 @@
   * `@PostUpdate`
 * When generating the synthetic `key` from immutable props and the type of the prop implements or extends `Keyed` as well as being annotated with either `@ArezComponent` or `@ActAsComponent` then the framework will use the `Keyed` strategy for retrieving the key.
 * Use consistent message describing how to suppress code warnings.
+* Rename `ReactProcessor` to `React4jProcessor` so that the processor name is consistent with the name of the project.
 
 ### [v0.143](https://github.com/react4j/react4j/tree/v0.143) (2019-11-28) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.142...v0.143)
 

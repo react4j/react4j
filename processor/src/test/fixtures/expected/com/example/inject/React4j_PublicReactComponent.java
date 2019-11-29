@@ -24,7 +24,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.CONSUME
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class React4j_PublicReactComponent extends PublicReactComponent {
   React4j_PublicReactComponent(
       @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent,

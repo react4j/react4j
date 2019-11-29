@@ -23,7 +23,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.NONE
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ImmutablePropTypePrimitiveShort extends ImmutablePropTypePrimitiveShort {
   React4j_ImmutablePropTypePrimitiveShort(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {

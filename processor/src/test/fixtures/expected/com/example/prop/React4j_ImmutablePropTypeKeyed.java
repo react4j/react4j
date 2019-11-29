@@ -23,7 +23,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.NONE
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ImmutablePropTypeKeyed extends ImmutablePropTypeKeyed {
   React4j_ImmutablePropTypeKeyed(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );

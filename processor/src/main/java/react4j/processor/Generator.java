@@ -1942,7 +1942,7 @@ final class Generator
   private static void addGeneratedAnnotation( @Nonnull final ProcessingEnvironment processingEnv,
                                               @Nonnull final TypeSpec.Builder builder )
   {
-    GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, ReactProcessor.class.getName() );
+    GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
   }
 
   private static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,

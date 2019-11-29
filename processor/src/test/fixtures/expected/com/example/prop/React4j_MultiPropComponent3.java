@@ -23,7 +23,7 @@ import react4j.internal.OnShouldComponentUpdate;
     allowEmpty = true,
     inject = InjectMode.NONE
 )
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 abstract class React4j_MultiPropComponent3 extends MultiPropComponent3 {
   React4j_MultiPropComponent3(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );

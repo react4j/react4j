@@ -6,7 +6,7 @@ import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.internal.NativeComponent;
 
-@Generated("react4j.processor.ReactProcessor")
+@Generated("react4j.processor.React4jProcessor")
 public interface NestedCompleteComponent_BasicReactComponentDaggerComponentExtension extends NestedCompleteComponent_React4j_BasicReactComponentDaggerComponentExtension {
   default void bindBasicReactComponent() {
     InjectSupport.setFactory( getBasicReactComponentDaggerSubcomponent().createFactory() );
