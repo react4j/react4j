@@ -69,6 +69,7 @@ public class React4jProcessorTest
         new Object[]{ "com.example.on_error.InfoOnlyOnErrorComponent", false },
         new Object[]{ "com.example.on_error.InverseOrderOnErrorComponent", false },
         new Object[]{ "com.example.on_error.MinimalOnErrorComponent", false },
+
         new Object[]{ "com.example.on_prop_change.BooleanOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.ByteOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.CharOnPropChange", false },
@@ -82,12 +83,16 @@ public class React4jProcessorTest
         new Object[]{ "com.example.on_prop_change.NonnullOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.NullableOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.OtherTypeOnPropChange", false },
-        new Object[]{ "com.example.on_prop_change.PackageAccessOnPropChange", false },
+        new Object[]{ "com.example.on_prop_change.PackageAccessOnPropChangeModel", false },
         new Object[]{ "com.example.on_prop_change.ParameterizedOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.PostUpdateOnPropChange", false },
-        new Object[]{ "com.example.on_prop_change.ProtectedAccessOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.ShortOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.StringOnPropChange", false },
+        new Object[]{ "com.example.on_prop_change.Suppressed1ProtectedAccessOnPropChangeModel", false },
+        new Object[]{ "com.example.on_prop_change.Suppressed1PublicAccessOnPropChangeModel", false },
+        new Object[]{ "com.example.on_prop_change.Suppressed2ProtectedAccessOnPropChangeModel", false },
+        new Object[]{ "com.example.on_prop_change.Suppressed2PublicAccessOnPropChangeModel", false },
+
         new Object[]{ "com.example.optional_props.ExplicitOptional", false },
         new Object[]{ "com.example.optional_props.OptionalChildrenWithOptionalAndRequired", false },
         new Object[]{ "com.example.optional_props.RequiredChildrenWithManyOptional", false },
@@ -277,6 +282,68 @@ public class React4jProcessorTest
     assertSuccessfulCompile( Arrays.asList( source1, source2 ),
                              Collections.singletonList(
                                "expected/com/example/render/React4j_RenderFromParentComponent.java" ) );
+  }
+
+  @Test
+  public void protectedAccessOnPropChange()
+  {
+    final String filename =
+      toFilename( "input", "com.example.on_prop_change.ProtectedAccessOnPropChangeModel" );
+    final String messageFragment =
+      "@OnPropChange target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void publicAccessOnPropChange()
+  {
+    final String filename =
+      toFilename( "input", "com.example.on_prop_change.PublicAccessOnPropChangeModel" );
+    final String messageFragment =
+      "@OnPropChange target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicLifecycleMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicLifecycleMethod\" )";
+    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( Collections.singletonList( fixture( filename ) ) ).
+      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
+      processedWith( new React4jProcessor(), new ArezProcessor() ).
+      compilesWithoutError().
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
+  }
+
+  @Test
+  public void validProtectedAccessOnPropChange()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.on_prop_change.ProtectedAccessFromBaseOnPropChangeModel" );
+    final String input2 =
+      toFilename( "input", "com.example.on_prop_change.other.BaseProtectedAccessOnPropChangeModel" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.on_prop_change.React4j_ProtectedAccessFromBaseOnPropChangeModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void validPublicAccessViaInterfaceOnPropChange()
+    throws Exception
+  {
+    final String input1 =
+      toFilename( "input", "com.example.on_prop_change.PublicAccessViaInterfaceOnPropChangeModel" );
+    final String input2 =
+      toFilename( "input", "com.example.on_prop_change.OnPropChangeInterface" );
+    final String output =
+      toFilename( "expected",
+                  "com.example.on_prop_change.React4j_PublicAccessViaInterfaceOnPropChangeModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
   }
 
   @Test
@@ -673,7 +740,6 @@ public class React4jProcessorTest
         new Object[]{ "com.example.on_prop_change.NoPropRefOnPropChange",
                       "@OnPropChange target must have at least 1 parameter." },
         new Object[]{ "com.example.on_prop_change.PrivateOnPropChange", "@OnPropChange target must not be private" },
-        new Object[]{ "com.example.on_prop_change.PublicOnPropChange", "@OnPropChange target must not be public" },
         new Object[]{ "com.example.on_prop_change.ReturnOnPropChange", "@OnPropChange target must not return a value" },
         new Object[]{ "com.example.on_prop_change.StaticOnPropChange", "@OnPropChange target must not be static" },
         new Object[]{ "com.example.on_prop_change.ThrowsOnPropChange",

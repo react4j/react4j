@@ -6,8 +6,8 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.React4jProcessor")
-final class PackageAccessOnPropChangeBuilder {
-  private PackageAccessOnPropChangeBuilder() {
+final class Suppressed2PublicAccessOnPropChangeModelBuilder {
+  private Suppressed2PublicAccessOnPropChangeModelBuilder() {
   }
 
   @Nonnull
@@ -21,12 +21,12 @@ final class PackageAccessOnPropChangeBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_PackageAccessOnPropChange.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_Suppressed2PublicAccessOnPropChangeModel.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_PackageAccessOnPropChange.Props.myProp, myProp );
+      _element.props().set( React4j_Suppressed2PublicAccessOnPropChangeModel.Props.myProp, myProp );
       return build();
     }
 

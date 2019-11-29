@@ -14,7 +14,6 @@ complete as there is too much un-said.
 
 * Add suppressable warnings for unnecessary access to the following annotations:
   * `OnError`
-  * `OnPropChange`
   * `PropDefault`
   * `PropValidate`
 

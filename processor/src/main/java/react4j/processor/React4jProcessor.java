@@ -265,7 +265,7 @@ public final class React4jProcessor
                                            method );
       MemberChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
       MemberChecks.mustNotReturnAnyValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-      MemberChecks.mustNotBePublic( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+      mustBeInternalLifecycleMethod( descriptor.getElement(), method, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME );
 
       final int parameterCount = parameters.size();
       if ( 0 == parameterCount )

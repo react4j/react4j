@@ -1,13 +1,11 @@
-package com.example.on_prop_change;
+package com.example.on_prop_change.other;
 
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
 import react4j.annotations.Prop;
-import react4j.annotations.ReactComponent;
 
-@ReactComponent
-abstract class ProtectedAccessOnPropChange
+public abstract class BaseProtectedAccessOnPropChangeModel
   extends Component
 {
   @OnPropChange
@@ -16,7 +14,7 @@ abstract class ProtectedAccessOnPropChange
   }
 
   @Prop
-  abstract String getMyProp();
+  protected abstract String getMyProp();
 
   @Override
   protected ReactNode render()

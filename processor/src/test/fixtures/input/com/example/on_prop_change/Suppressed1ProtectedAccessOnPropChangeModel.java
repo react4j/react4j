@@ -7,16 +7,18 @@ import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class PublicOnPropChange
+abstract class Suppressed1ProtectedAccessOnPropChangeModel
   extends Component
 {
+  // This uses the SOURCE retention suppression
+  @SuppressWarnings( "React4j:ProtectedLifecycleMethod" )
   @OnPropChange
-  public void onMyPropChange( String myProp )
+  protected void onMyPropChange( String myProp )
   {
   }
 
   @Prop
-  protected abstract String getMyProp();
+  abstract String getMyProp();
 
   @Override
   protected ReactNode render()

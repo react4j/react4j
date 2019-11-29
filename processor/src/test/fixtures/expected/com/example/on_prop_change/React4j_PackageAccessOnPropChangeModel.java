@@ -19,14 +19,15 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "PackageAccessOnPropChange",
+    name = "PackageAccessOnPropChangeModel",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_PackageAccessOnPropChange extends PackageAccessOnPropChange {
-  React4j_PackageAccessOnPropChange(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
+abstract class React4j_PackageAccessOnPropChangeModel extends PackageAccessOnPropChangeModel {
+  React4j_PackageAccessOnPropChangeModel(
+      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );
   }
 
@@ -34,7 +35,7 @@ abstract class React4j_PackageAccessOnPropChange extends PackageAccessOnPropChan
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "PackageAccessOnPropChange" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "PackageAccessOnPropChangeModel" );
     }
     return componentConstructor;
   }
@@ -69,7 +70,7 @@ abstract class React4j_PackageAccessOnPropChange extends PackageAccessOnPropChan
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_PackageAccessOnPropChange) this).dispose();
+    ((Arez_React4j_PackageAccessOnPropChangeModel) this).dispose();
   }
 
   static final class Factory {
@@ -83,12 +84,12 @@ abstract class React4j_PackageAccessOnPropChange extends PackageAccessOnPropChan
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
     @Nonnull
-    private final React4j_PackageAccessOnPropChange $$react4j$$_component;
+    private final React4j_PackageAccessOnPropChangeModel $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_PackageAccessOnPropChange( this );
+      $$react4j$$_component = new Arez_React4j_PackageAccessOnPropChangeModel( this );
     }
 
     @Override
@@ -112,12 +113,12 @@ abstract class React4j_PackageAccessOnPropChange extends PackageAccessOnPropChan
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
     @Nonnull
-    private final React4j_PackageAccessOnPropChange $$react4j$$_component;
+    private final React4j_PackageAccessOnPropChangeModel $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_PackageAccessOnPropChange( this );
+      $$react4j$$_component = new Arez_React4j_PackageAccessOnPropChangeModel( this );
     }
 
     @Override

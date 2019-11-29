@@ -6,8 +6,8 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.React4jProcessor")
-final class ProtectedAccessOnPropChangeBuilder {
-  private ProtectedAccessOnPropChangeBuilder() {
+final class Suppressed2ProtectedAccessOnPropChangeModelBuilder {
+  private Suppressed2ProtectedAccessOnPropChangeModelBuilder() {
   }
 
   @Nonnull
@@ -21,12 +21,12 @@ final class ProtectedAccessOnPropChangeBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ProtectedAccessOnPropChange.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createComponentElement( React4j_Suppressed2ProtectedAccessOnPropChangeModel.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_ProtectedAccessOnPropChange.Props.myProp, myProp );
+      _element.props().set( React4j_Suppressed2ProtectedAccessOnPropChangeModel.Props.myProp, myProp );
       return build();
     }
 
