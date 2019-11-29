@@ -26,6 +26,8 @@ complete as there is too much un-said.
 * Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props. Make sure immutable props
   favour Keyed over ArezId if type implements/extends `Keyed` and is annotated by `@ActAsComponent`
 
+* Avoid copying @SuppressWarnings into generated methods/fields/etc. Add suppress if raw types or deprecated present
+
 * Rename `ReactComponent` to `React4jComponent`
 
 * Consider eliminating the need to extend `react4j.Component` as can probably get away with just defining render
