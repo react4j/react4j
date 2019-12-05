@@ -341,7 +341,7 @@ final class MemberChecks
       final String message =
         toSimpleName( annotationName ) + " target should not be public. " +
         suppressedBy( warning, alternativeSuppressWarnings );
-      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message );
+      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
     }
   }
 
@@ -357,7 +357,7 @@ final class MemberChecks
       final String message =
         toSimpleName( annotationName ) + " target should not be protected. " +
         suppressedBy( warning, alternativeSuppressWarnings );
-      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message );
+      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
     }
   }
 
