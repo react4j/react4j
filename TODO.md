@@ -218,8 +218,12 @@ we ever do this here is a list of helpful links that could provide useful
   allow individual components to register actions to occur at each lifecycle stage. We could also use the
   strategies in [ivi](https://github.com/localvoid/ivi) or whatever is winning the
   [uibench](https://localvoid.github.io/uibench/) benchmark at the time. [Nerv](https://github.com/NervJS/nerv)
-  has some interesting benchmarks at https://github.com/NervJS/nerv/tree/master/benchmarks but most interesting
-  of all is [Preact X](https://github.com/developit/preact/releases/tag/10.0.0-alpha.0).
+  has some interesting benchmarks at https://github.com/NervJS/nerv/tree/master/benchmarks. Most interesting
+  of all is [Preact X](https://github.com/preactjs/preact) which is small, fast, simple and has all the capabilities
+  we seem to need. It's new DevTools integration may also be of interest as an alternative. We could also base the
+  library on alternative strategies such as described in
+  [this article](https://medium.com/javascript-in-plain-english/how-we-wrote-the-fastest-javascript-ui-frameworks-a96f2636431e)
+  and implemented by [dom-expressions](https://github.com/ryansolid/dom-expressions).
 
 * Consider using the React4j component model (a.k.a. annotations) and seeing if it can be used to generate
   a custom-element based component such as via Stencil.js. Ideals could also be incorporated from
