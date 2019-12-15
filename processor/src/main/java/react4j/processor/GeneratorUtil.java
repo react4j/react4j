@@ -30,7 +30,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-@SuppressWarnings( { "SameParameterValue", "unused" } )
+@SuppressWarnings( { "SameParameterValue", "unused", "WeakerAccess", "RedundantSuppression" } )
 final class GeneratorUtil
 {
   private GeneratorUtil()
