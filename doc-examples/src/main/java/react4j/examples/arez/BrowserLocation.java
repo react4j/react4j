@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
  * the view. Observing the browser location will allow the application to decide whether the
  * route should be updated.</p>
  */
-@ArezComponent( nameIncludesId = false )
+@ArezComponent
 public abstract class BrowserLocation
 {
   private final EventListener _listener = this::onHashChangeEvent;
