@@ -62,7 +62,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
   @Observable(
       name = "value",
       expectSetter = false,
-      readOutsideTransaction = true
+      readOutsideTransaction = Feature.ENABLE
   )
   String getValue() {
     if ( React.shouldCheckInvariants() ) {

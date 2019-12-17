@@ -799,7 +799,7 @@ final class Generator
         AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
           addMember( "name", "$S", prop.getName() ).
           addMember( "expectSetter", "false" ).
-          addMember( "readOutsideTransaction", "true" );
+          addMember( "readOutsideTransaction", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
       method.addAnnotation( annotation.build() );
     }
 

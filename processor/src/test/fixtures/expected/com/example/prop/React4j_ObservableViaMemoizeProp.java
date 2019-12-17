@@ -46,7 +46,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
   @Observable(
       name = "value",
       expectSetter = false,
-      readOutsideTransaction = true
+      readOutsideTransaction = Feature.ENABLE
   )
   Object getValue() {
     if ( React.shouldCheckInvariants() ) {

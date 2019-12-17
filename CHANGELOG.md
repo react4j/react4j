@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Include the location of the problem when generating warnings for unnecessary public or protected access on members.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.159`.
 
 ### [v0.144](https://github.com/react4j/react4j/tree/v0.144) (2019-11-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.143...v0.144)
 

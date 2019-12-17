@@ -61,7 +61,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
   @Observable(
       name = "value",
       expectSetter = false,
-      readOutsideTransaction = true
+      readOutsideTransaction = Feature.ENABLE
   )
   Object getValue() {
     if ( React.shouldCheckInvariants() ) {
