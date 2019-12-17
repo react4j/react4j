@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.145](https://github.com/react4j/react4j/tree/v0.145) (2019-12-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.144...v0.145)
+
+Changes in this release:
 
 * Include the location of the problem when generating warnings for unnecessary public or protected access on members.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.159`.
