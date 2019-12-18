@@ -119,11 +119,6 @@ final class BuilderGenerator
     {
       method.addModifiers( Modifier.PUBLIC );
     }
-    final ExecutableType propMethodType = stepMethod.getPropMethodType();
-    if ( null != propMethodType )
-    {
-      GeneratorUtil.copyTypeParameters( propMethodType, method );
-    }
     GeneratorUtil.copyTypeParameters( descriptor.getElement(), method );
 
     if ( stepMethod.isBuildIntrinsic() )
