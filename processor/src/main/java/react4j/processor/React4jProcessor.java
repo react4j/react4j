@@ -82,12 +82,12 @@ public final class React4jProcessor
     final ComponentDescriptor descriptor = parse( element );
     final String packageName = descriptor.getPackageName();
     final Filer filer = processingEnv.getFiler();
-    GeneratorUtil.emitJavaType( packageName, Generator.buildEnhancedComponent( processingEnv, descriptor ), filer );
-    GeneratorUtil.emitJavaType( packageName, Generator.buildComponentBuilder( processingEnv, descriptor ), filer );
+    GeneratorUtil.emitJavaType( packageName, ComponentGenerator.buildType( processingEnv, descriptor ), filer );
+    GeneratorUtil.emitJavaType( packageName, BuilderGenerator.buildType( processingEnv, descriptor ), filer );
     if ( descriptor.needsInjection() )
     {
       GeneratorUtil.emitJavaType( packageName,
-                                  Generator.buildDaggerComponentExtension( processingEnv, descriptor ),
+                                  DaggerComponentExtensionGenerator.buildType( processingEnv, descriptor ),
                                   filer );
     }
   }
