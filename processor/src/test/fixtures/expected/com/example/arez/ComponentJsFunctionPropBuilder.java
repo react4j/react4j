@@ -11,8 +11,13 @@ final class ComponentJsFunctionPropBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode value(final ComponentJsFunctionProp.TestFunction value) {
-    return new Builder().value( value );
+    return newBuilder().value( value );
   }
 
   public interface Step1 {

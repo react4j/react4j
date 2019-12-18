@@ -12,8 +12,13 @@ final class ImmutablePropTypeKeyedBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode myProp(final ImmutablePropTypeKeyed.KeyedComponent myProp) {
-    return new Builder().myProp( myProp );
+    return newBuilder().myProp( myProp );
   }
 
   public interface Step1 {

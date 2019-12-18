@@ -11,8 +11,13 @@ final class GenericTypeComponentBuilder {
   }
 
   @Nonnull
+  private static <T> Step1<T> newBuilder() {
+    return new Builder<>();
+  }
+
+  @Nonnull
   static <T> ReactNode build() {
-    return new Builder<T>().build();
+    return newBuilder().build();
   }
 
   @SuppressWarnings("unused")

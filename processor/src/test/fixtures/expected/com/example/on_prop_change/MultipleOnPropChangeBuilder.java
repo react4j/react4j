@@ -11,8 +11,13 @@ final class MultipleOnPropChangeBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static Step2 myProp1(final boolean myProp1) {
-    return new Builder().myProp1( myProp1 );
+    return newBuilder().myProp1( myProp1 );
   }
 
   public interface Step1 {

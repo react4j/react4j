@@ -11,8 +11,13 @@ public final class PublicReactComponentBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   public static ReactNode build() {
-    return new Builder().build();
+    return newBuilder().build();
   }
 
   public interface Step1 {

@@ -11,9 +11,14 @@ final class MutablePropAndPostConstructWithSuppressComponentBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode myProp(
       @SuppressWarnings("React4j:MutablePropAccessedInPostConstruct") final String myProp) {
-    return new Builder().myProp( myProp );
+    return newBuilder().myProp( myProp );
   }
 
   public interface Step1 {

@@ -12,13 +12,18 @@ final class PropDefaultWithColorfulNameBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode myProp12$23(final String myProp12$23) {
-    return new Builder().myProp12$23( myProp12$23 );
+    return newBuilder().myProp12$23( myProp12$23 );
   }
 
   @Nonnull
   static ReactNode build() {
-    return new Builder().build();
+    return newBuilder().build();
   }
 
   public interface Step1 {

@@ -14,8 +14,13 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static Step2 myRequiredProp(final String myRequiredProp) {
-    return new Builder().myRequiredProp( myRequiredProp );
+    return newBuilder().myRequiredProp( myRequiredProp );
   }
 
   public interface Step1 {

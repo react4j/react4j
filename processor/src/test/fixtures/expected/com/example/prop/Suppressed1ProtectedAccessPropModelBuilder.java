@@ -11,8 +11,13 @@ final class Suppressed1ProtectedAccessPropModelBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode myProp(@SuppressWarnings("React4j:ProtectedMethod") final String myProp) {
-    return new Builder().myProp( myProp );
+    return newBuilder().myProp( myProp );
   }
 
   public interface Step1 {

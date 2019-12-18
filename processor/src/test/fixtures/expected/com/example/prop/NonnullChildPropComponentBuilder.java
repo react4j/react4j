@@ -13,8 +13,13 @@ final class NonnullChildPropComponentBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode child(@Nonnull final ReactNode child) {
-    return new Builder().child( child );
+    return newBuilder().child( child );
   }
 
   public interface Step1 {

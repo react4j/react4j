@@ -11,8 +11,13 @@ final class OnPropChangeAndPostUpdateModelBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode myProp(final int myProp) {
-    return new Builder().myProp( myProp );
+    return newBuilder().myProp( myProp );
   }
 
   public interface Step1 {

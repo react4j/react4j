@@ -11,8 +11,13 @@ final class NonJavaBeanPropComponentBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode window(final String window) {
-    return new Builder().window( window );
+    return newBuilder().window( window );
   }
 
   public interface Step1 {

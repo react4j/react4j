@@ -67,6 +67,7 @@ final class BuilderGenerator
     final BuilderDescriptor builderDescriptor = buildBuilderDescriptor( descriptor );
 
     final List<Step> steps = builderDescriptor.getSteps();
+    builder.addMethod( buildStaticNewBuilderMethod( descriptor ) );
     for ( final Step step : steps )
     {
       builder.addType( buildBuilderStepInterface( descriptor, step ) );
@@ -88,6 +89,20 @@ final class BuilderGenerator
     {
       builder.addMethod( buildStaticStepMethodMethod( descriptor, step, method ) );
     }
+  }
+
+  @Nonnull
+  private static MethodSpec buildStaticNewBuilderMethod( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final String infix = descriptor.getDeclaredType().getTypeArguments().isEmpty() ? "" : "<>";
+    final MethodSpec.Builder method = MethodSpec
+      .methodBuilder( "newBuilder" )
+      .addModifiers( Modifier.PRIVATE, Modifier.STATIC )
+      .addAnnotation( NONNULL_CLASSNAME )
+      .returns( parameterizeIfRequired( descriptor, ClassName.bestGuess( "Step1" ) ) )
+      .addStatement( "return new $T" + infix + "()", ClassName.bestGuess( "Builder" ) );
+    GeneratorUtil.copyTypeParameters( descriptor.getElement(), method );
+    return method.build();
   }
 
   @Nonnull
@@ -113,8 +128,7 @@ final class BuilderGenerator
 
     if ( stepMethod.isBuildIntrinsic() )
     {
-      final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
-      method.addStatement( "return new $T" + infix + "().build()", ClassName.bestGuess( "Builder" ) );
+      method.addStatement( "return newBuilder().build()" );
     }
     else
     {
@@ -130,11 +144,20 @@ final class BuilderGenerator
         parameter.addAnnotation( NONNULL_CLASSNAME );
       }
       method.addParameter( parameter.build() );
+
       final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
-      method.addStatement( "return new $T" + infix + "().$N( $N )",
-                           ClassName.bestGuess( "Builder" ),
-                           stepMethod.getName(),
-                           stepMethod.getName() );
+      if ( infix.isEmpty() )
+      {
+        // No type parameters
+        method.addStatement( "return newBuilder().$N( $N )", stepMethod.getName(), stepMethod.getName() );
+      }
+      else
+      {
+        method.addStatement( "return $T." + infix + "newBuilder().$N( $N )",
+                             descriptor.getBuilderClassName(),
+                             stepMethod.getName(),
+                             stepMethod.getName() );
+      }
     }
     configureStepMethodReturns( descriptor, method, step, stepMethod.getStepMethodType() );
     return method.build();
@@ -167,17 +190,23 @@ final class BuilderGenerator
     else
     {
       final int returnIndex = step.getIndex() + ( StepMethodType.STAY == stepMethodType ? 0 : 1 );
-      final ClassName className = ClassName.bestGuess( "Step" + returnIndex );
-      final List<TypeVariableName> variableNames =
-        GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() );
-      if ( variableNames.isEmpty() )
-      {
-        method.returns( className );
-      }
-      else
-      {
-        method.returns( ParameterizedTypeName.get( className, variableNames.toArray( new TypeName[ 0 ] ) ) );
-      }
+      method.returns( parameterizeIfRequired( descriptor, ClassName.bestGuess( "Step" + returnIndex ) ) );
+    }
+  }
+
+  @Nonnull
+  private static TypeName parameterizeIfRequired( @Nonnull final ComponentDescriptor descriptor,
+                                                  @Nonnull final ClassName className )
+  {
+    final List<TypeVariableName> variableNames =
+      GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() );
+    if ( variableNames.isEmpty() )
+    {
+      return className;
+    }
+    else
+    {
+      return ParameterizedTypeName.get( className, variableNames.toArray( new TypeName[ 0 ] ) );
     }
   }
 

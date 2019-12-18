@@ -11,8 +11,13 @@ final class ImplicitDisposablePropOnComponentBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode model(final ImplicitDisposablePropOnComponent.Model model) {
-    return new Builder().model( model );
+    return newBuilder().model( model );
   }
 
   public interface Step1 {

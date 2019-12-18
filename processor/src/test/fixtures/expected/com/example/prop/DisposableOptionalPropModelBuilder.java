@@ -11,13 +11,18 @@ final class DisposableOptionalPropModelBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode value(final Object value) {
-    return new Builder().value( value );
+    return newBuilder().value( value );
   }
 
   @Nonnull
   static ReactNode build() {
-    return new Builder().build();
+    return newBuilder().build();
   }
 
   public interface Step1 {

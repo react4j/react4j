@@ -11,8 +11,13 @@ final class CharPropValidateBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode myProp(final char myProp) {
-    return new Builder().myProp( myProp );
+    return newBuilder().myProp( myProp );
   }
 
   public interface Step1 {

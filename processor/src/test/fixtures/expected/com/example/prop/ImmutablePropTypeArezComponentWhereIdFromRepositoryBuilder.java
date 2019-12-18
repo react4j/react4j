@@ -12,9 +12,14 @@ final class ImmutablePropTypeArezComponentWhereIdFromRepositoryBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode myProp(
       final ImmutablePropTypeArezComponentWhereIdFromRepository.MyComponent myProp) {
-    return new Builder().myProp( myProp );
+    return newBuilder().myProp( myProp );
   }
 
   public interface Step1 {

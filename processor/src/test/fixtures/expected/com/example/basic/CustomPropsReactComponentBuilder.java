@@ -11,8 +11,13 @@ final class CustomPropsReactComponentBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode someField(final boolean someField) {
-    return new Builder().someField( someField );
+    return newBuilder().someField( someField );
   }
 
   public interface Step1 {

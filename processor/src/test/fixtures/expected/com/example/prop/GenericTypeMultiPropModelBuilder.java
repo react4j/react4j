@@ -12,8 +12,13 @@ final class GenericTypeMultiPropModelBuilder {
   }
 
   @Nonnull
+  private static <T> Step1<T> newBuilder() {
+    return new Builder<>();
+  }
+
+  @Nonnull
   static <T> Step2<T> value(final T value) {
-    return new Builder<T>().value( value );
+    return GenericTypeMultiPropModelBuilder.<T>newBuilder().value( value );
   }
 
   @SuppressWarnings("unused")

@@ -11,8 +11,13 @@ final class CustomNamePropModelBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode foo(final String foo) {
-    return new Builder().foo( foo );
+    return newBuilder().foo( foo );
   }
 
   public interface Step1 {

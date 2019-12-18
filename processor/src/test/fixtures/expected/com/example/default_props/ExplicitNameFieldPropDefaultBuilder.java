@@ -12,13 +12,18 @@ final class ExplicitNameFieldPropDefaultBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode myProp(final String myProp) {
-    return new Builder().myProp( myProp );
+    return newBuilder().myProp( myProp );
   }
 
   @Nonnull
   static ReactNode build() {
-    return new Builder().build();
+    return newBuilder().build();
   }
 
   public interface Step1 {

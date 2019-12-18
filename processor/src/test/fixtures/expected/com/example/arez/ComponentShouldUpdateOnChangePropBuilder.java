@@ -11,8 +11,13 @@ final class ComponentShouldUpdateOnChangePropBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static Step2 value(final String value) {
-    return new Builder().value( value );
+    return newBuilder().value( value );
   }
 
   public interface Step1 {

@@ -13,18 +13,23 @@ final class MultipleChildrenPropComponentBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static ReactNode children(final ReactNode[] children) {
-    return new Builder().children( children );
+    return newBuilder().children( children );
   }
 
   @Nonnull
   static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
-    return new Builder().children( children );
+    return newBuilder().children( children );
   }
 
   @Nonnull
   static ReactNode build() {
-    return new Builder().build();
+    return newBuilder().build();
   }
 
   public interface Step1 {

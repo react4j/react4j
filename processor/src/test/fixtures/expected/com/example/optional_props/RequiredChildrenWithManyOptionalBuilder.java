@@ -14,33 +14,38 @@ final class RequiredChildrenWithManyOptionalBuilder {
   }
 
   @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
   static Step1 myPropA(final String myPropA) {
-    return new Builder().myPropA( myPropA );
+    return newBuilder().myPropA( myPropA );
   }
 
   @Nonnull
   static Step1 myPropB(final String myPropB) {
-    return new Builder().myPropB( myPropB );
+    return newBuilder().myPropB( myPropB );
   }
 
   @Nonnull
   static Step1 myPropC(final String myPropC) {
-    return new Builder().myPropC( myPropC );
+    return newBuilder().myPropC( myPropC );
   }
 
   @Nonnull
   static Step1 myPropD(final String myPropD) {
-    return new Builder().myPropD( myPropD );
+    return newBuilder().myPropD( myPropD );
   }
 
   @Nonnull
   static ReactNode children(final ReactNode[] children) {
-    return new Builder().children( children );
+    return newBuilder().children( children );
   }
 
   @Nonnull
   static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
-    return new Builder().children( children );
+    return newBuilder().children( children );
   }
 
   public interface Step1 {
