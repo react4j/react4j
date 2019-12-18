@@ -65,7 +65,9 @@ final class BuilderGenerator
     final BuilderDescriptor builderDescriptor = buildBuilderDescriptor( descriptor );
 
     final List<Step> steps = builderDescriptor.getSteps();
+
     builder.addMethod( buildStaticNewBuilderMethod( descriptor ) );
+
     for ( final Step step : steps )
     {
       builder.addType( buildBuilderStepInterface( descriptor, step ) );
