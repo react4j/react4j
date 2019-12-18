@@ -12,8 +12,12 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.AnnotatedConstruct;
@@ -274,6 +278,38 @@ final class GeneratorUtil
   }
 
   @Nonnull
+  static AnnotationSpec suppressWarningsAnnotation( @Nonnull final String... warnings )
+  {
+    return Objects.requireNonNull( maybeSuppressWarningsAnnotation( warnings ) );
+  }
+
+  @Nullable
+  static AnnotationSpec maybeSuppressWarningsAnnotation( @Nonnull final String... warnings )
+  {
+    final List<String> actualWarnings =
+      Arrays.stream( warnings ).filter( Objects::nonNull ).collect( Collectors.toList() );
+    if ( actualWarnings.isEmpty() )
+    {
+      return null;
+    }
+    else if ( 1 == actualWarnings.size() )
+    {
+      return AnnotationSpec
+        .builder( SuppressWarnings.class )
+        .addMember( "value", "$S", actualWarnings.get( 0 ) )
+        .build();
+    }
+    else
+    {
+      final String formatString = "{ " + String.join( ", ", actualWarnings ) + " }";
+      return AnnotationSpec
+        .builder( SuppressWarnings.class )
+        .addMember( "value", formatString, actualWarnings.toArray() )
+        .build();
+    }
+  }
+
+  @Nonnull
   static MethodSpec.Builder refMethod( @Nonnull final ProcessingEnvironment processingEnv,
                                        @Nonnull final TypeElement typeElement,
                                        @Nonnull final ExecutableElement original )
@@ -302,9 +338,7 @@ final class GeneratorUtil
 
     if ( hasRawTypes( processingEnv, returnType ) )
     {
-      method.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class ).
-        addMember( "value", "$S", "rawtypes" ).
-        build() );
+      method.addAnnotation( suppressWarningsAnnotation( "rawtypes" ) );
     }
     copyAccessModifiers( original, method );
     copyTypeParameters( originalExecutableType, method );
