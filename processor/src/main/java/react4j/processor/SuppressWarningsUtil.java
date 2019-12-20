@@ -42,20 +42,11 @@ final class SuppressWarningsUtil
     {
       return null;
     }
-    else if ( 1 == actualWarnings.size() )
-    {
-      return AnnotationSpec
-        .builder( SuppressWarnings.class )
-        .addMember( "value", "$S", actualWarnings.get( 0 ) )
-        .build();
-    }
     else
     {
-      final String formatString = "{ " + String.join( ", ", actualWarnings ) + " }";
-      return AnnotationSpec
-        .builder( SuppressWarnings.class )
-        .addMember( "value", formatString, actualWarnings.toArray() )
-        .build();
+      final AnnotationSpec.Builder builder = AnnotationSpec.builder( SuppressWarnings.class );
+      actualWarnings.forEach( w -> builder.addMember( "value", "$S", w ) );
+      return builder.build();
     }
   }
 
