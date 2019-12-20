@@ -21,6 +21,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
+@SuppressWarnings( "unused" )
 final class SuppressWarningsUtil
 {
   private SuppressWarningsUtil()
@@ -37,7 +38,7 @@ final class SuppressWarningsUtil
   static AnnotationSpec maybeSuppressWarningsAnnotation( @Nonnull final String... warnings )
   {
     final List<String> actualWarnings =
-      Arrays.stream( warnings ).filter( Objects::nonNull ).collect( Collectors.toList() );
+      Arrays.stream( warnings ).filter( Objects::nonNull ).sorted().collect( Collectors.toList() );
     if ( actualWarnings.isEmpty() )
     {
       return null;
