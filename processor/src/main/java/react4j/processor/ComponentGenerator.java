@@ -106,16 +106,10 @@ final class ComponentGenerator
 
     builder.superclass( descriptor.getComponentType() );
 
-    final AnnotationSpec.Builder warningsAnnotation = AnnotationSpec.builder( SuppressWarnings.class );
-    if ( descriptor.enhanceComponentAccessesDeprecatedElements() )
-    {
-      warningsAnnotation.addMember( "value", "{ $S, $S }", "Arez:UnnecessaryAllowEmpty", "deprecation" );
-    }
-    else
-    {
-      warningsAnnotation.addMember( "value", "$S", "Arez:UnnecessaryAllowEmpty" );
-    }
-    builder.addAnnotation( warningsAnnotation.build() );
+    builder.addAnnotation( SuppressWarningsUtil.suppressWarningsAnnotation( "Arez:UnnecessaryAllowEmpty",
+                                                                            descriptor.enhanceComponentAccessesDeprecatedElements() ?
+                                                                            "deprecation" :
+                                                                            null ) );
     final AnnotationSpec.Builder arezAnnotation =
       AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
         addMember( "name", "$S", descriptor.getName() ).

@@ -1,6 +1,5 @@
 package react4j.processor;
 
-import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -216,9 +215,7 @@ final class BuilderGenerator
 
     if ( !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
-      builder.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
-                               .addMember( "value", "$S", "unused" )
-                               .build() );
+      builder.addAnnotation( SuppressWarningsUtil.suppressWarningsAnnotation( "unused" ) );
     }
 
     for ( final StepMethod stepMethod : step.getMethods() )
