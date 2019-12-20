@@ -365,4 +365,18 @@ final class GeneratorUtil
       return false;
     }
   }
+
+  static boolean areTypesInDifferentPackage( @Nonnull final TypeElement typeElement1,
+                                             @Nonnull final TypeElement typeElement2 )
+  {
+    return !areTypesInSamePackage( typeElement1, typeElement2 );
+  }
+
+  static boolean areTypesInSamePackage( @Nonnull final TypeElement typeElement1,
+                                        @Nonnull final TypeElement typeElement2 )
+  {
+    final PackageElement packageElement1 = getPackageElement( typeElement1 );
+    final PackageElement packageElement2 = getPackageElement( typeElement2 );
+    return Objects.equals( packageElement1.getQualifiedName(), packageElement2.getQualifiedName() );
+  }
 }

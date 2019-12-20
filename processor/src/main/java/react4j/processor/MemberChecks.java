@@ -10,7 +10,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -200,10 +199,7 @@ final class MemberChecks
 
     if ( isPackageAccess )
     {
-      final PackageElement packageElement = GeneratorUtil.getPackageElement( element );
-      final PackageElement otherPackageElement =
-        GeneratorUtil.getPackageElement( (TypeElement) other.getEnclosingElement() );
-      if ( !Objects.equals( packageElement.getQualifiedName(), otherPackageElement.getQualifiedName() ) )
+      if ( GeneratorUtil.areTypesInDifferentPackage( element, (TypeElement) other.getEnclosingElement() ) )
       {
         throw new ProcessorException( mustNot( annotationName,
                                                "be package access if the " +
