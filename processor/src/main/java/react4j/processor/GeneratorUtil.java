@@ -13,11 +13,11 @@ import com.squareup.javapoet.TypeVariableName;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.AnnotatedConstruct;
@@ -29,15 +29,29 @@ import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
-import javax.lang.model.type.ArrayType;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-@SuppressWarnings( { "SameParameterValue", "unused", "WeakerAccess", "RedundantSuppression" } )
+@SuppressWarnings( { "SameParameterValue",
+                     "unused",
+                     "WeakerAccess",
+                     "RedundantSuppression",
+                     "BooleanMethodIsAlwaysInverted" } )
 final class GeneratorUtil
 {
+  static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
+  static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
+  static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
+  static final String NONNULL_ANNOTATION_CLASSNAME = "javax.annotation.Nonnull";
+  @Nonnull
+  private static final List<String> ANNOTATION_WHITELIST =
+    Arrays.asList( NONNULL_ANNOTATION_CLASSNAME,
+                   NULLABLE_ANNOTATION_CLASSNAME,
+                   Deprecated.class.getName() );
+
   private GeneratorUtil()
   {
   }
@@ -199,6 +213,12 @@ final class GeneratorUtil
   }
 
   static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                          @Nonnull final TypeSpec.Builder builder )
+  {
+    copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
+  }
+
+  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
                                           @Nonnull final TypeSpec.Builder builder,
                                           @Nonnull final List<String> whitelist )
   {
@@ -209,6 +229,12 @@ final class GeneratorUtil
         builder.addAnnotation( AnnotationSpec.get( annotation ) );
       }
     }
+  }
+
+  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                          @Nonnull final MethodSpec.Builder builder )
+  {
+    copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
   }
 
   static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
@@ -225,6 +251,12 @@ final class GeneratorUtil
   }
 
   static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                          @Nonnull final ParameterSpec.Builder builder )
+  {
+    copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
+  }
+
+  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
                                           @Nonnull final ParameterSpec.Builder builder,
                                           @Nonnull final List<String> whitelist )
   {
@@ -235,6 +267,12 @@ final class GeneratorUtil
         builder.addAnnotation( AnnotationSpec.get( annotation ) );
       }
     }
+  }
+
+  static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
+                                          @Nonnull final FieldSpec.Builder builder )
+  {
+    copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
   }
 
   static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
@@ -278,92 +316,84 @@ final class GeneratorUtil
   }
 
   @Nonnull
-  static AnnotationSpec suppressWarningsAnnotation( @Nonnull final String... warnings )
+  static MethodSpec.Builder overrideMethod( @Nonnull final ProcessingEnvironment processingEnv,
+                                            @Nonnull final TypeElement typeElement,
+                                            @Nonnull final ExecutableElement executableElement )
   {
-    return Objects.requireNonNull( maybeSuppressWarningsAnnotation( warnings ) );
+    return overrideMethod( processingEnv, typeElement, executableElement, Collections.emptyList(), true );
   }
 
-  @Nullable
-  static AnnotationSpec maybeSuppressWarningsAnnotation( @Nonnull final String... warnings )
+  @Nonnull
+  static MethodSpec.Builder overrideMethod( @Nonnull final ProcessingEnvironment processingEnv,
+                                            @Nonnull final TypeElement typeElement,
+                                            @Nonnull final ExecutableElement executableElement,
+                                            @Nonnull final Collection<String> additionalSuppressions,
+                                            final boolean copyNullabilityAnnotations )
   {
-    final List<String> actualWarnings =
-      Arrays.stream( warnings ).filter( Objects::nonNull ).collect( Collectors.toList() );
-    if ( actualWarnings.isEmpty() )
+    final DeclaredType declaredType = (DeclaredType) typeElement.asType();
+    final ExecutableType executableType =
+      (ExecutableType) processingEnv.getTypeUtils().asMemberOf( declaredType, executableElement );
+
+    final MethodSpec.Builder method = MethodSpec.methodBuilder( executableElement.getSimpleName().toString() );
+    method.addAnnotation( Override.class );
+    method.addModifiers( Modifier.FINAL );
+
+    SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, method, executableType );
+    copyAccessModifiers( executableElement, method );
+    copyTypeParameters( executableType, method );
+    if ( copyNullabilityAnnotations )
     {
-      return null;
-    }
-    else if ( 1 == actualWarnings.size() )
-    {
-      return AnnotationSpec
-        .builder( SuppressWarnings.class )
-        .addMember( "value", "$S", actualWarnings.get( 0 ) )
-        .build();
+      copyWhitelistedAnnotations( executableElement, method );
     }
     else
     {
-      final String formatString = "{ " + String.join( ", ", actualWarnings ) + " }";
-      return AnnotationSpec
-        .builder( SuppressWarnings.class )
-        .addMember( "value", formatString, actualWarnings.toArray() )
-        .build();
+      if ( AnnotationsUtil.hasAnnotationOfType( executableElement, Deprecated.class.getName() ) )
+      {
+        method.addAnnotation( Deprecated.class );
+      }
+    }
+
+    method.varargs( executableElement.isVarArgs() );
+
+    // Copy all the parameters across
+    copyParameters( executableElement, executableType, method );
+
+    copyExceptions( executableType, method );
+
+    // Copy return type
+    method.returns( TypeName.get( executableType.getReturnType() ) );
+    return method;
+  }
+
+  static void copyParameters( @Nonnull final ExecutableElement executableElement,
+                              @Nonnull final ExecutableType executableType,
+                              @Nonnull final MethodSpec.Builder method )
+  {
+    int paramIndex = 0;
+    for ( final TypeMirror parameterType : executableType.getParameterTypes() )
+    {
+      final TypeName typeName = TypeName.get( parameterType );
+      final VariableElement variableElement = executableElement.getParameters().get( paramIndex );
+      final String name = variableElement.getSimpleName().toString();
+      final ParameterSpec.Builder parameter = ParameterSpec.builder( typeName, name, Modifier.FINAL );
+      copyWhitelistedAnnotations( variableElement, parameter );
+      method.addParameter( parameter.build() );
+      paramIndex++;
     }
   }
 
   @Nonnull
   static MethodSpec.Builder refMethod( @Nonnull final ProcessingEnvironment processingEnv,
                                        @Nonnull final TypeElement typeElement,
-                                       @Nonnull final ExecutableElement original )
+                                       @Nonnull final ExecutableElement executableElement )
   {
-    final ExecutableType originalExecutableType =
-      (ExecutableType) processingEnv.getTypeUtils().asMemberOf( (DeclaredType) typeElement.asType(), original );
-    final TypeMirror returnType = originalExecutableType.getReturnType();
-
-    final String methodName = original.getSimpleName().toString();
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( methodName );
-    method.addModifiers( Modifier.FINAL );
-    if ( AnnotationsUtil.hasAnnotationOfType( original, Deprecated.class.getName() ) )
+    final MethodSpec.Builder method =
+      overrideMethod( processingEnv, typeElement, executableElement, Collections.emptyList(), false );
+    if ( !executableElement.getReturnType().getKind().isPrimitive() )
     {
-      method.addAnnotation( Deprecated.class );
+      method.addAnnotation( NONNULL_CLASSNAME );
     }
-    method.addAnnotation( Override.class );
-    if ( !TypeName.get( returnType ).isPrimitive() )
-    {
-      // If @Nonnull is present on the class path then generate ref using it
-      final TypeElement nonnull = processingEnv.getElementUtils().getTypeElement( "javax.annotation.Nonnull" );
-      if ( null != nonnull )
-      {
-        method.addAnnotation( ClassName.get( "javax.annotation", "Nonnull" ) );
-      }
-    }
-
-    if ( hasRawTypes( processingEnv, returnType ) )
-    {
-      method.addAnnotation( suppressWarningsAnnotation( "rawtypes" ) );
-    }
-    copyAccessModifiers( original, method );
-    copyTypeParameters( originalExecutableType, method );
-    method.returns( TypeName.get( returnType ) );
     return method;
-  }
-
-  private static boolean hasRawTypes( @Nonnull final ProcessingEnvironment processingEnv,
-                                      @Nonnull final TypeMirror type )
-  {
-    if ( type instanceof ArrayType )
-    {
-      return hasRawTypes( processingEnv, ( (ArrayType) type ).getComponentType() );
-    }
-    else if ( type instanceof DeclaredType )
-    {
-      final DeclaredType declaredType = (DeclaredType) type;
-      final int typeArgumentCount = declaredType.getTypeArguments().size();
-      final TypeElement typeElement = (TypeElement) processingEnv.getTypeUtils().asElement( type );
-      return typeArgumentCount != typeElement.getTypeParameters().size();
-    }
-    else
-    {
-      return false;
-    }
   }
 
   static boolean areTypesInDifferentPackage( @Nonnull final TypeElement typeElement1,

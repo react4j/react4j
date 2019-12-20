@@ -56,7 +56,7 @@ final class BuilderGenerator
 
     if ( descriptor.builderAccessesDeprecatedElements() )
     {
-      builder.addAnnotation( GeneratorUtil.suppressWarningsAnnotation( "deprecation" ) );
+      builder.addAnnotation( SuppressWarningsUtil.suppressWarningsAnnotation( "deprecation" ) );
     }
 
     // Private constructor so can not instantiate
