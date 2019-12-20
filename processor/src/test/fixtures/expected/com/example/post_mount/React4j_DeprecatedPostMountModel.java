@@ -17,7 +17,10 @@ import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 
-@SuppressWarnings({ "Arez:UnnecessaryAllowEmpty", "deprecation" })
+@SuppressWarnings({
+    "Arez:UnnecessaryAllowEmpty",
+    "deprecation"
+})
 @ArezComponent(
     name = "DeprecatedPostMountModel",
     disposeNotifier = Feature.DISABLE,

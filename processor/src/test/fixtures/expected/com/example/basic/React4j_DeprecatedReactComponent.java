@@ -17,7 +17,10 @@ import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 
 @Deprecated
-@SuppressWarnings({ "Arez:UnnecessaryAllowEmpty", "deprecation" })
+@SuppressWarnings({
+    "Arez:UnnecessaryAllowEmpty",
+    "deprecation"
+})
 @ArezComponent(
     name = "DeprecatedReactComponent",
     disposeNotifier = Feature.DISABLE,
