@@ -238,3 +238,7 @@ we ever do this here is a list of helpful links that could provide useful
   This means that you are directly poking at the internals of react but it would mean that we would not have to use
   un-minifiable externs interface to components. Essentially this would involve creating effect objects directly
   and adding them to the queue. See last example in https://medium.com/the-guild/under-the-hood-of-reacts-hooks-system-eb59638c9dba
+
+* [A deep dive into React Fiber internals](https://blog.logrocket.com/deep-dive-into-react-fiber-internals/)
+
+* [Build your own React](https://pomb.us/build-your-own-react/)
