@@ -141,7 +141,7 @@ final class ComponentGenerator
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
     GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
 
-    builder.addMethod( buildConstructor( descriptor ).build() );
+    builder.addMethod( buildConstructor( processingEnv,descriptor ).build() );
 
     if ( descriptor.trackRender() )
     {
@@ -218,7 +218,8 @@ final class ComponentGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildConstructor( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildConstructor( @Nonnull final ProcessingEnvironment processingEnv,
+                                                      @Nonnull final ComponentDescriptor descriptor )
   {
     final String componentParameterName = FRAMEWORK_INTERNAL_PREFIX + "nativeComponent";
     final ParameterSpec.Builder componentParameter =
@@ -251,7 +252,9 @@ final class ComponentGenerator
         params.add( name );
         final ParameterSpec.Builder ctorParameter =
           ParameterSpec.builder( TypeName.get( element.asType() ), name, Modifier.FINAL );
-        Generator.copyWhitelistedAnnotations( element, ctorParameter );
+        GeneratorUtil.copyWhitelistedAnnotations( element, ctorParameter );
+        SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, ctor, element.asType() );
+
         ctor.addParameter( ctorParameter.build() );
       }
       sb.append( " )" );
@@ -297,7 +300,7 @@ final class ComponentGenerator
         returns( TypeName.get( returnType ) );
     GeneratorUtil.copyTypeParameters( methodType, method );
     GeneratorUtil.copyAccessModifiers( methodElement, method );
-    Generator.copyWhitelistedAnnotations( methodElement, method );
+    GeneratorUtil.copyWhitelistedAnnotations( methodElement, method );
 
     method.addAnnotation( Override.class );
 

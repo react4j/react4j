@@ -27,9 +27,10 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInjectRawTypeComponent {
+  @SuppressWarnings("rawtypes")
   React4j_ConstructorInjectRawTypeComponent(
       @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent,
-      @SuppressWarnings("rawtypes") @Nonnull final Consumer someParam) {
+      @Nonnull final Consumer someParam) {
     super( someParam );
     bindComponent( $$react4j$$_nativeComponent );
   }

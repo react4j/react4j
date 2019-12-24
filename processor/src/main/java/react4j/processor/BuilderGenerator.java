@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -72,24 +73,25 @@ final class BuilderGenerator
 
     for ( final Step step : steps )
     {
-      builder.addType( buildBuilderStepInterface( descriptor, step ) );
+      builder.addType( buildBuilderStepInterface( processingEnv, descriptor, step ) );
     }
 
     // first step which may be required prop, optional props, or build terminal step.
-    buildStaticStepMethodMethods( descriptor, builder, steps.get( 0 ) );
+    buildStaticStepMethodMethods( processingEnv, descriptor, builder, steps.get( 0 ) );
 
-    builder.addType( buildBuilder( descriptor, builderDescriptor ) );
+    builder.addType( buildBuilder( processingEnv, descriptor, builderDescriptor ) );
 
     return builder.build();
   }
 
-  private static void buildStaticStepMethodMethods( @Nonnull final ComponentDescriptor descriptor,
+  private static void buildStaticStepMethodMethods( @Nonnull final ProcessingEnvironment processingEnv,
+                                                    @Nonnull final ComponentDescriptor descriptor,
                                                     @Nonnull final TypeSpec.Builder builder,
                                                     @Nonnull final Step step )
   {
     for ( final StepMethod method : step.getMethods() )
     {
-      builder.addMethod( buildStaticStepMethodMethod( descriptor, step, method ) );
+      builder.addMethod( buildStaticStepMethodMethod( processingEnv, descriptor, step, method ) );
     }
   }
 
@@ -108,7 +110,8 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildStaticStepMethodMethod( @Nonnull final ComponentDescriptor descriptor,
+  private static MethodSpec buildStaticStepMethodMethod( @Nonnull final ProcessingEnvironment processingEnv,
+                                                         @Nonnull final ComponentDescriptor descriptor,
                                                          @Nonnull final Step step,
                                                          @Nonnull final StepMethod stepMethod )
   {
@@ -134,7 +137,10 @@ final class BuilderGenerator
       final ExecutableElement propMethod = stepMethod.getPropMethod();
       if ( null != propMethod )
       {
-        Generator.copyWhitelistedAnnotations( propMethod, parameter );
+        GeneratorUtil.copyWhitelistedAnnotations( propMethod, parameter );
+        final ExecutableType methodType = stepMethod.getPropMethodType();
+        assert null != methodType;
+        SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
       }
       else if ( stepMethod.isChildrenStreamIntrinsic() )
       {
@@ -208,7 +214,8 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static TypeSpec buildBuilderStepInterface( @Nonnull final ComponentDescriptor descriptor,
+  private static TypeSpec buildBuilderStepInterface( @Nonnull final ProcessingEnvironment processingEnv,
+                                                     @Nonnull final ComponentDescriptor descriptor,
                                                      @Nonnull final Step step )
   {
     final int stepIndex = step.getIndex();
@@ -246,7 +253,10 @@ final class BuilderGenerator
           final ExecutableElement propMethod = stepMethod.getPropMethod();
           if ( null != propMethod )
           {
-            Generator.copyWhitelistedAnnotations( propMethod, parameter );
+            GeneratorUtil.copyWhitelistedAnnotations( propMethod, parameter );
+            final ExecutableType methodType = stepMethod.getPropMethodType();
+            assert null != methodType;
+            SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
           }
           else if ( stepMethod.isChildrenStreamIntrinsic() )
           {
@@ -261,7 +271,8 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildBuilderStepImpl( @Nonnull final ComponentDescriptor descriptor,
+  private static MethodSpec buildBuilderStepImpl( @Nonnull final ProcessingEnvironment processingEnv,
+                                                  @Nonnull final ComponentDescriptor descriptor,
                                                   @Nonnull final Step step,
                                                   @Nonnull final StepMethod stepMethod )
   {
@@ -281,7 +292,10 @@ final class BuilderGenerator
     final ExecutableElement propMethod = stepMethod.getPropMethod();
     if ( null != propMethod )
     {
-      Generator.copyWhitelistedAnnotations( propMethod, parameter );
+      GeneratorUtil.copyWhitelistedAnnotations( propMethod, parameter );
+      final ExecutableType methodType = stepMethod.getPropMethodType();
+      assert null != methodType;
+      SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
     }
     else if ( stepMethod.isChildrenStreamIntrinsic() )
     {
@@ -458,7 +472,8 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static TypeSpec buildBuilder( @Nonnull final ComponentDescriptor descriptor,
+  private static TypeSpec buildBuilder( @Nonnull final ProcessingEnvironment processingEnv,
+                                        @Nonnull final ComponentDescriptor descriptor,
                                         @Nonnull final BuilderDescriptor builderDescriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "Builder" );
@@ -496,7 +511,7 @@ final class BuilderGenerator
       builder.addMethod( method.build() );
     }
 
-    final HashSet<String> stepMethodsAdded = new HashSet<>();
+    final Set<String> stepMethodsAdded = new HashSet<>();
     for ( final Step step : steps )
     {
       for ( final StepMethod stepMethod : step.getMethods() )
@@ -505,7 +520,7 @@ final class BuilderGenerator
         {
           if ( !stepMethod.isBuildIntrinsic() )
           {
-            builder.addMethod( buildBuilderStepImpl( descriptor, step, stepMethod ) );
+            builder.addMethod( buildBuilderStepImpl( processingEnv, descriptor, step, stepMethod ) );
           }
         }
       }
