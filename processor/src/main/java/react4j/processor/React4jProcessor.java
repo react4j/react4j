@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -36,6 +37,12 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Types;
+import org.realityforge.proton.AbstractStandardProcessor;
+import org.realityforge.proton.AnnotationsUtil;
+import org.realityforge.proton.ElementsUtil;
+import org.realityforge.proton.GeneratorUtil;
+import org.realityforge.proton.MemberChecks;
+import org.realityforge.proton.ProcessorException;
 
 /**
  * Annotation processor that analyzes React annotated source and generates models from the annotations.
@@ -54,11 +61,14 @@ public final class React4jProcessor
   private static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
   private static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
 
+  @SuppressWarnings( "unchecked" )
   @Nonnull
   @Override
-  protected final String getRootAnnotationClassname()
+  protected Set<TypeElement> getTypeElementsToProcess( @Nonnull final RoundEnvironment env )
   {
-    return Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME;
+    final TypeElement annotation =
+      processingEnv.getElementUtils().getTypeElement( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME );
+    return (Set<TypeElement>) env.getElementsAnnotatedWith( annotation );
   }
 
   @Override
@@ -481,7 +491,7 @@ public final class React4jProcessor
   private void determineDefaultPropsFields( @Nonnull final ComponentDescriptor descriptor )
   {
     final List<VariableElement> defaultPropsFields =
-      ProcessorUtil.getFieldElements( descriptor.getElement() ).stream()
+      ElementsUtil.getFields( descriptor.getElement() ).stream()
         .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
         .collect( Collectors.toList() );
 
@@ -802,8 +812,7 @@ public final class React4jProcessor
         }
         else
         {
-          return ProcessorUtil
-            .getMethods( element, processingEnv.getTypeUtils() )
+          return getMethods( element )
             .stream()
             .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_ANNOTATION_CLASSNAME ) ||
                             AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_REF_ANNOTATION_CLASSNAME ) );
@@ -1042,8 +1051,7 @@ public final class React4jProcessor
                         )
         )
       ) ||
-      ProcessorUtil
-        .getFieldElements( typeElement )
+      ElementsUtil.getFields( typeElement )
         .stream()
         .anyMatch( e -> e.getAnnotationMirrors()
           .stream()
@@ -1174,15 +1182,15 @@ public final class React4jProcessor
   @Nonnull
   private List<ExecutableElement> getMethods( @Nonnull final TypeElement typeElement )
   {
-    return ProcessorUtil.getMethods( typeElement, processingEnv.getTypeUtils() );
+    return ElementsUtil.getMethods( typeElement, processingEnv.getElementUtils(), processingEnv.getTypeUtils() );
   }
 
   @SuppressWarnings( "SameParameterValue" )
   private boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
   {
-    return ProcessorUtil.isWarningSuppressed( element,
-                                              warning,
-                                              Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
+    return ElementsUtil.isWarningSuppressed( element,
+                                             warning,
+                                             Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
   }
 
   private void shouldBeInternalMethod( @Nonnull final TypeElement typeElement,

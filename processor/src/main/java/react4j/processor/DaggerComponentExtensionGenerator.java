@@ -9,6 +9,7 @@ import com.squareup.javapoet.TypeSpec;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
+import org.realityforge.proton.GeneratorUtil;
 
 final class DaggerComponentExtensionGenerator
 {

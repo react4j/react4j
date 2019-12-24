@@ -9,6 +9,8 @@ complete as there is too much un-said.
 * Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
   (See TODOs in Generator.java) with the enhancers.
 
+* Refactor `react4j.processor.Generator` by using proton equivalent functionality.
+
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
 

@@ -17,6 +17,9 @@ import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import org.realityforge.proton.AnnotationsUtil;
+import org.realityforge.proton.GeneratorUtil;
+import org.realityforge.proton.ProcessorException;
 
 final class ComponentDescriptor
 {
@@ -257,15 +260,15 @@ final class ComponentDescriptor
     return _props;
   }
 
+  void setProps( @Nonnull final List<PropDescriptor> events )
+  {
+    _props = Objects.requireNonNull( events );
+  }
+
   @Nullable
   PropDescriptor findPropNamed( @Nonnull final String name )
   {
     return getProps().stream().filter( p -> p.getName().equals( name ) ).findAny().orElse( null );
-  }
-
-  void setProps( @Nonnull final List<PropDescriptor> events )
-  {
-    _props = Objects.requireNonNull( events );
   }
 
   /**

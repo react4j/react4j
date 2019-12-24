@@ -6,20 +6,20 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.lang.model.AnnotatedConstruct;
-import javax.lang.model.element.ExecutableElement;
+import org.realityforge.proton.GeneratorUtil;
 
 final class Generator
 {
-  private Generator()
-  {
-  }
-
   @Nonnull
   static final List<String> ANNOTATION_WHITELIST =
     Arrays.asList( Constants.NONNULL_ANNOTATION_CLASSNAME,
                    Constants.NULLABLE_ANNOTATION_CLASSNAME,
                    SuppressWarnings.class.getName(),
                    Deprecated.class.getName() );
+
+  private Generator()
+  {
+  }
 
   static void copyWhitelistedAnnotations( @Nonnull final AnnotatedConstruct element,
                                           @Nonnull final ParameterSpec.Builder builder )
@@ -31,10 +31,5 @@ final class Generator
                                           @Nonnull final MethodSpec.Builder builder )
   {
     GeneratorUtil.copyWhitelistedAnnotations( element, builder, ANNOTATION_WHITELIST );
-  }
-
-  static boolean isNonnull( @Nonnull final ExecutableElement method )
-  {
-    return AnnotationsUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME );
   }
 }

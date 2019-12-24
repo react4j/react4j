@@ -23,6 +23,11 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import org.realityforge.proton.AnnotationsUtil;
+import org.realityforge.proton.GeneratorUtil;
+import org.realityforge.proton.MemberChecks;
+import org.realityforge.proton.ProcessorException;
+import org.realityforge.proton.SuppressWarningsUtil;
 
 @SuppressWarnings( "Duplicates" )
 final class ComponentGenerator
@@ -327,7 +332,7 @@ final class ComponentGenerator
 
     final String convertMethodName = getConverter( returnType, methodElement );
     final TypeKind resultKind = methodElement.getReturnType().getKind();
-    if ( !resultKind.isPrimitive() && !Generator.isNonnull( methodElement ) )
+    if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( methodElement ) )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
@@ -442,7 +447,7 @@ final class ComponentGenerator
         requireComma = true;
         final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
         final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
-        if ( !resultKind.isPrimitive() && !Generator.isNonnull( prop.getMethod() ) )
+        if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() ) )
         {
           sb.append( "$T.uncheckedCast( props.getAsAny( Props.$N ) )" );
           params.add( JS_CLASSNAME );
@@ -864,7 +869,7 @@ final class ComponentGenerator
       final String rawName = "raw$" + name;
       final String typedName = "typed$" + name;
       method.addStatement( "final $T $N = props.get( Props.$N )", Object.class, rawName, prop.getConstantName() );
-      final boolean isNonNull = Generator.isNonnull( prop.getMethod() );
+      final boolean isNonNull = AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() );
       if ( !prop.isOptional() && isNonNull )
       {
         final CodeBlock.Builder block = CodeBlock.builder();

@@ -24,6 +24,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
+import org.realityforge.proton.AnnotationsUtil;
+import org.realityforge.proton.GeneratorUtil;
+import org.realityforge.proton.SuppressWarningsUtil;
 
 final class BuilderGenerator
 {
@@ -344,7 +347,7 @@ final class BuilderGenerator
     {
       assert null != propMethod;
       assert null != prop;
-      if ( Generator.isNonnull( propMethod ) )
+      if ( AnnotationsUtil.hasNonnullAnnotation( propMethod ) )
       {
         method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $T.requireNonNull( $N ) ) )",
                              descriptor.getEnhancedClassName(),
@@ -364,7 +367,8 @@ final class BuilderGenerator
     }
     else
     {
-      if ( ( null != propMethod && Generator.isNonnull( propMethod ) ) && !stepMethod.getType().isPrimitive() )
+      if ( ( null != propMethod && AnnotationsUtil.hasNonnullAnnotation( propMethod ) ) &&
+           !stepMethod.getType().isPrimitive() )
       {
         method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
       }

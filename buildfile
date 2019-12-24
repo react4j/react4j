@@ -150,6 +150,7 @@ define 'react4j' do
     project.enable_annotation_processor = true
 
     compile.with :autocommon,
+                 :proton_processor_pack,
                  :javapoet,
                  :guava,
                  :javax_annotation
@@ -175,6 +176,7 @@ define 'react4j' do
       jar.merge(artifact(:javapoet))
       jar.merge(artifact(:guava))
       jar.merge(artifact(:autocommon))
+      jar.merge(artifact(:proton_processor_pack))
       jar.enhance do |f|
         shaded_jar = (f.to_s + '-shaded')
         Buildr.ant 'shade_jar' do |ant|
@@ -184,6 +186,7 @@ define 'react4j' do
           ant.shade :jar => f.to_s, :uberJar => shaded_jar do
             ant.relocation :pattern => 'com.squareup.javapoet', :shadedPattern => 'react4j.processor.vendor.javapoet'
             ant.relocation :pattern => 'com.google', :shadedPattern => 'react4j.processor.vendor.google'
+            ant.relocation :pattern => 'org.realityforge.proton', :shadedPattern => 'react4j.processor.vendor.proton'
           end
         end
         FileUtils.mv shaded_jar, f.to_s

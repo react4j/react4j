@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
+import org.realityforge.proton.ProcessorException;
 
 @SuppressWarnings( "Duplicates" )
 final class PropDescriptor
@@ -21,10 +22,10 @@ final class PropDescriptor
   private final boolean _shouldUpdateOnChange;
   private final boolean _observable;
   private final boolean _disposable;
-  private boolean _onChangePresent;
-  private boolean _suppressMutablePropAccessedInPostConstruct;
   @Nullable
   private final ImmutablePropKeyStrategy _immutablePropKeyStrategy;
+  private boolean _onChangePresent;
+  private boolean _suppressMutablePropAccessedInPostConstruct;
   @Nullable
   private VariableElement _defaultField;
   @Nullable
@@ -120,24 +121,6 @@ final class PropDescriptor
     return _immutablePropKeyStrategy;
   }
 
-  void setDefaultMethod( @Nonnull final ExecutableElement method )
-  {
-    if ( null != _defaultMethod )
-    {
-      throw new ProcessorException( "@PropDefault target duplicates existing method named " +
-                                    _defaultMethod.getSimpleName(), method );
-    }
-    else
-    {
-      /*
-       * As all methods are processed first, there is no chance that a duplicate field will be detected
-       * prior to the field being set. If there is a duplicate field it will be detected in setDefaultField()
-       */
-      assert null == _defaultField;
-      _defaultMethod = Objects.requireNonNull( method );
-    }
-  }
-
   boolean hasValidateMethod()
   {
     return null != _validateMethod;
@@ -163,6 +146,18 @@ final class PropDescriptor
     }
   }
 
+  boolean hasDefaultField()
+  {
+    return null != _defaultField;
+  }
+
+  @Nonnull
+  VariableElement getDefaultField()
+  {
+    assert null != _defaultField;
+    return _defaultField;
+  }
+
   void setDefaultField( @Nonnull final VariableElement field )
   {
     if ( null != _defaultMethod )
@@ -181,18 +176,6 @@ final class PropDescriptor
     }
   }
 
-  boolean hasDefaultField()
-  {
-    return null != _defaultField;
-  }
-
-  @Nonnull
-  VariableElement getDefaultField()
-  {
-    assert null != _defaultField;
-    return _defaultField;
-  }
-
   boolean hasDefaultMethod()
   {
     return null != _defaultMethod;
@@ -203,6 +186,24 @@ final class PropDescriptor
   {
     assert null != _defaultMethod;
     return _defaultMethod;
+  }
+
+  void setDefaultMethod( @Nonnull final ExecutableElement method )
+  {
+    if ( null != _defaultMethod )
+    {
+      throw new ProcessorException( "@PropDefault target duplicates existing method named " +
+                                    _defaultMethod.getSimpleName(), method );
+    }
+    else
+    {
+      /*
+       * As all methods are processed first, there is no chance that a duplicate field will be detected
+       * prior to the field being set. If there is a duplicate field it will be detected in setDefaultField()
+       */
+      assert null == _defaultField;
+      _defaultMethod = Objects.requireNonNull( method );
+    }
   }
 
   boolean isOptional()

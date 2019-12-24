@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Rework the internals of the generated builder class to reduce code size in some limited scenarios.
+* Use the `org.realityforge.proton:proton-processor-pack` project for non-React4j specific annotation processor utility methods. These were previously copy-paste shared between several projects. This is the first step towards sharing the code directly. The code is relocated as part of the build process to eliminate potential code conflicts.
 
 ### [v0.145](https://github.com/react4j/react4j/tree/v0.145) (2019-12-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.144...v0.145)
 
