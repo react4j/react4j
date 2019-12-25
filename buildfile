@@ -150,12 +150,13 @@ define 'react4j' do
     project.enable_annotation_processor = true
 
     compile.with :autocommon,
-                 :proton_processor_pack,
+                 :proton_core,
                  :javapoet,
                  :guava,
                  :javax_annotation
 
     test.with :compile_testing,
+              :proton_qa,
               :junit,
               :hamcrest_core,
               Java.tools_jar,
@@ -176,7 +177,7 @@ define 'react4j' do
       jar.merge(artifact(:javapoet))
       jar.merge(artifact(:guava))
       jar.merge(artifact(:autocommon))
-      jar.merge(artifact(:proton_processor_pack))
+      jar.merge(artifact(:proton_core))
       jar.enhance do |f|
         shaded_jar = (f.to_s + '-shaded')
         Buildr.ant 'shade_jar' do |ant|

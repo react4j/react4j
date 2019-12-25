@@ -11,6 +11,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Processor;
 import javax.tools.JavaFileObject;
+import org.realityforge.proton.qa.AbstractProcessorTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static com.google.common.truth.Truth.*;
