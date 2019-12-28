@@ -1,6 +1,7 @@
 package react4j.processor;
 
 import arez.processor.ArezProcessor;
+import com.google.testing.compile.CompileTester;
 import com.google.testing.compile.JavaSourcesSubjectFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,10 +78,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.on_error.InverseOrderOnErrorComponent", false },
         new Object[]{ "com.example.on_error.MinimalOnErrorComponent", false },
         new Object[]{ "com.example.on_error.PackageAccessOnErrorModel", false },
-        new Object[]{ "com.example.on_error.Suppressed1ProtectedAccessOnErrorModel", false },
-        new Object[]{ "com.example.on_error.Suppressed1PublicAccessOnErrorModel", false },
-        new Object[]{ "com.example.on_error.Suppressed2ProtectedAccessOnErrorModel", false },
-        new Object[]{ "com.example.on_error.Suppressed2PublicAccessOnErrorModel", false },
 
         new Object[]{ "com.example.on_prop_change.BooleanOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.ByteOnPropChange", false },
@@ -100,10 +97,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.on_prop_change.PostUpdateOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.ShortOnPropChange", false },
         new Object[]{ "com.example.on_prop_change.StringOnPropChange", false },
-        new Object[]{ "com.example.on_prop_change.Suppressed1ProtectedAccessOnPropChangeModel", false },
-        new Object[]{ "com.example.on_prop_change.Suppressed1PublicAccessOnPropChangeModel", false },
-        new Object[]{ "com.example.on_prop_change.Suppressed2ProtectedAccessOnPropChangeModel", false },
-        new Object[]{ "com.example.on_prop_change.Suppressed2PublicAccessOnPropChangeModel", false },
 
         new Object[]{ "com.example.optional_props.ExplicitOptional", false },
         new Object[]{ "com.example.optional_props.OptionalChildrenWithOptionalAndRequired", false },
@@ -114,35 +107,19 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.post_mount.BasicPostMountModel", false },
         new Object[]{ "com.example.post_mount.DeprecatedPostMountModel", false },
         new Object[]{ "com.example.post_mount.PackageAccessPostMountModel", false },
-        new Object[]{ "com.example.post_mount.Suppressed1ProtectedAccessPostMountModel", false },
-        new Object[]{ "com.example.post_mount.Suppressed1PublicAccessPostMountModel", false },
-        new Object[]{ "com.example.post_mount.Suppressed2ProtectedAccessPostMountModel", false },
-        new Object[]{ "com.example.post_mount.Suppressed2PublicAccessPostMountModel", false },
 
         new Object[]{ "com.example.post_mount_or_update.BasicPostMountOrUpdateModel", false },
         new Object[]{ "com.example.post_mount_or_update.PackageAccessPostMountOrUpdateModel", false },
         new Object[]{ "com.example.post_mount_or_update.PostMountAndPostMountOrUpdateModel", false },
         new Object[]{ "com.example.post_mount_or_update.PostUpdateAndPostMountOrUpdateModel", false },
-        new Object[]{ "com.example.post_mount_or_update.Suppressed1ProtectedAccessPostMountOrUpdateModel", false },
-        new Object[]{ "com.example.post_mount_or_update.Suppressed1PublicAccessPostMountOrUpdateModel", false },
-        new Object[]{ "com.example.post_mount_or_update.Suppressed2ProtectedAccessPostMountOrUpdateModel", false },
-        new Object[]{ "com.example.post_mount_or_update.Suppressed2PublicAccessPostMountOrUpdateModel", false },
 
         new Object[]{ "com.example.post_update.BasicPostUpdateModel", false },
         new Object[]{ "com.example.post_update.OnPropChangeAndPostUpdateModel", false },
         new Object[]{ "com.example.post_update.PackageAccessPostUpdateModel", false },
-        new Object[]{ "com.example.post_update.Suppressed1ProtectedAccessPostUpdateModel", false },
-        new Object[]{ "com.example.post_update.Suppressed1PublicAccessPostUpdateModel", false },
-        new Object[]{ "com.example.post_update.Suppressed2ProtectedAccessPostUpdateModel", false },
-        new Object[]{ "com.example.post_update.Suppressed2PublicAccessPostUpdateModel", false },
 
         new Object[]{ "com.example.pre_update.BasicPreUpdateModel", false },
         new Object[]{ "com.example.pre_update.OnPropChangeAndPreUpdateModel", false },
         new Object[]{ "com.example.pre_update.PackageAccessPreUpdateModel", false },
-        new Object[]{ "com.example.pre_update.Suppressed1ProtectedAccessPreUpdateModel", false },
-        new Object[]{ "com.example.pre_update.Suppressed1PublicAccessPreUpdateModel", false },
-        new Object[]{ "com.example.pre_update.Suppressed2ProtectedAccessPreUpdateModel", false },
-        new Object[]{ "com.example.pre_update.Suppressed2PublicAccessPreUpdateModel", false },
 
         new Object[]{ "com.example.prop.ActAsComponentPropModel", false },
         new Object[]{ "com.example.prop.ArezPropModel", false },
@@ -225,10 +202,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.PropTypeShort", false },
         new Object[]{ "com.example.prop.PropTypeString", false },
         new Object[]{ "com.example.prop.SingleChildPropComponent", false },
-        new Object[]{ "com.example.prop.Suppressed1ProtectedAccessPropModel", false },
-        new Object[]{ "com.example.prop.Suppressed1PublicAccessPropModel", false },
-        new Object[]{ "com.example.prop.Suppressed2ProtectedAccessPropModel", false },
-        new Object[]{ "com.example.prop.Suppressed2PublicAccessPropModel", false },
 
         new Object[]{ "com.example.prop_validate.BooleanPropValidate", false },
         new Object[]{ "com.example.prop_validate.BytePropValidate", false },
@@ -243,10 +216,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop_validate.PackageAccessPropValidate", false },
         new Object[]{ "com.example.prop_validate.ShortPropValidate", false },
         new Object[]{ "com.example.prop_validate.StringPropValidate", false },
-        new Object[]{ "com.example.prop_validate.Suppressed1ProtectedAccessPropValidateModel", false },
-        new Object[]{ "com.example.prop_validate.Suppressed1PublicAccessPropValidateModel", false },
-        new Object[]{ "com.example.prop_validate.Suppressed2ProtectedAccessPropValidateModel", false },
-        new Object[]{ "com.example.prop_validate.Suppressed2PublicAccessPropValidateModel", false },
 
         new Object[]{ "com.example.render.BaseRenderComponent", false },
         new Object[]{ "RootPackageCompleteComponent", false },
@@ -301,38 +270,6 @@ public final class React4jProcessorTest
   }
 
   @Test
-  public void protectedAccessOnError()
-  {
-    final String filename =
-      toFilename( "input", "com.example.on_error.ProtectedAccessOnErrorModel" );
-    final String messageFragment =
-      "@OnError target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
-  public void publicAccessOnError()
-  {
-    final String filename =
-      toFilename( "input", "com.example.on_error.PublicAccessOnErrorModel" );
-    final String messageFragment =
-      "@OnError target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
   public void validProtectedAccessOnError()
     throws Exception
   {
@@ -360,38 +297,6 @@ public final class React4jProcessorTest
                   "com.example.on_error.React4j_PublicAccessViaInterfaceOnErrorModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
-  }
-
-  @Test
-  public void protectedAccessOnPropChange()
-  {
-    final String filename =
-      toFilename( "input", "com.example.on_prop_change.ProtectedAccessOnPropChangeModel" );
-    final String messageFragment =
-      "@OnPropChange target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
-  public void publicAccessOnPropChange()
-  {
-    final String filename =
-      toFilename( "input", "com.example.on_prop_change.PublicAccessOnPropChangeModel" );
-    final String messageFragment =
-      "@OnPropChange target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
   }
 
   @Test
@@ -425,38 +330,6 @@ public final class React4jProcessorTest
   }
 
   @Test
-  public void protectedAccessPostMount()
-  {
-    final String filename =
-      toFilename( "input", "com.example.post_mount.ProtectedAccessPostMountModel" );
-    final String messageFragment =
-      "@PostMount target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
-  public void publicAccessPostMount()
-  {
-    final String filename =
-      toFilename( "input", "com.example.post_mount.PublicAccessPostMountModel" );
-    final String messageFragment =
-      "@PostMount target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
   public void validProtectedAccessPostMount()
     throws Exception
   {
@@ -484,38 +357,6 @@ public final class React4jProcessorTest
                   "com.example.post_mount.React4j_PublicAccessViaInterfacePostMountModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
-  }
-
-  @Test
-  public void protectedAccessPostMountOrUpdate()
-  {
-    final String filename =
-      toFilename( "input", "com.example.post_mount_or_update.ProtectedAccessPostMountOrUpdateModel" );
-    final String messageFragment =
-      "@PostMountOrUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
-  public void publicAccessPostMountOrUpdate()
-  {
-    final String filename =
-      toFilename( "input", "com.example.post_mount_or_update.PublicAccessPostMountOrUpdateModel" );
-    final String messageFragment =
-      "@PostMountOrUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
   }
 
   @Test
@@ -549,38 +390,6 @@ public final class React4jProcessorTest
   }
 
   @Test
-  public void protectedAccessPostUpdate()
-  {
-    final String filename =
-      toFilename( "input", "com.example.post_update.ProtectedAccessPostUpdateModel" );
-    final String messageFragment =
-      "@PostUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
-  public void publicAccessPostUpdate()
-  {
-    final String filename =
-      toFilename( "input", "com.example.post_update.PublicAccessPostUpdateModel" );
-    final String messageFragment =
-      "@PostUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
   public void validProtectedAccessPostUpdate()
     throws Exception
   {
@@ -608,38 +417,6 @@ public final class React4jProcessorTest
                   "com.example.post_update.React4j_PublicAccessViaInterfacePostUpdateModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
-  }
-
-  @Test
-  public void protectedAccessPreUpdate()
-  {
-    final String filename =
-      toFilename( "input", "com.example.pre_update.ProtectedAccessPreUpdateModel" );
-    final String messageFragment =
-      "@PreUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
-  public void publicAccessPreUpdate()
-  {
-    final String filename =
-      toFilename( "input", "com.example.pre_update.PublicAccessPreUpdateModel" );
-    final String messageFragment =
-      "@PreUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
   }
 
   @Test
@@ -673,38 +450,6 @@ public final class React4jProcessorTest
   }
 
   @Test
-  public void protectedAccessProp()
-  {
-    final String filename =
-      toFilename( "input", "com.example.prop.ProtectedAccessPropModel" );
-    final String messageFragment =
-      "@Prop target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
-  public void publicAccessProp()
-  {
-    final String filename =
-      toFilename( "input", "com.example.prop.PublicAccessPropModel" );
-    final String messageFragment =
-      "@Prop target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
   public void validProtectedAccessProp()
     throws Exception
   {
@@ -732,38 +477,6 @@ public final class React4jProcessorTest
                   "com.example.prop.React4j_PublicAccessViaInterfacePropModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
-  }
-
-  @Test
-  public void protectedAccessPropValidate()
-  {
-    final String filename =
-      toFilename( "input", "com.example.prop_validate.ProtectedAccessPropValidateModel" );
-    final String messageFragment =
-      "@PropValidate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none", "-Areact4j.defer.errors=false" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
-  }
-
-  @Test
-  public void publicAccessPropValidate()
-  {
-    final String filename =
-      toFilename( "input", "com.example.prop_validate.PublicAccessPropValidateModel" );
-    final String messageFragment =
-      "@PropValidate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )";
-    assert_().about( JavaSourcesSubjectFactory.javaSources() ).
-      that( Collections.singletonList( fixture( filename ) ) ).
-      withCompilerOptions( "-Xlint:all,-processing", "-implicit:none" ).
-      processedWith( new React4jProcessor(), new ArezProcessor() ).
-      compilesWithoutError().
-      withWarningCount( 1 ).
-      withWarningContaining( messageFragment );
   }
 
   @Test
@@ -1046,6 +759,112 @@ public final class React4jProcessorTest
                                  "@ReactComponent annotation" );
   }
 
+  @DataProvider( name = "compileWithWarnings" )
+  public Object[][] compileWithWarnings()
+  {
+    return new Object[][]
+      {
+        new Object[]{ "com.example.prop_validate.ProtectedAccessPropValidateModel",
+                      "@PropValidate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.prop_validate.PublicAccessPropValidateModel",
+                      "@PropValidate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
+        new Object[]{ "com.example.on_error.ProtectedAccessOnErrorModel",
+                      "@OnError target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.on_error.PublicAccessOnErrorModel",
+                      "@OnError target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
+        new Object[]{ "com.example.on_prop_change.ProtectedAccessOnPropChangeModel",
+                      "@OnPropChange target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.on_prop_change.PublicAccessOnPropChangeModel",
+                      "@OnPropChange target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
+        new Object[]{ "com.example.post_mount.ProtectedAccessPostMountModel",
+                      "@PostMount target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.post_mount.PublicAccessPostMountModel",
+                      "@PostMount target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
+        new Object[]{ "com.example.post_mount_or_update.ProtectedAccessPostMountOrUpdateModel",
+                      "@PostMountOrUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.post_mount_or_update.PublicAccessPostMountOrUpdateModel",
+                      "@PostMountOrUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
+        new Object[]{ "com.example.post_update.ProtectedAccessPostUpdateModel",
+                      "@PostUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.post_update.PublicAccessPostUpdateModel",
+                      "@PostUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
+        new Object[]{ "com.example.pre_update.ProtectedAccessPreUpdateModel",
+                      "@PreUpdate target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.pre_update.PublicAccessPreUpdateModel",
+                      "@PreUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
+        new Object[]{ "com.example.prop.ProtectedAccessPropModel",
+                      "@Prop target should not be protected. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.prop.PublicAccessPropModel",
+                      "@Prop target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" }
+      };
+  }
+
+  @Test( dataProvider = "compileWithWarnings" )
+  public void processCompileWithWarnings( @Nonnull final String classname, @Nonnull final String messageFragment )
+  {
+    assertCompilesWithSingleWarning( classname, messageFragment );
+  }
+
+  @DataProvider( name = "compileWithoutWarnings" )
+  public Object[][] compileWithoutWarnings()
+  {
+    return new Object[][]
+      {
+        new Object[]{ "com.example.on_error.Suppressed1ProtectedAccessOnErrorModel" },
+        new Object[]{ "com.example.on_error.Suppressed1PublicAccessOnErrorModel" },
+        new Object[]{ "com.example.on_error.Suppressed2ProtectedAccessOnErrorModel" },
+        new Object[]{ "com.example.on_error.Suppressed2PublicAccessOnErrorModel" },
+
+        new Object[]{ "com.example.on_prop_change.Suppressed1ProtectedAccessOnPropChangeModel" },
+        new Object[]{ "com.example.on_prop_change.Suppressed1PublicAccessOnPropChangeModel" },
+        new Object[]{ "com.example.on_prop_change.Suppressed2ProtectedAccessOnPropChangeModel" },
+        new Object[]{ "com.example.on_prop_change.Suppressed2PublicAccessOnPropChangeModel" },
+
+        new Object[]{ "com.example.post_mount.Suppressed1ProtectedAccessPostMountModel" },
+        new Object[]{ "com.example.post_mount.Suppressed1PublicAccessPostMountModel" },
+        new Object[]{ "com.example.post_mount.Suppressed2ProtectedAccessPostMountModel" },
+        new Object[]{ "com.example.post_mount.Suppressed2PublicAccessPostMountModel" },
+
+        new Object[]{ "com.example.post_mount_or_update.Suppressed1ProtectedAccessPostMountOrUpdateModel" },
+        new Object[]{ "com.example.post_mount_or_update.Suppressed1PublicAccessPostMountOrUpdateModel" },
+        new Object[]{ "com.example.post_mount_or_update.Suppressed2ProtectedAccessPostMountOrUpdateModel" },
+        new Object[]{ "com.example.post_mount_or_update.Suppressed2PublicAccessPostMountOrUpdateModel" },
+
+        new Object[]{ "com.example.post_update.Suppressed1ProtectedAccessPostUpdateModel" },
+        new Object[]{ "com.example.post_update.Suppressed1PublicAccessPostUpdateModel" },
+        new Object[]{ "com.example.post_update.Suppressed2ProtectedAccessPostUpdateModel" },
+        new Object[]{ "com.example.post_update.Suppressed2PublicAccessPostUpdateModel" },
+
+        new Object[]{ "com.example.pre_update.Suppressed1ProtectedAccessPreUpdateModel" },
+        new Object[]{ "com.example.pre_update.Suppressed1PublicAccessPreUpdateModel" },
+        new Object[]{ "com.example.pre_update.Suppressed2ProtectedAccessPreUpdateModel" },
+        new Object[]{ "com.example.pre_update.Suppressed2PublicAccessPreUpdateModel" },
+
+        new Object[]{ "com.example.prop.Suppressed1ProtectedAccessPropModel" },
+        new Object[]{ "com.example.prop.Suppressed1PublicAccessPropModel" },
+        new Object[]{ "com.example.prop.Suppressed2ProtectedAccessPropModel" },
+        new Object[]{ "com.example.prop.Suppressed2PublicAccessPropModel" },
+
+        new Object[]{ "com.example.prop_validate.Suppressed1ProtectedAccessPropValidateModel" },
+        new Object[]{ "com.example.prop_validate.Suppressed1PublicAccessPropValidateModel" },
+        new Object[]{ "com.example.prop_validate.Suppressed2ProtectedAccessPropValidateModel" },
+        new Object[]{ "com.example.prop_validate.Suppressed2PublicAccessPropValidateModel" }
+      };
+  }
+
+  @Test( dataProvider = "compileWithoutWarnings" )
+  public void processCompileWithWarnings( @Nonnull final String classname )
+  {
+    assertCompilesWithoutWarnings( classname );
+  }
+
   @Nonnull
   @Override
   protected Processor processor()
@@ -1161,5 +980,46 @@ public final class React4jProcessorTest
     {
     }
     return true;
+  }
+
+  @Nonnull
+  private CompileTester assertCompiles( @Nonnull final List<JavaFileObject> inputs )
+  {
+    return assert_().about( JavaSourcesSubjectFactory.javaSources() ).
+      that( inputs ).
+      withCompilerOptions( getOptions() ).
+      processedWith( processor(), additionalProcessors() );
+  }
+
+  @Nonnull
+  private CompileTester.SuccessfulCompilationClause assertCompilesWithoutErrors( @Nonnull final List<JavaFileObject> inputs )
+  {
+    return assertCompiles( inputs ).compilesWithoutError();
+  }
+
+  @SuppressWarnings( "UnusedReturnValue" )
+  @Nonnull
+  private CompileTester.CleanCompilationClause assertCompilesWithoutWarnings( @Nonnull final String classname )
+  {
+    return assertCompilesWithoutWarnings( Collections.singletonList( fixture( toFilename( "input", classname ) ) ) );
+  }
+
+  @Nonnull
+  private CompileTester.SuccessfulCompilationClause assertCompilesWithoutErrors( @Nonnull final String classname )
+  {
+    return assertCompilesWithoutErrors( Collections.singletonList( fixture( toFilename( "input", classname ) ) ) );
+  }
+
+  @Nonnull
+  private CompileTester.CleanCompilationClause assertCompilesWithoutWarnings( @Nonnull final List<JavaFileObject> inputs )
+  {
+    return assertCompiles( inputs ).compilesWithoutWarnings();
+  }
+
+  private void assertCompilesWithSingleWarning( @Nonnull final String classname, @Nonnull final String messageFragment )
+  {
+    assertCompilesWithoutErrors( classname ).
+      withWarningCount( 1 ).
+      withWarningContaining( messageFragment );
   }
 }
