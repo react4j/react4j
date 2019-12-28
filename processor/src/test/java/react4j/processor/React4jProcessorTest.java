@@ -16,7 +16,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static com.google.common.truth.Truth.*;
 
-public class React4jProcessorTest
+public final class React4jProcessorTest
   extends AbstractProcessorTest
 {
   @DataProvider( name = "successfulCompiles" )
