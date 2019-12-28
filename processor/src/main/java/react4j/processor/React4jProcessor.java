@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
@@ -40,7 +39,6 @@ import javax.lang.model.util.Types;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.ElementsUtil;
-import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
 
@@ -91,14 +89,11 @@ public final class React4jProcessor
   {
     final ComponentDescriptor descriptor = parse( element );
     final String packageName = descriptor.getPackageName();
-    final Filer filer = processingEnv.getFiler();
-    GeneratorUtil.emitJavaType( packageName, ComponentGenerator.buildType( processingEnv, descriptor ), filer );
-    GeneratorUtil.emitJavaType( packageName, BuilderGenerator.buildType( processingEnv, descriptor ), filer );
+    emitTypeSpec( packageName, ComponentGenerator.buildType( processingEnv, descriptor ) );
+    emitTypeSpec( packageName, BuilderGenerator.buildType( processingEnv, descriptor ) );
     if ( descriptor.needsInjection() )
     {
-      GeneratorUtil.emitJavaType( packageName,
-                                  DaggerComponentExtensionGenerator.buildType( processingEnv, descriptor ),
-                                  filer );
+      emitTypeSpec( packageName, DaggerComponentExtensionGenerator.buildType( processingEnv, descriptor ) );
     }
   }
 
