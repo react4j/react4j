@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.146](https://github.com/react4j/react4j/tree/v0.146) (2019-12-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.145...v0.146)
+
+Changes in this release:
 
 * Rework the internals of the generated builder class to reduce code size in some limited scenarios.
 * Improve the code generation so that rather than copying the `@SuppressWarnings` annotation from the input source code, Arez will analyze the type of the code being generated and add a `@SuppressWarning` when and if it is needed. In particular the annotation processor will attempt to detect when `unchecked`, `rawtypes` and `deprecation` suppressions are required.
