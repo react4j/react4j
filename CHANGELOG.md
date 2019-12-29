@@ -5,7 +5,7 @@
 * Rework the internals of the generated builder class to reduce code size in some limited scenarios.
 * Improve the code generation so that rather than copying the `@SuppressWarnings` annotation from the input source code, Arez will analyze the type of the code being generated and add a `@SuppressWarning` when and if it is needed. In particular the annotation processor will attempt to detect when `unchecked`, `rawtypes` and `deprecation` suppressions are required.
 * Use the `org.realityforge.proton` project for non-React4j specific annotation processor utility methods. These were previously copy-paste shared between several projects. This is the first step towards sharing the code directly. The code is relocated as part of the build process to eliminate potential code conflicts.
-* Upgrade the `org.realityforge.arez` artifacts to version `0.161`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.162`.
 * Decouple the `processor` artifact from the `com.google.auto:auto-common` dependency and thus the `com.google.guava:guava` dependency. This significantly reduces the build time for the processor and the size of the processor artifact.
 
 ### [v0.145](https://github.com/react4j/react4j/tree/v0.145) (2019-12-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.144...v0.145)
