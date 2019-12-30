@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.proton` artifact to version `0.09`.
+
 ### [v0.146](https://github.com/react4j/react4j/tree/v0.146) (2019-12-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.145...v0.146)
 
 Changes in this release:

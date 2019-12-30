@@ -60,13 +60,15 @@ public final class React4jProcessor
   private static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
 
   @SuppressWarnings( "unchecked" )
-  @Nonnull
   @Override
-  protected Set<TypeElement> getTypeElementsToProcess( @Nonnull final RoundEnvironment env )
+  public boolean process( final Set<? extends TypeElement> annotations, final RoundEnvironment env )
   {
     final TypeElement annotation =
       processingEnv.getElementUtils().getTypeElement( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME );
-    return (Set<TypeElement>) env.getElementsAnnotatedWith( annotation );
+    final Collection<TypeElement> elementsTo = (Collection<TypeElement>) env.getElementsAnnotatedWith( annotation );
+    processTypeElements( env, elementsTo, this::process );
+    errorIfProcessingOverAndInvalidTypesDetected( env );
+    return true;
   }
 
   @Override
@@ -83,8 +85,7 @@ public final class React4jProcessor
     return "react4j";
   }
 
-  @Override
-  protected void process( @Nonnull final TypeElement element )
+  private void process( @Nonnull final TypeElement element )
     throws IOException, ProcessorException
   {
     final ComponentDescriptor descriptor = parse( element );
