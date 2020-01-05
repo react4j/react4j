@@ -852,56 +852,14 @@ public final class React4jProcessorTest
   @Nonnull
   private String[] deriveExpectedOutputs( @Nonnull final String classname, final boolean dagger )
   {
-    // It should be noted that we do not test the output of any Arez artifact
-    // emitted. We assume the Arez project adequately tests this scenario
-    final String[] elements = classname.contains( "." ) ? classname.split( "\\." ) : new String[]{ classname };
-    final StringBuilder enhancedComponent = new StringBuilder();
-    final StringBuilder builder = new StringBuilder();
-    final StringBuilder componentExtension = dagger ? new StringBuilder() : null;
-    enhancedComponent.append( "expected" );
-    builder.append( "expected" );
+    final List<String> expectedOutputs = new ArrayList<>();
+    expectedOutputs.add( toFilename( "expected", classname, "React4j_", ".java" ) );
+    expectedOutputs.add( toFilename( "expected", classname, "", "Builder.java" ) );
     if ( dagger )
     {
-      componentExtension.append( "expected" );
+      expectedOutputs.add( toFilename( "expected", classname, "", "DaggerComponentExtension.java" ) );
     }
-    for ( int i = 0; i < elements.length; i++ )
-    {
-      enhancedComponent.append( '/' );
-      if ( i == elements.length - 1 )
-      {
-        enhancedComponent.append( "React4j_" );
-      }
-      enhancedComponent.append( elements[ i ] );
-      builder.append( '/' );
-      builder.append( elements[ i ] );
-      if ( i == elements.length - 1 )
-      {
-        builder.append( "Builder" );
-      }
-      if ( dagger )
-      {
-        componentExtension.append( '/' );
-        componentExtension.append( elements[ i ] );
-        if ( i == elements.length - 1 )
-        {
-          componentExtension.append( "DaggerComponentExtension" );
-        }
-      }
-    }
-    enhancedComponent.append( ".java" );
-    builder.append( ".java" );
-    if ( dagger )
-    {
-      componentExtension.append( ".java" );
-    }
-    final ArrayList<String> outputs = new ArrayList<>();
-    outputs.add( enhancedComponent.toString() );
-    outputs.add( builder.toString() );
-    if ( dagger )
-    {
-      outputs.add( componentExtension.toString() );
-    }
-    return outputs.toArray( new String[ 0 ] );
+    return expectedOutputs.toArray( new String[ 0 ] );
   }
 
   @Override
