@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Upgrade the `org.realityforge.proton` artifacts to version `0.13`.
+* Upgrade the `org.realityforge.proton` artifacts to version `0.14`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.164`.
 
 ### [v0.147](https://github.com/react4j/react4j/tree/v0.147) (2020-01-06) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.146...v0.147)
