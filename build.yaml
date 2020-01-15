@@ -43,11 +43,11 @@ artifacts:
   guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.102
 
   autocommon: com.google.auto:auto-common:jar:0.10
-  javapoet: com.squareup:javapoet:jar:1.11.1
+  javapoet: com.squareup:javapoet:jar:1.12.0
   guava: com.google.guava:guava:jar:25.0-jre
 
-  proton_core: org.realityforge.proton:proton-core:jar:0.14
-  proton_qa: org.realityforge.proton:proton-qa:jar:0.14
+  proton_core: org.realityforge.proton:proton-core:jar:0.16
+  proton_qa: org.realityforge.proton:proton-qa:jar:0.16
 
   #test deps
   compile_testing: com.google.testing.compile:compile-testing:jar:0.15
