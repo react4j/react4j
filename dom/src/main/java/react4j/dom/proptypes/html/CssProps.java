@@ -144,14 +144,22 @@ public class CssProps
   }
 
   @JsProperty
-  public native double getFontWeight();
-
-  @JsProperty
   public native void setFontWeight( double fontWeight );
 
   @JsOverlay
   @Nonnull
   public final CssProps fontWeight( double fontWeight )
+  {
+    setFontWeight( fontWeight );
+    return this;
+  }
+
+  @JsProperty
+  public native void setFontWeight( String fontWeight );
+
+  @JsOverlay
+  @Nonnull
+  public final CssProps fontWeight( String fontWeight )
   {
     setFontWeight( fontWeight );
     return this;
