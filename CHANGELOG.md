@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Upgrade the `com.squareup` artifact to version `1.12.0`.
+* Upgrade the `com.squareup:javapoet` artifact to version `1.12.0`.
 * Upgrade the `org.realityforge.proton` artifacts to version `0.16`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.165`.
 * Enhance `CssProps` to also accept a String parameter type for the `fontWeight` property.
