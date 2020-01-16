@@ -40,7 +40,7 @@ artifacts:
   javax_inject: javax.inject:javax.inject:jar:1
   javax_inject_sources: javax.inject:javax.inject:jar:sources:1
 
-  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.102
+  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.106
 
   autocommon: com.google.auto:auto-common:jar:0.10
   javapoet: com.squareup:javapoet:jar:1.12.0
