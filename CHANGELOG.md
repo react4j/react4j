@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `com.google.guava` artifact to version `27.1-jre`.
 * Upgrade the `com.google.truth` artifact to version `0.44`.
 * Upgrade the `com.google.testing.compile` artifact to version `0.18`.
 * Upgrade the `org.realityforge.proton` artifacts to version `0.18`.
