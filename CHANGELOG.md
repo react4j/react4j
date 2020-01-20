@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `com.google.testing.compile` artifact to version `0.18`.
 * Upgrade the `org.realityforge.proton` artifacts to version `0.17`.
 * Upgrade the `org.realityforge.guiceyloops` artifact to version `0.106`.
 

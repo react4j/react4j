@@ -50,7 +50,7 @@ artifacts:
   proton_qa: org.realityforge.proton:proton-qa:jar:0.17
 
   #test deps
-  compile_testing: com.google.testing.compile:compile-testing:jar:0.15
+  compile_testing: com.google.testing.compile:compile-testing:jar:0.18
   truth: com.google.truth:truth:jar:0.39
   junit: junit:junit:jar:4.12
   hamcrest_core: org.hamcrest:hamcrest-core:jar:1.3
