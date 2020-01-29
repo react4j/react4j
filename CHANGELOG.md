@@ -6,7 +6,7 @@
 * Upgrade the `com.google.guava` artifact to version `27.1-jre`.
 * Upgrade the `com.google.truth` artifact to version `0.44`.
 * Upgrade the `com.google.testing.compile` artifact to version `0.18`.
-* Upgrade the `org.realityforge.proton` artifacts to version `0.28`.
+* Upgrade the `org.realityforge.proton` artifacts to version `0.30`.
 * Upgrade the `org.realityforge.guiceyloops` artifact to version `0.106`.
 
 ### [v0.148](https://github.com/react4j/react4j/tree/v0.148) (2020-01-15) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.147...v0.148)
