@@ -671,6 +671,20 @@ public class CssProps
   }
 
   @JsProperty
+  public native String getBorderRadius();
+
+  @JsProperty
+  public native void setBorderRadius( String borderRadius );
+
+  @JsOverlay
+  @Nonnull
+  public final CssProps borderRadius( String borderRadius )
+  {
+    setBorderRadius( borderRadius );
+    return this;
+  }
+
+  @JsProperty
   public native String getBorderBottomLeftRadius();
 
   @JsProperty
