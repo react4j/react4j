@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.149](https://github.com/react4j/react4j/tree/v0.149) (2020-02-03) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.148...v0.149) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.148&new=0.149)
+
+The release includes 2 non breaking API changes and 1 potentially breaking API change.
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.grim` artifacts to version `0.04`.
 * Upgrade the `com.google.guava` artifact to version `27.1-jre`.
