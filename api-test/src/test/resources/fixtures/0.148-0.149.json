@@ -1,0 +1,50 @@
+[
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method java.lang.String react4j.dom.proptypes.html.CssProps::getBorderRadius()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.CssProps",
+      "classSimpleName": "CssProps",
+      "elementKind": "method",
+      "methodName": "getBorderRadius",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.CssProps react4j.dom.proptypes.html.CssProps::borderRadius(java.lang.String)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.CssProps",
+      "classSimpleName": "CssProps",
+      "elementKind": "method",
+      "methodName": "borderRadius",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.dom.proptypes.html.CssProps::setBorderRadius(java.lang.String)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.CssProps",
+      "classSimpleName": "CssProps",
+      "elementKind": "method",
+      "methodName": "setBorderRadius",
+      "package": "react4j.dom.proptypes.html"
+    }
+  }
+]
