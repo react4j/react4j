@@ -44,8 +44,8 @@ artifacts:
   javapoet: com.squareup:javapoet:jar:1.12.0
   guava: com.google.guava:guava:jar:27.1-jre
 
-  proton_core: org.realityforge.proton:proton-core:jar:0.32
-  proton_qa: org.realityforge.proton:proton-qa:jar:0.32
+  proton_core: org.realityforge.proton:proton-core:jar:0.33
+  proton_qa: org.realityforge.proton:proton-qa:jar:0.33
 
   #test deps
   compile_testing: com.google.testing.compile:compile-testing:jar:0.18-rf
