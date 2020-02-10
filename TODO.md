@@ -93,7 +93,7 @@ complete as there is too much un-said.
 
 * In base class have configuration that warns on re-renders that produced duplicate values.
 
-* build in https://github.com/maicki/why-did-you-update
+* build in https://github.com/maicki/why-did-you-update or alternatively https://github.com/welldone-software/why-did-you-render
 
 * Add some way to define effects which is just method called after render that returns a disposable to stop action.
   Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
