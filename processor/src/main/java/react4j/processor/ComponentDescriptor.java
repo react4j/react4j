@@ -24,6 +24,7 @@ final class ComponentDescriptor
   @Nonnull
   private final ComponentType _type;
   private final boolean _inject;
+  private final boolean _sting;
   private final boolean _hasPostConstruct;
   private final boolean _shouldSetDefaultPriority;
   @Nonnull
@@ -60,6 +61,7 @@ final class ComponentDescriptor
                        @Nonnull final ExecutableElement constructor,
                        @Nonnull final ComponentType type,
                        final boolean inject,
+                       final boolean sting,
                        final boolean hasPostConstruct,
                        final boolean shouldSetDefaultPriority )
   {
@@ -68,6 +70,7 @@ final class ComponentDescriptor
     _constructor = Objects.requireNonNull( constructor );
     _type = Objects.requireNonNull( type );
     _inject = inject;
+    _sting = sting;
     _hasPostConstruct = hasPostConstruct;
     _shouldSetDefaultPriority = shouldSetDefaultPriority;
   }
@@ -86,6 +89,11 @@ final class ComponentDescriptor
   boolean enableInject()
   {
     return _inject;
+  }
+
+  boolean enableSting()
+  {
+    return _sting;
   }
 
   boolean hasPostConstruct()
