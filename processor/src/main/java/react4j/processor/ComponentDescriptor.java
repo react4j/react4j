@@ -100,16 +100,6 @@ final class ComponentDescriptor
                                     "or the default constructor", element );
     }
     _constructor = constructors.get( 0 );
-    for ( final VariableElement parameter : _constructor.getParameters() )
-    {
-      if ( AnnotationsUtil.hasAnnotationOfType( parameter, Constants.PER_INSTANCE_ANNOTATION_CLASSNAME ) )
-      {
-        throw new ProcessorException( "@ReactComponent target has a constructor with a parameter named '" +
-                                      parameter.getSimpleName().toString() + "' that is incorrectly annotated " +
-                                      "with the " + Constants.PER_INSTANCE_ANNOTATION_CLASSNAME + " annotation.",
-                                      element );
-      }
-    }
   }
 
   private boolean isConstructorValid( @Nonnull final ExecutableElement ctor )

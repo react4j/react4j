@@ -510,8 +510,6 @@ public final class React4jProcessorTest
                       "@PropDefault target must not throw any exceptions" },
         new Object[]{ "com.example.inject.GenericTypeInjectedComponent",
                       "@ReactComponent target has enabled injection integration but the class has type arguments which is incompatible with injection integration." },
-        new Object[]{ "com.example.inject.PerInstanceInjectedComponent",
-                      "@ReactComponent target has a constructor with a parameter named 'someParam' that is incorrectly annotated with the arez.annotations.PerInstance annotation." },
         new Object[]{ "com.example.on_error.AbstractOnErrorComponent", "@OnError target must not be abstract" },
         new Object[]{ "com.example.on_error.BadParam1OnErrorComponent",
                       "@OnError target has parameter of invalid type named other" },

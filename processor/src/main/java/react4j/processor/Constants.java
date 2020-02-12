@@ -27,7 +27,6 @@ final class Constants
   static final String POST_CONSTRUCT_ANNOTATION_CLASSNAME = "arez.annotations.PostConstruct";
   static final String COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME = "arez.annotations.ComponentDependency";
   static final String CASCADE_DISPOSE_ANNOTATION_CLASSNAME = "arez.annotations.CascadeDispose";
-  static final String PER_INSTANCE_ANNOTATION_CLASSNAME = "arez.annotations.PerInstance";
   static final String NONNULL_ANNOTATION_CLASSNAME = "javax.annotation.Nonnull";
   static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
   static final String JS_ERROR_CLASSNAME = "elemental2.core.JsError";
