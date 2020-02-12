@@ -224,15 +224,13 @@ public final class React4jProcessor
 
   private boolean isConstructorValid( @Nonnull final ExecutableElement ctor )
   {
-    final List<? extends VariableElement> parameters = ctor.getParameters();
-    final Set<Modifier> modifiers = ctor.getModifiers();
-    if ( parameters.isEmpty() )
+    if ( ElementsUtil.isSynthetic( ctor ) )
     {
-      return !modifiers.contains( Modifier.PROTECTED ) &&
-             !modifiers.contains( Modifier.PRIVATE );
+      return true;
     }
     else
     {
+      final Set<Modifier> modifiers = ctor.getModifiers();
       return
         !modifiers.contains( Modifier.PRIVATE ) &&
         !modifiers.contains( Modifier.PUBLIC ) &&
