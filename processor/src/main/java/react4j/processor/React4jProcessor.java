@@ -135,12 +135,15 @@ public final class React4jProcessor
     final ExecutableElement constructor = constructors.get( 0 );
 
     final boolean inject = deriveInject( typeElement, constructor );
+    final boolean sting = deriveSting( typeElement, constructor );
+
     final ComponentDescriptor descriptor =
       new ComponentDescriptor( name,
                                typeElement,
                                constructor,
                                type,
                                inject,
+                               sting,
                                hasPostConstruct,
                                shouldSetDefaultPriority );
 
@@ -194,6 +197,27 @@ public final class React4jProcessor
     {
       return !constructor.getParameters().isEmpty() &&
              null != processingEnv.getElementUtils().getTypeElement( Constants.JSR_330_INJECT_CLASSNAME );
+    }
+  }
+
+  private boolean deriveSting( @Nonnull final TypeElement typeElement, final @Nonnull ExecutableElement constructor )
+  {
+    final String inject =
+      AnnotationsUtil.getEnumAnnotationParameter( typeElement,
+                                                  Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                  "sting" );
+    if ( "ENABLE".equals( inject ) )
+    {
+      return true;
+    }
+    else if ( "DISABLE".equals( inject ) )
+    {
+      return false;
+    }
+    else
+    {
+      return !constructor.getParameters().isEmpty() &&
+             null != processingEnv.getElementUtils().getTypeElement( Constants.STING_INJECTABLE_CLASSNAME );
     }
   }
 
