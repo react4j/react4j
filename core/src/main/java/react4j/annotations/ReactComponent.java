@@ -62,4 +62,17 @@ public @interface ReactComponent
    */
   @Nonnull
   Type type() default Type.STATEFUL;
+
+  /**
+   * Enum controlling whether javax.inject integration is generated for the component.
+   * The generated class is the same name as the component with the "Factory" suffix.
+   * React4j only supports constructor injection and thus this MUST NOT be set to {@link Feature#ENABLE}
+   * unless there are constructor parameters on the component. If the value is set to
+   * {@link Feature#AUTODETECT} then the feature will be enabled if the component has
+   * constructor parameters and the {@code javax.inject.Inject} class is present when
+   * compiling the component.
+   *
+   * @return an enum controlling whether javax.inject integration is generated for the component.
+   */
+  Feature inject() default Feature.AUTODETECT;
 }

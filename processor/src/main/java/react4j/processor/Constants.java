@@ -59,6 +59,7 @@ final class Constants
   @Nonnull
   static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
   @Nonnull
+  static final String JSR_330_INJECT_CLASSNAME = "javax.inject.Inject";
   static final String JS_ERROR_CLASSNAME = "elemental2.core.JsError";
   @Nonnull
   static final String WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT =

@@ -115,8 +115,34 @@ public final class React4jProcessor
     final ComponentType type = extractComponentType( typeElement );
     final boolean hasPostConstruct = hasPostConstruct( typeElement );
     final boolean shouldSetDefaultPriority = shouldSetDefaultPriority( typeElement );
+
+    MemberChecks.mustNotBeFinal( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, typeElement );
+    MemberChecks.mustBeAbstract( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, typeElement );
+    if ( ElementKind.CLASS != typeElement.getKind() )
+    {
+      throw new ProcessorException( "@ReactComponent target must be a class", typeElement );
+    }
+    else if ( ElementsUtil.isNonStaticNestedClass( typeElement ) )
+    {
+      throw new ProcessorException( "@ReactComponent target must not be a non-static nested class", typeElement );
+    }
+    final List<ExecutableElement> constructors = ElementsUtil.getConstructors( typeElement );
+    if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
+    {
+      throw new ProcessorException( "@ReactComponent target must have a single, package-access " +
+                                    "constructor or the default constructor", typeElement );
+    }
+    final ExecutableElement constructor = constructors.get( 0 );
+
+    final boolean inject = deriveInject( typeElement, constructor );
     final ComponentDescriptor descriptor =
-      new ComponentDescriptor( name, typeElement, type, hasPostConstruct, shouldSetDefaultPriority );
+      new ComponentDescriptor( name,
+                               typeElement,
+                               constructor,
+                               type,
+                               inject,
+                               hasPostConstruct,
+                               shouldSetDefaultPriority );
 
     determineComponentCapabilities( descriptor, typeElement );
     determineProps( descriptor );
@@ -148,6 +174,45 @@ public final class React4jProcessor
     verifyPropsNotCollectionOfArezComponents( descriptor );
 
     return descriptor;
+  }
+
+  private boolean deriveInject( @Nonnull final TypeElement typeElement, final @Nonnull ExecutableElement constructor )
+  {
+    final String inject =
+      AnnotationsUtil.getEnumAnnotationParameter( typeElement,
+                                                  Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                  "inject" );
+    if ( "ENABLE".equals( inject ) )
+    {
+      return true;
+    }
+    else if ( "DISABLE".equals( inject ) )
+    {
+      return false;
+    }
+    else
+    {
+      return !constructor.getParameters().isEmpty() &&
+             null != processingEnv.getElementUtils().getTypeElement( Constants.JSR_330_INJECT_CLASSNAME );
+    }
+  }
+
+  private boolean isConstructorValid( @Nonnull final ExecutableElement ctor )
+  {
+    final List<? extends VariableElement> parameters = ctor.getParameters();
+    final Set<Modifier> modifiers = ctor.getModifiers();
+    if ( parameters.isEmpty() )
+    {
+      return !modifiers.contains( Modifier.PROTECTED ) &&
+             !modifiers.contains( Modifier.PRIVATE );
+    }
+    else
+    {
+      return
+        !modifiers.contains( Modifier.PRIVATE ) &&
+        !modifiers.contains( Modifier.PUBLIC ) &&
+        !modifiers.contains( Modifier.PROTECTED );
+    }
   }
 
   private void verifyPropsNotCollectionOfArezComponents( @Nonnull final ComponentDescriptor descriptor )
