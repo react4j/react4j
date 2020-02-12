@@ -138,6 +138,19 @@ public final class React4jProcessor
     final boolean inject = deriveInject( typeElement, constructor );
     final boolean sting = deriveSting( typeElement, constructor );
 
+    if ( inject && constructor.getParameters().isEmpty() )
+    {
+      throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                          "have specified inject=ENABLED if the constructor has no parameters" ),
+                                    typeElement );
+    }
+    else if ( sting && constructor.getParameters().isEmpty() )
+    {
+      throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                          "have specified sting=ENABLED if the constructor has no parameters" ),
+                                    typeElement );
+    }
+
     final ComponentDescriptor descriptor =
       new ComponentDescriptor( name,
                                typeElement,

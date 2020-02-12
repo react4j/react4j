@@ -5,11 +5,11 @@ import react4j.ReactNode;
 import react4j.annotations.Feature;
 import react4j.annotations.ReactComponent;
 
-@ReactComponent( inject = Feature.ENABLE )
-abstract class InjectEnabledButNoConstructorParametersComponent
+@ReactComponent( sting = Feature.ENABLE )
+abstract class StingEnabledButNoConstructorParametersComponent
   extends Component
 {
-  InjectEnabledButNoConstructorParametersComponent()
+  StingEnabledButNoConstructorParametersComponent()
   {
   }
 
