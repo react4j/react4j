@@ -165,6 +165,8 @@ define 'react4j' do
               :javax_inject,
               DAGGER_PROCESSOR_DEPS,
               :arez_processor,
+              :sting_core,
+              :sting_processor,
               :gwt_user,
               :gwt_dev
 
@@ -288,6 +290,8 @@ define 'react4j' do
                  project('processor').compile.dependencies,
                  DAGGER_PROCESSOR_DEPS,
                  :arez_processor,
+                 :sting_core,
+                 :sting_processor,
                  :gwt_user
 
     gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
