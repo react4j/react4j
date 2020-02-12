@@ -129,8 +129,8 @@ public final class React4jProcessor
     final List<ExecutableElement> constructors = ElementsUtil.getConstructors( typeElement );
     if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
     {
-      throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                                          "have a single, package-access constructor or the default constructor" ),
+      throw new ProcessorException( MemberChecks.must( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                       "have a single, package-access constructor or the default constructor" ),
                                     typeElement );
     }
     final ExecutableElement constructor = constructors.get( 0 );
