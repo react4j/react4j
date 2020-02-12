@@ -406,12 +406,12 @@ public final class React4jProcessor
         }
         final boolean mismatchedNullability =
           (
-            AnnotationsUtil.hasAnnotationOfType( parameter, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-            AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
+            AnnotationsUtil.hasNonnullAnnotation( parameter ) &&
+            AnnotationsUtil.hasNullableAnnotation( prop.getMethod() )
           ) ||
           (
-            AnnotationsUtil.hasAnnotationOfType( parameter, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-            AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+            AnnotationsUtil.hasNullableAnnotation( parameter ) &&
+            AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() ) );
 
         if ( mismatchedNullability )
         {
@@ -503,12 +503,12 @@ public final class React4jProcessor
       final VariableElement param = method.getParameters().get( 0 );
       final boolean mismatchedNullability =
         (
-          AnnotationsUtil.hasAnnotationOfType( param, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-          AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
+          AnnotationsUtil.hasNonnullAnnotation( param ) &&
+          AnnotationsUtil.hasNullableAnnotation( prop.getMethod() )
         ) ||
         (
-          AnnotationsUtil.hasAnnotationOfType( param, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-          AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+          AnnotationsUtil.hasNullableAnnotation( param ) &&
+          AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() ) );
 
       if ( mismatchedNullability )
       {
@@ -754,7 +754,7 @@ public final class React4jProcessor
       default:
         return !prop.hasDefaultMethod() &&
                !prop.hasDefaultField() &&
-               !AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME );
+               !AnnotationsUtil.hasNullableAnnotation( prop.getMethod() );
     }
   }
 
@@ -811,8 +811,7 @@ public final class React4jProcessor
     final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange, immutable );
     final boolean disposable = null != propType && isPropDisposable( method, propType );
     final TypeName typeName = TypeName.get( returnType );
-    if ( typeName.isBoxedPrimitive() &&
-         AnnotationsUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+    if ( typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation( method ) )
     {
       throw new ProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
                                     "@Nonnull annotation. The return type should be the primitive type.",

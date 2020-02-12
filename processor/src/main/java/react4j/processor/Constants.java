@@ -55,10 +55,6 @@ final class Constants
   @Nonnull
   static final String CASCADE_DISPOSE_ANNOTATION_CLASSNAME = "arez.annotations.CascadeDispose";
   @Nonnull
-  static final String NONNULL_ANNOTATION_CLASSNAME = "javax.annotation.Nonnull";
-  @Nonnull
-  static final String NULLABLE_ANNOTATION_CLASSNAME = "javax.annotation.Nullable";
-  @Nonnull
   static final String JSR_330_INJECT_CLASSNAME = "javax.inject.Inject";
   @Nonnull
   static final String STING_INJECTABLE_CLASSNAME = "sting.Injectable";
