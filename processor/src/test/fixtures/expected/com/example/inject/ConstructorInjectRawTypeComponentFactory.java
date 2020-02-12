@@ -8,22 +8,15 @@ import javax.inject.Inject;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.internal.NativeComponent;
-import sting.Eager;
-import sting.Injectable;
 
 @Generated("react4j.processor.React4jProcessor")
-@Injectable
-@Eager
 public final class ConstructorInjectRawTypeComponentFactory {
   @SuppressWarnings("rawtypes")
   @Nonnull
   private final Consumer someParam;
 
   @Inject
-  @SuppressWarnings({
-      "Sting:Jsr330InjectPresent",
-      "rawtypes"
-  })
+  @SuppressWarnings("rawtypes")
   ConstructorInjectRawTypeComponentFactory(@Nonnull final Consumer someParam) {
     this.someParam = Objects.requireNonNull( someParam );
     InjectSupport.setFactory( this );

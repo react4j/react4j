@@ -4,9 +4,10 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import react4j.Component;
 import react4j.ReactNode;
+import react4j.annotations.Feature;
 import react4j.annotations.ReactComponent;
 
-@ReactComponent
+@ReactComponent( sting = Feature.DISABLE )
 abstract class ConstructorInjectRawTypeComponent
   extends Component
 {
