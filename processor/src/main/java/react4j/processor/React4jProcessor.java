@@ -38,6 +38,7 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Types;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.AnnotationsUtil;
+import org.realityforge.proton.DeferredElementSet;
 import org.realityforge.proton.ElementsUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
@@ -58,6 +59,8 @@ public final class React4jProcessor
   private static final Pattern LAST_PROP_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
   private static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
   private static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
+  @Nonnull
+  private final DeferredElementSet _deferredTypes = new DeferredElementSet();
 
   @SuppressWarnings( "unchecked" )
   @Override
@@ -66,7 +69,8 @@ public final class React4jProcessor
     final TypeElement annotation =
       processingEnv.getElementUtils().getTypeElement( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME );
     final Collection<TypeElement> elementsTo = (Collection<TypeElement>) env.getElementsAnnotatedWith( annotation );
-    processTypeElements( env, elementsTo, this::process );
+    processTypeElements( env, _deferredTypes, elementsTo, this::process );
+    errorIfProcessingOverAndDeferredTypesUnprocessed( env, _deferredTypes );
     errorIfProcessingOverAndInvalidTypesDetected( env );
     return true;
   }
