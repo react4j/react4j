@@ -3,7 +3,6 @@ package com.example.inject;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
-import arez.annotations.PerInstance;
 import java.util.function.Consumer;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -23,13 +22,13 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "ConstructorInjectRawTypeComponent",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.CONSUME
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInjectRawTypeComponent {
   @SuppressWarnings("rawtypes")
   React4j_ConstructorInjectRawTypeComponent(
-      @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent,
+      @Nonnull final NativeComponent $$react4j$$_nativeComponent,
       @Nonnull final Consumer someParam) {
     super( someParam );
     bindComponent( $$react4j$$_nativeComponent );
@@ -66,7 +65,7 @@ abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInje
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = ConstructorInjectRawTypeComponentDaggerComponentExtension.InjectSupport.create( this );
+      $$react4j$$_component = ConstructorInjectRawTypeComponentFactory.create( this );
     }
 
     @Override
@@ -88,7 +87,7 @@ abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInje
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = ConstructorInjectRawTypeComponentDaggerComponentExtension.InjectSupport.create( this );
+      $$react4j$$_component = ConstructorInjectRawTypeComponentFactory.create( this );
     }
 
     @Override

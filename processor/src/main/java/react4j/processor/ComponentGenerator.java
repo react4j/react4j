@@ -43,7 +43,6 @@ final class ComponentGenerator
     ClassName.get( "arez.annotations", "InjectMode" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
-  private static final ClassName PER_INSTANCE_CLASSNAME = ClassName.get( "arez.annotations", "PerInstance" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
   private static final ClassName EXECUTOR_CLASSNAME = ClassName.get( "arez.annotations", "Executor" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
@@ -125,14 +124,7 @@ final class ComponentGenerator
     {
       arezAnnotation.addMember( "defaultPriority", "$T.LOWEST", PRIORITY_CLASSNAME );
     }
-    if ( descriptor.needsInjection() )
-    {
-      arezAnnotation.addMember( "inject", "$T.CONSUME", AREZ_INJECT_MODE_CLASSNAME );
-    }
-    else
-    {
-      arezAnnotation.addMember( "inject", "$T.NONE", AREZ_INJECT_MODE_CLASSNAME );
-    }
+    arezAnnotation.addMember( "inject", "$T.NONE", AREZ_INJECT_MODE_CLASSNAME );
     builder.addAnnotation( arezAnnotation.build() );
     builder.addModifiers( Modifier.ABSTRACT );
 
@@ -224,10 +216,6 @@ final class ComponentGenerator
       ParameterSpec
         .builder( REACT_NATIVE_COMPONENT_CLASSNAME, componentParameterName, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
-    if ( descriptor.needsInjection() )
-    {
-      componentParameter.addAnnotation( PER_INSTANCE_CLASSNAME );
-    }
     final MethodSpec.Builder ctor = MethodSpec.constructorBuilder();
     ctor.addParameter( componentParameter.build() );
 

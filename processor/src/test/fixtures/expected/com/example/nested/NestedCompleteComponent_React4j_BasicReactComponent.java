@@ -3,7 +3,6 @@ package com.example.nested;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
-import arez.annotations.PerInstance;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,12 +21,12 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "BasicReactComponent",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.CONSUME
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {
   NestedCompleteComponent_React4j_BasicReactComponent(
-      @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent, final String value) {
+      @Nonnull final NativeComponent $$react4j$$_nativeComponent, final String value) {
     super( value );
     bindComponent( $$react4j$$_nativeComponent );
   }
@@ -80,7 +79,7 @@ abstract class NestedCompleteComponent_React4j_BasicReactComponent extends Neste
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = NestedCompleteComponent_BasicReactComponentDaggerComponentExtension.InjectSupport.create( this );
+      $$react4j$$_component = NestedCompleteComponent_BasicReactComponentFactory.create( this );
     }
 
     @Override
@@ -102,7 +101,7 @@ abstract class NestedCompleteComponent_React4j_BasicReactComponent extends Neste
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = NestedCompleteComponent_BasicReactComponentDaggerComponentExtension.InjectSupport.create( this );
+      $$react4j$$_component = NestedCompleteComponent_BasicReactComponentFactory.create( this );
     }
 
     @Override
