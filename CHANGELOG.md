@@ -4,6 +4,7 @@
 
 * Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.3.0`.
 * Upgrade the `org.realityforge.proton` artifacts to version `0.35`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.167`.
 
 ### [v0.149](https://github.com/react4j/react4j/tree/v0.149) (2020-02-03) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.148...v0.149) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.148&new=0.149)
 
