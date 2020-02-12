@@ -26,7 +26,6 @@ import org.realityforge.proton.SuppressWarningsUtil;
 
 final class FactoryExtensionGenerator
 {
-  private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeComponent" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
@@ -46,7 +45,7 @@ final class FactoryExtensionGenerator
 
     builder.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
 
-    if( descriptor.enableSting() )
+    if ( descriptor.enableSting() )
     {
       builder.addAnnotation( ClassName.bestGuess( Constants.STING_INJECTABLE_CLASSNAME ) );
       builder.addAnnotation( ClassName.bestGuess( Constants.STING_EAGER_CLASSNAME ) );
@@ -187,7 +186,7 @@ final class FactoryExtensionGenerator
       .addModifiers( Modifier.PRIVATE, Modifier.STATIC )
       .addParameter( ParameterSpec
                        .builder( descriptor.getFactoryClassName(), "factory", Modifier.FINAL )
-                       .addAnnotation( NONNULL_CLASSNAME ).build() );
+                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() );
     final CodeBlock.Builder block = CodeBlock.builder();
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
     block.addStatement( "$T.invariant( () -> null == c_factory, () -> \"Attempted to instantiate the React4j " +
@@ -209,8 +208,8 @@ final class FactoryExtensionGenerator
         .addModifiers( Modifier.PRIVATE, Modifier.STATIC )
         .addParameter( ParameterSpec
                          .builder( REACT_NATIVE_COMPONENT_CLASSNAME, "component", Modifier.FINAL )
-                         .addAnnotation( NONNULL_CLASSNAME ).build() )
-        .addAnnotation( NONNULL_CLASSNAME )
+                         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() )
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
         .returns( descriptor.getEnhancedClassName() );
     final CodeBlock.Builder block = CodeBlock.builder();
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
