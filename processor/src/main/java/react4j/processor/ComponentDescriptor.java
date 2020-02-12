@@ -149,15 +149,9 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  ClassName getDaggerComponentExtensionClassName()
+  ClassName getFactoryClassName()
   {
-    return GeneratorUtil.getGeneratedClassName( _element, "", "DaggerComponentExtension" );
-  }
-
-  @Nonnull
-  ClassName getArezDaggerExtensionClassName()
-  {
-    return GeneratorUtil.getGeneratedClassName( _element, "React4j_", "DaggerComponentExtension" );
+    return GeneratorUtil.getGeneratedClassName( _element, "", "Factory" );
   }
 
   @Nonnull

@@ -62,6 +62,11 @@ final class Constants
   static final String JSR_330_INJECT_CLASSNAME = "javax.inject.Inject";
   @Nonnull
   static final String STING_INJECTABLE_CLASSNAME = "sting.Injectable";
+  @Nonnull
+  static final String STING_EAGER_CLASSNAME = "sting.Eager";
+  @Nonnull
+  static final String JSR_330_NAMED_CLASSNAME = "javax.inject.Named";
+  @Nonnull
   static final String JS_ERROR_CLASSNAME = "elemental2.core.JsError";
   @Nonnull
   static final String WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT =

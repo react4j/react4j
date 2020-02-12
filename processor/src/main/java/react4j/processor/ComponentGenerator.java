@@ -1060,9 +1060,7 @@ final class ComponentGenerator
       method.addStatement( "super( props )" );
       if ( descriptor.needsInjection() )
       {
-        method.addStatement( "$N = $T.InjectSupport.create( this )",
-                             COMPONENT_FIELD,
-                             descriptor.getDaggerComponentExtensionClassName() );
+        method.addStatement( "$N = $T.create( this )", COMPONENT_FIELD, descriptor.getFactoryClassName() );
       }
       else
       {
