@@ -49,7 +49,7 @@ import org.realityforge.proton.ProcessorException;
 @SuppressWarnings( "Duplicates" )
 @SupportedAnnotationTypes( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME )
 @SupportedSourceVersion( SourceVersion.RELEASE_8 )
-@SupportedOptions( { "react4j.defer.unresolved", "react4j.defer.errors" } )
+@SupportedOptions( { "react4j.defer.unresolved", "react4j.defer.errors", "react4j.debug" } )
 public final class React4jProcessor
   extends AbstractStandardProcessor
 {
