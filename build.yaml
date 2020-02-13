@@ -27,8 +27,8 @@ artifacts:
   arez_core: org.realityforge.arez:arez-core:jar:0.167
   arez_processor: org.realityforge.arez:arez-processor:jar:0.167
 
-  sting_core: org.realityforge.sting:sting-core:jar:X
-  sting_processor: org.realityforge.sting:sting-processor:jar:X
+  sting_core: org.realityforge.sting:sting-core:jar:0.01
+  sting_processor: org.realityforge.sting:sting-processor:jar:0.01
 
   braincheck: org.realityforge.braincheck:braincheck:jar:1.25.0
 
