@@ -1110,22 +1110,26 @@ public final class React4jProcessor
 
     if ( !isComponent )
     {
-      throw new ProcessorException( "@ReactComponent target must be a subclass of react4j.Component",
+      throw new ProcessorException( MemberChecks.must( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                       "be a subclass of react4j.Component" ),
                                     typeElement );
     }
     else
     {
       if ( AnnotationsUtil.hasAnnotationOfType( typeElement, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
       {
-        throw new ProcessorException( "@ReactComponent target should not be annotated with the " +
-                                      "arez.annotations.ArezComponent as React4j will add the annotation.",
+        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                            "be annotated with the " +
+                                                            MemberChecks.toSimpleName( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) +
+                                                            " as React4j will add the annotation." ),
                                       typeElement );
       }
     }
 
     if ( descriptor.needsInjection() && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
-      throw new ProcessorException( "@ReactComponent target has enabled injection integration but the class " +
+      throw new ProcessorException( MemberChecks.toSimpleName( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME ) +
+                                    " target has enabled injection integration but the class " +
                                     "has type arguments which is incompatible with injection integration.",
                                     typeElement );
     }
