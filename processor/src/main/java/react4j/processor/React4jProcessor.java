@@ -62,7 +62,6 @@ public final class React4jProcessor
   @Nonnull
   private final DeferredElementSet _deferredTypes = new DeferredElementSet();
 
-  @SuppressWarnings( "unchecked" )
   @Override
   public boolean process( final Set<? extends TypeElement> annotations, final RoundEnvironment env )
   {
