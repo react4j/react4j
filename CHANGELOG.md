@@ -3,7 +3,7 @@
 ### Unreleased
 
 * Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.3.0`.
-* Upgrade the `org.realityforge.proton` artifacts to version `0.37`.
+* Upgrade the `org.realityforge.proton` artifacts to version `0.38`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.167`.
 * Change the way the annotation processor generates factories for the react components. Rather than relying on `@PerInstance` infrastructure from Arez, explicitly create the factory class. This is a breaking change as it changes the name of the factory class to `[MyComponent]Factory` and removes the dagger extension class `[MyComponent]DaggerComponentExtension`. This reduces significant boilerplate as the user is no longer required to call a `bind*()` method to attach the factory to the static factory infrastructure used by react4j. It also simplifies integration with other injection frameworks.
 * Add a `ReactComponent.inject` parameter that controls whether the generated factory is annotated with the `javax.inject` annotations. Previously it was assumed that the annotations were present if the type annotated by the `@ReactComponent` annotation had constructor parameters.
