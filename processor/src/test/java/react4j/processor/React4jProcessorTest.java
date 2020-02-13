@@ -66,7 +66,13 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.default_props.PublicMethodPropDefault", false },
         new Object[]{ "com.example.inject.ConstructorInjectComponent", true },
         new Object[]{ "com.example.inject.ConstructorInjectRawTypeComponent", true },
+        new Object[]{ "com.example.inject.FactoryOnlyInjectComponent", true },
+        new Object[]{ "com.example.inject.Jsr330NamedInjectComponent", true },
+        new Object[]{ "com.example.inject.Jsr330OnlyInjectComponent", true },
         new Object[]{ "com.example.inject.PublicReactComponent", true },
+        new Object[]{ "com.example.inject.StingNamedInjectComponent", true },
+        new Object[]{ "com.example.inject.StingOnlyInjectComponent", true },
+
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent", false },
 
         new Object[]{ "com.example.on_error.BasicOnErrorComponent", false },
@@ -251,7 +257,7 @@ public final class React4jProcessorTest
   {
     assertSuccessfulCompile( "com.example.nested.NestedCompleteComponent",
                              "expected/com/example/nested/NestedCompleteComponent_BasicReactComponentBuilder.java",
-                             "expected/com/example/nested/NestedCompleteComponent_BasicReactComponentDaggerComponentExtension.java",
+                             "expected/com/example/nested/NestedCompleteComponent_BasicReactComponentFactory.java",
                              "expected/com/example/nested/NestedCompleteComponent_React4j_BasicReactComponent.java" );
   }
 
@@ -510,8 +516,10 @@ public final class React4jProcessorTest
                       "@PropDefault target must not throw any exceptions" },
         new Object[]{ "com.example.inject.GenericTypeInjectedComponent",
                       "@ReactComponent target has enabled injection integration but the class has type arguments which is incompatible with injection integration." },
-        new Object[]{ "com.example.inject.PerInstanceInjectedComponent",
-                      "@ReactComponent target has a constructor with a parameter named 'someParam' that is incorrectly annotated with the arez.annotations.PerInstance annotation." },
+        new Object[]{ "com.example.inject.InjectEnabledButNoConstructorParametersComponent",
+                      "@ReactComponent target must not have specified inject=ENABLED if the constructor has no parameters" },
+        new Object[]{ "com.example.inject.StingEnabledButNoConstructorParametersComponent",
+                      "@ReactComponent target must not have specified sting=ENABLED if the constructor has no parameters" },
         new Object[]{ "com.example.on_error.AbstractOnErrorComponent", "@OnError target must not be abstract" },
         new Object[]{ "com.example.on_error.BadParam1OnErrorComponent",
                       "@OnError target has parameter of invalid type named other" },
@@ -850,14 +858,14 @@ public final class React4jProcessorTest
   }
 
   @Nonnull
-  private String[] deriveExpectedOutputs( @Nonnull final String classname, final boolean dagger )
+  private String[] deriveExpectedOutputs( @Nonnull final String classname, final boolean generateFactory )
   {
     final List<String> expectedOutputs = new ArrayList<>();
     expectedOutputs.add( toFilename( "expected", classname, "React4j_", ".java" ) );
     expectedOutputs.add( toFilename( "expected", classname, "", "Builder.java" ) );
-    if ( dagger )
+    if ( generateFactory )
     {
-      expectedOutputs.add( toFilename( "expected", classname, "", "DaggerComponentExtension.java" ) );
+      expectedOutputs.add( toFilename( "expected", classname, "", "Factory.java" ) );
     }
     return expectedOutputs.toArray( new String[ 0 ] );
   }
@@ -876,7 +884,7 @@ public final class React4jProcessorTest
         String line = reader.readLine();
         while ( null != line )
         {
-          if ( line.contains( "arez.processor.ArezProcessor" ) )
+          if ( line.contains( "arez.processor.ArezProcessor" ) || line.contains( "sting.processor.StingProcessor" ) )
           {
             return false;
           }

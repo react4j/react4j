@@ -1,0 +1,52 @@
+[
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'react4j.annotations.StingProvider'.",
+    "element": "@interface react4j.annotations.ReactComponent",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@react4j.annotations.StingProvider(\"[FlatEnclosingName][SimpleName]Factory\")",
+      "annotationType": "react4j.annotations.StingProvider",
+      "classQualifiedName": "react4j.annotations.ReactComponent",
+      "classSimpleName": "ReactComponent",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.attributeWithDefaultAddedToAnnotationType",
+    "description": "The annotation has a new attribute with a default value.",
+    "newElement": "method react4j.annotations.Feature react4j.annotations.ReactComponent::inject()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.ReactComponent",
+      "classSimpleName": "ReactComponent",
+      "elementKind": "method",
+      "methodName": "inject",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.attributeWithDefaultAddedToAnnotationType",
+    "description": "The annotation has a new attribute with a default value.",
+    "newElement": "method react4j.annotations.Feature react4j.annotations.ReactComponent::sting()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.ReactComponent",
+      "classSimpleName": "ReactComponent",
+      "elementKind": "method",
+      "methodName": "sting",
+      "package": "react4j.annotations"
+    }
+  }
+]

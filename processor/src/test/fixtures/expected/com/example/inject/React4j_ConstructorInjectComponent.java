@@ -3,7 +3,6 @@ package com.example.inject;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.InjectMode;
-import arez.annotations.PerInstance;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,12 +21,11 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "ConstructorInjectComponent",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.CONSUME
+    inject = InjectMode.NONE
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ConstructorInjectComponent extends ConstructorInjectComponent {
-  React4j_ConstructorInjectComponent(
-      @Nonnull @PerInstance final NativeComponent $$react4j$$_nativeComponent,
+  React4j_ConstructorInjectComponent(@Nonnull final NativeComponent $$react4j$$_nativeComponent,
       @Nonnull final String someParam) {
     super( someParam );
     bindComponent( $$react4j$$_nativeComponent );
@@ -64,7 +62,7 @@ abstract class React4j_ConstructorInjectComponent extends ConstructorInjectCompo
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = ConstructorInjectComponentDaggerComponentExtension.InjectSupport.create( this );
+      $$react4j$$_component = ConstructorInjectComponentFactory.create( this );
     }
 
     @Override
@@ -86,7 +84,7 @@ abstract class React4j_ConstructorInjectComponent extends ConstructorInjectCompo
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = ConstructorInjectComponentDaggerComponentExtension.InjectSupport.create( this );
+      $$react4j$$_component = ConstructorInjectComponentFactory.create( this );
     }
 
     @Override

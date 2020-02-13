@@ -31,7 +31,6 @@ import org.realityforge.proton.SuppressWarningsUtil;
 
 final class BuilderGenerator
 {
-  private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
   private static final ClassName IDENTIFIABLE_CLASSNAME = ClassName.get( "arez.component", "Identifiable" );
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
@@ -102,7 +101,7 @@ final class BuilderGenerator
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "newBuilder" )
       .addModifiers( Modifier.PRIVATE, Modifier.STATIC )
-      .addAnnotation( NONNULL_CLASSNAME )
+      .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
       .returns( parameterizeIfRequired( descriptor, ClassName.bestGuess( "Step1" ) ) )
       .addStatement( "return new $T" + infix + "()", ClassName.bestGuess( "Builder" ) );
     GeneratorUtil.copyTypeParameters( descriptor.getElement(), method );
@@ -117,7 +116,7 @@ final class BuilderGenerator
   {
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( stepMethod.getName() ).
-        addAnnotation( NONNULL_CLASSNAME );
+        addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
 
     method.addModifiers( Modifier.STATIC );
     if ( descriptor.getDeclaredType().asElement().getModifiers().contains( Modifier.PUBLIC ) )
@@ -144,7 +143,7 @@ final class BuilderGenerator
       }
       else if ( stepMethod.isChildrenStreamIntrinsic() )
       {
-        parameter.addAnnotation( NONNULL_CLASSNAME );
+        parameter.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
       }
       method.addParameter( parameter.build() );
 
@@ -175,7 +174,7 @@ final class BuilderGenerator
   {
     final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
     method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
-    method.addAnnotation( NONNULL_CLASSNAME );
+    method.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
     action.accept( method );
     configureStepMethodReturns( descriptor, method, step, stepMethodType );
     return method;
@@ -260,7 +259,7 @@ final class BuilderGenerator
           }
           else if ( stepMethod.isChildrenStreamIntrinsic() )
           {
-            parameter.addAnnotation( NONNULL_CLASSNAME );
+            parameter.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
           }
           m.addParameter( parameter.build() );
         } ).build() );
@@ -279,7 +278,7 @@ final class BuilderGenerator
     final MethodSpec.Builder method = MethodSpec.methodBuilder( stepMethod.getName() );
     method.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
     method.addAnnotation( Override.class );
-    method.addAnnotation( NONNULL_CLASSNAME );
+    method.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
 
     final PropDescriptor prop = stepMethod.getProp();
     final ExecutableType propMethodType = stepMethod.getPropMethodType();
@@ -299,7 +298,7 @@ final class BuilderGenerator
     }
     else if ( stepMethod.isChildrenStreamIntrinsic() )
     {
-      parameter.addAnnotation( NONNULL_CLASSNAME );
+      parameter.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
     }
     method.addParameter( parameter.build() );
 
@@ -412,7 +411,7 @@ final class BuilderGenerator
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "build" )
       .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
-      .addAnnotation( NONNULL_CLASSNAME );
+      .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
     final List<PropDescriptor> syntheticProps =
       descriptor.getProps().stream().filter( PropDescriptor::isImmutable ).collect( Collectors.toList() );
     if ( syntheticProps.size() > 1 )

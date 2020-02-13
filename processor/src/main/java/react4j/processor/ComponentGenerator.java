@@ -32,8 +32,6 @@ import org.realityforge.proton.SuppressWarningsUtil;
 @SuppressWarnings( "Duplicates" )
 final class ComponentGenerator
 {
-  private static final ClassName NONNULL_CLASSNAME = ClassName.get( "javax.annotation", "Nonnull" );
-  private static final ClassName NULLABLE_CLASSNAME = ClassName.get( "javax.annotation", "Nullable" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   private static final ClassName AREZ_CLASSNAME = ClassName.get( "arez", "Arez" );
   private static final ClassName OBSERVER_CLASSNAME = ClassName.get( "arez", "Observer" );
@@ -45,7 +43,6 @@ final class ComponentGenerator
     ClassName.get( "arez.annotations", "InjectMode" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
-  private static final ClassName PER_INSTANCE_CLASSNAME = ClassName.get( "arez.annotations", "PerInstance" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
   private static final ClassName EXECUTOR_CLASSNAME = ClassName.get( "arez.annotations", "Executor" );
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
@@ -127,21 +124,14 @@ final class ComponentGenerator
     {
       arezAnnotation.addMember( "defaultPriority", "$T.LOWEST", PRIORITY_CLASSNAME );
     }
-    if ( descriptor.needsInjection() )
-    {
-      arezAnnotation.addMember( "inject", "$T.CONSUME", AREZ_INJECT_MODE_CLASSNAME );
-    }
-    else
-    {
-      arezAnnotation.addMember( "inject", "$T.NONE", AREZ_INJECT_MODE_CLASSNAME );
-    }
+    arezAnnotation.addMember( "inject", "$T.NONE", AREZ_INJECT_MODE_CLASSNAME );
     builder.addAnnotation( arezAnnotation.build() );
     builder.addModifiers( Modifier.ABSTRACT );
 
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
     GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
 
-    builder.addMethod( buildConstructor( processingEnv,descriptor ).build() );
+    builder.addMethod( buildConstructor( processingEnv, descriptor ).build() );
 
     if ( descriptor.trackRender() )
     {
@@ -225,11 +215,7 @@ final class ComponentGenerator
     final ParameterSpec.Builder componentParameter =
       ParameterSpec
         .builder( REACT_NATIVE_COMPONENT_CLASSNAME, componentParameterName, Modifier.FINAL )
-        .addAnnotation( NONNULL_CLASSNAME );
-    if ( descriptor.needsInjection() )
-    {
-      componentParameter.addAnnotation( PER_INSTANCE_CLASSNAME );
-    }
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
     final MethodSpec.Builder ctor = MethodSpec.constructorBuilder();
     ctor.addParameter( componentParameter.build() );
 
@@ -401,7 +387,7 @@ final class ComponentGenerator
   {
     return MethodSpec.methodBuilder( toObservableValueRefMethodName( prop ) ).
       addModifiers( Modifier.ABSTRACT ).
-      addAnnotation( NONNULL_CLASSNAME ).
+      addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).
       addAnnotation( OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME ).
       returns( ParameterizedTypeName.get( OBSERVABLE_CLASSNAME, WildcardTypeName.subtypeOf( TypeName.OBJECT ) ) );
   }
@@ -506,7 +492,7 @@ final class ComponentGenerator
         .returns( TypeName.BOOLEAN )
         .addParameter( ParameterSpec
                          .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL )
-                         .addAnnotation( NULLABLE_CLASSNAME )
+                         .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
                          .build() );
 
     final List<PropDescriptor> observableProps =
@@ -632,7 +618,7 @@ final class ComponentGenerator
         .addModifiers( Modifier.PRIVATE )
         .addParameter( ParameterSpec
                          .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
-                         .addAnnotation( NULLABLE_CLASSNAME )
+                         .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
                          .build() );
     final boolean hasPreUpdateOnPropChange = descriptor.hasPreUpdateOnPropChange();
     if ( hasPreUpdateOnPropChange )
@@ -664,7 +650,7 @@ final class ComponentGenerator
     {
       method.addParameter( ParameterSpec
                              .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
-                             .addAnnotation( NULLABLE_CLASSNAME )
+                             .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
                              .build() );
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != prevProps )" );
@@ -717,7 +703,7 @@ final class ComponentGenerator
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "render" )
       .addAnnotation( Override.class )
-      .addAnnotation( NULLABLE_CLASSNAME )
+      .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
       .addModifiers( Modifier.PROTECTED )
       .returns( REACT_NODE_CLASSNAME );
 
@@ -797,7 +783,7 @@ final class ComponentGenerator
     assert descriptor.trackRender();
     return MethodSpec
       .methodBuilder( "getRenderObserver" )
-      .addAnnotation( NONNULL_CLASSNAME )
+      .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
       .addAnnotation( OBSERVER_REF_ANNOTATION_CLASSNAME )
       .addModifiers( Modifier.ABSTRACT )
       .returns( OBSERVER_CLASSNAME );
@@ -812,7 +798,7 @@ final class ComponentGenerator
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PROTECTED )
       .addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "data", Modifier.FINAL )
-                       .addAnnotation( NONNULL_CLASSNAME )
+                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
     final CodeBlock.Builder block = CodeBlock.builder();
     block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() && $T.areSpiesEnabled() )",
@@ -864,7 +850,7 @@ final class ComponentGenerator
       MethodSpec.methodBuilder( VALIDATE_PROPS_METHOD ).
         addModifiers( Modifier.PRIVATE ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
-          addAnnotation( NONNULL_CLASSNAME ).build() );
+          addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() );
 
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
@@ -911,7 +897,7 @@ final class ComponentGenerator
   {
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "getConstructorFunction" ).
-        addAnnotation( NONNULL_CLASSNAME ).
+        addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).
         addModifiers( Modifier.STATIC, Modifier.PRIVATE ).
         returns( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME );
 
@@ -980,7 +966,7 @@ final class ComponentGenerator
     final FieldSpec.Builder field =
       FieldSpec
         .builder( COMPONENT_CONSTRUCTOR_FUNCTION_CLASSNAME, "TYPE", Modifier.STATIC, Modifier.FINAL )
-        .addAnnotation( NONNULL_CLASSNAME )
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
         .initializer( "getConstructorFunction()" );
     builder.addField( field.build() );
 
@@ -1014,7 +1000,7 @@ final class ComponentGenerator
 
     builder.addField( FieldSpec
                         .builder( componentFieldType, COMPONENT_FIELD, Modifier.PRIVATE, Modifier.FINAL )
-                        .addAnnotation( NONNULL_CLASSNAME )
+                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                         .build() );
 
     if ( lite )
@@ -1068,15 +1054,13 @@ final class ComponentGenerator
     {
       final ParameterSpec.Builder props =
         ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
-          addAnnotation( NULLABLE_CLASSNAME );
+          addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME );
       final MethodSpec.Builder method =
         MethodSpec.constructorBuilder().addParameter( props.build() ).addAnnotation( JS_CONSTRUCTOR_CLASSNAME );
       method.addStatement( "super( props )" );
       if ( descriptor.needsInjection() )
       {
-        method.addStatement( "$N = $T.InjectSupport.create( this )",
-                             COMPONENT_FIELD,
-                             descriptor.getDaggerComponentExtensionClassName() );
+        method.addStatement( "$N = $T.create( this )", COMPONENT_FIELD, descriptor.getFactoryClassName() );
       }
       else
       {
@@ -1135,7 +1119,7 @@ final class ComponentGenerator
     return MethodSpec
       .methodBuilder( "render" )
       .addAnnotation( Override.class )
-      .addAnnotation( NULLABLE_CLASSNAME )
+      .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .returns( REACT_NODE_CLASSNAME )
       .addStatement( "return $N.render()", COMPONENT_FIELD );
@@ -1161,7 +1145,7 @@ final class ComponentGenerator
       .returns( TypeName.BOOLEAN )
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL )
-                       .addAnnotation( NONNULL_CLASSNAME )
+                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() )
       .addStatement( "return $N.$N( nextProps )", COMPONENT_FIELD, SHOULD_COMPONENT_UPDATE_METHOD );
   }
@@ -1176,11 +1160,11 @@ final class ComponentGenerator
       .returns( TypeName.get( Object.class ) )
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
-                       .addAnnotation( NONNULL_CLASSNAME )
+                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() )
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
-                       .addAnnotation( NONNULL_CLASSNAME )
+                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() )
       .addStatement( "$N.$N( prevProps )", COMPONENT_FIELD, COMPONENT_PRE_UPDATE_METHOD )
       .addStatement( "return null" );
@@ -1195,7 +1179,7 @@ final class ComponentGenerator
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
-                       .addAnnotation( NONNULL_CLASSNAME )
+                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
     if ( descriptor.hasPostUpdateOnPropChange() )
     {
@@ -1227,10 +1211,10 @@ final class ComponentGenerator
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .addParameter( ParameterSpec.builder( JS_ERROR_CLASSNAME, "error", Modifier.FINAL )
-                       .addAnnotation( NONNULL_CLASSNAME )
+                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() )
       .addParameter( ParameterSpec.builder( REACT_ERROR_INFO_CLASSNAME, "info", Modifier.FINAL )
-                       .addAnnotation( NONNULL_CLASSNAME )
+                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
 
     final List<? extends VariableElement> parameters = onError.getParameters();

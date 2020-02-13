@@ -5,19 +5,13 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.ProcessorException;
 
@@ -29,6 +23,8 @@ final class ComponentDescriptor
   private final TypeElement _element;
   @Nonnull
   private final ComponentType _type;
+  private final boolean _inject;
+  private final boolean _sting;
   private final boolean _hasPostConstruct;
   private final boolean _shouldSetDefaultPriority;
   @Nonnull
@@ -62,72 +58,21 @@ final class ComponentDescriptor
 
   ComponentDescriptor( @Nonnull final String name,
                        @Nonnull final TypeElement element,
+                       @Nonnull final ExecutableElement constructor,
                        @Nonnull final ComponentType type,
+                       final boolean inject,
+                       final boolean sting,
                        final boolean hasPostConstruct,
                        final boolean shouldSetDefaultPriority )
   {
     _name = Objects.requireNonNull( name );
     _element = Objects.requireNonNull( element );
+    _constructor = Objects.requireNonNull( constructor );
     _type = Objects.requireNonNull( type );
+    _inject = inject;
+    _sting = sting;
     _hasPostConstruct = hasPostConstruct;
     _shouldSetDefaultPriority = shouldSetDefaultPriority;
-
-    if ( ElementKind.CLASS != element.getKind() )
-    {
-      throw new ProcessorException( "@ReactComponent target must be a class", element );
-    }
-    else if ( element.getModifiers().contains( Modifier.FINAL ) )
-    {
-      throw new ProcessorException( "@ReactComponent target must not be final", element );
-    }
-    else if ( !element.getModifiers().contains( Modifier.ABSTRACT ) )
-    {
-      throw new ProcessorException( "@ReactComponent target must be abstract", element );
-    }
-    else if ( NestingKind.TOP_LEVEL != element.getNestingKind() &&
-              !element.getModifiers().contains( Modifier.STATIC ) )
-    {
-      throw new ProcessorException( "@ReactComponent target must not be a non-static nested class", element );
-    }
-
-    final List<ExecutableElement> constructors = element.getEnclosedElements().stream().
-      filter( m -> m.getKind() == ElementKind.CONSTRUCTOR ).
-      map( m -> (ExecutableElement) m ).
-      collect( Collectors.toList() );
-    if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
-    {
-      throw new ProcessorException( "@ReactComponent target must have a single, package-access constructor " +
-                                    "or the default constructor", element );
-    }
-    _constructor = constructors.get( 0 );
-    for ( final VariableElement parameter : _constructor.getParameters() )
-    {
-      if ( AnnotationsUtil.hasAnnotationOfType( parameter, Constants.PER_INSTANCE_ANNOTATION_CLASSNAME ) )
-      {
-        throw new ProcessorException( "@ReactComponent target has a constructor with a parameter named '" +
-                                      parameter.getSimpleName().toString() + "' that is incorrectly annotated " +
-                                      "with the " + Constants.PER_INSTANCE_ANNOTATION_CLASSNAME + " annotation.",
-                                      element );
-      }
-    }
-  }
-
-  private boolean isConstructorValid( @Nonnull final ExecutableElement ctor )
-  {
-    final List<? extends VariableElement> parameters = ctor.getParameters();
-    final Set<Modifier> modifiers = ctor.getModifiers();
-    if ( parameters.isEmpty() )
-    {
-      return !modifiers.contains( Modifier.PROTECTED ) &&
-             !modifiers.contains( Modifier.PRIVATE );
-    }
-    else
-    {
-      return
-        !modifiers.contains( Modifier.PRIVATE ) &&
-        !modifiers.contains( Modifier.PUBLIC ) &&
-        !modifiers.contains( Modifier.PROTECTED );
-    }
   }
 
   @Nonnull
@@ -139,6 +84,16 @@ final class ComponentDescriptor
   private boolean hasConstructorParams()
   {
     return !_constructor.getParameters().isEmpty();
+  }
+
+  boolean enableInject()
+  {
+    return _inject;
+  }
+
+  boolean enableSting()
+  {
+    return _sting;
   }
 
   boolean hasPostConstruct()
@@ -194,15 +149,9 @@ final class ComponentDescriptor
   }
 
   @Nonnull
-  ClassName getDaggerComponentExtensionClassName()
+  ClassName getFactoryClassName()
   {
-    return GeneratorUtil.getGeneratedClassName( _element, "", "DaggerComponentExtension" );
-  }
-
-  @Nonnull
-  ClassName getArezDaggerExtensionClassName()
-  {
-    return GeneratorUtil.getGeneratedClassName( _element, "React4j_", "DaggerComponentExtension" );
+    return GeneratorUtil.getGeneratedClassName( _element, "", "Factory" );
   }
 
   @Nonnull

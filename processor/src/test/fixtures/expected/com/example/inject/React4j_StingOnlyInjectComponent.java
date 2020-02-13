@@ -1,4 +1,4 @@
-package com.example.nested;
+package com.example.inject;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
@@ -18,16 +18,16 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "BasicReactComponent",
+    name = "StingOnlyInjectComponent",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     inject = InjectMode.NONE
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class NestedCompleteComponent_React4j_BasicReactComponent extends NestedCompleteComponent.BasicReactComponent {
-  NestedCompleteComponent_React4j_BasicReactComponent(
-      @Nonnull final NativeComponent $$react4j$$_nativeComponent, final String value) {
-    super( value );
+abstract class React4j_StingOnlyInjectComponent extends StingOnlyInjectComponent {
+  React4j_StingOnlyInjectComponent(@Nonnull final NativeComponent $$react4j$$_nativeComponent,
+      @Nonnull final String someParam) {
+    super( someParam );
     bindComponent( $$react4j$$_nativeComponent );
   }
 
@@ -35,32 +35,19 @@ abstract class NestedCompleteComponent_React4j_BasicReactComponent extends Neste
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "BasicReactComponent" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "StingOnlyInjectComponent" );
     }
     return componentConstructor;
-  }
-
-  @Override
-  String getMyProp() {
-    if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).asString() : null;
-    } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp ) );
-    }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
-    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
-      return true;
-    }
     return false;
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_NestedCompleteComponent_React4j_BasicReactComponent) this).dispose();
+    ((Arez_React4j_StingOnlyInjectComponent) this).dispose();
   }
 
   static final class Factory {
@@ -68,18 +55,14 @@ abstract class NestedCompleteComponent_React4j_BasicReactComponent extends Neste
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
-  }
-
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     @Nonnull
-    private final NestedCompleteComponent_React4j_BasicReactComponent $$react4j$$_component;
+    private final React4j_StingOnlyInjectComponent $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = NestedCompleteComponent_BasicReactComponentFactory.create( this );
+      $$react4j$$_component = StingOnlyInjectComponentFactory.create( this );
     }
 
     @Override
@@ -96,12 +79,12 @@ abstract class NestedCompleteComponent_React4j_BasicReactComponent extends Neste
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final NestedCompleteComponent_React4j_BasicReactComponent $$react4j$$_component;
+    private final React4j_StingOnlyInjectComponent $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = NestedCompleteComponent_BasicReactComponentFactory.create( this );
+      $$react4j$$_component = StingOnlyInjectComponentFactory.create( this );
     }
 
     @Override

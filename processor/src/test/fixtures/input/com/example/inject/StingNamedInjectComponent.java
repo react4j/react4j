@@ -1,15 +1,16 @@
 package com.example.inject;
 
-import arez.annotations.PerInstance;
+import javax.annotation.Nonnull;
 import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
+import sting.Named;
 
 @ReactComponent
-abstract class PerInstanceInjectedComponent
+abstract class StingNamedInjectComponent
   extends Component
 {
-  PerInstanceInjectedComponent( @PerInstance final String someParam )
+  StingNamedInjectComponent( @Nonnull @Named( "blah" ) String someParam )
   {
   }
 

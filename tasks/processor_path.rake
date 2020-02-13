@@ -16,6 +16,7 @@ module Buildr
       before_define do |project|
         t = project.task('processors_setup') do
           mkdir_p project._(:generated, 'processors/main/java') if project.enable_annotation_processor?
+          mkdir_p project._(:generated, 'processors/test/java') if project.enable_annotation_processor?
         end
         project.compile.enhance([t.name])
 
@@ -28,14 +29,18 @@ module Buildr
       after_define do |project|
         if project.enable_annotation_processor?
           project.file(project._(:generated, 'processors/main/java')).enhance([project.compile])
+          project.file(project._(:generated, 'processors/test/java')).enhance([project.test.compile])
 
           project.compile.options.merge!(:other => ['-s', project._(:generated, 'processors/main/java')])
+          project.test.compile.options.merge!(:other => ['-s', project._(:generated, 'processors/test/java')])
           if project.iml? && project.enable_annotation_processor?
             project.iml.main_generated_source_directories << project._(:generated, 'processors/main/java')
+            project.iml.test_generated_source_directories << project._(:generated, 'processors/test/java')
           end
           project.clean do
             # Clean the IDE generated sources
             rm_rf project._(:generated, 'processors/main/java')
+            rm_rf project._(:generated, 'processors/test/java')
           end
         end
 

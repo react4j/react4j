@@ -38,6 +38,7 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Types;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.AnnotationsUtil;
+import org.realityforge.proton.DeferredElementSet;
 import org.realityforge.proton.ElementsUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
@@ -48,7 +49,7 @@ import org.realityforge.proton.ProcessorException;
 @SuppressWarnings( "Duplicates" )
 @SupportedAnnotationTypes( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME )
 @SupportedSourceVersion( SourceVersion.RELEASE_8 )
-@SupportedOptions( { "react4j.defer.unresolved", "react4j.defer.errors" } )
+@SupportedOptions( { "react4j.defer.unresolved", "react4j.defer.errors", "react4j.debug" } )
 public final class React4jProcessor
   extends AbstractStandardProcessor
 {
@@ -58,15 +59,17 @@ public final class React4jProcessor
   private static final Pattern LAST_PROP_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
   private static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
   private static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
+  @Nonnull
+  private final DeferredElementSet _deferredTypes = new DeferredElementSet();
 
-  @SuppressWarnings( "unchecked" )
   @Override
   public boolean process( final Set<? extends TypeElement> annotations, final RoundEnvironment env )
   {
-    final TypeElement annotation =
-      processingEnv.getElementUtils().getTypeElement( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME );
-    final Collection<TypeElement> elementsTo = (Collection<TypeElement>) env.getElementsAnnotatedWith( annotation );
-    processTypeElements( env, elementsTo, this::process );
+    processTypeElements( annotations,
+                         env,
+                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                         _deferredTypes,
+                         this::process );
     errorIfProcessingOverAndInvalidTypesDetected( env );
     return true;
   }
@@ -94,7 +97,7 @@ public final class React4jProcessor
     emitTypeSpec( packageName, BuilderGenerator.buildType( processingEnv, descriptor ) );
     if ( descriptor.needsInjection() )
     {
-      emitTypeSpec( packageName, DaggerComponentExtensionGenerator.buildType( processingEnv, descriptor ) );
+      emitTypeSpec( packageName, FactoryExtensionGenerator.buildType( processingEnv, descriptor ) );
     }
   }
 
@@ -115,8 +118,51 @@ public final class React4jProcessor
     final ComponentType type = extractComponentType( typeElement );
     final boolean hasPostConstruct = hasPostConstruct( typeElement );
     final boolean shouldSetDefaultPriority = shouldSetDefaultPriority( typeElement );
+
+    MemberChecks.mustNotBeFinal( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, typeElement );
+    MemberChecks.mustBeAbstract( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, typeElement );
+    if ( ElementKind.CLASS != typeElement.getKind() )
+    {
+      throw new ProcessorException( "@ReactComponent target must be a class", typeElement );
+    }
+    else if ( ElementsUtil.isNonStaticNestedClass( typeElement ) )
+    {
+      throw new ProcessorException( "@ReactComponent target must not be a non-static nested class", typeElement );
+    }
+    final List<ExecutableElement> constructors = ElementsUtil.getConstructors( typeElement );
+    if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
+    {
+      throw new ProcessorException( MemberChecks.must( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                       "have a single, package-access constructor or the default constructor" ),
+                                    typeElement );
+    }
+    final ExecutableElement constructor = constructors.get( 0 );
+
+    final boolean inject = deriveInject( typeElement, constructor );
+    final boolean sting = deriveSting( typeElement, constructor );
+
+    if ( inject && constructor.getParameters().isEmpty() )
+    {
+      throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                          "have specified inject=ENABLED if the constructor has no parameters" ),
+                                    typeElement );
+    }
+    else if ( sting && constructor.getParameters().isEmpty() )
+    {
+      throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                          "have specified sting=ENABLED if the constructor has no parameters" ),
+                                    typeElement );
+    }
+
     final ComponentDescriptor descriptor =
-      new ComponentDescriptor( name, typeElement, type, hasPostConstruct, shouldSetDefaultPriority );
+      new ComponentDescriptor( name,
+                               typeElement,
+                               constructor,
+                               type,
+                               inject,
+                               sting,
+                               hasPostConstruct,
+                               shouldSetDefaultPriority );
 
     determineComponentCapabilities( descriptor, typeElement );
     determineProps( descriptor );
@@ -148,6 +194,64 @@ public final class React4jProcessor
     verifyPropsNotCollectionOfArezComponents( descriptor );
 
     return descriptor;
+  }
+
+  private boolean deriveInject( @Nonnull final TypeElement typeElement, final @Nonnull ExecutableElement constructor )
+  {
+    final String inject =
+      AnnotationsUtil.getEnumAnnotationParameter( typeElement,
+                                                  Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                  "inject" );
+    if ( "ENABLE".equals( inject ) )
+    {
+      return true;
+    }
+    else if ( "DISABLE".equals( inject ) )
+    {
+      return false;
+    }
+    else
+    {
+      return !constructor.getParameters().isEmpty() &&
+             null != processingEnv.getElementUtils().getTypeElement( Constants.JSR_330_INJECT_CLASSNAME );
+    }
+  }
+
+  private boolean deriveSting( @Nonnull final TypeElement typeElement, final @Nonnull ExecutableElement constructor )
+  {
+    final String inject =
+      AnnotationsUtil.getEnumAnnotationParameter( typeElement,
+                                                  Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                  "sting" );
+    if ( "ENABLE".equals( inject ) )
+    {
+      return true;
+    }
+    else if ( "DISABLE".equals( inject ) )
+    {
+      return false;
+    }
+    else
+    {
+      return !constructor.getParameters().isEmpty() &&
+             null != processingEnv.getElementUtils().getTypeElement( Constants.STING_INJECTABLE_CLASSNAME );
+    }
+  }
+
+  private boolean isConstructorValid( @Nonnull final ExecutableElement ctor )
+  {
+    if ( ElementsUtil.isSynthetic( ctor ) )
+    {
+      return true;
+    }
+    else
+    {
+      final Set<Modifier> modifiers = ctor.getModifiers();
+      return
+        !modifiers.contains( Modifier.PRIVATE ) &&
+        !modifiers.contains( Modifier.PUBLIC ) &&
+        !modifiers.contains( Modifier.PROTECTED );
+    }
   }
 
   private void verifyPropsNotCollectionOfArezComponents( @Nonnull final ComponentDescriptor descriptor )
@@ -301,12 +405,12 @@ public final class React4jProcessor
         }
         final boolean mismatchedNullability =
           (
-            AnnotationsUtil.hasAnnotationOfType( parameter, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-            AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
+            AnnotationsUtil.hasNonnullAnnotation( parameter ) &&
+            AnnotationsUtil.hasNullableAnnotation( prop.getMethod() )
           ) ||
           (
-            AnnotationsUtil.hasAnnotationOfType( parameter, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-            AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+            AnnotationsUtil.hasNullableAnnotation( parameter ) &&
+            AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() ) );
 
         if ( mismatchedNullability )
         {
@@ -398,12 +502,12 @@ public final class React4jProcessor
       final VariableElement param = method.getParameters().get( 0 );
       final boolean mismatchedNullability =
         (
-          AnnotationsUtil.hasAnnotationOfType( param, Constants.NONNULL_ANNOTATION_CLASSNAME ) &&
-          AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME )
+          AnnotationsUtil.hasNonnullAnnotation( param ) &&
+          AnnotationsUtil.hasNullableAnnotation( prop.getMethod() )
         ) ||
         (
-          AnnotationsUtil.hasAnnotationOfType( param, Constants.NULLABLE_ANNOTATION_CLASSNAME ) &&
-          AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NONNULL_ANNOTATION_CLASSNAME ) );
+          AnnotationsUtil.hasNullableAnnotation( param ) &&
+          AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() ) );
 
       if ( mismatchedNullability )
       {
@@ -649,7 +753,7 @@ public final class React4jProcessor
       default:
         return !prop.hasDefaultMethod() &&
                !prop.hasDefaultField() &&
-               !AnnotationsUtil.hasAnnotationOfType( prop.getMethod(), Constants.NULLABLE_ANNOTATION_CLASSNAME );
+               !AnnotationsUtil.hasNullableAnnotation( prop.getMethod() );
     }
   }
 
@@ -706,8 +810,7 @@ public final class React4jProcessor
     final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange, immutable );
     final boolean disposable = null != propType && isPropDisposable( method, propType );
     final TypeName typeName = TypeName.get( returnType );
-    if ( typeName.isBoxedPrimitive() &&
-         AnnotationsUtil.hasAnnotationOfType( method, Constants.NONNULL_ANNOTATION_CLASSNAME ) )
+    if ( typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation( method ) )
     {
       throw new ProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
                                     "@Nonnull annotation. The return type should be the primitive type.",
@@ -1006,25 +1109,26 @@ public final class React4jProcessor
 
     if ( !isComponent )
     {
-      throw new ProcessorException( "@ReactComponent target must be a subclass of react4j.Component",
+      throw new ProcessorException( MemberChecks.must( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                       "be a subclass of react4j.Component" ),
                                     typeElement );
     }
     else
     {
-      final AnnotationMirror arezAnnotation = typeElement.getAnnotationMirrors().stream().
-        filter( m -> m.getAnnotationType().toString().equals( "arez.annotations.ArezComponent" ) ).
-        findAny().orElse( null );
-      if ( null != arezAnnotation )
+      if ( AnnotationsUtil.hasAnnotationOfType( typeElement, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
       {
-        throw new ProcessorException( "@ReactComponent target should not be annotated with the " +
-                                      "arez.annotations.ArezComponent as React4j will add the annotation.",
+        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                            "be annotated with the " +
+                                                            MemberChecks.toSimpleName( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) +
+                                                            " as React4j will add the annotation." ),
                                       typeElement );
       }
     }
 
     if ( descriptor.needsInjection() && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
-      throw new ProcessorException( "@ReactComponent target has enabled injection integration but the class " +
+      throw new ProcessorException( MemberChecks.toSimpleName( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME ) +
+                                    " target has enabled injection integration but the class " +
                                     "has type arguments which is incompatible with injection integration.",
                                     typeElement );
     }
