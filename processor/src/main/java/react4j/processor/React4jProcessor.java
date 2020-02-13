@@ -1115,10 +1115,7 @@ public final class React4jProcessor
     }
     else
     {
-      final AnnotationMirror arezAnnotation = typeElement.getAnnotationMirrors().stream().
-        filter( m -> m.getAnnotationType().toString().equals( "arez.annotations.ArezComponent" ) ).
-        findAny().orElse( null );
-      if ( null != arezAnnotation )
+      if ( AnnotationsUtil.hasAnnotationOfType( typeElement, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
       {
         throw new ProcessorException( "@ReactComponent target should not be annotated with the " +
                                       "arez.annotations.ArezComponent as React4j will add the annotation.",
