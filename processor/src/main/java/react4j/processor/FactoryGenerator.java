@@ -98,7 +98,7 @@ final class FactoryGenerator
       ctor.addModifiers( Modifier.PUBLIC );
     }
 
-    final ArrayList<String> whitelistedAnnotations = new ArrayList<>( GeneratorUtil.ANNOTATION_WHITELIST );
+    final List<String> whitelistedAnnotations = new ArrayList<>( GeneratorUtil.ANNOTATION_WHITELIST );
     whitelistedAnnotations.add( "sting.Named" );
     whitelistedAnnotations.add( "javax.inject.Named" );
     for ( final VariableElement parameter : constructor.getParameters() )
