@@ -97,7 +97,7 @@ public final class React4jProcessor
     emitTypeSpec( packageName, BuilderGenerator.buildType( processingEnv, descriptor ) );
     if ( descriptor.needsInjection() )
     {
-      emitTypeSpec( packageName, FactoryExtensionGenerator.buildType( processingEnv, descriptor ) );
+      emitTypeSpec( packageName, FactoryGenerator.buildType( processingEnv, descriptor ) );
     }
   }
 

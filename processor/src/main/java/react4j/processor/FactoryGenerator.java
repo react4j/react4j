@@ -24,14 +24,14 @@ import org.realityforge.proton.ElementsUtil;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.SuppressWarningsUtil;
 
-final class FactoryExtensionGenerator
+final class FactoryGenerator
 {
   private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
     ClassName.get( "react4j.internal", "NativeComponent" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
 
-  private FactoryExtensionGenerator()
+  private FactoryGenerator()
   {
   }
 
