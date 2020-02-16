@@ -9,7 +9,6 @@ import arez.annotations.ArezComponent;
 import arez.annotations.DepType;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
-import arez.annotations.InjectMode;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
 import arez.annotations.Observe;
@@ -38,7 +37,7 @@ import react4j.internal.arez.SchedulerUtil;
 @ArezComponent(
     name = "ObservableProp",
     disposeNotifier = Feature.DISABLE,
-    inject = InjectMode.NONE
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ObservableProp extends ObservableProp {

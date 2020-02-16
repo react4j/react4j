@@ -7,7 +7,6 @@ import arez.annotations.ArezComponent;
 import arez.annotations.DepType;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
-import arez.annotations.InjectMode;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
@@ -33,7 +32,7 @@ import react4j.internal.arez.SchedulerUtil;
 @ArezComponent(
     name = "MaybeTrackingComponent",
     disposeNotifier = Feature.DISABLE,
-    inject = InjectMode.NONE
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {

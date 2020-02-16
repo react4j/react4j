@@ -2,7 +2,6 @@ package com.example.post_mount;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
-import arez.annotations.InjectMode;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,7 +24,7 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "DeprecatedPostMountModel",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.NONE
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_DeprecatedPostMountModel extends DeprecatedPostMountModel {

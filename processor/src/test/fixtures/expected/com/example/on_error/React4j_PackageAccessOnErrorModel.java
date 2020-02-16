@@ -2,7 +2,6 @@ package com.example.on_error;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
-import arez.annotations.InjectMode;
 import elemental2.core.JsError;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -24,7 +23,7 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "PackageAccessOnErrorModel",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.NONE
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_PackageAccessOnErrorModel extends PackageAccessOnErrorModel {

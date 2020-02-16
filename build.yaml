@@ -24,8 +24,8 @@ artifacts:
   elemental2_dom: org.realityforge.com.google.elemental2:elemental2-dom:jar:2.27
   elemental2_promise: org.realityforge.com.google.elemental2:elemental2-promise:jar:2.27
 
-  arez_core: org.realityforge.arez:arez-core:jar:0.167
-  arez_processor: org.realityforge.arez:arez-processor:jar:0.167
+  arez_core: org.realityforge.arez:arez-core:jar:0.168
+  arez_processor: org.realityforge.arez:arez-processor:jar:0.168
 
   sting_core: org.realityforge.sting:sting-core:jar:0.01
   sting_processor: org.realityforge.sting:sting-processor:jar:0.01

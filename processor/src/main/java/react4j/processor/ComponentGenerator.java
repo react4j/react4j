@@ -39,8 +39,6 @@ final class ComponentGenerator
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
-  private static final ClassName AREZ_INJECT_MODE_CLASSNAME =
-    ClassName.get( "arez.annotations", "InjectMode" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
@@ -124,7 +122,7 @@ final class ComponentGenerator
     {
       arezAnnotation.addMember( "defaultPriority", "$T.LOWEST", PRIORITY_CLASSNAME );
     }
-    arezAnnotation.addMember( "inject", "$T.NONE", AREZ_INJECT_MODE_CLASSNAME );
+    arezAnnotation.addMember( "dagger", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
     builder.addAnnotation( arezAnnotation.build() );
     builder.addModifiers( Modifier.ABSTRACT );
 

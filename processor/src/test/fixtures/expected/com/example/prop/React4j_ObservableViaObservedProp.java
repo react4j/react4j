@@ -4,7 +4,6 @@ import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
-import arez.annotations.InjectMode;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
 import javax.annotation.Generated;
@@ -25,7 +24,7 @@ import react4j.internal.OnShouldComponentUpdate;
     name = "ObservableViaObservedProp",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
-    inject = InjectMode.NONE
+    dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedProp {
