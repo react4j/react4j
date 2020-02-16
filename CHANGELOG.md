@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.151](https://github.com/react4j/react4j/tree/v0.151) (2020-02-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.150...v0.151)
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.4.0`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.168`.
