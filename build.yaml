@@ -27,8 +27,8 @@ artifacts:
   arez_core: org.realityforge.arez:arez-core:jar:0.168
   arez_processor: org.realityforge.arez:arez-processor:jar:0.168
 
-  sting_core: org.realityforge.sting:sting-core:jar:0.01
-  sting_processor: org.realityforge.sting:sting-processor:jar:0.01
+  sting_core: org.realityforge.sting:sting-core:jar:0.02
+  sting_processor: org.realityforge.sting:sting-processor:jar:0.02
 
   braincheck: org.realityforge.braincheck:braincheck:jar:1.25.0
 
@@ -46,8 +46,8 @@ artifacts:
   javapoet: com.squareup:javapoet:jar:1.12.0
   guava: com.google.guava:guava:jar:27.1-jre
 
-  proton_core: org.realityforge.proton:proton-core:jar:0.39
-  proton_qa: org.realityforge.proton:proton-qa:jar:0.39
+  proton_core: org.realityforge.proton:proton-core:jar:0.40
+  proton_qa: org.realityforge.proton:proton-qa:jar:0.40
 
   #test deps
   compile_testing: com.google.testing.compile:compile-testing:jar:0.18-rf
