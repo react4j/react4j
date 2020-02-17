@@ -33,8 +33,7 @@ public final class CollectBuildStats
     throws Exception
   {
     Gir.go( () -> {
-      final List<String> baseBranches =
-        Arrays.asList( "raw", "arez", "dagger", "spritz", "raw_maven", "arez_maven", "dagger_maven" );
+      final List<String> baseBranches = Arrays.asList( "raw", "arez", "dagger", "spritz", "dagger_maven" );
 
       final ArrayList<String> branches = new ArrayList<>( baseBranches );
       if ( WorkspaceUtil.buildJ2clBuilds() )
@@ -158,8 +157,10 @@ public final class CollectBuildStats
   private static void archivej2clOutput( @Nonnull final Path archiveDir )
   {
     final Path currentDirectory = FileUtil.getCurrentDirectory();
-    WorkspaceUtil.archiveDirectory( currentDirectory.resolve( "target/react4j-todomvc-1.0.0-SNAPSHOT" ), archiveDir.resolve( "sources" ) );
-    WorkspaceUtil.archiveFile( currentDirectory.resolve( "target/react4j-todomvc-1.0.0-SNAPSHOT/react4j-todomvc/react4j-todomvc.js" ),
+    WorkspaceUtil.archiveDirectory( currentDirectory.resolve( "target/react4j-todomvc-1.0.0-SNAPSHOT" ),
+                                    archiveDir.resolve( "sources" ) );
+    WorkspaceUtil.archiveFile( currentDirectory.resolve(
+      "target/react4j-todomvc-1.0.0-SNAPSHOT/react4j-todomvc/react4j-todomvc.js" ),
                                archiveDir.resolve( "assets/todomvc/todomvc.nocache.js" ) );
   }
 
