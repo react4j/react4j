@@ -40,21 +40,6 @@ React4j looks like.
     </td>
   </tr>
   <tr>
-    <td><a href="https://github.com/react4j/react4j-todomvc/tree/raw_maven">raw_maven</a></td>
-    <td>
-      <a href="https://travis-ci.org/react4j/react4j-todomvc">
-        <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=raw_maven" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
-      </a>
-    </td>
-    <td></td>
-    <td></td>
-    <td>
-      <ul>
-        <li>Build System: <a href="https://maven.apache.org">Maven</a></li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
     <td><a href="https://github.com/react4j/react4j-todomvc/tree/arez">arez</a></td>
     <td>
       <a href="https://travis-ci.org/react4j/react4j-todomvc">
@@ -67,22 +52,6 @@ React4j looks like.
       <ul>
         <li>State Management: <a href="https://arez.github.io">Arez</a></li>
         <li>Build System: <a href="https://buildr.apache.org">Buildr</a></li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/react4j/react4j-todomvc/tree/arez_maven">arez_maven</a></td>
-    <td>
-      <a href="https://travis-ci.org/react4j/react4j-todomvc">
-        <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=arez_maven" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
-      </a>
-    </td>
-    <td></td>
-    <td></td>
-    <td>
-      <ul>
-        <li>State Management: <a href="https://arez.github.io">Arez</a></li>
-        <li>Build System: <a href="https://maven.apache.org">Maven</a></li>
       </ul>
     </td>
   </tr>
