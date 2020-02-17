@@ -38,8 +38,6 @@ public final class CollectBuildStats
       final ArrayList<String> branches = new ArrayList<>( baseBranches );
       if ( WorkspaceUtil.buildJ2clBuilds() )
       {
-        branches.add( "raw_maven_j2cl" );
-        branches.add( "arez_maven_j2cl" );
         branches.add( "dagger_maven_j2cl" );
       }
 
