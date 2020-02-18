@@ -114,7 +114,7 @@ public final class CollectBuildStats
     else
     {
       // Assume maven
-      Exec.system( "mvn", "clean", "package" );
+      Exec.system( "./mvnw", "clean", "package" );
 
       if ( isj2cl )
       {
