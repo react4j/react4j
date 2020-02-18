@@ -10,7 +10,7 @@ artifacts:
   shade_task: org.realityforge.ant.shade:ant-shade-task:jar:0.1
 
   javax_annotation: org.realityforge.javax.annotation:javax.annotation:jar:1.0.1
-  jetbrains_annotations: org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.4.0
+  jetbrains_annotations: org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.5.0
 
   # GWT deps
   gwt_user: org.realityforge.com.google.gwt:gwt-user:jar:2.8.2-v20191108
@@ -27,8 +27,8 @@ artifacts:
   arez_core: org.realityforge.arez:arez-core:jar:0.168
   arez_processor: org.realityforge.arez:arez-processor:jar:0.168
 
-  sting_core: org.realityforge.sting:sting-core:jar:0.02
-  sting_processor: org.realityforge.sting:sting-processor:jar:0.02
+  sting_core: org.realityforge.sting:sting-core:jar:0.03
+  sting_processor: org.realityforge.sting:sting-processor:jar:0.03
 
   braincheck: org.realityforge.braincheck:braincheck:jar:1.25.0
 
