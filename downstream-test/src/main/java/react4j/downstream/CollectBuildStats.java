@@ -38,7 +38,7 @@ public final class CollectBuildStats
       final ArrayList<String> branches = new ArrayList<>( baseBranches );
       if ( WorkspaceUtil.buildJ2clBuilds() )
       {
-        branches.add( "dagger_maven_j2cl" );
+        branches.add( "sting_maven_j2cl" );
       }
 
       WorkspaceUtil.forEachBranch( "react4j-todomvc",

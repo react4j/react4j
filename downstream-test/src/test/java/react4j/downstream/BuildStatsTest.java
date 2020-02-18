@@ -41,12 +41,12 @@ public class BuildStatsTest
   }
 
   @Test
-  public void dagger_j2cl()
+  public void sting_j2cl()
     throws Exception
   {
     if ( WorkspaceUtil.buildJ2clBuilds() )
     {
-      compareSizesForBranch( "dagger_maven_j2cl", true );
+      compareSizesForBranch( "sting_maven_j2cl", true );
     }
   }
 
