@@ -5,7 +5,7 @@ DOWNSTREAM_PROJECTS=%w()
 # Project -> [Branch1, Branch2, ...]
 DOWNSTREAM_EXAMPLES =
   {
-    'react4j-todomvc' => %w(raw arez spritz sting dagger dagger_maven dagger_maven_j2cl),
+    'react4j-todomvc' => %w(raw arez spritz sting dagger sting_maven dagger_maven_j2cl),
     'react4j-drumloop' => %w(master),
     'react4j-flux-challenge' => %w(master),
   }

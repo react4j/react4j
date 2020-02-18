@@ -90,17 +90,17 @@ React4j looks like.
     </td>
   </tr>
   <tr>
-    <td><a href="https://github.com/react4j/react4j-todomvc/tree/dagger_maven">dagger_maven</a></td>
+    <td><a href="https://github.com/react4j/react4j-todomvc/tree/sting_maven">sting_maven</a></td>
     <td>
       <a href="https://travis-ci.org/react4j/react4j-todomvc">
-        <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=dagger_maven" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
+        <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=sting_maven" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
       </a>
     </td>
     <td></td>
     <td></td>
     <td>
       <ul>
-        <li>Dependency Injection: <a href="https://google.github.io/dagger">Dagger2</a></li>
+        <li>Dependency Injection: <a href="https://sting-ioc.github.io/">Sting</a></li>
         <li>State Management: <a href="https://arez.github.io">Arez</a></li>
         <li>Build System: <a href="https://maven.apache.org">Maven</a></li>
       </ul>
