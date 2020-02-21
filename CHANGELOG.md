@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Upgrade the `org.realityforge.arez` artifacts to version `0.169`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.170`.
 * Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.5.0`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.04`.
 * Upgrade the `org.realityforge.proton` artifacts to version `0.40`.
