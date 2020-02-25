@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.braincheck` artifact to version `1.26.0`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.170`.
 * Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.5.0`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.04`.
