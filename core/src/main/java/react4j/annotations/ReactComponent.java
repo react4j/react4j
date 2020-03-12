@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
  */
 @Documented
 @Target( ElementType.TYPE )
-@StingProvider( "[FlatEnclosingName][SimpleName]Factory" )
 public @interface ReactComponent
 {
   /**

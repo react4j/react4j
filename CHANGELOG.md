@@ -7,6 +7,7 @@
 * Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.5.0`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.06`.
 * Upgrade the `org.realityforge.proton` artifacts to version `0.41`.
+* Remove the `@StingProvider` annotation on `@ReactComponent` as it does not make sense to explicitly add the authored component to a Sting injector when the component it ultimately includes is a factory for the component.
 
 ### [v0.151](https://github.com/react4j/react4j/tree/v0.151) (2020-02-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.150...v0.151)
 

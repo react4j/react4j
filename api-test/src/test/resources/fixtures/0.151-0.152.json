@@ -1,0 +1,20 @@
+[
+  {
+    "code": "java.annotation.removed",
+    "description": "Element no longer annotated with 'react4j.annotations.StingProvider'.",
+    "element": "@interface react4j.annotations.ReactComponent",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@react4j.annotations.StingProvider(\"[FlatEnclosingName][SimpleName]Factory\")",
+      "annotationType": "react4j.annotations.StingProvider",
+      "classQualifiedName": "react4j.annotations.ReactComponent",
+      "classSimpleName": "ReactComponent",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  }
+]
