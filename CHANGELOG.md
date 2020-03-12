@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.152](https://github.com/react4j/react4j/tree/v0.152) (2020-03-12) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.151...v0.152) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.151&new=0.152)
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.26.0`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.170`.
