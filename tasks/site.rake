@@ -8,6 +8,9 @@ task 'site:javadocs' do
   file(javadocs_dir).invoke
   mkdir_p SITE_DIR
   cp_r javadocs_dir, "#{SITE_DIR}/api"
+
+  # Copy api docs to a location suitable for local development
+  cp_r javadocs_dir, "#{WORKSPACE_DIR}/website/static/api"
 end
 
 desc 'Copy the compiled examples to docs dir'
@@ -58,6 +61,8 @@ end
 desc 'Build the website'
 task 'site:build' do
   rm_rf SITE_DIR
+  # Remove the static site used when doing local development of website
+  rm_rf "#{WORKSPACE_DIR}/website/static/api"
   sh "yarn build #{SITE_DIR}"
   mkdir_p File.dirname(SITE_DIR)
   mv "#{WORKSPACE_DIR}/website/build/react4j", SITE_DIR
