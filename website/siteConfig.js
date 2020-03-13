@@ -179,10 +179,6 @@ const siteConfig = {
     { href: 'https://github.com/react4j/react4j', label: 'GitHub', external: true },
     { search: true }
   ],
-  algolia: {
-    apiKey: 'bcbf32ec3754c54aadb410fd32ca236b',
-    indexName: 'react4j'
-  },
   users: [],
   /* path to images for header/footer */
   headerIcon: 'img/logo.svg',
