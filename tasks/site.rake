@@ -117,7 +117,7 @@ task 'site:link_check' do
     (%w(todomvc) + DOWNSTREAM_PROJECTS).each do |project_name|
       excludes << "#{base_url}/#{project_name.gsub(/^react4j-/, '')}"
     end
-    sh "yarn blc --ordered --recursive --filter-level 3 #{base_url} #{excludes.collect {|e| "--exclude #{e}"}.join(' ')}"
+    sh "yarn blc --user-agent SiteChecker --ordered --recursive --filter-level 3 #{base_url} #{excludes.collect {|e| "--exclude #{e}"}.join(' ')}"
   ensure
     webserver.shutdown
   end
