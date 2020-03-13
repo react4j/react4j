@@ -154,6 +154,7 @@ const fileContent = function(params, options) {
   }
   const newContent = newSelectedLines.join('\n');
 
+  //noinspection CheckTagEmptyBody
   return '<pre><code>' + options.highlight(newContent, language) + '</code></pre>';
 };
 
@@ -162,7 +163,7 @@ embed.reg = /{@(\w+)\s*:\s*((([^\s"'][^\s}]*|"[^"]*"|'[^']*')\s*)+?)}/;
 embed.register({
   youtube: RemarkableEmbed.extensions.youtube,
   file_content: fileContent,
-  api_url: apiUrl,
+  link: javaLink,
   include: markdownInclude
 });
 
