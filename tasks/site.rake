@@ -145,7 +145,7 @@ task 'site:deploy' => ['site:build'] do
     local_dir = "#{WORKSPACE_DIR}/target/remote_site"
     rm_rf local_dir
 
-    sh "git clone -b master #{origin_url} #{local_dir}"
+    sh "git clone -b master --depth 1 #{origin_url} #{local_dir}"
 
     # This is the list of directories controlled by other processes that should be left alone
     excludes = %w(todomvc drumloop) + DOWNSTREAM_PROJECTS.collect {|project_name| project_name.gsub(/^react4j-/, '')}
