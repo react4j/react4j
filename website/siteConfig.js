@@ -175,7 +175,6 @@ const siteConfig = {
   headerLinks: [
     { doc: 'overview', label: 'Docs' },
     { href: '/api', label: 'API' },
-    { blog: true, label: 'Blog' },
     { href: 'https://github.com/react4j/react4j/releases', label: 'Releases', external: true },
     { href: 'https://github.com/react4j/react4j', label: 'GitHub', external: true },
     { search: true }
@@ -198,7 +197,7 @@ const siteConfig = {
     primaryColor: '#8DAF66',
     secondaryColor: '#44764A'
   },
-  // This copyright info is used in /core/Footer.js and blog rss/atom feeds.
+  // This copyright info is used in /core/Footer.js
   copyright: 'Copyright © ' + new Date().getFullYear() + ' the React4j Project',
   organizationName: 'react4j',
   highlight: {
