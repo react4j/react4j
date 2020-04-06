@@ -69,8 +69,8 @@ task 'site:build' do
   mkdir_p File.dirname(SITE_DIR)
   mv "#{WORKSPACE_DIR}/website/build/react4j", SITE_DIR
   task('site:javadocs').invoke
-  task('site:favicons').invoke
   task('site:apidiff').invoke
+  task('site:favicons').invoke
   task('site:examples').invoke
 end
 
