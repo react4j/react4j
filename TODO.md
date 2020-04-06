@@ -145,43 +145,6 @@ complete as there is too much un-said.
   - See egghead training videos as well.
   - https://www.youtube.com/playlist?list=PLV5CVI1eNcJhc9Lxu83Zp4uyqP2yKV4xl&app=desktop
 
-#### Sample Applications
-
-Applications to build and help asses react4j going forward.
-
-* Port https://github.com/realityforge/Piano-Trainer across to react4j
-
-* https://github.com/Swizec/react-fractals
-
-* https://github.com/rwieruch/favesound-mobx
-
-* Consider a Metronome - https://daveceddia.com/react-practice-projects/#metronome & https://github.com/cwilso/metronome
-
-* realworld-example - https://github.com/gothinkster/react-mobx-realworld-example-app
-
-* WhatsApp clone - https://medium.com/the-guild/whatsapp-clone-using-react-hooks-suspense-graphql-apollo-typescript-and-postgresql-de1840c27d21
-
-* Port Minesweeper
-  - https://medium.com/@tdelev/minesweeper-in-typescript-and-react-f5f8a5d57383
-  - https://github.com/tdelev/minesweeper-react
-  - https://delev.me/minesweeper-react/
-  - https://github.com/hinsxd/react-minesweeper
-
-* https://github.com/hinsxd/react-snake
-
-* Tetris clone
-  - https://github.com/hinsxd/react-tetris
-  - https://tetris.wiki/SRS
-
-* Port https://github.com/benawad/slack-clone-client/tree/53_code_splitting across to react4j. Good way to experiment with GraphQL and few other interesting elements.
-
-* Another app to build is a YouTube clone ala https://github.com/productioncoder/youtube-react
-  It seems relatively advanced and may require a router to be in place prior to starting.
-  - Blog Series starts here - https://productioncoder.com/build-youtube-in-react-part-1/ thru to https://productioncoder.com/build-youtube-in-react-part-11/
-  - Final demo https://www.youtube.com/watch?v=E7wJTI-1dvQ
-
-* [Maze Game](https://github.com/TheCodeDepository/PickleRick-MazeGame)
-
 #### Bazel Integration
 
 * Add Bazel integration rules. Will also need some mechanism for keeping the build artifacts inline. Maybe should
