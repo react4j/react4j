@@ -24,8 +24,8 @@ artifacts:
   elemental2_dom: org.realityforge.com.google.elemental2:elemental2-dom:jar:2.27
   elemental2_promise: org.realityforge.com.google.elemental2:elemental2-promise:jar:2.27
 
-  arez_core: org.realityforge.arez:arez-core:jar:0.170
-  arez_processor: org.realityforge.arez:arez-processor:jar:0.170
+  arez_core: org.realityforge.arez:arez-core:jar:0.172
+  arez_processor: org.realityforge.arez:arez-processor:jar:0.172
 
   sting_core: org.realityforge.sting:sting-core:jar:0.06
   sting_processor: org.realityforge.sting:sting-processor:jar:0.06
@@ -46,8 +46,8 @@ artifacts:
   javapoet: com.squareup:javapoet:jar:1.12.0
   guava: com.google.guava:guava:jar:27.1-jre
 
-  proton_core: org.realityforge.proton:proton-core:jar:0.43
-  proton_qa: org.realityforge.proton:proton-qa:jar:0.43
+  proton_core: org.realityforge.proton:proton-core:jar:0.44
+  proton_qa: org.realityforge.proton:proton-qa:jar:0.44
 
   #test deps
   compile_testing: com.google.testing.compile:compile-testing:jar:0.18-rf
