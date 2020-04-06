@@ -30,12 +30,6 @@ complete as there is too much un-said.
 
 ### Enhancements
 
-* Generate documentation for components from annotations. This documentation could use the prop types to give
-  basic documentation overview and then use special annotations to give extended documentation and/or reference
-  examples that will be both output as documentation and fed into basic test infrastructure. This ensures that the
-  examples will continue to work as the library is evolved. There is a few examples like this in react world ...
-  stylguidist??
-
 * The message that indicates prop does not match immutable constraints should say exactly why. (i.e. Is not
   primitive, Arez component nor implements Keyed or if an ArezComponent indicate it needs a requireId=ENABLE etc)
 
