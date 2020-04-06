@@ -163,32 +163,7 @@ Vue integration that uses a similar thing inside template language is described 
 Another integration approach is to add a "<Stream/>" component that takes a stream as a prop and has a render prop
 that has output of stream as parameter. See [react-streams](https://github.com/johnlindquist/react-streams/) for inspiration.
 
-### Fiber Reimplementation
-
-It seems that at some point there may be a demand to re-implement the underlying react reconciliation layer. If
-we ever do this here is a list of helpful links that could provide useful
-
-* [react-fiber-implement](https://github.com/tranbathanhtung/react-fiber-implement) A simplified implementation some one is using to learn how fiber works
-* [Implementation notes on react's scheduling model](https://gist.github.com/Jessidhia/49d0915b7e722dc5b49ab9779b5906e8)
-* Add notes regarding fiber like - https://github.com/acdlite/react-fiber-architecture
-* Also useful to extract notes from https://www.youtube.com/watch?v=ZCuYPiUIONs&app=desktop
-
-* Consider a web-worker based implementation that ships commands to main GUI thread. Would need to rpc from main
-  thread to work to perform some of the other commands (i.e. myelement.focus()) although maybe refs could be magic-ed
-  up such that they use [worker-dom](https://github.com/ampproject/worker-dom)
-
 #### Additional Capabilities
-
-* If we were to ever re-implement the component model at a basic level, an interesting approach would be to
-  allow individual components to register actions to occur at each lifecycle stage. We could also use the
-  strategies in [ivi](https://github.com/localvoid/ivi) or whatever is winning the
-  [uibench](https://localvoid.github.io/uibench/) benchmark at the time. [Nerv](https://github.com/NervJS/nerv)
-  has some interesting benchmarks at https://github.com/NervJS/nerv/tree/master/benchmarks. Most interesting
-  of all is [Preact X](https://github.com/preactjs/preact) which is small, fast, simple and has all the capabilities
-  we seem to need. It's new DevTools integration may also be of interest as an alternative. We could also base the
-  library on alternative strategies such as described in
-  [this article](https://medium.com/javascript-in-plain-english/how-we-wrote-the-fastest-javascript-ui-frameworks-a96f2636431e)
-  and implemented by [dom-expressions](https://github.com/ryansolid/dom-expressions).
 
 * Consider using the React4j component model (a.k.a. annotations) and seeing if it can be used to generate
   a custom-element based component such as via Stencil.js. Ideals could also be incorporated from
