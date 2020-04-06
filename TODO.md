@@ -115,10 +115,6 @@ complete as there is too much un-said.
 
 * Or most excellent image from https://medium.freecodecamp.org/why-react16-is-a-blessing-to-react-developers-31433bfc210a
 
-* Create a jsbin-alike to display GWT code
-  - https://github.com/jsbin/jsbin
-  - http://jsbin.com/?html,css,js,console,output
-
 * Prepare a screencast for React4j+Arez.
   - Probably use ScreenFLow software https://www.telestream.net/screenflow/
   - Possibly with custom scripting - see https://wickstrom.tech/programming/2018/10/26/writing-a-screencast-video-editor-in-haskell.html
