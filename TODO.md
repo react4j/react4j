@@ -126,8 +126,6 @@ complete as there is too much un-said.
 * Add Bazel integration rules. Will also need some mechanism for keeping the build artifacts inline. Maybe should
   have a tool that generates a snippet from build.yaml that can be included in WORKSPACE which would mean it always aligns.
 
-* Pull techniques for Bazel/Closure integration and probably externs from https://github.com/tadeegan/react-closure-sample
-
 ### Spritz Integration
 
 Could we integrate with React4j such that event handlers are a stream. Props could also be passed
