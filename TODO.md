@@ -6,10 +6,6 @@ complete as there is too much un-said.
 
 ### Next Release
 
-* Add a gathering annotation processor that collects all `@ReactComponent` annotated types and generates either
-  a dagger module or sting fragment for all injectables. It will defer until all types are resolved. It will also
-  have parameters where can specifically include or exclude types.
-
 * Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
   (See TODOs in Generator.java) with the enhancers.
 
