@@ -22,18 +22,20 @@ const markdownInclude = function(code) {
   return fs.readFileSync(filename, 'utf8');
 };
 
-const apiUrl = function(code) {
-  const elements = code.split('::');
+const javaLink = function(code) {
+  const elements = code.trim().split(/ +/);
 
-  const label =
-    elements.length >
-    1 ?
-    elements[0] :
-    ((elements[0].match(/^annotations\./) ? '@' : '') + elements[0].replace(/^.+\./, '') );
-  const classname = elements.length > 1 ? elements[1] : elements[0];
-  const url = '/api/react4j/' +
-              classname.replace('.', '/') + '.html' +
-              (elements.length > 2 ? '#' + elements[2].replace('(', '-').replace(',', '-').replace(')', '-') : '');
+  const spec = elements[0];
+  const parts = spec.split('#');
+  const classname = parts[0];
+  const member = parts.length > 1 ? parts[1] : '';
+
+  const label = elements.length > 1 ? elements.slice(1).join(' ') : (classname.replace(/^.+\./, '') + '.' + member );
+
+  const url =
+    '/api/' +
+    classname.replace('.', '/') + '.html' +
+    (member.length > 0 ? '#' + member.replace('(', '-').replace(',', '-').replace(')', '-') : '');
 
   return `<a href="${url}"><code>${label}</code></a>`;
 };

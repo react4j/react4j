@@ -38,7 +38,7 @@ processors and statically checks the object graph at compilation time. The root 
 a component which is an interface annotated by the `@dagger.Component` annotation. The injection rules are customized
 via `@dagger.Module` annotated classes.
 
-React4j has greater support for the dagger injection framework than GIN. The {@api_url: annotations.ReactComponent}
+React4j has greater support for the dagger injection framework than GIN. The {@link: react4j.annotations.ReactComponent}
 annotation has a `dagger` parameter that controls whether the React4j annotation processor generates a dagger
 subcomponent and supporting module. As with the `inject` parameter it can be explicitly enabled, disabled or
 the default value `AUTODETECT`. The `AUTODETECT` value determines whether the component requires injection and
