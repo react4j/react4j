@@ -162,14 +162,3 @@ Vue integration that uses a similar thing inside template language is described 
 
 Another integration approach is to add a "<Stream/>" component that takes a stream as a prop and has a render prop
 that has output of stream as parameter. See [react-streams](https://github.com/johnlindquist/react-streams/) for inspiration.
-
-#### Additional Capabilities
-
-* Consider using the React4j component model (a.k.a. annotations) and seeing if it can be used to generate
-  a custom-element based component such as via Stencil.js. Ideals could also be incorporated from
-  [lit-html](https://lit-html.polymer-project.org/) and/or [lit-element](https://lit-element.polymer-project.org/).
-
-* Investigate feasibility of https://github.com/sokra/rawact which compiles react components into native
-  browser interactions in attempt to eliminate overhead of library. A similar framework is imba @ http://imba.io/
-  which can learn about in https://scrimba.com/p/c6B9rAM - actually imba + Embers AOT template compiler seem
-  like a very very very interesting approach.
