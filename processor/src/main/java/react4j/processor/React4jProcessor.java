@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.DeferredElementSet;
@@ -196,6 +198,24 @@ public final class React4jProcessor
                                hasPostConstruct,
                                shouldSetDefaultPriority );
 
+    for ( final ExecutableElement method : getMethods( descriptor.getElement() ) )
+    {
+      if ( Objects.equals( typeElement, method.getEnclosingElement() ) &&
+           method.getModifiers().contains( Modifier.PROTECTED ) &&
+           ElementsUtil.isWarningNotSuppressed( method,
+                                                Constants.WARNING_PROTECTED_METHOD,
+                                                Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) &&
+           !isMethodAProtectedOverride( typeElement, method ) )
+      {
+        final String message =
+          MemberChecks.shouldNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                  "declare a protected method. " +
+                                  MemberChecks.suppressedBy( Constants.WARNING_PROTECTED_METHOD,
+                                                             Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
+        processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+      }
+    }
+
     determineComponentCapabilities( descriptor, typeElement );
     determineProps( descriptor );
     determinePropValidatesMethods( descriptor );
@@ -226,6 +246,13 @@ public final class React4jProcessor
     verifyPropsNotCollectionOfArezComponents( descriptor );
 
     return descriptor;
+  }
+
+  private boolean isMethodAProtectedOverride( @Nonnull final TypeElement typeElement,
+                                              final ExecutableElement method )
+  {
+    final ExecutableElement overridenMethod = ProcessorUtil.getOverridenMethod( processingEnv, typeElement, method );
+    return null != overridenMethod && overridenMethod.getModifiers().contains( Modifier.PROTECTED );
   }
 
   private boolean deriveInject( @Nonnull final TypeElement typeElement, final @Nonnull ExecutableElement constructor )
@@ -1329,13 +1356,14 @@ public final class React4jProcessor
                                        @Nonnull final ExecutableElement method,
                                        @Nonnull final String annotationClassname )
   {
-    MemberChecks.shouldBeInternalMethod( processingEnv,
-                                         typeElement,
-                                         method,
-                                         annotationClassname,
-                                         Constants.WARNING_PUBLIC_METHOD,
-                                         Constants.WARNING_PROTECTED_METHOD,
-                                         Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
+    if ( MemberChecks.doesMethodNotOverrideInterfaceMethod( processingEnv, typeElement, method ) )
+    {
+      MemberChecks.shouldNotBePublic( processingEnv,
+                                      method,
+                                      annotationClassname,
+                                      Constants.WARNING_PUBLIC_METHOD,
+                                      Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
+    }
   }
 
   private boolean isSentinelName( @Nonnull final String name )

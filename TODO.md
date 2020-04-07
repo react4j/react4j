@@ -12,13 +12,8 @@ complete as there is too much un-said.
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
 
-* Add suppressible warnings for unnecessary access to the following annotations:
-  * `PropDefault`
-
 * Generate a suppressible warning if any public methods are declared in a react class or any parent class unless they
   are implementations of an interface.
-
-* Generate a suppressible warning if protected methods are declared in a react class.
 
 * Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props
 

@@ -3,6 +3,9 @@
 ### Unreleased
 
 * Upgrade the `org.realityforge.proton` artifacts to version `0.46`.
+* Generate a suppresable warning if a method annotated with `@PropDefault` is protected access.
+* Generate a suppresable warning if any non-lifecycle method is protected access unless it is overriding a protected method in a super-class.
+* Use a consistent warning message when protected methods are detected on components.
 
 ### [v0.153](https://github.com/react4j/react4j/tree/v0.153) (2020-04-07) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.152...v0.153) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.152&new=0.153)
 
