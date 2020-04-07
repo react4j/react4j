@@ -1,0 +1,20 @@
+[
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'react4j.annotations.ActAsStingComponent'.",
+    "element": "@interface react4j.annotations.ReactComponent",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@react4j.annotations.ActAsStingComponent",
+      "annotationType": "react4j.annotations.ActAsStingComponent",
+      "classQualifiedName": "react4j.annotations.ReactComponent",
+      "classSimpleName": "ReactComponent",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  }
+]

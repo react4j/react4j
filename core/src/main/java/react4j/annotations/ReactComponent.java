@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
  */
 @Documented
 @Target( ElementType.TYPE )
+@ActAsStingComponent
 public @interface ReactComponent
 {
   /**
