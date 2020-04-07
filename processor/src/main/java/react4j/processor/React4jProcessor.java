@@ -141,17 +141,49 @@ public final class React4jProcessor
     final boolean inject = deriveInject( typeElement, constructor );
     final boolean sting = deriveSting( typeElement, constructor );
 
-    if ( inject && constructor.getParameters().isEmpty() )
+    final List<? extends VariableElement> parameters = constructor.getParameters();
+    if ( inject )
     {
-      throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                                          "have specified inject=ENABLED if the constructor has no parameters" ),
-                                    typeElement );
+      if ( parameters.isEmpty() )
+      {
+        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                            "have specified inject=ENABLED if the constructor has no parameters" ),
+                                      typeElement );
+      }
     }
-    else if ( sting && constructor.getParameters().isEmpty() )
+    else
     {
-      throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                                          "have specified sting=ENABLED if the constructor has no parameters" ),
-                                    typeElement );
+      final boolean hasNamedAnnotation =
+        parameters.stream().anyMatch( p -> AnnotationsUtil.hasAnnotationOfType( p, Constants.JSR_330_NAMED_CLASSNAME ) );
+      if ( hasNamedAnnotation )
+      {
+        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                            "have specified inject=DISABLED and have a constructor parameter annotated with the " +
+                                                            Constants.JSR_330_NAMED_CLASSNAME + " annotation" ),
+                                      constructor );
+      }
+    }
+
+    if ( sting )
+    {
+      if ( parameters.isEmpty() )
+      {
+        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                            "have specified sting=ENABLED if the constructor has no parameters" ),
+                                      typeElement );
+      }
+    }
+    else
+    {
+      final boolean hasNamedAnnotation =
+        parameters.stream().anyMatch( p -> AnnotationsUtil.hasAnnotationOfType( p, Constants.STING_NAMED_CLASSNAME ) );
+      if ( hasNamedAnnotation )
+      {
+        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                            "have specified sting=DISABLED and have a constructor parameter annotated with the " +
+                                                            Constants.STING_NAMED_CLASSNAME + " annotation" ),
+                                      constructor );
+      }
     }
 
     final ComponentDescriptor descriptor =
