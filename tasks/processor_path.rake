@@ -16,7 +16,6 @@ module Buildr
       before_define do |project|
         t = project.task('processors_setup') do
           mkdir_p project._(:generated, 'processors/main/java') if project.enable_annotation_processor?
-          mkdir_p project._(:generated, 'processors/test/java') if project.enable_annotation_processor?
         end
         project.compile.enhance([t.name])
 
@@ -29,30 +28,27 @@ module Buildr
       after_define do |project|
         if project.enable_annotation_processor?
           project.file(project._(:generated, 'processors/main/java')).enhance([project.compile])
-          project.file(project._(:generated, 'processors/test/java')).enhance([project.test.compile])
 
           project.compile.options.merge!(:other => ['-s', project._(:generated, 'processors/main/java')])
-          project.test.compile.options.merge!(:other => ['-s', project._(:generated, 'processors/test/java')])
           if project.iml? && project.enable_annotation_processor?
             project.iml.main_generated_source_directories << project._(:generated, 'processors/main/java')
-            project.iml.test_generated_source_directories << project._(:generated, 'processors/test/java')
           end
           project.clean do
             # Clean the IDE generated sources
             rm_rf project._(:generated, 'processors/main/java')
-            rm_rf project._(:generated, 'processors/test/java')
           end
         end
 
         unless project.processorpath.empty?
           processor_deps = Buildr.artifacts(project.processorpath)
           project.compile.enhance(processor_deps)
-          pp = processor_deps.collect {|d| d.to_s}.join(File::PATH_SEPARATOR)
+          pp = processor_deps.collect { |d| d.to_s }.join(File::PATH_SEPARATOR)
           project.compile.options[:other] += ['-processorpath', pp]
         end
 
         if project.ipr?
-          project.ipr.add_component('CompilerConfiguration') do |component|
+          project.ipr.add_component_in_lambda('CompilerConfiguration') do |component|
+            component.addNotNullAssertions :enabled => 'false' unless project.ipr.nonnull_assertions?
             component.annotationProcessing do |xml|
               xml.profile(:default => true, :name => 'Default', :enabled => true) do
                 xml.sourceOutputDir :name => 'generated/processors/main/java'
@@ -60,7 +56,7 @@ module Buildr
                 xml.outputRelativeToContentRoot :value => true
                 xml.processorPath :useClasspath => true
               end
-              enabled = Buildr.projects(:no_invoke => true).select {|p| p.iml? && p.enable_annotation_processor?}
+              enabled = Buildr.projects.select { |p| p.iml? && p.enable_annotation_processor? }
               enabled.each do |prj|
                 xml.profile(:name => "#{prj.name}", :enabled => true) do
                   xml.sourceOutputDir :name => 'generated/processors/main/java'
@@ -78,11 +74,11 @@ module Buildr
                   end
                 end
               end
-              disabled = Buildr.projects(:no_invoke => true).select {|p| p.iml? && !p.enable_annotation_processor?}
+              disabled = Buildr.projects.select { |p| p.iml? && !p.enable_annotation_processor? }
               unless disabled.empty?
                 xml.profile(:name => 'Disabled') do
                   disabled.each do |p|
-                    xml.module :name => p.name
+                    xml.module :name => p.iml.name
                   end
                 end
               end
@@ -96,4 +92,25 @@ end
 
 class Buildr::Project
   include Buildr::ProcessorPath::ProjectExtension
+end
+
+
+module Buildr #:nodoc:
+  module IntellijIdea
+    class IdeaFile
+      def add_component_in_lambda(name, attrs = {}, &xml)
+        self.components << lambda do
+          create_component(name, attrs, &xml)
+        end
+      end
+    end
+
+    class IdeaProject < IdeaFile
+      def nonnull_assertions?
+        @nonnull_assertions.nil? ? true : !!@nonnull_assertions
+      end
+
+      attr_writer :nonnull_assertions
+    end
+  end
 end
