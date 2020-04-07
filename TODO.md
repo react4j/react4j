@@ -125,14 +125,3 @@ complete as there is too much un-said.
 
 * Add Bazel integration rules. Will also need some mechanism for keeping the build artifacts inline. Maybe should
   have a tool that generates a snippet from build.yaml that can be included in WORKSPACE which would mean it always aligns.
-
-### Spritz Integration
-
-Could we integrate with React4j such that event handlers are a stream. Props could also be passed
-to components as streams and then the component would subscribe and expose the values from stream to user code (ala angular).
-This could be done by either generating a wrapper component or preferably by updating code generator.
-Vue integration that uses a similar thing inside template language is described in [course](https://egghead.io/courses/build-async-vue-js-apps-with-rxjs)
-[Yolk](https://github.com/garbles/yolk) is an interesting framework that died but tackled these approaches in a react-like way.
-
-Another integration approach is to add a "<Stream/>" component that takes a stream as a prop and has a render prop
-that has output of stream as parameter. See [react-streams](https://github.com/johnlindquist/react-streams/) for inspiration.
