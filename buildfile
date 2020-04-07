@@ -149,7 +149,9 @@ define 'react4j' do
   define 'processor' do
     pom.dependency_filter = Proc.new { |_| false }
 
-    project.enable_annotation_processor = true
+    # Note: It is deliberate that Sting annotation processor is not present otherwise fixtures
+    # would not compile reliably due to the presence of @AutoFragment
+    project.processorpath << [:arez_processor]
 
     compile.with :proton_core,
                  :javapoet,

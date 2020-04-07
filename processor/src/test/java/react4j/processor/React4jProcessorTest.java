@@ -1,6 +1,8 @@
 package react4j.processor;
 
 import arez.processor.ArezProcessor;
+import com.google.testing.compile.Compilation;
+import com.google.testing.compile.Compiler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import javax.tools.JavaFileObject;
 import org.realityforge.proton.qa.AbstractProcessorTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import sting.processor.StingProcessor;
 
 public final class React4jProcessorTest
   extends AbstractProcessorTest
@@ -71,6 +74,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.inject.Jsr330OnlyInjectComponent", true },
         new Object[]{ "com.example.inject.PublicReactComponent", true },
         new Object[]{ "com.example.inject.StingNamedInjectComponent", true },
+        new Object[]{ "com.example.inject.StingNamedTypeComponent", true },
         new Object[]{ "com.example.inject.StingOnlyInjectComponent", true },
 
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent", false },
@@ -463,6 +467,41 @@ public final class React4jProcessorTest
                              Collections.singletonList( output ) );
   }
 
+  @Test
+  public void processSuccessfulServiceViaContributeToStingModel()
+    throws Exception
+  {
+    final String pkg = "com.example.inject.autofragment";
+
+    final List<JavaFileObject> inputs =
+      inputs( pkg + ".ContributeToComponent",
+              pkg + ".MyAutoFragment",
+
+              // The following input exists so that the synthesizing processor has types to "process"
+              pkg + ".MyFramework",
+              pkg + ".MyFrameworkModel" );
+    outputFilesIfEnabled( inputs, this::emitGeneratedFile );
+
+    // This one is just used to keep synthesizer running
+    final Processor synthesizingProcessor1 =
+      newSynthesizingProcessor( "input", pkg + ".MyFrameworkModelImpl", 1 );
+    // this synthesizer produces java file that we are using in test
+    final Processor synthesizingProcessor2 =
+      newSynthesizingProcessor( "input", pkg + ".OtherModel", 2 );
+
+    final List<Processor> processors = new ArrayList<>();
+    processors.add( processor() );
+    processors.addAll( processors() );
+    processors.add( synthesizingProcessor1 );
+    processors.add( synthesizingProcessor2 );
+    final Compilation compilation =
+      Compiler.javac()
+        .withProcessors( processors )
+        .withOptions( getOptions() )
+        .compile( inputs );
+    assertCompilationSuccessful( compilation );
+  }
+
   @DataProvider( name = "failedCompiles" )
   public Object[][] failedCompiles()
   {
@@ -832,7 +871,7 @@ public final class React4jProcessorTest
   @Override
   protected Processor[] additionalProcessors()
   {
-    return new Processor[]{ new ArezProcessor() };
+    return new Processor[]{ new StingProcessor(), new ArezProcessor() };
   }
 
   @Nonnull
@@ -873,7 +912,7 @@ public final class React4jProcessorTest
   @Override
   protected boolean emitGeneratedFile( @Nonnull final JavaFileObject target )
   {
-    if ( !super.emitGeneratedFile( target ) )
+    if ( !super.emitGeneratedFile( target ) || target.getName().endsWith( ".sbf" ) )
     {
       return false;
     }

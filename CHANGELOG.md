@@ -6,6 +6,7 @@
 * Upgrade the `org.realityforge.proton` artifacts to version `0.45`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.14`.
 * Annotate `@ReactComponent` with `@ActAsStingComponent` so that the react component can be annotated with `@sting.ContributeTo` and `@sting.Named` and so that dependencies passed in via the constructor can be annotated with `@sting.Named`.
+* If the `@sting.Named` annotation or the `@sting.ContributeTo` annotation is present on a type annotated with `@ReactComponent` then copy these annotations to the factory that creates instances of the react component.
 
 ### [v0.152](https://github.com/react4j/react4j/tree/v0.152) (2020-03-12) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.151...v0.152) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.151&new=0.152)
 

@@ -49,6 +49,10 @@ final class FactoryGenerator
     {
       builder.addAnnotation( ClassName.bestGuess( Constants.STING_INJECTABLE_CLASSNAME ) );
       builder.addAnnotation( ClassName.bestGuess( Constants.STING_EAGER_CLASSNAME ) );
+      GeneratorUtil.copyWhitelistedAnnotations( descriptor.getElement(),
+                                                builder,
+                                                Arrays.asList( Constants.STING_NAMED_CLASSNAME,
+                                                               Constants.STING_CONTRIBUTE_TO_CLASSNAME ) );
     }
 
     final ExecutableElement constructor = ElementsUtil.getConstructors( descriptor.getElement() ).get( 0 );
