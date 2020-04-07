@@ -14,11 +14,6 @@ module Buildr
       end
 
       before_define do |project|
-        t = project.task('processors_setup') do
-          mkdir_p project._(:generated, 'processors/main/java') if project.enable_annotation_processor?
-        end
-        project.compile.enhance([t.name])
-
         if project.iml?
           project.iml.instance_variable_set('@main_generated_source_directories', [])
           project.iml.instance_variable_set('@processorpath', {})
@@ -27,7 +22,10 @@ module Buildr
 
       after_define do |project|
         if project.enable_annotation_processor?
-          project.file(project._(:generated, 'processors/main/java')).enhance([project.compile])
+          t = project.task('processors_setup') do
+            mkdir_p project._(:generated, 'processors/main/java')
+          end
+          project.compile.enhance([t.name])
 
           project.compile.options.merge!(:other => ['-s', project._(:generated, 'processors/main/java')])
           if project.iml? && project.enable_annotation_processor?
