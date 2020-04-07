@@ -30,12 +30,29 @@ const javaLink = function(code) {
   const classname = parts[0];
   const member = parts.length > 1 ? parts[1] : '';
 
-  const label = elements.length > 1 ? elements.slice(1).join(' ') : (classname.replace(/^.+\./, '') + '.' + member );
+  const nameParts = classname.split('.');
 
-  const url =
-    '/api/' +
-    classname.replace('.', '/') + '.html' +
-    (member.length > 0 ? '#' + member.replace('(', '-').replace(',', '-').replace(')', '-') : '');
+  var indexOfClassNameStart;
+  for (indexOfClassNameStart = 0; indexOfClassNameStart < nameParts.length; indexOfClassNameStart++) {
+    var ch = nameParts[indexOfClassNameStart].charAt(0);
+    if (ch === ch.toUpperCase()) {
+      break;
+    }
+  }
+
+  const localNameParts = nameParts.slice(indexOfClassNameStart).join('.');
+
+  const label =
+    elements.length > 1 ?
+    elements.slice(1).join(' ') :
+    (localNameParts + (member.length > 0 ? '.' + member : ''));
+
+  const anchor =
+    member.length > 0 ?
+    '#' + member.replace(/\(/g, '-').replace(/,/g, '-').replace(/\)/g, '-').replace(/\.\.\./g, ':A') :
+    '';
+
+  const url = '/api/' + nameParts.slice(0, indexOfClassNameStart).join('/') + '/' + localNameParts + '.html' + anchor;
 
   return `<a href="${url}"><code>${label}</code></a>`;
 };
