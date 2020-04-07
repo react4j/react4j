@@ -12,7 +12,7 @@ soon it is released.
 
 The "Hello World" of React4j that just returns a header is as simple as:
 
-{@file_content: file=react4j/examples/hello_world/HelloWorld.java "start_line= ReactDOM" "end_line=;" strip_block=true}
+{@file_content: file=react4j/examples/hello_world/HelloWorld.java "start_line= ReactDOM" "end_line=;"}
 
 Although there is significantly more ceremony in java. You also need an xml based build descriptor for GWT which
 serves a similar purpose as a webpack configuration.

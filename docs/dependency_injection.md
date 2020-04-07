@@ -60,4 +60,4 @@ instance to the enhanced component class. Unfortunately it is currently required
 invokes the `bind[ComponentName]()` method for every component is injection enabled. In the future this
 may not be required but it is at this stage.
 
-{@file_content: file=react4j/examples/dagger/DaggerExample.java "start_line=^  {" "end_line=^  }" include_start_line=false include_end_line=false strip_block=true}
+{@file_content: file=react4j/examples/dagger/DaggerExample.java "start_line=^  {" "end_line=^  }" include_start_line=false include_end_line=false}

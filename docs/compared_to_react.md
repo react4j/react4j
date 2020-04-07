@@ -116,7 +116,7 @@ And the java code is very similar to the transpiled output.
 However this approach can be too verbose, so most code actually uses a factory based approach such as the code
 that follows. In some cases this is more verbose than the equivalent JSX and sometimes it is more succinct.
 
-{@file_content: file=react4j/examples/factory_example/FactoryExample.java "start_line=^  {" "end_line=^  }" include_start_line=false include_end_line=false strip_block=true}
+{@file_content: file=react4j/examples/factory_example/FactoryExample.java "start_line=^  {" "end_line=^  }" include_start_line=false include_end_line=false}
 
 ### Stateless Function Components
 

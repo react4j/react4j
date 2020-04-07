@@ -122,7 +122,7 @@ const fileContent = function(params, options) {
   const lastLine = args['end_line'];
   const includeStartLine = (args['include_start_line'] || 'true') === 'true';
   const includeEndLine = (args['include_end_line'] || 'true') === 'true';
-  const stripBlock = (args['strip_block'] || 'false') === 'true';
+  const stripBlock = (args['strip_block'] || 'true') === 'true';
   const elideStart = args['elide_start'] || 'DOC ELIDE START';
   const elideEnd = args['elide_end'] || 'DOC ELIDE END';
   const elideReplacement = args['elide_replacement'] || '...';

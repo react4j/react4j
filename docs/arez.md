@@ -61,7 +61,7 @@ to render if the value returned from the `@Memoize` method changes.
 
 This method will look like:
 
-{@file_content: file=react4j/examples/arez/step2/Footer.java start_line=@Memoize "end_line=^}" include_end_line=false strip_block=true}
+{@file_content: file=react4j/examples/arez/step2/Footer.java start_line=@Memoize "end_line=^}" include_end_line=false}
 
 Using computed properties is one of the easiest and least intrusive mechanisms for optimizing components.
 
@@ -147,7 +147,7 @@ indicates that it is required.
 
 So this results in some minor modifications to the employee service so that the action is implemented as follows:
 
-{@file_content: file=react4j/examples/arez/best_practice/step2/EmployeeService.java "start_line=private boolean _loadEmployeeData" "end_line=EXAMPLE ENDS HERE" include_end_line=false strip_block=true}
+{@file_content: file=react4j/examples/arez/best_practice/step2/EmployeeService.java "start_line=private boolean _loadEmployeeData" "end_line=EXAMPLE ENDS HERE" include_end_line=false}
 
 Then there would be a separate arez component to observe the intent and perform the remote call:
 
