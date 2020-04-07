@@ -277,6 +277,7 @@ define 'react4j' do
                       :grim_asserts,
                       :javax_json,
                       :gwt_symbolmap,
+                      :jetbrains_annotations,
                       :testng
   end
 
