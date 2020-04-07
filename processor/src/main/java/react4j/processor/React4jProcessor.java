@@ -156,7 +156,8 @@ public final class React4jProcessor
     else
     {
       final boolean hasNamedAnnotation =
-        parameters.stream().anyMatch( p -> AnnotationsUtil.hasAnnotationOfType( p, Constants.JSR_330_NAMED_CLASSNAME ) );
+        parameters.stream()
+          .anyMatch( p -> AnnotationsUtil.hasAnnotationOfType( p, Constants.JSR_330_NAMED_CLASSNAME ) );
       if ( hasNamedAnnotation )
       {
         throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
