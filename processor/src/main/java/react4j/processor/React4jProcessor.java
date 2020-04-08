@@ -204,8 +204,7 @@ public final class React4jProcessor
       if ( ElementKind.METHOD == element.getKind() )
       {
         final ExecutableElement method = (ExecutableElement) element;
-        if ( Objects.equals( typeElement, method.getEnclosingElement() ) &&
-             method.getModifiers().contains( Modifier.FINAL ) &&
+        if ( method.getModifiers().contains( Modifier.FINAL ) &&
              ElementsUtil.isWarningNotSuppressed( method,
                                                   Constants.WARNING_FINAL_METHOD,
                                                   Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
@@ -217,8 +216,7 @@ public final class React4jProcessor
                                                                Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
           processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
         }
-        if ( Objects.equals( typeElement, method.getEnclosingElement() ) &&
-             method.getModifiers().contains( Modifier.PROTECTED ) &&
+        if ( method.getModifiers().contains( Modifier.PROTECTED ) &&
              ElementsUtil.isWarningNotSuppressed( method,
                                                   Constants.WARNING_PROTECTED_METHOD,
                                                   Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) &&
