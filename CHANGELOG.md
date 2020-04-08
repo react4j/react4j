@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.154](https://github.com/react4j/react4j/tree/v0.154) (2020-04-08) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.153...v0.154)
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.proton` artifacts to version `0.46`.
 * Generate a suppresable warning if a method annotated with `@PropDefault` is protected access.
