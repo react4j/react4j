@@ -22,7 +22,7 @@ abstract class PropAndMemoizeComponent
   }
 
   @Memoize
-  public boolean isActive()
+  boolean isActive()
   {
     return true;
   }

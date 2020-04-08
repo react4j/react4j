@@ -12,9 +12,6 @@ complete as there is too much un-said.
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
 
-* Generate a suppressible warning if any public methods are declared in a react class or any parent class unless they
-  are implementations of an interface.
-
 * Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props
 
 * Rename `ReactComponent` to `React4jComponent`

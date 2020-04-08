@@ -7,6 +7,8 @@
 * Generate a suppresable warning if any non-lifecycle method is protected access unless it is overriding a protected method in a super-class.
 * Use a consistent warning message when protected methods are detected on components.
 * Generate suppressable warnings when a react component declares a final method. React components are not intended to be extended outside of generated subclasses and thus the final qualifier does not offer much value.
+* Use a consistent warning message when public methods are detected on components.
+* Generate suppressable warnings when a react component declares a public method unless it is implementing an interface method. React components are not intended to invoked directly.
 
 ### [v0.153](https://github.com/react4j/react4j/tree/v0.153) (2020-04-07) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.152...v0.153) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.152&new=0.153)
 

@@ -63,7 +63,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.default_props.ProtectedFieldPropDefault", false },
         new Object[]{ "com.example.default_props.PropDefaultWithColorfulName", false },
         new Object[]{ "com.example.default_props.PublicFieldPropDefault", false },
-        new Object[]{ "com.example.default_props.PublicMethodPropDefault", false },
         new Object[]{ "com.example.inject.ConstructorInjectComponent", true },
         new Object[]{ "com.example.inject.ConstructorInjectRawTypeComponent", true },
         new Object[]{ "com.example.inject.FactoryOnlyInjectComponent", true },
@@ -766,42 +765,42 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop_validate.ProtectedAccessPropValidateModel",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.prop_validate.PublicAccessPropValidateModel",
-                      "@PropValidate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.on_error.ProtectedAccessOnErrorModel",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.on_error.PublicAccessOnErrorModel",
-                      "@OnError target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.on_prop_change.ProtectedAccessOnPropChangeModel",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.on_prop_change.PublicAccessOnPropChangeModel",
-                      "@OnPropChange target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.post_mount.ProtectedAccessPostMountModel",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.post_mount.PublicAccessPostMountModel",
-                      "@PostMount target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.post_mount_or_update.ProtectedAccessPostMountOrUpdateModel",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.post_mount_or_update.PublicAccessPostMountOrUpdateModel",
-                      "@PostMountOrUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.post_update.ProtectedAccessPostUpdateModel",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.post_update.PublicAccessPostUpdateModel",
-                      "@PostUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.pre_update.ProtectedAccessPreUpdateModel",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.pre_update.PublicAccessPreUpdateModel",
-                      "@PreUpdate target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.prop.ProtectedAccessPropModel",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.prop.PublicAccessPropModel",
-                      "@Prop target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.default_props.ProtectedMethodPropDefault",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" }

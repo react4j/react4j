@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -204,6 +203,19 @@ public final class React4jProcessor
       if ( ElementKind.METHOD == element.getKind() )
       {
         final ExecutableElement method = (ExecutableElement) element;
+        if ( method.getModifiers().contains( Modifier.PUBLIC ) &&
+             MemberChecks.doesMethodNotOverrideInterfaceMethod( processingEnv, typeElement, method ) &&
+             ElementsUtil.isWarningNotSuppressed( method,
+                                                  Constants.WARNING_PUBLIC_METHOD,
+                                                  Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
+        {
+          final String message =
+            MemberChecks.shouldNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                    "declare a public method. " +
+                                    MemberChecks.suppressedBy( Constants.WARNING_PUBLIC_METHOD,
+                                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
+          processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+        }
         if ( method.getModifiers().contains( Modifier.FINAL ) &&
              ElementsUtil.isWarningNotSuppressed( method,
                                                   Constants.WARNING_FINAL_METHOD,
@@ -450,7 +462,6 @@ public final class React4jProcessor
                                            method );
       MemberChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
       MemberChecks.mustNotReturnAnyValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-      shouldBeInternalMethod( descriptor.getElement(), method, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME );
 
       final int parameterCount = parameters.size();
       if ( 0 == parameterCount )
@@ -572,7 +583,6 @@ public final class React4jProcessor
                                            method );
       MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
       MemberChecks.mustNotReturnAnyValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
-      shouldBeInternalMethod( descriptor.getElement(), method, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME );
 
       final VariableElement param = method.getParameters().get( 0 );
       final boolean mismatchedNullability =
@@ -865,7 +875,6 @@ public final class React4jProcessor
     {
       throw new ProcessorException( "@Prop named 'children' should be of type react4j.ReactNode[]", method );
     }
-    shouldBeInternalMethod( descriptor.getElement(), method, Constants.PROP_ANNOTATION_CLASSNAME );
 
     if ( returnType instanceof TypeVariable )
     {
@@ -1028,7 +1037,6 @@ public final class React4jProcessor
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.ON_ERROR_ANNOTATION_CLASSNAME ) )
       {
         MemberChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
-        shouldBeInternalMethod( typeElement, method, Constants.ON_ERROR_ANNOTATION_CLASSNAME );
         MemberChecks.mustBeSubclassCallable( typeElement,
                                              Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                              Constants.ON_ERROR_ANNOTATION_CLASSNAME,
@@ -1084,7 +1092,6 @@ public final class React4jProcessor
                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                           Constants.POST_MOUNT_ANNOTATION_CLASSNAME,
                                           method );
-        shouldBeInternalMethod( typeElement, method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME );
         descriptor.setPostMount( method );
       }
     }
@@ -1101,7 +1108,6 @@ public final class React4jProcessor
                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                           Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
-        shouldBeInternalMethod( typeElement, method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME );
         descriptor.setPostRender( method );
       }
     }
@@ -1118,7 +1124,6 @@ public final class React4jProcessor
                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                           Constants.POST_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
-        shouldBeInternalMethod( typeElement, method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME );
         descriptor.setPostUpdate( method );
       }
     }
@@ -1135,7 +1140,6 @@ public final class React4jProcessor
                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
                                           Constants.PRE_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
-        shouldBeInternalMethod( typeElement, method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME );
         descriptor.setPreUpdate( method );
       }
     }
@@ -1360,20 +1364,6 @@ public final class React4jProcessor
   private List<ExecutableElement> getMethods( @Nonnull final TypeElement typeElement )
   {
     return ElementsUtil.getMethods( typeElement, processingEnv.getElementUtils(), processingEnv.getTypeUtils() );
-  }
-
-  private void shouldBeInternalMethod( @Nonnull final TypeElement typeElement,
-                                       @Nonnull final ExecutableElement method,
-                                       @Nonnull final String annotationClassname )
-  {
-    if ( MemberChecks.doesMethodNotOverrideInterfaceMethod( processingEnv, typeElement, method ) )
-    {
-      MemberChecks.shouldNotBePublic( processingEnv,
-                                      method,
-                                      annotationClassname,
-                                      Constants.WARNING_PUBLIC_METHOD,
-                                      Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
-    }
   }
 
   private boolean isSentinelName( @Nonnull final String name )
