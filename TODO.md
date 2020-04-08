@@ -112,8 +112,3 @@ complete as there is too much un-said.
   - Possibly with custom scripting - see https://wickstrom.tech/programming/2018/10/26/writing-a-screencast-video-editor-in-haskell.html
   - See egghead training videos as well.
   - https://www.youtube.com/playlist?list=PLV5CVI1eNcJhc9Lxu83Zp4uyqP2yKV4xl&app=desktop
-
-#### Bazel Integration
-
-* Add Bazel integration rules. Will also need some mechanism for keeping the build artifacts inline. Maybe should
-  have a tool that generates a snippet from build.yaml that can be included in WORKSPACE which would mean it always aligns.
