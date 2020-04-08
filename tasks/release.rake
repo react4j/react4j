@@ -121,7 +121,6 @@ CONTENT
       # Zapwhite only runs against files added to git so we have to do this dance after adding files
       `bundle exec zapwhite`
       sh 'git reset 2>&1 1> /dev/null'
-      sh "git commit -m \"Update site to add news about the #{ENV['PRODUCT_VERSION']} release\""
       sh "git add #{setup_filename}"
       sh "git commit -m \"Update documentation to reflect the #{ENV['PRODUCT_VERSION']} release\""
     end
