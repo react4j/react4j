@@ -912,7 +912,9 @@ public final class React4jProcessor
                           strategy );
     if ( propDescriptor.mayNeedMutablePropAccessedInPostConstructInvariant() )
     {
-      if ( isWarningSuppressed( method, Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT ) )
+      if ( ElementsUtil.isWarningSuppressed( method,
+                                             Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT,
+                                             Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
       {
         propDescriptor.suppressMutablePropAccessedInPostConstruct();
       }
@@ -1358,14 +1360,6 @@ public final class React4jProcessor
   private List<ExecutableElement> getMethods( @Nonnull final TypeElement typeElement )
   {
     return ElementsUtil.getMethods( typeElement, processingEnv.getElementUtils(), processingEnv.getTypeUtils() );
-  }
-
-  @SuppressWarnings( "SameParameterValue" )
-  private boolean isWarningSuppressed( @Nonnull final Element element, @Nonnull final String warning )
-  {
-    return ElementsUtil.isWarningSuppressed( element,
-                                             warning,
-                                             Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME );
   }
 
   private void shouldBeInternalMethod( @Nonnull final TypeElement typeElement,
