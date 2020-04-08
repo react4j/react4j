@@ -199,21 +199,38 @@ public final class React4jProcessor
                                hasPostConstruct,
                                shouldSetDefaultPriority );
 
-    for ( final ExecutableElement method : getMethods( descriptor.getElement() ) )
+    for ( final Element element : descriptor.getElement().getEnclosedElements() )
     {
-      if ( Objects.equals( typeElement, method.getEnclosingElement() ) &&
-           method.getModifiers().contains( Modifier.PROTECTED ) &&
-           ElementsUtil.isWarningNotSuppressed( method,
-                                                Constants.WARNING_PROTECTED_METHOD,
-                                                Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) &&
-           !isMethodAProtectedOverride( typeElement, method ) )
+      if ( ElementKind.METHOD == element.getKind() )
       {
-        final String message =
-          MemberChecks.shouldNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                  "declare a protected method. " +
-                                  MemberChecks.suppressedBy( Constants.WARNING_PROTECTED_METHOD,
-                                                             Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
-        processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+        final ExecutableElement method = (ExecutableElement) element;
+        if ( Objects.equals( typeElement, method.getEnclosingElement() ) &&
+             method.getModifiers().contains( Modifier.FINAL ) &&
+             ElementsUtil.isWarningNotSuppressed( method,
+                                                  Constants.WARNING_FINAL_METHOD,
+                                                  Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
+        {
+          final String message =
+            MemberChecks.shouldNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                    "declare a final method. " +
+                                    MemberChecks.suppressedBy( Constants.WARNING_FINAL_METHOD,
+                                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
+          processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+        }
+        if ( Objects.equals( typeElement, method.getEnclosingElement() ) &&
+             method.getModifiers().contains( Modifier.PROTECTED ) &&
+             ElementsUtil.isWarningNotSuppressed( method,
+                                                  Constants.WARNING_PROTECTED_METHOD,
+                                                  Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) &&
+             !isMethodAProtectedOverride( typeElement, method ) )
+        {
+          final String message =
+            MemberChecks.shouldNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                    "declare a protected method. " +
+                                    MemberChecks.suppressedBy( Constants.WARNING_PROTECTED_METHOD,
+                                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
+          processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+        }
       }
     }
 

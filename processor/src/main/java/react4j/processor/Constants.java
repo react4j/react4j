@@ -75,6 +75,8 @@ final class Constants
   static final String WARNING_PUBLIC_METHOD = "React4j:PublicMethod";
   @Nonnull
   static final String WARNING_PROTECTED_METHOD = "React4j:ProtectedMethod";
+  @Nonnull
+  static final String WARNING_FINAL_METHOD = "React4j:FinalMethod";
 
   private Constants()
   {

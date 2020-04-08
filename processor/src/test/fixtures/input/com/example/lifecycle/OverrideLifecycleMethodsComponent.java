@@ -23,27 +23,27 @@ abstract class OverrideLifecycleMethodsComponent
   }
 
   @PreUpdate
-  final void preUpdate()
+  void preUpdate()
   {
   }
 
   @PostUpdate
-  final void postUpdate()
+  void postUpdate()
   {
   }
 
   @PostMountOrUpdate
-  final void postMountOrUpdate()
+  void postMountOrUpdate()
   {
   }
 
   @PostMount
-  final void postMount()
+  void postMount()
   {
   }
 
   @OnError
-  final void onError( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
+  void onError( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
   {
   }
 }

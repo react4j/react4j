@@ -760,6 +760,9 @@ public final class React4jProcessorTest
   {
     return new Object[][]
       {
+        new Object[]{ "com.example.basic.FinalMethodInReactComponent",
+                      "@ReactComponent target should not declare a final method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:FinalMethod\" ) or @SuppressReact4jWarnings( \"React4j:FinalMethod\" )" },
+
         new Object[]{ "com.example.prop_validate.ProtectedAccessPropValidateModel",
                       "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.prop_validate.PublicAccessPropValidateModel",
