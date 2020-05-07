@@ -27,6 +27,14 @@ EXAMPLES = {
   'hello_world' => 'react4j.examples.hello_world.HelloWorld'
 }
 
+# JDK options passed to test environment. Essentially turns assertions on.
+REACT_TEST_OPTIONS =
+  {
+    'braincheck.environment' => 'development',
+    'arez.environment' => 'development',
+    'react4j.environment' => 'development'
+  }
+
 desc 'React4j: An opinionated Java binding for React'
 define 'react4j' do
   project.group = 'org.realityforge.react4j'
@@ -71,7 +79,8 @@ define 'react4j' do
     gwt_enhance(project)
 
     test.using :testng
-    test.options[:properties] = { 'react4j.core.compile_target' => compile.target.to_s }
+    test.options[:properties] =
+      REACT_TEST_OPTIONS.merge('react4j.core.compile_target' => compile.target.to_s)
     test.options[:java_args] = ['-ea']
     test.compile.with :jdepend,
                       :arez_testng
@@ -319,7 +328,6 @@ define 'react4j' do
   iml.excluded_directories << project._('tmp')
   iml.excluded_directories << project._('node_modules')
 
-  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/fixtures -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes")
   ipr.add_component_from_artifact(:idea_codestyle)
 
   ipr.add_component('JavacSettings') do |xml|
@@ -335,6 +343,20 @@ define 'react4j' do
                               :shell_parameters => "-strict -style PRETTY -XmethodNameDisplayMode FULL -nostartServer -incremental -codeServerPort 8889 -bindAddress 0.0.0.0 -deploy #{_(:generated, :gwt, 'deploy')} -extra #{_(:generated, :gwt, 'extra')} -war #{_(:generated, :gwt, 'war')}",
                               :launch_page => "http://127.0.0.1:8889/#{gwt_module}/index.html")
   end
+
+  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/fixtures -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes")
+
+  ipr.add_testng_configuration('core',
+                               :module => 'core',
+                               :jvm_args => '-ea -Dbraincheck.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.core.compile_target=../target/react4j_core/idea/classes')
+  ipr.add_testng_configuration('dom',
+                               :module => 'dom',
+                               :jvm_args => '-ea -Dbraincheck.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.dom.compile_target=../target/react4j_dom/idea/classes')
+  ipr.add_testng_configuration('processor',
+                               :module => 'processor',
+                               :jvm_args => '-ea -Dreact4j.output_fixture_data=true -Dreact4j.fixture_dir=src/test/fixtures')
+
+  ipr.nonnull_assertions = false
 
   ipr.add_component('JavaProjectCodeInsightSettings') do |xml|
     xml.tag!('excluded-names') do
