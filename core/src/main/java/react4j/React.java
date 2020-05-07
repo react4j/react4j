@@ -137,7 +137,7 @@ public final class React
    * @return the context.
    */
   @Nonnull
-  public static native <T> Context<T> createContext( T defaultValue );
+  static native <T> Context<T> createContext( T defaultValue );
 
   /**
    * Return the fiber for current component.

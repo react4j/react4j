@@ -2,6 +2,21 @@
   {
     "code": "java.class.added",
     "description": "Class was added.",
+    "newElement": "class react4j.Contexts",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Contexts",
+      "classSimpleName": "Contexts",
+      "elementKind": "class",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
     "newElement": "class react4j.ReactTestUtil",
     "classification": {
       "SOURCE": "NON_BREAKING",
@@ -27,6 +42,24 @@
       "classSimpleName": "React",
       "elementKind": "field",
       "fieldName": "Provider",
+      "newVisibility": "package",
+      "oldVisibility": "public",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.visibilityReduced",
+    "description": "visibility reduced",
+    "element": "method <T> react4j.Context<T> react4j.React::createContext(T)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "method",
+      "methodName": "createContext",
       "newVisibility": "package",
       "oldVisibility": "public",
       "package": "react4j"

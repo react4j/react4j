@@ -43,6 +43,8 @@ public final class ReactTestUtil
       storeDebugDataAsState();
       freezeProps();
     }
+    Contexts.setContextProvider( new Contexts.DefaultContextProvider() );
+    Contexts.clear();
   }
 
   /**
@@ -174,6 +176,7 @@ public final class ReactTestUtil
   {
     setConstant( "SHOULD_FREEZE_PROPS", setting );
   }
+
   /**
    * Set the `react4j.check_invariants` setting to {@code true}.
    */

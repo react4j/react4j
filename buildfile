@@ -83,6 +83,7 @@ define 'react4j' do
       REACT_TEST_OPTIONS.merge('react4j.core.compile_target' => compile.target.to_s)
     test.options[:java_args] = ['-ea']
     test.compile.with :jdepend,
+                      :mockito,
                       :arez_testng
 
     package(:jar)
