@@ -14,13 +14,13 @@ public abstract class AbstractTest
   public void preTest()
     throws Exception
   {
-    arez.testng.ArezTestSupport.super.preTest();
+    ArezTestSupport.super.preTest();
   }
 
   @AfterMethod
   @Override
   public void postTest()
   {
-    arez.testng.ArezTestSupport.super.postTest();
+    ArezTestSupport.super.postTest();
   }
 }
