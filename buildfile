@@ -73,7 +73,8 @@ define 'react4j' do
     test.using :testng
     test.options[:properties] = { 'react4j.core.compile_target' => compile.target.to_s }
     test.options[:java_args] = ['-ea']
-    test.compile.with :jdepend
+    test.compile.with :jdepend,
+                      :arez_testng
 
     package(:jar)
     package(:sources)
