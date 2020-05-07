@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Correct the symbol used to create context consumer components thus restoring the context functionality.
+
 ### [v0.154](https://github.com/react4j/react4j/tree/v0.154) (2020-04-08) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.153...v0.154)
 
 Changes in this release:

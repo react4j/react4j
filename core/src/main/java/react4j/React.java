@@ -123,6 +123,11 @@ public final class React
    */
   @JsProperty( name = "Provider" )
   public static Object Provider;
+  /**
+   * The Symbol type for Consumer.
+   */
+  @JsProperty( name = "Consumer" )
+  static Object Consumer;
 
   /**
    * Creates a context with specified default value.
