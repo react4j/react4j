@@ -1,0 +1,20 @@
+[
+  {
+    "code": "java.field.visibilityReduced",
+    "description": "Visibility was reduced from 'public' to 'package'.",
+    "element": "field react4j.React.Provider",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "field",
+      "fieldName": "Provider",
+      "newVisibility": "package",
+      "oldVisibility": "public",
+      "package": "react4j"
+    }
+  }
+]

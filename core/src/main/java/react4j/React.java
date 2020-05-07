@@ -122,7 +122,7 @@ public final class React
    * The Symbol type for Provider.
    */
   @JsProperty( name = "Provider" )
-  public static Object Provider;
+  static Object Provider;
   /**
    * The Symbol type for Consumer.
    */
