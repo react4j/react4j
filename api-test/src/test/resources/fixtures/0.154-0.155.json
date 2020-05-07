@@ -30,24 +30,6 @@
     }
   },
   {
-    "code": "java.field.visibilityReduced",
-    "description": "Visibility was reduced from 'public' to 'package'.",
-    "element": "field react4j.React.Provider",
-    "classification": {
-      "SOURCE": "BREAKING",
-      "BINARY": "BREAKING"
-    },
-    "attachments": {
-      "classQualifiedName": "react4j.React",
-      "classSimpleName": "React",
-      "elementKind": "field",
-      "fieldName": "Provider",
-      "newVisibility": "package",
-      "oldVisibility": "public",
-      "package": "react4j"
-    }
-  },
-  {
     "code": "java.method.visibilityReduced",
     "description": "visibility reduced",
     "element": "method <T> react4j.Context<T> react4j.React::createContext(T)",
@@ -62,6 +44,22 @@
       "methodName": "createContext",
       "newVisibility": "package",
       "oldVisibility": "public",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.field.removed",
+    "description": "Field removed from class.",
+    "oldElement": "field react4j.React.Provider",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "field",
+      "fieldName": "Provider",
       "package": "react4j"
     }
   }

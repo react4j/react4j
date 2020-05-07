@@ -13,14 +13,14 @@ JS_ASSET_GROUPS =
         :path => 'react4j/public/dev/react.js',
         :regex_patches => {
           # See notes in React class why we need to do this
-          /Fragment: REACT_FRAGMENT_TYPE,/ => "Fragment: REACT_FRAGMENT_TYPE,\n  Element: REACT_ELEMENT_TYPE,\n  Provider: REACT_PROVIDER_TYPE,"
+          /Fragment: REACT_FRAGMENT_TYPE,/ => "Fragment: REACT_FRAGMENT_TYPE,\n  Element: REACT_ELEMENT_TYPE,"
         }
       },
       'com.unpkg:react:js:min:16.6.0' => {
         :path => 'react4j/public/react.js',
         :regex_patches => {
           # See notes in React class why we need to do this
-          /Fragment:q,/ => "Fragment:q,Element:y,Provider:Ba,"
+          /Fragment:q,/ => "Fragment:q,Element:y,"
         } }
     },
     :dom => {

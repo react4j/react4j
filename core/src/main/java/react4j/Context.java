@@ -7,6 +7,8 @@ import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Context is designed to share data that can be considered "global" for a tree of React components.
@@ -27,7 +29,7 @@ public class Context<T>
   @Nonnull
   public final ProviderBuilder<T> provider()
   {
-    return new ProviderBuilder<>();
+    return new ProviderBuilder<>( this );
   }
 
   /**
@@ -39,7 +41,7 @@ public class Context<T>
   @Nonnull
   public final ConsumerBuilder<T> consumer()
   {
-    return new ConsumerBuilder<>();
+    return new ConsumerBuilder<>( this );
   }
 
   /**
@@ -49,10 +51,11 @@ public class Context<T>
   public static final class ProviderBuilder<ST>
   {
     @Nonnull
-    private final ReactElement _element = ReactElement.createContextElement( React.Provider );
+    private final ReactElement _element;
 
-    private ProviderBuilder()
+    private ProviderBuilder( @Nonnull final Context<ST> context )
     {
+      _element = ReactElement.createContextElement( Js.<JsPropertyMap<Object>>cast( context ).get( "Provider" ) );
     }
 
     /**
@@ -113,10 +116,11 @@ public class Context<T>
   public static final class ConsumerBuilder<ST>
   {
     @Nonnull
-    private final ReactElement _element = ReactElement.createContextElement( React.Consumer );
+    private final ReactElement _element;
 
-    private ConsumerBuilder()
+    private ConsumerBuilder( @Nonnull final Context<ST> context )
     {
+      _element = ReactElement.createContextElement( Js.<JsPropertyMap<Object>>cast( context ).get( "Consumer" ) );
     }
 
     /**

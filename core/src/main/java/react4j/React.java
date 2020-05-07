@@ -118,16 +118,6 @@ public final class React
    */
   @JsProperty( name = "Element" )
   public static Object Element;
-  /**
-   * The Symbol type for Provider.
-   */
-  @JsProperty( name = "Provider" )
-  static Object Provider;
-  /**
-   * The Symbol type for Consumer.
-   */
-  @JsProperty( name = "Consumer" )
-  static Object Consumer;
 
   /**
    * Creates a context with specified default value.
