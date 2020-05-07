@@ -1,6 +1,7 @@
 package react4j;
 
 import grim.annotations.OmitType;
+import javax.annotation.Nonnull;
 import org.realityforge.braincheck.BrainCheckConfig;
 
 /**
@@ -9,6 +10,7 @@ import org.realityforge.braincheck.BrainCheckConfig;
 @OmitType
 final class ReactConfig
 {
+  @Nonnull
   private static final ConfigProvider PROVIDER = new ConfigProvider();
   private static final boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
   private static final boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
