@@ -15,12 +15,14 @@ public abstract class AbstractTest
     throws Exception
   {
     ArezTestSupport.super.preTest();
+    ReactTestUtil.resetConfig( false );
   }
 
   @AfterMethod
   @Override
   public void postTest()
   {
+    ReactTestUtil.resetConfig( true );
     ArezTestSupport.super.postTest();
   }
 }

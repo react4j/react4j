@@ -1,5 +1,20 @@
 [
   {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.ReactTestUtil",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "class",
+      "package": "react4j"
+    }
+  },
+  {
     "code": "java.field.visibilityReduced",
     "description": "Visibility was reduced from 'public' to 'package'.",
     "element": "field react4j.React.Provider",

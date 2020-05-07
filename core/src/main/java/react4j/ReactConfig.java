@@ -7,18 +7,19 @@ import org.realityforge.braincheck.BrainCheckConfig;
 /**
  * Location of all compile time configuration settings for framework.
  */
+@SuppressWarnings( "FieldMayBeFinal" )
 @OmitType
 final class ReactConfig
 {
   @Nonnull
   private static final ConfigProvider PROVIDER = new ConfigProvider();
   private static final boolean PRODUCTION_ENVIRONMENT = PROVIDER.isProductionEnvironment();
-  private static final boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
-  private static final boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
-  private static final boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
-  private static final boolean SHOULD_FREEZE_PROPS = PROVIDER.shouldFreezeProps();
-  private static final boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
   private static boolean ENABLE_COMPONENT_NAMES = PROVIDER.enableComponentNames();
+  private static boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
+  private static boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
+  private static boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
+  private static boolean SHOULD_FREEZE_PROPS = PROVIDER.shouldFreezeProps();
+  private static boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
   private ReactConfig()
   {
