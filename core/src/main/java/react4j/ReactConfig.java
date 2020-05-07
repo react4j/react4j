@@ -13,12 +13,12 @@ final class ReactConfig
   @Nonnull
   private static final ConfigProvider PROVIDER = new ConfigProvider();
   private static final boolean PRODUCTION_MODE = PROVIDER.isProductionMode();
-  private static final boolean ENABLE_NAMES = PROVIDER.enableComponentNames();
   private static final boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
   private static final boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
   private static final boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
   private static final boolean SHOULD_FREEZE_PROPS = PROVIDER.shouldFreezeProps();
   private static final boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
+  private static boolean ENABLE_COMPONENT_NAMES = PROVIDER.enableComponentNames();
 
   private ReactConfig()
   {
@@ -42,7 +42,7 @@ final class ReactConfig
    */
   static boolean enableComponentNames()
   {
-    return ENABLE_NAMES;
+    return ENABLE_COMPONENT_NAMES;
   }
 
   /**
