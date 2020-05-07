@@ -12,7 +12,7 @@ final class ReactConfig
 {
   @Nonnull
   private static final ConfigProvider PROVIDER = new ConfigProvider();
-  private static final boolean PRODUCTION_MODE = PROVIDER.isProductionMode();
+  private static final boolean PRODUCTION_ENVIRONMENT = PROVIDER.isProductionEnvironment();
   private static final boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
   private static final boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
   private static final boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
@@ -24,14 +24,14 @@ final class ReactConfig
   {
   }
 
-  static boolean isDevelopmentMode()
+  static boolean isDevelopmentEnvironment()
   {
-    return !isProductionMode();
+    return !isProductionEnvironment();
   }
 
-  static boolean isProductionMode()
+  static boolean isProductionEnvironment()
   {
-    return PRODUCTION_MODE;
+    return PRODUCTION_ENVIRONMENT;
   }
 
   /**
@@ -104,7 +104,7 @@ final class ReactConfig
   {
     @GwtIncompatible
     @Override
-    boolean isProductionMode()
+    boolean isProductionEnvironment()
     {
       return "production".equals( System.getProperty( "react4j.environment", "production" ) );
     }
@@ -114,21 +114,21 @@ final class ReactConfig
     boolean enableComponentNames()
     {
       return "true".equals( System.getProperty( "react4j.enable_component_names",
-                                                PRODUCTION_MODE ? "false" : "true" ) );
+                                                PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
 
     @GwtIncompatible
     @Override
     boolean shouldMinimizePropKeys()
     {
-      return "true".equals( System.getProperty( "react4j.minimize_prop_keys", PRODUCTION_MODE ? "true" : "false" ) );
+      return "true".equals( System.getProperty( "react4j.minimize_prop_keys", PRODUCTION_ENVIRONMENT ? "true" : "false" ) );
     }
 
     @GwtIncompatible
     @Override
     boolean shouldValidatePropValues()
     {
-      return "true".equals( System.getProperty( "react4j.validate_prop_values", PRODUCTION_MODE ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.validate_prop_values", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
 
     @GwtIncompatible
@@ -136,28 +136,28 @@ final class ReactConfig
     boolean shouldStoreDebugDataAsState()
     {
       return "true".equals( System.getProperty( "react4j.store_debug_data_as_state",
-                                                PRODUCTION_MODE ? "false" : "true" ) );
+                                                PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
 
     @GwtIncompatible
     @Override
     boolean shouldCheckInvariants()
     {
-      return "true".equals( System.getProperty( "react4j.check_invariants", PRODUCTION_MODE ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.check_invariants", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
 
     @GwtIncompatible
     @Override
     boolean shouldFreezeProps()
     {
-      return "true".equals( System.getProperty( "react4j.freeze_props", PRODUCTION_MODE ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.freeze_props", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
   }
 
   @SuppressWarnings( { "unused", "StringEquality" } )
   private static abstract class AbstractConfigProvider
   {
-    boolean isProductionMode()
+    boolean isProductionEnvironment()
     {
       return "production" == System.getProperty( "react4j.environment" );
     }
