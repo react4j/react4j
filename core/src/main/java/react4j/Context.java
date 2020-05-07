@@ -48,6 +48,7 @@ public class Context<T>
    */
   public static final class ProviderBuilder<ST>
   {
+    @Nonnull
     private final ReactElement _element = ReactElement.createContextElement( React.Provider );
 
     private ProviderBuilder()
@@ -111,6 +112,7 @@ public class Context<T>
    */
   public static final class ConsumerBuilder<ST>
   {
+    @Nonnull
     private final ReactElement _element = ReactElement.createContextElement( React.Provider );
 
     private ConsumerBuilder()
