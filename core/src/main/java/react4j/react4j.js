@@ -5,6 +5,8 @@
 goog.provide('react4j');
 
 /** @define {string} */
+react4j.environment = goog.define('react4j.environment', 'production');
+/** @define {string} */
 react4j.enable_component_names = goog.define('react4j.enable_component_names', 'false');
 /** @define {string} */
 react4j.check_invariants = goog.define('react4j.check_invariants', 'false');

@@ -5,6 +5,7 @@
 * Correct the symbol used to create context consumer components thus restoring the context functionality.
 * Reduce the access of the `React.Provider` symbol as it is only used when creating provider components that is done within the same package.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.15`.
+* Introduce the `react4j.environment` compile time constant that will be used to improve testing from within a JRE context.
 
 ### [v0.154](https://github.com/react4j/react4j/tree/v0.154) (2020-04-08) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.153...v0.154)
 

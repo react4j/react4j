@@ -16,6 +16,9 @@
     See that class for a better understanding of what these properties do.
   -->
 
+  <define-property name='react4j.environment' values='development,production'/>
+  <set-property name='react4j.environment' value='production'/>
+
   <define-property name='react4j.enable_component_names' values='true,false'/>
   <set-property name='react4j.enable_component_names' value='false'/>
 
