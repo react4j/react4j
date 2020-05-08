@@ -9,6 +9,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.internal.ComponentConstructorFunction;
 import static org.realityforge.braincheck.Guards.*;
@@ -46,6 +47,18 @@ public class ReactElement
       JsObject.freeze( this );
       JsObject.freeze( props );
     }
+  }
+
+  @JsOverlay
+  public final ReactElement dup()
+  {
+    final ReactElement element = createRawNode( typeof, type );
+    element.key = key;
+    element.ref = ref;
+    element.props = JsPropertyMap.of();
+    // Need to use an unchecked cast here otherwise it is cast to a java object array breaks assign
+    JsObject.assign( element.props, Js.uncheckedCast( this.props ) );
+    return element;
   }
 
   @JsOverlay

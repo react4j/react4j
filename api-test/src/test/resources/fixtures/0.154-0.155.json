@@ -50,6 +50,22 @@
   {
     "code": "java.method.finalMethodAddedToNonFinalClass",
     "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.ReactElement react4j.ReactElement::dup()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "dup",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
     "newElement": "method react4j.ReactElement react4j.ReactElement::prop(java.lang.String, java.lang.Object)",
     "classification": {
       "SOURCE": "POTENTIALLY_BREAKING",
