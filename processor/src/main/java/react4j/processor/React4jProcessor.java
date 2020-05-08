@@ -262,6 +262,15 @@ public final class React4jProcessor
       {
         prop.markAsOptional();
       }
+      else
+      {
+        if ( prop.isContextProp() )
+        {
+          throw new ProcessorException( MemberChecks.mustNot( Constants.PROP_ANNOTATION_CLASSNAME,
+                                                              "specify require=ENABLE parameter when the for source=CONTEXT parameter is specified" ),
+                                        prop.getMethod() );
+        }
+      }
     }
 
     /*
@@ -827,18 +836,24 @@ public final class React4jProcessor
 
   private boolean isPropRequired( @Nonnull final PropDescriptor prop )
   {
-    final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( prop.getMethod(), Constants.PROP_ANNOTATION_CLASSNAME, "require" ).getValue();
-    switch ( parameter.getSimpleName().toString() )
+    final String requiredValue = prop.getRequiredValue();
+    if ( "ENABLE".equals( requiredValue ) )
     {
-      case "ENABLE":
-        return true;
-      case "DISABLE":
-        return false;
-      default:
-        return !prop.hasDefaultMethod() &&
-               !prop.hasDefaultField() &&
-               !AnnotationsUtil.hasNullableAnnotation( prop.getMethod() );
+      return true;
+    }
+    else if ( "DISABLE".equals( requiredValue ) )
+    {
+      return false;
+    }
+    else if ( prop.isContextProp() )
+    {
+      return false;
+    }
+    else
+    {
+      return !prop.hasDefaultMethod() &&
+             !prop.hasDefaultField() &&
+             !AnnotationsUtil.hasNullableAnnotation( prop.getMethod() );
     }
   }
 
@@ -888,6 +903,7 @@ public final class React4jProcessor
       }
     }
 
+    final boolean contextProp = isContextProp( method );
     final Element propType = processingEnv.getTypeUtils().asElement( returnType );
     final boolean immutable = isPropImmutable( method );
     final boolean shouldUpdateOnChange = shouldUpdateOnChange( method, immutable );
@@ -910,15 +926,22 @@ public final class React4jProcessor
                                     "the @Prop annotation.",
                                     method );
     }
+    final String requiredValue =
+      ( (VariableElement) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "require" )
+        .getValue() )
+        .getSimpleName().toString();
+
     final PropDescriptor propDescriptor =
       new PropDescriptor( descriptor,
                           name,
                           method,
                           methodType,
+                          contextProp,
                           shouldUpdateOnChange,
                           observable,
                           disposable,
-                          strategy );
+                          strategy,
+                          requiredValue );
     if ( propDescriptor.mayNeedMutablePropAccessedInPostConstructInvariant() )
     {
       if ( ElementsUtil.isWarningSuppressed( method,
@@ -1337,6 +1360,13 @@ public final class React4jProcessor
             AnnotationsUtil.hasAnnotationOfType( propType, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME )
           );
     }
+  }
+
+  private boolean isContextProp( @Nonnull final ExecutableElement method )
+  {
+    final VariableElement parameter = (VariableElement)
+      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "source" ).getValue();
+    return "CONTEXT".equals( parameter.getSimpleName().toString() );
   }
 
   private boolean shouldSetDefaultPriority( @Nonnull final TypeElement typeElement )

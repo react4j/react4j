@@ -34,6 +34,8 @@ final class BuilderGenerator
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
   private static final ClassName IDENTIFIABLE_CLASSNAME = ClassName.get( "arez.component", "Identifiable" );
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
+  private static final ClassName CONTEXT_CLASSNAME = ClassName.get( "react4j", "Context" );
+  private static final ClassName CONTEXTS_CLASSNAME = ClassName.get( "react4j", "Contexts" );
   private static final ClassName KEYED_CLASSNAME = ClassName.get( "react4j", "Keyed" );
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
@@ -77,6 +79,11 @@ final class BuilderGenerator
 
     // first step which may be required prop, optional props, or build terminal step.
     buildStaticStepMethodMethods( processingEnv, descriptor, builder, steps.get( 0 ) );
+
+    if ( descriptor.getProps().stream().anyMatch( PropDescriptor::isContextProp ) )
+    {
+      builder.addType( buildContextHolder( descriptor ) );
+    }
 
     builder.addType( buildBuilder( processingEnv, descriptor, builderDescriptor ) );
 
@@ -412,15 +419,86 @@ final class BuilderGenerator
       .methodBuilder( "build" )
       .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+    return buildBuildMethodContent( descriptor, method, "_element" );
+  }
+
+  @Nonnull
+  private static MethodSpec buildContextBuildStepImpl( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final List<PropDescriptor> contextProps =
+      descriptor.getProps().stream().filter( PropDescriptor::isContextProp ).collect( Collectors.toList() );
+
+    final int count = contextProps.size();
+
+    final StringBuilder sb = new StringBuilder();
+    final List<Object> args = new ArrayList<>();
+
+    sb.append( "return " );
+
+    for ( int i = 0; i < count; i++ )
+    {
+      final PropDescriptor prop = contextProps.get( i );
+      sb.append( "$T.$N.consumer().render( $N -> " );
+      args.add( ClassName.bestGuess( "ContextHolder" ) );
+      args.add( "CONTEXT_" + prop.getConstantName() );
+      args.add( "v" + i );
+    }
+
+    sb.append( "build( _element" );
+
+    for ( int i = 0; i < count; i++ )
+    {
+      final PropDescriptor prop = contextProps.get( i );
+      sb.append( ".prop( $T.Props.$N, $N )" );
+      args.add( descriptor.getEnhancedClassName() );
+      args.add( prop.getConstantName() );
+      args.add( "v" + i );
+    }
+
+    sb.append( ".dup() )" );
+
+    for ( int i = 0; i < count; i++ )
+    {
+      sb.append( " )" );
+    }
+    return MethodSpec
+      .methodBuilder( "build" )
+      .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
+      .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+      .addStatement( sb.toString(), args.toArray() )
+      .returns( REACT_NODE_CLASSNAME )
+      .build();
+  }
+
+  @Nonnull
+  private static MethodSpec buildInternalBuildStepImpl( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final MethodSpec.Builder method = MethodSpec
+      .methodBuilder( "build" )
+      .addModifiers( Modifier.PRIVATE )
+      .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+      .addParameter( ParameterSpec
+                       .builder( REACT_ELEMENT_CLASSNAME, "element", Modifier.FINAL )
+                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+                       .build() );
+    return buildBuildMethodContent( descriptor, method, "element" );
+  }
+
+  @Nonnull
+  private static MethodSpec buildBuildMethodContent( @Nonnull final ComponentDescriptor descriptor,
+                                                     @Nonnull final MethodSpec.Builder method,
+                                                     @Nonnull final String elementName )
+  {
     final List<PropDescriptor> syntheticProps =
       descriptor.getProps().stream().filter( PropDescriptor::isImmutable ).collect( Collectors.toList() );
     if ( syntheticProps.size() > 1 )
     {
-      method.addStatement( "final $T props = _element.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      method.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName );
 
       final StringBuilder sb = new StringBuilder();
-      sb.append( "_element.setKey( $T.class.getName()" );
-      final ArrayList<Object> params = new ArrayList<>();
+      sb.append( "$N.setKey( $T.class.getName()" );
+      final List<Object> params = new ArrayList<>();
+      params.add( elementName );
       params.add( descriptor.getClassName() );
       for ( final PropDescriptor prop : syntheticProps )
       {
@@ -463,11 +541,40 @@ final class BuilderGenerator
       sb.append( " )" );
       method.addStatement( sb.toString(), params.toArray() );
     }
+
     method
-      .addStatement( "_element.complete()" )
-      .addStatement( "return _element" )
+      .addStatement( "$N.complete()", elementName )
+      .addStatement( "return $N", elementName )
       .returns( REACT_NODE_CLASSNAME );
     return method.build();
+  }
+
+  @Nonnull
+  private static TypeSpec buildContextHolder( @Nonnull final ComponentDescriptor descriptor )
+  {
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "ContextHolder" );
+    GeneratorUtil.copyTypeParameters( descriptor.getElement(), builder );
+
+    builder.addModifiers( Modifier.PRIVATE, Modifier.STATIC );
+
+    builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
+
+    final List<PropDescriptor> contextProps =
+      descriptor.getProps().stream().filter( PropDescriptor::isContextProp ).collect( Collectors.toList() );
+
+    for ( final PropDescriptor prop : contextProps )
+    {
+      final TypeName type = TypeName.get( prop.getMethodType().getReturnType() ).box();
+      builder.addField( FieldSpec
+                          .builder( ParameterizedTypeName.get( CONTEXT_CLASSNAME, type ),
+                                    "CONTEXT_" + prop.getConstantName(),
+                                    Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL )
+                          .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+                          .initializer( "$T.get( $T.class )", CONTEXTS_CLASSNAME, type )
+                          .build() );
+    }
+
+    return builder.build();
   }
 
   @Nonnull
@@ -535,7 +642,15 @@ final class BuilderGenerator
     }
     builder.addField( field.build() );
 
-    builder.addMethod( buildBuildStepImpl( descriptor ) );
+    if ( descriptor.getProps().stream().anyMatch( PropDescriptor::isContextProp ) )
+    {
+      builder.addMethod( buildInternalBuildStepImpl( descriptor ) );
+      builder.addMethod( buildContextBuildStepImpl( descriptor ) );
+    }
+    else
+    {
+      builder.addMethod( buildBuildStepImpl( descriptor ) );
+    }
 
     return builder.build();
   }
@@ -569,7 +684,8 @@ final class BuilderGenerator
     final BuilderDescriptor builder = new BuilderDescriptor();
 
     Step optionalPropStep = null;
-    final List<PropDescriptor> props = descriptor.getProps();
+    final List<PropDescriptor> props =
+      descriptor.getProps().stream().filter( p -> !p.isContextProp() ).collect( Collectors.toList() );
 
     final int propsSize = props.size();
 

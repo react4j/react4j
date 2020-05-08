@@ -30,6 +30,21 @@
     }
   },
   {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "enum react4j.annotations.Prop.Source",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Prop.Source",
+      "classSimpleName": "Source",
+      "elementKind": "enum",
+      "package": "react4j.annotations"
+    }
+  },
+  {
     "code": "java.method.visibilityReduced",
     "description": "visibility reduced",
     "element": "method <T> react4j.Context<T> react4j.React::createContext(T)",
@@ -77,6 +92,22 @@
       "elementKind": "method",
       "methodName": "prop",
       "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.attributeWithDefaultAddedToAnnotationType",
+    "description": "The annotation has a new attribute with a default value.",
+    "newElement": "method react4j.annotations.Prop.Source react4j.annotations.Prop::source()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Prop",
+      "classSimpleName": "Prop",
+      "elementKind": "method",
+      "methodName": "source",
+      "package": "react4j.annotations"
     }
   },
   {

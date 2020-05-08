@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
+import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
 
 @SuppressWarnings( "Duplicates" )
@@ -19,11 +20,14 @@ final class PropDescriptor
   private final ExecutableElement _method;
   @Nonnull
   private final ExecutableType _methodType;
+  private final boolean _contextProp;
   private final boolean _shouldUpdateOnChange;
   private final boolean _observable;
   private final boolean _disposable;
   @Nullable
   private final ImmutablePropKeyStrategy _immutablePropKeyStrategy;
+  @Nonnull
+  private final String _requiredValue;
   private boolean _onChangePresent;
   private boolean _suppressMutablePropAccessedInPostConstruct;
   @Nullable
@@ -41,19 +45,23 @@ final class PropDescriptor
                   @Nonnull final String name,
                   @Nonnull final ExecutableElement method,
                   @Nonnull final ExecutableType methodType,
+                  final boolean contextProp,
                   final boolean shouldUpdateOnChange,
                   final boolean observable,
                   final boolean disposable,
-                  @Nullable final ImmutablePropKeyStrategy immutablePropKeyStrategy )
+                  @Nullable final ImmutablePropKeyStrategy immutablePropKeyStrategy,
+                  @Nonnull final String requiredValue )
   {
     _descriptor = Objects.requireNonNull( descriptor );
     _name = Objects.requireNonNull( name );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
+    _contextProp = contextProp;
     _shouldUpdateOnChange = shouldUpdateOnChange;
     _observable = observable;
     _disposable = disposable;
     _immutablePropKeyStrategy = immutablePropKeyStrategy;
+    _requiredValue = Objects.requireNonNull( requiredValue );
   }
 
   @Nonnull
@@ -92,6 +100,12 @@ final class PropDescriptor
   boolean isImmutable()
   {
     return null != _immutablePropKeyStrategy;
+  }
+
+  @Nonnull
+  String getRequiredValue()
+  {
+    return _requiredValue;
   }
 
   void markAsOnChangePresent()
@@ -160,6 +174,12 @@ final class PropDescriptor
 
   void setDefaultField( @Nonnull final VariableElement field )
   {
+    if ( isContextProp() )
+    {
+      throw new ProcessorException( MemberChecks.mustNot( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
+                                                          "be specified for a @Prop method that specifies source=CONTEXT" ),
+                                    field );
+    }
     if ( null != _defaultMethod )
     {
       throw new ProcessorException( "@PropDefault target duplicates existing method named " +
@@ -190,6 +210,12 @@ final class PropDescriptor
 
   void setDefaultMethod( @Nonnull final ExecutableElement method )
   {
+    if ( isContextProp() )
+    {
+      throw new ProcessorException( MemberChecks.mustNot( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
+                                                          "be specified for a @Prop method that specifies source=CONTEXT" ),
+                                    method );
+    }
     if ( null != _defaultMethod )
     {
       throw new ProcessorException( "@PropDefault target duplicates existing method named " +
@@ -220,6 +246,11 @@ final class PropDescriptor
   String getConstantName()
   {
     return getName();
+  }
+
+  boolean isContextProp()
+  {
+    return _contextProp;
   }
 
   boolean isSpecialChildrenProp()

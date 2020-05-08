@@ -10,6 +10,7 @@
 * Introduce `react4j.Contexts` that acts as a global registry for contexts created within a react4j application. Contexts can be registered and subsequently looked up by type with an optional qualifier. Remove `React.createContext()` from the public API to force context usage through the new `Contexts` class.
 * Add `ReactElement.prop(key,value)` method so that elements can be created in a literal style.
 * Add `ReactElement.dup()` method so that elements can be programmatically cloned. This is useful when constructing certain styles of builder.
+* Add the `@Prop.source` parameter so that props can be supplied from react context by setting `source=CONTEXT`.
 
 ### [v0.154](https://github.com/react4j/react4j/tree/v0.154) (2020-04-08) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.153...v0.154)
 

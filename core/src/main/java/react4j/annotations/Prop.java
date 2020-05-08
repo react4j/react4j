@@ -13,7 +13,8 @@ import react4j.Keyed;
 
 /**
  * Annotation used to specify an abstract method that returns a prop.
- * The property is extracted from Reacts underlying props object.
+ * The property is extracted from Reacts underlying props object. By default the prop is passed as
+ * a value in when creating the component but it can also be retrieved from the react context.
  *
  * <p>The method that is annotated with this annotation must also comply with the following constraints:</p>
  * <ul>
@@ -52,13 +53,21 @@ public @interface Prop
   String name() default "<default>";
 
   /**
-   * Return enum indicating whether prop should be when component is constructed.
+   * The setting controlling where the prop value is source from.
+   *
+   * @return the setting controlling where the prop value is source from.
+   */
+  Source source() default Source.DEFAULT;
+
+  /**
+   * Setting indicating whether the prop should be supplied when the component is constructed.
    * This influences validation when enabled and how the Builder class is created.
    * If set to {@link Feature#ENABLE} then the user MUST supply the prop and the builder will require the user
    * to specify the value. If set to {@link Feature#DISABLE} then the user can optionally supply the prop.
    * If set to {@link Feature#AUTODETECT} then the annotation processor will treat it as {@link Feature#DISABLE}
-   * if there is a corresponding {@link PropDefault} for the prop, otherwise it will be treated as
-   * {@link Feature#ENABLE}.
+   * if there is a corresponding {@link PropDefault} for the prop or the {@link #source()} parameter is set to
+   * {@link Source#CONTEXT}, otherwise it will be treated as {@link Feature#ENABLE}. The value of this setting
+   * must not be {@link Feature#ENABLE} when {@link #source()} is set to {@link Source#CONTEXT}.
    *
    * @return the flag indicating whether the prop needs to be supplied.
    */
@@ -124,4 +133,19 @@ public @interface Prop
    * @return true if changing the prop recreates the component.
    */
   boolean immutable() default false;
+
+  /**
+   * Enum where the prop is sourced from.
+   */
+  enum Source
+  {
+    /**
+     * The prop value is passed to the component during construction.
+     */
+    DEFAULT,
+    /**
+     * The prop value is retrieved from the react context.
+     */
+    CONTEXT
+  }
 }
