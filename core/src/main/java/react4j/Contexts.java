@@ -88,6 +88,12 @@ public final class Contexts
                                    @Nonnull final String qualifier,
                                    @Nullable final T defaultValue )
   {
+    if ( ReactConfig.shouldCheckInvariants() )
+    {
+      apiInvariant( () -> !type.isPrimitive(),
+                    () -> "Attempting to register primitive type " + type +
+                          " in React context. Use the boxed type instead" );
+    }
     final Map<String, Context<?>> map = c_contexts.computeIfAbsent( type, t -> new HashMap<>() );
     if ( ReactConfig.shouldCheckInvariants() )
     {
@@ -126,6 +132,12 @@ public final class Contexts
   @SuppressWarnings( "unchecked" )
   public static <T> Context<T> get( @Nonnull final Class<T> type, @Nonnull final String qualifier )
   {
+    if ( ReactConfig.shouldCheckInvariants() )
+    {
+      apiInvariant( () -> !type.isPrimitive(),
+                    () -> "Attempting to access primitive type " + type +
+                          " from the React context. Access using the boxed type instead" );
+    }
     final Map<String, Context<?>> map = c_contexts.get( type );
     if ( ReactConfig.shouldCheckInvariants() )
     {

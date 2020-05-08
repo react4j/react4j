@@ -105,6 +105,22 @@ public final class ContextsTest
   }
 
   @Test
+  public void register_primitive()
+  {
+    final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
+    Contexts.setContextProvider( provider );
+
+    final IllegalStateException exception =
+      expectThrows( IllegalStateException.class,
+                    () -> Contexts.register( int.class, "port", 2 ) );
+
+    verify( provider, never() ).createContext( any() );
+
+    assertEquals( exception.getMessage(),
+                  "Attempting to register primitive type int in React context. Use the boxed type instead" );
+  }
+
+  @Test
   public void get_missing()
   {
     final IllegalStateException exception =
@@ -112,6 +128,16 @@ public final class ContextsTest
 
     assertEquals( exception.getMessage(),
                   "Attempting to retrieve React context with type interface java.lang.Runnable and qualifier 'someQual' but no such context exists with that type and name" );
+  }
+
+  @Test
+  public void get_primitiveType()
+  {
+    final IllegalStateException exception =
+      expectThrows( IllegalStateException.class, () -> Contexts.get( int.class, "port" ) );
+
+    assertEquals( exception.getMessage(),
+                  "Attempting to access primitive type int from the React context. Access using the boxed type instead" );
   }
 
   @Test
