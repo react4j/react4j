@@ -2,6 +2,7 @@ package react4j;
 
 import elemental2.core.JsObject;
 import java.util.Objects;
+import javaemul.internal.annotations.DoNotAutobox;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
@@ -183,6 +184,14 @@ public class ReactElement
   public final JsPropertyMap<Object> props()
   {
     return props;
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final ReactElement prop( @Nonnull final String key, @DoNotAutobox final Object value )
+  {
+    props.set( key, value );
+    return this;
   }
 
   @JsOverlay

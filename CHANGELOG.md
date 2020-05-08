@@ -8,6 +8,7 @@
 * Introduce the `react4j.environment` compile time constant that will be used to improve testing from within a JRE context.
 * Introduce `react4j.ReactTestUtil` to start supporting some JRE based tests for react4j components.
 * Introduce `react4j.Contexts` that acts as a global registry for contexts created within a react4j application. Contexts can be registered and subsequently looked up by type with an optional qualifier. Remove `React.createContext()` from the public API to force context usage through the new `Contexts` class.
+* Add `ReactElement.prop(key,value)` method so that elements can be created in a literal style.
 
 ### [v0.154](https://github.com/react4j/react4j/tree/v0.154) (2020-04-08) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.153...v0.154)
 

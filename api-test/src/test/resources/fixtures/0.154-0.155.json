@@ -48,6 +48,22 @@
     }
   },
   {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.ReactElement react4j.ReactElement::prop(java.lang.String, java.lang.Object)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "prop",
+      "package": "react4j"
+    }
+  },
+  {
     "code": "java.field.removed",
     "description": "Field removed from class.",
     "oldElement": "field react4j.React.Provider",
