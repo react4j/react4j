@@ -43,9 +43,8 @@ public @interface Prop
 {
   /**
    * Return the name of the prop.
-   * If the underlying method conforms to java beans accessor conventions (i.e. starts with "is" and is a boolean
-   * or starts with "get") then the name is the same as the java bean convention dictates, otherwise the name of
-   * the method is used as the default value for the prop.
+   * The name is the key used when accessing the prop from the props object. It is also used when creating
+   * the builder steps associated with the props that set {@link #source()} to {@link Source#DEFAULT}.
    *
    * @return the name of the prop.
    */
