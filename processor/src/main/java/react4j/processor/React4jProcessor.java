@@ -477,7 +477,7 @@ public final class React4jProcessor
       {
         throw new ProcessorException( "@OnPropChange target must have at least 1 parameter.", method );
       }
-      final ArrayList<PropDescriptor> propDescriptors = new ArrayList<>( parameterCount );
+      final List<PropDescriptor> propDescriptors = new ArrayList<>( parameterCount );
       for ( int i = 0; i < parameterCount; i++ )
       {
         final VariableElement parameter = parameters.get( i );
