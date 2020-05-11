@@ -52,6 +52,15 @@ public @interface Prop
   String name() default "<default>";
 
   /**
+   * Return the qualifier used to access value from context.
+   * It must only be specified if {@link #source()} is set to {@link Source#CONTEXT}.
+   *
+   * @return the qualifier used to access value from context.
+   */
+  @Nonnull
+  String qualifier() default "";
+
+  /**
    * The setting controlling where the prop value is source from.
    *
    * @return the setting controlling where the prop value is source from.

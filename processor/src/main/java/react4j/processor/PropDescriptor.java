@@ -17,6 +17,8 @@ final class PropDescriptor
   @Nonnull
   private final String _name;
   @Nonnull
+  private final String _qualifier;
+  @Nonnull
   private final ExecutableElement _method;
   @Nonnull
   private final ExecutableType _methodType;
@@ -43,6 +45,7 @@ final class PropDescriptor
 
   PropDescriptor( @Nonnull final ComponentDescriptor descriptor,
                   @Nonnull final String name,
+                  @Nonnull final String qualifier,
                   @Nonnull final ExecutableElement method,
                   @Nonnull final ExecutableType methodType,
                   final boolean contextProp,
@@ -54,6 +57,7 @@ final class PropDescriptor
   {
     _descriptor = Objects.requireNonNull( descriptor );
     _name = Objects.requireNonNull( name );
+    _qualifier = Objects.requireNonNull( qualifier );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
     _contextProp = contextProp;
@@ -68,6 +72,12 @@ final class PropDescriptor
   String getName()
   {
     return _name;
+  }
+
+  @Nonnull
+  String getQualifier()
+  {
+    return _qualifier;
   }
 
   @Nonnull

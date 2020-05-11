@@ -565,13 +565,21 @@ final class BuilderGenerator
     for ( final PropDescriptor prop : contextProps )
     {
       final TypeName type = TypeName.get( prop.getMethodType().getReturnType() ).box();
-      builder.addField( FieldSpec
-                          .builder( ParameterizedTypeName.get( CONTEXT_CLASSNAME, type ),
-                                    "CONTEXT_" + prop.getConstantName(),
-                                    Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL )
-                          .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
-                          .initializer( "$T.get( $T.class )", CONTEXTS_CLASSNAME, type )
-                          .build() );
+      final FieldSpec.Builder field = FieldSpec
+        .builder( ParameterizedTypeName.get( CONTEXT_CLASSNAME, type ),
+                  "CONTEXT_" + prop.getConstantName(),
+                  Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL )
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+      final String qualifier = prop.getQualifier();
+      if ( "".equals( qualifier ) )
+      {
+        field.initializer( "$T.get( $T.class )", CONTEXTS_CLASSNAME, type );
+      }
+      else
+      {
+        field.initializer( "$T.get( $T.class, $S )", CONTEXTS_CLASSNAME, type, qualifier );
+      }
+      builder.addField( field.build() );
     }
 
     return builder.build();

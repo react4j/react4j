@@ -63,6 +63,22 @@
     }
   },
   {
+    "code": "java.method.attributeWithDefaultAddedToAnnotationType",
+    "description": "The annotation has a new attribute with a default value.",
+    "newElement": "method java.lang.String react4j.annotations.Prop::qualifier()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Prop",
+      "classSimpleName": "Prop",
+      "elementKind": "method",
+      "methodName": "qualifier",
+      "package": "react4j.annotations"
+    }
+  },
+  {
     "code": "java.method.finalMethodAddedToNonFinalClass",
     "description": "A final method has been added to an inheritable class.",
     "newElement": "method react4j.ReactElement react4j.ReactElement::dup()",

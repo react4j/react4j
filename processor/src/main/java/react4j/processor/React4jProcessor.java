@@ -902,7 +902,8 @@ public final class React4jProcessor
                                       "that is declared on the method.", method );
       }
     }
-
+    final String qualifier = (String) AnnotationsUtil
+      .getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "qualifier" ).getValue();
     final boolean contextProp = isContextProp( method );
     final Element propType = processingEnv.getTypeUtils().asElement( returnType );
     final boolean immutable = isPropImmutable( method );
@@ -926,6 +927,12 @@ public final class React4jProcessor
                                     "the @Prop annotation.",
                                     method );
     }
+    if ( !"".equals( qualifier ) && !contextProp )
+    {
+      throw new ProcessorException( MemberChecks.mustNot( Constants.PROP_ANNOTATION_CLASSNAME,
+                                                          "specify qualifier parameter unless source=CONTEXT is also specified" ),
+                                    method );
+    }
     final String requiredValue =
       ( (VariableElement) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "require" )
         .getValue() )
@@ -934,6 +941,7 @@ public final class React4jProcessor
     final PropDescriptor propDescriptor =
       new PropDescriptor( descriptor,
                           name,
+                          qualifier,
                           method,
                           methodType,
                           contextProp,
