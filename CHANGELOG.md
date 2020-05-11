@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.155](https://github.com/react4j/react4j/tree/v0.155) (2020-05-11) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.154...v0.155) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.154&new=0.155)
+
+The release includes 5 non breaking API changes, 2 potentially breaking API changes and 2 breaking API changes.
+
+Changes in this release:
 
 * Correct the type used to create context provider and consumer components thus restoring the context functionality.
 * Reduce the access of the `React.Provider` symbol as it is only used when creating provider components that is done within the same package.
