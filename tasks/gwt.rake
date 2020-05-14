@@ -19,9 +19,11 @@ def gwt_enhance(project, options = {})
     extra_deps += [project.file(project._(:generated, 'processors/main/java'))]
   end
 
-  dependencies = project.compile.dependencies + extra_deps + [Buildr.artifact(:gwt_user)]
+  project.compile.with Buildr::GWT.dependencies(project.gwt_detect_version(Buildr.artifacts(:gwt_user)))
 
-  gwt_modules = []
+  dependencies = project.compile.dependencies + extra_deps
+
+  gwt_modules = options[:gwt_modules] || []
   source_paths = project.compile.sources + project.iml.main_generated_resource_directories.flatten.compact + project.iml.main_generated_source_directories.flatten.compact
   source_paths.each do |base_dir|
     Dir["#{base_dir}/**/*.gwt.xml"].each do |filename|
@@ -58,7 +60,7 @@ CONTENT
   # which we typically do NOT want to include in jar
   assets = project.assets.paths.dup
   if ENV['GWT'].nil? || ENV['GWT'] == project.name
-    modules = modules_complete ? gwt_modules : gwt_modules.collect {|gwt_module| "#{gwt_module}Test"}
+    modules = modules_complete ? gwt_modules : gwt_modules.collect { |gwt_module| "#{gwt_module}Test" }
     modules.each do |m|
       gwtc_args = options[:module_gwtc_args].nil? ? nil : options[:module_gwtc_args][m]
       output_key = options[:output_key] || m
@@ -74,9 +76,15 @@ CONTENT
   project.package(:jar).tap do |j|
     extra_deps.each do |dep|
       j.enhance([dep])
-      j.include("#{dep}/react4j")
+      Dir["#{"#{dep}/*"}"].each do |path|
+        j.include(path)
+      end
     end
-    j.include(project._(:generated, 'processors/main/java/react4j')) if project.enable_annotation_processor?
+    if project.enable_annotation_processor?
+      Dir["#{project._(:generated, 'processors/main/java/*')}"].each do |path|
+        j.include(path)
+      end
+    end
     assets.each do |path|
       j.include("#{path}/*")
     end

@@ -170,7 +170,7 @@ module Buildr
 
     module ProjectExtension
       protected
-     def gwt_detect_version(dependencies)
+      def gwt_detect_version(dependencies)
         version = nil
         dependencies.each do |dep|
           if dep.respond_to?(:to_spec_hash)
