@@ -76,14 +76,7 @@ CONTENT
   project.package(:jar).tap do |j|
     extra_deps.each do |dep|
       j.enhance([dep])
-      Dir["#{"#{dep}/*"}"].each do |path|
-        j.include(path)
-      end
-    end
-    if project.enable_annotation_processor?
-      Dir["#{project._(:generated, 'processors/main/java/*')}"].each do |path|
-        j.include(path)
-      end
+      j.include("#{dep}/*")
     end
     assets.each do |path|
       j.include("#{path}/*")
@@ -96,7 +89,7 @@ CONTENT
     config[gwt_module] = false
   end
   project.iml.add_gwt_facet(config, :settings => {
-    :compilerMaxHeapSize => '1024',
-    :compilerParameters => '-draftCompile -localWorkers 2 -strict'
+      :compilerMaxHeapSize => '1024',
+      :compilerParameters => '-draftCompile -localWorkers 2 -strict'
   }, :gwt_dev_artifact => :gwt_dev)
 end
