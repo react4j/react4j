@@ -5,6 +5,7 @@
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.28.0`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.177`.
 * Upgrade the jsinterop library to use the `com.google.jsinterop:jsinterop-annotations:jar:2.0.0` artifact.
+* Upgrade to use GWT version `2.9.0`.
 
 ### [v0.155](https://github.com/react4j/react4j/tree/v0.155) (2020-05-11) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.154...v0.155) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.154&new=0.155)
 
