@@ -38,16 +38,11 @@ complete as there is too much un-said.
 
 * Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
-* Figure out a way to define dom factories in java that are optimized away in production such that
-  `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))`
-  compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
-  Maybe judicious use of `@ForceInline`? `.children` or `.build` closing the element. Perhaps these
-  element factories can be built by looking at html spec and auto-generating? The props classes should also be
-  converted into `JsPropertyMap<Object>` instances so that the externs for react.js need not include all the props
-  that can not be minimized under J2CL.
-  - https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts
-  - https://www.w3schools.com/tags/ref_standardattributes.asp
-  - Consider typed refs that bind to underlying Elemental2 element.
+* Consider generating dom factories such that `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))` compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
+
+* Generate the DOM factories from WebIDL spec via webtack. The factories should use unchecked cast
+  of `this` to `JsPropertyMap<Object>` so `react.js` doe not need to name all parameter names. The ref
+  callbacks should also be typed to the underlying DOM element.
 
 * Migrate to React 16.5.0 features
   - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
@@ -67,9 +62,9 @@ complete as there is too much un-said.
   - https://popmotion.io/pose/
   - Source transition components from VueJS. See https://www.udemy.com/vuejs-2-the-complete-guide for good example
 
-* In base class have configuration that warns on re-renders that produced duplicate values.
-
-* build in https://github.com/maicki/why-did-you-update or alternatively https://github.com/welldone-software/why-did-you-render
+* In base class have configuration that warns on re-renders that produced duplicate values through something
+  like [why-did-you-update](https://github.com/maicki/why-did-you-update) or
+  [why-did-you-render](https://github.com/welldone-software/why-did-you-render)
 
 * Add some way to define effects which is just method called after render that returns a disposable to stop action.
   Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
@@ -108,7 +103,7 @@ complete as there is too much un-said.
 * Or most excellent image from https://medium.freecodecamp.org/why-react16-is-a-blessing-to-react-developers-31433bfc210a
 
 * Prepare a screencast for React4j+Arez.
-  - Probably use ScreenFLow software https://www.telestream.net/screenflow/
+  - Probably use ScreenFlow software https://www.telestream.net/screenflow/
   - Possibly with custom scripting - see https://wickstrom.tech/programming/2018/10/26/writing-a-screencast-video-editor-in-haskell.html
   - See egghead training videos as well.
   - https://www.youtube.com/playlist?list=PLV5CVI1eNcJhc9Lxu83Zp4uyqP2yKV4xl&app=desktop
