@@ -1022,17 +1022,10 @@ public final class React4jProcessor
       case "DISABLE":
         return false;
       default:
-        if ( AnnotationsUtil.hasAnnotationOfType( element, Constants.REPOSITORY_ANNOTATION_CLASSNAME ) )
-        {
-          return true;
-        }
-        else
-        {
-          return getMethods( element )
-            .stream()
-            .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_ANNOTATION_CLASSNAME ) ||
-                            AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_REF_ANNOTATION_CLASSNAME ) );
-        }
+        return getMethods( element )
+          .stream()
+          .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_ANNOTATION_CLASSNAME ) ||
+                          AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_REF_ANNOTATION_CLASSNAME ) );
     }
   }
 

@@ -135,7 +135,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.GenericTypePropModel" },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentWhereIdFromComponentId" },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentWhereIdFromComponentIdRef" },
-        new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentWhereIdFromRepository" },
         new Object[]{ "com.example.prop.ImmutablePropTypeBoxedBoolean" },
         new Object[]{ "com.example.prop.ImmutablePropTypeBoxedByte" },
         new Object[]{ "com.example.prop.ImmutablePropTypeBoxedCharacter" },

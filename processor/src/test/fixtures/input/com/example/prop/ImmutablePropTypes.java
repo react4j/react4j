@@ -2,7 +2,7 @@ package com.example.prop;
 
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
-import arez.annotations.Repository;
+import arez.annotations.ComponentId;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.Component;
@@ -15,13 +15,18 @@ import react4j.annotations.ReactComponent;
 abstract class ImmutablePropTypes
   extends Component
 {
-  @Repository
   @ArezComponent
   static abstract class MyComponent
   {
     @Action
     void myAction()
     {
+    }
+
+    @ComponentId
+    final int getId()
+    {
+      return 0;
     }
   }
 

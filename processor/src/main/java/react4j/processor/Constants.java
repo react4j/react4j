@@ -39,8 +39,6 @@ final class Constants
   @Nonnull
   static final String AREZ_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ArezComponent";
   @Nonnull
-  static final String REPOSITORY_ANNOTATION_CLASSNAME = "arez.annotations.Repository";
-  @Nonnull
   static final String COMPONENT_ID_ANNOTATION_CLASSNAME = "arez.annotations.ComponentId";
   @Nonnull
   static final String COMPONENT_ID_REF_ANNOTATION_CLASSNAME = "arez.annotations.ComponentIdRef";
