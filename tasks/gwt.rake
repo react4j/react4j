@@ -75,8 +75,9 @@ CONTENT
 
   project.package(:jar).tap do |j|
     extra_deps.each do |dep|
-      j.enhance([dep])
-      j.include("#{dep}/*")
+      j.enhance([dep]) do |j2|
+        j2.include("#{dep}/*")
+      end
     end
     assets.each do |path|
       j.include("#{path}/*")
