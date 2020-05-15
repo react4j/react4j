@@ -52,29 +52,15 @@ define 'react4j' do
 
   desc 'React4j core binding'
   define 'core' do
-    pom.include_transitive_dependencies << artifact(:javax_annotation)
-    pom.include_transitive_dependencies << artifact(:jetbrains_annotations)
-    pom.include_transitive_dependencies << artifact(:grim_annotations)
-    pom.include_transitive_dependencies << artifact(:elemental2_promise)
-    pom.include_transitive_dependencies << artifact(:elemental2_core)
-    pom.include_transitive_dependencies << artifact(:arez_core)
-    pom.include_transitive_dependencies << artifact(:braincheck)
-    pom.dependency_filter = Proc.new { |dep| dep[:group].to_s != 'org.realityforge.com.google.gwt' && dep[:group].to_s != 'com.google.jsinterop' && dep[:scope].to_s != 'test' && (dep[:group].to_s != 'org.realityforge.arez' || dep[:id].to_s == 'arez-core') && (dep[:group].to_s != 'org.realityforge.com.google.elemental2' || %w(elemental2-promise elemental2-core).include?(dep[:id].to_s)) && dep[:group].to_s != 'org.realityforge.org.jetbrains.annotations' && dep[:scope].to_s != 'test' }
+    deps = artifacts(:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrains_annotations, :braincheck, :grim_annotations, :elemental2_promise, :elemental2_core, :arez_core)
+    pom.include_transitive_dependencies << deps
+    pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 
     project.processorpath << artifacts(:grim_processor, :javax_json)
 
     js_assets(project, :core)
 
-    compile.with :javax_annotation,
-                 :elemental2_core,
-                 :elemental2_promise,
-                 :jsinterop_base,
-                 :jsinterop_annotations,
-                 :braincheck,
-                 :grim_annotations,
-                 :arez_core,
-                 :gwt_user,
-                 :jetbrains_annotations
+    compile.with deps
 
     gwt_enhance(project)
 
@@ -93,18 +79,16 @@ define 'react4j' do
 
   desc 'React4j DOM binding'
   define 'dom' do
-    pom.include_transitive_dependencies << project('core').package(:jar)
-    pom.include_transitive_dependencies << artifact(:elemental2_dom)
-    pom.dependency_filter = Proc.new { |dep| !project('core').compile.dependencies.include?(dep[:artifact]) && dep[:id].to_s != 'elemental2-promise' && dep[:scope].to_s != 'test' }
+    deps = [project('core').package(:jar)] + artifacts(:elemental2_dom)
+    pom.include_transitive_dependencies << deps
+    pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 
     project.processorpath << artifacts(:grim_processor, :javax_json)
 
     js_assets(project, :dom)
 
-    compile.with project('core').package(:jar),
-                 project('core').compile.dependencies,
-                 :elemental2_dom,
-                 :elemental2_promise
+    compile.with deps,
+                 project('core').compile.dependencies
 
     generate_factory_source(project)
     gwt_enhance(project)
