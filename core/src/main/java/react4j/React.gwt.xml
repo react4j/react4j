@@ -1,5 +1,4 @@
 <module>
-  <inherits name='jsinterop.annotations.Annotations'/>
   <inherits name='elemental2.core.Core'/>
   <inherits name='arez.component.Component'/>
 
