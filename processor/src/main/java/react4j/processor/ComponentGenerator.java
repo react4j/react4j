@@ -794,7 +794,7 @@ final class ComponentGenerator
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "populateDebugData" )
       .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PROTECTED )
+      .addModifiers( Modifier.PROTECTED )
       .addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "data", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
@@ -813,8 +813,7 @@ final class ComponentGenerator
   {
     assert descriptor.trackRender();
     final MethodSpec.Builder method = MethodSpec
-      .methodBuilder( "onRenderDepsChange" )
-      .addModifiers( Modifier.FINAL );
+      .methodBuilder( "onRenderDepsChange" );
 
     final CodeBlock.Builder outer = CodeBlock.builder();
     outer.beginControlFlow( "if ( $T.IDLE == $N )", COMPONENT_STATE_CLASSNAME, COMPONENT_STATE_FIELD );

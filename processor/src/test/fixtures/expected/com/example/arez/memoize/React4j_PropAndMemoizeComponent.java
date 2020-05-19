@@ -127,7 +127,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
     return result;
   }
 
-  final void onRenderDepsChange() {
+  void onRenderDepsChange() {
     if ( ComponentState.IDLE == $$react4j$$_state ) {
       $$react4j$$_state = ComponentState.SCHEDULED;
       scheduleRender( false );
@@ -139,7 +139,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
   abstract Observer getRenderObserver();
 
   @Override
-  protected final void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
+  protected void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
     if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
       IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
     }

@@ -119,7 +119,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
     return result;
   }
 
-  final void onRenderDepsChange() {
+  void onRenderDepsChange() {
     if ( ComponentState.IDLE == $$react4j$$_state ) {
       $$react4j$$_state = ComponentState.SCHEDULED;
       scheduleRender();
@@ -131,7 +131,7 @@ abstract class React4j_ComponentShouldUpdateOnChangeProp extends ComponentShould
   abstract Observer getRenderObserver();
 
   @Override
-  protected final void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
+  protected void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
     if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
       IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
     }
