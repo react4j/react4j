@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -60,6 +61,8 @@ public final class React4jProcessor
   private static final Pattern LAST_PROP_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
   private static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
   private static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
+  private static final Pattern GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)$" );
+  private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
   @Nonnull
   private final DeferredElementSet _deferredTypes = new DeferredElementSet();
 
@@ -623,7 +626,7 @@ public final class React4jProcessor
 
     if ( isSentinelName( name ) )
     {
-      final String deriveName = ProcessorUtil.deriveName( element, VALIDATE_PROP_PATTERN, name, SENTINEL_NAME );
+      final String deriveName = deriveName( element, VALIDATE_PROP_PATTERN, name, SENTINEL_NAME );
       if ( null == deriveName )
       {
         throw new ProcessorException( "@PropValidate target has not specified name nor is it named according " +
@@ -724,7 +727,7 @@ public final class React4jProcessor
     {
       if ( element instanceof ExecutableElement )
       {
-        final String deriveName = ProcessorUtil.deriveName( element, DEFAULT_GETTER_PATTERN, name, SENTINEL_NAME );
+        final String deriveName = deriveName( element, DEFAULT_GETTER_PATTERN, name, SENTINEL_NAME );
         if ( null == deriveName )
         {
           throw new ProcessorException( "@PropDefault target has not specified name nor is it named according " +
@@ -1036,7 +1039,7 @@ public final class React4jProcessor
     final String specifiedName =
       (String) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "name" ).getValue();
 
-    final String name = ProcessorUtil.getPropertyAccessorName( method, specifiedName, SENTINEL_NAME );
+    final String name = getPropertyAccessorName( method, specifiedName );
     if ( !SourceVersion.isIdentifier( name ) )
     {
       throw new ProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
@@ -1400,5 +1403,53 @@ public final class React4jProcessor
   private boolean isSentinelName( @Nonnull final String name )
   {
     return SENTINEL_NAME.equals( name );
+  }
+
+  @Nonnull
+  private String getPropertyAccessorName( @Nonnull final ExecutableElement method,
+                                          @Nonnull final String specifiedName )
+    throws ProcessorException
+  {
+    String name = deriveName( method, GETTER_PATTERN, specifiedName, React4jProcessor.SENTINEL_NAME );
+    if ( null != name )
+    {
+      return name;
+    }
+    else if ( method.getReturnType().getKind() == TypeKind.BOOLEAN )
+    {
+      name = deriveName( method, ISSER_PATTERN, specifiedName, React4jProcessor.SENTINEL_NAME );
+      if ( null != name )
+      {
+        return name;
+      }
+    }
+    return method.getSimpleName().toString();
+  }
+
+  @Nullable
+  private String deriveName( @Nonnull final Element method,
+                             @Nonnull final Pattern pattern,
+                             @Nonnull final String name,
+                             @Nonnull final String sentinelName )
+    throws ProcessorException
+  {
+    if ( sentinelName.equals( name ) )
+    {
+      final String methodName = method.getSimpleName().toString();
+      final Matcher matcher = pattern.matcher( methodName );
+      if ( matcher.find() )
+      {
+        final String candidate = matcher.group( 1 );
+        return Character.toLowerCase( candidate.charAt( 0 ) ) + candidate.substring( 1 );
+      }
+      else
+      {
+        return null;
+      }
+    }
+    else
+    {
+      return name;
+    }
   }
 }
