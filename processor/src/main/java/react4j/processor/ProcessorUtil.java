@@ -73,6 +73,7 @@ final class ProcessorUtil
     }
   }
 
+  //TODO: Move method to proton
   @Nullable
   static ExecutableElement getOverriddenMethod( @Nonnull final ProcessingEnvironment processingEnv,
                                                 @Nonnull final TypeElement typeElement,
