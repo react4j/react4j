@@ -288,7 +288,7 @@ public final class React4jProcessor
   private boolean isMethodAProtectedOverride( @Nonnull final TypeElement typeElement,
                                               @Nonnull final ExecutableElement method )
   {
-    final ExecutableElement overriddenMethod = ProcessorUtil.getOverridenMethod( processingEnv, typeElement, method );
+    final ExecutableElement overriddenMethod = ProcessorUtil.getOverriddenMethod( processingEnv, typeElement, method );
     return null != overriddenMethod && overriddenMethod.getModifiers().contains( Modifier.PROTECTED );
   }
 

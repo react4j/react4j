@@ -74,9 +74,9 @@ final class ProcessorUtil
   }
 
   @Nullable
-  static ExecutableElement getOverridenMethod( @Nonnull final ProcessingEnvironment processingEnv,
-                                               @Nonnull final TypeElement typeElement,
-                                               @Nonnull final ExecutableElement method )
+  static ExecutableElement getOverriddenMethod( @Nonnull final ProcessingEnvironment processingEnv,
+                                                @Nonnull final TypeElement typeElement,
+                                                @Nonnull final ExecutableElement method )
   {
     final TypeMirror superclass = typeElement.getSuperclass();
     if ( TypeKind.NONE == superclass.getKind() )
