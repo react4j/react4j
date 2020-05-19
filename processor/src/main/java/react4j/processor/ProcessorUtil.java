@@ -95,7 +95,7 @@ final class ProcessorUtil
           return (ExecutableElement) enclosedElement;
         }
       }
-      return null;
+      return getOverriddenMethod( processingEnv, typeElement, method );
     }
   }
 }
