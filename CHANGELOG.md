@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Upgrade the `org.realityforge.proton` artifacts to version `0.47`.
+* Upgrade the `org.realityforge.proton` artifacts to version `0.48`.
 * Fixed a bug where a warning was generated if a protected method was declared that was an override of a protected method in a super class that was not the direct superclass.
 
 ### [v0.156](https://github.com/react4j/react4j/tree/v0.156) (2020-05-15) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.155...v0.156)
