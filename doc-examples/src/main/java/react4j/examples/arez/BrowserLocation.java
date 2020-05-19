@@ -65,14 +65,14 @@ public abstract class BrowserLocation
   }
 
   @PostConstruct
-  final void postConstruct()
+  void postConstruct()
   {
     DomGlobal.window.addEventListener( "hashchange", _listener, false );
     _targetLocation = _browserLocation = _location = getHash();
   }
 
   @PreDispose
-  final void preDispose()
+  void preDispose()
   {
     DomGlobal.window.removeEventListener( "hashchange", _listener, false );
   }
