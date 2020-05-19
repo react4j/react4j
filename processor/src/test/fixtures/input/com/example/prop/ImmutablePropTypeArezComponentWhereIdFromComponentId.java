@@ -17,7 +17,7 @@ abstract class ImmutablePropTypeArezComponentWhereIdFromComponentId
   static abstract class MyComponent
   {
     @ComponentId
-    final int componentId()
+    int componentId()
     {
       return 0;
     }

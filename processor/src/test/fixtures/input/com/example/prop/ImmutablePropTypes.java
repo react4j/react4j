@@ -24,7 +24,7 @@ abstract class ImmutablePropTypes
     }
 
     @ComponentId
-    final int getId()
+    int getId()
     {
       return 0;
     }
