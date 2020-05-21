@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.arez.testng` artifact to version `0.11`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.179`.
 * Upgrade the `org.realityforge.proton` artifacts to version `0.50`.
 
