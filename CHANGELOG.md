@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.158](https://github.com/react4j/react4j/tree/v0.158) (2020-05-27) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.157...v0.158) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.157&new=0.158)
+
+The release includes 1 potentially breaking API change.
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.arez.testng` artifact to version `0.12`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.180`.
