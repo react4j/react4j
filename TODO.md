@@ -94,8 +94,6 @@ complete as there is too much un-said.
 
 #### Documentation
 
-* Add graph reflecting size of TodoMVC over time
-
 * Reorganize documentation using the following sites as inspiration.
   - Reason React - https://reasonml.github.io/reason-react/
   - VueGWT - https://axellience.github.io/vue-gwt/introduction/
