@@ -40,8 +40,6 @@ complete as there is too much un-said.
 
 * Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
-* Consider generating dom factories such that `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))` compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
-
 * Migrate to React 16.5.0 features
   - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
   - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
