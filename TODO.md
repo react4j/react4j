@@ -61,13 +61,6 @@ complete as there is too much un-said.
   this lower down in the react stack.
 - EventHandlers should probably start profiler "interactions" by default with the ability to disable
 
-* Animation/Transition capabilities are getting more urgent.
-  - https://react-simple-animate.now.sh/ (Seems like the best easy option)
-  - https://www.npmjs.com/package/@nearform/react-animation
-  - https://github.com/reactjs/react-transition-group/blob/master/src/Transition.js
-  - https://popmotion.io/pose/
-  - Source transition components from VueJS. See https://www.udemy.com/vuejs-2-the-complete-guide for good example
-
 * In base class have configuration that warns on re-renders that produced duplicate values through something
   like [why-did-you-update](https://github.com/maicki/why-did-you-update) or
   [why-did-you-render](https://github.com/welldone-software/why-did-you-render)
