@@ -1,0 +1,18 @@
+[
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.ReactNode react4j.Context<T>::provide(T, react4j.ReactNode[])",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context",
+      "classSimpleName": "Context",
+      "elementKind": "method",
+      "methodName": "provide",
+      "package": "react4j"
+    }
+  }
+]
