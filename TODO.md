@@ -31,10 +31,6 @@ complete as there is too much un-said.
 * The message that indicates prop does not match immutable constraints should say exactly why. (i.e. Is not
   primitive, Arez component nor implements Keyed or if an ArezComponent indicate it needs a requireId=ENABLE etc)
 
-* Implement react-cache and update react4j-drumloop
-  It should be noted that when the `react-cache` instances throws a `Promise` it must be the same
-  instance for the same entry. Suspense uses the promise as a key into maps to dedupe listeners etc.
-
 * Add additional `@ReacComponent.type` value `STATELESS` that would result in render being inlined into caller
   without a component in production mode. Component must have no fields, arez elements and no lifecycle methods.
   The `shouldComponentUpdate()` is skipped for this scenario.
