@@ -35,9 +35,6 @@ complete as there is too much un-said.
   without a component in production mode. Component must have no fields, arez elements and no lifecycle methods.
   The `shouldComponentUpdate()` is skipped for this scenario.
 
-* Reactor the way the `dom` library creates host `ReactElement` instances to avoid copying props and adding
-  special handling for `ref`, `key` and `children` and instead creating elements directly.
-
 * Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
 * Migrate to React 16.5.0 features
