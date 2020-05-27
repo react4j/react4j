@@ -42,10 +42,6 @@ complete as there is too much un-said.
 
 * Consider generating dom factories such that `DOM.h1().className('foo').tabIndex(3).children("Hello",DOM.span().className('red').children('World'))` compiles to `React.createElement('h1', {className: 'foo', tabIndex:3},["Hello",React.createElement('span',{className: 'red'},['World'])])`
 
-* Generate the DOM factories from WebIDL spec via webtack. The factories should use unchecked cast
-  of `this` to `JsPropertyMap<Object>` so `react.js` doe not need to name all parameter names. The ref
-  callbacks should also be typed to the underlying DOM element.
-
 * Migrate to React 16.5.0 features
   - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
   - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
