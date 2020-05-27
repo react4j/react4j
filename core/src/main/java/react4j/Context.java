@@ -33,6 +33,20 @@ public class Context<T>
   }
 
   /**
+   * Create a provider component that provides specified value to specified children.
+   *
+   * @param value    the value to provider to children.
+   * @param children the child elements.
+   * @return the element.
+   */
+  @JsOverlay
+  @Nonnull
+  public final ReactNode provide( @Nullable final T value, final ReactNode... children )
+  {
+    return provider().value( value ).children( children );
+  }
+
+  /**
    * Create a builder for the Consumer component.
    *
    * @return a builder for the Consumer component.

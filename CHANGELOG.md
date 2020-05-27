@@ -5,6 +5,7 @@
 * Upgrade the `org.realityforge.arez.testng` artifact to version `0.12`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.180`.
 * Upgrade the `org.realityforge.proton` artifacts to version `0.50`.
+* Add a `Context.provide(value, children)` helper method that builds the provider component to provide value to children.
 
 ### [v0.157](https://github.com/react4j/react4j/tree/v0.157) (2020-05-19) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.156...v0.157)
 
