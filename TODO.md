@@ -69,9 +69,3 @@ complete as there is too much un-said.
 
 * Incorporate many of the ideas of Litho. Inadvertently we seem to have created something that looks similar with
   slight differences. Probably because both libraries try to use idiomatic java patterns with a react-like engine.
-
-* Prepare a screencast for React4j+Arez.
-  - Probably use ScreenFlow software https://www.telestream.net/screenflow/
-  - Possibly with custom scripting - see https://wickstrom.tech/programming/2018/10/26/writing-a-screencast-video-editor-in-haskell.html
-  - See egghead training videos as well.
-  - https://www.youtube.com/playlist?list=PLV5CVI1eNcJhc9Lxu83Zp4uyqP2yKV4xl&app=desktop
