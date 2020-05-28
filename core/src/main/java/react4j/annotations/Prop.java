@@ -62,6 +62,9 @@ public @interface Prop
 
   /**
    * The setting controlling where the prop value is source from.
+   * If the source is set to {@link Source#CONTEXT} then the prop is sometimes described as a "TreeProp"
+   * as it is transparently passed from a parent component to all child components. A "TreeProp" does not
+   * have to be specified by the user when creating the component.
    *
    * @return the setting controlling where the prop value is source from.
    */
