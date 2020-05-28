@@ -22,10 +22,6 @@ complete as there is too much un-said.
 
 * Rename `ReactComponent` to `React4jComponent`
 
-* Consider eliminating the need to extend `react4j.Component` as can probably get away with just defining render
-  method these days??? Marked via interface and/or annotation? We may also need a way for the component to force
-  itself to render. Probably exposed via another annotation.
-
 ### Enhancements
 
 * The message that indicates prop does not match immutable constraints should say exactly why. (i.e. Is not
