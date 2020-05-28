@@ -37,12 +37,6 @@ complete as there is too much un-said.
 
 * Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
 
-* Migrate to React 16.5.0 features
-  - https://github.com/facebook/react/blob/master/CHANGELOG.md#1650-september-5-2018
-  - Consider generating "Interaction tracking with React" - https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16
-  - Consider adding `react-dom/profiling` "production" javascript profiler - may need to wait for umd variant of
-    production js produced. - https://github.com/facebook/react/issues/13634
-
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
   schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
   this lower down in the react stack.
