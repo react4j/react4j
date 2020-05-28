@@ -61,5 +61,3 @@ complete as there is too much un-said.
   push it outside the commit phase of react rendering and have it run later
 
 * Collections returned from props should be made immutable.
-
-* Integrate [React.warn](https://github.com/facebook/react/pull/15170) when it ships.
