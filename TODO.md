@@ -20,8 +20,6 @@ complete as there is too much un-said.
 
 * Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props
 
-* Rename `ReactComponent` to `React4jComponent`
-
 ### Enhancements
 
 * The message that indicates prop does not match immutable constraints should say exactly why. (i.e. Is not
