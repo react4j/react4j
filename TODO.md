@@ -67,19 +67,8 @@ complete as there is too much un-said.
 
 * Integrate [React.warn](https://github.com/facebook/react/pull/15170) when it ships.
 
-#### Documentation
-
-* Reorganize documentation using the following sites as inspiration.
-  - Reason React - https://reasonml.github.io/reason-react/
-  - VueGWT - https://axellience.github.io/vue-gwt/introduction/
-  - https://fblitho.com/
-
 * Incorporate many of the ideas of Litho. Inadvertently we seem to have created something that looks similar with
   slight differences. Probably because both libraries try to use idiomatic java patterns with a react-like engine.
-
-* Add lifecycle image from https://twitter.com/dan_abramov/status/981712092611989509 and credit author
-
-* Or most excellent image from https://medium.freecodecamp.org/why-react16-is-a-blessing-to-react-developers-31433bfc210a
 
 * Prepare a screencast for React4j+Arez.
   - Probably use ScreenFlow software https://www.telestream.net/screenflow/
