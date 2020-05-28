@@ -35,8 +35,6 @@ complete as there is too much un-said.
   without a component in production mode. Component must have no fields, arez elements and no lifecycle methods.
   The `shouldComponentUpdate()` is skipped for this scenario.
 
-* Figure out a way to get the *Builders eliminated. May need a closure-compiler pass.
-
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
   schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
   this lower down in the react stack.
