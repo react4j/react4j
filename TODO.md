@@ -66,6 +66,3 @@ complete as there is too much un-said.
   - The DevTools could be updated to present Arez debug data in nested block.
 
 * Integrate [React.warn](https://github.com/facebook/react/pull/15170) when it ships.
-
-* Incorporate many of the ideas of Litho. Inadvertently we seem to have created something that looks similar with
-  slight differences. Probably because both libraries try to use idiomatic java patterns with a react-like engine.
