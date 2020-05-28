@@ -62,7 +62,4 @@ complete as there is too much un-said.
 
 * Collections returned from props should be made immutable.
 
-* Consider replacing the "backend" of the component model with hooks. The advantages are:
-  - The DevTools could be updated to present Arez debug data in nested block.
-
 * Integrate [React.warn](https://github.com/facebook/react/pull/15170) when it ships.
