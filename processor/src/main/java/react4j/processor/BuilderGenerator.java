@@ -36,6 +36,7 @@ final class BuilderGenerator
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
   private static final ClassName CONTEXT_CLASSNAME = ClassName.get( "react4j", "Context" );
   private static final ClassName CONTEXTS_CLASSNAME = ClassName.get( "react4j", "Contexts" );
+  private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
   private static final ClassName KEYED_CLASSNAME = ClassName.get( "react4j", "Keyed" );
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
@@ -314,36 +315,34 @@ final class BuilderGenerator
       final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
       if ( ImmutablePropKeyStrategy.KEYED == strategy )
       {
-        method.addStatement( "_element.setKey( $T.class.getName() + $T.getKey( $N ) )",
-                             descriptor.getClassName(),
+        method.addStatement( "_element.setKey( $T.getKey( $N ) + " +
+                             "( $T.enableComponentNames() ? $S : $T.class.getName() ) )",
                              KEYED_CLASSNAME,
-                             stepMethod.getName() );
+                             stepMethod.getName(),
+                             REACT_CLASSNAME,
+                             descriptor.keySuffix(),
+                             descriptor.getClassName() );
       }
-      else if ( ImmutablePropKeyStrategy.IS_STRING == strategy )
+      else if ( ImmutablePropKeyStrategy.IS_STRING == strategy ||
+                ImmutablePropKeyStrategy.TO_STRING == strategy ||
+                ImmutablePropKeyStrategy.ENUM == strategy )
       {
-        method.addStatement( "_element.setKey( $T.class.getName() + $N )",
-                             descriptor.getClassName(),
-                             stepMethod.getName() );
-      }
-      else if ( ImmutablePropKeyStrategy.TO_STRING == strategy )
-      {
-        method.addStatement( "_element.setKey( $T.class.getName() + $N )",
-                             descriptor.getClassName(),
-                             stepMethod.getName() );
-      }
-      else if ( ImmutablePropKeyStrategy.ENUM == strategy )
-      {
-        method.addStatement( "_element.setKey( $T.class.getName() + $N.name() )",
-                             descriptor.getClassName(),
-                             stepMethod.getName() );
+        method.addStatement( "_element.setKey( $N + ( $T.enableComponentNames() ? $S : $T.class.getName() ) )",
+                             stepMethod.getName(),
+                             REACT_CLASSNAME,
+                             descriptor.keySuffix(),
+                             descriptor.getClassName() );
       }
       else
       {
         assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
-        method.addStatement( "_element.setKey( $T.class.getName() + $T.<Object>getArezId( $N ) )",
-                             descriptor.getClassName(),
+        method.addStatement( "_element.setKey( $T.<Object>getArezId( $N ) + " +
+                             "( $T.enableComponentNames() ? $S : $T.class.getName() ) )",
                              IDENTIFIABLE_CLASSNAME,
-                             stepMethod.getName() );
+                             stepMethod.getName(),
+                             REACT_CLASSNAME,
+                             descriptor.keySuffix(),
+                             descriptor.getClassName() );
       }
     }
 
@@ -496,9 +495,11 @@ final class BuilderGenerator
       method.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName );
 
       final StringBuilder sb = new StringBuilder();
-      sb.append( "$N.setKey( $T.class.getName()" );
+      sb.append( "$N.setKey( ( $T.enableComponentNames() ? $S : $T.class.getName() )" );
       final List<Object> params = new ArrayList<>();
       params.add( elementName );
+      params.add( REACT_CLASSNAME );
+      params.add( descriptor.keySuffix() );
       params.add( descriptor.getClassName() );
       for ( final PropDescriptor prop : syntheticProps )
       {

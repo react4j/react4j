@@ -3,6 +3,8 @@ package react4j.processor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -73,6 +75,12 @@ final class ComponentDescriptor
     _sting = sting;
     _hasPostConstruct = hasPostConstruct;
     _shouldSetDefaultPriority = shouldSetDefaultPriority;
+  }
+
+  @Nonnull
+  String keySuffix()
+  {
+    return "_" + _element.getSimpleName() + "_" + shortSha( _element.getQualifiedName().toString() );
   }
 
   @Nonnull
@@ -489,5 +497,26 @@ final class ComponentDescriptor
   private boolean isDeprecated( @Nullable final Element element )
   {
     return null != element && null != element.getAnnotation( Deprecated.class );
+  }
+
+  @Nonnull
+  private String shortSha( @Nonnull final String text )
+  {
+    try
+    {
+      final MessageDigest algo = MessageDigest.getInstance( "SHA-1" );
+      final byte[] digest = algo.digest( text.getBytes() );
+      final StringBuilder sb = new StringBuilder();
+      for ( int i = 0; i < 4; i++ )
+      {
+        final byte value = digest[ i ];
+        sb.append( Integer.toString( ( value & 0xff ) + 0x100, 16 ).substring( 1 ) );
+      }
+      return sb.toString();
+    }
+    catch ( final NoSuchAlgorithmException e )
+    {
+      throw new IllegalStateException( e );
+    }
   }
 }

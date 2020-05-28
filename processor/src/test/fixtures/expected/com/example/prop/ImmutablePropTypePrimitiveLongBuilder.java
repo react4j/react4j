@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -31,7 +32,7 @@ final class ImmutablePropTypePrimitiveLongBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final long myProp) {
-      _element.setKey( ImmutablePropTypePrimitiveLong.class.getName() + myProp );
+      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypePrimitiveLong_ebf73d2b" : ImmutablePropTypePrimitiveLong.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypePrimitiveLong.Props.myProp, myProp );
       return build();
     }

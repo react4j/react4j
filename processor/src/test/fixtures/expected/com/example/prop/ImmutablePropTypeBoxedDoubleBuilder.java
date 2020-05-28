@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -31,7 +32,7 @@ final class ImmutablePropTypeBoxedDoubleBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Double myProp) {
-      _element.setKey( ImmutablePropTypeBoxedDouble.class.getName() + myProp );
+      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeBoxedDouble_7e5f2de1" : ImmutablePropTypeBoxedDouble.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeBoxedDouble.Props.myProp, myProp );
       return build();
     }

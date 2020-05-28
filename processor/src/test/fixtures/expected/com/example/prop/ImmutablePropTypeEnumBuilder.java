@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -31,7 +32,7 @@ final class ImmutablePropTypeEnumBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeEnum.Foo myProp) {
-      _element.setKey( ImmutablePropTypeEnum.class.getName() + myProp.name() );
+      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeEnum_00ba1b5e" : ImmutablePropTypeEnum.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeEnum.Props.myProp, myProp );
       return build();
     }

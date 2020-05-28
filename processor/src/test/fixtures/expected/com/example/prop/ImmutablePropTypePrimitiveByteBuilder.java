@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -31,7 +32,7 @@ final class ImmutablePropTypePrimitiveByteBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final byte myProp) {
-      _element.setKey( ImmutablePropTypePrimitiveByte.class.getName() + myProp );
+      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypePrimitiveByte_90aa81dc" : ImmutablePropTypePrimitiveByte.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypePrimitiveByte.Props.myProp, myProp );
       return build();
     }

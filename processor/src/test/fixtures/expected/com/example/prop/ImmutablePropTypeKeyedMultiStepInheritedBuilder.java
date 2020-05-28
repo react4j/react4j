@@ -3,6 +3,7 @@ package com.example.prop;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import react4j.Keyed;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -33,7 +34,7 @@ final class ImmutablePropTypeKeyedMultiStepInheritedBuilder {
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp) {
-      _element.setKey( ImmutablePropTypeKeyedMultiStepInherited.class.getName() + Keyed.getKey( myProp ) );
+      _element.setKey( Keyed.getKey( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeKeyedMultiStepInherited_7d3cf3a5" : ImmutablePropTypeKeyedMultiStepInherited.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeKeyedMultiStepInherited.Props.myProp, myProp );
       return build();
     }

@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -31,7 +32,7 @@ final class ImmutablePropTypeBoxedShortBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Short myProp) {
-      _element.setKey( ImmutablePropTypeBoxedShort.class.getName() + myProp );
+      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeBoxedShort_9954b60a" : ImmutablePropTypeBoxedShort.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeBoxedShort.Props.myProp, myProp );
       return build();
     }

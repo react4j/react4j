@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Use a shorter synthetic key when component names are enabled that consists of the simple class name of the react component and a hash of the fully qualified classname. The synthetic part of the key has been changed to a suffix rather than a prefix. This makes it much easier to inspect the keys of react components in modern react dev tools that no longer show keys as part of properties pane but as a shortened value in component tree panel.
+
 ### [v0.158](https://github.com/react4j/react4j/tree/v0.158) (2020-05-27) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.157...v0.158) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.157&new=0.158)
 
 The release includes 1 potentially breaking API change.

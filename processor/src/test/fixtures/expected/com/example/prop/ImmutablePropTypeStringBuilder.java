@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -31,7 +32,7 @@ final class ImmutablePropTypeStringBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.setKey( ImmutablePropTypeString.class.getName() + myProp );
+      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeString_e57e44c1" : ImmutablePropTypeString.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeString.Props.myProp, myProp );
       return build();
     }

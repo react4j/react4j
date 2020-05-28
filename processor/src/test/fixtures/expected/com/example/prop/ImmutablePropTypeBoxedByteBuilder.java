@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -31,7 +32,7 @@ final class ImmutablePropTypeBoxedByteBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Byte myProp) {
-      _element.setKey( ImmutablePropTypeBoxedByte.class.getName() + myProp );
+      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeBoxedByte_72d659be" : ImmutablePropTypeBoxedByte.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeBoxedByte.Props.myProp, myProp );
       return build();
     }

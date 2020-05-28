@@ -3,6 +3,7 @@ package com.example.prop;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import react4j.Keyed;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -33,7 +34,7 @@ final class ImmutablePropTypeActAsComponentAndKeyedBuilder {
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeActAsComponentAndKeyed.MyComponent myProp) {
-      _element.setKey( ImmutablePropTypeActAsComponentAndKeyed.class.getName() + Keyed.getKey( myProp ) );
+      _element.setKey( Keyed.getKey( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeActAsComponentAndKeyed_fae2f037" : ImmutablePropTypeActAsComponentAndKeyed.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeActAsComponentAndKeyed.Props.myProp, myProp );
       return build();
     }

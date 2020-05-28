@@ -3,6 +3,7 @@ package com.example.prop;
 import arez.component.Identifiable;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -33,7 +34,7 @@ final class ImmutablePropTypeActAsComponentInterfaceBuilder {
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeActAsComponentInterface.MyComponent myProp) {
-      _element.setKey( ImmutablePropTypeActAsComponentInterface.class.getName() + Identifiable.<Object>getArezId( myProp ) );
+      _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeActAsComponentInterface_56c176ed" : ImmutablePropTypeActAsComponentInterface.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeActAsComponentInterface.Props.myProp, myProp );
       return build();
     }
