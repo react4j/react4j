@@ -35,13 +35,11 @@ final class Constants
   @Nonnull
   static final String PRE_UPDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PreUpdate";
   @Nonnull
+  static final String IDENTIFIABLE_CLASSNAME = "arez.component.Identifiable";
+  @Nonnull
   static final String ACT_AS_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ActAsComponent";
   @Nonnull
   static final String AREZ_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ArezComponent";
-  @Nonnull
-  static final String COMPONENT_ID_ANNOTATION_CLASSNAME = "arez.annotations.ComponentId";
-  @Nonnull
-  static final String COMPONENT_ID_REF_ANNOTATION_CLASSNAME = "arez.annotations.ComponentIdRef";
   @Nonnull
   static final String OBSERVE_ANNOTATION_CLASSNAME = "arez.annotations.Observe";
   @Nonnull

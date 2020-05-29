@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import javax.annotation.Generated;
@@ -18,14 +17,14 @@ import react4j.internal.OnShouldComponentUpdate;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "ImmutablePropTypeArezComponentWhereIdFromComponentIdRef",
+    name = "ImmutablePropTypeArezIdentifiable",
     disposeNotifier = Feature.DISABLE,
     allowEmpty = true,
     dagger = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef extends ImmutablePropTypeArezComponentWhereIdFromComponentIdRef {
-  React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef(
+abstract class React4j_ImmutablePropTypeArezIdentifiable extends ImmutablePropTypeArezIdentifiable {
+  React4j_ImmutablePropTypeArezIdentifiable(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );
   }
@@ -34,13 +33,13 @@ abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef e
   private static ComponentConstructorFunction getConstructorFunction() {
     final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
     if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ImmutablePropTypeArezComponentWhereIdFromComponentIdRef" );
+      Js.asPropertyMap( componentConstructor ).set( "displayName", "ImmutablePropTypeArezIdentifiable" );
     }
     return componentConstructor;
   }
 
   @Override
-  ImmutablePropTypeArezComponentWhereIdFromComponentIdRef.MyComponent getMyProp() {
+  ImmutablePropTypeArezIdentifiable.MyComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
     } else {
@@ -55,18 +54,7 @@ abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef e
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef) this).dispose();
-  }
-
-  @Override
-  @Nullable
-  protected ReactNode render() {
-    assert Disposable.isNotDisposed( this );
-    final ImmutablePropTypeArezComponentWhereIdFromComponentIdRef.MyComponent $$react4jv$$_getMyProp = getMyProp();
-    if ( Disposable.isDisposed( $$react4jv$$_getMyProp ) ) {
-      return null;
-    }
-    return super.render();
+    ((Arez_React4j_ImmutablePropTypeArezIdentifiable) this).dispose();
   }
 
   static final class Factory {
@@ -80,12 +68,12 @@ abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef e
 
   private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
     @Nonnull
-    private final React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef $$react4j$$_component;
+    private final React4j_ImmutablePropTypeArezIdentifiable $$react4j$$_component;
 
     @JsConstructor
     LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef( this );
+      $$react4j$$_component = new Arez_React4j_ImmutablePropTypeArezIdentifiable( this );
     }
 
     @Override
@@ -102,12 +90,12 @@ abstract class React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef e
 
   private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef $$react4j$$_component;
+    private final React4j_ImmutablePropTypeArezIdentifiable $$react4j$$_component;
 
     @JsConstructor
     NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ImmutablePropTypeArezComponentWhereIdFromComponentIdRef( this );
+      $$react4j$$_component = new Arez_React4j_ImmutablePropTypeArezIdentifiable( this );
     }
 
     @Override

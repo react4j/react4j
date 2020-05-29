@@ -1,8 +1,7 @@
 package com.example.prop;
 
-import arez.annotations.Action;
-import arez.annotations.ArezComponent;
-import arez.annotations.ComponentIdRef;
+import arez.component.Identifiable;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.ReactNode;
@@ -10,18 +9,17 @@ import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class ImmutablePropTypeArezComponentWhereIdFromComponentIdRef
+abstract class ImmutablePropTypeArezIdentifiable
   extends Component
 {
-  @ArezComponent
   static abstract class MyComponent
+    implements Identifiable<Object>
   {
-    @ComponentIdRef
-    abstract int componentId();
-
-    @Action
-    void myAction()
+    @Nonnull
+    @Override
+    public Object getArezId()
     {
+      return "";
     }
   }
 

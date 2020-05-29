@@ -984,14 +984,13 @@ public final class React4jProcessor
       {
         return ImmutablePropKeyStrategy.KEYED;
       }
-      else if ( ElementKind.CLASS == element.getKind() &&
-                AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) &&
-                isIdRequired( (TypeElement) element ) )
-      {
-        return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
-      }
       else if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
-                AnnotationsUtil.hasAnnotationOfType( element, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME ) )
+                (
+                  isAssignableToIdentifiable( element ) ||
+                  AnnotationsUtil.hasAnnotationOfType( element, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME ) ||
+                  ( AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) &&
+                    isIdRequired( (TypeElement) element ) )
+                ) )
       {
         return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
       }
@@ -1009,6 +1008,13 @@ public final class React4jProcessor
     return processingEnv.getTypeUtils().isAssignable( element.asType(), typeElement.asType() );
   }
 
+  private boolean isAssignableToIdentifiable( @Nonnull final Element element )
+  {
+    final TypeElement typeElement = processingEnv.getElementUtils().getTypeElement( Constants.IDENTIFIABLE_CLASSNAME );
+    final TypeMirror identifiableErasure = processingEnv.getTypeUtils().erasure( typeElement.asType() );
+    return processingEnv.getTypeUtils().isAssignable( element.asType(), identifiableErasure );
+  }
+
   /**
    * The logic from this method has been cloned from Arez.
    * One day we should consider improving Arez so that this is not required somehow?
@@ -1018,18 +1024,7 @@ public final class React4jProcessor
     final VariableElement requireIdParameter = (VariableElement)
       AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME, "requireId" )
         .getValue();
-    switch ( requireIdParameter.getSimpleName().toString() )
-    {
-      case "ENABLE":
-        return true;
-      case "DISABLE":
-        return false;
-      default:
-        return getMethods( element )
-          .stream()
-          .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_ANNOTATION_CLASSNAME ) ||
-                          AnnotationsUtil.hasAnnotationOfType( m, Constants.COMPONENT_ID_REF_ANNOTATION_CLASSNAME ) );
-    }
+    return !"DISABLE".equals( requireIdParameter.getSimpleName().toString() );
   }
 
   @Nonnull

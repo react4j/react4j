@@ -10,7 +10,7 @@ import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
 
 @ReactComponent
-abstract class ImmutablePropTypeArezComponentWhereIdFromComponentId
+abstract class ImmutablePropTypeArezComponentWithExplicitRequireId
   extends Component
 {
   @ArezComponent

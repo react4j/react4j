@@ -1,7 +1,7 @@
 package com.example.prop;
 
-import arez.annotations.Action;
 import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Nullable;
 import react4j.Component;
 import react4j.ReactNode;
@@ -12,13 +12,9 @@ import react4j.annotations.ReactComponent;
 abstract class ImmutablePropTypeArezComponentHasNoId
   extends Component
 {
-  @ArezComponent
+  @ArezComponent( allowEmpty = true, requireId = Feature.DISABLE )
   static abstract class MyComponent
   {
-    @Action
-    void myAction()
-    {
-    }
   }
 
   @Prop( immutable = true )
