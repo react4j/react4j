@@ -28,7 +28,7 @@ module Buildr
           project.compile.enhance([t.name])
           project.file(project._(:generated, 'processors/main/java')).enhance([project.compile])
 
-          project.compile.options.merge!(:other => ['-s', project._(:generated, 'processors/main/java')])
+          project.compile.options[:other] += ['-s', project._(:generated, 'processors/main/java')]
           if project.iml? && project.enable_annotation_processor?
             project.iml.main_generated_source_directories << project._(:generated, 'processors/main/java')
           end
