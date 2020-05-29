@@ -18,8 +18,6 @@ complete as there is too much un-said.
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
 
-* Consider defaulting requireId=ENABLE in Arez to avoid errors with immutable props
-
 ### Enhancements
 
 * The message that indicates prop does not match immutable constraints should say exactly why. (i.e. Is not
