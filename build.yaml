@@ -24,8 +24,8 @@ artifacts:
   elemental2_dom: org.realityforge.com.google.elemental2:elemental2-dom:jar:2.27
   elemental2_promise: org.realityforge.com.google.elemental2:elemental2-promise:jar:2.27
 
-  arez_core: org.realityforge.arez:arez-core:jar:0.180
-  arez_processor: org.realityforge.arez:arez-processor:jar:0.180
+  arez_core: org.realityforge.arez:arez-core:jar:0.181
+  arez_processor: org.realityforge.arez:arez-processor:jar:0.181
 
   arez_testng: org.realityforge.arez.testng:arez-testng:jar:0.12
   mockito: org.mockito:mockito-all:jar:1.10.19
