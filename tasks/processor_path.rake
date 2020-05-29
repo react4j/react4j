@@ -28,6 +28,7 @@ module Buildr
           project.compile.enhance([t.name])
           project.file(project._(:generated, 'processors/main/java')).enhance([project.compile])
 
+          project.compile.options[:other] = [] unless project.compile.options[:other]
           project.compile.options[:other] += ['-s', project._(:generated, 'processors/main/java')]
           if project.iml? && project.enable_annotation_processor?
             project.iml.main_generated_source_directories << project._(:generated, 'processors/main/java')
@@ -42,6 +43,7 @@ module Buildr
           processor_deps = Buildr.artifacts(project.processorpath)
           project.compile.enhance(processor_deps)
           pp = processor_deps.collect { |d| d.to_s }.join(File::PATH_SEPARATOR)
+          project.compile.options[:other] = [] unless project.compile.options[:other]
           project.compile.options[:other] += ['-processorpath', pp]
         end
 
