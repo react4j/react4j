@@ -28,7 +28,6 @@ import react4j.internal.arez.ComponentState;
 import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
 
-@SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
     name = "MaybeTrackingComponent",
     disposeNotifier = Feature.DISABLE,
