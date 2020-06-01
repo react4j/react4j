@@ -128,7 +128,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
   void onRenderDepsChange() {
     if ( ComponentState.IDLE == $$react4j$$_state ) {
       $$react4j$$_state = ComponentState.SCHEDULED;
-      scheduleRender( false );
+      component().setState( JsPropertyMap.of() );
     }
   }
 

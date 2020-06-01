@@ -111,7 +111,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   void onRenderDepsChange() {
     if ( ComponentState.IDLE == $$react4j$$_state ) {
       $$react4j$$_state = ComponentState.SCHEDULED;
-      scheduleRender();
+      component().forceUpdate();
     }
   }
 

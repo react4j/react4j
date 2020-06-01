@@ -19,6 +19,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
@@ -101,7 +102,9 @@ final class ComponentGenerator
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getEnhancedClassName() );
     builder.addTypeVariables( GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
-    GeneratorUtil.copyWhitelistedAnnotations( descriptor.getElement(), builder,
+    final TypeElement typeElement = descriptor.getElement();
+    GeneratorUtil.copyWhitelistedAnnotations( typeElement,
+                                              builder,
                                               Collections.singletonList( Deprecated.class.getName() ) );
 
     builder.superclass( descriptor.getComponentType() );
@@ -132,10 +135,23 @@ final class ComponentGenerator
     builder.addModifiers( Modifier.ABSTRACT );
 
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
-    GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
+    GeneratorUtil.addOriginatingTypes( typeElement, builder );
 
     builder.addMethod( buildConstructor( processingEnv, descriptor ).build() );
 
+    for ( final ScheduleRenderDescriptor element : descriptor.getScheduleRenderDescriptors() )
+    {
+      final MethodSpec.Builder method = GeneratorUtil.overrideMethod( processingEnv, typeElement, element.getMethod() );
+      if ( element.skipShouldComponentUpdate() )
+      {
+        method.addStatement( "component().forceUpdate()" );
+      }
+      else
+      {
+        method.addStatement( "component().setState( $T.of() )", JS_PROPERTY_MAP_CLASSNAME );
+      }
+      builder.addMethod( method.build() );
+    }
     if ( descriptor.trackRender() )
     {
       builder.addField( FieldSpec.builder( TypeName.INT, COMPONENT_STATE_FIELD, Modifier.PRIVATE ).build() );
@@ -825,11 +841,11 @@ final class ComponentGenerator
     outer.addStatement( "$N = $T.SCHEDULED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
     if ( descriptor.hasObservableProps() )
     {
-      outer.addStatement( "scheduleRender( false )" );
+      outer.addStatement( "component().setState( JsPropertyMap.of() )" );
     }
     else
     {
-      outer.addStatement( "scheduleRender()" );
+      outer.addStatement( "component().forceUpdate()" );
     }
     outer.endControlFlow();
     method.addCode( outer.build() );

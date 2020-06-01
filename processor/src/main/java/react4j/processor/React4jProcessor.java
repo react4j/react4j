@@ -258,6 +258,7 @@ public final class React4jProcessor
     determinePostUpdateMethod( typeElement, descriptor );
     determinePostMountMethod( typeElement, descriptor );
     determineOnErrorMethod( typeElement, descriptor );
+    determineScheduleRenderMethods( typeElement, descriptor );
 
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
@@ -1101,6 +1102,33 @@ public final class React4jProcessor
         descriptor.setOnError( method );
       }
     }
+  }
+
+  private void determineScheduleRenderMethods( @Nonnull final TypeElement typeElement,
+                                               @Nonnull final ComponentDescriptor descriptor )
+  {
+    final List<ScheduleRenderDescriptor> scheduleRenderDescriptors = new ArrayList<>();
+    for ( final ExecutableElement method : getMethods( typeElement ) )
+    {
+      final AnnotationMirror annotation =
+        AnnotationsUtil.findAnnotationByType( method, Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME );
+      if ( null != annotation )
+      {
+        MemberChecks.mustBeAbstract( Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustBeSubclassCallable( typeElement,
+                                             Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                             Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME,
+                                             method );
+        MemberChecks.mustNotReturnAnyValue( Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotThrowAnyExceptions( Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME, method );
+
+        final boolean skipShouldComponentUpdate =
+          AnnotationsUtil.getAnnotationValueValue( annotation, "skipShouldComponentUpdate" );
+
+        scheduleRenderDescriptors.add( new ScheduleRenderDescriptor( method, skipShouldComponentUpdate ) );
+      }
+    }
+    descriptor.setScheduleRenderDescriptors( scheduleRenderDescriptors );
   }
 
   private void determinePostMountMethod( @Nonnull final TypeElement typeElement,

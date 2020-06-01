@@ -53,6 +53,11 @@ final class ComponentDescriptor
    */
   @Nullable
   private List<OnPropChangeDescriptor> _onPropChangeDescriptors;
+  /**
+   * Descriptors for methods annotated by @ScheduleRender.
+   */
+  @Nullable
+  private List<ScheduleRenderDescriptor> _scheduleRenderDescriptors;
   private Boolean _hasValidatedProps;
   private Boolean _enhanceComponentAccessesDeprecatedElements;
   private Boolean _builderAccessesDeprecatedElements;
@@ -262,6 +267,18 @@ final class ComponentDescriptor
   void setOnPropChangeDescriptors( @Nonnull List<OnPropChangeDescriptor> onPropChangeDescriptors )
   {
     _onPropChangeDescriptors = Objects.requireNonNull( onPropChangeDescriptors );
+  }
+
+  @Nonnull
+  List<ScheduleRenderDescriptor> getScheduleRenderDescriptors()
+  {
+    assert null != _scheduleRenderDescriptors;
+    return _scheduleRenderDescriptors;
+  }
+
+  public void setScheduleRenderDescriptors( @Nonnull final List<ScheduleRenderDescriptor> scheduleRenderDescriptors )
+  {
+    _scheduleRenderDescriptors = Objects.requireNonNull( scheduleRenderDescriptors );
   }
 
   boolean hasObservableProps()

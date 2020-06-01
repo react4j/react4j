@@ -217,6 +217,11 @@ public final class React4jProcessorTest
 
         new Object[]{ "com.example.render.BaseRenderComponent" },
 
+        new Object[]{ "com.example.schedule_render.BasicScheduleRenderComponent" },
+        new Object[]{ "com.example.schedule_render.MultiScheduleRenderComponent" },
+        new Object[]{ "com.example.schedule_render.NoSkipScheduleRenderComponent" },
+        new Object[]{ "com.example.schedule_render.SkipScheduleRenderComponent" },
+
         new Object[]{ "RootPackageCompleteComponent" },
         new Object[]{ "RootPackageReactComponent" }
       };
@@ -721,7 +726,14 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop_validate.TooManyParamsPropValidate",
                       "@PropValidate target must have exactly 1 parameter" },
         new Object[]{ "com.example.render.MissingRenderComponent",
-                      "@ArezComponent target has an abstract method not implemented by framework. The method is named render" }
+                      "@ArezComponent target has an abstract method not implemented by framework. The method is named render" },
+
+        new Object[]{ "com.example.schedule_render.ConcreteScheduleRenderComponent",
+                      "@ScheduleRender target must be abstract" },
+        new Object[]{ "com.example.schedule_render.PrivateScheduleRenderComponent",
+                      "@ScheduleRender target must be abstract" },
+        new Object[]{ "com.example.schedule_render.StaticScheduleRenderComponent",
+                      "@ScheduleRender target must be abstract" }
       };
   }
 
@@ -830,7 +842,12 @@ public final class React4jProcessorTest
                       "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.default_props.ProtectedMethodPropDefault",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" }
+                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+
+        new Object[]{ "com.example.schedule_render.ProtectedScheduleRenderComponent",
+                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.schedule_render.PublicScheduleRenderComponent",
+                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" }
       };
   }
 
@@ -883,7 +900,10 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop_validate.Suppressed1ProtectedAccessPropValidateModel" },
         new Object[]{ "com.example.prop_validate.Suppressed1PublicAccessPropValidateModel" },
         new Object[]{ "com.example.prop_validate.Suppressed2ProtectedAccessPropValidateModel" },
-        new Object[]{ "com.example.prop_validate.Suppressed2PublicAccessPropValidateModel" }
+        new Object[]{ "com.example.prop_validate.Suppressed2PublicAccessPropValidateModel" },
+
+        new Object[]{ "com.example.schedule_render.SuppressedProtectedScheduleRenderComponent" },
+        new Object[]{ "com.example.schedule_render.SuppressedPublicScheduleRenderComponent" }
       };
   }
 

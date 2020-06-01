@@ -100,7 +100,7 @@ abstract class React4j_OverridingComponentDidUpdateComponent extends OverridingC
   void onRenderDepsChange() {
     if ( ComponentState.IDLE == $$react4j$$_state ) {
       $$react4j$$_state = ComponentState.SCHEDULED;
-      scheduleRender();
+      component().forceUpdate();
     }
   }
 

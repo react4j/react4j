@@ -1,0 +1,67 @@
+[
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.ScheduleRender",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.ScheduleRender",
+      "classSimpleName": "ScheduleRender",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.visibilityIncreased",
+    "description": "visibility increased",
+    "element": "method react4j.internal.NativeComponent react4j.Component::component()",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "component",
+      "newVisibility": "protected",
+      "oldVisibility": "private",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.Component::scheduleRender()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "scheduleRender",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.Component::scheduleRender(boolean)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "scheduleRender",
+      "package": "react4j"
+    }
+  }
+]

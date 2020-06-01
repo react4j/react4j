@@ -129,7 +129,7 @@ abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
   void onRenderDepsChange() {
     if ( ComponentState.IDLE == $$react4j$$_state ) {
       $$react4j$$_state = ComponentState.SCHEDULED;
-      scheduleRender( false );
+      component().setState( JsPropertyMap.of() );
     }
   }
 
