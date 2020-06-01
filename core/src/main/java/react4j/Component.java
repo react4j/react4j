@@ -3,16 +3,15 @@ package react4j;
 import arez.Arez;
 import arez.annotations.ComponentIdRef;
 import arez.annotations.ComponentNameRef;
-import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import grim.annotations.OmitSymbol;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.internal.NativeComponent;
+import react4j.internal.arez.IntrospectUtil;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -95,45 +94,13 @@ public abstract class Component
         populateDebugData( newState );
 
         final JsPropertyMap<Object> state = component().state();
-        /*
-         * To determine whether we need to do a state update we do compare each key and value and make sure
-         * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
-         * updates in react are merges, we need to implement this by putting undefined values into the state.
-         */
-        if ( null != state )
+        if ( IntrospectUtil.prepareStateUpdate( newState, state ) )
         {
-          final JsArray<String> currentStateKeys = JsObject.keys( Js.uncheckedCast( state ) );
-          for ( final String key : currentStateKeys.asArray( new String[ currentStateKeys.length ] ) )
-          {
-            if ( !newState.has( key ) )
-            {
-              newState.set( key, Js.undefined() );
-            }
-          }
-
-          boolean newStateHasChanges = false;
-          final JsArray<String> newStateKeys = JsObject.keys( Js.uncheckedCast( state ) );
-          for ( final String key : newStateKeys.asArray( new String[ newStateKeys.length ] ) )
-          {
-            final Any newValue = state.getAsAny( key );
-            final Any existingValue = newState.getAsAny( key );
-            if ( !Objects.equals( newValue, existingValue ) )
-            {
-              newStateHasChanges = true;
-              break;
-            }
-          }
-          if ( !newStateHasChanges )
-          {
-            return;
-          }
+          component().setState( Js.cast( JsObject.freeze( newState ) ) );
+          // Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
+          component().forceUpdate();
+          _scheduledDebugStateUpdate = true;
         }
-        component().setState( Js.cast( JsObject.freeze( newState ) ) );
-        /*
-         * Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
-         */
-        component().forceUpdate();
-        _scheduledDebugStateUpdate = true;
       }
     }
   }

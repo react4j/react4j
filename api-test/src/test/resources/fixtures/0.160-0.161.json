@@ -15,6 +15,22 @@
     }
   },
   {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method boolean react4j.internal.arez.IntrospectUtil::prepareStateUpdate(jsinterop.base.JsPropertyMap<java.lang.Object>, jsinterop.base.JsPropertyMap<java.lang.Object>)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.arez.IntrospectUtil",
+      "classSimpleName": "IntrospectUtil",
+      "elementKind": "method",
+      "methodName": "prepareStateUpdate",
+      "package": "react4j.internal.arez"
+    }
+  },
+  {
     "code": "java.method.visibilityIncreased",
     "description": "visibility increased",
     "element": "method react4j.internal.NativeComponent react4j.Component::component()",

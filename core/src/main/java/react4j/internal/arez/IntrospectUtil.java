@@ -4,10 +4,14 @@ import arez.Arez;
 import arez.Observer;
 import arez.spy.ObservableValueInfo;
 import arez.spy.ObserverInfo;
+import elemental2.core.JsArray;
+import elemental2.core.JsObject;
 import grim.annotations.OmitType;
+import java.util.Objects;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -106,5 +110,50 @@ public final class IntrospectUtil
   {
     final ObserverInfo observerInfo = observer.getContext().getSpy().asObserverInfo( observer );
     observerInfo.getDependencies().forEach( d -> data.set( d.getName(), getValue( d ) ) );
+  }
+
+  /**
+   * Prepare the newState value to be updated given specified current state.
+   * If no changes are required then return false.
+   *
+   * @param newState     the new "state" of the component.
+   * @param currentState the current "state" of the component.
+   * @return true if newState needs to be saved to native component, false otherwise.
+   */
+  public static boolean prepareStateUpdate( @Nonnull final JsPropertyMap<Object> newState,
+                                            @Nullable final JsPropertyMap<Object> currentState )
+  {
+    /*
+     * To determine whether we need to do a state update we do compare each key and value and make sure
+     * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
+     * updates in react are merges, we need to implement this by putting undefined values into the state.
+     */
+    if ( null != currentState )
+    {
+      final JsArray<String> currentStateKeys = JsObject.keys( Js.uncheckedCast( currentState ) );
+      for ( final String key : currentStateKeys.asArray( new String[ currentStateKeys.length ] ) )
+      {
+        if ( !newState.has( key ) )
+        {
+          newState.set( key, Js.undefined() );
+        }
+      }
+
+      final JsArray<String> newStateKeys = JsObject.keys( Js.uncheckedCast( currentState ) );
+      for ( final String key : newStateKeys.asArray( new String[ newStateKeys.length ] ) )
+      {
+        final Any newValue = currentState.getAsAny( key );
+        final Any existingValue = newState.getAsAny( key );
+        if ( !Objects.equals( newValue, existingValue ) )
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+    else
+    {
+      return true;
+    }
   }
 }
