@@ -42,3 +42,11 @@ complete as there is too much un-said.
   push it outside the commit phase of react rendering and have it run later
 
 * Collections returned from props should be made immutable.
+
+* Update docs to shortcut conversations like:
+
+> Miroslav Pokorny: The dox mention "React4j uses GWT 2.8+ to compile the Java code to Javascript and aims to migrate to J2CL and/or GWT 3.x as soon it is released." but doesnt actually mention how much has or hasnt been done to migrate..."
+>
+> Peter Donald: @mP1 Every build of arez is tested against j2cl using @niloc132 's maven plugin and has been for a while. Prior to j2cl being released. I have built some slightly bigger j2cl apps to test it and they seem to work fine ... although they are not opensource and not run every build. The only problem I have encountered is one of externs. As react/react4j spits out raw javascript objects to pass to their reconciliation engine, they can not be name mangled. Currently, I use an externs to manage this but occasionally I run into a symbol that is missing from the extern. In the next few months, I plan to rewrite the support in react4j so that the code generates JsPropertyMap objects after which I will not need externs and pretty much should be plug and play. It should be noted that we don't pass react.js itself to closure as it does not work :( Other than that all great
+>
+> Miroslav Pokorny: @realityforge nice, could you update the docs to say this , because as my quote shows it leads someone to think its only gwt. Your summary should appear on the docs it answers a lot of questions
