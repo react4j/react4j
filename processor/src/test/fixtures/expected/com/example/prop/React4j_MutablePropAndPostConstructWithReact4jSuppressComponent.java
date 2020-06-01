@@ -19,8 +19,9 @@ import react4j.internal.OnShouldComponentUpdate;
 @ArezComponent(
     name = "MutablePropAndPostConstructWithReact4jSuppressComponent",
     disposeNotifier = Feature.DISABLE,
-    allowEmpty = true,
-    dagger = Feature.DISABLE
+    dagger = Feature.DISABLE,
+    sting = Feature.DISABLE,
+    allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_MutablePropAndPostConstructWithReact4jSuppressComponent extends MutablePropAndPostConstructWithReact4jSuppressComponent {

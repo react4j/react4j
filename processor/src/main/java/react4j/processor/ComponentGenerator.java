@@ -126,7 +126,9 @@ final class ComponentGenerator
     final AnnotationSpec.Builder arezAnnotation =
       AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).
         addMember( "name", "$S", descriptor.getName() ).
-        addMember( "disposeNotifier", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
+        addMember( "disposeNotifier", "$T.DISABLE", AREZ_FEATURE_CLASSNAME ).
+        addMember( "dagger", "$T.DISABLE", AREZ_FEATURE_CLASSNAME ).
+        addMember( "sting", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
     if ( !descriptor.trackRender() )
     {
       arezAnnotation.addMember( "allowEmpty", "true" );
@@ -135,7 +137,6 @@ final class ComponentGenerator
     {
       arezAnnotation.addMember( "defaultPriority", "$T.LOWEST", PRIORITY_CLASSNAME );
     }
-    arezAnnotation.addMember( "dagger", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
     builder.addAnnotation( arezAnnotation.build() );
     builder.addModifiers( Modifier.ABSTRACT );
 

@@ -19,8 +19,9 @@ import react4j.internal.OnShouldComponentUpdate;
 @ArezComponent(
     name = "MultiPropComponent3",
     disposeNotifier = Feature.DISABLE,
-    allowEmpty = true,
-    dagger = Feature.DISABLE
+    dagger = Feature.DISABLE,
+    sting = Feature.DISABLE,
+    allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_MultiPropComponent3 extends MultiPropComponent3 {

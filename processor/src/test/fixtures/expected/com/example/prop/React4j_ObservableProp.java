@@ -39,7 +39,8 @@ import react4j.internal.arez.SchedulerUtil;
 @ArezComponent(
     name = "ObservableProp",
     disposeNotifier = Feature.DISABLE,
-    dagger = Feature.DISABLE
+    dagger = Feature.DISABLE,
+    sting = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ObservableProp extends ObservableProp {

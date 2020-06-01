@@ -19,8 +19,9 @@ import react4j.internal.OnShouldComponentUpdate;
 @ArezComponent(
     name = "Jsr330OnlyInjectComponent",
     disposeNotifier = Feature.DISABLE,
-    allowEmpty = true,
-    dagger = Feature.DISABLE
+    dagger = Feature.DISABLE,
+    sting = Feature.DISABLE,
+    allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_Jsr330OnlyInjectComponent extends Jsr330OnlyInjectComponent {

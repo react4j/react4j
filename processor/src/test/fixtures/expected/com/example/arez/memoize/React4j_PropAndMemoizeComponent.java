@@ -39,8 +39,9 @@ import react4j.internal.arez.SchedulerUtil;
 @ArezComponent(
     name = "PropAndMemoizeComponent",
     disposeNotifier = Feature.DISABLE,
-    defaultPriority = Priority.LOWEST,
-    dagger = Feature.DISABLE
+    dagger = Feature.DISABLE,
+    sting = Feature.DISABLE,
+    defaultPriority = Priority.LOWEST
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_PropAndMemoizeComponent extends PropAndMemoizeComponent {
