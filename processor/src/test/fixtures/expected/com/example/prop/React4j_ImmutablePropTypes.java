@@ -41,41 +41,41 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   @Override
   ImmutablePropTypes.MyComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
+      return null != component().props().getAsAny( Props.myProp ) ? component().props().getAsAny( Props.myProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myProp ) );
     }
   }
 
   @Override
   String getMyOtherProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myOtherProp ) ? props().getAsAny( Props.myOtherProp ).asString() : null;
+      return null != component().props().getAsAny( Props.myOtherProp ) ? component().props().getAsAny( Props.myOtherProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myOtherProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myOtherProp ) );
     }
   }
 
   @Override
   int stillAnotherProp() {
-    return props().getAsAny( Props.stillAnotherProp ).asInt();
+    return component().props().getAsAny( Props.stillAnotherProp ).asInt();
   }
 
   @Override
   ImmutablePropTypes.KeyedComponent BobsProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.BobsProp ) ? props().getAsAny( Props.BobsProp ).cast() : null;
+      return null != component().props().getAsAny( Props.BobsProp ) ? component().props().getAsAny( Props.BobsProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.BobsProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.BobsProp ) );
     }
   }
 
   @Override
   ImmutablePropTypes.Foo getSomeProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.someProp ) ? props().getAsAny( Props.someProp ).cast() : null;
+      return null != component().props().getAsAny( Props.someProp ) ? component().props().getAsAny( Props.someProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.someProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.someProp ) );
     }
   }
 

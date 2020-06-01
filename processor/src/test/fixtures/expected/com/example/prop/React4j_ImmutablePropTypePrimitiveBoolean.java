@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypePrimitiveBoolean extends ImmutablePropTy
 
   @Override
   boolean getMyProp() {
-    return props().getAsAny( Props.myProp ).asBoolean();
+    return component().props().getAsAny( Props.myProp ).asBoolean();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

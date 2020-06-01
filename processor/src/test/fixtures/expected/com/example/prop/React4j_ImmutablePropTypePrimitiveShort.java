@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypePrimitiveShort extends ImmutablePropType
 
   @Override
   short getMyProp() {
-    return props().getAsAny( Props.myProp ).asShort();
+    return component().props().getAsAny( Props.myProp ).asShort();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

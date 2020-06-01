@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypePrimitiveChar extends ImmutablePropTypeP
 
   @Override
   char getMyProp() {
-    return props().getAsAny( Props.myProp ).asChar();
+    return component().props().getAsAny( Props.myProp ).asChar();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

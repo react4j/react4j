@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypePrimitiveInt extends ImmutablePropTypePr
 
   @Override
   int getMyProp() {
-    return props().getAsAny( Props.myProp ).asInt();
+    return component().props().getAsAny( Props.myProp ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

@@ -40,18 +40,18 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
   @Override
   T getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).cast() : null;
+      return null != component().props().getAsAny( Props.value ) ? component().props().getAsAny( Props.value ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.value ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.value ) );
     }
   }
 
   @Override
   String getValue2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.value2 ) ? props().getAsAny( Props.value2 ).asString() : null;
+      return null != component().props().getAsAny( Props.value2 ) ? component().props().getAsAny( Props.value2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.value2 ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.value2 ) );
     }
   }
 
@@ -59,9 +59,9 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
   @Override
   String getValue3() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.value3 ) ? props().getAsAny( Props.value3 ).asString() : null;
+      return null != component().props().getAsAny( Props.value3 ) ? component().props().getAsAny( Props.value3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.value3 ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.value3 ) );
     }
   }
 
@@ -69,16 +69,16 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
   @Override
   String getValue4() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.value4 ) ? props().getAsAny( Props.value4 ).asString() : null;
+      return null != component().props().getAsAny( Props.value4 ) ? component().props().getAsAny( Props.value4 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.value4 ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.value4 ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
       return true;
     }

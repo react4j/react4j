@@ -39,13 +39,13 @@ abstract class React4j_PropTypeBoolean extends PropTypeBoolean {
 
   @Override
   boolean getMyProp() {
-    return props().getAsAny( Props.myProp ).asBoolean();
+    return component().props().getAsAny( Props.myProp ).asBoolean();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

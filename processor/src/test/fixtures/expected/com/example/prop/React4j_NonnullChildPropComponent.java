@@ -40,13 +40,13 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
   @Nonnull
   @Override
   ReactNode getChild() {
-    return props().getAsAny( Props.child ).cast();
+    return component().props().getAsAny( Props.child ).cast();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.child ), nextProps.get( Props.child ) ) ) {
       return true;
     }

@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypePrimitiveLong extends ImmutablePropTypeP
 
   @Override
   long getMyProp() {
-    return props().getAsAny( Props.myProp ).asLong();
+    return component().props().getAsAny( Props.myProp ).asLong();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

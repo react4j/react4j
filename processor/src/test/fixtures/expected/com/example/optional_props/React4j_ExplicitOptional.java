@@ -40,34 +40,34 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   @Override
   String getMyRequiredProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myRequiredProp ) ? props().getAsAny( Props.myRequiredProp ).asString() : null;
+      return null != component().props().getAsAny( Props.myRequiredProp ) ? component().props().getAsAny( Props.myRequiredProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myRequiredProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myRequiredProp ) );
     }
   }
 
   @Override
   String getMyOptionalProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myOptionalProp ) ? props().getAsAny( Props.myOptionalProp ).asString() : null;
+      return null != component().props().getAsAny( Props.myOptionalProp ) ? component().props().getAsAny( Props.myOptionalProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myOptionalProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myOptionalProp ) );
     }
   }
 
   @Override
   String getMyOtherOptionalProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myOtherOptionalProp ) ? props().getAsAny( Props.myOtherOptionalProp ).asString() : null;
+      return null != component().props().getAsAny( Props.myOtherOptionalProp ) ? component().props().getAsAny( Props.myOtherOptionalProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myOtherOptionalProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myOtherOptionalProp ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myRequiredProp ), nextProps.get( Props.myRequiredProp ) ) ) {
       return true;
     }

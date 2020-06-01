@@ -41,7 +41,7 @@ abstract class React4j_NonnullPropValidate extends NonnullPropValidate {
   @Nonnull
   @Override
   String getMyProp() {
-    return props().getAsAny( Props.myProp ).asString();
+    return component().props().getAsAny( Props.myProp ).asString();
   }
 
   private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
@@ -61,7 +61,7 @@ abstract class React4j_NonnullPropValidate extends NonnullPropValidate {
     if ( React.shouldValidatePropValues() ) {
       $$react4j$$_validatePropValues( nextProps );
     }
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

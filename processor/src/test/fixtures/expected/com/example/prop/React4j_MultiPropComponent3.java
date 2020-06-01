@@ -40,34 +40,34 @@ abstract class React4j_MultiPropComponent3 extends MultiPropComponent3 {
   @Override
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).asString() : null;
+      return null != component().props().getAsAny( Props.myProp ) ? component().props().getAsAny( Props.myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myProp ) );
     }
   }
 
   @Override
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp2 ) ? props().getAsAny( Props.myProp2 ).asString() : null;
+      return null != component().props().getAsAny( Props.myProp2 ) ? component().props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp2 ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myProp2 ) );
     }
   }
 
   @Override
   ReactNode getChild() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.child ) ? props().getAsAny( Props.child ).cast() : null;
+      return null != component().props().getAsAny( Props.child ) ? component().props().getAsAny( Props.child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.child ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.child ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

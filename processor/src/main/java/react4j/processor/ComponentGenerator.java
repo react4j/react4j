@@ -344,12 +344,12 @@ final class ComponentGenerator
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-      block.addStatement( "return null != props().getAsAny( Props.$N ) ? props().getAsAny( Props.$N ).$N() : null",
+      block.addStatement( "return null != component().props().getAsAny( Props.$N ) ? component().props().getAsAny( Props.$N ).$N() : null",
                           prop.getConstantName(),
                           prop.getConstantName(),
                           convertMethodName );
       block.nextControlFlow( "else" );
-      block.addStatement( "return $T.uncheckedCast( props().getAsAny( Props.$N ) )",
+      block.addStatement( "return $T.uncheckedCast( component().props().getAsAny( Props.$N ) )",
                           JS_CLASSNAME,
                           prop.getConstantName() );
       block.endControlFlow();
@@ -357,7 +357,7 @@ final class ComponentGenerator
     }
     else
     {
-      method.addStatement( "return props().getAsAny( Props.$N ).$N()", prop.getConstantName(), convertMethodName );
+      method.addStatement( "return component().props().getAsAny( Props.$N ).$N()", prop.getConstantName(), convertMethodName );
     }
     return method;
   }
@@ -562,7 +562,7 @@ final class ComponentGenerator
     }
     else
     {
-      method.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      method.addStatement( "final $T props = component().props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
 
       final boolean hasObservablePropsToUpdateOnChange =
         observableProps.stream().anyMatch( PropDescriptor::shouldUpdateOnChange );
@@ -644,7 +644,7 @@ final class ComponentGenerator
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != prevProps )" );
-      block.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      block.addStatement( "final $T props = component().props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
       buildOnPropChangeInvocations( block, descriptor.getPreUpdateOnPropChangeDescriptors() );
       block.endControlFlow();
       method.addCode( block.build() );
@@ -673,7 +673,7 @@ final class ComponentGenerator
                              .build() );
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != prevProps )" );
-      block.addStatement( "final $T props = props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      block.addStatement( "final $T props = component().props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
       buildOnPropChangeInvocations( block, descriptor.getPostUpdateOnPropChangeDescriptors() );
       block.endControlFlow();
       method.addCode( block.build() );

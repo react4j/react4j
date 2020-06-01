@@ -39,13 +39,13 @@ abstract class React4j_CustomPropsReactComponent extends CustomPropsReactCompone
 
   @Override
   boolean isSomeField() {
-    return props().getAsAny( Props.someField ).asBoolean();
+    return component().props().getAsAny( Props.someField ).asBoolean();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.someField ), nextProps.get( Props.someField ) ) ) {
       return true;
     }

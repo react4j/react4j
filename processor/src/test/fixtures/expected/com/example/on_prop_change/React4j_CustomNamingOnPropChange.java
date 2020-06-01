@@ -40,27 +40,27 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
 
   @Override
   boolean getMyProp1() {
-    return props().getAsAny( Props.myProp1 ).asBoolean();
+    return component().props().getAsAny( Props.myProp1 ).asBoolean();
   }
 
   @Override
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp2 ) ? props().getAsAny( Props.myProp2 ).asString() : null;
+      return null != component().props().getAsAny( Props.myProp2 ) ? component().props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp2 ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myProp2 ) );
     }
   }
 
   @Override
   int getMyProp3() {
-    return props().getAsAny( Props.myProp3 ).asInt();
+    return component().props().getAsAny( Props.myProp3 ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp1 ), nextProps.get( Props.myProp1 ) ) ) {
       return true;
     }
@@ -75,7 +75,7 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
 
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
-      final JsPropertyMap<Object> props = props();
+      final JsPropertyMap<Object> props = component().props();
       final boolean myProp1 = !Js.isTripleEqual( props.get( Props.myProp1 ), prevProps.get( Props.myProp1 ) );
       final boolean myProp2 = !Js.isTripleEqual( props.get( Props.myProp2 ), prevProps.get( Props.myProp2 ) );
       final boolean myProp3 = !Js.isTripleEqual( props.get( Props.myProp3 ), prevProps.get( Props.myProp3 ) );

@@ -40,23 +40,23 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
   @Nonnull
   @Override
   String getMyProp() {
-    return props().getAsAny( Props.myProp ).asString();
+    return component().props().getAsAny( Props.myProp ).asString();
   }
 
   @Nullable
   @Override
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp2 ) ? props().getAsAny( Props.myProp2 ).asString() : null;
+      return null != component().props().getAsAny( Props.myProp2 ) ? component().props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp2 ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myProp2 ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

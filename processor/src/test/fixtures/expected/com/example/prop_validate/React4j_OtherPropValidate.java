@@ -41,9 +41,9 @@ abstract class React4j_OtherPropValidate extends OtherPropValidate {
   @Override
   BitSet getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
+      return null != component().props().getAsAny( Props.myProp ) ? component().props().getAsAny( Props.myProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myProp ) );
     }
   }
 
@@ -61,7 +61,7 @@ abstract class React4j_OtherPropValidate extends OtherPropValidate {
     if ( React.shouldValidatePropValues() ) {
       $$react4j$$_validatePropValues( nextProps );
     }
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

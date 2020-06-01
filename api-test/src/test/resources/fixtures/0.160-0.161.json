@@ -35,6 +35,22 @@
   {
     "code": "java.method.removed",
     "description": "Method was removed.",
+    "oldElement": "method jsinterop.base.JsPropertyMap<java.lang.Object> react4j.Component::props()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "props",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
     "oldElement": "method void react4j.Component::scheduleRender()",
     "classification": {
       "SOURCE": "BREAKING",

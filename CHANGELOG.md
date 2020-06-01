@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Introduce the `@ScheduleRender` annotation that is applied to a template method that can be invoked by the component to schedule a render. The `Component.scheduleRender()` and `Component.scheduleRender(boolean)` were removed as they are replaced by the `@ScheduleRender` annotation.
+* Remove the `Component.props()` method from the public API as it is no longer used anywhere.
 
 ### [v0.160](https://github.com/react4j/react4j/tree/v0.160) (2020-05-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.159...v0.160)
 

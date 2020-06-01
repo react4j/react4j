@@ -40,16 +40,16 @@ abstract class React4j_GenericTypePropModel<T> extends GenericTypePropModel<T> {
   @Override
   T getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).cast() : null;
+      return null != component().props().getAsAny( Props.value ) ? component().props().getAsAny( Props.value ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.value ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.value ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
       return true;
     }

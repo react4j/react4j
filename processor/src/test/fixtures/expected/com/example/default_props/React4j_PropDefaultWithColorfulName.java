@@ -40,16 +40,16 @@ abstract class React4j_PropDefaultWithColorfulName extends PropDefaultWithColorf
   @Override
   String getMyProp12$23() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp12$23 ) ? props().getAsAny( Props.myProp12$23 ).asString() : null;
+      return null != component().props().getAsAny( Props.myProp12$23 ) ? component().props().getAsAny( Props.myProp12$23 ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp12$23 ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myProp12$23 ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp12$23 ), nextProps.get( Props.myProp12$23 ) ) ) {
       return true;
     }

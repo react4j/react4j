@@ -40,16 +40,16 @@ abstract class React4j_CustomNamePropModel extends CustomNamePropModel {
   @Override
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.foo ) ? props().getAsAny( Props.foo ).asString() : null;
+      return null != component().props().getAsAny( Props.foo ) ? component().props().getAsAny( Props.foo ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.foo ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.foo ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.foo ), nextProps.get( Props.foo ) ) ) {
       return true;
     }

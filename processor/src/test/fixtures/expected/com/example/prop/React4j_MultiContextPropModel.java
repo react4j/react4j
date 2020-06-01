@@ -40,21 +40,21 @@ abstract class React4j_MultiContextPropModel extends MultiContextPropModel {
   @Override
   String getStringContextValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.stringContextValue ) ? props().getAsAny( Props.stringContextValue ).asString() : null;
+      return null != component().props().getAsAny( Props.stringContextValue ) ? component().props().getAsAny( Props.stringContextValue ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.stringContextValue ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.stringContextValue ) );
     }
   }
 
   @Override
   int getIntContextValue() {
-    return props().getAsAny( Props.intContextValue ).asInt();
+    return component().props().getAsAny( Props.intContextValue ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.stringContextValue ), nextProps.get( Props.stringContextValue ) ) ) {
       return true;
     }

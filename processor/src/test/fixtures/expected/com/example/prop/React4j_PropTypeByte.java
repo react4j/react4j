@@ -39,13 +39,13 @@ abstract class React4j_PropTypeByte extends PropTypeByte {
 
   @Override
   byte getMyProp() {
-    return props().getAsAny( Props.myProp ).asByte();
+    return component().props().getAsAny( Props.myProp ).asByte();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

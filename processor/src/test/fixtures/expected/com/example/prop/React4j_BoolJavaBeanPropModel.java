@@ -39,13 +39,13 @@ abstract class React4j_BoolJavaBeanPropModel extends BoolJavaBeanPropModel {
 
   @Override
   boolean isFoo() {
-    return props().getAsAny( Props.foo ).asBoolean();
+    return component().props().getAsAny( Props.foo ).asBoolean();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.foo ), nextProps.get( Props.foo ) ) ) {
       return true;
     }

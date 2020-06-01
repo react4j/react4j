@@ -40,7 +40,7 @@ abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTyp
 
   @Override
   double getMyProp() {
-    return props().getAsAny( Props.myProp ).asDouble();
+    return component().props().getAsAny( Props.myProp ).asDouble();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

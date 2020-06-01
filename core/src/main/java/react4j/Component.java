@@ -64,17 +64,6 @@ public abstract class Component
   }
 
   /**
-   * Return the component props from the native component.
-   * This may be null if no props were supplied.
-   *
-   * @return the component state.
-   */
-  protected final JsPropertyMap<Object> props()
-  {
-    return component().props();
-  }
-
-  /**
    * Render the component.
    * See the <a href="https://reactjs.org/docs/react-component.html#render">React Component documentation</a> for more details.
    *

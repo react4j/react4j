@@ -54,16 +54,16 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   @Override
   ImplicitDisposableProp.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.model ) ? props().getAsAny( Props.model ).cast() : null;
+      return null != component().props().getAsAny( Props.model ) ? component().props().getAsAny( Props.model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.model ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.model ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.model ), nextProps.get( Props.model ) ) ) {
       return true;
     }

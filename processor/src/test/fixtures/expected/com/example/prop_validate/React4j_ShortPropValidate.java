@@ -39,7 +39,7 @@ abstract class React4j_ShortPropValidate extends ShortPropValidate {
 
   @Override
   short getMyProp() {
-    return props().getAsAny( Props.myProp ).asShort();
+    return component().props().getAsAny( Props.myProp ).asShort();
   }
 
   private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
@@ -56,7 +56,7 @@ abstract class React4j_ShortPropValidate extends ShortPropValidate {
     if ( React.shouldValidatePropValues() ) {
       $$react4j$$_validatePropValues( nextProps );
     }
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

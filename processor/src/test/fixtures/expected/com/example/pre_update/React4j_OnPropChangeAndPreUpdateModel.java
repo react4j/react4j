@@ -41,13 +41,13 @@ abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreU
 
   @Override
   int getMyProp() {
-    return props().getAsAny( Props.myProp ).asInt();
+    return component().props().getAsAny( Props.myProp ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }
@@ -56,7 +56,7 @@ abstract class React4j_OnPropChangeAndPreUpdateModel extends OnPropChangeAndPreU
 
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
-      final JsPropertyMap<Object> props = props();
+      final JsPropertyMap<Object> props = component().props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
         onMyPropChange( props.getAsAny( Props.myProp ).asInt() );

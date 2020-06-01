@@ -54,25 +54,25 @@ abstract class React4j_ComponentWithDependency extends ComponentWithDependency {
   @Override
   String getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.value ) ? props().getAsAny( Props.value ).asString() : null;
+      return null != component().props().getAsAny( Props.value ) ? component().props().getAsAny( Props.value ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.value ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.value ) );
     }
   }
 
   @Override
   ComponentWithDependency.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.model ) ? props().getAsAny( Props.model ).cast() : null;
+      return null != component().props().getAsAny( Props.model ) ? component().props().getAsAny( Props.model ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.model ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.model ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
       return true;
     }

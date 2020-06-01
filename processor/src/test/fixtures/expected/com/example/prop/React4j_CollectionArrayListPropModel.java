@@ -41,16 +41,16 @@ abstract class React4j_CollectionArrayListPropModel extends CollectionArrayListP
   @Override
   ArrayList<String> getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).cast() : null;
+      return null != component().props().getAsAny( Props.myProp ) ? component().props().getAsAny( Props.myProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myProp ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

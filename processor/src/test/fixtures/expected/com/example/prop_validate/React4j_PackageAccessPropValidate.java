@@ -40,9 +40,9 @@ abstract class React4j_PackageAccessPropValidate extends PackageAccessPropValida
   @Override
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.myProp ) ? props().getAsAny( Props.myProp ).asString() : null;
+      return null != component().props().getAsAny( Props.myProp ) ? component().props().getAsAny( Props.myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.myProp ) );
     }
   }
 
@@ -60,7 +60,7 @@ abstract class React4j_PackageAccessPropValidate extends PackageAccessPropValida
     if ( React.shouldValidatePropValues() ) {
       $$react4j$$_validatePropValues( nextProps );
     }
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

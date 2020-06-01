@@ -40,16 +40,16 @@ abstract class React4j_SingleChildPropComponent extends SingleChildPropComponent
   @Override
   ReactNode getChild() {
     if ( React.shouldCheckInvariants() ) {
-      return null != props().getAsAny( Props.child ) ? props().getAsAny( Props.child ).cast() : null;
+      return null != component().props().getAsAny( Props.child ) ? component().props().getAsAny( Props.child ).cast() : null;
     } else {
-      return Js.uncheckedCast( props().getAsAny( Props.child ) );
+      return Js.uncheckedCast( component().props().getAsAny( Props.child ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = props();
+    final JsPropertyMap<Object> props = component().props();
     if ( !Js.isTripleEqual( props.get( Props.child ), nextProps.get( Props.child ) ) ) {
       return true;
     }
