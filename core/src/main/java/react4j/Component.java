@@ -98,15 +98,14 @@ public abstract class Component
         populateDebugData( newState );
 
         final JsPropertyMap<Object> state = component().state();
-        final JsPropertyMap<Object> currentState = null == state ? null : Js.asPropertyMap( state );
         /*
          * To determine whether we need to do a state update we do compare each key and value and make sure
          * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state
          * updates in react are merges, we need to implement this by putting undefined values into the state.
          */
-        if ( null != currentState )
+        if ( null != state )
         {
-          final JsArray<String> currentStateKeys = JsObject.keys( Js.uncheckedCast( currentState ) );
+          final JsArray<String> currentStateKeys = JsObject.keys( Js.uncheckedCast( state ) );
           for ( final String key : currentStateKeys.asArray( new String[ currentStateKeys.length ] ) )
           {
             if ( !newState.has( key ) )
@@ -116,10 +115,10 @@ public abstract class Component
           }
 
           boolean newStateHasChanges = false;
-          final JsArray<String> newStateKeys = JsObject.keys( Js.uncheckedCast( currentState ) );
+          final JsArray<String> newStateKeys = JsObject.keys( Js.uncheckedCast( state ) );
           for ( final String key : newStateKeys.asArray( new String[ newStateKeys.length ] ) )
           {
-            final Any newValue = currentState.getAsAny( key );
+            final Any newValue = state.getAsAny( key );
             final Any existingValue = newState.getAsAny( key );
             if ( !Objects.equals( newValue, existingValue ) )
             {
