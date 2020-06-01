@@ -65,9 +65,6 @@ abstract class React4j_PostUpdateOnPropChange extends PostUpdateOnPropChange {
         onMyPropChange( Js.uncheckedCast( props.getAsAny( Props.myProp ) ) );
       }
     }
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentWillUnmount() {

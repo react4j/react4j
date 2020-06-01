@@ -47,12 +47,17 @@ final class ComponentGenerator
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
   private static final ClassName OBSERVER_REF_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "ObserverRef" );
+  private static final ClassName COMPONENT_NAME_REF_ANNOTATION_CLASSNAME =
+    ClassName.get( "arez.annotations", "ComponentNameRef" );
+  private static final ClassName COMPONENT_ID_REF_ANNOTATION_CLASSNAME =
+    ClassName.get( "arez.annotations", "ComponentIdRef" );
   private static final ClassName COMPONENT_STATE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ComponentStateRef" );
   private static final ClassName OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
+  private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
   private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
@@ -212,9 +217,14 @@ final class ComponentGenerator
 
     if ( descriptor.trackRender() )
     {
+      builder.addField( FieldSpec.builder( TypeName.BOOLEAN,
+                                           FRAMEWORK_INTERNAL_PREFIX + "scheduledDebugStateUpdate",
+                                           Modifier.PRIVATE ).build() );
       builder.addMethod( buildOnRenderDepsChange( descriptor ).build() );
       builder.addMethod( buildGetRenderObserver( descriptor ).build() );
-      builder.addMethod( buildPopulateDebugData( descriptor ).build() );
+      builder.addMethod( buildGetComponentId().build() );
+      builder.addMethod( buildGetComponentName().build() );
+      builder.addMethod( buildStoreDebugDataAsState().build() );
     }
 
     if ( descriptor.shouldGenerateLiteLifecycle() )
@@ -496,11 +506,16 @@ final class ComponentGenerator
     {
       method.addStatement( "$N()", postMount.getSimpleName().toString() );
     }
-    final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() )", REACT_CLASSNAME );
-    block.addStatement( "storeDebugDataAsState()" );
-    block.endControlFlow();
-    method.addCode( block.build() );
+    if ( descriptor.trackRender() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() && $T.areSpiesEnabled() )",
+                              REACT_CLASSNAME,
+                              AREZ_CLASSNAME );
+      block.addStatement( "$N()", FRAMEWORK_INTERNAL_PREFIX + "storeDebugDataAsState" );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
 
     return method;
   }
@@ -691,11 +706,16 @@ final class ComponentGenerator
     {
       method.addStatement( "$N()", postUpdate.getSimpleName().toString() );
     }
-    final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() )", REACT_CLASSNAME );
-    block.addStatement( "storeDebugDataAsState()" );
-    block.endControlFlow();
-    method.addCode( block.build() );
+    if ( descriptor.trackRender() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() && $T.areSpiesEnabled() )",
+                              REACT_CLASSNAME,
+                              AREZ_CLASSNAME );
+      block.addStatement( "$N()", FRAMEWORK_INTERNAL_PREFIX + "storeDebugDataAsState" );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
     return method;
   }
 
@@ -781,13 +801,16 @@ final class ComponentGenerator
       depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
                                       AREZ_CLASSNAME,
                                       AREZ_CLASSNAME );
-      depCheckBlock.addStatement( "$T.invariant( () -> !getRenderObserver().getContext().getSpy()." +
-                                  "asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), " +
+      final String getObserverMethodName = FRAMEWORK_INTERNAL_PREFIX + "getRenderObserver";
+      depCheckBlock.addStatement( "$T.invariant( () -> !$N().getContext().getSpy()." +
+                                  "asObserverInfo( $N() ).getDependencies().isEmpty(), " +
                                   "() -> \"Component render completed on '\" + this + \"' without accessing " +
                                   "any Arez dependencies but has a type set to TRACKING. The render method " +
                                   "needs to access an Arez dependency or the type should be changed to " +
                                   "STATEFUL or MAYBE_TRACKING.\" )",
-                                  GUARDS_CLASSNAME );
+                                  GUARDS_CLASSNAME,
+                                  getObserverMethodName,
+                                  getObserverMethodName );
       depCheckBlock.endControlFlow();
       method.addCode( depCheckBlock.build() );
       method.addStatement( "return result" );
@@ -800,29 +823,75 @@ final class ComponentGenerator
   }
 
   @Nonnull
+  private static MethodSpec.Builder buildGetComponentId()
+  {
+    return MethodSpec
+      .methodBuilder( FRAMEWORK_INTERNAL_PREFIX + "getComponentId" )
+      .addAnnotation( COMPONENT_ID_REF_ANNOTATION_CLASSNAME )
+      .addModifiers( Modifier.ABSTRACT )
+      .returns( TypeName.INT );
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder buildGetComponentName()
+  {
+    return MethodSpec
+      .methodBuilder( FRAMEWORK_INTERNAL_PREFIX + "getComponentName" )
+      .addAnnotation( COMPONENT_NAME_REF_ANNOTATION_CLASSNAME )
+      .addModifiers( Modifier.ABSTRACT )
+      .returns( ClassName.get( String.class ) );
+  }
+
+  @Nonnull
   private static MethodSpec.Builder buildGetRenderObserver( @Nonnull final ComponentDescriptor descriptor )
   {
     assert descriptor.trackRender();
     return MethodSpec
-      .methodBuilder( "getRenderObserver" )
+      .methodBuilder( FRAMEWORK_INTERNAL_PREFIX + "getRenderObserver" )
       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
-      .addAnnotation( OBSERVER_REF_ANNOTATION_CLASSNAME )
+      .addAnnotation( AnnotationSpec.builder( OBSERVER_REF_ANNOTATION_CLASSNAME )
+                        .addMember( "name", "$S", "render" )
+                        .build() )
       .addModifiers( Modifier.ABSTRACT )
       .returns( OBSERVER_CLASSNAME );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildPopulateDebugData( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildStoreDebugDataAsState()
   {
-    assert descriptor.trackRender();
     final MethodSpec.Builder method = MethodSpec
-      .methodBuilder( "populateDebugData" )
-      .addAnnotation( Override.class )
-      .addModifiers( Modifier.PROTECTED )
-      .addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "data", Modifier.FINAL )
-                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
-                       .build() );
-    method.addStatement( "$T.collectDependencyDebugData( getRenderObserver(), data )", INTROSPECT_UTIL_CLASSNAME );
+      .methodBuilder( FRAMEWORK_INTERNAL_PREFIX + "storeDebugDataAsState" )
+      .addModifiers( Modifier.PRIVATE );
+
+    final CodeBlock.Builder block = CodeBlock.builder();
+    final String flag = FRAMEWORK_INTERNAL_PREFIX + "scheduledDebugStateUpdate";
+    block.beginControlFlow( "if ( $N )", flag );
+    block.addStatement( "$N = false", flag );
+    block.nextControlFlow( "else" );
+    block.addStatement( "final $T newState = $T.of()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, JS_PROPERTY_MAP_CLASSNAME );
+    // Present component id as state. Useful to track when instance ids change.
+    block.addStatement( "newState.set( $S, $N() )", "Arez.id", FRAMEWORK_INTERNAL_PREFIX + "getComponentId" );
+    block.addStatement( "newState.set( $S, $N() )", "Arez.name", FRAMEWORK_INTERNAL_PREFIX + "getComponentName" );
+
+    block.addStatement( "$T.collectDependencyDebugData( $N(), newState )",
+                        INTROSPECT_UTIL_CLASSNAME,
+                        FRAMEWORK_INTERNAL_PREFIX + "getRenderObserver" );
+
+    final CodeBlock.Builder onUpdateBlock = CodeBlock.builder();
+    onUpdateBlock.beginControlFlow( "if ( $T.prepareStateUpdate( newState, component().state() ) )",
+                                    INTROSPECT_UTIL_CLASSNAME );
+    onUpdateBlock.addStatement( "component().setState( $T.cast( $T.freeze( newState ) ) )",
+                                JS_CLASSNAME,
+                                JS_OBJECT_CLASSNAME );
+    // Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
+    onUpdateBlock.addStatement( "component().forceUpdate()" );
+    onUpdateBlock.addStatement( "$N = true", flag );
+    onUpdateBlock.endControlFlow();
+    block.add( onUpdateBlock.build() );
+    block.endControlFlow();
+
+    method.addCode( block.build() );
+
     return method;
   }
 

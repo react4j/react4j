@@ -48,16 +48,10 @@ abstract class React4j_PackageAccessPostMountOrUpdateModel extends PackageAccess
 
   private void $$react4j$$_componentDidMount() {
     postMountOrUpdate();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentDidUpdate() {
     postMountOrUpdate();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentWillUnmount() {

@@ -4,12 +4,15 @@ import arez.Arez;
 import arez.Disposable;
 import arez.Observer;
 import arez.annotations.ArezComponent;
+import arez.annotations.ComponentIdRef;
+import arez.annotations.ComponentNameRef;
 import arez.annotations.DepType;
 import arez.annotations.Executor;
 import arez.annotations.Feature;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
+import elemental2.core.JsObject;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,6 +40,8 @@ import react4j.internal.arez.SchedulerUtil;
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
   private int $$react4j$$_state;
+
+  private boolean $$react4j$$_scheduledDebugStateUpdate;
 
   React4j_ComponentJsFunctionProp(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
     bindComponent( $$react4j$$_nativeComponent );
@@ -71,14 +76,14 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
   }
 
   private void $$react4j$$_componentDidMount() {
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
+    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
+      $$react4j$$_storeDebugDataAsState();
     }
   }
 
   private void $$react4j$$_componentDidUpdate() {
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
+    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
+      $$react4j$$_storeDebugDataAsState();
     }
   }
 
@@ -103,7 +108,7 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
     assert Disposable.isNotDisposed( this );
     final ReactNode result = super.render();
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
-      Guards.invariant( () -> !getRenderObserver().getContext().getSpy().asObserverInfo( getRenderObserver() ).getDependencies().isEmpty(), () -> "Component render completed on '" + this + "' without accessing any Arez dependencies but has a type set to TRACKING. The render method needs to access an Arez dependency or the type should be changed to STATEFUL or MAYBE_TRACKING." );
+      Guards.invariant( () -> !$$react4j$$_getRenderObserver().getContext().getSpy().asObserverInfo( $$react4j$$_getRenderObserver() ).getDependencies().isEmpty(), () -> "Component render completed on '" + this + "' without accessing any Arez dependencies but has a type set to TRACKING. The render method needs to access an Arez dependency or the type should be changed to STATEFUL or MAYBE_TRACKING." );
     }
     return result;
   }
@@ -116,12 +121,31 @@ abstract class React4j_ComponentJsFunctionProp extends ComponentJsFunctionProp {
   }
 
   @Nonnull
-  @ObserverRef
-  abstract Observer getRenderObserver();
+  @ObserverRef(
+      name = "render"
+  )
+  abstract Observer $$react4j$$_getRenderObserver();
 
-  @Override
-  protected void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
-    IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
+  @ComponentIdRef
+  abstract int $$react4j$$_getComponentId();
+
+  @ComponentNameRef
+  abstract String $$react4j$$_getComponentName();
+
+  private void $$react4j$$_storeDebugDataAsState() {
+    if ( $$react4j$$_scheduledDebugStateUpdate ) {
+      $$react4j$$_scheduledDebugStateUpdate = false;
+    } else {
+      final JsPropertyMap<Object> newState = JsPropertyMap.of();
+      newState.set( "Arez.id", $$react4j$$_getComponentId() );
+      newState.set( "Arez.name", $$react4j$$_getComponentName() );
+      IntrospectUtil.collectDependencyDebugData( $$react4j$$_getRenderObserver(), newState );
+      if ( IntrospectUtil.prepareStateUpdate( newState, component().state() ) ) {
+        component().setState( Js.cast( JsObject.freeze( newState ) ) );
+        component().forceUpdate();
+        $$react4j$$_scheduledDebugStateUpdate = true;
+      }
+    }
   }
 
   static final class Factory {

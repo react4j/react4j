@@ -46,9 +46,6 @@ abstract class React4j_BasicPostMountModel extends BasicPostMountModel {
 
   private void $$react4j$$_componentDidMount() {
     postMount();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentWillUnmount() {

@@ -13,16 +13,4 @@ class ConcreteComponent
   {
     return null;
   }
-
-  @Override
-  protected int getComponentId()
-  {
-    return 0;
-  }
-
-  @Override
-  protected String getComponentName()
-  {
-    return null;
-  }
 }

@@ -51,6 +51,38 @@
   {
     "code": "java.method.removed",
     "description": "Method was removed.",
+    "oldElement": "method int react4j.Component::getComponentId()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "getComponentId",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.String react4j.Component::getComponentName()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "getComponentName",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
     "oldElement": "method jsinterop.base.JsPropertyMap<java.lang.Object> react4j.Component::props()",
     "classification": {
       "SOURCE": "BREAKING",
@@ -61,6 +93,22 @@
       "classSimpleName": "Component",
       "elementKind": "method",
       "methodName": "props",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.Component::populateDebugData(jsinterop.base.JsPropertyMap<java.lang.Object>)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "populateDebugData",
       "package": "react4j"
     }
   },
@@ -93,6 +141,22 @@
       "classSimpleName": "Component",
       "elementKind": "method",
       "methodName": "scheduleRender",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.Component::storeDebugDataAsState()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Component",
+      "classSimpleName": "Component",
+      "elementKind": "method",
+      "methodName": "storeDebugDataAsState",
       "package": "react4j"
     }
   }

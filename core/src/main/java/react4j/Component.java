@@ -1,17 +1,9 @@
 package react4j;
 
-import arez.Arez;
-import arez.annotations.ComponentIdRef;
-import arez.annotations.ComponentNameRef;
-import elemental2.core.JsObject;
-import grim.annotations.OmitSymbol;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 import react4j.internal.NativeComponent;
-import react4j.internal.arez.IntrospectUtil;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
@@ -21,13 +13,6 @@ public abstract class Component
 {
   @Nullable
   private NativeComponent _nativeComponent;
-  /**
-   * If the last render resulted in state update to record new debug state then this will be true.
-   * It guards against multiple renders of a single component where rendering is just updating
-   * react state to expose debug data. This should only be true if {@link React#shouldStoreDebugDataAsState()}
-   * returns true.
-   */
-  private boolean _scheduledDebugStateUpdate;
 
   /**
    * Bind the native react component to this component.
@@ -70,64 +55,4 @@ public abstract class Component
    */
   @Nullable
   protected abstract ReactNode render();
-
-  /**
-   * Store debug data on the state object of the native component.
-   * This is only done if {@link React#shouldStoreDebugDataAsState()} returns true and is primarily
-   * done to make it easy to debug the component from within React DevTools.
-   */
-  @OmitSymbol( unless = "react4j.store_debug_data_as_state" )
-  protected final void storeDebugDataAsState()
-  {
-    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() )
-    {
-      if ( _scheduledDebugStateUpdate )
-      {
-        _scheduledDebugStateUpdate = false;
-      }
-      else
-      {
-        final JsPropertyMap<Object> newState = JsPropertyMap.of();
-        // Present component id as state. Useful to track when instance ids change.
-        newState.set( "Arez.id", getComponentId() );
-        newState.set( "Arez.name", getComponentName() );
-        populateDebugData( newState );
-
-        final JsPropertyMap<Object> state = component().state();
-        if ( IntrospectUtil.prepareStateUpdate( newState, state ) )
-        {
-          component().setState( Js.cast( JsObject.freeze( newState ) ) );
-          // Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
-          component().forceUpdate();
-          _scheduledDebugStateUpdate = true;
-        }
-      }
-    }
-  }
-
-  /**
-   * Return the unique identifier of component according to Arez.
-   *
-   * @return the unique identifier of component according to Arez.
-   */
-  @ComponentIdRef
-  protected abstract int getComponentId();
-
-  /**
-   * Return the name of the component according to Arez.
-   *
-   * @return the name of the component according to Arez.
-   */
-  @ComponentNameRef
-  protected abstract String getComponentName();
-
-  /**
-   * Populate the state parameter with any data that is useful when debugging the component.
-   *
-   * @param data the property map to populate with debug data.
-   */
-  @OmitSymbol( unless = "react4j.store_debug_data_as_state" )
-  protected void populateDebugData( @Nonnull final JsPropertyMap<Object> data )
-  {
-  }
 }

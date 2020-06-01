@@ -47,9 +47,6 @@ abstract class React4j_PublicAccessViaInterfacePostMountModel extends PublicAcce
 
   private void $$react4j$$_componentDidMount() {
     postMount();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentWillUnmount() {

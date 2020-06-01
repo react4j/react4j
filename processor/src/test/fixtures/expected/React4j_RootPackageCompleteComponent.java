@@ -55,9 +55,6 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
 
   private void $$react4j$$_componentDidMount() {
     postMount();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
@@ -73,9 +70,6 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
 
   private void $$react4j$$_componentDidUpdate() {
     postUpdate();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentWillUnmount() {

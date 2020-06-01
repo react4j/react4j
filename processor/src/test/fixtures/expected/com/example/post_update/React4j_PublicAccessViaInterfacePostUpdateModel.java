@@ -47,9 +47,6 @@ abstract class React4j_PublicAccessViaInterfacePostUpdateModel extends PublicAcc
 
   private void $$react4j$$_componentDidUpdate() {
     postUpdate();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentWillUnmount() {

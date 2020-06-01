@@ -46,9 +46,6 @@ abstract class React4j_BasicPostUpdateModel extends BasicPostUpdateModel {
 
   private void $$react4j$$_componentDidUpdate() {
     postUpdate();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentWillUnmount() {

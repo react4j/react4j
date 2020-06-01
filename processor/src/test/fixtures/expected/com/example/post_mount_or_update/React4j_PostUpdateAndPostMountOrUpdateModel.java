@@ -48,17 +48,11 @@ abstract class React4j_PostUpdateAndPostMountOrUpdateModel extends PostUpdateAnd
 
   private void $$react4j$$_componentDidMount() {
     postMountOrUpdate();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentDidUpdate() {
     postMountOrUpdate();
     postUpdate();
-    if ( React.shouldStoreDebugDataAsState() ) {
-      storeDebugDataAsState();
-    }
   }
 
   private void $$react4j$$_componentWillUnmount() {
