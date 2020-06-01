@@ -32,7 +32,7 @@ public final class IntrospectUtil
    * @param observableInfo the observable.
    * @return the value as a string.
    */
-  @SuppressWarnings( "UnnecessaryUnboxing" )
+  @SuppressWarnings( { "UnnecessaryUnboxing", "rawtypes" } )
   @Nullable
   public static Object getValue( @Nonnull final ObservableValueInfo observableInfo )
   {
