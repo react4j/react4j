@@ -344,10 +344,11 @@ final class ComponentGenerator
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-      block.addStatement( "return null != component().props().getAsAny( Props.$N ) ? component().props().getAsAny( Props.$N ).$N() : null",
-                          prop.getConstantName(),
-                          prop.getConstantName(),
-                          convertMethodName );
+      block.addStatement(
+        "return null != component().props().getAsAny( Props.$N ) ? component().props().getAsAny( Props.$N ).$N() : null",
+        prop.getConstantName(),
+        prop.getConstantName(),
+        convertMethodName );
       block.nextControlFlow( "else" );
       block.addStatement( "return $T.uncheckedCast( component().props().getAsAny( Props.$N ) )",
                           JS_CLASSNAME,
@@ -357,7 +358,9 @@ final class ComponentGenerator
     }
     else
     {
-      method.addStatement( "return component().props().getAsAny( Props.$N ).$N()", prop.getConstantName(), convertMethodName );
+      method.addStatement( "return component().props().getAsAny( Props.$N ).$N()",
+                           prop.getConstantName(),
+                           convertMethodName );
     }
     return method;
   }
@@ -819,13 +822,7 @@ final class ComponentGenerator
       .addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "data", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
-    final CodeBlock.Builder block = CodeBlock.builder();
-    block.beginControlFlow( "if ( $T.shouldStoreDebugDataAsState() && $T.areSpiesEnabled() )",
-                            REACT_CLASSNAME,
-                            AREZ_CLASSNAME );
-    block.addStatement( "$T.collectDependencyDebugData( getRenderObserver(), data )", INTROSPECT_UTIL_CLASSNAME );
-    block.endControlFlow();
-    method.addCode( block.build() );
+    method.addStatement( "$T.collectDependencyDebugData( getRenderObserver(), data )", INTROSPECT_UTIL_CLASSNAME );
     return method;
   }
 

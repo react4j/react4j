@@ -1,6 +1,5 @@
 package com.example.arez;
 
-import arez.Arez;
 import arez.Disposable;
 import arez.Observer;
 import arez.annotations.ArezComponent;
@@ -103,9 +102,7 @@ abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
 
   @Override
   protected void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
-    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
-      IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
-    }
+    IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
   }
 
   static final class Factory {

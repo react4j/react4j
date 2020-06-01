@@ -109,9 +109,7 @@ abstract class React4j_AnnotatedMemoizeComponent extends AnnotatedMemoizeCompone
 
   @Override
   protected void populateDebugData(@Nonnull final JsPropertyMap<Object> data) {
-    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() ) {
-      IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
-    }
+    IntrospectUtil.collectDependencyDebugData( getRenderObserver(), data );
   }
 
   static final class Factory {

@@ -80,7 +80,7 @@ public abstract class Component
   @OmitSymbol( unless = "react4j.store_debug_data_as_state" )
   protected final void storeDebugDataAsState()
   {
-    if ( React.shouldStoreDebugDataAsState() )
+    if ( React.shouldStoreDebugDataAsState() && Arez.areSpiesEnabled() )
     {
       if ( _scheduledDebugStateUpdate )
       {
@@ -91,10 +91,7 @@ public abstract class Component
         final JsPropertyMap<Object> newState = JsPropertyMap.of();
         // Present component id as state. Useful to track when instance ids change.
         newState.set( "Arez.id", getComponentId() );
-        if ( Arez.areNamesEnabled() )
-        {
-          newState.set( "Arez.name", getComponentName() );
-        }
+        newState.set( "Arez.name", getComponentName() );
         populateDebugData( newState );
 
         final JsPropertyMap<Object> state = component().state();
