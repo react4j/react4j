@@ -42,7 +42,6 @@ public class JDependTest
     react4j.dependsUpon( braincheck );
     react4j.dependsUpon( elemental2Core );
     react4j.dependsUpon( react4jInternal );
-    react4j.dependsUpon( arez );
 
     react4jInternal.dependsUpon( jsinteropAnnotations );
     react4jInternal.dependsUpon( jsinteropBase );
@@ -53,6 +52,7 @@ public class JDependTest
     react4jInternalArez.dependsUpon( elemental2Promise );
     react4jInternalArez.dependsUpon( arez );
     react4jInternalArez.dependsUpon( arezSpy );
+    react4jInternalArez.dependsUpon( elemental2Core );
 
     final DependencyConstraint.MatchResult result = jdepend.analyzeDependencies( constraint );
 
