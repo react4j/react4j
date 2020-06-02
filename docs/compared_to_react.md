@@ -35,10 +35,9 @@ In React, [`forceUpdate(...)`](https://reactjs.org/docs/react-component.html#for
 to schedule the component for re-rendering. If this method is invoked it will skip the `shouldComponentUpdate()`
 method. It is not an uncommon pattern for a component to schedule a re-render by invoking `setState({})` if you
 still want the component to call `shouldComponentUpdate()` lifecycle method. To unify these two mechanisms for
-scheduling a render, React4j decided to define the method to
-{@link: react4j.Component#scheduleRender(boolean) scheduleRender(boolean force)}. If you pass `force = true`
-then `forceUpdate()` will be invoked on the underlying react component otherwise `setState({})` will be invoked.
-In both React and React4j, explicitly scheduling a re-render should be avoided but if you need to do it you can.
+scheduling a render, React4j decided to define the annotation
+{@link: react4j.annotations.ScheduleRender @ScheduleRender} with a parameter that controls whether
+`forceUpdate()` will be invoked or `setState({})` will be invoked.
 
 ### getInitialProps versus defaultProps
 
