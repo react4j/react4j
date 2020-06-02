@@ -70,17 +70,8 @@ the user. In particular, there is some additional steps required when using [Int
 ## Configure a GWT Application
 
 As React4j applications, are GWT applications, you will also need to inherit the appropriate
-GWT module in your `.gwt.xml` file. For React4j applications that use Arez component then it issufficient to add:
-
-```xml
-<module>
-  ...
-  <inherits name='react4j.arez.Arez'/>
-  ...
-</module>
-```
-
-Otherwise you can simply rely on the dom library via:
+GWT module in your `.gwt.xml` file. The most common approach is inherit the dom module that
+transitively inherits all the required modules via:
 
 ```xml
 <module>
