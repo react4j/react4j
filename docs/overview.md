@@ -7,8 +7,7 @@ to build a web application using the React component model. The [React component
 defines components that are passed `props` by their container, manage their own `state` and can be composed
 to make complex UIs.
 
-React4j uses GWT 2.8+ to compile the Java code to Javascript and aims to migrate to J2CL and/or GWT 3.x as
-soon it is released.
+React4j uses [GWT](https://github.com/gwtproject/gwt) or [J2CL](https://github.com/google/j2cl) to compile the Java code to Javascript.
 
 The "Hello World" of React4j that just returns a header is as simple as:
 
