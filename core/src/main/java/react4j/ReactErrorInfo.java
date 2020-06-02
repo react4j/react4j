@@ -7,7 +7,7 @@ import jsinterop.annotations.JsType;
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class ReactErrorInfo
 {
-  @SuppressWarnings( "NullableProblems" )
+  @SuppressWarnings( { "NotNullFieldNotInitialized", "unused" } )
   @Nonnull
   public String componentStack;
 }
