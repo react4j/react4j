@@ -14,16 +14,4 @@ public class MyComponent_
   public static void setProvider( final Provider<MyComponent> provider )
   {
   }
-
-  @Override
-  protected int getComponentId()
-  {
-    return 0;
-  }
-
-  @Override
-  protected String getComponentName()
-  {
-    return null;
-  }
 }
