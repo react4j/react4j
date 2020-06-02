@@ -15,6 +15,78 @@
     }
   },
   {
+    "code": "java.field.visibilityReduced",
+    "description": "Visibility was reduced from 'public' to 'package'.",
+    "element": "field react4j.React.Element",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "field",
+      "fieldName": "Element",
+      "newVisibility": "package",
+      "oldVisibility": "public",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.field.visibilityReduced",
+    "description": "Visibility was reduced from 'public' to 'package'.",
+    "element": "field react4j.React.Fragment",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "field",
+      "fieldName": "Fragment",
+      "newVisibility": "package",
+      "oldVisibility": "public",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.field.visibilityReduced",
+    "description": "Visibility was reduced from 'public' to 'package'.",
+    "element": "field react4j.React.StrictMode",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "field",
+      "fieldName": "StrictMode",
+      "newVisibility": "package",
+      "oldVisibility": "public",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.field.visibilityReduced",
+    "description": "Visibility was reduced from 'public' to 'package'.",
+    "element": "field react4j.React.Suspense",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "field",
+      "fieldName": "Suspense",
+      "newVisibility": "package",
+      "oldVisibility": "public",
+      "package": "react4j"
+    }
+  },
+  {
     "code": "java.method.added",
     "description": "Method was added.",
     "newElement": "method boolean react4j.internal.arez.IntrospectUtil::prepareStateUpdate(jsinterop.base.JsPropertyMap<java.lang.Object>, jsinterop.base.JsPropertyMap<java.lang.Object>)",
