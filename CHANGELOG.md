@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.161](https://github.com/react4j/react4j/tree/v0.161) (2020-06-02) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.160...v0.161) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.160&new=0.161)
+
+The release includes 2 non breaking API changes and 12 breaking API changes.
+
+Changes in this release:
 
 * Introduce the `@ScheduleRender` annotation that is applied to a template method that can be invoked by the component to schedule a render. The `Component.scheduleRender()` and `Component.scheduleRender(boolean)` were removed as they are replaced by the `@ScheduleRender` annotation.
 * Remove the `Component.props()` method from the public API as it is no longer used anywhere.
