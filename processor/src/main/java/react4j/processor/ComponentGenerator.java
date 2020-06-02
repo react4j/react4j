@@ -13,6 +13,7 @@ import com.squareup.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -96,6 +97,7 @@ final class ComponentGenerator
   private static final String COMPONENT_STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
   private static final String COMPONENT_FIELD = FRAMEWORK_INTERNAL_PREFIX + "component";
   private static final String IS_READY_METHOD = FRAMEWORK_INTERNAL_PREFIX + "isReady";
+  private static final String NATIVE_COMPONENT_FIELD = FRAMEWORK_INTERNAL_PREFIX + "nativeComponent";
 
   private ComponentGenerator()
   {
@@ -143,6 +145,13 @@ final class ComponentGenerator
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
     GeneratorUtil.addOriginatingTypes( typeElement, builder );
 
+    builder.addField( FieldSpec
+                        .builder( REACT_NATIVE_COMPONENT_CLASSNAME,
+                                  NATIVE_COMPONENT_FIELD,
+                                  Modifier.PRIVATE,
+                                  Modifier.FINAL )
+                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+                        .build() );
     builder.addMethod( buildConstructor( processingEnv, descriptor ).build() );
 
     for ( final ScheduleRenderDescriptor element : descriptor.getScheduleRenderDescriptors() )
@@ -150,11 +159,11 @@ final class ComponentGenerator
       final MethodSpec.Builder method = GeneratorUtil.overrideMethod( processingEnv, typeElement, element.getMethod() );
       if ( element.skipShouldComponentUpdate() )
       {
-        method.addStatement( "component().forceUpdate()" );
+        method.addStatement( "$N.forceUpdate()", NATIVE_COMPONENT_FIELD );
       }
       else
       {
-        method.addStatement( "component().setState( $T.of() )", JS_PROPERTY_MAP_CLASSNAME );
+        method.addStatement( "$N.setState( $T.of() )", NATIVE_COMPONENT_FIELD, JS_PROPERTY_MAP_CLASSNAME );
       }
       builder.addMethod( method.build() );
     }
@@ -241,10 +250,9 @@ final class ComponentGenerator
   private static MethodSpec.Builder buildConstructor( @Nonnull final ProcessingEnvironment processingEnv,
                                                       @Nonnull final ComponentDescriptor descriptor )
   {
-    final String componentParameterName = FRAMEWORK_INTERNAL_PREFIX + "nativeComponent";
     final ParameterSpec.Builder componentParameter =
       ParameterSpec
-        .builder( REACT_NATIVE_COMPONENT_CLASSNAME, componentParameterName, Modifier.FINAL )
+        .builder( REACT_NATIVE_COMPONENT_CLASSNAME, NATIVE_COMPONENT_FIELD, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
     final MethodSpec.Builder ctor = MethodSpec.constructorBuilder();
     ctor.addParameter( componentParameter.build() );
@@ -277,7 +285,10 @@ final class ComponentGenerator
       ctor.addStatement( sb.toString(), params.toArray() );
     }
 
-    ctor.addStatement( "bindComponent( $N )", componentParameterName );
+    ctor.addStatement( "this.$N = $T.requireNonNull( $N )",
+                       NATIVE_COMPONENT_FIELD,
+                       Objects.class,
+                       NATIVE_COMPONENT_FIELD );
     return ctor;
   }
 
@@ -356,20 +367,24 @@ final class ComponentGenerator
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
       block.addStatement(
-        "return null != component().props().getAsAny( Props.$N ) ? component().props().getAsAny( Props.$N ).$N() : null",
+        "return null != $N.props().getAsAny( Props.$N ) ? $N.props().getAsAny( Props.$N ).$N() : null",
+        NATIVE_COMPONENT_FIELD,
         prop.getConstantName(),
+        NATIVE_COMPONENT_FIELD,
         prop.getConstantName(),
         convertMethodName );
       block.nextControlFlow( "else" );
-      block.addStatement( "return $T.uncheckedCast( component().props().getAsAny( Props.$N ) )",
+      block.addStatement( "return $T.uncheckedCast( $N.props().getAsAny( Props.$N ) )",
                           JS_CLASSNAME,
+                          NATIVE_COMPONENT_FIELD,
                           prop.getConstantName() );
       block.endControlFlow();
       method.addCode( block.build() );
     }
     else
     {
-      method.addStatement( "return component().props().getAsAny( Props.$N ).$N()",
+      method.addStatement( "return $N.props().getAsAny( Props.$N ).$N()",
+                           NATIVE_COMPONENT_FIELD,
                            prop.getConstantName(),
                            convertMethodName );
     }
@@ -581,7 +596,7 @@ final class ComponentGenerator
     }
     else
     {
-      method.addStatement( "final $T props = component().props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      method.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_COMPONENT_FIELD );
 
       final boolean hasObservablePropsToUpdateOnChange =
         observableProps.stream().anyMatch( PropDescriptor::shouldUpdateOnChange );
@@ -663,7 +678,7 @@ final class ComponentGenerator
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != prevProps )" );
-      block.addStatement( "final $T props = component().props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      block.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_COMPONENT_FIELD );
       buildOnPropChangeInvocations( block, descriptor.getPreUpdateOnPropChangeDescriptors() );
       block.endControlFlow();
       method.addCode( block.build() );
@@ -692,7 +707,7 @@ final class ComponentGenerator
                              .build() );
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != prevProps )" );
-      block.addStatement( "final $T props = component().props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      block.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_COMPONENT_FIELD );
       buildOnPropChangeInvocations( block, descriptor.getPostUpdateOnPropChangeDescriptors() );
       block.endControlFlow();
       method.addCode( block.build() );
@@ -879,13 +894,15 @@ final class ComponentGenerator
                         FRAMEWORK_INTERNAL_PREFIX + "getRenderObserver" );
 
     final CodeBlock.Builder onUpdateBlock = CodeBlock.builder();
-    onUpdateBlock.beginControlFlow( "if ( $T.prepareStateUpdate( newState, component().state() ) )",
-                                    INTROSPECT_UTIL_CLASSNAME );
-    onUpdateBlock.addStatement( "component().setState( $T.cast( $T.freeze( newState ) ) )",
+    onUpdateBlock.beginControlFlow( "if ( $T.prepareStateUpdate( newState, $N.state() ) )",
+                                    INTROSPECT_UTIL_CLASSNAME,
+                                    NATIVE_COMPONENT_FIELD );
+    onUpdateBlock.addStatement( "$N.setState( $T.cast( $T.freeze( newState ) ) )",
+                                NATIVE_COMPONENT_FIELD,
                                 JS_CLASSNAME,
                                 JS_OBJECT_CLASSNAME );
     // Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
-    onUpdateBlock.addStatement( "component().forceUpdate()" );
+    onUpdateBlock.addStatement( "$N.forceUpdate()", NATIVE_COMPONENT_FIELD );
     onUpdateBlock.addStatement( "$N = true", flag );
     onUpdateBlock.endControlFlow();
     block.add( onUpdateBlock.build() );
@@ -908,11 +925,11 @@ final class ComponentGenerator
     outer.addStatement( "$N = $T.SCHEDULED", COMPONENT_STATE_FIELD, COMPONENT_STATE_CLASSNAME );
     if ( descriptor.hasObservableProps() )
     {
-      outer.addStatement( "component().setState( JsPropertyMap.of() )" );
+      outer.addStatement( "$N.setState( $T.of() )", NATIVE_COMPONENT_FIELD, JS_PROPERTY_MAP_CLASSNAME );
     }
     else
     {
-      outer.addStatement( "component().forceUpdate()" );
+      outer.addStatement( "$N.forceUpdate()", NATIVE_COMPONENT_FIELD );
     }
     outer.endControlFlow();
     method.addCode( outer.build() );

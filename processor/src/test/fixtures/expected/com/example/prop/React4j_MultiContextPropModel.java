@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,8 +26,11 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_MultiContextPropModel extends MultiContextPropModel {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_MultiContextPropModel(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -41,21 +45,21 @@ abstract class React4j_MultiContextPropModel extends MultiContextPropModel {
   @Override
   String getStringContextValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.stringContextValue ) ? component().props().getAsAny( Props.stringContextValue ).asString() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.stringContextValue ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.stringContextValue ).asString() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.stringContextValue ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.stringContextValue ) );
     }
   }
 
   @Override
   int getIntContextValue() {
-    return component().props().getAsAny( Props.intContextValue ).asInt();
+    return $$react4j$$_nativeComponent.props().getAsAny( Props.intContextValue ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = component().props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
     if ( !Js.isTripleEqual( props.get( Props.stringContextValue ), nextProps.get( Props.stringContextValue ) ) ) {
       return true;
     }

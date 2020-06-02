@@ -2,6 +2,7 @@ package com.example.inject;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import java.util.function.Consumer;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -26,12 +27,15 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInjectRawTypeComponent {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   @SuppressWarnings("rawtypes")
   React4j_ConstructorInjectRawTypeComponent(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent,
       @Nonnull final Consumer someParam) {
     super( someParam );
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

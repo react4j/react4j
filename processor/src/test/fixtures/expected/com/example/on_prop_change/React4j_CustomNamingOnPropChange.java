@@ -2,6 +2,7 @@ package com.example.on_prop_change;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,8 +27,11 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_CustomNamingOnPropChange(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -41,27 +45,27 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
 
   @Override
   boolean getMyProp1() {
-    return component().props().getAsAny( Props.myProp1 ).asBoolean();
+    return $$react4j$$_nativeComponent.props().getAsAny( Props.myProp1 ).asBoolean();
   }
 
   @Override
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.myProp2 ) ? component().props().getAsAny( Props.myProp2 ).asString() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.myProp2 ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.myProp2 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.myProp2 ) );
     }
   }
 
   @Override
   int getMyProp3() {
-    return component().props().getAsAny( Props.myProp3 ).asInt();
+    return $$react4j$$_nativeComponent.props().getAsAny( Props.myProp3 ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = component().props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
     if ( !Js.isTripleEqual( props.get( Props.myProp1 ), nextProps.get( Props.myProp1 ) ) ) {
       return true;
     }
@@ -76,7 +80,7 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
 
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
-      final JsPropertyMap<Object> props = component().props();
+      final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
       final boolean myProp1 = !Js.isTripleEqual( props.get( Props.myProp1 ), prevProps.get( Props.myProp1 ) );
       final boolean myProp2 = !Js.isTripleEqual( props.get( Props.myProp2 ), prevProps.get( Props.myProp2 ) );
       final boolean myProp3 = !Js.isTripleEqual( props.get( Props.myProp3 ), prevProps.get( Props.myProp3 ) );

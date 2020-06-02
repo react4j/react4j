@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Move the reference to the native react component out of the `react.Component` class and into the generated subclass. This involves removing the method `Component.bindComponent(NativeComponent)` and `Component.component()`.
+
 ### [v0.161](https://github.com/react4j/react4j/tree/v0.161) (2020-06-02) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.160...v0.161) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.160&new=0.161)
 
 The release includes 2 non breaking API changes and 12 breaking API changes.

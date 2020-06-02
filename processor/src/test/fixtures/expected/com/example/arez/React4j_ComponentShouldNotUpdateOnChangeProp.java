@@ -13,6 +13,7 @@ import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import elemental2.core.JsObject;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,13 +41,16 @@ import react4j.internal.arez.SchedulerUtil;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentShouldNotUpdateOnChangeProp {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   private int $$react4j$$_state;
 
   private boolean $$react4j$$_scheduledDebugStateUpdate;
 
   React4j_ComponentShouldNotUpdateOnChangeProp(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -61,9 +65,9 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
   @Override
   String getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.value ) ? component().props().getAsAny( Props.value ).asString() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.value ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.value ).asString() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.value ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.value ) );
     }
   }
 
@@ -114,7 +118,7 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
   void onRenderDepsChange() {
     if ( ComponentState.IDLE == $$react4j$$_state ) {
       $$react4j$$_state = ComponentState.SCHEDULED;
-      component().forceUpdate();
+      $$react4j$$_nativeComponent.forceUpdate();
     }
   }
 
@@ -138,9 +142,9 @@ abstract class React4j_ComponentShouldNotUpdateOnChangeProp extends ComponentSho
       newState.set( "Arez.id", $$react4j$$_getComponentId() );
       newState.set( "Arez.name", $$react4j$$_getComponentName() );
       IntrospectUtil.collectDependencyDebugData( $$react4j$$_getRenderObserver(), newState );
-      if ( IntrospectUtil.prepareStateUpdate( newState, component().state() ) ) {
-        component().setState( Js.cast( JsObject.freeze( newState ) ) );
-        component().forceUpdate();
+      if ( IntrospectUtil.prepareStateUpdate( newState, $$react4j$$_nativeComponent.state() ) ) {
+        $$react4j$$_nativeComponent.setState( Js.cast( JsObject.freeze( newState ) ) );
+        $$react4j$$_nativeComponent.forceUpdate();
         $$react4j$$_scheduledDebugStateUpdate = true;
       }
     }

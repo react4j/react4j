@@ -2,6 +2,7 @@ package com.example.nested;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,9 +26,12 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent extends NestedNestedReactComponent.DeepNesting.BasicReactComponent {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull

@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,8 +26,11 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_NonJavaBeanPropComponent(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -41,16 +45,16 @@ abstract class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent
   @Override
   String window() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.window ) ? component().props().getAsAny( Props.window ).asString() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.window ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.window ).asString() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.window ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.window ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = component().props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
     if ( !Js.isTripleEqual( props.get( Props.window ), nextProps.get( Props.window ) ) ) {
       return true;
     }

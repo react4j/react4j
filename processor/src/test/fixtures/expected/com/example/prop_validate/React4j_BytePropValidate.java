@@ -2,6 +2,7 @@ package com.example.prop_validate;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,8 +26,11 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_BytePropValidate extends BytePropValidate {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_BytePropValidate(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -40,7 +44,7 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
 
   @Override
   byte getMyProp() {
-    return component().props().getAsAny( Props.myProp ).asByte();
+    return $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ).asByte();
   }
 
   private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
@@ -57,7 +61,7 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
     if ( React.shouldValidatePropValues() ) {
       $$react4j$$_validatePropValues( nextProps );
     }
-    final JsPropertyMap<Object> props = component().props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

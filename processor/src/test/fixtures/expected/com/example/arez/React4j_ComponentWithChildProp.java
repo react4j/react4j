@@ -13,6 +13,7 @@ import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import elemental2.core.JsObject;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,12 +41,15 @@ import react4j.internal.arez.SchedulerUtil;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   private int $$react4j$$_state;
 
   private boolean $$react4j$$_scheduledDebugStateUpdate;
 
   React4j_ComponentWithChildProp(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -60,16 +64,16 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   @Override
   ReactNode getChild() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.child ) ? component().props().getAsAny( Props.child ).cast() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.child ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.child ).cast() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.child ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.child ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = component().props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
     if ( !Js.isTripleEqual( props.get( Props.child ), nextProps.get( Props.child ) ) ) {
       return true;
     }
@@ -117,7 +121,7 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
   void onRenderDepsChange() {
     if ( ComponentState.IDLE == $$react4j$$_state ) {
       $$react4j$$_state = ComponentState.SCHEDULED;
-      component().forceUpdate();
+      $$react4j$$_nativeComponent.forceUpdate();
     }
   }
 
@@ -141,9 +145,9 @@ abstract class React4j_ComponentWithChildProp extends ComponentWithChildProp {
       newState.set( "Arez.id", $$react4j$$_getComponentId() );
       newState.set( "Arez.name", $$react4j$$_getComponentName() );
       IntrospectUtil.collectDependencyDebugData( $$react4j$$_getRenderObserver(), newState );
-      if ( IntrospectUtil.prepareStateUpdate( newState, component().state() ) ) {
-        component().setState( Js.cast( JsObject.freeze( newState ) ) );
-        component().forceUpdate();
+      if ( IntrospectUtil.prepareStateUpdate( newState, $$react4j$$_nativeComponent.state() ) ) {
+        $$react4j$$_nativeComponent.setState( Js.cast( JsObject.freeze( newState ) ) );
+        $$react4j$$_nativeComponent.forceUpdate();
         $$react4j$$_scheduledDebugStateUpdate = true;
       }
     }

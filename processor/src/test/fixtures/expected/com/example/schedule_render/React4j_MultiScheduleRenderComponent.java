@@ -2,6 +2,7 @@ package com.example.schedule_render;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,28 +26,31 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_MultiScheduleRenderComponent extends MultiScheduleRenderComponent {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_MultiScheduleRenderComponent(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Override
   void myScheduleRender1() {
-    component().forceUpdate();
+    $$react4j$$_nativeComponent.forceUpdate();
   }
 
   @Override
   void myScheduleRender2() {
-    component().forceUpdate();
+    $$react4j$$_nativeComponent.forceUpdate();
   }
 
   @Override
   void myScheduleRender3() {
-    component().setState( JsPropertyMap.of() );
+    $$react4j$$_nativeComponent.setState( JsPropertyMap.of() );
   }
 
   @Override
   void myScheduleRender4() {
-    component().setState( JsPropertyMap.of() );
+    $$react4j$$_nativeComponent.setState( JsPropertyMap.of() );
   }
 
   @Nonnull

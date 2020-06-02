@@ -6,6 +6,7 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.Observable;
 import arez.annotations.ObservableValueRef;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,8 +30,11 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_ObservableViaMemoizeProp(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -50,9 +54,9 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
   )
   Object getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.value ) ? component().props().getAsAny( Props.value ).cast() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.value ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.value ).cast() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.value ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.value ) );
     }
   }
 
@@ -65,7 +69,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
   )
   boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = component().props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
     boolean modified = false;
     if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
       getValueObservableValue().reportChanged();

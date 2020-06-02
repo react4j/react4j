@@ -2,6 +2,7 @@ package com.example.schedule_render;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,14 +26,17 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_NoSkipScheduleRenderComponent extends NoSkipScheduleRenderComponent {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_NoSkipScheduleRenderComponent(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Override
   void myScheduleRender() {
-    component().setState( JsPropertyMap.of() );
+    $$react4j$$_nativeComponent.setState( JsPropertyMap.of() );
   }
 
   @Nonnull

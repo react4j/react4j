@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,8 +26,11 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_NullabilityPropsComponent extends NullabilityPropsComponent {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_NullabilityPropsComponent(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -41,23 +45,23 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
   @Nonnull
   @Override
   String getMyProp() {
-    return component().props().getAsAny( Props.myProp ).asString();
+    return $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ).asString();
   }
 
   @Nullable
   @Override
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.myProp2 ) ? component().props().getAsAny( Props.myProp2 ).asString() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.myProp2 ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.myProp2 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.myProp2 ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = component().props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }

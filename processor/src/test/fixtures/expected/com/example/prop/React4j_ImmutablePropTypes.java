@@ -3,6 +3,7 @@ package com.example.prop;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,8 +27,11 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_ImmutablePropTypes(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -42,41 +46,41 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   @Override
   ImmutablePropTypes.MyComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.myProp ) ? component().props().getAsAny( Props.myProp ).cast() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ) );
     }
   }
 
   @Override
   String getMyOtherProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.myOtherProp ) ? component().props().getAsAny( Props.myOtherProp ).asString() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.myOtherProp ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.myOtherProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.myOtherProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.myOtherProp ) );
     }
   }
 
   @Override
   int stillAnotherProp() {
-    return component().props().getAsAny( Props.stillAnotherProp ).asInt();
+    return $$react4j$$_nativeComponent.props().getAsAny( Props.stillAnotherProp ).asInt();
   }
 
   @Override
   ImmutablePropTypes.KeyedComponent BobsProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.BobsProp ) ? component().props().getAsAny( Props.BobsProp ).cast() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.BobsProp ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.BobsProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.BobsProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.BobsProp ) );
     }
   }
 
   @Override
   ImmutablePropTypes.Foo getSomeProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.someProp ) ? component().props().getAsAny( Props.someProp ).cast() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.someProp ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.someProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.someProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.someProp ) );
     }
   }
 

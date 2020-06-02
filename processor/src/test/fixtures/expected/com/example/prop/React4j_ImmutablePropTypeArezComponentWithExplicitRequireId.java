@@ -3,6 +3,7 @@ package com.example.prop;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,9 +27,12 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ImmutablePropTypeArezComponentWithExplicitRequireId extends ImmutablePropTypeArezComponentWithExplicitRequireId {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_ImmutablePropTypeArezComponentWithExplicitRequireId(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -43,9 +47,9 @@ abstract class React4j_ImmutablePropTypeArezComponentWithExplicitRequireId exten
   @Override
   ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.myProp ) ? component().props().getAsAny( Props.myProp ).cast() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ) );
     }
   }
 

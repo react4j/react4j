@@ -2,6 +2,7 @@ package com.example.optional_props;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,9 +26,12 @@ import react4j.internal.OnShouldComponentUpdate;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyRequired {
+  @Nonnull
+  private final NativeComponent $$react4j$$_nativeComponent;
+
   React4j_RequiredChildrenWithManyRequired(
       @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    bindComponent( $$react4j$$_nativeComponent );
+    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
   }
 
   @Nonnull
@@ -42,43 +46,43 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
   @Override
   String getMyRequiredProp1() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.myRequiredProp1 ) ? component().props().getAsAny( Props.myRequiredProp1 ).asString() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.myRequiredProp1 ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.myRequiredProp1 ).asString() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.myRequiredProp1 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.myRequiredProp1 ) );
     }
   }
 
   @Override
   String getMyRequiredProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.myRequiredProp2 ) ? component().props().getAsAny( Props.myRequiredProp2 ).asString() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.myRequiredProp2 ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.myRequiredProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.myRequiredProp2 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.myRequiredProp2 ) );
     }
   }
 
   @Override
   String getMyRequiredProp3() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.myRequiredProp3 ) ? component().props().getAsAny( Props.myRequiredProp3 ).asString() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.myRequiredProp3 ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.myRequiredProp3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.myRequiredProp3 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.myRequiredProp3 ) );
     }
   }
 
   @Override
   ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
-      return null != component().props().getAsAny( Props.children ) ? component().props().getAsAny( Props.children ).cast() : null;
+      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.children ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.children ).cast() : null;
     } else {
-      return Js.uncheckedCast( component().props().getAsAny( Props.children ) );
+      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.children ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = component().props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
     if ( !Js.isTripleEqual( props.get( Props.myRequiredProp1 ), nextProps.get( Props.myRequiredProp1 ) ) ) {
       return true;
     }
