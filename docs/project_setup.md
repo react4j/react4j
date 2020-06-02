@@ -30,25 +30,6 @@ the `react4j-core` library. To add this library to your Maven project, simply ad
 </project>
 ```
 
-If you plan to use [React Arez](arez.md) components you can instead add the `react4j-arez` dependency
-which will transitively include the required dependencies. This can be done by instead adding the
-following to your `pom.xml`:
-
-```xml
-<project>
-  ...
-  <dependencies>
-    ...
-    <dependency>
-      <groupId>org.realityforge.react4j</groupId>
-      <artifactId>react4j-arez</artifactId>
-      <version>0.161</version>
-    </dependency>
-    ...
-  </dependencies>
-</project>
-```
-
 To enable the annotation processor used by React4j, you need add the following
 snippet to configure the maven compiler plugin from within the `pom.xml`:
 
