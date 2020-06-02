@@ -81,28 +81,16 @@ transitively inherits all the required modules via:
 </module>
 ```
 
-In addition you can *also* add the `Dev` module if you want the framework to perform validation
-and limited invariant checking. The `Dev` module is very useful during development as it adds a
-level of safety and error checking but it should not be used in production environments as it adds
-some overhead. The `Dev` module decreases the execution speeds and significantly increases the code
-size. In small and medium sized applications, the extra safety afforded by developing with the `Dev`
-module always enabled and disabling the `Dev` module for production builds is usually worth the
-decreased performance of development builds. The `Dev` module can be added via:
+During development, it is useful to *also* inherit the `Dev` module as it enables limited invariant
+checking. The invariant checking does increase the code size and decrease execution speeds significantly
+so should not be used when deploying the applications. The extra safety afforded by developing with the
+`Dev` module always enabled is usually worth the decreased performance in development builds. The `Dev`
+module can be added via:
 
 ```xml
 <module>
   ...
   <inherits name='react4j.ReactDev'/>
-  ...
-</module>
-```
-
-If you are using Arez components you can enable further invariant checking via:
-
-```xml
-<module>
-  ...
-  <inherits name='react4j.arez.ArezDev'/>
   ...
 </module>
 ```
