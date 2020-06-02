@@ -1,6 +1,5 @@
 <module rename-to='hello_world'>
   <inherits name="com.google.gwt.core.Core"/>
-  <inherits name="react4j.React"/>
   <inherits name="react4j.dom.Dom"/>
 
   <entry-point class='react4j.examples.hello_world.HelloWorld'/>
