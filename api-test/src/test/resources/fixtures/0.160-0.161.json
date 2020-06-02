@@ -49,6 +49,22 @@
     }
   },
   {
+    "code": "java.field.removed",
+    "description": "Field removed from class.",
+    "oldElement": "field react4j.React.Profiler",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "field",
+      "fieldName": "Profiler",
+      "package": "react4j"
+    }
+  },
+  {
     "code": "java.method.removed",
     "description": "Method was removed.",
     "oldElement": "method int react4j.Component::getComponentId()",

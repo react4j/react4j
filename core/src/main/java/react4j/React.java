@@ -109,11 +109,6 @@ public final class React
   @JsProperty( name = "Suspense" )
   public static Object Suspense;
   /**
-   * The Symbol type for Profiler.
-   */
-  @JsProperty( name = "unstable_Profiler" )
-  public static Object Profiler;
-  /**
    * The Symbol type for Element.
    */
   @JsProperty( name = "Element" )
