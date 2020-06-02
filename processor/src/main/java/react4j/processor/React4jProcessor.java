@@ -627,7 +627,7 @@ public final class React4jProcessor
 
     if ( isSentinelName( name ) )
     {
-      final String deriveName = deriveName( element, VALIDATE_PROP_PATTERN, name, SENTINEL_NAME );
+      final String deriveName = deriveName( element, VALIDATE_PROP_PATTERN, name );
       if ( null == deriveName )
       {
         throw new ProcessorException( "@PropValidate target has not specified name nor is it named according " +
@@ -728,7 +728,7 @@ public final class React4jProcessor
     {
       if ( element instanceof ExecutableElement )
       {
-        final String deriveName = deriveName( element, DEFAULT_GETTER_PATTERN, name, SENTINEL_NAME );
+        final String deriveName = deriveName( element, DEFAULT_GETTER_PATTERN, name );
         if ( null == deriveName )
         {
           throw new ProcessorException( "@PropDefault target has not specified name nor is it named according " +
@@ -1433,14 +1433,14 @@ public final class React4jProcessor
                                           @Nonnull final String specifiedName )
     throws ProcessorException
   {
-    String name = deriveName( method, GETTER_PATTERN, specifiedName, React4jProcessor.SENTINEL_NAME );
+    String name = deriveName( method, GETTER_PATTERN, specifiedName );
     if ( null != name )
     {
       return name;
     }
     else if ( method.getReturnType().getKind() == TypeKind.BOOLEAN )
     {
-      name = deriveName( method, ISSER_PATTERN, specifiedName, React4jProcessor.SENTINEL_NAME );
+      name = deriveName( method, ISSER_PATTERN, specifiedName );
       if ( null != name )
       {
         return name;
@@ -1450,13 +1450,10 @@ public final class React4jProcessor
   }
 
   @Nullable
-  private String deriveName( @Nonnull final Element method,
-                             @Nonnull final Pattern pattern,
-                             @Nonnull final String name,
-                             @Nonnull final String sentinelName )
+  private String deriveName( @Nonnull final Element method, @Nonnull final Pattern pattern, @Nonnull final String name )
     throws ProcessorException
   {
-    if ( sentinelName.equals( name ) )
+    if ( isSentinelName( name ) )
     {
       final String methodName = method.getSimpleName().toString();
       final Matcher matcher = pattern.matcher( methodName );
