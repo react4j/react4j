@@ -97,7 +97,7 @@ public final class React
    * The Symbol type for Fragments.
    */
   @JsProperty( name = "Fragment" )
-  public static Object Fragment;
+  static Object Fragment;
   /**
    * The Symbol type for StrictMode.
    */
@@ -107,12 +107,12 @@ public final class React
    * The Symbol type for Suspense.
    */
   @JsProperty( name = "Suspense" )
-  public static Object Suspense;
+  static Object Suspense;
   /**
    * The Symbol type for Element.
    */
   @JsProperty( name = "Element" )
-  public static Object Element;
+  static Object Element;
 
   /**
    * Creates a context with specified default value.

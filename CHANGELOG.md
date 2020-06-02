@@ -9,6 +9,7 @@
 * Remove `Component.storeDebugDataAsState()` method and supporting infrastructure such as `Component.getComponentId()` and `Component.getComponentName()` as it is inlined into the generated react component subclass where it is needed.
 * Remove the unused `React.Profiler` field.
 * Reduce access level of `React.StrictMode` and `ReactElement.createStrictMode(...)` as they are not intended to be used outside of internal debug infrastructure.
+* Reduce the access level of the `React.Element`, `React.Fragment` and `React.Suspense` fields as they are only used within local methods.
 
 ### [v0.160](https://github.com/react4j/react4j/tree/v0.160) (2020-05-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.159...v0.160)
 
