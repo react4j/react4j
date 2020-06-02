@@ -135,7 +135,7 @@ CONTENT
     end
 
     stage('MavenCentralPublish', 'Publish artifacts to Maven Central') do
-      sh 'bundle exec buildr clean mcrt:publish_if_tagged site:deploy TEST=no GWT=react4j:doc-examples'
+      sh "bundle exec buildr clean mcrt:publish_if_tagged site:deploy TEST=no GWT=react4j:doc-examples#{Buildr.application.options.trace ? ' --trace' : ''}"
     end
 
     stage('PatchChangelogPostRelease', 'Patch the changelog post release to prepare for next development iteration') do
