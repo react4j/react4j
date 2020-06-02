@@ -6,8 +6,7 @@
     ],
     "Reference": [
       "arez",
-      "compared_to_react",
-      "dependency_injection"
+      "compared_to_react"
     ],
     "Examples": [
       "todomvc"
