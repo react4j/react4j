@@ -8,6 +8,7 @@
 * Extract a utility method `IntrospectUtil.prepareStateUpdate(newState, currentState)` from the `react4j.Component` class to make it easier to reuse.
 * Remove `Component.storeDebugDataAsState()` method and supporting infrastructure such as `Component.getComponentId()` and `Component.getComponentName()` as it is inlined into the generated react component subclass where it is needed.
 * Remove the unused `React.Profiler` field.
+* Reduce access level of `React.StrictMode` and `ReactElement.createStrictMode(...)` as they are not intended to be used outside of internal debug infrastructure.
 
 ### [v0.160](https://github.com/react4j/react4j/tree/v0.160) (2020-05-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.159...v0.160)
 

@@ -102,7 +102,7 @@ public final class React
    * The Symbol type for StrictMode.
    */
   @JsProperty( name = "StrictMode" )
-  public static Object StrictMode;
+  static Object StrictMode;
   /**
    * The Symbol type for Suspense.
    */

@@ -138,7 +138,7 @@ public class ReactElement
    */
   @JsOverlay
   @Nonnull
-  public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
+  static ReactNode createStrictMode( @Nonnull final ReactNode... children )
   {
     return ReactElement.createRawElement( React.StrictMode,
                                           null,
