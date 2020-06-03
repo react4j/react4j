@@ -32,6 +32,21 @@
   {
     "code": "java.class.added",
     "description": "Class was added.",
+    "newElement": "class react4j.internal.IntrospectUtil",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.IntrospectUtil",
+      "classSimpleName": "IntrospectUtil",
+      "elementKind": "class",
+      "package": "react4j.internal"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
     "newElement": "class react4j.internal.NativeView",
     "classification": {
       "SOURCE": "NON_BREAKING",
@@ -47,16 +62,31 @@
   {
     "code": "java.class.added",
     "description": "Class was added.",
-    "newElement": "class react4j.internal.arez.ViewState",
+    "newElement": "class react4j.internal.SchedulerUtil",
     "classification": {
       "SOURCE": "NON_BREAKING",
       "BINARY": "NON_BREAKING"
     },
     "attachments": {
-      "classQualifiedName": "react4j.internal.arez.ViewState",
+      "classQualifiedName": "react4j.internal.SchedulerUtil",
+      "classSimpleName": "SchedulerUtil",
+      "elementKind": "class",
+      "package": "react4j.internal"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.internal.ViewState",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.ViewState",
       "classSimpleName": "ViewState",
       "elementKind": "class",
-      "package": "react4j.internal.arez"
+      "package": "react4j.internal"
     }
   },
   {
@@ -227,6 +257,36 @@
     "attachments": {
       "classQualifiedName": "react4j.internal.arez.ComponentState",
       "classSimpleName": "ComponentState",
+      "elementKind": "class",
+      "package": "react4j.internal.arez"
+    }
+  },
+  {
+    "code": "java.class.removed",
+    "description": "Class was removed.",
+    "oldElement": "class react4j.internal.arez.IntrospectUtil",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.arez.IntrospectUtil",
+      "classSimpleName": "IntrospectUtil",
+      "elementKind": "class",
+      "package": "react4j.internal.arez"
+    }
+  },
+  {
+    "code": "java.class.removed",
+    "description": "Class was removed.",
+    "oldElement": "class react4j.internal.arez.SchedulerUtil",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.arez.SchedulerUtil",
+      "classSimpleName": "SchedulerUtil",
       "elementKind": "class",
       "package": "react4j.internal.arez"
     }
