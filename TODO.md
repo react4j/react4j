@@ -6,6 +6,9 @@ complete as there is too much un-said.
 
 ### Next Release
 
+* Consider changing the default type to `TRACKING`? Asses how many components exist of each different type
+  in your average app.
+
 * Consider adding the ability to pass immutable `@Prop` values in as constructor parameters. The
   `immutable` param on the `@Prop` could simply be dropped and just anything passed in via constructor
   is by definition immutable. This would require a some rework in code generation, particularly when
