@@ -14,7 +14,7 @@ import react4j.Keyed;
 /**
  * Annotation used to specify an abstract method that returns a prop.
  * The property is extracted from Reacts underlying props object. By default the prop is passed as
- * a value in when creating the component but it can also be retrieved from the react context.
+ * a value in when creating the view but it can also be retrieved from the react context.
  *
  * <p>The method that is annotated with this annotation must also comply with the following constraints:</p>
  * <ul>
@@ -23,16 +23,16 @@ import react4j.Keyed;
  * <li>Must return a value</li>
  * <li>Must be an abstract instance method</li>
  * <li>Must not throw exceptions</li>
- * <li>Must be accessible from the same package as the class annotated by {@link ReactComponent}</li>
+ * <li>Must be accessible from the same package as the class annotated by {@link View}</li>
  * <li>
- *   Should not be public as not expected to be invoked outside the component. A warning will be generated but can
+ *   Should not be public as not expected to be invoked outside the view. A warning will be generated but can
  *   be suppressed by the {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key
  *   "React4j:PublicMethod". This warning is also suppressed by the annotation processor if it is implementing
  *   an interface method.
  * </li>
  * <li>
- *   Should not be protected if in the class annotated with the {@link ReactComponent} annotation as the method is not
- *   expected to be invoked outside the component. A warning will be generated but can be suppressed by the
+ *   Should not be protected if in the class annotated with the {@link View} annotation as the method is not
+ *   expected to be invoked outside the view. A warning will be generated but can be suppressed by the
  *   {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key "React4j:ProtectedMethod".
  * </li>
  * </ul>
@@ -63,15 +63,15 @@ public @interface Prop
   /**
    * The setting controlling where the prop value is source from.
    * If the source is set to {@link Source#CONTEXT} then the prop is sometimes described as a "TreeProp"
-   * as it is transparently passed from a parent component to all child components. A "TreeProp" does not
-   * have to be specified by the user when creating the component.
+   * as it is transparently passed from a parent view to all child views. A "TreeProp" does not
+   * have to be specified by the user when creating the view.
    *
    * @return the setting controlling where the prop value is source from.
    */
   Source source() default Source.DEFAULT;
 
   /**
-   * Setting indicating whether the prop should be supplied when the component is constructed.
+   * Setting indicating whether the prop should be supplied when the view is constructed.
    * This influences validation when enabled and how the Builder class is created.
    * If set to {@link Feature#ENABLE} then the user MUST supply the prop and the builder will require the user
    * to specify the value. If set to {@link Feature#DISABLE} then the user can optionally supply the prop.
@@ -99,7 +99,7 @@ public @interface Prop
    * <p>If set to {@link Feature#AUTODETECT} then the prop will be observable if and only if:</p>
    * <ul>
    * <li>{@link #shouldUpdateOnChange()} is not set to {@link Feature#DISABLE}.</li>
-   * <li>the component has at least one method annotated with {@link Memoize} or {@link Observe}.</li>
+   * <li>the view has at least one method annotated with {@link Memoize} or {@link Observe}.</li>
    * </ul>
    *
    * @return the enum indicating whether prop is observable.
@@ -107,20 +107,20 @@ public @interface Prop
   Feature observable() default Feature.AUTODETECT;
 
   /**
-   * Return an enum indicating whether the component should check whether the value of the prop is disposed
+   * Return an enum indicating whether the view should check whether the value of the prop is disposed
    * prior to rendering. If the value is disposed then the render method will exit early and return null.
    * If this parameter is set to {@link Feature#AUTODETECT} then the annotation processor will inspect the
    * type of the prop and treat it as {@link Feature#ENABLE} if the type is annotated with the {@link ArezComponent}
    * annotation or the {@link ActAsComponent} annotation.
    *
-   * @return an enum indicating whether the component should check whether the value of the prop is disposed prior to rendering.
+   * @return an enum indicating whether the view should check whether the value of the prop is disposed prior to rendering.
    */
   Feature disposable() default Feature.AUTODETECT;
 
   /**
    * True if the prop is not expected to change after initial value is set. If the value of the prop does change
-   * then it is expected that the react component will be unmounted and a new component created. This is implemented
-   * by synthesizing a key for the component every time the component that is derived from this prop. To enable this
+   * then it is expected that the react view will be unmounted and a new view created. This is implemented
+   * by synthesizing a key for the view every time the view that is derived from this prop. To enable this
    * the annotation processor must be able to identify the type of the prop so that a key can be synthesized. The
    * following types are supported by the annotation processor;
    *
@@ -137,7 +137,7 @@ public @interface Prop
    * or {@link ActAsComponent} then the annotation processor will assume the {@link Keyed} interface is to used in
    * preference to other alternative strategies.</p>
    *
-   * @return true if changing the prop recreates the component.
+   * @return true if changing the prop recreates the view.
    */
   boolean immutable() default false;
 
@@ -147,7 +147,7 @@ public @interface Prop
   enum Source
   {
     /**
-     * The prop value is passed to the component during construction.
+     * The prop value is passed to the view during construction.
      */
     DEFAULT,
     /**

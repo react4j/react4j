@@ -27,12 +27,12 @@ final class ImmutablePropTypePrimitiveFloatBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypePrimitiveFloat.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypePrimitiveFloat.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final float myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypePrimitiveFloat_7757742f" : ImmutablePropTypePrimitiveFloat.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveFloat_7757742f" : ImmutablePropTypePrimitiveFloat.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypePrimitiveFloat.Props.myProp, myProp );
       return build();
     }

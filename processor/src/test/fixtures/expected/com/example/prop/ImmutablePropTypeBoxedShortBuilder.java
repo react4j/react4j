@@ -27,12 +27,12 @@ final class ImmutablePropTypeBoxedShortBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeBoxedShort.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeBoxedShort.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final Short myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeBoxedShort_9954b60a" : ImmutablePropTypeBoxedShort.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedShort_9954b60a" : ImmutablePropTypeBoxedShort.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeBoxedShort.Props.myProp, myProp );
       return build();
     }

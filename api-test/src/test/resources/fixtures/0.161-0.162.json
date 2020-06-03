@@ -15,9 +15,181 @@
     }
   },
   {
-    "code": "java.method.removed",
-    "description": "Method was removed.",
-    "oldElement": "method react4j.internal.NativeComponent react4j.Component::component()",
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.View",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.View",
+      "classSimpleName": "View",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.internal.NativeView",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.NativeView",
+      "classSimpleName": "NativeView",
+      "elementKind": "class",
+      "package": "react4j.internal"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.internal.arez.ViewState",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.arez.ViewState",
+      "classSimpleName": "ViewState",
+      "elementKind": "class",
+      "package": "react4j.internal.arez"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "interface react4j.internal.ViewConstructorFunction",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.ViewConstructorFunction",
+      "classSimpleName": "ViewConstructorFunction",
+      "elementKind": "interface",
+      "package": "react4j.internal"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method boolean react4j.React::enableViewNames()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "method",
+      "methodName": "enableViewNames",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.attributeWithDefaultAddedToAnnotationType",
+    "description": "The annotation has a new attribute with a default value.",
+    "newElement": "method boolean react4j.annotations.ScheduleRender::skipShouldViewUpdate()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.ScheduleRender",
+      "classSimpleName": "ScheduleRender",
+      "elementKind": "method",
+      "methodName": "skipShouldViewUpdate",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method react4j.ReactElement react4j.ReactElement::createViewElement(react4j.internal.ViewConstructorFunction)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "createViewElement",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.ReactTestUtil::disableViewNames()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "disableViewNames",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.ReactTestUtil::enableViewNames()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "enableViewNames",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.ReactTestUtil::setViewEnableNames(boolean)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "setViewEnableNames",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.annotation.noLongerPresent",
+    "description": "Old API referenced the annotation type but the new API version no longer does.",
+    "oldElement": "@interface react4j.annotations.ReactComponent",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "NON_BREAKING",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.ReactComponent",
+      "classSimpleName": "ReactComponent",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.removed",
+    "description": "Class was removed.",
+    "oldElement": "class react4j.Component",
     "classification": {
       "SOURCE": "BREAKING",
       "BINARY": "BREAKING"
@@ -25,24 +197,148 @@
     "attachments": {
       "classQualifiedName": "react4j.Component",
       "classSimpleName": "Component",
+      "elementKind": "class",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.class.removed",
+    "description": "Class was removed.",
+    "oldElement": "class react4j.internal.NativeComponent",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.NativeComponent",
+      "classSimpleName": "NativeComponent",
+      "elementKind": "class",
+      "package": "react4j.internal"
+    }
+  },
+  {
+    "code": "java.class.removed",
+    "description": "Class was removed.",
+    "oldElement": "class react4j.internal.arez.ComponentState",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.arez.ComponentState",
+      "classSimpleName": "ComponentState",
+      "elementKind": "class",
+      "package": "react4j.internal.arez"
+    }
+  },
+  {
+    "code": "java.class.removed",
+    "description": "Class was removed.",
+    "oldElement": "interface react4j.internal.ComponentConstructorFunction",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.ComponentConstructorFunction",
+      "classSimpleName": "ComponentConstructorFunction",
+      "elementKind": "interface",
+      "package": "react4j.internal"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method boolean react4j.React::enableComponentNames()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
       "elementKind": "method",
-      "methodName": "component",
+      "methodName": "enableComponentNames",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.attributeRemovedFromAnnotationType",
+    "description": "The annotation no longer has an attribute.",
+    "oldElement": "method boolean react4j.annotations.ScheduleRender::skipShouldComponentUpdate()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.ScheduleRender",
+      "classSimpleName": "ScheduleRender",
+      "elementKind": "method",
+      "methodName": "skipShouldComponentUpdate",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactElement react4j.ReactElement::createComponentElement(react4j.internal.ComponentConstructorFunction)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "createComponentElement",
       "package": "react4j"
     }
   },
   {
     "code": "java.method.removed",
     "description": "Method was removed.",
-    "oldElement": "method void react4j.Component::bindComponent(react4j.internal.NativeComponent)",
+    "oldElement": "method void react4j.ReactTestUtil::disableComponentNames()",
     "classification": {
       "SOURCE": "BREAKING",
       "BINARY": "BREAKING"
     },
     "attachments": {
-      "classQualifiedName": "react4j.Component",
-      "classSimpleName": "Component",
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
       "elementKind": "method",
-      "methodName": "bindComponent",
+      "methodName": "disableComponentNames",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.ReactTestUtil::enableComponentNames()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "enableComponentNames",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.ReactTestUtil::setComponentEnableNames(boolean)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "setComponentEnableNames",
       "package": "react4j"
     }
   }

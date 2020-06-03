@@ -5,8 +5,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a method that is called after a component is mounted or attatched to the DOM.
- * There must only be one method annotated with this annotation in a single component.
+ * Identifies a method that is called after a view is mounted or attached to the DOM.
+ * There must only be one method annotated with this annotation in a view.
  * This method is invoked in the "commit" phase using reacts <code>componentDidMount()</code> lifecycle method.
  *
  * <p>The method must also conform to the following constraints:</p>
@@ -19,16 +19,16 @@ import java.lang.annotation.Target;
  * <li>Must not be static</li>
  * <li>Must not be abstract</li>
  * <li>Must not throw exceptions</li>
- * <li>Must be accessible from the same package as the class annotated by {@link ReactComponent}</li>
+ * <li>Must be accessible from the same package as the class annotated by {@link View}</li>
  * <li>
- *   Should not be public as not expected to be invoked outside the component. A warning will be generated but can
+ *   Should not be public as not expected to be invoked outside the view. A warning will be generated but can
  *   be suppressed by the {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key
  *   "React4j:PublicMethod". This warning is also suppressed by the annotation processor if it is implementing
  *   an interface method.
  * </li>
  * <li>
- *   Should not be protected if in the class annotated with the {@link ReactComponent} annotation as the method is not
- *   expected to be invoked outside the component. A warning will be generated but can be suppressed by the
+ *   Should not be protected if in the class annotated with the {@link View} annotation as the method is not
+ *   expected to be invoked outside the view. A warning will be generated but can be suppressed by the
  *   {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key "React4j:ProtectedMethod".
  * </li>
  * </ul>

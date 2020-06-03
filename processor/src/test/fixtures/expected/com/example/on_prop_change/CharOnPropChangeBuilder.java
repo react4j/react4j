@@ -26,7 +26,7 @@ final class CharOnPropChangeBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_CharOnPropChange.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_CharOnPropChange.Factory.TYPE );
 
     @Override
     @Nonnull

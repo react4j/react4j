@@ -12,10 +12,9 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
-import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
+import react4j.internal.ViewConstructorFunction;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
@@ -28,28 +27,28 @@ import react4j.internal.OnShouldComponentUpdate;
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ProtectedAccessFromBasePropValidateModel extends ProtectedAccessFromBasePropValidateModel {
   @Nonnull
-  private final NativeComponent $$react4j$$_nativeComponent;
+  private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   React4j_ProtectedAccessFromBasePropValidateModel(
-      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+    this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
 
   @Nonnull
-  private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
-    if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ProtectedAccessFromBasePropValidateModel" );
+  private static ViewConstructorFunction getConstructorFunction() {
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    if ( React.enableViewNames() ) {
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ProtectedAccessFromBasePropValidateModel" );
     }
-    return componentConstructor;
+    return viewConstructor;
   }
 
   @Override
   protected String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ).asString() : null;
+      return null != $$react4j$$_nativeView.props().getAsAny( Props.myProp ) ? $$react4j$$_nativeView.props().getAsAny( Props.myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myProp ) );
     }
   }
 
@@ -67,7 +66,7 @@ abstract class React4j_ProtectedAccessFromBasePropValidateModel extends Protecte
     if ( React.shouldValidatePropValues() ) {
       $$react4j$$_validatePropValues( nextProps );
     }
-    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }
@@ -86,67 +85,67 @@ abstract class React4j_ProtectedAccessFromBasePropValidateModel extends Protecte
 
   static final class Factory {
     @Nonnull
-    static final ComponentConstructorFunction TYPE = getConstructorFunction();
+    static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
   static final class Props {
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate {
+  private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
     @Nonnull
-    private final React4j_ProtectedAccessFromBasePropValidateModel $$react4j$$_component;
+    private final React4j_ProtectedAccessFromBasePropValidateModel $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ProtectedAccessFromBasePropValidateModel( this );
+      $$react4j$$_view = new Arez_React4j_ProtectedAccessFromBasePropValidateModel( this );
       if ( React.shouldValidatePropValues() ) {
         assert null != props;
-        $$react4j$$_component.$$react4j$$_validatePropValues( props );
+        $$react4j$$_view.$$react4j$$_validatePropValues( props );
       }
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.$$react4j$$_render();
+      return $$react4j$$_view.$$react4j$$_render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+  private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ProtectedAccessFromBasePropValidateModel $$react4j$$_component;
+    private final React4j_ProtectedAccessFromBasePropValidateModel $$react4j$$_view;
 
     @JsConstructor
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+    NativeView(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ProtectedAccessFromBasePropValidateModel( this );
+      $$react4j$$_view = new Arez_React4j_ProtectedAccessFromBasePropValidateModel( this );
       if ( React.shouldValidatePropValues() ) {
         assert null != props;
-        $$react4j$$_component.$$react4j$$_validatePropValues( props );
+        $$react4j$$_view.$$react4j$$_validatePropValues( props );
       }
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_component.$$react4j$$_componentWillUnmount();
+      $$react4j$$_view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.$$react4j$$_render();
+      return $$react4j$$_view.$$react4j$$_render();
     }
   }
 }

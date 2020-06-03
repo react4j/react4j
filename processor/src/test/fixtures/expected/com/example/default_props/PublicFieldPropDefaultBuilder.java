@@ -38,7 +38,7 @@ final class PublicFieldPropDefaultBuilder {
     private final ReactElement _element;
 
     Builder() {
-      _element = ReactElement.createComponentElement( React4j_PublicFieldPropDefault.Factory.TYPE );
+      _element = ReactElement.createViewElement( React4j_PublicFieldPropDefault.Factory.TYPE );
       final JsPropertyMap<Object> props = _element.props();
       props.set( React4j_PublicFieldPropDefault.Props.myProp, PublicFieldPropDefault.DEFAULT_MY_PROP );
     }

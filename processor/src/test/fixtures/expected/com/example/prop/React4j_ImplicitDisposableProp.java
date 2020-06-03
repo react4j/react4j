@@ -23,15 +23,14 @@ import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
-import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
-import react4j.internal.arez.ComponentState;
+import react4j.internal.ViewConstructorFunction;
 import react4j.internal.arez.IntrospectUtil;
 import react4j.internal.arez.SchedulerUtil;
+import react4j.internal.arez.ViewState;
 
 @ArezComponent(
     name = "ImplicitDisposableProp",
@@ -42,42 +41,43 @@ import react4j.internal.arez.SchedulerUtil;
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   @Nonnull
-  private final NativeComponent $$react4j$$_nativeComponent;
+  private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   private int $$react4j$$_state;
 
   private boolean $$react4j$$_scheduledDebugStateUpdate;
 
-  React4j_ImplicitDisposableProp(@Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
+  React4j_ImplicitDisposableProp(
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+    this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
 
   @Nonnull
-  private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
-    if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "ImplicitDisposableProp" );
+  private static ViewConstructorFunction getConstructorFunction() {
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    if ( React.enableViewNames() ) {
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ImplicitDisposableProp" );
     }
-    return componentConstructor;
+    return viewConstructor;
   }
 
   @Override
   ImplicitDisposableProp.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeComponent.props().getAsAny( Props.model ) ? $$react4j$$_nativeComponent.props().getAsAny( Props.model ).cast() : null;
+      return null != $$react4j$$_nativeView.props().getAsAny( Props.model ) ? $$react4j$$_nativeView.props().getAsAny( Props.model ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeComponent.props().getAsAny( Props.model ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.model ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
     if ( !Js.isTripleEqual( props.get( Props.model ), nextProps.get( Props.model ) ) ) {
       return true;
     }
-    return ComponentState.SCHEDULED == $$react4j$$_state;
+    return ViewState.SCHEDULED == $$react4j$$_state;
   }
 
   private void $$react4j$$_componentDidMount() {
@@ -93,7 +93,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    $$react4j$$_state = ComponentState.UNMOUNTED;
+    $$react4j$$_state = ViewState.UNMOUNTED;
     ((Arez_React4j_ImplicitDisposableProp) this).dispose();
   }
 
@@ -107,7 +107,7 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
       reportResult = false
   )
   ReactNode $$react4j$$_render() {
-    $$react4j$$_state = ComponentState.IDLE;
+    $$react4j$$_state = ViewState.IDLE;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final ImplicitDisposableProp.Model $$react4jv$$_getModel = getModel();
@@ -122,9 +122,9 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
   }
 
   void onRenderDepsChange() {
-    if ( ComponentState.IDLE == $$react4j$$_state ) {
-      $$react4j$$_state = ComponentState.SCHEDULED;
-      $$react4j$$_nativeComponent.forceUpdate();
+    if ( ViewState.IDLE == $$react4j$$_state ) {
+      $$react4j$$_state = ViewState.SCHEDULED;
+      $$react4j$$_nativeView.forceUpdate();
     }
   }
 
@@ -148,9 +148,9 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
       newState.set( "Arez.id", $$react4j$$_getComponentId() );
       newState.set( "Arez.name", $$react4j$$_getComponentName() );
       IntrospectUtil.collectDependencyDebugData( $$react4j$$_getRenderObserver(), newState );
-      if ( IntrospectUtil.prepareStateUpdate( newState, $$react4j$$_nativeComponent.state() ) ) {
-        $$react4j$$_nativeComponent.setState( Js.cast( JsObject.freeze( newState ) ) );
-        $$react4j$$_nativeComponent.forceUpdate();
+      if ( IntrospectUtil.prepareStateUpdate( newState, $$react4j$$_nativeView.state() ) ) {
+        $$react4j$$_nativeView.setState( Js.cast( JsObject.freeze( newState ) ) );
+        $$react4j$$_nativeView.forceUpdate();
         $$react4j$$_scheduledDebugStateUpdate = true;
       }
     }
@@ -158,74 +158,74 @@ abstract class React4j_ImplicitDisposableProp extends ImplicitDisposableProp {
 
   static final class Factory {
     @Nonnull
-    static final ComponentConstructorFunction TYPE = getConstructorFunction();
+    static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
   static final class Props {
     static final String model = React.shouldMinimizePropKeys() ? "a" : "model";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnShouldComponentUpdate, OnComponentWillUnmount {
+  private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ImplicitDisposableProp $$react4j$$_component;
+    private final React4j_ImplicitDisposableProp $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ImplicitDisposableProp( this );
+      $$react4j$$_view = new Arez_React4j_ImplicitDisposableProp( this );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_component.$$react4j$$_componentWillUnmount();
+      $$react4j$$_view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.$$react4j$$_render();
+      return $$react4j$$_view.$$react4j$$_render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+  private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ImplicitDisposableProp $$react4j$$_component;
+    private final React4j_ImplicitDisposableProp $$react4j$$_view;
 
     @JsConstructor
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+    NativeView(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_ImplicitDisposableProp( this );
+      $$react4j$$_view = new Arez_React4j_ImplicitDisposableProp( this );
     }
 
     @Override
     public final void componentDidMount() {
-      $$react4j$$_component.$$react4j$$_componentDidMount();
+      $$react4j$$_view.$$react4j$$_componentDidMount();
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      $$react4j$$_component.$$react4j$$_componentDidUpdate();
+      $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_component.$$react4j$$_componentWillUnmount();
+      $$react4j$$_view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.$$react4j$$_render();
+      return $$react4j$$_view.$$react4j$$_render();
     }
   }
 }

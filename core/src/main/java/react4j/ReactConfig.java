@@ -14,7 +14,7 @@ final class ReactConfig
   @Nonnull
   private static final ConfigProvider PROVIDER = new ConfigProvider();
   private static final boolean PRODUCTION_ENVIRONMENT = PROVIDER.isProductionEnvironment();
-  private static boolean ENABLE_COMPONENT_NAMES = PROVIDER.enableComponentNames();
+  private static boolean ENABLE_VIEW_NAMES = PROVIDER.enableViewNames();
   private static boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
   private static boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
   private static boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
@@ -25,25 +25,20 @@ final class ReactConfig
   {
   }
 
-  static boolean isDevelopmentEnvironment()
-  {
-    return !isProductionEnvironment();
-  }
-
   static boolean isProductionEnvironment()
   {
     return PRODUCTION_ENVIRONMENT;
   }
 
   /**
-   * Return true if components should have human readable names specified.
+   * Return true if views should have human readable names specified.
    * Useful if you want to interact via DevTools or other tool chains.
    *
-   * @return true to enable human readable names for components.
+   * @return true to enable human readable names for views.
    */
-  static boolean enableComponentNames()
+  static boolean enableViewNames()
   {
-    return ENABLE_COMPONENT_NAMES;
+    return ENABLE_VIEW_NAMES;
   }
 
   /**
@@ -112,9 +107,9 @@ final class ReactConfig
 
     @GwtIncompatible
     @Override
-    boolean enableComponentNames()
+    boolean enableViewNames()
     {
-      return "true".equals( System.getProperty( "react4j.enable_component_names",
+      return "true".equals( System.getProperty( "react4j.enable_view_names",
                                                 PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
 
@@ -163,9 +158,9 @@ final class ReactConfig
       return "production" == System.getProperty( "react4j.environment" );
     }
 
-    boolean enableComponentNames()
+    boolean enableViewNames()
     {
-      return "true" == System.getProperty( "react4j.enable_component_names" );
+      return "true" == System.getProperty( "react4j.enable_view_names" );
     }
 
     boolean shouldMinimizePropKeys()

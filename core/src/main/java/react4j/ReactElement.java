@@ -11,11 +11,11 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import react4j.internal.ComponentConstructorFunction;
+import react4j.internal.ViewConstructorFunction;
 import static org.realityforge.braincheck.Guards.*;
 
 /**
- * Element represents either a component or a host component.
+ * Element represents either a view or a host component.
  */
 @SuppressWarnings( "unused" )
 @JsType( isNative = true, name = "Object", namespace = JsPackage.GLOBAL )
@@ -28,7 +28,7 @@ public class ReactElement
   private String key;
   private Object ref;
   private JsPropertyMap<Object> props;
-  // The component responsible for creating this element.
+  // The view responsible for creating this element.
   // can be null if create happens outside of a render method (i.e. at the top level).
   @Nullable
   private Object _owner;
@@ -63,7 +63,7 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
-  public static ReactElement createComponentElement( @Nonnull final ComponentConstructorFunction type )
+  public static ReactElement createViewElement( @Nonnull final ViewConstructorFunction type )
   {
     final ReactElement element = create( type );
     element.props = JsPropertyMap.of();

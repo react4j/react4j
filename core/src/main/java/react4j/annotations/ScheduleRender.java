@@ -5,7 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 /**
- * Identify a method that can be invoked to schedule the component for re-rendering.
+ * Identify a method that can be invoked to schedule the view for re-rendering.
  * This annotation is rarely required as the underlying arez reactivity infrastructure
  * should be used in preference to this method. The method primarily exists for backwards
  * compatibility with earlier versions of the framework.
@@ -18,16 +18,16 @@ import java.lang.annotation.Target;
  * <li>Must not return a value</li>
  * <li>Must not be static</li>
  * <li>Must not throw exceptions</li>
- * <li>Must be accessible from the same package as the class annotated by {@link ReactComponent}</li>
+ * <li>Must be accessible from the same package as the class annotated by {@link View}</li>
  * <li>
- *   Should not be public as not expected to be invoked outside the component. A warning will be generated but can
+ *   Should not be public as not expected to be invoked outside the view. A warning will be generated but can
  *   be suppressed by the {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key
  *   "React4j:PublicMethod". This warning is also suppressed by the annotation processor if it is implementing
  *   an interface method.
  * </li>
  * <li>
- *   Should not be protected if enclosed in the class annotated with the {@link ReactComponent} annotation as the
- *   method is not expected to be invoked outside the component. A warning will be generated but can be suppressed
+ *   Should not be protected if enclosed in the class annotated with the {@link View} annotation as the
+ *   method is not expected to be invoked outside the view. A warning will be generated but can be suppressed
  *   by the {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a
  *   key "React4j:ProtectedMethod".
  * </li>
@@ -38,9 +38,9 @@ import java.lang.annotation.Target;
 public @interface ScheduleRender
 {
   /**
-   * Determines whether the component will invoke the <code>shouldComponentUpdate()</code> before invoking the render method.
+   * Determines whether the view will invoke the <code>shouldComponentUpdate()</code> before invoking the render method.
    *
-   * @return true to skip "shouldComponentUpdate" phase, false otherwise.
+   * @return true to skip "shouldViewUpdate" phase, false otherwise.
    */
-  boolean skipShouldComponentUpdate() default true;
+  boolean skipShouldViewUpdate() default true;
 }

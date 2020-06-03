@@ -83,7 +83,7 @@ final class RequiredChildrenWithManyOptionalBuilder {
     private final ReactElement _element;
 
     Builder() {
-      _element = ReactElement.createComponentElement( React4j_RequiredChildrenWithManyOptional.Factory.TYPE );
+      _element = ReactElement.createViewElement( React4j_RequiredChildrenWithManyOptional.Factory.TYPE );
       final JsPropertyMap<Object> props = _element.props();
       props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropA, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_A );
       props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropB, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_B );

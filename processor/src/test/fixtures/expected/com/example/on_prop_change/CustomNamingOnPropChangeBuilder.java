@@ -36,7 +36,7 @@ final class CustomNamingOnPropChangeBuilder {
   }
 
   private static class Builder implements Step1, Step2, Step3 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_CustomNamingOnPropChange.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_CustomNamingOnPropChange.Factory.TYPE );
 
     @Override
     @Nonnull

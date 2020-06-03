@@ -2,10 +2,10 @@ package com.example.arez;
 
 import javax.annotation.Nullable;
 import react4j.ReactNode;
-import react4j.annotations.ReactComponent;
 import react4j.annotations.Render;
+import react4j.annotations.View;
 
-@ReactComponent( type = ReactComponent.Type.MAYBE_TRACKING )
+@View( type = View.Type.MAYBE_TRACKING )
 abstract class MaybeTrackingComponent
 {
   @Nullable

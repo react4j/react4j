@@ -39,7 +39,7 @@ final class DeprecatedFieldPropDefaultModelBuilder {
     private final ReactElement _element;
 
     Builder() {
-      _element = ReactElement.createComponentElement( React4j_DeprecatedFieldPropDefaultModel.Factory.TYPE );
+      _element = ReactElement.createViewElement( React4j_DeprecatedFieldPropDefaultModel.Factory.TYPE );
       final JsPropertyMap<Object> props = _element.props();
       props.set( React4j_DeprecatedFieldPropDefaultModel.Props.myProp, DeprecatedFieldPropDefaultModel.DEFAULT_MY_PROP );
     }

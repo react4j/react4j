@@ -12,12 +12,11 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
-import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
+import react4j.internal.ViewConstructorFunction;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
@@ -30,31 +29,31 @@ import react4j.internal.OnShouldComponentUpdate;
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPostUpdateModel {
   @Nonnull
-  private final NativeComponent $$react4j$$_nativeComponent;
+  private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   React4j_OnPropChangeAndPostUpdateModel(
-      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+    this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
 
   @Nonnull
-  private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
-    if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "OnPropChangeAndPostUpdateModel" );
+  private static ViewConstructorFunction getConstructorFunction() {
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    if ( React.enableViewNames() ) {
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "OnPropChangeAndPostUpdateModel" );
     }
-    return componentConstructor;
+    return viewConstructor;
   }
 
   @Override
   int getMyProp() {
-    return $$react4j$$_nativeComponent.props().getAsAny( Props.myProp ).asInt();
+    return $$react4j$$_nativeView.props().getAsAny( Props.myProp ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextProps) {
     assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
+    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
     if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
       return true;
     }
@@ -63,7 +62,7 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
 
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
     if ( null != prevProps ) {
-      final JsPropertyMap<Object> props = $$react4j$$_nativeComponent.props();
+      final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
       final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
       if ( myProp ) {
         onMyPropChange( props.getAsAny( Props.myProp ).asInt() );
@@ -87,83 +86,83 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
 
   static final class Factory {
     @Nonnull
-    static final ComponentConstructorFunction TYPE = getConstructorFunction();
+    static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
   static final class Props {
     static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
+  private static final class LiteNativeView extends react4j.internal.NativeView implements OnComponentDidUpdate, OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
     @Nonnull
-    private final React4j_OnPropChangeAndPostUpdateModel $$react4j$$_component;
+    private final React4j_OnPropChangeAndPostUpdateModel $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_OnPropChangeAndPostUpdateModel( this );
+      $$react4j$$_view = new Arez_React4j_OnPropChangeAndPostUpdateModel( this );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_component.$$react4j$$_componentPreUpdate( prevProps );
+      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      $$react4j$$_component.$$react4j$$_componentDidUpdate();
+      $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.$$react4j$$_render();
+      return $$react4j$$_view.$$react4j$$_render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
+  private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
     @Nonnull
-    private final React4j_OnPropChangeAndPostUpdateModel $$react4j$$_component;
+    private final React4j_OnPropChangeAndPostUpdateModel $$react4j$$_view;
 
     @JsConstructor
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+    NativeView(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_OnPropChangeAndPostUpdateModel( this );
+      $$react4j$$_view = new Arez_React4j_OnPropChangeAndPostUpdateModel( this );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_component.$$react4j$$_componentPreUpdate( prevProps );
+      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevProps );
       return null;
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      $$react4j$$_component.$$react4j$$_componentDidUpdate();
+      $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_component.$$react4j$$_componentWillUnmount();
+      $$react4j$$_view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.$$react4j$$_render();
+      return $$react4j$$_view.$$react4j$$_render();
     }
   }
 }

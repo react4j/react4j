@@ -27,12 +27,12 @@ final class ImmutablePropTypePrimitiveDoubleBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypePrimitiveDouble.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypePrimitiveDouble.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final double myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypePrimitiveDouble_9191758c" : ImmutablePropTypePrimitiveDouble.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveDouble_9191758c" : ImmutablePropTypePrimitiveDouble.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypePrimitiveDouble.Props.myProp, myProp );
       return build();
     }

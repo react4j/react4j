@@ -16,8 +16,8 @@
   <define-property name='react4j.environment' values='development,production'/>
   <set-property name='react4j.environment' value='production'/>
 
-  <define-property name='react4j.enable_component_names' values='true,false'/>
-  <set-property name='react4j.enable_component_names' value='false'/>
+  <define-property name='react4j.enable_view_names' values='true,false'/>
+  <set-property name='react4j.enable_view_names' value='false'/>
 
   <define-property name='react4j.check_invariants' values='true,false'/>
   <set-property name='react4j.check_invariants' value='false'/>

@@ -2,10 +2,10 @@ package com.example.render;
 
 import javax.annotation.Nullable;
 import react4j.ReactNode;
-import react4j.annotations.ReactComponent;
 import react4j.annotations.Render;
+import react4j.annotations.View;
 
-@ReactComponent
+@View
 abstract class BaseRenderComponent
 {
   @Nullable

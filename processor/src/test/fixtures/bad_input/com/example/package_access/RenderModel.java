@@ -1,9 +1,9 @@
 package com.example.package_access;
 
 import com.example.package_access.other.BaseRenderModel;
-import react4j.annotations.ReactComponent;
+import react4j.annotations.View;
 
-@ReactComponent
+@View
 public abstract class RenderModel
   extends BaseRenderModel
 {

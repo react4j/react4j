@@ -26,7 +26,7 @@ final class ExplicitNamePropValidateBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ExplicitNamePropValidate.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ExplicitNamePropValidate.Factory.TYPE );
 
     @Override
     @Nonnull

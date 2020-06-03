@@ -51,11 +51,11 @@ return a value that is compatible with the prop type for the component.
 ### Automatic shouldComponentUpdate lifecycle
 
 In React4j, the equivalent of react's `shouldComponentUpdate()` lifecycle method is generated unless the component
-is marked as `STATELESS`. A {@link: react4j.annotations.ReactComponent.Type#STATEFUL STATEFUL} component will
+is marked as `STATELESS`. A {@link: react4j.annotations.View.Type#STATEFUL STATEFUL} component will
 re-render if the components container re-renders and passes a prop with a different value from the previous render.
-A {@link: react4j.annotations.ReactComponent.Type#STATEFUL STATEFUL} component will also re-render if the component
-explicitly invokes `scheduleRender()`. A {@link: react4j.annotations.ReactComponent.Type#TRACKING TRACKING} or
-{@link: react4j.annotations.ReactComponent.Type#MAYBE_TRACKING MAYBE_TRACKING} component will also re-render if
+A {@link: react4j.annotations.View.Type#STATEFUL STATEFUL} component will also re-render if the component
+explicitly invokes `scheduleRender()`. A {@link: react4j.annotations.View.Type#TRACKING TRACKING} or
+{@link: react4j.annotations.View.Type#MAYBE_TRACKING MAYBE_TRACKING} component will also re-render if
 any Arez dependency accessed during the previous render is changed.
 
 ### JSX

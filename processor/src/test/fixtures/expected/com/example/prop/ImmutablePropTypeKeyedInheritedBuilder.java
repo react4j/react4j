@@ -28,12 +28,12 @@ final class ImmutablePropTypeKeyedInheritedBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeKeyedInherited.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeKeyedInherited.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
-      _element.setKey( Keyed.getKey( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeKeyedInherited_62ec04af" : ImmutablePropTypeKeyedInherited.class.getName() ) );
+      _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedInherited_62ec04af" : ImmutablePropTypeKeyedInherited.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeKeyedInherited.Props.myProp, myProp );
       return build();
     }

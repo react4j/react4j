@@ -27,7 +27,7 @@ final class OtherTypeOnPropChangeBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_OtherTypeOnPropChange.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_OtherTypeOnPropChange.Factory.TYPE );
 
     @Override
     @Nonnull

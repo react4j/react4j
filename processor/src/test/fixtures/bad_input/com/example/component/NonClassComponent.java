@@ -1,8 +1,8 @@
 package com.example.component;
 
-import react4j.annotations.ReactComponent;
+import react4j.annotations.View;
 
-@ReactComponent
+@View
 interface NonClassComponent
 {
 }

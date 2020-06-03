@@ -4,10 +4,10 @@ import java.io.IOException;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.PropValidate;
-import react4j.annotations.ReactComponent;
 import react4j.annotations.Render;
+import react4j.annotations.View;
 
-@ReactComponent
+@View
 abstract class ThrowsPropValidate
 {
   @PropValidate

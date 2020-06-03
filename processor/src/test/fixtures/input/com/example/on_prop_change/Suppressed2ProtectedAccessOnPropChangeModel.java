@@ -3,11 +3,11 @@ package com.example.on_prop_change;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
 import react4j.annotations.Prop;
-import react4j.annotations.ReactComponent;
 import react4j.annotations.Render;
 import react4j.annotations.SuppressReact4jWarnings;
+import react4j.annotations.View;
 
-@ReactComponent
+@View
 abstract class Suppressed2ProtectedAccessOnPropChangeModel
 {
   // This uses the CLASS retention suppression

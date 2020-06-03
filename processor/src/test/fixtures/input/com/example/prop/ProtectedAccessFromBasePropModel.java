@@ -1,9 +1,9 @@
 package com.example.prop;
 
 import com.example.prop.other.BaseProtectedAccessPropModel;
-import react4j.annotations.ReactComponent;
+import react4j.annotations.View;
 
-@ReactComponent
+@View
 abstract class ProtectedAccessFromBasePropModel
   extends BaseProtectedAccessPropModel
 {

@@ -27,7 +27,7 @@ public final class ReactTestUtil
 
     if ( productionMode )
     {
-      disableComponentNames();
+      disableViewNames();
       noCheckInvariants();
       minimizePropKeys();
       noValidatePropValues();
@@ -36,7 +36,7 @@ public final class ReactTestUtil
     }
     else
     {
-      enableComponentNames();
+      enableViewNames();
       checkInvariants();
       noMinimizePropKeys();
       validatePropValues();
@@ -48,29 +48,29 @@ public final class ReactTestUtil
   }
 
   /**
-   * Set the `react4j.enable_component_names` setting to {@code true}.
+   * Set the `react4j.enable_view_names` setting to {@code true}.
    */
-  public static void enableComponentNames()
+  public static void enableViewNames()
   {
-    setComponentEnableNames( true );
+    setViewEnableNames( true );
   }
 
   /**
-   * Set the `react4j.enable_component_names` setting to {@code false}.
+   * Set the `react4j.enable_view_names` setting to {@code false}.
    */
-  public static void disableComponentNames()
+  public static void disableViewNames()
   {
-    setComponentEnableNames( true );
+    setViewEnableNames( true );
   }
 
   /**
-   * Configure the `react4j.enable_component_names` setting.
+   * Configure the `react4j.enable_view_names` setting.
    *
    * @param setting the setting.
    */
-  public static void setComponentEnableNames( final boolean setting )
+  public static void setViewEnableNames( final boolean setting )
   {
-    setConstant( "ENABLE_COMPONENT_NAMES", setting );
+    setConstant( "ENABLE_VIEW_NAMES", setting );
   }
 
   /**

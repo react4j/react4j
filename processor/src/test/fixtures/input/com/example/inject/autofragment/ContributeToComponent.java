@@ -2,12 +2,12 @@ package com.example.inject.autofragment;
 
 import javax.annotation.Nonnull;
 import react4j.ReactNode;
-import react4j.annotations.ReactComponent;
 import react4j.annotations.Render;
+import react4j.annotations.View;
 import sting.ContributeTo;
 
 @ContributeTo( "MyAutoFragment" )
-@ReactComponent
+@View
 abstract class ContributeToComponent
 {
   ContributeToComponent( @Nonnull String someParam )

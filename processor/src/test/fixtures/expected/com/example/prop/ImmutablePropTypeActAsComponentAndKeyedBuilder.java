@@ -28,13 +28,13 @@ final class ImmutablePropTypeActAsComponentAndKeyedBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeActAsComponentAndKeyed.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeActAsComponentAndKeyed.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeActAsComponentAndKeyed.MyComponent myProp) {
-      _element.setKey( Keyed.getKey( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeActAsComponentAndKeyed_fae2f037" : ImmutablePropTypeActAsComponentAndKeyed.class.getName() ) );
+      _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeActAsComponentAndKeyed_fae2f037" : ImmutablePropTypeActAsComponentAndKeyed.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeActAsComponentAndKeyed.Props.myProp, myProp );
       return build();
     }

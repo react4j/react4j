@@ -49,7 +49,7 @@ final class RequiredChildrenWithManyRequiredBuilder {
   }
 
   private static class Builder implements Step1, Step2, Step3, Step4 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_RequiredChildrenWithManyRequired.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_RequiredChildrenWithManyRequired.Factory.TYPE );
 
     @Override
     @Nonnull

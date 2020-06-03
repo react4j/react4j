@@ -27,12 +27,12 @@ final class ImmutablePropTypeBoxedFloatBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeBoxedFloat.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeBoxedFloat.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final Float myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeBoxedFloat_0dca3d37" : ImmutablePropTypeBoxedFloat.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedFloat_0dca3d37" : ImmutablePropTypeBoxedFloat.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeBoxedFloat.Props.myProp, myProp );
       return build();
     }

@@ -27,12 +27,12 @@ final class ImmutablePropTypeBoxedLongBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeBoxedLong.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeBoxedLong.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final Long myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeBoxedLong_077dacd3" : ImmutablePropTypeBoxedLong.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedLong_077dacd3" : ImmutablePropTypeBoxedLong.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeBoxedLong.Props.myProp, myProp );
       return build();
     }

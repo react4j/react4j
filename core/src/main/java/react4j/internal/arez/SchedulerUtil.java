@@ -22,17 +22,17 @@ public final class SchedulerUtil
   }
 
   /**
-   * The first time an arez component is rendered it will lock the Arez scheduler and release
+   * The first time an react4j view is rendered it will lock the Arez scheduler and release
    * the lock in the micro-task immediately following the task that prompted the render. If this
-   * is not done it is possible that Arez can re-trigger a component render when the scheduler is
+   * is not done it is possible that Arez can re-trigger a view render when the scheduler is
    * triggered after the tracked render completes but before the render method has returned to the
    * react runtime. This results in error message from react as a setState()/forceRender() was invoked
    * while still within a render() method.
    *
    * <p>NOTE: While render methods are read-only transactions, they can un-observe components with
-   * {@link ArezComponent#disposeOnDeactivate()}set to <code>true</code> that would result in the component
-   * being disposed and triggering an update that would mark particular React Components/Observers as STALE and
-   * trigger a re-render of that component.</p>
+   * {@link ArezComponent#disposeOnDeactivate()} set to <code>true</code> that would result in the
+   * arez component being disposed and triggering an update that would mark particular React
+   * view/Observers as STALE and trigger a re-render of that view.</p>
    */
   public static void pauseUntilRenderLoopComplete()
   {

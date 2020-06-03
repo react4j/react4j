@@ -36,7 +36,7 @@ final class MultipleOnPropChangeBuilder {
   }
 
   private static class Builder implements Step1, Step2, Step3 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_MultipleOnPropChange.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_MultipleOnPropChange.Factory.TYPE );
 
     @Override
     @Nonnull

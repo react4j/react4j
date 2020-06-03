@@ -50,7 +50,7 @@ final class ImmutablePropTypesBuilder {
   }
 
   private static class Builder implements Step1, Step2, Step3, Step4, Step5 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypes.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypes.Factory.TYPE );
 
     @Override
     @Nonnull
@@ -90,7 +90,7 @@ final class ImmutablePropTypesBuilder {
     @Nonnull
     public final ReactNode build() {
       final JsPropertyMap<Object> props = _element.props();
-      _element.setKey( ( React.enableComponentNames() ? "_ImmutablePropTypes_108bb2eb" : ImmutablePropTypes.class.getName() ) + "-" + String.valueOf( Identifiable.<Object>getArezId( (ImmutablePropTypes.MyComponent) props.get( React4j_ImmutablePropTypes.Props.myProp ) ) ) + "-" + ( (String) props.get( React4j_ImmutablePropTypes.Props.myOtherProp ) ) + "-" + String.valueOf( (int) props.get( React4j_ImmutablePropTypes.Props.stillAnotherProp ) ) + "-" + Keyed.getKey( (ImmutablePropTypes.KeyedComponent) props.get( React4j_ImmutablePropTypes.Props.BobsProp ) ) + "-" + ( (ImmutablePropTypes.Foo) props.get( React4j_ImmutablePropTypes.Props.someProp ) ) );
+      _element.setKey( ( React.enableViewNames() ? "_ImmutablePropTypes_108bb2eb" : ImmutablePropTypes.class.getName() ) + "-" + String.valueOf( Identifiable.<Object>getArezId( (ImmutablePropTypes.MyComponent) props.get( React4j_ImmutablePropTypes.Props.myProp ) ) ) + "-" + ( (String) props.get( React4j_ImmutablePropTypes.Props.myOtherProp ) ) + "-" + String.valueOf( (int) props.get( React4j_ImmutablePropTypes.Props.stillAnotherProp ) ) + "-" + Keyed.getKey( (ImmutablePropTypes.KeyedComponent) props.get( React4j_ImmutablePropTypes.Props.BobsProp ) ) + "-" + ( (ImmutablePropTypes.Foo) props.get( React4j_ImmutablePropTypes.Props.someProp ) ) );
       _element.complete();
       return _element;
     }

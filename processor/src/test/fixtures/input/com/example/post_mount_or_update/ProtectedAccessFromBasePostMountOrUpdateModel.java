@@ -1,9 +1,9 @@
 package com.example.post_mount_or_update;
 
 import com.example.post_mount_or_update.other.BaseProtectedAccessPostMountOrUpdateModel;
-import react4j.annotations.ReactComponent;
+import react4j.annotations.View;
 
-@ReactComponent
+@View
 abstract class ProtectedAccessFromBasePostMountOrUpdateModel
   extends BaseProtectedAccessPostMountOrUpdateModel
 {

@@ -26,7 +26,7 @@ final class MinimalOnErrorComponentBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_MinimalOnErrorComponent.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_MinimalOnErrorComponent.Factory.TYPE );
 
     @Nonnull
     public final ReactNode build() {

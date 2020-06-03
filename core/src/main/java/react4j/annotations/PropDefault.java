@@ -7,8 +7,8 @@ import javax.annotation.Nonnull;
 
 /**
  * Annotation used to specify the default value for a prop.
- * The annotation can be applied to a static field or static method on the component.
- * The field or method is then accessed when initializing the default props for the component.
+ * The annotation can be applied to a static field or static method on the view.
+ * The field or method is then accessed when initializing the default props for the view.
  *
  * <p>If a method is annotated with this annotation then it must also comply with the following constraints:</p>
  * <ul>
@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
  * <li>Must be a static field</li>
  * <li>Must be a final field</li>
  * <li>Must not be private</li>
- * <li>Must be accessible from the same package as the class annotated by {@link ReactComponent}</li>
+ * <li>Must be accessible from the same package as the class annotated by {@link View}</li>
  * </ul>
  */
 @Documented

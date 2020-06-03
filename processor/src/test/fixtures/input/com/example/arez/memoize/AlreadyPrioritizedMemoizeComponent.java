@@ -4,10 +4,10 @@ import arez.annotations.Memoize;
 import arez.annotations.Priority;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
-import react4j.annotations.ReactComponent;
 import react4j.annotations.Render;
+import react4j.annotations.View;
 
-@ReactComponent( type = ReactComponent.Type.TRACKING )
+@View( type = View.Type.TRACKING )
 abstract class AlreadyPrioritizedMemoizeComponent
 {
   @Nullable

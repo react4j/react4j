@@ -49,7 +49,7 @@ final class BuilderGenerator
 
   @Nonnull
   static TypeSpec buildType( @Nonnull final ProcessingEnvironment processingEnv,
-                             @Nonnull final ComponentDescriptor descriptor )
+                             @Nonnull final ViewDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
     GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
@@ -92,7 +92,7 @@ final class BuilderGenerator
   }
 
   private static void buildStaticStepMethodMethods( @Nonnull final ProcessingEnvironment processingEnv,
-                                                    @Nonnull final ComponentDescriptor descriptor,
+                                                    @Nonnull final ViewDescriptor descriptor,
                                                     @Nonnull final TypeSpec.Builder builder,
                                                     @Nonnull final Step step )
   {
@@ -103,7 +103,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildStaticNewBuilderMethod( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec buildStaticNewBuilderMethod( @Nonnull final ViewDescriptor descriptor )
   {
     final String infix = descriptor.getDeclaredType().getTypeArguments().isEmpty() ? "" : "<>";
     final MethodSpec.Builder method = MethodSpec
@@ -118,7 +118,7 @@ final class BuilderGenerator
 
   @Nonnull
   private static MethodSpec buildStaticStepMethodMethod( @Nonnull final ProcessingEnvironment processingEnv,
-                                                         @Nonnull final ComponentDescriptor descriptor,
+                                                         @Nonnull final ViewDescriptor descriptor,
                                                          @Nonnull final Step step,
                                                          @Nonnull final StepMethod stepMethod )
   {
@@ -174,7 +174,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildStepInterfaceMethod( @Nonnull final ComponentDescriptor descriptor,
+  private static MethodSpec.Builder buildStepInterfaceMethod( @Nonnull final ViewDescriptor descriptor,
                                                               @Nonnull final String name,
                                                               @Nonnull final Step step,
                                                               @Nonnull final StepMethodType stepMethodType,
@@ -188,7 +188,7 @@ final class BuilderGenerator
     return method;
   }
 
-  private static void configureStepMethodReturns( @Nonnull final ComponentDescriptor descriptor,
+  private static void configureStepMethodReturns( @Nonnull final ViewDescriptor descriptor,
                                                   @Nonnull final MethodSpec.Builder method,
                                                   @Nonnull final Step step,
                                                   @Nonnull final StepMethodType stepMethodType )
@@ -205,7 +205,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static TypeName parameterizeIfRequired( @Nonnull final ComponentDescriptor descriptor,
+  private static TypeName parameterizeIfRequired( @Nonnull final ViewDescriptor descriptor,
                                                   @Nonnull final ClassName className )
   {
     final List<TypeVariableName> variableNames =
@@ -222,7 +222,7 @@ final class BuilderGenerator
 
   @Nonnull
   private static TypeSpec buildBuilderStepInterface( @Nonnull final ProcessingEnvironment processingEnv,
-                                                     @Nonnull final ComponentDescriptor descriptor,
+                                                     @Nonnull final ViewDescriptor descriptor,
                                                      @Nonnull final Step step )
   {
     final int stepIndex = step.getIndex();
@@ -279,7 +279,7 @@ final class BuilderGenerator
 
   @Nonnull
   private static MethodSpec buildBuilderStepImpl( @Nonnull final ProcessingEnvironment processingEnv,
-                                                  @Nonnull final ComponentDescriptor descriptor,
+                                                  @Nonnull final ViewDescriptor descriptor,
                                                   @Nonnull final Step step,
                                                   @Nonnull final StepMethod stepMethod )
   {
@@ -310,13 +310,13 @@ final class BuilderGenerator
     }
     method.addParameter( parameter.build() );
 
-    if ( null != prop && prop.isImmutable() && 1 == descriptor.syntheticKeyComponents() )
+    if ( null != prop && prop.isImmutable() && 1 == descriptor.syntheticKeyParts() )
     {
       final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
       if ( ImmutablePropKeyStrategy.KEYED == strategy )
       {
         method.addStatement( "_element.setKey( $T.getKey( $N ) + " +
-                             "( $T.enableComponentNames() ? $S : $T.class.getName() ) )",
+                             "( $T.enableViewNames() ? $S : $T.class.getName() ) )",
                              KEYED_CLASSNAME,
                              stepMethod.getName(),
                              REACT_CLASSNAME,
@@ -327,7 +327,7 @@ final class BuilderGenerator
                 ImmutablePropKeyStrategy.TO_STRING == strategy ||
                 ImmutablePropKeyStrategy.ENUM == strategy )
       {
-        method.addStatement( "_element.setKey( $N + ( $T.enableComponentNames() ? $S : $T.class.getName() ) )",
+        method.addStatement( "_element.setKey( $N + ( $T.enableViewNames() ? $S : $T.class.getName() ) )",
                              stepMethod.getName(),
                              REACT_CLASSNAME,
                              descriptor.keySuffix(),
@@ -337,7 +337,7 @@ final class BuilderGenerator
       {
         assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
         method.addStatement( "_element.setKey( $T.<Object>getArezId( $N ) + " +
-                             "( $T.enableComponentNames() ? $S : $T.class.getName() ) )",
+                             "( $T.enableViewNames() ? $S : $T.class.getName() ) )",
                              IDENTIFIABLE_CLASSNAME,
                              stepMethod.getName(),
                              REACT_CLASSNAME,
@@ -412,7 +412,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildBuildStepImpl( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec buildBuildStepImpl( @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "build" )
@@ -422,7 +422,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildContextBuildStepImpl( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec buildContextBuildStepImpl( @Nonnull final ViewDescriptor descriptor )
   {
     final List<PropDescriptor> contextProps =
       descriptor.getProps().stream().filter( PropDescriptor::isContextProp ).collect( Collectors.toList() );
@@ -470,7 +470,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildInternalBuildStepImpl( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec buildInternalBuildStepImpl( @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "build" )
@@ -484,7 +484,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildBuildMethodContent( @Nonnull final ComponentDescriptor descriptor,
+  private static MethodSpec buildBuildMethodContent( @Nonnull final ViewDescriptor descriptor,
                                                      @Nonnull final MethodSpec.Builder method,
                                                      @Nonnull final String elementName )
   {
@@ -495,7 +495,7 @@ final class BuilderGenerator
       method.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName );
 
       final StringBuilder sb = new StringBuilder();
-      sb.append( "$N.setKey( ( $T.enableComponentNames() ? $S : $T.class.getName() )" );
+      sb.append( "$N.setKey( ( $T.enableViewNames() ? $S : $T.class.getName() )" );
       final List<Object> params = new ArrayList<>();
       params.add( elementName );
       params.add( REACT_CLASSNAME );
@@ -551,7 +551,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static TypeSpec buildContextHolder( @Nonnull final ComponentDescriptor descriptor )
+  private static TypeSpec buildContextHolder( @Nonnull final ViewDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "ContextHolder" );
     GeneratorUtil.copyTypeParameters( descriptor.getElement(), builder );
@@ -588,7 +588,7 @@ final class BuilderGenerator
 
   @Nonnull
   private static TypeSpec buildBuilder( @Nonnull final ProcessingEnvironment processingEnv,
-                                        @Nonnull final ComponentDescriptor descriptor,
+                                        @Nonnull final ViewDescriptor descriptor,
                                         @Nonnull final BuilderDescriptor builderDescriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "Builder" );
@@ -607,7 +607,7 @@ final class BuilderGenerator
     if ( !propsWithDefaults.isEmpty() )
     {
       final MethodSpec.Builder method = MethodSpec.constructorBuilder();
-      method.addStatement( "_element = $T.createComponentElement( $T.Factory.TYPE )",
+      method.addStatement( "_element = $T.createViewElement( $T.Factory.TYPE )",
                            REACT_ELEMENT_CLASSNAME,
                            descriptor.getEnhancedClassName() );
       method.addStatement( "final $T props = _element.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
@@ -645,7 +645,7 @@ final class BuilderGenerator
       FieldSpec.builder( REACT_ELEMENT_CLASSNAME, "_element", Modifier.PRIVATE, Modifier.FINAL );
     if ( propsWithDefaults.isEmpty() )
     {
-      field.initializer( "$T.createComponentElement( $T.Factory.TYPE )",
+      field.initializer( "$T.createViewElement( $T.Factory.TYPE )",
                          REACT_ELEMENT_CLASSNAME,
                          descriptor.getEnhancedClassName() );
     }
@@ -665,7 +665,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static TypeName getParameterizedTypeName( @Nonnull final ComponentDescriptor descriptor,
+  private static TypeName getParameterizedTypeName( @Nonnull final ViewDescriptor descriptor,
                                                     @Nonnull final ClassName baseName )
   {
     final List<? extends TypeMirror> arguments = descriptor.getDeclaredType().getTypeArguments();
@@ -688,7 +688,7 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static BuilderDescriptor buildBuilderDescriptor( @Nonnull final ComponentDescriptor descriptor )
+  private static BuilderDescriptor buildBuilderDescriptor( @Nonnull final ViewDescriptor descriptor )
   {
     final BuilderDescriptor builder = new BuilderDescriptor();
 

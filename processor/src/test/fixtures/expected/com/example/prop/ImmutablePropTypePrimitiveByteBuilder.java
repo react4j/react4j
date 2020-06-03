@@ -27,12 +27,12 @@ final class ImmutablePropTypePrimitiveByteBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypePrimitiveByte.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypePrimitiveByte.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final byte myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypePrimitiveByte_90aa81dc" : ImmutablePropTypePrimitiveByte.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveByte_90aa81dc" : ImmutablePropTypePrimitiveByte.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypePrimitiveByte.Props.myProp, myProp );
       return build();
     }

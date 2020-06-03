@@ -28,12 +28,12 @@ final class ImmutablePropTypeKeyedInterfaceBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeKeyedInterface.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeKeyedInterface.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeKeyedInterface.KeyedInterface myProp) {
-      _element.setKey( Keyed.getKey( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeKeyedInterface_3326071b" : ImmutablePropTypeKeyedInterface.class.getName() ) );
+      _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedInterface_3326071b" : ImmutablePropTypeKeyedInterface.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeKeyedInterface.Props.myProp, myProp );
       return build();
     }

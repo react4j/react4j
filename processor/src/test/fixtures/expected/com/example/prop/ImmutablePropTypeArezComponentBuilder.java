@@ -28,12 +28,12 @@ final class ImmutablePropTypeArezComponentBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeArezComponent.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeArezComponent.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeArezComponent.MyComponent myProp) {
-      _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeArezComponent_2492c8a2" : ImmutablePropTypeArezComponent.class.getName() ) );
+      _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezComponent_2492c8a2" : ImmutablePropTypeArezComponent.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeArezComponent.Props.myProp, myProp );
       return build();
     }

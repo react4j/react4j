@@ -28,13 +28,13 @@ final class ImmutablePropTypeActAsComponentInterfaceBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeActAsComponentInterface.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeActAsComponentInterface.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeActAsComponentInterface.MyComponent myProp) {
-      _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeActAsComponentInterface_56c176ed" : ImmutablePropTypeActAsComponentInterface.class.getName() ) );
+      _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeActAsComponentInterface_56c176ed" : ImmutablePropTypeActAsComponentInterface.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeActAsComponentInterface.Props.myProp, myProp );
       return build();
     }

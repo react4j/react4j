@@ -49,7 +49,7 @@ import org.realityforge.proton.ProcessorException;
  * Annotation processor that analyzes React annotated source and generates models from the annotations.
  */
 @SuppressWarnings( "Duplicates" )
-@SupportedAnnotationTypes( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME )
+@SupportedAnnotationTypes( Constants.VIEW_CLASSNAME )
 @SupportedSourceVersion( SourceVersion.RELEASE_8 )
 @SupportedOptions( { "react4j.defer.unresolved", "react4j.defer.errors", "react4j.debug" } )
 public final class React4jProcessor
@@ -71,7 +71,7 @@ public final class React4jProcessor
   {
     processTypeElements( annotations,
                          env,
-                         Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                         Constants.VIEW_CLASSNAME,
                          _deferredTypes,
                          this::process );
     errorIfProcessingOverAndInvalidTypesDetected( env );
@@ -95,9 +95,9 @@ public final class React4jProcessor
   private void process( @Nonnull final TypeElement element )
     throws IOException, ProcessorException
   {
-    final ComponentDescriptor descriptor = parse( element );
+    final ViewDescriptor descriptor = parse( element );
     final String packageName = descriptor.getPackageName();
-    emitTypeSpec( packageName, ComponentGenerator.buildType( processingEnv, descriptor ) );
+    emitTypeSpec( packageName, ViewGenerator.buildType( processingEnv, descriptor ) );
     emitTypeSpec( packageName, BuilderGenerator.buildType( processingEnv, descriptor ) );
     if ( descriptor.needsInjection() )
     {
@@ -116,27 +116,30 @@ public final class React4jProcessor
   }
 
   @Nonnull
-  private ComponentDescriptor parse( @Nonnull final TypeElement typeElement )
+  private ViewDescriptor parse( @Nonnull final TypeElement typeElement )
   {
-    final String name = deriveComponentName( typeElement );
-    final ComponentType type = extractComponentType( typeElement );
+    final String name = deriveViewName( typeElement );
+    final ViewType type = extractViewType( typeElement );
     final boolean hasPostConstruct = hasPostConstruct( typeElement );
     final boolean shouldSetDefaultPriority = shouldSetDefaultPriority( typeElement );
 
-    MemberChecks.mustNotBeFinal( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, typeElement );
-    MemberChecks.mustBeAbstract( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, typeElement );
+    MemberChecks.mustNotBeFinal( Constants.VIEW_CLASSNAME, typeElement );
+    MemberChecks.mustBeAbstract( Constants.VIEW_CLASSNAME, typeElement );
     if ( ElementKind.CLASS != typeElement.getKind() )
     {
-      throw new ProcessorException( "@ReactComponent target must be a class", typeElement );
+      throw new ProcessorException( MemberChecks.must( Constants.VIEW_CLASSNAME, "be a class" ),
+                                    typeElement );
     }
     else if ( ElementsUtil.isNonStaticNestedClass( typeElement ) )
     {
-      throw new ProcessorException( "@ReactComponent target must not be a non-static nested class", typeElement );
+      throw new ProcessorException( MemberChecks.toSimpleName( Constants.VIEW_CLASSNAME ) +
+                                    " target must not be a non-static nested class",
+                                    typeElement );
     }
     final List<ExecutableElement> constructors = ElementsUtil.getConstructors( typeElement );
     if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
     {
-      throw new ProcessorException( MemberChecks.must( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+      throw new ProcessorException( MemberChecks.must( Constants.VIEW_CLASSNAME,
                                                        "have a single, package-access constructor or the default constructor" ),
                                     typeElement );
     }
@@ -150,7 +153,7 @@ public final class React4jProcessor
     {
       if ( parameters.isEmpty() )
       {
-        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+        throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
                                                             "have specified inject=ENABLED if the constructor has no parameters" ),
                                       typeElement );
       }
@@ -162,7 +165,7 @@ public final class React4jProcessor
           .anyMatch( p -> AnnotationsUtil.hasAnnotationOfType( p, Constants.JSR_330_NAMED_CLASSNAME ) );
       if ( hasNamedAnnotation )
       {
-        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+        throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
                                                             "have specified inject=DISABLED and have a constructor parameter annotated with the " +
                                                             Constants.JSR_330_NAMED_CLASSNAME + " annotation" ),
                                       constructor );
@@ -173,7 +176,7 @@ public final class React4jProcessor
     {
       if ( parameters.isEmpty() )
       {
-        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+        throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
                                                             "have specified sting=ENABLED if the constructor has no parameters" ),
                                       typeElement );
       }
@@ -184,22 +187,22 @@ public final class React4jProcessor
         parameters.stream().anyMatch( p -> AnnotationsUtil.hasAnnotationOfType( p, Constants.STING_NAMED_CLASSNAME ) );
       if ( hasNamedAnnotation )
       {
-        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+        throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
                                                             "have specified sting=DISABLED and have a constructor parameter annotated with the " +
                                                             Constants.STING_NAMED_CLASSNAME + " annotation" ),
                                       constructor );
       }
     }
 
-    final ComponentDescriptor descriptor =
-      new ComponentDescriptor( name,
-                               typeElement,
-                               constructor,
-                               type,
-                               inject,
-                               sting,
-                               hasPostConstruct,
-                               shouldSetDefaultPriority );
+    final ViewDescriptor descriptor =
+      new ViewDescriptor( name,
+                          typeElement,
+                          constructor,
+                          type,
+                          inject,
+                          sting,
+                          hasPostConstruct,
+                          shouldSetDefaultPriority );
 
     for ( final Element element : descriptor.getElement().getEnclosedElements() )
     {
@@ -213,7 +216,7 @@ public final class React4jProcessor
                                                   Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
         {
           final String message =
-            MemberChecks.shouldNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+            MemberChecks.shouldNot( Constants.VIEW_CLASSNAME,
                                     "declare a public method. " +
                                     MemberChecks.suppressedBy( Constants.WARNING_PUBLIC_METHOD,
                                                                Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
@@ -225,7 +228,7 @@ public final class React4jProcessor
                                                   Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
         {
           final String message =
-            MemberChecks.shouldNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+            MemberChecks.shouldNot( Constants.VIEW_CLASSNAME,
                                     "declare a final method. " +
                                     MemberChecks.suppressedBy( Constants.WARNING_FINAL_METHOD,
                                                                Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
@@ -238,7 +241,7 @@ public final class React4jProcessor
              !isMethodAProtectedOverride( typeElement, method ) )
         {
           final String message =
-            MemberChecks.shouldNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+            MemberChecks.shouldNot( Constants.VIEW_CLASSNAME,
                                     "declare a protected method. " +
                                     MemberChecks.suppressedBy( Constants.WARNING_PROTECTED_METHOD,
                                                                Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
@@ -247,7 +250,7 @@ public final class React4jProcessor
       }
     }
 
-    determineComponentCapabilities( descriptor, typeElement );
+    determineViewCapabilities( descriptor, typeElement );
     determineProps( descriptor );
     determinePropValidatesMethods( descriptor );
     determineOnPropChangeMethods( descriptor );
@@ -301,7 +304,7 @@ public final class React4jProcessor
   {
     final String inject =
       AnnotationsUtil.getEnumAnnotationParameter( typeElement,
-                                                  Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                  Constants.VIEW_CLASSNAME,
                                                   "inject" );
     if ( "ENABLE".equals( inject ) )
     {
@@ -322,7 +325,7 @@ public final class React4jProcessor
   {
     final String inject =
       AnnotationsUtil.getEnumAnnotationParameter( typeElement,
-                                                  Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                  Constants.VIEW_CLASSNAME,
                                                   "sting" );
     if ( "ENABLE".equals( inject ) )
     {
@@ -355,7 +358,7 @@ public final class React4jProcessor
     }
   }
 
-  private void verifyPropsNotCollectionOfArezComponents( @Nonnull final ComponentDescriptor descriptor )
+  private void verifyPropsNotCollectionOfArezComponents( @Nonnull final ViewDescriptor descriptor )
   {
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
@@ -435,7 +438,7 @@ public final class React4jProcessor
              .anyMatch( a -> a.getAnnotationType().toString().equals( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) );
   }
 
-  private void verifyPropsNotAnnotatedWithArezAnnotations( @Nonnull final ComponentDescriptor descriptor )
+  private void verifyPropsNotAnnotatedWithArezAnnotations( @Nonnull final ViewDescriptor descriptor )
   {
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
@@ -452,7 +455,7 @@ public final class React4jProcessor
     }
   }
 
-  private void determineOnPropChangeMethods( @Nonnull final ComponentDescriptor descriptor )
+  private void determineOnPropChangeMethods( @Nonnull final ViewDescriptor descriptor )
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
@@ -471,7 +474,7 @@ public final class React4jProcessor
       final List<? extends TypeMirror> parameterTypes = methodType.getParameterTypes();
 
       MemberChecks.mustBeSubclassCallable( descriptor.getElement(),
-                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                           Constants.VIEW_CLASSNAME,
                                            Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
                                            method );
       MemberChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
@@ -564,7 +567,7 @@ public final class React4jProcessor
     }
   }
 
-  private void determinePropValidatesMethods( @Nonnull final ComponentDescriptor descriptor )
+  private void determinePropValidatesMethods( @Nonnull final ViewDescriptor descriptor )
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
@@ -592,7 +595,7 @@ public final class React4jProcessor
                                       "return type of the associated @Prop annotated method.", method );
       }
       MemberChecks.mustBeSubclassCallable( descriptor.getElement(),
-                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                           Constants.VIEW_CLASSNAME,
                                            Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
                                            method );
       MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
@@ -652,7 +655,7 @@ public final class React4jProcessor
     }
   }
 
-  private void determineDefaultPropsMethods( @Nonnull final ComponentDescriptor descriptor )
+  private void determineDefaultPropsMethods( @Nonnull final ViewDescriptor descriptor )
   {
     final List<ExecutableElement> defaultPropsMethods =
       getMethods( descriptor.getElement() ).stream()
@@ -676,7 +679,7 @@ public final class React4jProcessor
                                       "return type of the associated @Prop annotated method.", method );
       }
       MemberChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
-                                                     Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                     Constants.VIEW_CLASSNAME,
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                      method );
       MemberChecks.mustNotHaveAnyParameters( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
@@ -687,7 +690,7 @@ public final class React4jProcessor
     }
   }
 
-  private void determineDefaultPropsFields( @Nonnull final ComponentDescriptor descriptor )
+  private void determineDefaultPropsFields( @Nonnull final ViewDescriptor descriptor )
   {
     final List<VariableElement> defaultPropsFields =
       ElementsUtil.getFields( descriptor.getElement() ).stream()
@@ -709,7 +712,7 @@ public final class React4jProcessor
                                       "return type of the associated @Prop annotated method.", field );
       }
       MemberChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
-                                                     Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                     Constants.VIEW_CLASSNAME,
                                                      Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
                                                      field );
       MemberChecks.mustBeFinal( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
@@ -816,7 +819,7 @@ public final class React4jProcessor
     return sb.toString();
   }
 
-  private void determineProps( @Nonnull final ComponentDescriptor descriptor )
+  private void determineProps( @Nonnull final ViewDescriptor descriptor )
   {
     final List<PropDescriptor> props =
       getMethods( descriptor.getElement() ).stream()
@@ -863,7 +866,7 @@ public final class React4jProcessor
   }
 
   @Nonnull
-  private PropDescriptor createPropDescriptor( @Nonnull final ComponentDescriptor descriptor,
+  private PropDescriptor createPropDescriptor( @Nonnull final ViewDescriptor descriptor,
                                                @Nonnull final ExecutableElement method )
   {
     final String name = derivePropName( method );
@@ -875,7 +878,7 @@ public final class React4jProcessor
     MemberChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
     MemberChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
-                                                           Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                           Constants.VIEW_CLASSNAME,
                                                            Constants.PROP_ANNOTATION_CLASSNAME,
                                                            method );
     final TypeMirror returnType = method.getReturnType();
@@ -1054,7 +1057,7 @@ public final class React4jProcessor
   }
 
   private void determineOnErrorMethod( @Nonnull final TypeElement typeElement,
-                                       @Nonnull final ComponentDescriptor descriptor )
+                                       @Nonnull final ViewDescriptor descriptor )
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
@@ -1062,7 +1065,7 @@ public final class React4jProcessor
       {
         MemberChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
         MemberChecks.mustBeSubclassCallable( typeElement,
-                                             Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                             Constants.VIEW_CLASSNAME,
                                              Constants.ON_ERROR_ANNOTATION_CLASSNAME,
                                              method );
         MemberChecks.mustNotReturnAnyValue( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
@@ -1106,7 +1109,7 @@ public final class React4jProcessor
   }
 
   private void determineScheduleRenderMethods( @Nonnull final TypeElement typeElement,
-                                               @Nonnull final ComponentDescriptor descriptor )
+                                               @Nonnull final ViewDescriptor descriptor )
   {
     final List<ScheduleRenderDescriptor> scheduleRenderDescriptors = new ArrayList<>();
     for ( final ExecutableElement method : getMethods( typeElement ) )
@@ -1117,23 +1120,22 @@ public final class React4jProcessor
       {
         MemberChecks.mustBeAbstract( Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME, method );
         MemberChecks.mustBeSubclassCallable( typeElement,
-                                             Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                             Constants.VIEW_CLASSNAME,
                                              Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME,
                                              method );
         MemberChecks.mustNotReturnAnyValue( Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME, method );
         MemberChecks.mustNotThrowAnyExceptions( Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME, method );
 
-        final boolean skipShouldComponentUpdate =
-          AnnotationsUtil.getAnnotationValueValue( annotation, "skipShouldComponentUpdate" );
+        final boolean skipShouldViewUpdate = AnnotationsUtil.getAnnotationValueValue( annotation, "skipShouldViewUpdate" );
 
-        scheduleRenderDescriptors.add( new ScheduleRenderDescriptor( method, skipShouldComponentUpdate ) );
+        scheduleRenderDescriptors.add( new ScheduleRenderDescriptor( method, skipShouldViewUpdate ) );
       }
     }
     descriptor.setScheduleRenderDescriptors( scheduleRenderDescriptors );
   }
 
   private void determineRenderMethod( @Nonnull final TypeElement typeElement,
-                                      @Nonnull final ComponentDescriptor descriptor )
+                                      @Nonnull final ViewDescriptor descriptor )
   {
     boolean foundRender = false;
     for ( final ExecutableElement method : getMethods( typeElement ) )
@@ -1144,7 +1146,7 @@ public final class React4jProcessor
       {
         MemberChecks.mustNotBeAbstract( Constants.RENDER_ANNOTATION_CLASSNAME, method );
         MemberChecks.mustBeSubclassCallable( typeElement,
-                                             Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                             Constants.VIEW_CLASSNAME,
                                              Constants.RENDER_ANNOTATION_CLASSNAME,
                                              method );
         MemberChecks.mustNotHaveAnyParameters( Constants.RENDER_ANNOTATION_CLASSNAME, method );
@@ -1161,7 +1163,7 @@ public final class React4jProcessor
     }
     if ( !foundRender )
     {
-      throw new ProcessorException( MemberChecks.must( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+      throw new ProcessorException( MemberChecks.must( Constants.VIEW_CLASSNAME,
                                                        "contain a method annotated with the " +
                                                        MemberChecks.toSimpleName( Constants.RENDER_ANNOTATION_CLASSNAME ) +
                                                        " annotation" ),
@@ -1170,14 +1172,14 @@ public final class React4jProcessor
   }
 
   private void determinePostMountMethod( @Nonnull final TypeElement typeElement,
-                                         @Nonnull final ComponentDescriptor descriptor )
+                                         @Nonnull final ViewDescriptor descriptor )
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
       {
         MemberChecks.mustBeLifecycleHook( typeElement,
-                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.VIEW_CLASSNAME,
                                           Constants.POST_MOUNT_ANNOTATION_CLASSNAME,
                                           method );
         descriptor.setPostMount( method );
@@ -1186,14 +1188,14 @@ public final class React4jProcessor
   }
 
   private void determinePostMountOrUpdateMethod( @Nonnull final TypeElement typeElement,
-                                                 @Nonnull final ComponentDescriptor descriptor )
+                                                 @Nonnull final ViewDescriptor descriptor )
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         MemberChecks.mustBeLifecycleHook( typeElement,
-                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.VIEW_CLASSNAME,
                                           Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
         descriptor.setPostRender( method );
@@ -1202,14 +1204,14 @@ public final class React4jProcessor
   }
 
   private void determinePostUpdateMethod( @Nonnull final TypeElement typeElement,
-                                          @Nonnull final ComponentDescriptor descriptor )
+                                          @Nonnull final ViewDescriptor descriptor )
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         MemberChecks.mustBeLifecycleHook( typeElement,
-                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.VIEW_CLASSNAME,
                                           Constants.POST_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
         descriptor.setPostUpdate( method );
@@ -1218,14 +1220,14 @@ public final class React4jProcessor
   }
 
   private void determinePreUpdateMethod( @Nonnull final TypeElement typeElement,
-                                         @Nonnull final ComponentDescriptor descriptor )
+                                         @Nonnull final ViewDescriptor descriptor )
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
       {
         MemberChecks.mustBeLifecycleHook( typeElement,
-                                          Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                          Constants.VIEW_CLASSNAME,
                                           Constants.PRE_UPDATE_ANNOTATION_CLASSNAME,
                                           method );
         descriptor.setPreUpdate( method );
@@ -1233,17 +1235,17 @@ public final class React4jProcessor
     }
   }
 
-  private ExecutableType resolveMethodType( @Nonnull final ComponentDescriptor descriptor,
+  private ExecutableType resolveMethodType( @Nonnull final ViewDescriptor descriptor,
                                             @Nonnull final ExecutableElement method )
   {
     return (ExecutableType) processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), method );
   }
 
   @Nonnull
-  private String deriveComponentName( @Nonnull final TypeElement typeElement )
+  private String deriveViewName( @Nonnull final TypeElement typeElement )
   {
     final String name =
-      (String) AnnotationsUtil.getAnnotationValue( typeElement, Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, "name" )
+      (String) AnnotationsUtil.getAnnotationValue( typeElement, Constants.VIEW_CLASSNAME, "name" )
         .getValue();
 
     if ( isSentinelName( name ) )
@@ -1254,24 +1256,26 @@ public final class React4jProcessor
     {
       if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ProcessorException( "@ReactComponent target specified an invalid name '" + name + "'. The " +
+        throw new ProcessorException( MemberChecks.toSimpleName( Constants.VIEW_CLASSNAME ) +
+                                      " target specified an invalid name '" + name + "'. The " +
                                       "name must be a valid java identifier.", typeElement );
       }
       else if ( SourceVersion.isKeyword( name ) )
       {
-        throw new ProcessorException( "@ReactComponent target specified an invalid name '" + name + "'. The " +
+        throw new ProcessorException( MemberChecks.toSimpleName( Constants.VIEW_CLASSNAME ) +
+                                      " target specified an invalid name '" + name + "'. The " +
                                       "name must not be a java keyword.", typeElement );
       }
       return name;
     }
   }
 
-  private void determineComponentCapabilities( @Nonnull final ComponentDescriptor descriptor,
-                                               @Nonnull final TypeElement typeElement )
+  private void determineViewCapabilities( @Nonnull final ViewDescriptor descriptor,
+                                          @Nonnull final TypeElement typeElement )
   {
     if ( AnnotationsUtil.hasAnnotationOfType( typeElement, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
     {
-      throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+      throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
                                                           "be annotated with the " +
                                                           MemberChecks.toSimpleName( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) +
                                                           " as React4j will add the annotation." ),
@@ -1280,7 +1284,7 @@ public final class React4jProcessor
 
     if ( descriptor.needsInjection() && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )
     {
-      throw new ProcessorException( MemberChecks.toSimpleName( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME ) +
+      throw new ProcessorException( MemberChecks.toSimpleName( Constants.VIEW_CLASSNAME ) +
                                     " target has enabled injection integration but the class " +
                                     "has type arguments which is incompatible with injection integration.",
                                     typeElement );
@@ -1317,13 +1321,13 @@ public final class React4jProcessor
   }
 
   @Nonnull
-  private ComponentType extractComponentType( @Nonnull final TypeElement typeElement )
+  private ViewType extractViewType( @Nonnull final TypeElement typeElement )
   {
     final VariableElement declaredTypeEnum = (VariableElement)
       AnnotationsUtil
-        .getAnnotationValue( typeElement, Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME, "type" )
+        .getAnnotationValue( typeElement, Constants.VIEW_CLASSNAME, "type" )
         .getValue();
-    return ComponentType.valueOf( declaredTypeEnum.getSimpleName().toString() );
+    return ViewType.valueOf( declaredTypeEnum.getSimpleName().toString() );
   }
 
   private boolean shouldUpdateOnChange( @Nonnull final ExecutableElement method,
@@ -1349,7 +1353,7 @@ public final class React4jProcessor
     }
   }
 
-  private boolean isPropObservable( @Nonnull final ComponentDescriptor descriptor,
+  private boolean isPropObservable( @Nonnull final ViewDescriptor descriptor,
                                     @Nonnull final ExecutableElement method,
                                     final boolean shouldUpdateOnChange,
                                     final boolean immutable )

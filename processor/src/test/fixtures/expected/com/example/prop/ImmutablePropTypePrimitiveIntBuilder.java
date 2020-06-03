@@ -27,12 +27,12 @@ final class ImmutablePropTypePrimitiveIntBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypePrimitiveInt.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypePrimitiveInt.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final int myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypePrimitiveInt_c0c80f1a" : ImmutablePropTypePrimitiveInt.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveInt_c0c80f1a" : ImmutablePropTypePrimitiveInt.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypePrimitiveInt.Props.myProp, myProp );
       return build();
     }

@@ -27,7 +27,7 @@ final class Constants
   @Nonnull
   static final String ON_PROP_CHANGE_ANNOTATION_CLASSNAME = "react4j.annotations.OnPropChange";
   @Nonnull
-  static final String REACT_COMPONENT_ANNOTATION_CLASSNAME = "react4j.annotations.ReactComponent";
+  static final String VIEW_CLASSNAME = "react4j.annotations.View";
   @Nonnull
   static final String POST_MOUNT_ANNOTATION_CLASSNAME = "react4j.annotations.PostMount";
   @Nonnull

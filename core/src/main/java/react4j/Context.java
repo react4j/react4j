@@ -11,11 +11,11 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
- * Context is designed to share data that can be considered "global" for a tree of React components.
+ * Context is designed to share data that can be considered "global" for a tree of views.
  * In a typical React application, data is passed top-down (parent to child) via props, but this can
  * be cumbersome for certain types of props (e.g. locale preference, UI theme) that are required by
- * \many components within an application. Context provides a way to share values like this between
- * components without having to explicitly pass a prop through every level of the tree.
+ * many views within an application. Context provides a way to share values like this between
+ * views without having to explicitly pass a prop through every level of the tree.
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class Context<T>

@@ -44,7 +44,7 @@ class MyComponent {
     int param;
   }
 
-  @ReactComponent
+  @View
   public static final StatelessComponent<Props> COMPONENT = (props) -> {
     return span(new HtmlProps().className("myclass"), String.valueOf( props.param ));
   };
@@ -54,7 +54,7 @@ class MyComponent {
 Contrast this with code that uses normal components:
 
 ```java
-@ReactComponent
+@View
 class MyComponent extends Component<MyComponent.Props, BaseState> {
   @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
   static class Props extends BaseProps {

@@ -54,7 +54,7 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
     private final ReactElement _element;
 
     Builder() {
-      _element = ReactElement.createComponentElement( React4j_RequiredChildrenWithOptionalAndRequired.Factory.TYPE );
+      _element = ReactElement.createViewElement( React4j_RequiredChildrenWithOptionalAndRequired.Factory.TYPE );
       final JsPropertyMap<Object> props = _element.props();
       props.set( React4j_RequiredChildrenWithOptionalAndRequired.Props.myProp, RequiredChildrenWithOptionalAndRequired.DEFAULT_MY_PROP );
     }

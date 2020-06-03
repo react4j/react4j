@@ -29,13 +29,13 @@ final class ImmutablePropTypeArezComponentWithExplicitRequireIdBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeArezComponentWithExplicitRequireId.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeArezComponentWithExplicitRequireId.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp) {
-      _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeArezComponentWithExplicitRequireId_a574b6c9" : ImmutablePropTypeArezComponentWithExplicitRequireId.class.getName() ) );
+      _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezComponentWithExplicitRequireId_a574b6c9" : ImmutablePropTypeArezComponentWithExplicitRequireId.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeArezComponentWithExplicitRequireId.Props.myProp, myProp );
       return build();
     }

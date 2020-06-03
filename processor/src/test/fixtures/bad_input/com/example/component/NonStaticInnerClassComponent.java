@@ -1,12 +1,12 @@
 package com.example.component;
 
 import react4j.ReactNode;
-import react4j.annotations.ReactComponent;
 import react4j.annotations.Render;
+import react4j.annotations.View;
 
 final class NonStaticInnerClassComponent
 {
-  @ReactComponent
+  @View
   abstract class MyReactClassComponent
   {
     @Render

@@ -12,12 +12,11 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
-import react4j.internal.ComponentConstructorFunction;
-import react4j.internal.NativeComponent;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
+import react4j.internal.ViewConstructorFunction;
 
 @SuppressWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
@@ -30,20 +29,20 @@ import react4j.internal.OnShouldComponentUpdate;
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_PackageAccessPostMountOrUpdateModel extends PackageAccessPostMountOrUpdateModel {
   @Nonnull
-  private final NativeComponent $$react4j$$_nativeComponent;
+  private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   React4j_PackageAccessPostMountOrUpdateModel(
-      @Nonnull final NativeComponent $$react4j$$_nativeComponent) {
-    this.$$react4j$$_nativeComponent = Objects.requireNonNull( $$react4j$$_nativeComponent );
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+    this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
 
   @Nonnull
-  private static ComponentConstructorFunction getConstructorFunction() {
-    final ComponentConstructorFunction componentConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeReactComponent::new : LiteNativeReactComponent::new;
-    if ( React.enableComponentNames() ) {
-      Js.asPropertyMap( componentConstructor ).set( "displayName", "PackageAccessPostMountOrUpdateModel" );
+  private static ViewConstructorFunction getConstructorFunction() {
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    if ( React.enableViewNames() ) {
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "PackageAccessPostMountOrUpdateModel" );
     }
-    return componentConstructor;
+    return viewConstructor;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -72,75 +71,75 @@ abstract class React4j_PackageAccessPostMountOrUpdateModel extends PackageAccess
 
   static final class Factory {
     @Nonnull
-    static final ComponentConstructorFunction TYPE = getConstructorFunction();
+    static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class LiteNativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate {
+  private static final class LiteNativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate {
     @Nonnull
-    private final React4j_PackageAccessPostMountOrUpdateModel $$react4j$$_component;
+    private final React4j_PackageAccessPostMountOrUpdateModel $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_PackageAccessPostMountOrUpdateModel( this );
+      $$react4j$$_view = new Arez_React4j_PackageAccessPostMountOrUpdateModel( this );
     }
 
     @Override
     public final void componentDidMount() {
-      $$react4j$$_component.$$react4j$$_componentDidMount();
+      $$react4j$$_view.$$react4j$$_componentDidMount();
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      $$react4j$$_component.$$react4j$$_componentDidUpdate();
+      $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.$$react4j$$_render();
+      return $$react4j$$_view.$$react4j$$_render();
     }
   }
 
-  private static final class NativeReactComponent extends NativeComponent implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+  private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_PackageAccessPostMountOrUpdateModel $$react4j$$_component;
+    private final React4j_PackageAccessPostMountOrUpdateModel $$react4j$$_view;
 
     @JsConstructor
-    NativeReactComponent(@Nullable final JsPropertyMap<Object> props) {
+    NativeView(@Nullable final JsPropertyMap<Object> props) {
       super( props );
-      $$react4j$$_component = new Arez_React4j_PackageAccessPostMountOrUpdateModel( this );
+      $$react4j$$_view = new Arez_React4j_PackageAccessPostMountOrUpdateModel( this );
     }
 
     @Override
     public final void componentDidMount() {
-      $$react4j$$_component.$$react4j$$_componentDidMount();
+      $$react4j$$_view.$$react4j$$_componentDidMount();
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_component.$$react4j$$_shouldComponentUpdate( nextProps );
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
-      $$react4j$$_component.$$react4j$$_componentDidUpdate();
+      $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_component.$$react4j$$_componentWillUnmount();
+      $$react4j$$_view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.$$react4j$$_render();
+      return $$react4j$$_view.$$react4j$$_render();
     }
   }
 }

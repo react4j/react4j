@@ -26,8 +26,7 @@ import org.realityforge.proton.SuppressWarningsUtil;
 
 final class FactoryGenerator
 {
-  private static final ClassName REACT_NATIVE_COMPONENT_CLASSNAME =
-    ClassName.get( "react4j.internal", "NativeComponent" );
+  private static final ClassName NATIVE_VIEW_CLASSNAME = ClassName.get( "react4j.internal", "NativeView" );
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
 
@@ -37,7 +36,7 @@ final class FactoryGenerator
 
   @Nonnull
   static TypeSpec buildType( @Nonnull final ProcessingEnvironment processingEnv,
-                             @Nonnull final ComponentDescriptor descriptor )
+                             @Nonnull final ViewDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getFactoryClassName() );
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
@@ -66,7 +65,7 @@ final class FactoryGenerator
   }
 
   private static void buildConstructor( @Nonnull final ProcessingEnvironment processingEnv,
-                                        @Nonnull final ComponentDescriptor descriptor,
+                                        @Nonnull final ViewDescriptor descriptor,
                                         @Nonnull final TypeSpec.Builder builder,
                                         @Nonnull final ExecutableElement constructor )
   {
@@ -145,7 +144,7 @@ final class FactoryGenerator
     }
   }
 
-  private static void buildCreateMethod( @Nonnull final ComponentDescriptor descriptor,
+  private static void buildCreateMethod( @Nonnull final ViewDescriptor descriptor,
                                          @Nonnull final TypeSpec.Builder builder )
   {
     builder.addMethod( MethodSpec
@@ -153,16 +152,16 @@ final class FactoryGenerator
                          .addModifiers( Modifier.PUBLIC, Modifier.STATIC )
                          .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                          .addParameter( ParameterSpec
-                                          .builder( REACT_NATIVE_COMPONENT_CLASSNAME, "component", Modifier.FINAL )
+                                          .builder( NATIVE_VIEW_CLASSNAME, "view", Modifier.FINAL )
                                           .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                                           .build() )
                          .returns( descriptor.getEnhancedClassName() )
-                         .addStatement( "return InjectSupport.create( component )", descriptor.getArezClassName() )
+                         .addStatement( "return InjectSupport.create( view )", descriptor.getArezClassName() )
                          .build() );
   }
 
   @Nonnull
-  private static TypeSpec buildInjectSupport( @Nonnull final ComponentDescriptor descriptor )
+  private static TypeSpec buildInjectSupport( @Nonnull final ViewDescriptor descriptor )
   {
     // We create a separate InjectSupport class to avoid generating a clinit for the factory class
     // which can block optimizations in GWT
@@ -177,13 +176,13 @@ final class FactoryGenerator
   }
 
   @Nonnull
-  private static FieldSpec.Builder buildFactoryField( @Nonnull final ComponentDescriptor descriptor )
+  private static FieldSpec.Builder buildFactoryField( @Nonnull final ViewDescriptor descriptor )
   {
     return FieldSpec.builder( descriptor.getFactoryClassName(), "c_factory", Modifier.STATIC, Modifier.PRIVATE );
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildSetFactoryMethod( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildSetFactoryMethod( @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "setFactory" )
@@ -194,7 +193,7 @@ final class FactoryGenerator
     final CodeBlock.Builder block = CodeBlock.builder();
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
     block.addStatement( "$T.invariant( () -> null == c_factory, () -> \"Attempted to instantiate the React4j " +
-                        "component factory for the component named '$N' a second time\" )",
+                        "view factory for the view named '$N' a second time\" )",
                         GUARDS_CLASSNAME,
                         descriptor.getName() );
     block.endControlFlow();
@@ -204,14 +203,14 @@ final class FactoryGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildInjectCreateMethod( @Nonnull final ComponentDescriptor descriptor )
+  private static MethodSpec.Builder buildInjectCreateMethod( @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method =
       MethodSpec
         .methodBuilder( "create" )
         .addModifiers( Modifier.PRIVATE, Modifier.STATIC )
         .addParameter( ParameterSpec
-                         .builder( REACT_NATIVE_COMPONENT_CLASSNAME, "component", Modifier.FINAL )
+                         .builder( NATIVE_VIEW_CLASSNAME, "view", Modifier.FINAL )
                          .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
         .returns( descriptor.getEnhancedClassName() );
@@ -219,7 +218,7 @@ final class FactoryGenerator
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
     block.addStatement(
       "$T.invariant( () -> null != c_factory, () -> \"Attempted to create an instance of the React4j " +
-      "component named '$N' before the component factory has been initialized. Please see " +
+      "view named '$N' before the view factory has been initialized. Please see " +
       "the documentation at https://react4j.github.io/dependency_injection for directions how to " +
       "configure dependency injection.\" )",
       GUARDS_CLASSNAME,
@@ -227,7 +226,7 @@ final class FactoryGenerator
     block.endControlFlow();
     method.addCode( block.build() );
     final ExecutableElement constructor = ElementsUtil.getConstructors( descriptor.getElement() ).get( 0 );
-    return method.addStatement( "return new $T( component" +
+    return method.addStatement( "return new $T( view" +
                                 constructor.getParameters()
                                   .stream()
                                   .map( p -> ", c_factory." + p.getSimpleName().toString() )

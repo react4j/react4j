@@ -29,13 +29,13 @@ final class ImmutablePropTypeKeyedViaInheritanceInterfaceBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeKeyedViaInheritanceInterface.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeKeyedViaInheritanceInterface.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(
         final ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp) {
-      _element.setKey( Keyed.getKey( myProp ) + ( React.enableComponentNames() ? "_ImmutablePropTypeKeyedViaInheritanceInterface_4cd25d5b" : ImmutablePropTypeKeyedViaInheritanceInterface.class.getName() ) );
+      _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedViaInheritanceInterface_4cd25d5b" : ImmutablePropTypeKeyedViaInheritanceInterface.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeKeyedViaInheritanceInterface.Props.myProp, myProp );
       return build();
     }

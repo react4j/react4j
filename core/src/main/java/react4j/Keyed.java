@@ -10,7 +10,7 @@ import react4j.annotations.Prop;
 public interface Keyed
 {
   /**
-   * Return a string that will be the key or contribute to the key of a react component.
+   * Return a string that will be the key or contribute to the key of a view.
    *
    * @return the value used to form key.
    */

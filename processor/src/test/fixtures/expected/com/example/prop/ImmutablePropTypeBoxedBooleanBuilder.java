@@ -27,12 +27,12 @@ final class ImmutablePropTypeBoxedBooleanBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeBoxedBoolean.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeBoxedBoolean.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final Boolean myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeBoxedBoolean_c8609c6b" : ImmutablePropTypeBoxedBoolean.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedBoolean_c8609c6b" : ImmutablePropTypeBoxedBoolean.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeBoxedBoolean.Props.myProp, myProp );
       return build();
     }

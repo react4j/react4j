@@ -34,8 +34,8 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.arez.memoize.ParameterizedReturnMemoizeComponent" },
         new Object[]{ "com.example.arez.memoize.PropAndMemoizeComponent" },
         new Object[]{ "com.example.arez.MaybeTrackingComponent" },
-        new Object[]{ "com.example.arez.AutorunArezReactComponent" },
-        new Object[]{ "com.example.arez.BasicArezReactComponent" },
+        new Object[]{ "com.example.arez.AutorunArezView" },
+        new Object[]{ "com.example.arez.BasicArezView" },
         new Object[]{ "com.example.arez.ComponentFunctionalInterfaceProp" },
         new Object[]{ "com.example.arez.ComponentJsFunctionProp" },
         new Object[]{ "com.example.arez.ComponentShouldNotUpdateOnChangeProp" },
@@ -43,18 +43,18 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.arez.ComponentWithChildProp" },
         new Object[]{ "com.example.arez.ComponentWithDependency" },
         new Object[]{ "com.example.arez.ComponentWithProp" },
-        new Object[]{ "com.example.arez.KeepAliveMemoizeArezReactComponent" },
+        new Object[]{ "com.example.arez.KeepAliveMemoizeArezView" },
         new Object[]{ "com.example.arez.NonArezHasArezAnnotation" },
         new Object[]{ "com.example.arez.NonArezHasArezFieldAnnotation" },
         new Object[]{ "com.example.arez.OverridingComponentDidUpdateComponent" },
         new Object[]{ "com.example.arez.TrackingComponent" },
 
-        new Object[]{ "com.example.basic.BasicReactComponent" },
-        new Object[]{ "com.example.basic.CustomNameReactComponent" },
-        new Object[]{ "com.example.basic.CustomPropsReactComponent" },
-        new Object[]{ "com.example.basic.DeprecatedReactComponent" },
+        new Object[]{ "com.example.basic.BasicView" },
+        new Object[]{ "com.example.basic.CustomNameView" },
+        new Object[]{ "com.example.basic.CustomPropsView" },
+        new Object[]{ "com.example.basic.DeprecatedView" },
         new Object[]{ "com.example.basic.GenericTypeComponent" },
-        new Object[]{ "com.example.basic.PublicReactComponent" },
+        new Object[]{ "com.example.basic.PublicView" },
 
         new Object[]{ "com.example.default_props.DeprecatedFieldPropDefaultModel" },
         new Object[]{ "com.example.default_props.DeprecatedMethodPropDefaultModel" },
@@ -223,7 +223,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.schedule_render.SkipScheduleRenderComponent" },
 
         new Object[]{ "RootPackageCompleteComponent" },
-        new Object[]{ "RootPackageReactComponent" }
+        new Object[]{ "RootPackageView" }
       };
   }
 
@@ -244,7 +244,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.inject.FactoryOnlyInjectComponent" },
         new Object[]{ "com.example.inject.Jsr330NamedInjectComponent" },
         new Object[]{ "com.example.inject.Jsr330OnlyInjectComponent" },
-        new Object[]{ "com.example.inject.PublicReactComponent" },
+        new Object[]{ "com.example.inject.PublicView" },
         new Object[]{ "com.example.inject.StingNamedInjectComponent" },
         new Object[]{ "com.example.inject.StingNamedTypeComponent" },
         new Object[]{ "com.example.inject.StingOnlyInjectComponent" }
@@ -259,21 +259,21 @@ public final class React4jProcessorTest
   }
 
   @Test
-  public void nestedReactComponent()
+  public void nestedView()
     throws Exception
   {
-    assertSuccessfulCompile( "com.example.nested.NestedReactComponent",
-                             "expected/com/example/nested/NestedReactComponent_BasicReactComponentBuilder.java",
-                             "expected/com/example/nested/NestedReactComponent_React4j_BasicReactComponent.java" );
+    assertSuccessfulCompile( "com.example.nested.NestedView",
+                             "expected/com/example/nested/NestedView_BasicViewBuilder.java",
+                             "expected/com/example/nested/NestedView_React4j_BasicView.java" );
   }
 
   @Test
-  public void nestedNestedReactComponent()
+  public void nestedNestedView()
     throws Exception
   {
-    assertSuccessfulCompile( "com.example.nested.NestedNestedReactComponent",
-                             "expected/com/example/nested/NestedNestedReactComponent_DeepNesting_BasicReactComponentBuilder.java",
-                             "expected/com/example/nested/NestedNestedReactComponent_DeepNesting_React4j_BasicReactComponent.java" );
+    assertSuccessfulCompile( "com.example.nested.NestedNestedView",
+                             "expected/com/example/nested/NestedNestedView_DeepNesting_BasicViewBuilder.java",
+                             "expected/com/example/nested/NestedNestedView_DeepNesting_React4j_BasicView.java" );
   }
 
   @Test
@@ -281,9 +281,9 @@ public final class React4jProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( "com.example.nested.NestedCompleteComponent",
-                             "expected/com/example/nested/NestedCompleteComponent_BasicReactComponentBuilder.java",
-                             "expected/com/example/nested/NestedCompleteComponent_BasicReactComponentFactory.java",
-                             "expected/com/example/nested/NestedCompleteComponent_React4j_BasicReactComponent.java" );
+                             "expected/com/example/nested/NestedCompleteComponent_BasicViewBuilder.java",
+                             "expected/com/example/nested/NestedCompleteComponent_BasicViewFactory.java",
+                             "expected/com/example/nested/NestedCompleteComponent_React4j_BasicView.java" );
   }
 
   @Test
@@ -528,19 +528,19 @@ public final class React4jProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "com.example.component.ConcreteComponent", "@ReactComponent target must be abstract" },
+        new Object[]{ "com.example.component.ConcreteComponent", "@View target must be abstract" },
         new Object[]{ "com.example.component.BadNameComponent",
-                      "@ReactComponent target specified an invalid name '-abc'. The name must be a valid java identifier." },
+                      "@View target specified an invalid name '-abc'. The name must be a valid java identifier." },
         new Object[]{ "com.example.component.BadNameComponent2",
-                      "@ReactComponent target specified an invalid name 'for'. The name must not be a java keyword." },
-        new Object[]{ "com.example.component.FinalComponent", "@ReactComponent target must not be final" },
+                      "@View target specified an invalid name 'for'. The name must not be a java keyword." },
+        new Object[]{ "com.example.component.FinalComponent", "@View target must not be final" },
         new Object[]{ "com.example.component.MultipleConstructorsComponent",
-                      "@ReactComponent target must have a single, package-access constructor or the default constructor" },
+                      "@View target must have a single, package-access constructor or the default constructor" },
         new Object[]{ "com.example.component.NonStaticInnerClassComponent",
-                      "@ReactComponent target must not be a non-static nested class" },
-        new Object[]{ "com.example.component.NonClassComponent", "@ReactComponent target must be a class" },
+                      "@View target must not be a non-static nested class" },
+        new Object[]{ "com.example.component.NonClassComponent", "@View target must be a class" },
         new Object[]{ "com.example.component.PrivateConstructorComponent",
-                      "@ReactComponent target must have a single, package-access constructor or the default constructor" },
+                      "@View target must have a single, package-access constructor or the default constructor" },
         new Object[]{ "com.example.default_props.BadNameFieldPropDefault",
                       "@PropDefault target specified an invalid name '-myProp'. The name must be a valid java identifier." },
         new Object[]{ "com.example.default_props.BadNameFieldPropDefault2",
@@ -577,15 +577,15 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.default_props.ThrowsMethodPropDefault",
                       "@PropDefault target must not throw any exceptions" },
         new Object[]{ "com.example.inject.GenericTypeInjectedComponent",
-                      "@ReactComponent target has enabled injection integration but the class has type arguments which is incompatible with injection integration." },
+                      "@View target has enabled injection integration but the class has type arguments which is incompatible with injection integration." },
         new Object[]{ "com.example.inject.InjectDisabledWithNamedConstructorParameterComponent",
-                      "@ReactComponent target must not have specified inject=DISABLED and have a constructor parameter annotated with the javax.inject.Named annotation" },
+                      "@View target must not have specified inject=DISABLED and have a constructor parameter annotated with the javax.inject.Named annotation" },
         new Object[]{ "com.example.inject.InjectEnabledButNoConstructorParametersComponent",
-                      "@ReactComponent target must not have specified inject=ENABLED if the constructor has no parameters" },
+                      "@View target must not have specified inject=ENABLED if the constructor has no parameters" },
         new Object[]{ "com.example.inject.StingDisabledWithNamedConstructorParameterComponent",
-                      "@ReactComponent target must not have specified sting=DISABLED and have a constructor parameter annotated with the sting.Named annotation" },
+                      "@View target must not have specified sting=DISABLED and have a constructor parameter annotated with the sting.Named annotation" },
         new Object[]{ "com.example.inject.StingEnabledButNoConstructorParametersComponent",
-                      "@ReactComponent target must not have specified sting=ENABLED if the constructor has no parameters" },
+                      "@View target must not have specified sting=ENABLED if the constructor has no parameters" },
         new Object[]{ "com.example.on_error.AbstractOnErrorComponent", "@OnError target must not be abstract" },
         new Object[]{ "com.example.on_error.BadParam1OnErrorComponent",
                       "@OnError target has parameter of invalid type named other" },
@@ -727,7 +727,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.render.AbstractComponent", "@Render target must not be abstract" },
         new Object[]{ "com.example.render.MethodParameterComponent", "@Render target must not have any parameters" },
         new Object[]{ "com.example.render.MissingRenderComponent",
-                      "@ReactComponent target must contain a method annotated with the @Render annotation" },
+                      "@View target must contain a method annotated with the @Render annotation" },
         new Object[]{ "com.example.render.PrivateComponent", "@Render target must not be private" },
         new Object[]{ "com.example.render.StaticComponent", "@Render target must not be static" },
         new Object[]{ "com.example.render.ThrowsComponent", "@Render target must not throw any exceptions" },
@@ -772,7 +772,7 @@ public final class React4jProcessorTest
     assertFailedCompileResource( Arrays.asList( source1, source2 ),
                                  "@" + annotation + " target must not be package access if " +
                                  "the method is in a different package from the type annotated with the " +
-                                 "@ReactComponent annotation" );
+                                 "@View annotation" );
   }
 
   @DataProvider( name = "packageAccessFieldInDifferentPackage" )
@@ -795,7 +795,7 @@ public final class React4jProcessorTest
     assertFailedCompileResource( Arrays.asList( source1, source2 ),
                                  "@" + annotation + " target must not be package access if " +
                                  "the field is in a different package from the type annotated with the " +
-                                 "@ReactComponent annotation" );
+                                 "@View annotation" );
   }
 
   @DataProvider( name = "compileWithWarnings" )
@@ -803,56 +803,56 @@ public final class React4jProcessorTest
   {
     return new Object[][]
       {
-        new Object[]{ "com.example.basic.FinalMethodInReactComponent",
-                      "@ReactComponent target should not declare a final method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:FinalMethod\" ) or @SuppressReact4jWarnings( \"React4j:FinalMethod\" )" },
+        new Object[]{ "com.example.basic.FinalMethodInView",
+                      "@View target should not declare a final method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:FinalMethod\" ) or @SuppressReact4jWarnings( \"React4j:FinalMethod\" )" },
 
         new Object[]{ "com.example.prop_validate.ProtectedAccessPropValidateModel",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.prop_validate.PublicAccessPropValidateModel",
-                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.on_error.ProtectedAccessOnErrorModel",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.on_error.PublicAccessOnErrorModel",
-                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.on_prop_change.ProtectedAccessOnPropChangeModel",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.on_prop_change.PublicAccessOnPropChangeModel",
-                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.post_mount.ProtectedAccessPostMountModel",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.post_mount.PublicAccessPostMountModel",
-                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.post_mount_or_update.ProtectedAccessPostMountOrUpdateModel",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.post_mount_or_update.PublicAccessPostMountOrUpdateModel",
-                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.post_update.ProtectedAccessPostUpdateModel",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.post_update.PublicAccessPostUpdateModel",
-                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.pre_update.ProtectedAccessPreUpdateModel",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.pre_update.PublicAccessPreUpdateModel",
-                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.prop.ProtectedAccessPropModel",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.prop.PublicAccessPropModel",
-                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.default_props.ProtectedMethodPropDefault",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
 
         new Object[]{ "com.example.schedule_render.ProtectedScheduleRenderComponent",
-                      "@ReactComponent target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.schedule_render.PublicScheduleRenderComponent",
-                      "@ReactComponent target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" }
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" }
       };
   }
 

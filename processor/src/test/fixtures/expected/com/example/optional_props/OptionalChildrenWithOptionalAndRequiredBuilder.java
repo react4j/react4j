@@ -46,7 +46,7 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
     private final ReactElement _element;
 
     Builder() {
-      _element = ReactElement.createComponentElement( React4j_OptionalChildrenWithOptionalAndRequired.Factory.TYPE );
+      _element = ReactElement.createViewElement( React4j_OptionalChildrenWithOptionalAndRequired.Factory.TYPE );
       final JsPropertyMap<Object> props = _element.props();
       props.set( React4j_OptionalChildrenWithOptionalAndRequired.Props.myProp, OptionalChildrenWithOptionalAndRequired.DEFAULT_MY_PROP );
     }

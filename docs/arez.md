@@ -30,7 +30,7 @@ Below is a `Footer` component extracted from a [TodoMVC](http://todomvc.com/) im
 observable state `AppData.model.totalCount()`, `AppData.viewService.getFilterMode()` and
 `AppData.model.completedCount()` and will re-render each time any of these values change.
 
-{@file_content: file=react4j/examples/arez/step1/Footer.java start_line=@ReactComponent "end_line=^}"}
+{@file_content: file=react4j/examples/arez/step1/Footer.java start_line=@View "end_line=^}"}
 
 ---
 
@@ -73,7 +73,7 @@ component is re-rendered any time a Todo is added or removed as the value for th
 every time a re-render occurs. However we can decide to limit the scope of the rendering by extracting a component
 that encapsulates the html that changes.
 
-{@file_content: file=react4j/examples/arez/step2/FooterTodoCount.java start_line=@ReactComponent}
+{@file_content: file=react4j/examples/arez/step2/FooterTodoCount.java start_line=@View}
 
 This component can be rendered via an expression such as `React.createElement( FooterTodoCount_.TYPE )`.
 
@@ -84,7 +84,7 @@ We could also extract another component to manage the links and only re-render t
 `filterMode` observable property changes but we have decided against this as it is a relatively infrequent event.
 The final `Footer` component looks something like:
 
-{@file_content: file=react4j/examples/arez/step2/Footer.java start_line=@ReactComponent "end_line=^}"}
+{@file_content: file=react4j/examples/arez/step2/Footer.java start_line=@View "end_line=^}"}
 
 ### On Optimizing
 

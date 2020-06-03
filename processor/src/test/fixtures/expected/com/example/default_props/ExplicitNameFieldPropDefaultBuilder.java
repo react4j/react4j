@@ -38,7 +38,7 @@ final class ExplicitNameFieldPropDefaultBuilder {
     private final ReactElement _element;
 
     Builder() {
-      _element = ReactElement.createComponentElement( React4j_ExplicitNameFieldPropDefault.Factory.TYPE );
+      _element = ReactElement.createViewElement( React4j_ExplicitNameFieldPropDefault.Factory.TYPE );
       final JsPropertyMap<Object> props = _element.props();
       props.set( React4j_ExplicitNameFieldPropDefault.Props.myProp, ExplicitNameFieldPropDefault.MY_PROP );
     }

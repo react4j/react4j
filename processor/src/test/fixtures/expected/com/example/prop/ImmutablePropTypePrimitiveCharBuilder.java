@@ -27,12 +27,12 @@ final class ImmutablePropTypePrimitiveCharBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypePrimitiveChar.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypePrimitiveChar.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final char myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypePrimitiveChar_acc92cbb" : ImmutablePropTypePrimitiveChar.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveChar_acc92cbb" : ImmutablePropTypePrimitiveChar.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypePrimitiveChar.Props.myProp, myProp );
       return build();
     }

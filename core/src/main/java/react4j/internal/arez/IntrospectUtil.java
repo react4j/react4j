@@ -16,7 +16,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 /**
- * Utilities for introspecting the Arez components and runtime.
+ * Utilities for introspecting the React4j views and runtime.
  */
 @OmitType( unless = "react4j.store_debug_data_as_state" )
 public final class IntrospectUtil
@@ -116,9 +116,9 @@ public final class IntrospectUtil
    * Prepare the newState value to be updated given specified current state.
    * If no changes are required then return false.
    *
-   * @param newState     the new "state" of the component.
-   * @param currentState the current "state" of the component.
-   * @return true if newState needs to be saved to native component, false otherwise.
+   * @param newState     the new "state" of the view.
+   * @param currentState the current "state" of the view.
+   * @return true if newState needs to be saved to native view, false otherwise.
    */
   public static boolean prepareStateUpdate( @Nonnull final JsPropertyMap<Object> newState,
                                             @Nullable final JsPropertyMap<Object> currentState )

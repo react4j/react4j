@@ -27,12 +27,12 @@ final class ImmutablePropTypeEnumBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeEnum.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeEnum.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeEnum.Foo myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeEnum_00ba1b5e" : ImmutablePropTypeEnum.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeEnum_00ba1b5e" : ImmutablePropTypeEnum.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeEnum.Props.myProp, myProp );
       return build();
     }

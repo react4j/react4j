@@ -2,17 +2,17 @@ package com.example.nested;
 
 import react4j.ReactNode;
 import react4j.annotations.Prop;
-import react4j.annotations.ReactComponent;
 import react4j.annotations.Render;
+import react4j.annotations.View;
 
 public class NestedCompleteComponent
 {
-  @ReactComponent
-  static abstract class BasicReactComponent
+  @View
+  static abstract class BasicView
   {
     private final String _value;
 
-    BasicReactComponent( final String value )
+    BasicView( final String value )
     {
       _value = value;
     }

@@ -27,12 +27,12 @@ final class ImmutablePropTypeStringBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeString.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeString.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeString_e57e44c1" : ImmutablePropTypeString.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeString_e57e44c1" : ImmutablePropTypeString.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeString.Props.myProp, myProp );
       return build();
     }

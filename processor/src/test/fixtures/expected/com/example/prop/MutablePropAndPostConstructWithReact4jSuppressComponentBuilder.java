@@ -26,7 +26,7 @@ final class MutablePropAndPostConstructWithReact4jSuppressComponentBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_MutablePropAndPostConstructWithReact4jSuppressComponent.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_MutablePropAndPostConstructWithReact4jSuppressComponent.Factory.TYPE );
 
     @Override
     @Nonnull

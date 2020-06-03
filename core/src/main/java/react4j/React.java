@@ -8,7 +8,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 /**
- * Native interface to native runtime for creating component.
+ * Native interface to native runtime for creating views.
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "React" )
 public final class React
@@ -18,15 +18,15 @@ public final class React
   }
 
   /**
-   * Return true if components should have human readable names specified.
+   * Return true if views should have human readable names specified.
    * Useful if you want to interact via DevTools or other tool chains.
    *
-   * @return true to enable human readable names for components.
+   * @return true to enable human readable names for views.
    */
   @JsOverlay
-  public static boolean enableComponentNames()
+  public static boolean enableViewNames()
   {
-    return ReactConfig.enableComponentNames();
+    return ReactConfig.enableViewNames();
   }
 
   /**

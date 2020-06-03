@@ -13,7 +13,7 @@ import org.realityforge.proton.ProcessorException;
 final class PropDescriptor
 {
   @Nonnull
-  private final ComponentDescriptor _descriptor;
+  private final ViewDescriptor _descriptor;
   @Nonnull
   private final String _name;
   @Nonnull
@@ -43,7 +43,7 @@ final class PropDescriptor
    */
   private boolean _optional;
 
-  PropDescriptor( @Nonnull final ComponentDescriptor descriptor,
+  PropDescriptor( @Nonnull final ViewDescriptor descriptor,
                   @Nonnull final String name,
                   @Nonnull final String qualifier,
                   @Nonnull final ExecutableElement method,

@@ -38,7 +38,7 @@ final class PackageAccessFieldPropDefaultBuilder {
     private final ReactElement _element;
 
     Builder() {
-      _element = ReactElement.createComponentElement( React4j_PackageAccessFieldPropDefault.Factory.TYPE );
+      _element = ReactElement.createViewElement( React4j_PackageAccessFieldPropDefault.Factory.TYPE );
       final JsPropertyMap<Object> props = _element.props();
       props.set( React4j_PackageAccessFieldPropDefault.Props.myProp, PackageAccessFieldPropDefault.DEFAULT_MY_PROP );
     }

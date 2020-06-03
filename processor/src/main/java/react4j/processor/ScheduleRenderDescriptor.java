@@ -8,12 +8,12 @@ final class ScheduleRenderDescriptor
 {
   @Nonnull
   private final ExecutableElement _method;
-  private final boolean _skipShouldComponentUpdate;
+  private final boolean _skipShouldViewUpdate;
 
-  ScheduleRenderDescriptor( @Nonnull final ExecutableElement method, final boolean skipShouldComponentUpdate )
+  ScheduleRenderDescriptor( @Nonnull final ExecutableElement method, final boolean skipShouldViewUpdate )
   {
     _method = Objects.requireNonNull( method );
-    _skipShouldComponentUpdate = skipShouldComponentUpdate;
+    _skipShouldViewUpdate = skipShouldViewUpdate;
   }
 
   @Nonnull
@@ -22,8 +22,8 @@ final class ScheduleRenderDescriptor
     return _method;
   }
 
-  boolean skipShouldComponentUpdate()
+  boolean skipShouldViewUpdate()
   {
-    return _skipShouldComponentUpdate;
+    return _skipShouldViewUpdate;
   }
 }

@@ -27,12 +27,12 @@ final class ImmutablePropAndPostConstructComponentBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropAndPostConstructComponent.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropAndPostConstructComponent.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropAndPostConstructComponent_48ad187e" : ImmutablePropAndPostConstructComponent.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropAndPostConstructComponent_48ad187e" : ImmutablePropAndPostConstructComponent.class.getName() ) );
       _element.props().set( React4j_ImmutablePropAndPostConstructComponent.Props.myProp, myProp );
       return build();
     }

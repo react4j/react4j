@@ -31,7 +31,7 @@ final class ComponentShouldUpdateOnChangePropBuilder {
   }
 
   private static class Builder implements Step1, Step2 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ComponentShouldUpdateOnChangeProp.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ComponentShouldUpdateOnChangeProp.Factory.TYPE );
 
     @Override
     @Nonnull

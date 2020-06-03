@@ -27,12 +27,12 @@ final class ImmutablePropTypePrimitiveShortBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypePrimitiveShort.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypePrimitiveShort.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final short myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypePrimitiveShort_be261e8c" : ImmutablePropTypePrimitiveShort.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveShort_be261e8c" : ImmutablePropTypePrimitiveShort.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypePrimitiveShort.Props.myProp, myProp );
       return build();
     }

@@ -27,12 +27,12 @@ final class ImmutablePropTypeBoxedIntegerBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createComponentElement( React4j_ImmutablePropTypeBoxedInteger.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeBoxedInteger.Factory.TYPE );
 
     @Override
     @Nonnull
     public final ReactNode myProp(final Integer myProp) {
-      _element.setKey( myProp + ( React.enableComponentNames() ? "_ImmutablePropTypeBoxedInteger_5fafd942" : ImmutablePropTypeBoxedInteger.class.getName() ) );
+      _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedInteger_5fafd942" : ImmutablePropTypeBoxedInteger.class.getName() ) );
       _element.props().set( React4j_ImmutablePropTypeBoxedInteger.Props.myProp, myProp );
       return build();
     }

@@ -1,15 +1,15 @@
 package com.example.schedule_render;
 
 import react4j.ReactNode;
-import react4j.annotations.ReactComponent;
 import react4j.annotations.Render;
 import react4j.annotations.ScheduleRender;
+import react4j.annotations.View;
 
-@ReactComponent
+@View
 abstract class SkipScheduleRenderComponent
 {
   @SuppressWarnings( "DefaultAnnotationParam" )
-  @ScheduleRender( skipShouldComponentUpdate = true )
+  @ScheduleRender( skipShouldViewUpdate = true )
   abstract void myScheduleRender();
 
   @Render
