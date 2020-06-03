@@ -14,7 +14,7 @@ final class OnPropChangeDescriptor
   /**
    * Flag set to true if the hook method is invoked prio to update.
    */
-  private boolean _preUpdate;
+  private final boolean _preUpdate;
 
   OnPropChangeDescriptor( @Nonnull final ExecutableElement method,
                           @Nonnull final List<PropDescriptor> props,
