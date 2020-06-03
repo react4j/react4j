@@ -23,14 +23,14 @@ import jsinterop.base.JsPropertyMap;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.internal.IntrospectUtil;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
+import react4j.internal.SchedulerUtil;
 import react4j.internal.ViewConstructorFunction;
-import react4j.internal.arez.IntrospectUtil;
-import react4j.internal.arez.SchedulerUtil;
-import react4j.internal.arez.ViewState;
+import react4j.internal.ViewState;
 
 @ArezComponent(
     name = "ComponentFunctionalInterfaceProp",
@@ -112,7 +112,7 @@ abstract class React4j_ComponentFunctionalInterfaceProp extends ComponentFunctio
     assert Disposable.isNotDisposed( this );
     final ReactNode result = render();
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
-      Guards.invariant( () -> !$$react4j$$_getRenderObserver().getContext().getSpy().asObserverInfo( $$react4j$$_getRenderObserver() ).getDependencies().isEmpty(), () -> "Component render completed on '" + this + "' without accessing any Arez dependencies but has a type set to TRACKING. The render method needs to access an Arez dependency or the type should be changed to STATEFUL or MAYBE_TRACKING." );
+      Guards.invariant( () -> !$$react4j$$_getRenderObserver().getContext().getSpy().asObserverInfo( $$react4j$$_getRenderObserver() ).getDependencies().isEmpty(), () -> "View render completed on '" + this + "' without accessing any Arez dependencies but has a type set to TRACKING. The render method needs to access an Arez dependency or the type should be changed to STATEFUL or MAYBE_TRACKING." );
     }
     return result;
   }

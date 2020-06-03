@@ -83,9 +83,9 @@ final class ViewGenerator
   private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
     ClassName.get( "react4j.internal", "OnComponentDidCatch" );
   private static final ClassName NATIVE_VIEW_CLASSNAME = ClassName.get( "react4j.internal", "NativeView" );
-  private static final ClassName VIEW_STATE_CLASSNAME = ClassName.get( "react4j.internal.arez", "ViewState" );
-  private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "SchedulerUtil" );
-  private static final ClassName INTROSPECT_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "IntrospectUtil" );
+  private static final ClassName VIEW_STATE_CLASSNAME = ClassName.get( "react4j.internal", "ViewState" );
+  private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get( "react4j.internal", "SchedulerUtil" );
+  private static final ClassName INTROSPECT_UTIL_CLASSNAME = ClassName.get( "react4j.internal", "IntrospectUtil" );
   private static final String FRAMEWORK_INTERNAL_PREFIX = "$$react4j$$_";
   private static final String RENDER_METHOD = FRAMEWORK_INTERNAL_PREFIX + "render";
   private static final String SHOULD_COMPONENT_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "shouldComponentUpdate";

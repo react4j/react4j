@@ -22,14 +22,14 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.internal.IntrospectUtil;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
+import react4j.internal.SchedulerUtil;
 import react4j.internal.ViewConstructorFunction;
-import react4j.internal.arez.IntrospectUtil;
-import react4j.internal.arez.SchedulerUtil;
-import react4j.internal.arez.ViewState;
+import react4j.internal.ViewState;
 
 @ArezComponent(
     name = "MaybeTrackingComponent",

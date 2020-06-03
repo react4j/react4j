@@ -1,4 +1,4 @@
-package react4j.internal.arez;
+package react4j.internal;
 
 import arez.Arez;
 import arez.Disposable;
