@@ -95,7 +95,6 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     ((Arez_React4j_NotObservableAsNotUpdateOnChangeProp) this).dispose();
   }
 
-  @Override
   @Nullable
   @Observe(
       name = "render",
@@ -105,11 +104,11 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
       observeLowerPriorityDependencies = true,
       reportResult = false
   )
-  protected ReactNode render() {
+  ReactNode $$react4j$$_render() {
     $$react4j$$_state = ComponentState.IDLE;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
-    final ReactNode result = super.render();
+    final ReactNode result = render();
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
       Guards.invariant( () -> !$$react4j$$_getRenderObserver().getContext().getSpy().asObserverInfo( $$react4j$$_getRenderObserver() ).getDependencies().isEmpty(), () -> "Component render completed on '" + this + "' without accessing any Arez dependencies but has a type set to TRACKING. The render method needs to access an Arez dependency or the type should be changed to STATEFUL or MAYBE_TRACKING." );
     }
@@ -183,7 +182,7 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 
@@ -220,7 +219,7 @@ abstract class React4j_NotObservableAsNotUpdateOnChangeProp extends NotObservabl
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 }

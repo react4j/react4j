@@ -1,14 +1,13 @@
 package com.example.prop_validate;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.PropValidate;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class DoublePropValidate
-  extends Component
 {
   @PropValidate
   void validateMyProp( double prop )
@@ -18,8 +17,8 @@ abstract class DoublePropValidate
   @Prop
   abstract double getMyProp();
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

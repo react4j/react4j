@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import java.util.Objects;
@@ -61,6 +62,12 @@ abstract class React4j_ImmutablePropTypeString extends ImmutablePropTypeString {
     ((Arez_React4j_ImmutablePropTypeString) this).dispose();
   }
 
+  @Nullable
+  ReactNode $$react4j$$_render() {
+    assert Disposable.isNotDisposed( this );
+    return render();
+  }
+
   static final class Factory {
     @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
@@ -88,7 +95,7 @@ abstract class React4j_ImmutablePropTypeString extends ImmutablePropTypeString {
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 
@@ -115,7 +122,7 @@ abstract class React4j_ImmutablePropTypeString extends ImmutablePropTypeString {
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 }

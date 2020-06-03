@@ -259,6 +259,7 @@ public final class React4jProcessor
     determinePostMountMethod( typeElement, descriptor );
     determineOnErrorMethod( typeElement, descriptor );
     determineScheduleRenderMethods( typeElement, descriptor );
+    determineRenderMethod( typeElement, descriptor );
 
     for ( final PropDescriptor prop : descriptor.getProps() )
     {
@@ -1131,6 +1132,43 @@ public final class React4jProcessor
     descriptor.setScheduleRenderDescriptors( scheduleRenderDescriptors );
   }
 
+  private void determineRenderMethod( @Nonnull final TypeElement typeElement,
+                                      @Nonnull final ComponentDescriptor descriptor )
+  {
+    boolean foundRender = false;
+    for ( final ExecutableElement method : getMethods( typeElement ) )
+    {
+      final AnnotationMirror annotation =
+        AnnotationsUtil.findAnnotationByType( method, Constants.RENDER_ANNOTATION_CLASSNAME );
+      if ( null != annotation )
+      {
+        MemberChecks.mustNotBeAbstract( Constants.RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustBeSubclassCallable( typeElement,
+                                             Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                             Constants.RENDER_ANNOTATION_CLASSNAME,
+                                             method );
+        MemberChecks.mustNotHaveAnyParameters( Constants.RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustReturnAnInstanceOf( processingEnv,
+                                             method,
+                                             Constants.RENDER_ANNOTATION_CLASSNAME,
+                                             Constants.VNODE_CLASSNAME );
+        MemberChecks.mustNotThrowAnyExceptions( Constants.RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotHaveAnyTypeParameters( Constants.RENDER_ANNOTATION_CLASSNAME, method );
+
+        descriptor.setRender( method );
+        foundRender = true;
+      }
+    }
+    if ( !foundRender )
+    {
+      throw new ProcessorException( MemberChecks.must( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                       "contain a method annotated with the " +
+                                                       MemberChecks.toSimpleName( Constants.RENDER_ANNOTATION_CLASSNAME ) +
+                                                       " annotation" ),
+                                    typeElement );
+    }
+  }
+
   private void determinePostMountMethod( @Nonnull final TypeElement typeElement,
                                          @Nonnull final ComponentDescriptor descriptor )
   {
@@ -1231,29 +1269,13 @@ public final class React4jProcessor
   private void determineComponentCapabilities( @Nonnull final ComponentDescriptor descriptor,
                                                @Nonnull final TypeElement typeElement )
   {
-    final TypeElement componentType = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_CLASSNAME );
-    final TypeMirror rawComponentType = processingEnv.getTypeUtils().erasure( componentType.asType() );
-
-    final TypeMirror declaredType = descriptor.getDeclaredType();
-
-    final boolean isComponent = processingEnv.getTypeUtils().isSubtype( declaredType, rawComponentType );
-
-    if ( !isComponent )
+    if ( AnnotationsUtil.hasAnnotationOfType( typeElement, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
     {
-      throw new ProcessorException( MemberChecks.must( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                                       "be a subclass of react4j.Component" ),
+      throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
+                                                          "be annotated with the " +
+                                                          MemberChecks.toSimpleName( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) +
+                                                          " as React4j will add the annotation." ),
                                     typeElement );
-    }
-    else
-    {
-      if ( AnnotationsUtil.hasAnnotationOfType( typeElement, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
-      {
-        throw new ProcessorException( MemberChecks.mustNot( Constants.REACT_COMPONENT_ANNOTATION_CLASSNAME,
-                                                            "be annotated with the " +
-                                                            MemberChecks.toSimpleName( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) +
-                                                            " as React4j will add the annotation." ),
-                                      typeElement );
-      }
     }
 
     if ( descriptor.needsInjection() && !descriptor.getDeclaredType().getTypeArguments().isEmpty() )

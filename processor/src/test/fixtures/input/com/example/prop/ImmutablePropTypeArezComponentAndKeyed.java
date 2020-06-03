@@ -5,15 +5,14 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.Keyed;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class ImmutablePropTypeArezComponentAndKeyed
-  extends Component
 {
   @ArezComponent( requireId = Feature.ENABLE )
   static abstract class MyComponent
@@ -26,7 +25,6 @@ abstract class ImmutablePropTypeArezComponentAndKeyed
 
     // Keyed should win over ArezId
     @Nonnull
-    @Override
     public String getKey()
     {
       return "";
@@ -37,8 +35,8 @@ abstract class ImmutablePropTypeArezComponentAndKeyed
   abstract MyComponent getMyProp();
 
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

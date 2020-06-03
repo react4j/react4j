@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Move the reference to the native react component out of the `react.Component` class and into the generated subclass. This involves removing the method `Component.bindComponent(NativeComponent)` and `Component.component()`.
+* Introduce a `@Render` annotation that is used to annotate the render method of a component. This makes it possible to completely remove the `react.Component` class.
 
 ### [v0.161](https://github.com/react4j/react4j/tree/v0.161) (2020-06-02) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.160...v0.161) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.160&new=0.161)
 

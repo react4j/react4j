@@ -1,8 +1,8 @@
 package com.example.nested;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 public class NestedNestedReactComponent
 {
@@ -10,10 +10,9 @@ public class NestedNestedReactComponent
   {
     @ReactComponent
     static abstract class BasicReactComponent
-      extends Component
     {
-      @Override
-      protected ReactNode render()
+      @Render
+      ReactNode render()
       {
         return null;
       }

@@ -1,15 +1,14 @@
 package com.example.prop_validate;
 
 import java.io.IOException;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.PropValidate;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class ThrowsPropValidate
-  extends Component
 {
   @PropValidate
   void validateMyProp( String prop )
@@ -20,8 +19,8 @@ abstract class ThrowsPropValidate
   @Prop
   protected abstract String getMyProp();
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

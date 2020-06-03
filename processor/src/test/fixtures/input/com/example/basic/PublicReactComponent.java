@@ -1,15 +1,14 @@
 package com.example.basic;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 public abstract class PublicReactComponent
-  extends Component
 {
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

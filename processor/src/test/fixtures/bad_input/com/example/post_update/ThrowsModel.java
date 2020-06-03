@@ -1,14 +1,13 @@
 package com.example.post_update;
 
 import java.io.IOException;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class ThrowsModel
-  extends Component
 {
   @PostUpdate
   void postUpdate()
@@ -16,8 +15,8 @@ abstract class ThrowsModel
   {
   }
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

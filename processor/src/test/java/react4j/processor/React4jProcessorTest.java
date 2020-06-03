@@ -539,8 +539,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.component.NonStaticInnerClassComponent",
                       "@ReactComponent target must not be a non-static nested class" },
         new Object[]{ "com.example.component.NonClassComponent", "@ReactComponent target must be a class" },
-        new Object[]{ "com.example.component.NotExtendingComponent",
-                      "@ReactComponent target must be a subclass of react4j.Component" },
         new Object[]{ "com.example.component.PrivateConstructorComponent",
                       "@ReactComponent target must have a single, package-access constructor or the default constructor" },
         new Object[]{ "com.example.default_props.BadNameFieldPropDefault",
@@ -725,8 +723,14 @@ public final class React4jProcessorTest
                       "@PropValidate target must not throw any exceptions" },
         new Object[]{ "com.example.prop_validate.TooManyParamsPropValidate",
                       "@PropValidate target must have exactly 1 parameter" },
+
+        new Object[]{ "com.example.render.AbstractComponent", "@Render target must not be abstract" },
+        new Object[]{ "com.example.render.MethodParameterComponent", "@Render target must not have any parameters" },
         new Object[]{ "com.example.render.MissingRenderComponent",
-                      "@ArezComponent target has an abstract method not implemented by framework. The method is named render" },
+                      "@ReactComponent target must contain a method annotated with the @Render annotation" },
+        new Object[]{ "com.example.render.PrivateComponent", "@Render target must not be private" },
+        new Object[]{ "com.example.render.StaticComponent", "@Render target must not be static" },
+        new Object[]{ "com.example.render.ThrowsComponent", "@Render target must not throw any exceptions" },
 
         new Object[]{ "com.example.schedule_render.ConcreteScheduleRenderComponent",
                       "@ScheduleRender target must be abstract" },
@@ -752,7 +756,8 @@ public final class React4jProcessorTest
         new Object[]{ "PropDefault", "PropDefault" },
         new Object[]{ "PostUpdate", "PostUpdate" },
         new Object[]{ "PreUpdate", "PreUpdate" },
-        new Object[]{ "PropValidate", "PropValidate" }
+        new Object[]{ "PropValidate", "PropValidate" },
+        new Object[]{ "Render", "Render" }
       };
   }
 

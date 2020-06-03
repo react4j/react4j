@@ -1,15 +1,14 @@
 package com.example.component;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent( name = "for" )
 abstract class BadNameComponent2
-  extends Component
 {
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

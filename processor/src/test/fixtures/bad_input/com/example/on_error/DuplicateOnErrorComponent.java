@@ -1,16 +1,15 @@
 package com.example.on_error;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnError;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class DuplicateOnErrorComponent
-  extends Component
 {
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

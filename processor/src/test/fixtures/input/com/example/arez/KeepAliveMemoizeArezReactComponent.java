@@ -2,13 +2,12 @@ package com.example.arez;
 
 import arez.annotations.Memoize;
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent( type = ReactComponent.Type.TRACKING )
 abstract class KeepAliveMemoizeArezReactComponent
-  extends Component
 {
   @Memoize( keepAlive = true )
   int myAutorun()
@@ -17,8 +16,8 @@ abstract class KeepAliveMemoizeArezReactComponent
   }
 
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

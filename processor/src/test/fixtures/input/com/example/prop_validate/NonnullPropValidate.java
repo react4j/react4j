@@ -1,15 +1,14 @@
 package com.example.prop_validate;
 
 import javax.annotation.Nonnull;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.PropValidate;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class NonnullPropValidate
-  extends Component
 {
   @PropValidate
   void validateMyProp( @Nonnull String prop )
@@ -20,8 +19,8 @@ abstract class NonnullPropValidate
   @Nonnull
   abstract String getMyProp();
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

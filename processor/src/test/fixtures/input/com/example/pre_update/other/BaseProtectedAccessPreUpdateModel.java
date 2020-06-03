@@ -1,19 +1,17 @@
 package com.example.pre_update.other;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.PreUpdate;
-import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 public abstract class BaseProtectedAccessPreUpdateModel
-  extends Component
 {
   @PreUpdate
   protected void preUpdate()
   {
   }
 
-  @Override
+  @Render
   protected ReactNode render()
   {
     return null;

@@ -1,17 +1,16 @@
 package com.example.prop;
 
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 /**
  * This prop has multiple optional props
  */
 @ReactComponent
 abstract class MultiPropComponent4
-  extends Component
 {
   @Prop
   abstract String getMyProp();
@@ -33,8 +32,8 @@ abstract class MultiPropComponent4
   abstract ReactNode getChild();
 
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

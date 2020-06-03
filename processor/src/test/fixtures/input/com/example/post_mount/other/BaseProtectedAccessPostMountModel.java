@@ -1,18 +1,17 @@
 package com.example.post_mount.other;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.PostMount;
+import react4j.annotations.Render;
 
 public abstract class BaseProtectedAccessPostMountModel
-  extends Component
 {
   @PostMount
   protected void postMount()
   {
   }
 
-  @Override
+  @Render
   protected ReactNode render()
   {
     return null;

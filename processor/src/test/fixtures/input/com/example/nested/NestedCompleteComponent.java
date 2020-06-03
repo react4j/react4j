@@ -1,15 +1,14 @@
 package com.example.nested;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 public class NestedCompleteComponent
 {
   @ReactComponent
   static abstract class BasicReactComponent
-    extends Component
   {
     private final String _value;
 
@@ -21,8 +20,8 @@ public class NestedCompleteComponent
     @Prop
     abstract String getMyProp();
 
-    @Override
-    protected ReactNode render()
+    @Render
+    ReactNode render()
     {
       return null;
     }

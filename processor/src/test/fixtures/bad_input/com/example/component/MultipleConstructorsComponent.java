@@ -1,12 +1,11 @@
 package com.example.component;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class MultipleConstructorsComponent
-  extends Component
 {
   MultipleConstructorsComponent( final String ignored )
   {
@@ -16,8 +15,8 @@ abstract class MultipleConstructorsComponent
   {
   }
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

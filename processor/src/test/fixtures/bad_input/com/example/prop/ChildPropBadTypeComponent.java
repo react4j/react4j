@@ -1,21 +1,20 @@
 package com.example.prop;
 
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class ChildPropBadTypeComponent
-  extends Component
 {
   @Prop
   protected abstract int getChild();
 
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

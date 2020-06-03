@@ -2,7 +2,6 @@ package com.example.lifecycle;
 
 import elemental2.core.JsError;
 import javax.annotation.Nonnull;
-import react4j.Component;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
 import react4j.annotations.OnError;
@@ -11,13 +10,13 @@ import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class OverrideLifecycleMethodsComponent
-  extends Component
 {
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

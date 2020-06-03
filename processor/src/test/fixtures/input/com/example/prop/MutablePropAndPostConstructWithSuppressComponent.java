@@ -2,14 +2,13 @@ package com.example.prop;
 
 import arez.annotations.PostConstruct;
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class MutablePropAndPostConstructWithSuppressComponent
-  extends Component
 {
   @SuppressWarnings( "React4j:MutablePropAccessedInPostConstruct" )
   @Prop
@@ -21,8 +20,8 @@ abstract class MutablePropAndPostConstructWithSuppressComponent
   }
 
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

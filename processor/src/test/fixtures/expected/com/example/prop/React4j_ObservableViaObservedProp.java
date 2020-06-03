@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.ObservableValue;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
@@ -82,6 +83,12 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     ((Arez_React4j_ObservableViaObservedProp) this).dispose();
   }
 
+  @Nullable
+  ReactNode $$react4j$$_render() {
+    assert Disposable.isNotDisposed( this );
+    return render();
+  }
+
   static final class Factory {
     @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
@@ -114,7 +121,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 }

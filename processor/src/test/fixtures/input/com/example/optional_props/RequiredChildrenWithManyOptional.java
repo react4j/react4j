@@ -1,14 +1,13 @@
 package com.example.optional_props;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.PropDefault;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class RequiredChildrenWithManyOptional
-  extends Component
 {
   @PropDefault
   static final String DEFAULT_MY_PROP_A = "Foo";
@@ -34,8 +33,8 @@ abstract class RequiredChildrenWithManyOptional
   @Prop
   abstract String getMyPropD();
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

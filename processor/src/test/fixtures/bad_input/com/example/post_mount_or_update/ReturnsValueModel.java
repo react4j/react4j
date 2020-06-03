@@ -1,13 +1,12 @@
 package com.example.post_mount_or_update;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class ReturnsValueModel
-  extends Component
 {
   @PostMountOrUpdate
   int postMountOrUpdate()
@@ -15,8 +14,8 @@ abstract class ReturnsValueModel
     return 0;
   }
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

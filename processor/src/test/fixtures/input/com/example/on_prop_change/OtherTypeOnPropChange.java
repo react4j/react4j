@@ -1,15 +1,14 @@
 package com.example.on_prop_change;
 
 import java.util.BitSet;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class OtherTypeOnPropChange
-  extends Component
 {
   @OnPropChange
   void onMyPropChange( BitSet myProp )
@@ -19,8 +18,8 @@ abstract class OtherTypeOnPropChange
   @Prop
   abstract BitSet getMyProp();
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

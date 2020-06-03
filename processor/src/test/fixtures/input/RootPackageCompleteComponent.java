@@ -1,4 +1,3 @@
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
 import react4j.annotations.PostMount;
@@ -7,10 +6,10 @@ import react4j.annotations.PreUpdate;
 import react4j.annotations.Prop;
 import react4j.annotations.PropDefault;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class RootPackageCompleteComponent
-  extends Component
 {
   @PropDefault( name = "myProp" )
   static final int MY_PROP = 37;
@@ -23,8 +22,8 @@ abstract class RootPackageCompleteComponent
   @Prop
   abstract int getMyProp();
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

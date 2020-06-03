@@ -2,9 +2,9 @@ package react4j.examples.arez.step2;
 
 import arez.annotations.Memoize;
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 import react4j.dom.proptypes.html.AnchorProps;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.dom.proptypes.html.HtmlProps;
@@ -14,11 +14,10 @@ import static react4j.dom.DOM.*;
 
 @ReactComponent( type = ReactComponent.Type.TRACKING )
 abstract class Footer
-  extends Component
 {
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     final FilterMode filterMode = AppData.viewService.getFilterMode();
     return

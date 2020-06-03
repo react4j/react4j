@@ -1,5 +1,6 @@
 package com.example.on_prop_change;
 
+import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import java.util.Objects;
@@ -77,6 +78,12 @@ abstract class React4j_ProtectedAccessFromBaseOnPropChangeModel extends Protecte
     ((Arez_React4j_ProtectedAccessFromBaseOnPropChangeModel) this).dispose();
   }
 
+  @Nullable
+  ReactNode $$react4j$$_render() {
+    assert Disposable.isNotDisposed( this );
+    return render();
+  }
+
   static final class Factory {
     @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
@@ -111,7 +118,7 @@ abstract class React4j_ProtectedAccessFromBaseOnPropChangeModel extends Protecte
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 
@@ -145,7 +152,7 @@ abstract class React4j_ProtectedAccessFromBaseOnPropChangeModel extends Protecte
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 }

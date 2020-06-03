@@ -2,14 +2,13 @@ package com.example.prop;
 
 import arez.annotations.Observe;
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class ObservableViaObservedProp
-  extends Component
 {
   @Prop
   abstract Object getValue();
@@ -20,8 +19,8 @@ abstract class ObservableViaObservedProp
   }
 
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

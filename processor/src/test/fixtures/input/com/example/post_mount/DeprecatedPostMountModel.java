@@ -1,13 +1,12 @@
 package com.example.post_mount;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.PostMount;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class DeprecatedPostMountModel
-  extends Component
 {
   @Deprecated
   @PostMount
@@ -15,8 +14,8 @@ abstract class DeprecatedPostMountModel
   {
   }
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

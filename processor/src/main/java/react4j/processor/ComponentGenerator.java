@@ -88,6 +88,7 @@ final class ComponentGenerator
   private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "SchedulerUtil" );
   private static final ClassName INTROSPECT_UTIL_CLASSNAME = ClassName.get( "react4j.internal.arez", "IntrospectUtil" );
   private static final String FRAMEWORK_INTERNAL_PREFIX = "$$react4j$$_";
+  private static final String RENDER_METHOD = FRAMEWORK_INTERNAL_PREFIX + "render";
   private static final String SHOULD_COMPONENT_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "shouldComponentUpdate";
   private static final String COMPONENT_PRE_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentPreUpdate";
   private static final String COMPONENT_DID_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidUpdate";
@@ -220,10 +221,7 @@ final class ComponentGenerator
       builder.addMethod( buildComponentWillUnmount( descriptor ).build() );
     }
 
-    if ( descriptor.trackRender() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable ) )
-    {
-      builder.addMethod( buildRender( descriptor ).build() );
-    }
+    builder.addMethod( buildRender( descriptor ).build() );
 
     if ( descriptor.trackRender() )
     {
@@ -757,13 +755,13 @@ final class ComponentGenerator
   @Nonnull
   private static MethodSpec.Builder buildRender( @Nonnull final ComponentDescriptor descriptor )
   {
-    assert descriptor.trackRender() || descriptor.getProps().stream().anyMatch( PropDescriptor::isDisposable );
-    final MethodSpec.Builder method = MethodSpec
-      .methodBuilder( "render" )
-      .addAnnotation( Override.class )
-      .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
-      .addModifiers( Modifier.PROTECTED )
-      .returns( REACT_NODE_CLASSNAME );
+    final ExecutableElement render = descriptor.getRender();
+
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( RENDER_METHOD )
+        .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
+        .returns( REACT_NODE_CLASSNAME );
 
     if ( descriptor.trackRender() )
     {
@@ -811,7 +809,7 @@ final class ComponentGenerator
 
     if ( ComponentType.TRACKING == descriptor.getType() )
     {
-      method.addStatement( "final $T result = super.render()", REACT_NODE_CLASSNAME );
+      method.addStatement( "final $T result = $N()", REACT_NODE_CLASSNAME, render.getSimpleName().toString() );
 
       final CodeBlock.Builder depCheckBlock = CodeBlock.builder();
       depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
@@ -833,7 +831,7 @@ final class ComponentGenerator
     }
     else
     {
-      method.addStatement( "return super.render()" );
+      method.addStatement( "return $N()", render.getSimpleName().toString() );
     }
     return method;
   }
@@ -1224,7 +1222,7 @@ final class ComponentGenerator
       .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .returns( REACT_NODE_CLASSNAME )
-      .addStatement( "return $N.render()", COMPONENT_FIELD );
+      .addStatement( "return $N.$N()", COMPONENT_FIELD, RENDER_METHOD );
   }
 
   @Nonnull

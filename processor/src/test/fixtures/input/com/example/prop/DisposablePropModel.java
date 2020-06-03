@@ -1,22 +1,21 @@
 package com.example.prop;
 
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Feature;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent( type = ReactComponent.Type.TRACKING )
 abstract class DisposablePropModel
-  extends Component
 {
   @Prop( disposable = Feature.ENABLE )
   abstract Object getValue();
 
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

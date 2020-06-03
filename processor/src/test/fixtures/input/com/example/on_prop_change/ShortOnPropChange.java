@@ -1,14 +1,13 @@
 package com.example.on_prop_change;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class ShortOnPropChange
-  extends Component
 {
   @OnPropChange
   void onMyPropChange( short myProp )
@@ -18,8 +17,8 @@ abstract class ShortOnPropChange
   @Prop
   abstract short getMyProp();
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

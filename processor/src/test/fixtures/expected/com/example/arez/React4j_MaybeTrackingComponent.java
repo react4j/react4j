@@ -83,7 +83,6 @@ abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
     ((Arez_React4j_MaybeTrackingComponent) this).dispose();
   }
 
-  @Override
   @Nullable
   @Observe(
       name = "render",
@@ -93,11 +92,11 @@ abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
       observeLowerPriorityDependencies = true,
       reportResult = false
   )
-  protected ReactNode render() {
+  ReactNode $$react4j$$_render() {
     $$react4j$$_state = ComponentState.IDLE;
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
-    return super.render();
+    return render();
   }
 
   void onRenderDepsChange() {
@@ -163,7 +162,7 @@ abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 
@@ -200,7 +199,7 @@ abstract class React4j_MaybeTrackingComponent extends MaybeTrackingComponent {
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 }

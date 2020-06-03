@@ -1,15 +1,14 @@
 package com.example.post_update;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class OnPropChangeAndPostUpdateModel
-  extends Component
 {
   @Prop
   abstract int getMyProp();
@@ -24,8 +23,8 @@ abstract class OnPropChangeAndPostUpdateModel
   {
   }
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

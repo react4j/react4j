@@ -3,17 +3,16 @@ package com.example.arez.memoize;
 import arez.annotations.DepType;
 import arez.annotations.Memoize;
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent( type = ReactComponent.Type.TRACKING )
 abstract class ParameterizedMemoizeComponent
-  extends Component
 {
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

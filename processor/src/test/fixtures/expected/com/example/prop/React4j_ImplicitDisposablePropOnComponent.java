@@ -67,15 +67,14 @@ abstract class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposa
     ((Arez_React4j_ImplicitDisposablePropOnComponent) this).dispose();
   }
 
-  @Override
   @Nullable
-  protected ReactNode render() {
+  ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     final ImplicitDisposablePropOnComponent.Model $$react4jv$$_getModel = getModel();
     if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {
       return null;
     }
-    return super.render();
+    return render();
   }
 
   static final class Factory {
@@ -105,7 +104,7 @@ abstract class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposa
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 
@@ -132,7 +131,7 @@ abstract class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposa
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 }

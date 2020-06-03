@@ -1,19 +1,17 @@
 package com.example.prop.other;
 
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
-import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 public abstract class BaseProtectedAccessPropModel
-  extends Component
 {
   @Prop
   protected abstract String getMyProp();
 
   @Nullable
-  @Override
+  @Render
   protected ReactNode render()
   {
     return null;

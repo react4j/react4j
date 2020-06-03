@@ -1,19 +1,18 @@
 package com.example.inject;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 public abstract class PublicReactComponent
-  extends Component
 {
   PublicReactComponent( String someParam )
   {
   }
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

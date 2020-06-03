@@ -15,6 +15,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import org.realityforge.proton.GeneratorUtil;
+import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
 
 final class ComponentDescriptor
@@ -31,6 +32,8 @@ final class ComponentDescriptor
   private final boolean _shouldSetDefaultPriority;
   @Nonnull
   private final ExecutableElement _constructor;
+  @Nullable
+  private ExecutableElement _render;
   @Nullable
   private ExecutableElement _preUpdate;
   @Nullable
@@ -304,6 +307,25 @@ final class ComponentDescriptor
     {
       _preUpdate = preUpdate;
     }
+  }
+
+  @Nonnull
+  ExecutableElement getRender()
+  {
+    assert null != _render;
+    return _render;
+  }
+
+  void setRender( @Nonnull final ExecutableElement render )
+  {
+    if ( null != _render )
+    {
+      throw new ProcessorException( MemberChecks.mustNot( Constants.RENDER_ANNOTATION_CLASSNAME,
+                                                          "be present when another method named " +
+                                                          _render.getSimpleName() +
+                                                          " exists with the same annotation" ), render );
+    }
+    _render = Objects.requireNonNull( render );
   }
 
   @Nullable

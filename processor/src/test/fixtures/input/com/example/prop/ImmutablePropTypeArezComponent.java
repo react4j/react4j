@@ -4,14 +4,13 @@ import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class ImmutablePropTypeArezComponent
-  extends Component
 {
   @ArezComponent( requireId = Feature.ENABLE )
   static abstract class MyComponent
@@ -26,8 +25,8 @@ abstract class ImmutablePropTypeArezComponent
   abstract MyComponent getMyProp();
 
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

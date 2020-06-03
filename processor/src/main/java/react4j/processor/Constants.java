@@ -5,11 +5,13 @@ import javax.annotation.Nonnull;
 final class Constants
 {
   @Nonnull
-  static final String COMPONENT_CLASSNAME = "react4j.Component";
-  @Nonnull
   static final String ERROR_INFO_CLASSNAME = "react4j.ReactErrorInfo";
   @Nonnull
+  static final String VNODE_CLASSNAME = "react4j.ReactNode";
+  @Nonnull
   static final String KEYED_CLASSNAME = "react4j.Keyed";
+  @Nonnull
+  static final String RENDER_ANNOTATION_CLASSNAME = "react4j.annotations.Render";
   @Nonnull
   static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";
   @Nonnull

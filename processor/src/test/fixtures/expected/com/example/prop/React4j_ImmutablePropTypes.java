@@ -94,15 +94,14 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     ((Arez_React4j_ImmutablePropTypes) this).dispose();
   }
 
-  @Override
   @Nullable
-  protected ReactNode render() {
+  ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     final ImmutablePropTypes.MyComponent $$react4jv$$_getMyProp = getMyProp();
     if ( Disposable.isDisposed( $$react4jv$$_getMyProp ) ) {
       return null;
     }
-    return super.render();
+    return render();
   }
 
   static final class Factory {
@@ -140,7 +139,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 
@@ -167,7 +166,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.example.lifecycle;
 
+import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import elemental2.core.JsError;
@@ -73,6 +74,12 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     ((Arez_React4j_OverrideLifecycleMethodsComponent) this).dispose();
   }
 
+  @Nullable
+  ReactNode $$react4j$$_render() {
+    assert Disposable.isNotDisposed( this );
+    return render();
+  }
+
   static final class Factory {
     @Nonnull
     static final ComponentConstructorFunction TYPE = getConstructorFunction();
@@ -119,7 +126,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 
@@ -169,7 +176,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_component.render();
+      return $$react4j$$_component.$$react4j$$_render();
     }
   }
 }

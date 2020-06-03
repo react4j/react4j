@@ -5,15 +5,14 @@ import arez.annotations.ArezComponent;
 import arez.annotations.ComponentId;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import react4j.Component;
 import react4j.Keyed;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class ImmutablePropTypes
-  extends Component
 {
   @ArezComponent
   static abstract class MyComponent
@@ -34,7 +33,6 @@ abstract class ImmutablePropTypes
     implements Keyed
   {
     @Nonnull
-    @Override
     public String getKey()
     {
       return "";
@@ -62,8 +60,8 @@ abstract class ImmutablePropTypes
   abstract Foo getSomeProp();
 
   @Nullable
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

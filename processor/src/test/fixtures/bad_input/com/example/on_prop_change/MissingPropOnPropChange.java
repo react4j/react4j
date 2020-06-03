@@ -1,21 +1,20 @@
 package com.example.on_prop_change;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.OnPropChange;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class MissingPropOnPropChange
-  extends Component
 {
   @OnPropChange
   void onMyPropChange( String myProp )
   {
   }
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }

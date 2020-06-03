@@ -1,14 +1,13 @@
 package com.example.default_props;
 
-import react4j.Component;
 import react4j.ReactNode;
 import react4j.annotations.Prop;
 import react4j.annotations.PropDefault;
 import react4j.annotations.ReactComponent;
+import react4j.annotations.Render;
 
 @ReactComponent
 abstract class BadTypeMethodPropDefault
-  extends Component
 {
   @PropDefault
   static int getMyPropDefault()
@@ -19,8 +18,8 @@ abstract class BadTypeMethodPropDefault
   @Prop
   protected abstract String getMyProp();
 
-  @Override
-  protected ReactNode render()
+  @Render
+  ReactNode render()
   {
     return null;
   }
