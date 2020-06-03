@@ -6,6 +6,8 @@ complete as there is too much un-said.
 
 ### Next Release
 
+* Generate an error if a view contains a `@ScheduleRender` annotated method and is not of type `STATEFUL`
+
 * Consider changing the default type to `TRACKING`? Asses how many components exist of each different type
   in your average app.
 
