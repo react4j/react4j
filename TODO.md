@@ -11,13 +11,13 @@ complete as there is too much un-said.
 * Consider changing the default type to `TRACKING`? Asses how many components exist of each different type
   in your average app.
 
-* Consider adding the ability to pass immutable `@Prop` values in as constructor parameters. The
-  `immutable` param on the `@Prop` could simply be dropped and just anything passed in via constructor
+* Consider adding the ability to pass immutable `@Input` values in as constructor parameters. The
+  `immutable` param on the `@Input` could simply be dropped and just anything passed in via constructor
   is by definition immutable. This would require a some rework in code generation, particularly when
   interacting with the dependency injectors but it could simplify a lot of code. A lot of places
   we have a `@PostConstruct` simply so that we can process an immutable prop.
 
-* Add ability to `@Prop` to add enhancers to builder. Convert several existing special cased methods in builder
+* Add ability to `@Input` to add enhancers to builder. Convert several existing special cased methods in builder
   (See TODOs in Generator.java) with the enhancers.
 
 * Add to build process so that every published packaged is attempted to be built using bazel to
