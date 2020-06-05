@@ -36,7 +36,7 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "NullabilityPropsComponent" );
     }
@@ -46,27 +46,27 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
   @Nonnull
   @Override
   String getMyProp() {
-    return $$react4j$$_nativeView.props().getAsAny( Props.myProp ).asString();
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString();
   }
 
   @Nullable
   @Override
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.myProp2 ) ? $$react4j$$_nativeView.props().getAsAny( Props.myProp2 ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myProp2 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.myProp2 ), nextProps.get( Props.myProp2 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp2 ), nextInputs.get( Inputs.myProp2 ) ) ) {
       return true;
     }
     return false;
@@ -87,10 +87,10 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final class Inputs {
+    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
 
-    static final String myProp2 = React.shouldMinimizePropKeys() ? "b" : "myProp2";
+    static final String myProp2 = React.shouldMinimizeInputKeys() ? "b" : "myProp2";
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
@@ -98,14 +98,14 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
     private final React4j_NullabilityPropsComponent $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_NullabilityPropsComponent( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -120,14 +120,14 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
     private final React4j_NullabilityPropsComponent $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_NullabilityPropsComponent( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

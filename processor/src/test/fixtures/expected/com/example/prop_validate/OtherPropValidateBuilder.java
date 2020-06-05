@@ -32,7 +32,7 @@ final class OtherPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final BitSet myProp) {
-      _element.props().set( React4j_OtherPropValidate.Props.myProp, myProp );
+      _element.input( React4j_OtherPropValidate.Inputs.myProp, myProp );
       return build();
     }
 

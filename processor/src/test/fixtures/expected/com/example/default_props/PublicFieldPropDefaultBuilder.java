@@ -39,14 +39,14 @@ final class PublicFieldPropDefaultBuilder {
 
     Builder() {
       _element = ReactElement.createViewElement( React4j_PublicFieldPropDefault.Factory.TYPE );
-      final JsPropertyMap<Object> props = _element.props();
-      props.set( React4j_PublicFieldPropDefault.Props.myProp, PublicFieldPropDefault.DEFAULT_MY_PROP );
+      final JsPropertyMap<Object> inputs = _element.inputs();
+      inputs.set( React4j_PublicFieldPropDefault.Inputs.myProp, PublicFieldPropDefault.DEFAULT_MY_PROP );
     }
 
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_PublicFieldPropDefault.Props.myProp, myProp );
+      _element.input( React4j_PublicFieldPropDefault.Inputs.myProp, myProp );
       return build();
     }
 

@@ -9,8 +9,8 @@
   <set-property name='react4j.environment' value='development'/>
   <set-property name='react4j.enable_view_names' value='true'/>
   <set-property name='react4j.check_invariants' value='true'/>
-  <set-property name='react4j.minimize_prop_keys' value='false'/>
-  <set-property name='react4j.validate_prop_values' value='true'/>
+  <set-property name='react4j.minimize_input_keys' value='false'/>
+  <set-property name='react4j.validate_input_values' value='true'/>
   <set-property name='react4j.store_debug_data_as_state' value='true'/>
-  <set-property name='react4j.freeze_props' value='true'/>
+  <set-property name='react4j.freeze_inputs' value='true'/>
 </module>

@@ -33,7 +33,7 @@ final class NonnullChildPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode child(@Nonnull final ReactNode child) {
-      _element.props().set( React4j_NonnullChildPropComponent.Props.child, JsArray.of( Objects.requireNonNull( child ) ) );
+      _element.input( React4j_NonnullChildPropComponent.Inputs.child, JsArray.of( Objects.requireNonNull( child ) ) );
       return build();
     }
 

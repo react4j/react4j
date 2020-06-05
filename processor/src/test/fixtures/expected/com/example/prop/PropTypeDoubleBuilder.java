@@ -31,7 +31,7 @@ final class PropTypeDoubleBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final double myProp) {
-      _element.props().set( React4j_PropTypeDouble.Props.myProp, myProp );
+      _element.input( React4j_PropTypeDouble.Inputs.myProp, myProp );
       return build();
     }
 

@@ -37,7 +37,7 @@ abstract class React4j_PackageAccessPostUpdateModel extends PackageAccessPostUpd
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "PackageAccessPostUpdateModel" );
     }
@@ -45,8 +45,8 @@ abstract class React4j_PackageAccessPostUpdateModel extends PackageAccessPostUpd
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
     return false;
   }
 
@@ -74,18 +74,18 @@ abstract class React4j_PackageAccessPostUpdateModel extends PackageAccessPostUpd
     private final React4j_PackageAccessPostUpdateModel $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_PackageAccessPostUpdateModel( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
       $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 
@@ -101,18 +101,18 @@ abstract class React4j_PackageAccessPostUpdateModel extends PackageAccessPostUpd
     private final React4j_PackageAccessPostUpdateModel $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_PackageAccessPostUpdateModel( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
       $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 

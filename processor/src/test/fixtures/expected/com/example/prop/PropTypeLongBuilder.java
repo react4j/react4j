@@ -31,7 +31,7 @@ final class PropTypeLongBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final long myProp) {
-      _element.props().set( React4j_PropTypeLong.Props.myProp, myProp );
+      _element.input( React4j_PropTypeLong.Inputs.myProp, myProp );
       return build();
     }
 

@@ -31,7 +31,7 @@ final class NonJavaBeanPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode window(final String window) {
-      _element.props().set( React4j_NonJavaBeanPropComponent.Props.window, window );
+      _element.input( React4j_NonJavaBeanPropComponent.Inputs.window, window );
       return build();
     }
 

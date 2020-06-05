@@ -2,7 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Nullable;
 import react4j.ReactNode;
-import react4j.annotations.Prop;
+import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
@@ -12,22 +12,22 @@ import react4j.annotations.View;
 @View
 abstract class MultiPropComponent4
 {
-  @Prop
+  @Input
   abstract String getMyProp();
 
-  @Prop
+  @Input
   @Nullable
   abstract String getMyProp2();
 
-  @Prop
+  @Input
   @Nullable
   abstract String getMyProp3();
 
-  @Prop
+  @Input
   @Nullable
   abstract String getMyProp4();
 
-  @Prop
+  @Input
   @Nullable
   abstract ReactNode getChild();
 

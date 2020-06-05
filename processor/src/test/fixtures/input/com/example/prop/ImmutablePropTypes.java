@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.Keyed;
 import react4j.ReactNode;
-import react4j.annotations.Prop;
+import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
@@ -44,19 +44,19 @@ abstract class ImmutablePropTypes
     A, B, C
   }
 
-  @Prop( immutable = true )
+  @Input( immutable = true )
   abstract MyComponent getMyProp();
 
-  @Prop( immutable = true )
+  @Input( immutable = true )
   abstract String getMyOtherProp();
 
-  @Prop( immutable = true )
+  @Input( immutable = true )
   abstract int stillAnotherProp();
 
-  @Prop( immutable = true )
+  @Input( immutable = true )
   abstract KeyedComponent BobsProp();
 
-  @Prop( immutable = true )
+  @Input( immutable = true )
   abstract Foo getSomeProp();
 
   @Nullable

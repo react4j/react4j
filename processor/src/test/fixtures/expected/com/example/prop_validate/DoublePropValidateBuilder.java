@@ -31,7 +31,7 @@ final class DoublePropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final double myProp) {
-      _element.props().set( React4j_DoublePropValidate.Props.myProp, myProp );
+      _element.input( React4j_DoublePropValidate.Inputs.myProp, myProp );
       return build();
     }
 

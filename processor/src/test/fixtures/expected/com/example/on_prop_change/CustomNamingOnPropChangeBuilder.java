@@ -41,21 +41,21 @@ final class CustomNamingOnPropChangeBuilder {
     @Override
     @Nonnull
     public final Step2 myProp1(final boolean myProp1) {
-      _element.props().set( React4j_CustomNamingOnPropChange.Props.myProp1, myProp1 );
+      _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp1, myProp1 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step3 myProp2(final String myProp2) {
-      _element.props().set( React4j_CustomNamingOnPropChange.Props.myProp2, myProp2 );
+      _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp2, myProp2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode myProp3(final int myProp3) {
-      _element.props().set( React4j_CustomNamingOnPropChange.Props.myProp3, myProp3 );
+      _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp3, myProp3 );
       return build();
     }
 

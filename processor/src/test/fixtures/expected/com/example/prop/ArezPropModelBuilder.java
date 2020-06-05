@@ -36,14 +36,14 @@ final class ArezPropModelBuilder {
     @Override
     @Nonnull
     public final Step2 value(final String value) {
-      _element.props().set( React4j_ArezPropModel.Props.value, value );
+      _element.input( React4j_ArezPropModel.Inputs.value, value );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode model(final ArezPropModel.Model model) {
-      _element.props().set( React4j_ArezPropModel.Props.model, model );
+      _element.input( React4j_ArezPropModel.Inputs.model, model );
       return build();
     }
 

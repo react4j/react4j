@@ -37,14 +37,14 @@ final class RootPackageCompleteComponentBuilder {
 
     Builder() {
       _element = ReactElement.createViewElement( React4j_RootPackageCompleteComponent.Factory.TYPE );
-      final JsPropertyMap<Object> props = _element.props();
-      props.set( React4j_RootPackageCompleteComponent.Props.myProp, RootPackageCompleteComponent.MY_PROP );
+      final JsPropertyMap<Object> inputs = _element.inputs();
+      inputs.set( React4j_RootPackageCompleteComponent.Inputs.myProp, RootPackageCompleteComponent.MY_PROP );
     }
 
     @Override
     @Nonnull
     public final ReactNode myProp(final int myProp) {
-      _element.props().set( React4j_RootPackageCompleteComponent.Props.myProp, myProp );
+      _element.input( React4j_RootPackageCompleteComponent.Inputs.myProp, myProp );
       return build();
     }
 

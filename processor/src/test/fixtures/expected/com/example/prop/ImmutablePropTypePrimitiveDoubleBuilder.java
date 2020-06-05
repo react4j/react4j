@@ -33,7 +33,7 @@ final class ImmutablePropTypePrimitiveDoubleBuilder {
     @Nonnull
     public final ReactNode myProp(final double myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveDouble_9191758c" : ImmutablePropTypePrimitiveDouble.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypePrimitiveDouble.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypePrimitiveDouble.Inputs.myProp, myProp );
       return build();
     }
 

@@ -31,7 +31,7 @@ final class ImplicitDisposablePropBuilder {
     @Override
     @Nonnull
     public final ReactNode model(final ImplicitDisposableProp.Model model) {
-      _element.props().set( React4j_ImplicitDisposableProp.Props.model, model );
+      _element.input( React4j_ImplicitDisposableProp.Inputs.model, model );
       return build();
     }
 

@@ -33,7 +33,7 @@ final class NonnullOnPropChangeBuilder {
     @Nonnull
     public final ReactNode myProp(@Nonnull final String myProp) {
       Objects.requireNonNull( myProp );
-      _element.props().set( React4j_NonnullOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_NonnullOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

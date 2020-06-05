@@ -33,7 +33,7 @@ final class ImmutablePropTypeBoxedByteBuilder {
     @Nonnull
     public final ReactNode myProp(final Byte myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedByte_72d659be" : ImmutablePropTypeBoxedByte.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeBoxedByte.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeBoxedByte.Inputs.myProp, myProp );
       return build();
     }
 

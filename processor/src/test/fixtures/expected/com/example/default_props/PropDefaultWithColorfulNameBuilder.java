@@ -39,14 +39,14 @@ final class PropDefaultWithColorfulNameBuilder {
 
     Builder() {
       _element = ReactElement.createViewElement( React4j_PropDefaultWithColorfulName.Factory.TYPE );
-      final JsPropertyMap<Object> props = _element.props();
-      props.set( React4j_PropDefaultWithColorfulName.Props.myProp12$23, PropDefaultWithColorfulName.DEFAULT_MY_PROP12$23 );
+      final JsPropertyMap<Object> inputs = _element.inputs();
+      inputs.set( React4j_PropDefaultWithColorfulName.Inputs.myProp12$23, PropDefaultWithColorfulName.DEFAULT_MY_PROP12$23 );
     }
 
     @Override
     @Nonnull
     public final ReactNode myProp12$23(final String myProp12$23) {
-      _element.props().set( React4j_PropDefaultWithColorfulName.Props.myProp12$23, myProp12$23 );
+      _element.input( React4j_PropDefaultWithColorfulName.Inputs.myProp12$23, myProp12$23 );
       return build();
     }
 

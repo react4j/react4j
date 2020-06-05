@@ -36,7 +36,7 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypePrimitiveFloat" );
     }
@@ -45,12 +45,12 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
 
   @Override
   float getMyProp() {
-    return $$react4j$$_nativeView.props().getAsAny( Props.myProp ).asFloat();
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asFloat();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
     return false;
   }
 
@@ -69,8 +69,8 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final class Inputs {
+    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
@@ -78,14 +78,14 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
     private final React4j_ImmutablePropTypePrimitiveFloat $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_ImmutablePropTypePrimitiveFloat( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -100,14 +100,14 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
     private final React4j_ImmutablePropTypePrimitiveFloat $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_ImmutablePropTypePrimitiveFloat( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

@@ -31,7 +31,7 @@ final class ShortPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final short myProp) {
-      _element.props().set( React4j_ShortPropValidate.Props.myProp, myProp );
+      _element.input( React4j_ShortPropValidate.Inputs.myProp, myProp );
       return build();
     }
 

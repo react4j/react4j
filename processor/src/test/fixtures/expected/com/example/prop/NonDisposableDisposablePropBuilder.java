@@ -31,7 +31,7 @@ final class NonDisposableDisposablePropBuilder {
     @Override
     @Nonnull
     public final ReactNode model(final NonDisposableDisposableProp.Model model) {
-      _element.props().set( React4j_NonDisposableDisposableProp.Props.model, model );
+      _element.input( React4j_NonDisposableDisposableProp.Inputs.model, model );
       return build();
     }
 

@@ -54,28 +54,28 @@ final class RequiredChildrenWithManyRequiredBuilder {
     @Override
     @Nonnull
     public final Step2 myRequiredProp1(final String myRequiredProp1) {
-      _element.props().set( React4j_RequiredChildrenWithManyRequired.Props.myRequiredProp1, myRequiredProp1 );
+      _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.myRequiredProp1, myRequiredProp1 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step3 myRequiredProp2(final String myRequiredProp2) {
-      _element.props().set( React4j_RequiredChildrenWithManyRequired.Props.myRequiredProp2, myRequiredProp2 );
+      _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.myRequiredProp2, myRequiredProp2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step4 myRequiredProp3(final String myRequiredProp3) {
-      _element.props().set( React4j_RequiredChildrenWithManyRequired.Props.myRequiredProp3, myRequiredProp3 );
+      _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.myRequiredProp3, myRequiredProp3 );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode... children) {
-      _element.props().set( React4j_RequiredChildrenWithManyRequired.Props.children, JsArray.of( children ) );
+      _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.children, JsArray.of( children ) );
       return build();
     }
 

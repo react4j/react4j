@@ -31,7 +31,7 @@ final class BooleanPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final boolean myProp) {
-      _element.props().set( React4j_BooleanPropValidate.Props.myProp, myProp );
+      _element.input( React4j_BooleanPropValidate.Inputs.myProp, myProp );
       return build();
     }
 

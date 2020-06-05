@@ -31,7 +31,7 @@ final class ExplicitNameOnPropChangeBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final double myProp) {
-      _element.props().set( React4j_ExplicitNameOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_ExplicitNameOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

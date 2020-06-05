@@ -55,9 +55,9 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
   )
   Object getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.value ) ? $$react4j$$_nativeView.props().getAsAny( Props.value ).cast() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.value ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) );
     }
   }
 
@@ -68,11 +68,11 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
   @Action(
       verifyRequired = false
   )
-  boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
+  boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
     boolean modified = false;
-    if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.value ), nextInputs.get( Inputs.value ) ) ) {
       getValueObservableValue().reportChanged();
       modified = true;
     }
@@ -94,8 +94,8 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
+  static final class Inputs {
+    static final String value = React.shouldMinimizeInputKeys() ? "a" : "value";
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
@@ -103,14 +103,14 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
     private final React4j_ObservableViaMemoizeProp $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_ObservableViaMemoizeProp( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

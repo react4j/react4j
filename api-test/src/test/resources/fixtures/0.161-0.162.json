@@ -2,6 +2,81 @@
   {
     "code": "java.class.added",
     "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.Input",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Input",
+      "classSimpleName": "Input",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.InputDefault",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.InputDefault",
+      "classSimpleName": "InputDefault",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.InputRef",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.InputRef",
+      "classSimpleName": "InputRef",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.InputValidate",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.InputValidate",
+      "classSimpleName": "InputValidate",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.OnInputChange",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.OnInputChange",
+      "classSimpleName": "OnInputChange",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
     "newElement": "@interface react4j.annotations.Render",
     "classification": {
       "SOURCE": "NON_BREAKING",
@@ -121,6 +196,54 @@
     }
   },
   {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method boolean react4j.React::shouldFreezeInputs()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "method",
+      "methodName": "shouldFreezeInputs",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method boolean react4j.React::shouldMinimizeInputKeys()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "method",
+      "methodName": "shouldMinimizeInputKeys",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method boolean react4j.React::shouldValidateInputValues()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "method",
+      "methodName": "shouldValidateInputValues",
+      "package": "react4j"
+    }
+  },
+  {
     "code": "java.method.attributeWithDefaultAddedToAnnotationType",
     "description": "The annotation has a new attribute with a default value.",
     "newElement": "method boolean react4j.annotations.ScheduleRender::skipShouldViewUpdate()",
@@ -137,6 +260,22 @@
     }
   },
   {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method jsinterop.base.JsPropertyMap<java.lang.Object> react4j.ReactElement::inputs()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "inputs",
+      "package": "react4j"
+    }
+  },
+  {
     "code": "java.method.added",
     "description": "Method was added.",
     "newElement": "method react4j.ReactElement react4j.ReactElement::createViewElement(react4j.internal.ViewConstructorFunction)",
@@ -149,6 +288,38 @@
       "classSimpleName": "ReactElement",
       "elementKind": "method",
       "methodName": "createViewElement",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.ReactElement react4j.ReactElement::input(java.lang.String, java.lang.Object)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method void react4j.ReactElement::setInputs(jsinterop.base.JsPropertyMap<java.lang.Object>)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "setInputs",
       "package": "react4j"
     }
   },
@@ -187,6 +358,86 @@
   {
     "code": "java.method.added",
     "description": "Method was added.",
+    "newElement": "method void react4j.ReactTestUtil::freezeInputs()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "freezeInputs",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.ReactTestUtil::minimizeInputKeys()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "minimizeInputKeys",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.ReactTestUtil::noFreezeInputs()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "noFreezeInputs",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.ReactTestUtil::noMinimizeInputKeys()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "noMinimizeInputKeys",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.ReactTestUtil::noValidateInputValues()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "noValidateInputValues",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
     "newElement": "method void react4j.ReactTestUtil::setViewEnableNames(boolean)",
     "classification": {
       "SOURCE": "NON_BREAKING",
@@ -198,6 +449,102 @@
       "elementKind": "method",
       "methodName": "setViewEnableNames",
       "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.ReactTestUtil::validateInputValues()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "validateInputValues",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.annotation.noLongerPresent",
+    "description": "Old API referenced the annotation type but the new API version no longer does.",
+    "oldElement": "@interface react4j.annotations.OnPropChange",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "NON_BREAKING",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.OnPropChange",
+      "classSimpleName": "OnPropChange",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.annotation.noLongerPresent",
+    "description": "Old API referenced the annotation type but the new API version no longer does.",
+    "oldElement": "@interface react4j.annotations.Prop",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "NON_BREAKING",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Prop",
+      "classSimpleName": "Prop",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.annotation.noLongerPresent",
+    "description": "Old API referenced the annotation type but the new API version no longer does.",
+    "oldElement": "@interface react4j.annotations.PropDefault",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "NON_BREAKING",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.PropDefault",
+      "classSimpleName": "PropDefault",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.annotation.noLongerPresent",
+    "description": "Old API referenced the annotation type but the new API version no longer does.",
+    "oldElement": "@interface react4j.annotations.PropRef",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "NON_BREAKING",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.PropRef",
+      "classSimpleName": "PropRef",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.annotation.noLongerPresent",
+    "description": "Old API referenced the annotation type but the new API version no longer does.",
+    "oldElement": "@interface react4j.annotations.PropValidate",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "NON_BREAKING",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.PropValidate",
+      "classSimpleName": "PropValidate",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
     }
   },
   {
@@ -323,6 +670,54 @@
     }
   },
   {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method boolean react4j.React::shouldFreezeProps()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "method",
+      "methodName": "shouldFreezeProps",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method boolean react4j.React::shouldMinimizePropKeys()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "method",
+      "methodName": "shouldMinimizePropKeys",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method boolean react4j.React::shouldValidatePropValues()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.React",
+      "classSimpleName": "React",
+      "elementKind": "method",
+      "methodName": "shouldValidatePropValues",
+      "package": "react4j"
+    }
+  },
+  {
     "code": "java.method.attributeRemovedFromAnnotationType",
     "description": "The annotation no longer has an attribute.",
     "oldElement": "method boolean react4j.annotations.ScheduleRender::skipShouldComponentUpdate()",
@@ -341,6 +736,22 @@
   {
     "code": "java.method.removed",
     "description": "Method was removed.",
+    "oldElement": "method jsinterop.base.JsPropertyMap<java.lang.Object> react4j.ReactElement::props()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "props",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
     "oldElement": "method react4j.ReactElement react4j.ReactElement::createComponentElement(react4j.internal.ComponentConstructorFunction)",
     "classification": {
       "SOURCE": "BREAKING",
@@ -351,6 +762,38 @@
       "classSimpleName": "ReactElement",
       "elementKind": "method",
       "methodName": "createComponentElement",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactElement react4j.ReactElement::prop(java.lang.String, java.lang.Object)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "prop",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.ReactElement::setProps(jsinterop.base.JsPropertyMap<java.lang.Object>)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactElement",
+      "classSimpleName": "ReactElement",
+      "elementKind": "method",
+      "methodName": "setProps",
       "package": "react4j"
     }
   },
@@ -389,6 +832,86 @@
   {
     "code": "java.method.removed",
     "description": "Method was removed.",
+    "oldElement": "method void react4j.ReactTestUtil::freezeProps()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "freezeProps",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.ReactTestUtil::minimizePropKeys()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "minimizePropKeys",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.ReactTestUtil::noFreezeProps()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "noFreezeProps",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.ReactTestUtil::noMinimizePropKeys()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "noMinimizePropKeys",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.ReactTestUtil::noValidatePropValues()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "noValidatePropValues",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
     "oldElement": "method void react4j.ReactTestUtil::setComponentEnableNames(boolean)",
     "classification": {
       "SOURCE": "BREAKING",
@@ -399,6 +922,22 @@
       "classSimpleName": "ReactTestUtil",
       "elementKind": "method",
       "methodName": "setComponentEnableNames",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method void react4j.ReactTestUtil::validatePropValues()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "method",
+      "methodName": "validatePropValues",
       "package": "react4j"
     }
   }

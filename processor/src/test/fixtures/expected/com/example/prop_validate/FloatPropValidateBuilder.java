@@ -31,7 +31,7 @@ final class FloatPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final float myProp) {
-      _element.props().set( React4j_FloatPropValidate.Props.myProp, myProp );
+      _element.input( React4j_FloatPropValidate.Inputs.myProp, myProp );
       return build();
     }
 

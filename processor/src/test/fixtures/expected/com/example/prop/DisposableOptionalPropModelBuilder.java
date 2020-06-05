@@ -39,7 +39,7 @@ final class DisposableOptionalPropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final Object value) {
-      _element.props().set( React4j_DisposableOptionalPropModel.Props.value, value );
+      _element.input( React4j_DisposableOptionalPropModel.Inputs.value, value );
       return build();
     }
 

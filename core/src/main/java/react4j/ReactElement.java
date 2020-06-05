@@ -27,7 +27,8 @@ public class ReactElement
   private Object type;
   private String key;
   private Object ref;
-  private JsPropertyMap<Object> props;
+  @JsProperty( name = "props" )
+  private JsPropertyMap<Object> inputs;
   // The view responsible for creating this element.
   // can be null if create happens outside of a render method (i.e. at the top level).
   @Nullable
@@ -35,17 +36,17 @@ public class ReactElement
 
   /**
    * Complete the element.
-   * If {@link React#shouldFreezeProps()} returns true this method will freeze the props and the
+   * If {@link React#shouldFreezeInputs()} returns true this method will freeze the inputs and the
    * element, otherwise this method is a no-op. This method should be called before returning the element
    * to the react runtime.
    */
   @JsOverlay
   public final void complete()
   {
-    if ( React.shouldFreezeProps() )
+    if ( React.shouldFreezeInputs() )
     {
       JsObject.freeze( this );
-      JsObject.freeze( props );
+      JsObject.freeze( inputs );
     }
   }
 
@@ -55,9 +56,9 @@ public class ReactElement
     final ReactElement element = createRawNode( typeof, type );
     element.key = key;
     element.ref = ref;
-    element.props = JsPropertyMap.of();
+    element.inputs = JsPropertyMap.of();
     // Need to use an unchecked cast here otherwise it is cast to a java object array breaks assign
-    JsObject.assign( element.props, Js.uncheckedCast( this.props ) );
+    JsObject.assign( element.inputs, Js.uncheckedCast( this.inputs ) );
     return element;
   }
 
@@ -66,7 +67,7 @@ public class ReactElement
   public static ReactElement createViewElement( @Nonnull final ViewConstructorFunction type )
   {
     final ReactElement element = create( type );
-    element.props = JsPropertyMap.of();
+    element.inputs = JsPropertyMap.of();
     element.key = null;
     element.ref = null;
     return element;
@@ -77,7 +78,7 @@ public class ReactElement
   static ReactElement createContextElement( @Nonnull final Object type )
   {
     final ReactElement element = create( type );
-    element.props = JsPropertyMap.of();
+    element.inputs = JsPropertyMap.of();
     element.key = null;
     element.ref = null;
     return element;
@@ -106,12 +107,12 @@ public class ReactElement
   private static ReactElement createRawElement( @Nonnull final Object type,
                                                 @Nullable final String key,
                                                 @Nullable final Object ref,
-                                                @Nonnull final JsPropertyMap<Object> props )
+                                                @Nonnull final JsPropertyMap<Object> inputs )
   {
     final ReactElement element = create( type );
     element.key = key;
     element.ref = ref;
-    element.props = Objects.requireNonNull( props );
+    element.inputs = Objects.requireNonNull( inputs );
 
     element.complete();
     return element;
@@ -124,7 +125,7 @@ public class ReactElement
     final ReactElement element = createRawNode( React.Element, React.Fragment );
     element.key = key;
     element.ref = null;
-    element.props = JsPropertyMap.of( "children", Objects.requireNonNull( children ) );
+    element.inputs = JsPropertyMap.of( "children", Objects.requireNonNull( children ) );
 
     element.complete();
     return element;
@@ -156,9 +157,9 @@ public class ReactElement
     final ReactElement element = createRawNode( React.Element, React.Suspense );
     element.key = key;
     element.ref = null;
-    element.props = JsPropertyMap.of( "children", Objects.requireNonNull( children ),
-                                      "fallback", fallback,
-                                      "ms", maxTimeToFallback );
+    element.inputs = JsPropertyMap.of( "children", Objects.requireNonNull( children ),
+                                       "fallback", fallback,
+                                       "ms", maxTimeToFallback );
 
     element.complete();
     return element;
@@ -169,9 +170,9 @@ public class ReactElement
   public static ReactElement createHostElement( @Nonnull final String type,
                                                 @Nullable final String key,
                                                 @Nullable final Object ref,
-                                                @Nonnull final JsPropertyMap<Object> props )
+                                                @Nonnull final JsPropertyMap<Object> inputs )
   {
-    return createRawElement( type, key, ref, props );
+    return createRawElement( type, key, ref, inputs );
   }
 
   @JsOverlay
@@ -184,7 +185,7 @@ public class ReactElement
   @JsOverlay
   public final void setKey( @Nullable final String key )
   {
-    if ( React.shouldCheckInvariants() && React.shouldFreezeProps() )
+    if ( React.shouldCheckInvariants() && React.shouldFreezeInputs() )
     {
       invariant( () -> !JsObject.isFrozen( this ),
                  () -> "Attempting to modify key of ReactElement after it has been frozen" );
@@ -194,22 +195,22 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
-  public final JsPropertyMap<Object> props()
+  public final JsPropertyMap<Object> inputs()
   {
-    return props;
+    return inputs;
   }
 
   @JsOverlay
   @Nonnull
-  public final ReactElement prop( @Nonnull final String key, @DoNotAutobox final Object value )
+  public final ReactElement input( @Nonnull final String key, @DoNotAutobox final Object value )
   {
-    props.set( key, value );
+    inputs.set( key, value );
     return this;
   }
 
   @JsOverlay
-  protected final void setProps( @Nonnull final JsPropertyMap<Object> props )
+  protected final void setInputs( @Nonnull final JsPropertyMap<Object> inputs )
   {
-    this.props = props;
+    this.inputs = inputs;
   }
 }

@@ -38,7 +38,7 @@ abstract class React4j_MutablePropAndPostConstructComponent extends MutablePropA
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "MutablePropAndPostConstructComponent" );
     }
@@ -51,20 +51,20 @@ abstract class React4j_MutablePropAndPostConstructComponent extends MutablePropA
   @Override
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      Guards.apiInvariant( () -> $$react4j$$_isReady(), () -> "The view '" + this + "' accessed the prop named 'myProp' before the view is ready (possibly in a @PostConstruct annotated method?) and does not have a @OnPropChange annotated method to cover the prop and reflect changes of the prop onto the view. This is considered a likely bug and the @Prop should be made immutable or an @OnPropChange method added to cover the prop. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:MutablePropAccessedInPostConstruct\" ) or @SuppressReact4jWarnings( \"React4j:MutablePropAccessedInPostConstruct\" ) to the @Prop annotated method." );
+      Guards.apiInvariant( () -> $$react4j$$_isReady(), () -> "The view '" + this + "' accessed the input named 'myProp' before the view is ready (possibly in a @PostConstruct annotated method?) and does not have a @OnInputChange annotated method to cover the input and reflect changes of the input onto the view. This is considered a likely bug and the @Input should be made immutable or an @OnInputChange method added to cover the input. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:MutableInputAccessedInPostConstruct\" ) or @SuppressReact4jWarnings( \"React4j:MutableInputAccessedInPostConstruct\" ) to the @Input annotated method." );
     }
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.myProp ) ? $$react4j$$_nativeView.props().getAsAny( Props.myProp ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
       return true;
     }
     return false;
@@ -85,8 +85,8 @@ abstract class React4j_MutablePropAndPostConstructComponent extends MutablePropA
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final class Inputs {
+    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
@@ -94,14 +94,14 @@ abstract class React4j_MutablePropAndPostConstructComponent extends MutablePropA
     private final React4j_MutablePropAndPostConstructComponent $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_MutablePropAndPostConstructComponent( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -116,14 +116,14 @@ abstract class React4j_MutablePropAndPostConstructComponent extends MutablePropA
     private final React4j_MutablePropAndPostConstructComponent $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_MutablePropAndPostConstructComponent( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

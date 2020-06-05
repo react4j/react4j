@@ -33,7 +33,7 @@ final class ImmutablePropTypePrimitiveShortBuilder {
     @Nonnull
     public final ReactNode myProp(final short myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveShort_be261e8c" : ImmutablePropTypePrimitiveShort.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypePrimitiveShort.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypePrimitiveShort.Inputs.myProp, myProp );
       return build();
     }
 

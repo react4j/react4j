@@ -40,7 +40,7 @@ final class NullableOnPropChangeBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(@Nullable final String myProp) {
-      _element.props().set( React4j_NullableOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_NullableOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

@@ -39,14 +39,14 @@ final class PackageAccessMethodPropDefaultBuilder {
 
     Builder() {
       _element = ReactElement.createViewElement( React4j_PackageAccessMethodPropDefault.Factory.TYPE );
-      final JsPropertyMap<Object> props = _element.props();
-      props.set( React4j_PackageAccessMethodPropDefault.Props.myProp, PackageAccessMethodPropDefault.getMyPropDefault() );
+      final JsPropertyMap<Object> inputs = _element.inputs();
+      inputs.set( React4j_PackageAccessMethodPropDefault.Inputs.myProp, PackageAccessMethodPropDefault.getMyPropDefault() );
     }
 
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_PackageAccessMethodPropDefault.Props.myProp, myProp );
+      _element.input( React4j_PackageAccessMethodPropDefault.Inputs.myProp, myProp );
       return build();
     }
 

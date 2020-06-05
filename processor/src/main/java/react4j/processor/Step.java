@@ -21,9 +21,9 @@ final class Step
     return _index;
   }
 
-  void addMethod( @Nonnull final PropDescriptor prop, @Nonnull final StepMethodType stepMethodType )
+  void addMethod( @Nonnull final InputDescriptor input, @Nonnull final StepMethodType stepMethodType )
   {
-    getMethods().add( new StepMethod( prop, stepMethodType ) );
+    getMethods().add( new StepMethod( input, stepMethodType ) );
   }
 
   void addTerminalMethod( @Nonnull final String name, @Nonnull final String key, @Nonnull final TypeName type )

@@ -35,7 +35,7 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "MultiPropComponent4" );
     }
@@ -45,9 +45,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.myProp ) ? $$react4j$$_nativeView.props().getAsAny( Props.myProp ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
     }
   }
 
@@ -55,9 +55,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.myProp2 ) ? $$react4j$$_nativeView.props().getAsAny( Props.myProp2 ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myProp2 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) );
     }
   }
 
@@ -65,9 +65,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   String getMyProp3() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.myProp3 ) ? $$react4j$$_nativeView.props().getAsAny( Props.myProp3 ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp3 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myProp3 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp3 ) );
     }
   }
 
@@ -75,9 +75,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   String getMyProp4() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.myProp4 ) ? $$react4j$$_nativeView.props().getAsAny( Props.myProp4 ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp4 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp4 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myProp4 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp4 ) );
     }
   }
 
@@ -85,29 +85,29 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   @Override
   ReactNode getChild() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.child ) ? $$react4j$$_nativeView.props().getAsAny( Props.child ).cast() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.child ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.child ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.child ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.child ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.myProp2 ), nextProps.get( Props.myProp2 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp2 ), nextInputs.get( Inputs.myProp2 ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.myProp3 ), nextProps.get( Props.myProp3 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp3 ), nextInputs.get( Inputs.myProp3 ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.myProp4 ), nextProps.get( Props.myProp4 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp4 ), nextInputs.get( Inputs.myProp4 ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.child ), nextProps.get( Props.child ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.child ), nextInputs.get( Inputs.child ) ) ) {
       return true;
     }
     return false;
@@ -128,14 +128,14 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final class Inputs {
+    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
 
-    static final String myProp2 = React.shouldMinimizePropKeys() ? "b" : "myProp2";
+    static final String myProp2 = React.shouldMinimizeInputKeys() ? "b" : "myProp2";
 
-    static final String myProp3 = React.shouldMinimizePropKeys() ? "c" : "myProp3";
+    static final String myProp3 = React.shouldMinimizeInputKeys() ? "c" : "myProp3";
 
-    static final String myProp4 = React.shouldMinimizePropKeys() ? "d" : "myProp4";
+    static final String myProp4 = React.shouldMinimizeInputKeys() ? "d" : "myProp4";
 
     static final String child = "children";
   }
@@ -145,14 +145,14 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     private final React4j_MultiPropComponent4 $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_MultiPropComponent4( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -167,14 +167,14 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     private final React4j_MultiPropComponent4 $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_MultiPropComponent4( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

@@ -12,10 +12,10 @@ import jsinterop.base.JsPropertyMap;
 
 /**
  * Context is designed to share data that can be considered "global" for a tree of views.
- * In a typical React application, data is passed top-down (parent to child) via props, but this can
- * be cumbersome for certain types of props (e.g. locale preference, UI theme) that are required by
+ * In a typical React application, data is passed top-down (parent to child) via inputs, but this can
+ * be cumbersome for certain types of inputs (e.g. locale preference, UI theme) that are required by
  * many views within an application. Context provides a way to share values like this between
- * views without having to explicitly pass a prop through every level of the tree.
+ * views without having to explicitly pass a input through every level of the tree.
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 public class Context<T>
@@ -88,14 +88,14 @@ public class Context<T>
     @Nonnull
     public final ProviderBuilder<ST> value( @Nullable final ST value )
     {
-      _element.props().set( "value", value );
+      _element.input( "value", value );
       return this;
     }
 
     @Nonnull
     public final ReactNode children( final ReactNode... children )
     {
-      _element.props().set( "children", children );
+      _element.input( "children", children );
       return build();
     }
 
@@ -108,7 +108,7 @@ public class Context<T>
   }
 
   /**
-   * Interface used to type the render function prop.
+   * Interface used to type the render function input.
    */
   @JsFunction
   @FunctionalInterface
@@ -159,7 +159,7 @@ public class Context<T>
     @Nonnull
     public final ReactNode render( @Nonnull final ConsumerRenderFunction<ST> render )
     {
-      _element.props().set( "children", render );
+      _element.input( "children", render );
       _element.complete();
       return _element;
     }

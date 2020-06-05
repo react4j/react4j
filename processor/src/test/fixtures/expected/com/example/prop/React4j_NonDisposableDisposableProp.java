@@ -54,7 +54,7 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "NonDisposableDisposableProp" );
     }
@@ -64,17 +64,17 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
   @Override
   NonDisposableDisposableProp.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.model ) ? $$react4j$$_nativeView.props().getAsAny( Props.model ).cast() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.model ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.model ), nextProps.get( Props.model ) ) ) {
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.model ), nextInputs.get( Inputs.model ) ) ) {
       return true;
     }
     return ViewState.SCHEDULED == $$react4j$$_state;
@@ -157,8 +157,8 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String model = React.shouldMinimizePropKeys() ? "a" : "model";
+  static final class Inputs {
+    static final String model = React.shouldMinimizeInputKeys() ? "a" : "model";
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
@@ -166,14 +166,14 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     private final React4j_NonDisposableDisposableProp $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_NonDisposableDisposableProp( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -193,8 +193,8 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     private final React4j_NonDisposableDisposableProp $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_NonDisposableDisposableProp( this );
     }
 
@@ -204,12 +204,12 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
       $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 

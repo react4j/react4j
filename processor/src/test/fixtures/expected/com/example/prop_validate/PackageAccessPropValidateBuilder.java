@@ -31,7 +31,7 @@ final class PackageAccessPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_PackageAccessPropValidate.Props.myProp, myProp );
+      _element.input( React4j_PackageAccessPropValidate.Inputs.myProp, myProp );
       return build();
     }
 

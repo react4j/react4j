@@ -35,7 +35,7 @@ abstract class React4j_MultiContextPropModel extends MultiContextPropModel {
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "MultiContextPropModel" );
     }
@@ -45,25 +45,25 @@ abstract class React4j_MultiContextPropModel extends MultiContextPropModel {
   @Override
   String getStringContextValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.stringContextValue ) ? $$react4j$$_nativeView.props().getAsAny( Props.stringContextValue ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.stringContextValue ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.stringContextValue ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.stringContextValue ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.stringContextValue ) );
     }
   }
 
   @Override
   int getIntContextValue() {
-    return $$react4j$$_nativeView.props().getAsAny( Props.intContextValue ).asInt();
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.intContextValue ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.stringContextValue ), nextProps.get( Props.stringContextValue ) ) ) {
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.stringContextValue ), nextInputs.get( Inputs.stringContextValue ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.intContextValue ), nextProps.get( Props.intContextValue ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.intContextValue ), nextInputs.get( Inputs.intContextValue ) ) ) {
       return true;
     }
     return false;
@@ -84,10 +84,10 @@ abstract class React4j_MultiContextPropModel extends MultiContextPropModel {
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String stringContextValue = React.shouldMinimizePropKeys() ? "a" : "stringContextValue";
+  static final class Inputs {
+    static final String stringContextValue = React.shouldMinimizeInputKeys() ? "a" : "stringContextValue";
 
-    static final String intContextValue = React.shouldMinimizePropKeys() ? "b" : "intContextValue";
+    static final String intContextValue = React.shouldMinimizeInputKeys() ? "b" : "intContextValue";
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
@@ -95,14 +95,14 @@ abstract class React4j_MultiContextPropModel extends MultiContextPropModel {
     private final React4j_MultiContextPropModel $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_MultiContextPropModel( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -117,14 +117,14 @@ abstract class React4j_MultiContextPropModel extends MultiContextPropModel {
     private final React4j_MultiContextPropModel $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_MultiContextPropModel( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

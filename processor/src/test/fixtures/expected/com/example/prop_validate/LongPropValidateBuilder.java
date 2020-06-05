@@ -31,7 +31,7 @@ final class LongPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final long myProp) {
-      _element.props().set( React4j_LongPropValidate.Props.myProp, myProp );
+      _element.input( React4j_LongPropValidate.Inputs.myProp, myProp );
       return build();
     }
 

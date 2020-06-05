@@ -57,10 +57,10 @@ public final class React4jProcessor
 {
   private static final String SENTINEL_NAME = "<default>";
   private static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
-  private static final Pattern VALIDATE_PROP_PATTERN = Pattern.compile( "^validate([A-Z].*)$" );
-  private static final Pattern LAST_PROP_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
-  private static final Pattern PREV_PROP_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
-  private static final Pattern PROP_PATTERN = Pattern.compile( "^([a-z].*)$" );
+  private static final Pattern VALIDATE_INPUT_PATTERN = Pattern.compile( "^validate([A-Z].*)$" );
+  private static final Pattern LAST_INPUT_PATTERN = Pattern.compile( "^last([A-Z].*)$" );
+  private static final Pattern PREV_INPUT_PATTERN = Pattern.compile( "^prev([A-Z].*)$" );
+  private static final Pattern INPUT_PATTERN = Pattern.compile( "^([a-z].*)$" );
   private static final Pattern GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)$" );
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
   @Nonnull
@@ -251,11 +251,11 @@ public final class React4jProcessor
     }
 
     determineViewCapabilities( descriptor, typeElement );
-    determineProps( descriptor );
-    determinePropValidatesMethods( descriptor );
-    determineOnPropChangeMethods( descriptor );
-    determineDefaultPropsMethods( descriptor );
-    determineDefaultPropsFields( descriptor );
+    determineInputs( descriptor );
+    determineInputValidatesMethods( descriptor );
+    determineOnInputChangeMethods( descriptor );
+    determineDefaultInputsMethods( descriptor );
+    determineDefaultInputsFields( descriptor );
     determinePreUpdateMethod( typeElement, descriptor );
     determinePostMountOrUpdateMethod( typeElement, descriptor );
     determinePostUpdateMethod( typeElement, descriptor );
@@ -264,31 +264,31 @@ public final class React4jProcessor
     determineScheduleRenderMethods( typeElement, descriptor );
     determineRenderMethod( typeElement, descriptor );
 
-    for ( final PropDescriptor prop : descriptor.getProps() )
+    for ( final InputDescriptor input : descriptor.getInputs() )
     {
-      if ( !isPropRequired( prop ) )
+      if ( !isInputRequired( input ) )
       {
-        prop.markAsOptional();
+        input.markAsOptional();
       }
       else
       {
-        if ( prop.isContextProp() )
+        if ( input.isContextSource() )
         {
-          throw new ProcessorException( MemberChecks.mustNot( Constants.PROP_ANNOTATION_CLASSNAME,
+          throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_CLASSNAME,
                                                               "specify require=ENABLE parameter when the for source=CONTEXT parameter is specified" ),
-                                        prop.getMethod() );
+                                        input.getMethod() );
         }
       }
     }
 
     /*
-     * Sorting must occur after @PropDefault has been processed to ensure the sorting
-     * correctly sorts optional props after required props.
+     * Sorting must occur after @InputDefault has been processed to ensure the sorting
+     * correctly sorts optional inputs after required inputs.
      */
-    descriptor.sortProps();
+    descriptor.sortInputs();
 
-    verifyPropsNotAnnotatedWithArezAnnotations( descriptor );
-    verifyPropsNotCollectionOfArezComponents( descriptor );
+    verifyInputsNotAnnotatedWithArezAnnotations( descriptor );
+    verifyInputsNotCollectionOfArezComponents( descriptor );
 
     return descriptor;
   }
@@ -358,11 +358,11 @@ public final class React4jProcessor
     }
   }
 
-  private void verifyPropsNotCollectionOfArezComponents( @Nonnull final ViewDescriptor descriptor )
+  private void verifyInputsNotCollectionOfArezComponents( @Nonnull final ViewDescriptor descriptor )
   {
-    for ( final PropDescriptor prop : descriptor.getProps() )
+    for ( final InputDescriptor input : descriptor.getInputs() )
     {
-      final ExecutableElement method = prop.getMethod();
+      final ExecutableElement method = input.getMethod();
       final TypeMirror returnType = method.getReturnType();
       if ( TypeKind.DECLARED == returnType.getKind() )
       {
@@ -372,7 +372,7 @@ public final class React4jProcessor
         {
           if ( 1 == typeArguments.size() && isArezComponent( typeArguments.get( 0 ) ) )
           {
-            throw new ProcessorException( "@Prop target is a collection that contains Arez components. " +
+            throw new ProcessorException( "@Input target is a collection that contains Arez components. " +
                                           "This is not a safe pattern when the arez components can be disposed.",
                                           method );
           }
@@ -383,7 +383,7 @@ public final class React4jProcessor
                ( isArezComponent( typeArguments.get( 0 ) ) ||
                  isArezComponent( typeArguments.get( 1 ) ) ) )
           {
-            throw new ProcessorException( "@Prop target is a collection that contains Arez components. " +
+            throw new ProcessorException( "@Input target is a collection that contains Arez components. " +
                                           "This is not a safe pattern when the arez components can be disposed.",
                                           method );
           }
@@ -394,7 +394,7 @@ public final class React4jProcessor
         final ArrayType arrayType = (ArrayType) returnType;
         if ( isArezComponent( arrayType.getComponentType() ) )
         {
-          throw new ProcessorException( "@Prop target is an array that contains Arez components. " +
+          throw new ProcessorException( "@Input target is an array that contains Arez components. " +
                                         "This is not a safe pattern when the arez components can be disposed.",
                                         method );
         }
@@ -438,35 +438,35 @@ public final class React4jProcessor
              .anyMatch( a -> a.getAnnotationType().toString().equals( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) );
   }
 
-  private void verifyPropsNotAnnotatedWithArezAnnotations( @Nonnull final ViewDescriptor descriptor )
+  private void verifyInputsNotAnnotatedWithArezAnnotations( @Nonnull final ViewDescriptor descriptor )
   {
-    for ( final PropDescriptor prop : descriptor.getProps() )
+    for ( final InputDescriptor input : descriptor.getInputs() )
     {
-      final ExecutableElement method = prop.getMethod();
+      final ExecutableElement method = input.getMethod();
       for ( final AnnotationMirror mirror : method.getAnnotationMirrors() )
       {
         final String classname = mirror.getAnnotationType().toString();
         if ( classname.startsWith( "arez.annotations." ) )
         {
-          throw new ProcessorException( "@Prop target must not be annotated with any arez annotations but " +
+          throw new ProcessorException( "@Input target must not be annotated with any arez annotations but " +
                                         "is annotated by '" + classname + "'.", method );
         }
       }
     }
   }
 
-  private void determineOnPropChangeMethods( @Nonnull final ViewDescriptor descriptor )
+  private void determineOnInputChangeMethods( @Nonnull final ViewDescriptor descriptor )
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.ON_INPUT_CHANGE_CLASSNAME ) )
         .collect( Collectors.toList() );
 
-    final ArrayList<OnPropChangeDescriptor> onPropChangeDescriptors = new ArrayList<>();
+    final ArrayList<OnInputChangeDescriptor> onInputChangeDescriptors = new ArrayList<>();
     for ( final ExecutableElement method : methods )
     {
       final VariableElement phase = (VariableElement)
-        AnnotationsUtil.getAnnotationValue( method, Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, "phase" ).getValue();
+        AnnotationsUtil.getAnnotationValue( method, Constants.ON_INPUT_CHANGE_CLASSNAME, "phase" ).getValue();
       final boolean preUpdate = phase.getSimpleName().toString().equals( "PRE" );
 
       final List<? extends VariableElement> parameters = method.getParameters();
@@ -475,71 +475,71 @@ public final class React4jProcessor
 
       MemberChecks.mustBeSubclassCallable( descriptor.getElement(),
                                            Constants.VIEW_CLASSNAME,
-                                           Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
+                                           Constants.ON_INPUT_CHANGE_CLASSNAME,
                                            method );
-      MemberChecks.mustNotThrowAnyExceptions( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
-      MemberChecks.mustNotReturnAnyValue( Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotThrowAnyExceptions( Constants.ON_INPUT_CHANGE_CLASSNAME, method );
+      MemberChecks.mustNotReturnAnyValue( Constants.ON_INPUT_CHANGE_CLASSNAME, method );
 
       final int parameterCount = parameters.size();
       if ( 0 == parameterCount )
       {
-        throw new ProcessorException( "@OnPropChange target must have at least 1 parameter.", method );
+        throw new ProcessorException( "@OnInputChange target must have at least 1 parameter.", method );
       }
-      final List<PropDescriptor> propDescriptors = new ArrayList<>( parameterCount );
+      final List<InputDescriptor> inputDescriptors = new ArrayList<>( parameterCount );
       for ( int i = 0; i < parameterCount; i++ )
       {
         final VariableElement parameter = parameters.get( i );
-        final String name = deriveOnPropChangeName( parameter );
-        final PropDescriptor prop = descriptor.findPropNamed( name );
-        if ( null == prop )
+        final String name = deriveOnInputChangeName( parameter );
+        final InputDescriptor input = descriptor.findInputNamed( name );
+        if ( null == input )
         {
-          throw new ProcessorException( "@OnPropChange target has a parameter named '" +
+          throw new ProcessorException( "@OnInputChange target has a parameter named '" +
                                         parameter.getSimpleName() + "' and the parameter is associated with a " +
-                                        "@Prop named '" + name + "' but there is no corresponding @Prop " +
+                                        "@Input named '" + name + "' but there is no corresponding @Input " +
                                         "annotated method.", parameter );
         }
         final Types typeUtils = processingEnv.getTypeUtils();
-        if ( !typeUtils.isAssignable( parameterTypes.get( i ), prop.getMethodType().getReturnType() ) )
+        if ( !typeUtils.isAssignable( parameterTypes.get( i ), input.getMethodType().getReturnType() ) )
         {
-          throw new ProcessorException( "@OnPropChange target has a parameter named '" +
+          throw new ProcessorException( "@OnInputChange target has a parameter named '" +
                                         parameter.getSimpleName() + "' and the parameter type is not " +
-                                        "assignable to the return type of the associated @Prop annotated method.",
+                                        "assignable to the return type of the associated @Input annotated method.",
                                         method );
         }
         final boolean mismatchedNullability =
           (
             AnnotationsUtil.hasNonnullAnnotation( parameter ) &&
-            AnnotationsUtil.hasNullableAnnotation( prop.getMethod() )
+            AnnotationsUtil.hasNullableAnnotation( input.getMethod() )
           ) ||
           (
             AnnotationsUtil.hasNullableAnnotation( parameter ) &&
-            AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() ) );
+            AnnotationsUtil.hasNonnullAnnotation( input.getMethod() ) );
 
         if ( mismatchedNullability )
         {
-          throw new ProcessorException( "@OnPropChange target has a parameter named '" +
+          throw new ProcessorException( "@OnInputChange target has a parameter named '" +
                                         parameter.getSimpleName() + "' that has a nullability annotation " +
-                                        "incompatible with the associated @Prop method named " +
+                                        "incompatible with the associated @Input method named " +
                                         method.getSimpleName(), method );
         }
-        if ( prop.isImmutable() )
+        if ( input.isImmutable() )
         {
-          throw new ProcessorException( "@OnPropChange target has a parameter named '" +
-                                        parameter.getSimpleName() + "' that is associated with a @Prop " +
-                                        "annotated method and the prop is specified as immutable.", method );
+          throw new ProcessorException( "@OnInputChange target has a parameter named '" +
+                                        parameter.getSimpleName() + "' that is associated with a @Input " +
+                                        "annotated method and the input is specified as immutable.", method );
         }
-        propDescriptors.add( prop );
+        inputDescriptors.add( input );
       }
-      onPropChangeDescriptors.add( new OnPropChangeDescriptor( method, propDescriptors, preUpdate ) );
+      onInputChangeDescriptors.add( new OnInputChangeDescriptor( method, inputDescriptors, preUpdate ) );
     }
-    descriptor.setOnPropChangeDescriptors( onPropChangeDescriptors );
+    descriptor.setOnInputChangeDescriptors( onInputChangeDescriptors );
   }
 
   @Nonnull
-  private String deriveOnPropChangeName( @Nonnull final VariableElement parameter )
+  private String deriveOnInputChangeName( @Nonnull final VariableElement parameter )
   {
     final AnnotationValue value =
-      AnnotationsUtil.findAnnotationValue( parameter, Constants.PROP_REF_ANNOTATION_CLASSNAME, "value" );
+      AnnotationsUtil.findAnnotationValue( parameter, Constants.INPUT_REF_CLASSNAME, "value" );
 
     if ( null != value )
     {
@@ -548,94 +548,94 @@ public final class React4jProcessor
     else
     {
       final String parameterName = parameter.getSimpleName().toString();
-      if ( LAST_PROP_PATTERN.matcher( parameterName ).matches() ||
-           PREV_PROP_PATTERN.matcher( parameterName ).matches() )
+      if ( LAST_INPUT_PATTERN.matcher( parameterName ).matches() ||
+           PREV_INPUT_PATTERN.matcher( parameterName ).matches() )
       {
         return Character.toLowerCase( parameterName.charAt( 4 ) ) + parameterName.substring( 5 );
       }
-      else if ( PROP_PATTERN.matcher( parameterName ).matches() )
+      else if ( INPUT_PATTERN.matcher( parameterName ).matches() )
       {
         return parameterName;
       }
       else
       {
-        throw new ProcessorException( "@OnPropChange target has a parameter named '" + parameterName +
-                                      "' is not explicitly associated with a prop using @PropRef nor does it " +
-                                      "follow required naming conventions 'prev[MyProp]', 'last[MyProp]' or " +
-                                      "'[myProp]'.", parameter );
+        throw new ProcessorException( "@OnInputChange target has a parameter named '" + parameterName +
+                                      "' is not explicitly associated with a input using @InputRef nor does it " +
+                                      "follow required naming conventions 'prev[MyInput]', 'last[MyInput]' or " +
+                                      "'[myInput]'.", parameter );
       }
     }
   }
 
-  private void determinePropValidatesMethods( @Nonnull final ViewDescriptor descriptor )
+  private void determineInputValidatesMethods( @Nonnull final ViewDescriptor descriptor )
   {
     final List<ExecutableElement> methods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.INPUT_VALIDATE_CLASSNAME ) )
         .collect( Collectors.toList() );
 
     for ( final ExecutableElement method : methods )
     {
-      final String name = derivePropValidateName( method );
-      final PropDescriptor prop = descriptor.findPropNamed( name );
-      if ( null == prop )
+      final String name = deriveInputValidateName( method );
+      final InputDescriptor input = descriptor.findInputNamed( name );
+      if ( null == input )
       {
-        throw new ProcessorException( "@PropValidate target for prop named '" + name + "' has no corresponding " +
-                                      "@Prop annotated method.", method );
+        throw new ProcessorException( "@InputValidate target for input named '" + name + "' has no corresponding " +
+                                      "@Input annotated method.", method );
       }
       if ( 1 != method.getParameters().size() )
       {
-        throw new ProcessorException( "@PropValidate target must have exactly 1 parameter", method );
+        throw new ProcessorException( "@InputValidate target must have exactly 1 parameter", method );
       }
       final ExecutableType methodType = resolveMethodType( descriptor, method );
       if ( !processingEnv.getTypeUtils().isAssignable( methodType.getParameterTypes().get( 0 ),
-                                                       prop.getMethodType().getReturnType() ) )
+                                                       input.getMethodType().getReturnType() ) )
       {
-        throw new ProcessorException( "@PropValidate target has a parameter type that is not assignable to the " +
-                                      "return type of the associated @Prop annotated method.", method );
+        throw new ProcessorException( "@InputValidate target has a parameter type that is not assignable to the " +
+                                      "return type of the associated @Input annotated method.", method );
       }
       MemberChecks.mustBeSubclassCallable( descriptor.getElement(),
                                            Constants.VIEW_CLASSNAME,
-                                           Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
+                                           Constants.INPUT_VALIDATE_CLASSNAME,
                                            method );
-      MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
-      MemberChecks.mustNotReturnAnyValue( Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotThrowAnyExceptions( Constants.INPUT_VALIDATE_CLASSNAME, method );
+      MemberChecks.mustNotReturnAnyValue( Constants.INPUT_VALIDATE_CLASSNAME, method );
 
       final VariableElement param = method.getParameters().get( 0 );
       final boolean mismatchedNullability =
         (
           AnnotationsUtil.hasNonnullAnnotation( param ) &&
-          AnnotationsUtil.hasNullableAnnotation( prop.getMethod() )
+          AnnotationsUtil.hasNullableAnnotation( input.getMethod() )
         ) ||
         (
           AnnotationsUtil.hasNullableAnnotation( param ) &&
-          AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() ) );
+          AnnotationsUtil.hasNonnullAnnotation( input.getMethod() ) );
 
       if ( mismatchedNullability )
       {
-        throw new ProcessorException( "@PropValidate target has a parameter that has a nullability annotation " +
-                                      "incompatible with the associated @Prop method named " +
-                                      prop.getMethod().getSimpleName(), method );
+        throw new ProcessorException( "@InputValidate target has a parameter that has a nullability annotation " +
+                                      "incompatible with the associated @Input method named " +
+                                      input.getMethod().getSimpleName(), method );
       }
-      prop.setValidateMethod( method );
+      input.setValidateMethod( method );
     }
   }
 
   @Nonnull
-  private String derivePropValidateName( @Nonnull final Element element )
+  private String deriveInputValidateName( @Nonnull final Element element )
     throws ProcessorException
   {
     final String name =
-      (String) AnnotationsUtil.getAnnotationValue( element, Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME, "name" )
+      (String) AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_VALIDATE_CLASSNAME, "name" )
         .getValue();
 
     if ( isSentinelName( name ) )
     {
-      final String deriveName = deriveName( element, VALIDATE_PROP_PATTERN, name );
+      final String deriveName = deriveName( element, VALIDATE_INPUT_PATTERN, name );
       if ( null == deriveName )
       {
-        throw new ProcessorException( "@PropValidate target has not specified name nor is it named according " +
-                                      "to the convention 'validate[Name]Prop'.", element );
+        throw new ProcessorException( "@InputValidate target has not specified name nor is it named according " +
+                                      "to the convention 'validate[Name]Input'.", element );
       }
       return deriveName;
     }
@@ -643,89 +643,89 @@ public final class React4jProcessor
     {
       if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ProcessorException( "@PropValidate target specified an invalid name '" + name + "'. The " +
+        throw new ProcessorException( "@InputValidate target specified an invalid name '" + name + "'. The " +
                                       "name must be a valid java identifier.", element );
       }
       else if ( SourceVersion.isKeyword( name ) )
       {
-        throw new ProcessorException( "@PropValidate target specified an invalid name '" + name + "'. The " +
+        throw new ProcessorException( "@InputValidate target specified an invalid name '" + name + "'. The " +
                                       "name must not be a java keyword.", element );
       }
       return name;
     }
   }
 
-  private void determineDefaultPropsMethods( @Nonnull final ViewDescriptor descriptor )
+  private void determineDefaultInputsMethods( @Nonnull final ViewDescriptor descriptor )
   {
-    final List<ExecutableElement> defaultPropsMethods =
+    final List<ExecutableElement> defaultInputsMethods =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.INPUT_DEFAULT_CLASSNAME ) )
         .collect( Collectors.toList() );
 
-    for ( final ExecutableElement method : defaultPropsMethods )
+    for ( final ExecutableElement method : defaultInputsMethods )
     {
-      final String name = derivePropDefaultName( method );
-      final PropDescriptor prop = descriptor.findPropNamed( name );
-      if ( null == prop )
+      final String name = deriveInputDefaultName( method );
+      final InputDescriptor input = descriptor.findInputNamed( name );
+      if ( null == input )
       {
-        throw new ProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
-                                      "@Prop annotated method.", method );
+        throw new ProcessorException( "@InputDefault target for input named '" + name + "' has no corresponding " +
+                                      "@Input annotated method.", method );
       }
       final ExecutableType methodType = resolveMethodType( descriptor, method );
       if ( !processingEnv.getTypeUtils().isAssignable( methodType.getReturnType(),
-                                                       prop.getMethodType().getReturnType() ) )
+                                                       input.getMethodType().getReturnType() ) )
       {
-        throw new ProcessorException( "@PropDefault target has a return type that is not assignable to the " +
-                                      "return type of the associated @Prop annotated method.", method );
+        throw new ProcessorException( "@InputDefault target has a return type that is not assignable to the " +
+                                      "return type of the associated @Input annotated method.", method );
       }
       MemberChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
                                                      Constants.VIEW_CLASSNAME,
-                                                     Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
+                                                     Constants.INPUT_DEFAULT_CLASSNAME,
                                                      method );
-      MemberChecks.mustNotHaveAnyParameters( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
-      MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
-      MemberChecks.mustReturnAValue( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, method );
+      MemberChecks.mustNotHaveAnyParameters( Constants.INPUT_DEFAULT_CLASSNAME, method );
+      MemberChecks.mustNotThrowAnyExceptions( Constants.INPUT_DEFAULT_CLASSNAME, method );
+      MemberChecks.mustReturnAValue( Constants.INPUT_DEFAULT_CLASSNAME, method );
 
-      prop.setDefaultMethod( method );
+      input.setDefaultMethod( method );
     }
   }
 
-  private void determineDefaultPropsFields( @Nonnull final ViewDescriptor descriptor )
+  private void determineDefaultInputsFields( @Nonnull final ViewDescriptor descriptor )
   {
-    final List<VariableElement> defaultPropsFields =
+    final List<VariableElement> defaultInputsFields =
       ElementsUtil.getFields( descriptor.getElement() ).stream()
-        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.INPUT_DEFAULT_CLASSNAME ) )
         .collect( Collectors.toList() );
 
-    for ( final VariableElement field : defaultPropsFields )
+    for ( final VariableElement field : defaultInputsFields )
     {
-      final String name = derivePropDefaultName( field );
-      final PropDescriptor prop = descriptor.findPropNamed( name );
-      if ( null == prop )
+      final String name = deriveInputDefaultName( field );
+      final InputDescriptor input = descriptor.findInputNamed( name );
+      if ( null == input )
       {
-        throw new ProcessorException( "@PropDefault target for prop named '" + name + "' has no corresponding " +
-                                      "@Prop annotated method.", field );
+        throw new ProcessorException( "@InputDefault target for input named '" + name + "' has no corresponding " +
+                                      "@Input annotated method.", field );
       }
-      if ( !processingEnv.getTypeUtils().isAssignable( field.asType(), prop.getMethodType().getReturnType() ) )
+      if ( !processingEnv.getTypeUtils().isAssignable( field.asType(), input.getMethodType().getReturnType() ) )
       {
-        throw new ProcessorException( "@PropDefault target has a type that is not assignable to the " +
-                                      "return type of the associated @Prop annotated method.", field );
+        throw new ProcessorException( "@InputDefault target has a type that is not assignable to the " +
+                                      "return type of the associated @Input annotated method.", field );
       }
       MemberChecks.mustBeStaticallySubclassCallable( descriptor.getElement(),
                                                      Constants.VIEW_CLASSNAME,
-                                                     Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
+                                                     Constants.INPUT_DEFAULT_CLASSNAME,
                                                      field );
-      MemberChecks.mustBeFinal( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, field );
-      prop.setDefaultField( field );
+      MemberChecks.mustBeFinal( Constants.INPUT_DEFAULT_CLASSNAME, field );
+      input.setDefaultField( field );
     }
   }
 
   @Nonnull
-  private String derivePropDefaultName( @Nonnull final Element element )
+  private String deriveInputDefaultName( @Nonnull final Element element )
     throws ProcessorException
   {
     final String name =
-      (String) AnnotationsUtil.getAnnotationValue( element, Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME, "name" )
+      (String) AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_DEFAULT_CLASSNAME, "name" )
         .getValue();
 
     if ( isSentinelName( name ) )
@@ -735,7 +735,7 @@ public final class React4jProcessor
         final String deriveName = deriveName( element, DEFAULT_GETTER_PATTERN, name );
         if ( null == deriveName )
         {
-          throw new ProcessorException( "@PropDefault target has not specified name nor is it named according " +
+          throw new ProcessorException( "@InputDefault target has not specified name nor is it named according " +
                                         "to the convention 'get[Name]Default'.", element );
         }
         return deriveName;
@@ -772,7 +772,7 @@ public final class React4jProcessor
         }
         else
         {
-          throw new ProcessorException( "@PropDefault target has not specified name nor is it named according " +
+          throw new ProcessorException( "@InputDefault target has not specified name nor is it named according " +
                                         "to the convention 'DEFAULT_[NAME]'.", element );
         }
       }
@@ -781,12 +781,12 @@ public final class React4jProcessor
     {
       if ( !SourceVersion.isIdentifier( name ) )
       {
-        throw new ProcessorException( "@PropDefault target specified an invalid name '" + name + "'. The " +
+        throw new ProcessorException( "@InputDefault target specified an invalid name '" + name + "'. The " +
                                       "name must be a valid java identifier.", element );
       }
       else if ( SourceVersion.isKeyword( name ) )
       {
-        throw new ProcessorException( "@PropDefault target specified an invalid name '" + name + "'. The " +
+        throw new ProcessorException( "@InputDefault target specified an invalid name '" + name + "'. The " +
                                       "name must not be a java keyword.", element );
       }
       return name;
@@ -819,32 +819,32 @@ public final class React4jProcessor
     return sb.toString();
   }
 
-  private void determineProps( @Nonnull final ViewDescriptor descriptor )
+  private void determineInputs( @Nonnull final ViewDescriptor descriptor )
   {
-    final List<PropDescriptor> props =
+    final List<InputDescriptor> inputs =
       getMethods( descriptor.getElement() ).stream()
-        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.PROP_ANNOTATION_CLASSNAME ) )
-        .map( m -> createPropDescriptor( descriptor, m ) )
+        .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.INPUT_CLASSNAME ) )
+        .map( m -> createInputDescriptor( descriptor, m ) )
         .collect( Collectors.toList() );
 
-    final PropDescriptor childrenProp =
-      props.stream().filter( p -> p.getName().equals( "children" ) ).findAny().orElse( null );
-    final PropDescriptor childProp =
-      props.stream().filter( p -> p.getName().equals( "child" ) ).findAny().orElse( null );
-    if ( null != childrenProp && null != childProp )
+    final InputDescriptor childrenInput =
+      inputs.stream().filter( p -> p.getName().equals( "children" ) ).findAny().orElse( null );
+    final InputDescriptor childInput =
+      inputs.stream().filter( p -> p.getName().equals( "child" ) ).findAny().orElse( null );
+    if ( null != childrenInput && null != childInput )
     {
-      throw new ProcessorException( "Multiple candidate children @Prop annotated methods: " +
-                                    childrenProp.getMethod().getSimpleName() + " and " +
-                                    childProp.getMethod().getSimpleName(),
-                                    childrenProp.getMethod() );
+      throw new ProcessorException( "Multiple candidate children @Input annotated methods: " +
+                                    childrenInput.getMethod().getSimpleName() + " and " +
+                                    childInput.getMethod().getSimpleName(),
+                                    childrenInput.getMethod() );
     }
 
-    descriptor.setProps( props );
+    descriptor.setInputs( inputs );
   }
 
-  private boolean isPropRequired( @Nonnull final PropDescriptor prop )
+  private boolean isInputRequired( @Nonnull final InputDescriptor input )
   {
-    final String requiredValue = prop.getRequiredValue();
+    final String requiredValue = input.getRequiredValue();
     if ( "ENABLE".equals( requiredValue ) )
     {
       return true;
@@ -853,50 +853,50 @@ public final class React4jProcessor
     {
       return false;
     }
-    else if ( prop.isContextProp() )
+    else if ( input.isContextSource() )
     {
       return false;
     }
     else
     {
-      return !prop.hasDefaultMethod() &&
-             !prop.hasDefaultField() &&
-             !AnnotationsUtil.hasNullableAnnotation( prop.getMethod() );
+      return !input.hasDefaultMethod() &&
+             !input.hasDefaultField() &&
+             !AnnotationsUtil.hasNullableAnnotation( input.getMethod() );
     }
   }
 
   @Nonnull
-  private PropDescriptor createPropDescriptor( @Nonnull final ViewDescriptor descriptor,
-                                               @Nonnull final ExecutableElement method )
+  private InputDescriptor createInputDescriptor( @Nonnull final ViewDescriptor descriptor,
+                                                @Nonnull final ExecutableElement method )
   {
-    final String name = derivePropName( method );
+    final String name = deriveInputName( method );
     final ExecutableType methodType = resolveMethodType( descriptor, method );
 
     verifyNoDuplicateAnnotations( method );
-    MemberChecks.mustBeAbstract( Constants.PROP_ANNOTATION_CLASSNAME, method );
-    MemberChecks.mustNotHaveAnyParameters( Constants.PROP_ANNOTATION_CLASSNAME, method );
-    MemberChecks.mustReturnAValue( Constants.PROP_ANNOTATION_CLASSNAME, method );
-    MemberChecks.mustNotThrowAnyExceptions( Constants.PROP_ANNOTATION_CLASSNAME, method );
+    MemberChecks.mustBeAbstract( Constants.INPUT_CLASSNAME, method );
+    MemberChecks.mustNotHaveAnyParameters( Constants.INPUT_CLASSNAME, method );
+    MemberChecks.mustReturnAValue( Constants.INPUT_CLASSNAME, method );
+    MemberChecks.mustNotThrowAnyExceptions( Constants.INPUT_CLASSNAME, method );
     MemberChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
                                                            Constants.VIEW_CLASSNAME,
-                                                           Constants.PROP_ANNOTATION_CLASSNAME,
+                                                           Constants.INPUT_CLASSNAME,
                                                            method );
     final TypeMirror returnType = method.getReturnType();
     if ( "build".equals( name ) )
     {
-      throw new ProcessorException( "@Prop named 'build' is invalid as it conflicts with the method named " +
+      throw new ProcessorException( "@Input named 'build' is invalid as it conflicts with the method named " +
                                     "build() that is used in the generated Builder classes",
                                     method );
     }
     else if ( "child".equals( name ) &&
               ( returnType.getKind() != TypeKind.DECLARED && !"react4j.ReactNode".equals( returnType.toString() ) ) )
     {
-      throw new ProcessorException( "@Prop named 'child' should be of type react4j.ReactNode", method );
+      throw new ProcessorException( "@Input named 'child' should be of type react4j.ReactNode", method );
     }
     else if ( "children".equals( name ) &&
               ( returnType.getKind() != TypeKind.DECLARED && !"react4j.ReactNode[]".equals( returnType.toString() ) ) )
     {
-      throw new ProcessorException( "@Prop named 'children' should be of type react4j.ReactNode[]", method );
+      throw new ProcessorException( "@Input named 'children' should be of type react4j.ReactNode[]", method );
     }
 
     if ( returnType instanceof TypeVariable )
@@ -906,88 +906,88 @@ public final class React4jProcessor
       List<? extends TypeParameterElement> typeParameters = method.getTypeParameters();
       if ( typeParameters.stream().anyMatch( p -> p.getSimpleName().toString().equals( typeVariableName ) ) )
       {
-        throw new ProcessorException( "@Prop named '" + name + "' is has a type variable as a return type " +
+        throw new ProcessorException( "@Input named '" + name + "' is has a type variable as a return type " +
                                       "that is declared on the method.", method );
       }
     }
     final String qualifier = (String) AnnotationsUtil
-      .getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "qualifier" ).getValue();
-    final boolean contextProp = isContextProp( method );
-    final Element propType = processingEnv.getTypeUtils().asElement( returnType );
-    final boolean immutable = isPropImmutable( method );
+      .getAnnotationValue( method, Constants.INPUT_CLASSNAME, "qualifier" ).getValue();
+    final boolean contextInput = isContextInput( method );
+    final Element inputType = processingEnv.getTypeUtils().asElement( returnType );
+    final boolean immutable = isInputImmutable( method );
     final boolean shouldUpdateOnChange = shouldUpdateOnChange( method, immutable );
-    final boolean observable = isPropObservable( descriptor, method, shouldUpdateOnChange, immutable );
-    final boolean disposable = null != propType && isPropDisposable( method, propType );
+    final boolean observable = isInputObservable( descriptor, method, shouldUpdateOnChange, immutable );
+    final boolean disposable = null != inputType && isInputDisposable( method, inputType );
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation( method ) )
     {
-      throw new ProcessorException( "@Prop named '" + name + "' is a boxed primitive annotated with a " +
+      throw new ProcessorException( "@Input named '" + name + "' is a boxed primitive annotated with a " +
                                     "@Nonnull annotation. The return type should be the primitive type.",
                                     method );
     }
-    final ImmutablePropKeyStrategy strategy = immutable ? getImmutablePropKeyStrategy( typeName, propType ) : null;
+    final ImmutableInputKeyStrategy strategy = immutable ? getImmutableInputKeyStrategy( typeName, inputType ) : null;
     if ( immutable && null == strategy )
     {
-      throw new ProcessorException( "@Prop named '" + name + "' has specified the 'immutable' parameter as " +
+      throw new ProcessorException( "@Input named '" + name + "' has specified the 'immutable' parameter as " +
                                     "true but the annotation processor can not extract a key part from the " +
                                     "type. This is because the type is not recognized as conforming to the " +
                                     "rules as documented in the javadocs for the immutable parameter of " +
-                                    "the @Prop annotation.",
+                                    "the @Input annotation.",
                                     method );
     }
-    if ( !"".equals( qualifier ) && !contextProp )
+    if ( !"".equals( qualifier ) && !contextInput )
     {
-      throw new ProcessorException( MemberChecks.mustNot( Constants.PROP_ANNOTATION_CLASSNAME,
+      throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_CLASSNAME,
                                                           "specify qualifier parameter unless source=CONTEXT is also specified" ),
                                     method );
     }
     final String requiredValue =
-      ( (VariableElement) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "require" )
+      ( (VariableElement) AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "require" )
         .getValue() )
         .getSimpleName().toString();
 
-    final PropDescriptor propDescriptor =
-      new PropDescriptor( descriptor,
-                          name,
-                          qualifier,
-                          method,
-                          methodType,
-                          contextProp,
-                          shouldUpdateOnChange,
-                          observable,
-                          disposable,
-                          strategy,
-                          requiredValue );
-    if ( propDescriptor.mayNeedMutablePropAccessedInPostConstructInvariant() )
+    final InputDescriptor inputDescriptor =
+      new InputDescriptor( descriptor,
+                           name,
+                           qualifier,
+                           method,
+                           methodType,
+                           contextInput,
+                           shouldUpdateOnChange,
+                           observable,
+                           disposable,
+                           strategy,
+                           requiredValue );
+    if ( inputDescriptor.mayNeedMutableInputAccessedInPostConstructInvariant() )
     {
       if ( ElementsUtil.isWarningSuppressed( method,
-                                             Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT,
+                                             Constants.WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT,
                                              Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
       {
-        propDescriptor.suppressMutablePropAccessedInPostConstruct();
+        inputDescriptor.suppressMutableInputAccessedInPostConstruct();
       }
     }
-    return propDescriptor;
+    return inputDescriptor;
   }
 
   @Nullable
-  private ImmutablePropKeyStrategy getImmutablePropKeyStrategy( @Nonnull final TypeName typeName,
-                                                                @Nullable final Element element )
+  private ImmutableInputKeyStrategy getImmutableInputKeyStrategy( @Nonnull final TypeName typeName,
+                                                                 @Nullable final Element element )
   {
     if ( typeName.toString().equals( "java.lang.String" ) )
     {
-      return ImmutablePropKeyStrategy.IS_STRING;
+      return ImmutableInputKeyStrategy.IS_STRING;
     }
     else if ( typeName.isBoxedPrimitive() || typeName.isPrimitive() )
     {
-      return ImmutablePropKeyStrategy.TO_STRING;
+      return ImmutableInputKeyStrategy.TO_STRING;
     }
     else if ( null != element )
     {
       if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
            isAssignableToKeyed( element ) )
       {
-        return ImmutablePropKeyStrategy.KEYED;
+        return ImmutableInputKeyStrategy.KEYED;
       }
       else if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
                 (
@@ -997,11 +997,11 @@ public final class React4jProcessor
                     isIdRequired( (TypeElement) element ) )
                 ) )
       {
-        return ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE;
+        return ImmutableInputKeyStrategy.AREZ_IDENTIFIABLE;
       }
       else if ( ElementKind.ENUM == element.getKind() )
       {
-        return ImmutablePropKeyStrategy.ENUM;
+        return ImmutableInputKeyStrategy.ENUM;
       }
     }
     return null;
@@ -1033,21 +1033,21 @@ public final class React4jProcessor
   }
 
   @Nonnull
-  private String derivePropName( @Nonnull final ExecutableElement method )
+  private String deriveInputName( @Nonnull final ExecutableElement method )
     throws ProcessorException
   {
     final String specifiedName =
-      (String) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "name" ).getValue();
+      (String) AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "name" ).getValue();
 
     final String name = getPropertyAccessorName( method, specifiedName );
     if ( !SourceVersion.isIdentifier( name ) )
     {
-      throw new ProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
+      throw new ProcessorException( "@Input target specified an invalid name '" + specifiedName + "'. The " +
                                     "name must be a valid java identifier.", method );
     }
     else if ( SourceVersion.isKeyword( name ) )
     {
-      throw new ProcessorException( "@Prop target specified an invalid name '" + specifiedName + "'. The " +
+      throw new ProcessorException( "@Input target specified an invalid name '" + specifiedName + "'. The " +
                                     "name must not be a java keyword.", method );
     }
     else
@@ -1334,14 +1334,14 @@ public final class React4jProcessor
                                         final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "shouldUpdateOnChange" )
+      AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "shouldUpdateOnChange" )
         .getValue();
     switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
         if ( immutable )
         {
-          throw new ProcessorException( "@Prop target has specified both immutable=true and " +
+          throw new ProcessorException( "@Input target has specified both immutable=true and " +
                                         "shouldUpdateOnChange=ENABLE which is an invalid combination.",
                                         method );
         }
@@ -1353,19 +1353,19 @@ public final class React4jProcessor
     }
   }
 
-  private boolean isPropObservable( @Nonnull final ViewDescriptor descriptor,
+  private boolean isInputObservable( @Nonnull final ViewDescriptor descriptor,
                                     @Nonnull final ExecutableElement method,
                                     final boolean shouldUpdateOnChange,
                                     final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "observable" ).getValue();
+      AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "observable" ).getValue();
     switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
         if ( immutable )
         {
-          throw new ProcessorException( "@Prop target has specified both immutable=true and " +
+          throw new ProcessorException( "@Input target has specified both immutable=true and " +
                                         "observable=ENABLE which is an invalid combination.",
                                         method );
         }
@@ -1386,16 +1386,16 @@ public final class React4jProcessor
                         ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
   }
 
-  private boolean isPropImmutable( @Nonnull final ExecutableElement method )
+  private boolean isInputImmutable( @Nonnull final ExecutableElement method )
   {
-    return (Boolean) AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "immutable" )
+    return (Boolean) AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "immutable" )
       .getValue();
   }
 
-  private boolean isPropDisposable( @Nonnull final ExecutableElement method, @Nonnull final Element propType )
+  private boolean isInputDisposable( @Nonnull final ExecutableElement method, @Nonnull final Element inputType )
   {
     final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "disposable" ).getValue();
+      AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "disposable" ).getValue();
     switch ( parameter.getSimpleName().toString() )
     {
       case "ENABLE":
@@ -1405,20 +1405,20 @@ public final class React4jProcessor
       default:
         return
           (
-            ElementKind.CLASS == propType.getKind() &&
-            AnnotationsUtil.hasAnnotationOfType( propType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME )
+            ElementKind.CLASS == inputType.getKind() &&
+            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME )
           ) ||
           (
-            ( ElementKind.CLASS == propType.getKind() || ElementKind.INTERFACE == propType.getKind() ) &&
-            AnnotationsUtil.hasAnnotationOfType( propType, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME )
+            ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
+            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME )
           );
     }
   }
 
-  private boolean isContextProp( @Nonnull final ExecutableElement method )
+  private boolean isContextInput( @Nonnull final ExecutableElement method )
   {
     final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( method, Constants.PROP_ANNOTATION_CLASSNAME, "source" ).getValue();
+      AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "source" ).getValue();
     return "CONTEXT".equals( parameter.getSimpleName().toString() );
   }
 
@@ -1436,10 +1436,10 @@ public final class React4jProcessor
     throws ProcessorException
   {
     final List<String> annotations =
-      Arrays.asList( Constants.PROP_DEFAULT_ANNOTATION_CLASSNAME,
-                     Constants.PROP_VALIDATE_ANNOTATION_CLASSNAME,
-                     Constants.ON_PROP_CHANGE_ANNOTATION_CLASSNAME,
-                     Constants.PROP_ANNOTATION_CLASSNAME );
+      Arrays.asList( Constants.INPUT_DEFAULT_CLASSNAME,
+                     Constants.INPUT_VALIDATE_CLASSNAME,
+                     Constants.ON_INPUT_CHANGE_CLASSNAME,
+                     Constants.INPUT_CLASSNAME );
     MemberChecks.verifyNoOverlappingAnnotations( method, annotations, Collections.emptyMap() );
   }
 

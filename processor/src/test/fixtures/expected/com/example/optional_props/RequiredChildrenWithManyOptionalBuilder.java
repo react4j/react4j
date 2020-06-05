@@ -84,45 +84,45 @@ final class RequiredChildrenWithManyOptionalBuilder {
 
     Builder() {
       _element = ReactElement.createViewElement( React4j_RequiredChildrenWithManyOptional.Factory.TYPE );
-      final JsPropertyMap<Object> props = _element.props();
-      props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropA, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_A );
-      props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropB, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_B );
-      props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropC, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_C );
-      props.set( React4j_RequiredChildrenWithManyOptional.Props.myPropD, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_D );
+      final JsPropertyMap<Object> inputs = _element.inputs();
+      inputs.set( React4j_RequiredChildrenWithManyOptional.Inputs.myPropA, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_A );
+      inputs.set( React4j_RequiredChildrenWithManyOptional.Inputs.myPropB, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_B );
+      inputs.set( React4j_RequiredChildrenWithManyOptional.Inputs.myPropC, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_C );
+      inputs.set( React4j_RequiredChildrenWithManyOptional.Inputs.myPropD, RequiredChildrenWithManyOptional.DEFAULT_MY_PROP_D );
     }
 
     @Override
     @Nonnull
     public final Step1 myPropA(final String myPropA) {
-      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropA, myPropA );
+      _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropA, myPropA );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step1 myPropB(final String myPropB) {
-      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropB, myPropB );
+      _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropB, myPropB );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step1 myPropC(final String myPropC) {
-      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropC, myPropC );
+      _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropC, myPropC );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step1 myPropD(final String myPropD) {
-      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.myPropD, myPropD );
+      _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropD, myPropD );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode... children) {
-      _element.props().set( React4j_RequiredChildrenWithManyOptional.Props.children, JsArray.of( children ) );
+      _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.children, JsArray.of( children ) );
       return build();
     }
 

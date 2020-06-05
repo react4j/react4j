@@ -35,7 +35,7 @@ final class ImmutablePropTypeActAsComponentAndKeyedBuilder {
     public final ReactNode myProp(
         final ImmutablePropTypeActAsComponentAndKeyed.MyComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeActAsComponentAndKeyed_fae2f037" : ImmutablePropTypeActAsComponentAndKeyed.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeActAsComponentAndKeyed.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeActAsComponentAndKeyed.Inputs.myProp, myProp );
       return build();
     }
 

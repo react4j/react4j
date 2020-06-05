@@ -35,7 +35,7 @@ abstract class React4j_CharPropValidate extends CharPropValidate {
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "CharPropValidate" );
     }
@@ -44,11 +44,11 @@ abstract class React4j_CharPropValidate extends CharPropValidate {
 
   @Override
   char getMyProp() {
-    return $$react4j$$_nativeView.props().getAsAny( Props.myProp ).asChar();
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asChar();
   }
 
-  private void $$react4j$$_validatePropValues(@Nonnull final JsPropertyMap<Object> props) {
-    final Object raw$myProp = props.get( Props.myProp );
+  private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+    final Object raw$myProp = inputs.get( Inputs.myProp );
     if ( null != raw$myProp ) {
       final char typed$myProp = Js.asChar( raw$myProp );
       validateMyProp( typed$myProp );
@@ -56,13 +56,13 @@ abstract class React4j_CharPropValidate extends CharPropValidate {
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    if ( React.shouldValidatePropValues() ) {
-      $$react4j$$_validatePropValues( nextProps );
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    if ( React.shouldValidateInputValues() ) {
+      $$react4j$$_validateInputValues( nextInputs );
     }
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
       return true;
     }
     return false;
@@ -83,8 +83,8 @@ abstract class React4j_CharPropValidate extends CharPropValidate {
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final class Inputs {
+    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
@@ -92,18 +92,18 @@ abstract class React4j_CharPropValidate extends CharPropValidate {
     private final React4j_CharPropValidate $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_CharPropValidate( this );
-      if ( React.shouldValidatePropValues() ) {
-        assert null != props;
-        $$react4j$$_view.$$react4j$$_validatePropValues( props );
+      if ( React.shouldValidateInputValues() ) {
+        assert null != inputs;
+        $$react4j$$_view.$$react4j$$_validateInputValues( inputs );
       }
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -118,18 +118,18 @@ abstract class React4j_CharPropValidate extends CharPropValidate {
     private final React4j_CharPropValidate $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_CharPropValidate( this );
-      if ( React.shouldValidatePropValues() ) {
-        assert null != props;
-        $$react4j$$_view.$$react4j$$_validatePropValues( props );
+      if ( React.shouldValidateInputValues() ) {
+        assert null != inputs;
+        $$react4j$$_view.$$react4j$$_validateInputValues( inputs );
       }
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

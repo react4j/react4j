@@ -30,27 +30,27 @@ public final class React
   }
 
   /**
-   * Return true if the prop keys should be minimized.
-   * This will significantly reduce the size of the compiled output but will make inspecting the props
+   * Return true if the input keys should be minimized.
+   * This will significantly reduce the size of the compiled output but will make inspecting the inputs
    * in DevTools difficult if not impossible.
    *
-   * @return true to minimize prop keys.
+   * @return true to minimize input keys.
    */
   @JsOverlay
-  public static boolean shouldMinimizePropKeys()
+  public static boolean shouldMinimizeInputKeys()
   {
-    return ReactConfig.shouldMinimizePropKeys();
+    return ReactConfig.shouldMinimizeInputKeys();
   }
 
   /**
-   * Return true if the prop value should be validated when initially set or when changed.
+   * Return true if the input value should be validated when initially set or when changed.
    *
-   * @return true to validate prop values.
+   * @return true to validate input values.
    */
   @JsOverlay
-  public static boolean shouldValidatePropValues()
+  public static boolean shouldValidateInputValues()
   {
-    return ReactConfig.shouldValidatePropValues();
+    return ReactConfig.shouldValidateInputValues();
   }
 
   /**
@@ -78,14 +78,14 @@ public final class React
   }
 
   /**
-   * Return true if props should be frozen before being passed to react.
+   * Return true if inputs should be frozen before being passed to react.
    *
-   * @return true if props should be frozen before being passed to react.
+   * @return true if inputs should be frozen before being passed to react.
    */
   @JsOverlay
-  public static boolean shouldFreezeProps()
+  public static boolean shouldFreezeInputs()
   {
-    return ReactConfig.shouldFreezeProps();
+    return ReactConfig.shouldFreezeInputs();
   }
 
   /*

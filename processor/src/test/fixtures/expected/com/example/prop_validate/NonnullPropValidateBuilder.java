@@ -33,7 +33,7 @@ final class NonnullPropValidateBuilder {
     @Nonnull
     public final ReactNode myProp(@Nonnull final String myProp) {
       Objects.requireNonNull( myProp );
-      _element.props().set( React4j_NonnullPropValidate.Props.myProp, myProp );
+      _element.input( React4j_NonnullPropValidate.Inputs.myProp, myProp );
       return build();
     }
 

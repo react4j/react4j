@@ -33,7 +33,7 @@ final class ImmutablePropTypeBoxedDoubleBuilder {
     @Nonnull
     public final ReactNode myProp(final Double myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedDouble_7e5f2de1" : ImmutablePropTypeBoxedDouble.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeBoxedDouble.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeBoxedDouble.Inputs.myProp, myProp );
       return build();
     }
 

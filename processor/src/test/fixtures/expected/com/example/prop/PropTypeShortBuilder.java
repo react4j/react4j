@@ -31,7 +31,7 @@ final class PropTypeShortBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final short myProp) {
-      _element.props().set( React4j_PropTypeShort.Props.myProp, myProp );
+      _element.input( React4j_PropTypeShort.Inputs.myProp, myProp );
       return build();
     }
 

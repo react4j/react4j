@@ -78,10 +78,10 @@ final class BuilderGenerator
       builder.addType( buildBuilderStepInterface( processingEnv, descriptor, step ) );
     }
 
-    // first step which may be required prop, optional props, or build terminal step.
+    // first step which may be required input, optional inputs, or build terminal step.
     buildStaticStepMethodMethods( processingEnv, descriptor, builder, steps.get( 0 ) );
 
-    if ( descriptor.getProps().stream().anyMatch( PropDescriptor::isContextProp ) )
+    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isContextSource ) )
     {
       builder.addType( buildContextHolder( descriptor ) );
     }
@@ -141,11 +141,11 @@ final class BuilderGenerator
     {
       final ParameterSpec.Builder parameter =
         ParameterSpec.builder( stepMethod.getType(), stepMethod.getName(), Modifier.FINAL );
-      final ExecutableElement propMethod = stepMethod.getPropMethod();
-      if ( null != propMethod )
+      final ExecutableElement inputMethod = stepMethod.getMethod();
+      if ( null != inputMethod )
       {
-        GeneratorUtil.copyWhitelistedAnnotations( propMethod, parameter );
-        final ExecutableType methodType = stepMethod.getPropMethodType();
+        GeneratorUtil.copyWhitelistedAnnotations( inputMethod, parameter );
+        final ExecutableType methodType = stepMethod.getMethodType();
         assert null != methodType;
         SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
       }
@@ -247,21 +247,21 @@ final class BuilderGenerator
       else
       {
         builder.addMethod( buildStepInterfaceMethod( descriptor, stepMethod.getName(), step, stepMethodType, m -> {
-          final ExecutableType propMethodType = stepMethod.getPropMethodType();
-          if ( null != propMethodType )
+          final ExecutableType inputMethodType = stepMethod.getMethodType();
+          if ( null != inputMethodType )
           {
-            GeneratorUtil.copyTypeParameters( propMethodType, m );
+            GeneratorUtil.copyTypeParameters( inputMethodType, m );
           }
           if ( stepMethod.isChildrenIntrinsic() )
           {
             m.varargs();
           }
           final ParameterSpec.Builder parameter = ParameterSpec.builder( stepMethod.getType(), stepMethod.getName() );
-          final ExecutableElement propMethod = stepMethod.getPropMethod();
-          if ( null != propMethod )
+          final ExecutableElement inputMethod = stepMethod.getMethod();
+          if ( null != inputMethod )
           {
-            GeneratorUtil.copyWhitelistedAnnotations( propMethod, parameter );
-            final ExecutableType methodType = stepMethod.getPropMethodType();
+            GeneratorUtil.copyWhitelistedAnnotations( inputMethod, parameter );
+            final ExecutableType methodType = stepMethod.getMethodType();
             assert null != methodType;
             SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
           }
@@ -288,19 +288,19 @@ final class BuilderGenerator
     method.addAnnotation( Override.class );
     method.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
 
-    final PropDescriptor prop = stepMethod.getProp();
-    final ExecutableType propMethodType = stepMethod.getPropMethodType();
-    if ( null != propMethodType )
+    final InputDescriptor input = stepMethod.getInput();
+    final ExecutableType inputMethodType = stepMethod.getMethodType();
+    if ( null != inputMethodType )
     {
-      GeneratorUtil.copyTypeParameters( propMethodType, method );
+      GeneratorUtil.copyTypeParameters( inputMethodType, method );
     }
     final ParameterSpec.Builder parameter =
       ParameterSpec.builder( stepMethod.getType(), stepMethod.getName(), Modifier.FINAL );
-    final ExecutableElement propMethod = stepMethod.getPropMethod();
-    if ( null != propMethod )
+    final ExecutableElement inputMethod = stepMethod.getMethod();
+    if ( null != inputMethod )
     {
-      GeneratorUtil.copyWhitelistedAnnotations( propMethod, parameter );
-      final ExecutableType methodType = stepMethod.getPropMethodType();
+      GeneratorUtil.copyWhitelistedAnnotations( inputMethod, parameter );
+      final ExecutableType methodType = stepMethod.getMethodType();
       assert null != methodType;
       SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
     }
@@ -310,10 +310,10 @@ final class BuilderGenerator
     }
     method.addParameter( parameter.build() );
 
-    if ( null != prop && prop.isImmutable() && 1 == descriptor.syntheticKeyParts() )
+    if ( null != input && input.isImmutable() && 1 == descriptor.syntheticKeyParts() )
     {
-      final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
-      if ( ImmutablePropKeyStrategy.KEYED == strategy )
+      final ImmutableInputKeyStrategy strategy = input.getImmutableInputKeyStrategy();
+      if ( ImmutableInputKeyStrategy.KEYED == strategy )
       {
         method.addStatement( "_element.setKey( $T.getKey( $N ) + " +
                              "( $T.enableViewNames() ? $S : $T.class.getName() ) )",
@@ -323,9 +323,9 @@ final class BuilderGenerator
                              descriptor.keySuffix(),
                              descriptor.getClassName() );
       }
-      else if ( ImmutablePropKeyStrategy.IS_STRING == strategy ||
-                ImmutablePropKeyStrategy.TO_STRING == strategy ||
-                ImmutablePropKeyStrategy.ENUM == strategy )
+      else if ( ImmutableInputKeyStrategy.IS_STRING == strategy ||
+                ImmutableInputKeyStrategy.TO_STRING == strategy ||
+                ImmutableInputKeyStrategy.ENUM == strategy )
       {
         method.addStatement( "_element.setKey( $N + ( $T.enableViewNames() ? $S : $T.class.getName() ) )",
                              stepMethod.getName(),
@@ -335,7 +335,7 @@ final class BuilderGenerator
       }
       else
       {
-        assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
+        assert ImmutableInputKeyStrategy.AREZ_IDENTIFIABLE == strategy;
         method.addStatement( "_element.setKey( $T.<Object>getArezId( $N ) + " +
                              "( $T.enableViewNames() ? $S : $T.class.getName() ) )",
                              IDENTIFIABLE_CLASSNAME,
@@ -349,10 +349,10 @@ final class BuilderGenerator
     if ( stepMethod.isChildrenIntrinsic() )
     {
       method.varargs();
-      assert null != prop;
-      method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $N ) )",
+      assert null != input;
+      method.addStatement( "_element.input( $T.Inputs.$N, $T.of( $N ) )",
                            descriptor.getEnhancedClassName(),
-                           prop.getConstantName(),
+                           input.getConstantName(),
                            JS_ARRAY_CLASSNAME,
                            stepMethod.getName() );
     }
@@ -364,37 +364,37 @@ final class BuilderGenerator
     }
     else if ( stepMethod.isChildIntrinsic() )
     {
-      assert null != propMethod;
-      assert null != prop;
-      if ( AnnotationsUtil.hasNonnullAnnotation( propMethod ) )
+      assert null != inputMethod;
+      assert null != input;
+      if ( AnnotationsUtil.hasNonnullAnnotation( inputMethod ) )
       {
-        method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $T.requireNonNull( $N ) ) )",
+        method.addStatement( "_element.input( $T.Inputs.$N, $T.of( $T.requireNonNull( $N ) ) )",
                              descriptor.getEnhancedClassName(),
-                             prop.getConstantName(),
+                             input.getConstantName(),
                              JS_ARRAY_CLASSNAME,
                              Objects.class,
                              stepMethod.getName() );
       }
       else
       {
-        method.addStatement( "_element.props().set( $T.Props.$N, $T.of( $N ) )",
+        method.addStatement( "_element.input( $T.Inputs.$N, $T.of( $N ) )",
                              descriptor.getEnhancedClassName(),
-                             prop.getConstantName(),
+                             input.getConstantName(),
                              JS_ARRAY_CLASSNAME,
                              stepMethod.getName() );
       }
     }
     else
     {
-      if ( ( null != propMethod && AnnotationsUtil.hasNonnullAnnotation( propMethod ) ) &&
+      if ( ( null != inputMethod && AnnotationsUtil.hasNonnullAnnotation( inputMethod ) ) &&
            !stepMethod.getType().isPrimitive() )
       {
         method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
       }
-      assert null != prop;
-      method.addStatement( "_element.props().set( $T.Props.$N, $N )",
+      assert null != input;
+      method.addStatement( "_element.input( $T.Inputs.$N, $N )",
                            descriptor.getEnhancedClassName(),
-                           prop.getConstantName(),
+                           input.getConstantName(),
                            stepMethod.getName() );
     }
 
@@ -424,10 +424,10 @@ final class BuilderGenerator
   @Nonnull
   private static MethodSpec buildContextBuildStepImpl( @Nonnull final ViewDescriptor descriptor )
   {
-    final List<PropDescriptor> contextProps =
-      descriptor.getProps().stream().filter( PropDescriptor::isContextProp ).collect( Collectors.toList() );
+    final List<InputDescriptor> contextInputs =
+      descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).collect( Collectors.toList() );
 
-    final int count = contextProps.size();
+    final int count = contextInputs.size();
 
     final StringBuilder sb = new StringBuilder();
     final List<Object> args = new ArrayList<>();
@@ -436,10 +436,9 @@ final class BuilderGenerator
 
     for ( int i = 0; i < count; i++ )
     {
-      final PropDescriptor prop = contextProps.get( i );
       sb.append( "$T.$N.consumer().render( $N -> " );
       args.add( ClassName.bestGuess( "ContextHolder" ) );
-      args.add( "CONTEXT_" + prop.getConstantName() );
+      args.add( "CONTEXT_" + contextInputs.get( i ).getConstantName() );
       args.add( "v" + i );
     }
 
@@ -447,10 +446,9 @@ final class BuilderGenerator
 
     for ( int i = 0; i < count; i++ )
     {
-      final PropDescriptor prop = contextProps.get( i );
-      sb.append( ".prop( $T.Props.$N, $N )" );
+      sb.append( ".input( $T.Inputs.$N, $N )" );
       args.add( descriptor.getEnhancedClassName() );
-      args.add( prop.getConstantName() );
+      args.add( contextInputs.get( i ).getConstantName() );
       args.add( "v" + i );
     }
 
@@ -488,11 +486,11 @@ final class BuilderGenerator
                                                      @Nonnull final MethodSpec.Builder method,
                                                      @Nonnull final String elementName )
   {
-    final List<PropDescriptor> syntheticProps =
-      descriptor.getProps().stream().filter( PropDescriptor::isImmutable ).collect( Collectors.toList() );
-    if ( syntheticProps.size() > 1 )
+    final List<InputDescriptor> syntheticInputs =
+      descriptor.getInputs().stream().filter( InputDescriptor::isImmutable ).collect( Collectors.toList() );
+    if ( syntheticInputs.size() > 1 )
     {
-      method.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName );
+      method.addStatement( "final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName );
 
       final StringBuilder sb = new StringBuilder();
       sb.append( "$N.setKey( ( $T.enableViewNames() ? $S : $T.class.getName() )" );
@@ -501,42 +499,42 @@ final class BuilderGenerator
       params.add( REACT_CLASSNAME );
       params.add( descriptor.keySuffix() );
       params.add( descriptor.getClassName() );
-      for ( final PropDescriptor prop : syntheticProps )
+      for ( final InputDescriptor input : syntheticInputs )
       {
         sb.append( " + \"-\" + " );
-        final ImmutablePropKeyStrategy strategy = prop.getImmutablePropKeyStrategy();
-        if ( ImmutablePropKeyStrategy.KEYED == strategy )
+        final ImmutableInputKeyStrategy strategy = input.getImmutableInputKeyStrategy();
+        if ( ImmutableInputKeyStrategy.KEYED == strategy )
         {
-          sb.append( "$T.getKey( ($T) props.get( $T.Props.$N ) )" );
+          sb.append( "$T.getKey( ($T) inputs.get( $T.Inputs.$N ) )" );
           params.add( KEYED_CLASSNAME );
-          params.add( prop.getMethodType().getReturnType() );
+          params.add( input.getMethodType().getReturnType() );
           params.add( descriptor.getEnhancedClassName() );
-          params.add( prop.getConstantName() );
+          params.add( input.getConstantName() );
         }
-        else if ( ImmutablePropKeyStrategy.IS_STRING == strategy || ImmutablePropKeyStrategy.ENUM == strategy )
+        else if ( ImmutableInputKeyStrategy.IS_STRING == strategy || ImmutableInputKeyStrategy.ENUM == strategy )
         {
-          sb.append( "( ($T) props.get( $T.Props.$N ) )" );
-          params.add( prop.getMethodType().getReturnType() );
+          sb.append( "( ($T) inputs.get( $T.Inputs.$N ) )" );
+          params.add( input.getMethodType().getReturnType() );
           params.add( descriptor.getEnhancedClassName() );
-          params.add( prop.getConstantName() );
+          params.add( input.getConstantName() );
         }
-        else if ( ImmutablePropKeyStrategy.TO_STRING == strategy )
+        else if ( ImmutableInputKeyStrategy.TO_STRING == strategy )
         {
-          sb.append( "$T.valueOf( ($T) props.get( $T.Props.$N ) )" );
+          sb.append( "$T.valueOf( ($T) inputs.get( $T.Inputs.$N ) )" );
           params.add( String.class );
-          params.add( prop.getMethodType().getReturnType() );
+          params.add( input.getMethodType().getReturnType() );
           params.add( descriptor.getEnhancedClassName() );
-          params.add( prop.getConstantName() );
+          params.add( input.getConstantName() );
         }
         else
         {
-          assert ImmutablePropKeyStrategy.AREZ_IDENTIFIABLE == strategy;
-          sb.append( "$T.valueOf( $T.<Object>getArezId( ($T) props.get( $T.Props.$N ) ) )" );
+          assert ImmutableInputKeyStrategy.AREZ_IDENTIFIABLE == strategy;
+          sb.append( "$T.valueOf( $T.<Object>getArezId( ($T) inputs.get( $T.Inputs.$N ) ) )" );
           params.add( String.class );
           params.add( IDENTIFIABLE_CLASSNAME );
-          params.add( prop.getMethodType().getReturnType() );
+          params.add( input.getMethodType().getReturnType() );
           params.add( descriptor.getEnhancedClassName() );
-          params.add( prop.getConstantName() );
+          params.add( input.getConstantName() );
         }
       }
       sb.append( " )" );
@@ -560,18 +558,18 @@ final class BuilderGenerator
 
     builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
 
-    final List<PropDescriptor> contextProps =
-      descriptor.getProps().stream().filter( PropDescriptor::isContextProp ).collect( Collectors.toList() );
+    final List<InputDescriptor> contextInputs =
+      descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).collect( Collectors.toList() );
 
-    for ( final PropDescriptor prop : contextProps )
+    for ( final InputDescriptor input : contextInputs )
     {
-      final TypeName type = TypeName.get( prop.getMethodType().getReturnType() ).box();
+      final TypeName type = TypeName.get( input.getMethodType().getReturnType() ).box();
       final FieldSpec.Builder field = FieldSpec
         .builder( ParameterizedTypeName.get( CONTEXT_CLASSNAME, type ),
-                  "CONTEXT_" + prop.getConstantName(),
+                  "CONTEXT_" + input.getConstantName(),
                   Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
-      final String qualifier = prop.getQualifier();
+      final String qualifier = input.getQualifier();
       if ( "".equals( qualifier ) )
       {
         field.initializer( "$T.get( $T.class )", CONTEXTS_CLASSNAME, type );
@@ -600,27 +598,27 @@ final class BuilderGenerator
       builder.addSuperinterface( getParameterizedTypeName( descriptor, ClassName.bestGuess( "Step" + ( i + 1 ) ) ) );
     }
 
-    final List<PropDescriptor> propsWithDefaults = descriptor.getProps()
+    final List<InputDescriptor> inputsWithDefaults = descriptor.getInputs()
       .stream()
       .filter( p -> p.hasDefaultField() || p.hasDefaultMethod() )
       .collect( Collectors.toList() );
-    if ( !propsWithDefaults.isEmpty() )
+    if ( !inputsWithDefaults.isEmpty() )
     {
       final MethodSpec.Builder method = MethodSpec.constructorBuilder();
       method.addStatement( "_element = $T.createViewElement( $T.Factory.TYPE )",
                            REACT_ELEMENT_CLASSNAME,
                            descriptor.getEnhancedClassName() );
-      method.addStatement( "final $T props = _element.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
-      for ( final PropDescriptor prop : propsWithDefaults )
+      method.addStatement( "final $T inputs = _element.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
+      for ( final InputDescriptor input : inputsWithDefaults )
       {
-        method.addStatement( "props.set( $T.Props.$N, $T.$N" +
-                             ( prop.hasDefaultField() ? "" : "()" ) + " )",
+        method.addStatement( "inputs.set( $T.Inputs.$N, $T.$N" +
+                             ( input.hasDefaultField() ? "" : "()" ) + " )",
                              descriptor.getEnhancedClassName(),
-                             prop.getConstantName(),
+                             input.getConstantName(),
                              descriptor.getClassName(),
-                             prop.hasDefaultField() ?
-                             prop.getDefaultField().getSimpleName() :
-                             prop.getDefaultMethod().getSimpleName() );
+                             input.hasDefaultField() ?
+                             input.getDefaultField().getSimpleName() :
+                             input.getDefaultMethod().getSimpleName() );
       }
 
       builder.addMethod( method.build() );
@@ -643,7 +641,7 @@ final class BuilderGenerator
 
     final FieldSpec.Builder field =
       FieldSpec.builder( REACT_ELEMENT_CLASSNAME, "_element", Modifier.PRIVATE, Modifier.FINAL );
-    if ( propsWithDefaults.isEmpty() )
+    if ( inputsWithDefaults.isEmpty() )
     {
       field.initializer( "$T.createViewElement( $T.Factory.TYPE )",
                          REACT_ELEMENT_CLASSNAME,
@@ -651,7 +649,7 @@ final class BuilderGenerator
     }
     builder.addField( field.build() );
 
-    if ( descriptor.getProps().stream().anyMatch( PropDescriptor::isContextProp ) )
+    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isContextSource ) )
     {
       builder.addMethod( buildInternalBuildStepImpl( descriptor ) );
       builder.addMethod( buildContextBuildStepImpl( descriptor ) );
@@ -692,58 +690,58 @@ final class BuilderGenerator
   {
     final BuilderDescriptor builder = new BuilderDescriptor();
 
-    Step optionalPropStep = null;
-    final List<PropDescriptor> props =
-      descriptor.getProps().stream().filter( p -> !p.isContextProp() ).collect( Collectors.toList() );
+    Step optionalInputStep = null;
+    final List<InputDescriptor> inputs =
+      descriptor.getInputs().stream().filter( p -> !p.isContextSource() ).collect( Collectors.toList() );
 
-    final int propsSize = props.size();
+    final int inputsSize = inputs.size();
 
-    final boolean hasSingleOptional = props.stream().filter( PropDescriptor::isOptional ).count() == 1;
+    final boolean hasSingleOptional = inputs.stream().filter( InputDescriptor::isOptional ).count() == 1;
     boolean hasRequiredAfterOptional = false;
-    for ( int i = 0; i < propsSize; i++ )
+    for ( int i = 0; i < inputsSize; i++ )
     {
-      final PropDescriptor prop = props.get( i );
-      final boolean isLast = i == propsSize - 1;
-      if ( prop.isOptional() )
+      final InputDescriptor input = inputs.get( i );
+      final boolean isLast = i == inputsSize - 1;
+      if ( input.isOptional() )
       {
-        if ( null == optionalPropStep )
+        if ( null == optionalInputStep )
         {
-          optionalPropStep = builder.addStep();
+          optionalInputStep = builder.addStep();
         }
-        if ( prop.getName().equals( "children" ) )
+        if ( input.getName().equals( "children" ) )
         {
-          addChildrenStreamPropStepMethod( optionalPropStep );
+          addChildrenStreamInputStepMethod( optionalInputStep );
         }
-        optionalPropStep.addMethod( prop, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY );
+        optionalInputStep.addMethod( input, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY );
       }
       else
       {
-        if ( null != optionalPropStep )
+        if ( null != optionalInputStep )
         {
-          // Need this when we have children magic prop that is required that follows the optional props.
-          optionalPropStep.addMethod( prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+          // Need this when we have children magic input that is required that follows the optional inputs.
+          optionalInputStep.addMethod( input, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
           // This is when children are built up using child steps
-          if ( prop.getName().equals( "children" ) )
+          if ( input.getName().equals( "children" ) )
           {
-            addChildrenStreamPropStepMethod( optionalPropStep );
+            addChildrenStreamInputStepMethod( optionalInputStep );
           }
           hasRequiredAfterOptional = true;
         }
         // Single method step
         final Step step = builder.addStep();
-        step.addMethod( prop, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
-        if ( prop.getName().equals( "children" ) )
+        step.addMethod( input, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
+        if ( input.getName().equals( "children" ) )
         {
-          addChildrenStreamPropStepMethod( step );
+          addChildrenStreamInputStepMethod( step );
           addBuildStep( step );
         }
       }
     }
-    if ( null != optionalPropStep && !hasRequiredAfterOptional )
+    if ( null != optionalInputStep && !hasRequiredAfterOptional )
     {
-      addBuildStep( optionalPropStep );
+      addBuildStep( optionalInputStep );
     }
-    if ( props.isEmpty() )
+    if ( inputs.isEmpty() )
     {
       addBuildStep( builder.addStep() );
     }
@@ -762,13 +760,13 @@ final class BuilderGenerator
   /**
    * A helper intrinsic that converts children streams.
    */
-  private static void addChildrenStreamPropStepMethod( @Nonnull final Step step )
+  private static void addChildrenStreamInputStepMethod( @Nonnull final Step step )
   {
     final ParameterizedTypeName typeName =
       ParameterizedTypeName.get( ClassName.get( Stream.class ),
                                  WildcardTypeName.subtypeOf( REACT_NODE_CLASSNAME ) );
 
-    //TODO: Replace this with prop enhancer
+    //TODO: Replace this with input enhancer
     step.addTerminalMethod( "children", "*children_stream*", typeName );
   }
 }

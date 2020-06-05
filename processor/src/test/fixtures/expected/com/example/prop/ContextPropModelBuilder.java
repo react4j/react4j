@@ -46,7 +46,7 @@ final class ContextPropModelBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return ContextHolder.CONTEXT_myProp.consumer().render( v0 -> build( _element.prop( React4j_ContextPropModel.Props.myProp, v0 ).dup() ) );
+      return ContextHolder.CONTEXT_myProp.consumer().render( v0 -> build( _element.input( React4j_ContextPropModel.Inputs.myProp, v0 ).dup() ) );
     }
   }
 }

@@ -34,7 +34,7 @@ final class ImmutablePropTypeArezIdentifiableBuilder {
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeArezIdentifiable.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezIdentifiable_30200f60" : ImmutablePropTypeArezIdentifiable.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeArezIdentifiable.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeArezIdentifiable.Inputs.myProp, myProp );
       return build();
     }
 

@@ -31,10 +31,10 @@ public class BuildOutputTest
     compileTimeProperties.put( "react4j.environment", "production" );
     compileTimeProperties.put( "react4j.enable_component_names", "false" );
     compileTimeProperties.put( "react4j.check_invariants", "false" );
-    compileTimeProperties.put( "react4j.minimize_prop_keys", "true" );
-    compileTimeProperties.put( "react4j.validate_prop_values", "false" );
+    compileTimeProperties.put( "react4j.minimize_input_keys", "true" );
+    compileTimeProperties.put( "react4j.validate_input_values", "false" );
     compileTimeProperties.put( "react4j.store_debug_data_as_state", "false" );
-    compileTimeProperties.put( "react4j.freeze_props", "false" );
+    compileTimeProperties.put( "react4j.freeze_inputs", "false" );
 
     final List<SymbolEntry> symbols = getInvalidSymbolEntries( index, ruleSet, compileTimeProperties );
     if ( !symbols.isEmpty() )

@@ -31,7 +31,7 @@ final class BoolJavaBeanPropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode foo(final boolean foo) {
-      _element.props().set( React4j_BoolJavaBeanPropModel.Props.foo, foo );
+      _element.input( React4j_BoolJavaBeanPropModel.Inputs.foo, foo );
       return build();
     }
 

@@ -31,7 +31,7 @@ final class PropTypeCharBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final char myProp) {
-      _element.props().set( React4j_PropTypeChar.Props.myProp, myProp );
+      _element.input( React4j_PropTypeChar.Inputs.myProp, myProp );
       return build();
     }
 

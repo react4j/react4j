@@ -33,7 +33,7 @@ final class ImmutablePropTypePrimitiveIntBuilder {
     @Nonnull
     public final ReactNode myProp(final int myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveInt_c0c80f1a" : ImmutablePropTypePrimitiveInt.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypePrimitiveInt.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypePrimitiveInt.Inputs.myProp, myProp );
       return build();
     }
 

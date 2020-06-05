@@ -33,7 +33,7 @@ final class ImmutablePropTypePrimitiveLongBuilder {
     @Nonnull
     public final ReactNode myProp(final long myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveLong_ebf73d2b" : ImmutablePropTypePrimitiveLong.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypePrimitiveLong.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypePrimitiveLong.Inputs.myProp, myProp );
       return build();
     }
 

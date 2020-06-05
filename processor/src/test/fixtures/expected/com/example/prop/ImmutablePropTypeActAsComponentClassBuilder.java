@@ -34,7 +34,7 @@ final class ImmutablePropTypeActAsComponentClassBuilder {
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeActAsComponentClass.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeActAsComponentClass_4cb28f6a" : ImmutablePropTypeActAsComponentClass.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeActAsComponentClass.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeActAsComponentClass.Inputs.myProp, myProp );
       return build();
     }
 

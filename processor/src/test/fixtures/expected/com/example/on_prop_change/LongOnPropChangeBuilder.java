@@ -31,7 +31,7 @@ final class LongOnPropChangeBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final long myProp) {
-      _element.props().set( React4j_LongOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_LongOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

@@ -49,21 +49,21 @@ final class MultiPropComponent2Builder {
     @Override
     @Nonnull
     public final Step2 myProp(final String myProp) {
-      _element.props().set( React4j_MultiPropComponent2.Props.myProp, myProp );
+      _element.input( React4j_MultiPropComponent2.Inputs.myProp, myProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step3 myProp2(final String myProp2) {
-      _element.props().set( React4j_MultiPropComponent2.Props.myProp2, myProp2 );
+      _element.input( React4j_MultiPropComponent2.Inputs.myProp2, myProp2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode... children) {
-      _element.props().set( React4j_MultiPropComponent2.Props.children, JsArray.of( children ) );
+      _element.input( React4j_MultiPropComponent2.Inputs.children, JsArray.of( children ) );
       return build();
     }
 

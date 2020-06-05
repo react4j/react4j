@@ -15,10 +15,10 @@ final class ReactConfig
   private static final ConfigProvider PROVIDER = new ConfigProvider();
   private static final boolean PRODUCTION_ENVIRONMENT = PROVIDER.isProductionEnvironment();
   private static boolean ENABLE_VIEW_NAMES = PROVIDER.enableViewNames();
-  private static boolean SHOULD_MINIMIZE_PROP_KEYS = PROVIDER.shouldMinimizePropKeys();
-  private static boolean SHOULD_VALIDATE_PROP_VALUES = PROVIDER.shouldValidatePropValues();
+  private static boolean MINIMIZE_INPUT_KEYS = PROVIDER.shouldMinimizeInputKeys();
+  private static boolean SHOULD_VALIDATE_INPUT_VALUES = PROVIDER.shouldValidateInputValues();
   private static boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
-  private static boolean SHOULD_FREEZE_PROPS = PROVIDER.shouldFreezeProps();
+  private static boolean SHOULD_FREEZE_INPUTS = PROVIDER.shouldFreezeInputs();
   private static boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
   private ReactConfig()
@@ -42,25 +42,25 @@ final class ReactConfig
   }
 
   /**
-   * Return true if the prop keys should be minimized.
-   * This will significantly reduce the size of the compiled output but will make inspecting the props
+   * Return true if the input keys should be minimized.
+   * This will significantly reduce the size of the compiled output but will make inspecting the inputs
    * in DevTools difficult if not impossible.
    *
-   * @return true to minimize prop keys.
+   * @return true to minimize input keys.
    */
-  static boolean shouldMinimizePropKeys()
+  static boolean shouldMinimizeInputKeys()
   {
-    return SHOULD_MINIMIZE_PROP_KEYS;
+    return MINIMIZE_INPUT_KEYS;
   }
 
   /**
-   * Return true if the prop value should be validated when initially set or when changed.
+   * Return true if the input value should be validated when initially set or when changed.
    *
-   * @return true to validate prop values.
+   * @return true to validate input values.
    */
-  static boolean shouldValidatePropValues()
+  static boolean shouldValidateInputValues()
   {
-    return SHOULD_VALIDATE_PROP_VALUES;
+    return SHOULD_VALIDATE_INPUT_VALUES;
   }
 
   /**
@@ -86,13 +86,13 @@ final class ReactConfig
   }
 
   /**
-   * Return true if props should be frozen before being passed to react.
+   * Return true if inputs should be frozen before being passed to react.
    *
-   * @return true if props should be frozen before being passed to react.
+   * @return true if inputs should be frozen before being passed to react.
    */
-  static boolean shouldFreezeProps()
+  static boolean shouldFreezeInputs()
   {
-    return SHOULD_FREEZE_PROPS;
+    return SHOULD_FREEZE_INPUTS;
   }
 
   private static final class ConfigProvider
@@ -115,16 +115,16 @@ final class ReactConfig
 
     @GwtIncompatible
     @Override
-    boolean shouldMinimizePropKeys()
+    boolean shouldMinimizeInputKeys()
     {
-      return "true".equals( System.getProperty( "react4j.minimize_prop_keys", PRODUCTION_ENVIRONMENT ? "true" : "false" ) );
+      return "true".equals( System.getProperty( "react4j.minimize_input_keys", PRODUCTION_ENVIRONMENT ? "true" : "false" ) );
     }
 
     @GwtIncompatible
     @Override
-    boolean shouldValidatePropValues()
+    boolean shouldValidateInputValues()
     {
-      return "true".equals( System.getProperty( "react4j.validate_prop_values", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.validate_input_values", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
 
     @GwtIncompatible
@@ -144,9 +144,9 @@ final class ReactConfig
 
     @GwtIncompatible
     @Override
-    boolean shouldFreezeProps()
+    boolean shouldFreezeInputs()
     {
-      return "true".equals( System.getProperty( "react4j.freeze_props", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.freeze_inputs", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
   }
 
@@ -163,14 +163,14 @@ final class ReactConfig
       return "true" == System.getProperty( "react4j.enable_view_names" );
     }
 
-    boolean shouldMinimizePropKeys()
+    boolean shouldMinimizeInputKeys()
     {
-      return "true" == System.getProperty( "react4j.minimize_prop_keys" );
+      return "true" == System.getProperty( "react4j.minimize_input_keys" );
     }
 
-    boolean shouldValidatePropValues()
+    boolean shouldValidateInputValues()
     {
-      return "true" == System.getProperty( "react4j.validate_prop_values" );
+      return "true" == System.getProperty( "react4j.validate_input_values" );
     }
 
     boolean shouldStoreDebugDataAsState()
@@ -183,9 +183,9 @@ final class ReactConfig
       return "true" == System.getProperty( "react4j.check_invariants" );
     }
 
-    boolean shouldFreezeProps()
+    boolean shouldFreezeInputs()
     {
-      return "true" == System.getProperty( "react4j.freeze_props" );
+      return "true" == System.getProperty( "react4j.freeze_inputs" );
     }
   }
 }

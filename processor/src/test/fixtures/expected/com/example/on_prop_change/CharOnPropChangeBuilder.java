@@ -31,7 +31,7 @@ final class CharOnPropChangeBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final char myProp) {
-      _element.props().set( React4j_CharOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_CharOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

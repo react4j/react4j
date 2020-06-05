@@ -1,25 +1,25 @@
 import react4j.ReactNode;
-import react4j.annotations.OnPropChange;
+import react4j.annotations.OnInputChange;
 import react4j.annotations.PostMount;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.PreUpdate;
-import react4j.annotations.Prop;
-import react4j.annotations.PropDefault;
+import react4j.annotations.Input;
+import react4j.annotations.InputDefault;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View
 abstract class RootPackageCompleteComponent
 {
-  @PropDefault( name = "myProp" )
+  @InputDefault( name = "myProp" )
   static final int MY_PROP = 37;
 
-  @OnPropChange
+  @OnInputChange
   void onMyPropChange( int myProp )
   {
   }
 
-  @Prop
+  @Input
   abstract int getMyProp();
 
   @Render

@@ -33,7 +33,7 @@ final class ImmutablePropTypePrimitiveFloatBuilder {
     @Nonnull
     public final ReactNode myProp(final float myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveFloat_7757742f" : ImmutablePropTypePrimitiveFloat.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypePrimitiveFloat.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypePrimitiveFloat.Inputs.myProp, myProp );
       return build();
     }
 

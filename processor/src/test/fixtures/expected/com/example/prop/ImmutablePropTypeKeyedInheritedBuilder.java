@@ -34,7 +34,7 @@ final class ImmutablePropTypeKeyedInheritedBuilder {
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedInherited_62ec04af" : ImmutablePropTypeKeyedInherited.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeKeyedInherited.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeKeyedInherited.Inputs.myProp, myProp );
       return build();
     }
 

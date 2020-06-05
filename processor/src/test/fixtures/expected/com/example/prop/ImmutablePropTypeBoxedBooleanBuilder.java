@@ -33,7 +33,7 @@ final class ImmutablePropTypeBoxedBooleanBuilder {
     @Nonnull
     public final ReactNode myProp(final Boolean myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedBoolean_c8609c6b" : ImmutablePropTypeBoxedBoolean.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeBoxedBoolean.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeBoxedBoolean.Inputs.myProp, myProp );
       return build();
     }
 

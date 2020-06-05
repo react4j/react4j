@@ -33,7 +33,7 @@ final class ImmutablePropAndPostConstructComponentBuilder {
     @Nonnull
     public final ReactNode myProp(final String myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropAndPostConstructComponent_48ad187e" : ImmutablePropAndPostConstructComponent.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropAndPostConstructComponent.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropAndPostConstructComponent.Inputs.myProp, myProp );
       return build();
     }
 

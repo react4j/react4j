@@ -37,7 +37,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "RootPackageCompleteComponent" );
     }
@@ -46,14 +46,14 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
 
   @Override
   int getMyProp() {
-    return $$react4j$$_nativeView.props().getAsAny( Props.myProp ).asInt();
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.myProp ), nextProps.get( Props.myProp ) ) ) {
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
       return true;
     }
     return false;
@@ -63,12 +63,12 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     postMount();
   }
 
-  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    if ( null != prevProps ) {
-      final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-      final boolean myProp = !Js.isTripleEqual( props.get( Props.myProp ), prevProps.get( Props.myProp ) );
+  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevInputs) {
+    if ( null != prevInputs ) {
+      final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+      final boolean myProp = !Js.isTripleEqual( inputs.get( Inputs.myProp ), prevInputs.get( Inputs.myProp ) );
       if ( myProp ) {
-        onMyPropChange( props.getAsAny( Props.myProp ).asInt() );
+        onMyPropChange( inputs.getAsAny( Inputs.myProp ).asInt() );
       }
     }
     preUpdate();
@@ -93,8 +93,8 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final class Inputs {
+    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
@@ -102,8 +102,8 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     private final React4j_RootPackageCompleteComponent $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_RootPackageCompleteComponent( this );
     }
 
@@ -113,19 +113,19 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevProps );
+      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
       $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 
@@ -141,8 +141,8 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     private final React4j_RootPackageCompleteComponent $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_RootPackageCompleteComponent( this );
     }
 
@@ -152,19 +152,19 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevProps );
+      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
       $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 

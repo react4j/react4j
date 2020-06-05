@@ -33,7 +33,7 @@ final class ImmutablePropTypeBoxedLongBuilder {
     @Nonnull
     public final ReactNode myProp(final Long myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedLong_077dacd3" : ImmutablePropTypeBoxedLong.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeBoxedLong.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeBoxedLong.Inputs.myProp, myProp );
       return build();
     }
 

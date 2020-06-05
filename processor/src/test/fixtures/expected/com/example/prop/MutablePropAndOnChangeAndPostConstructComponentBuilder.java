@@ -31,7 +31,7 @@ final class MutablePropAndOnChangeAndPostConstructComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_MutablePropAndOnChangeAndPostConstructComponent.Props.myProp, myProp );
+      _element.input( React4j_MutablePropAndOnChangeAndPostConstructComponent.Inputs.myProp, myProp );
       return build();
     }
 

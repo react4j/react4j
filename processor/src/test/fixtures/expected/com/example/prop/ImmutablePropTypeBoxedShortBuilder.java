@@ -33,7 +33,7 @@ final class ImmutablePropTypeBoxedShortBuilder {
     @Nonnull
     public final ReactNode myProp(final Short myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedShort_9954b60a" : ImmutablePropTypeBoxedShort.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeBoxedShort.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeBoxedShort.Inputs.myProp, myProp );
       return build();
     }
 

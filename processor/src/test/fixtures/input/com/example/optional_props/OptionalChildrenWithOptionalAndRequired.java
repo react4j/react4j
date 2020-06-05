@@ -2,24 +2,24 @@ package com.example.optional_props;
 
 import react4j.ReactNode;
 import react4j.annotations.Feature;
-import react4j.annotations.Prop;
-import react4j.annotations.PropDefault;
+import react4j.annotations.Input;
+import react4j.annotations.InputDefault;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View
 abstract class OptionalChildrenWithOptionalAndRequired
 {
-  @PropDefault
+  @InputDefault
   static final String DEFAULT_MY_PROP = "Foo";
 
-  @Prop( require = Feature.DISABLE )
+  @Input( require = Feature.DISABLE )
   abstract ReactNode[] getChildren();
 
-  @Prop
+  @Input
   abstract String getMyProp();
 
-  @Prop
+  @Input
   abstract String getMyRequiredProp();
 
   @Render

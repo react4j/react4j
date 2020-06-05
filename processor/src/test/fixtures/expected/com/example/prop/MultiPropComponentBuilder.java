@@ -36,14 +36,14 @@ final class MultiPropComponentBuilder {
     @Override
     @Nonnull
     public final Step2 myProp(final String myProp) {
-      _element.props().set( React4j_MultiPropComponent.Props.myProp, myProp );
+      _element.input( React4j_MultiPropComponent.Inputs.myProp, myProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode myProp2(final String myProp2) {
-      _element.props().set( React4j_MultiPropComponent.Props.myProp2, myProp2 );
+      _element.input( React4j_MultiPropComponent.Inputs.myProp2, myProp2 );
       return build();
     }
 

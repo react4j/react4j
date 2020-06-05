@@ -31,7 +31,7 @@ final class FloatOnPropChangeBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final float myProp) {
-      _element.props().set( React4j_FloatOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_FloatOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

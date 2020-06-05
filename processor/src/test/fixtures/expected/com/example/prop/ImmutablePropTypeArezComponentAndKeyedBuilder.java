@@ -34,7 +34,7 @@ final class ImmutablePropTypeArezComponentAndKeyedBuilder {
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeArezComponentAndKeyed.MyComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezComponentAndKeyed_ad8da370" : ImmutablePropTypeArezComponentAndKeyed.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeArezComponentAndKeyed.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeArezComponentAndKeyed.Inputs.myProp, myProp );
       return build();
     }
 

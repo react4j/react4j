@@ -31,7 +31,7 @@ final class DoubleOnPropChangeBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final double myProp) {
-      _element.props().set( React4j_DoubleOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_DoubleOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

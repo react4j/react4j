@@ -37,7 +37,7 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "CustomNamingOnPropChange" );
     }
@@ -46,53 +46,53 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
 
   @Override
   boolean getMyProp1() {
-    return $$react4j$$_nativeView.props().getAsAny( Props.myProp1 ).asBoolean();
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp1 ).asBoolean();
   }
 
   @Override
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.myProp2 ) ? $$react4j$$_nativeView.props().getAsAny( Props.myProp2 ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myProp2 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) );
     }
   }
 
   @Override
   int getMyProp3() {
-    return $$react4j$$_nativeView.props().getAsAny( Props.myProp3 ).asInt();
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp3 ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.myProp1 ), nextProps.get( Props.myProp1 ) ) ) {
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp1 ), nextInputs.get( Inputs.myProp1 ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.myProp2 ), nextProps.get( Props.myProp2 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp2 ), nextInputs.get( Inputs.myProp2 ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.myProp3 ), nextProps.get( Props.myProp3 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp3 ), nextInputs.get( Inputs.myProp3 ) ) ) {
       return true;
     }
     return false;
   }
 
-  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
-    if ( null != prevProps ) {
-      final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-      final boolean myProp1 = !Js.isTripleEqual( props.get( Props.myProp1 ), prevProps.get( Props.myProp1 ) );
-      final boolean myProp2 = !Js.isTripleEqual( props.get( Props.myProp2 ), prevProps.get( Props.myProp2 ) );
-      final boolean myProp3 = !Js.isTripleEqual( props.get( Props.myProp3 ), prevProps.get( Props.myProp3 ) );
+  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevInputs) {
+    if ( null != prevInputs ) {
+      final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+      final boolean myProp1 = !Js.isTripleEqual( inputs.get( Inputs.myProp1 ), prevInputs.get( Inputs.myProp1 ) );
+      final boolean myProp2 = !Js.isTripleEqual( inputs.get( Inputs.myProp2 ), prevInputs.get( Inputs.myProp2 ) );
+      final boolean myProp3 = !Js.isTripleEqual( inputs.get( Inputs.myProp3 ), prevInputs.get( Inputs.myProp3 ) );
       if ( myProp1 ) {
-        onPropChange( props.getAsAny( Props.myProp1 ).asBoolean() );
+        onPropChange( inputs.getAsAny( Inputs.myProp1 ).asBoolean() );
       }
       if ( myProp2 ) {
-        onPropChange( Js.uncheckedCast( props.getAsAny( Props.myProp2 ) ) );
+        onPropChange( Js.uncheckedCast( inputs.getAsAny( Inputs.myProp2 ) ) );
       }
       if ( myProp3 ) {
-        onPropChange( props.getAsAny( Props.myProp3 ).asInt() );
+        onPropChange( inputs.getAsAny( Inputs.myProp3 ).asInt() );
       }
     }
   }
@@ -112,12 +112,12 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String myProp1 = React.shouldMinimizePropKeys() ? "a" : "myProp1";
+  static final class Inputs {
+    static final String myProp1 = React.shouldMinimizeInputKeys() ? "a" : "myProp1";
 
-    static final String myProp2 = React.shouldMinimizePropKeys() ? "b" : "myProp2";
+    static final String myProp2 = React.shouldMinimizeInputKeys() ? "b" : "myProp2";
 
-    static final String myProp3 = React.shouldMinimizePropKeys() ? "c" : "myProp3";
+    static final String myProp3 = React.shouldMinimizeInputKeys() ? "c" : "myProp3";
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
@@ -125,20 +125,20 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
     private final React4j_CustomNamingOnPropChange $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_CustomNamingOnPropChange( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevProps );
+      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
     }
 
@@ -154,20 +154,20 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
     private final React4j_CustomNamingOnPropChange $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_CustomNamingOnPropChange( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevProps );
+      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
     }
 

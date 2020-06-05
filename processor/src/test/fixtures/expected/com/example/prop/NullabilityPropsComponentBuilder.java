@@ -42,14 +42,14 @@ final class NullabilityPropsComponentBuilder {
     @Nonnull
     public final Step2 myProp(@Nonnull final String myProp) {
       Objects.requireNonNull( myProp );
-      _element.props().set( React4j_NullabilityPropsComponent.Props.myProp, myProp );
+      _element.input( React4j_NullabilityPropsComponent.Inputs.myProp, myProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode myProp2(@Nullable final String myProp2) {
-      _element.props().set( React4j_NullabilityPropsComponent.Props.myProp2, myProp2 );
+      _element.input( React4j_NullabilityPropsComponent.Inputs.myProp2, myProp2 );
       return build();
     }
 

@@ -31,7 +31,7 @@ final class PackageAccessOnPropChangeModelBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_PackageAccessOnPropChangeModel.Props.myProp, myProp );
+      _element.input( React4j_PackageAccessOnPropChangeModel.Inputs.myProp, myProp );
       return build();
     }
 

@@ -35,7 +35,7 @@ final class ImmutablePropTypeKeyedMultiStepInheritedBuilder {
     public final ReactNode myProp(
         final ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedMultiStepInherited_7d3cf3a5" : ImmutablePropTypeKeyedMultiStepInherited.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeKeyedMultiStepInherited.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeKeyedMultiStepInherited.Inputs.myProp, myProp );
       return build();
     }
 

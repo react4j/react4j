@@ -32,7 +32,7 @@ final class SingleChildPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode child(final ReactNode child) {
-      _element.props().set( React4j_SingleChildPropComponent.Props.child, JsArray.of( child ) );
+      _element.input( React4j_SingleChildPropComponent.Inputs.child, JsArray.of( child ) );
       return build();
     }
 

@@ -31,7 +31,7 @@ final class ObservablePropBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final Object value) {
-      _element.props().set( React4j_ObservableProp.Props.value, value );
+      _element.input( React4j_ObservableProp.Inputs.value, value );
       return build();
     }
 

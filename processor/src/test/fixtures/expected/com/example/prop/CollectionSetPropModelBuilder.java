@@ -32,7 +32,7 @@ final class CollectionSetPropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final Set<String> myProp) {
-      _element.props().set( React4j_CollectionSetPropModel.Props.myProp, myProp );
+      _element.input( React4j_CollectionSetPropModel.Inputs.myProp, myProp );
       return build();
     }
 

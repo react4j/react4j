@@ -33,7 +33,7 @@ final class ImmutablePropTypeStringBuilder {
     @Nonnull
     public final ReactNode myProp(final String myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeString_e57e44c1" : ImmutablePropTypeString.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeString.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeString.Inputs.myProp, myProp );
       return build();
     }
 

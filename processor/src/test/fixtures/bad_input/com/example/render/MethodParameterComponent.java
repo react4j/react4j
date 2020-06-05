@@ -8,7 +8,7 @@ import react4j.annotations.View;
 abstract class MethodParameterComponent
 {
   @Render
-  ReactNode render(int i)
+  ReactNode render( int i )
   {
     return null;
   }

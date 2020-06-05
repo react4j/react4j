@@ -31,7 +31,7 @@ final class PublicAccessViaInterfacePropValidateModelBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_PublicAccessViaInterfacePropValidateModel.Props.myProp, myProp );
+      _element.input( React4j_PublicAccessViaInterfacePropValidateModel.Inputs.myProp, myProp );
       return build();
     }
 

@@ -33,7 +33,7 @@ final class ImmutablePropTypePrimitiveBooleanBuilder {
     @Nonnull
     public final ReactNode myProp(final boolean myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveBoolean_2e6a2a6d" : ImmutablePropTypePrimitiveBoolean.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypePrimitiveBoolean.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypePrimitiveBoolean.Inputs.myProp, myProp );
       return build();
     }
 

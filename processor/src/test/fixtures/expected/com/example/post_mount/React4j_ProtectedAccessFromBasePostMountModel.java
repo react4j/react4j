@@ -37,7 +37,7 @@ abstract class React4j_ProtectedAccessFromBasePostMountModel extends ProtectedAc
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ProtectedAccessFromBasePostMountModel" );
     }
@@ -45,8 +45,8 @@ abstract class React4j_ProtectedAccessFromBasePostMountModel extends ProtectedAc
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
     return false;
   }
 
@@ -74,8 +74,8 @@ abstract class React4j_ProtectedAccessFromBasePostMountModel extends ProtectedAc
     private final React4j_ProtectedAccessFromBasePostMountModel $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_ProtectedAccessFromBasePostMountModel( this );
     }
 
@@ -85,8 +85,8 @@ abstract class React4j_ProtectedAccessFromBasePostMountModel extends ProtectedAc
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -101,8 +101,8 @@ abstract class React4j_ProtectedAccessFromBasePostMountModel extends ProtectedAc
     private final React4j_ProtectedAccessFromBasePostMountModel $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_ProtectedAccessFromBasePostMountModel( this );
     }
 
@@ -112,8 +112,8 @@ abstract class React4j_ProtectedAccessFromBasePostMountModel extends ProtectedAc
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

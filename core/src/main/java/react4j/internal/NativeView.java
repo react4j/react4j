@@ -18,13 +18,13 @@ import react4j.ReactNode;
 @SuppressWarnings( "unused" )
 public abstract class NativeView
 {
-  @JsProperty
-  private JsPropertyMap<Object> props;
+  @JsProperty( name = "props" )
+  private JsPropertyMap<Object> inputs;
   @JsProperty
   private JsPropertyMap<Object> state;
 
   @JsConstructor
-  protected NativeView( @Nullable final JsPropertyMap<Object> props )
+  protected NativeView( @Nullable final JsPropertyMap<Object> inputs )
   {
   }
 
@@ -34,9 +34,9 @@ public abstract class NativeView
 
   @JsOverlay
   @Nullable
-  public final JsPropertyMap<Object> props()
+  public final JsPropertyMap<Object> inputs()
   {
-    return props;
+    return inputs;
   }
 
   @JsOverlay

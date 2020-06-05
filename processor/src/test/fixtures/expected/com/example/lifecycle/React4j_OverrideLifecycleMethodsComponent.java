@@ -42,7 +42,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
     }
@@ -50,8 +50,8 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
     return false;
   }
 
@@ -60,7 +60,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     postMount();
   }
 
-  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevProps) {
+  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevInputs) {
     preUpdate();
   }
 
@@ -89,8 +89,8 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     private final React4j_OverrideLifecycleMethodsComponent $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_OverrideLifecycleMethodsComponent( this );
     }
 
@@ -100,19 +100,19 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevProps );
+      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
       $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 
@@ -134,8 +134,8 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     private final React4j_OverrideLifecycleMethodsComponent $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_OverrideLifecycleMethodsComponent( this );
     }
 
@@ -145,19 +145,19 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevProps,
+    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevProps );
+      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevProps) {
+    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
       $$react4j$$_view.$$react4j$$_componentDidUpdate();
     }
 

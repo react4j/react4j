@@ -32,7 +32,7 @@ final class CollectionHashSetPropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final HashSet<String> myProp) {
-      _element.props().set( React4j_CollectionHashSetPropModel.Props.myProp, myProp );
+      _element.input( React4j_CollectionHashSetPropModel.Inputs.myProp, myProp );
       return build();
     }
 

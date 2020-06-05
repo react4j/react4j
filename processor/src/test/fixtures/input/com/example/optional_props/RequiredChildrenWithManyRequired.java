@@ -1,23 +1,23 @@
 package com.example.optional_props;
 
 import react4j.ReactNode;
-import react4j.annotations.Prop;
+import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View
 abstract class RequiredChildrenWithManyRequired
 {
-  @Prop
+  @Input
   abstract ReactNode[] getChildren();
 
-  @Prop
+  @Input
   abstract String getMyRequiredProp1();
 
-  @Prop
+  @Input
   abstract String getMyRequiredProp2();
 
-  @Prop
+  @Input
   abstract String getMyRequiredProp3();
 
   @Render

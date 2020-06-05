@@ -31,7 +31,7 @@ final class NestedCompleteComponent_BasicViewBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( NestedCompleteComponent_React4j_BasicView.Props.myProp, myProp );
+      _element.input( NestedCompleteComponent_React4j_BasicView.Inputs.myProp, myProp );
       return build();
     }
 

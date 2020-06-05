@@ -33,7 +33,7 @@ final class ImmutablePropTypeBoxedIntegerBuilder {
     @Nonnull
     public final ReactNode myProp(final Integer myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedInteger_5fafd942" : ImmutablePropTypeBoxedInteger.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeBoxedInteger.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeBoxedInteger.Inputs.myProp, myProp );
       return build();
     }
 

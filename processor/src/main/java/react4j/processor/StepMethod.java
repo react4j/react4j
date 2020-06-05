@@ -9,7 +9,7 @@ import javax.lang.model.type.ExecutableType;
 
 /**
  * Represents a step in the builder. There are a few "intrinsic" methods that are handled by generator
- * but the rest are driven by Prop annotation details. The intrinsics are as follows:
+ * but the rest are driven by Input annotation details. The intrinsics are as follows:
  *
  * <ul>
  * <li>name = build: no parameters returns ReactNode and terminates build. This has custom code in implementation.</li>
@@ -21,47 +21,47 @@ import javax.lang.model.type.ExecutableType;
 final class StepMethod
 {
   /**
-   * The name of the prop and the corresponding builder method.
+   * The name of the input and the corresponding builder method.
    */
   @Nonnull
   private final String _name;
   /**
-   * The key under which the prop is added into props.
+   * The key under which the input is added into inputs.
    */
   @Nonnull
   private final String _key;
   /**
-   * The expected type of the prop.
+   * The expected type of the input.
    */
   @Nonnull
   private final TypeName _type;
   @Nullable
-  private final PropDescriptor _prop;
+  private final InputDescriptor _input;
   /**
    * After this method is called should the builder STAY on the same step, ADVANCE to the next step or TERMINATE builder and call build().
    */
   @Nonnull
   private final StepMethodType _stepMethodType;
 
-  StepMethod( @Nonnull final PropDescriptor prop, @Nonnull final StepMethodType stepMethodType )
+  StepMethod( @Nonnull final InputDescriptor input, @Nonnull final StepMethodType stepMethodType )
   {
-    this( prop.getName(),
-          prop.getName(),
-          TypeName.get( prop.getMethodType().getReturnType() ),
-          prop,
+    this( input.getName(),
+          input.getName(),
+          TypeName.get( input.getMethodType().getReturnType() ),
+          input,
           stepMethodType );
   }
 
   StepMethod( @Nonnull final String name,
               @Nonnull final String key,
               @Nonnull final TypeName type,
-              @Nullable final PropDescriptor prop,
+              @Nullable final InputDescriptor input,
               @Nonnull final StepMethodType stepMethodType )
   {
     _name = Objects.requireNonNull( name );
     _key = Objects.requireNonNull( key );
     _type = Objects.requireNonNull( type );
-    _prop = prop;
+    _input = input;
     _stepMethodType = Objects.requireNonNull( stepMethodType );
   }
 
@@ -78,21 +78,21 @@ final class StepMethod
   }
 
   @Nullable
-  PropDescriptor getProp()
+  InputDescriptor getInput()
   {
-    return _prop;
+    return _input;
   }
 
   @Nullable
-  ExecutableElement getPropMethod()
+  ExecutableElement getMethod()
   {
-    return null != _prop ? _prop.getMethod() : null;
+    return null != _input ? _input.getMethod() : null;
   }
 
   @Nullable
-  ExecutableType getPropMethodType()
+  ExecutableType getMethodType()
   {
-    return null != _prop ? _prop.getMethodType() : null;
+    return null != _input ? _input.getMethodType() : null;
   }
 
   @Nonnull

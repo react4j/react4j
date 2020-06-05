@@ -31,7 +31,7 @@ final class PublicAccessViaInterfacePropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_PublicAccessViaInterfacePropModel.Props.myProp, myProp );
+      _element.input( React4j_PublicAccessViaInterfacePropModel.Inputs.myProp, myProp );
       return build();
     }
 

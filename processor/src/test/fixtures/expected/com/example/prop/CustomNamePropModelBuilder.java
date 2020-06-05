@@ -31,7 +31,7 @@ final class CustomNamePropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode foo(final String foo) {
-      _element.props().set( React4j_CustomNamePropModel.Props.foo, foo );
+      _element.input( React4j_CustomNamePropModel.Inputs.foo, foo );
       return build();
     }
 

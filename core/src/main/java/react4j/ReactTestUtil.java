@@ -29,19 +29,19 @@ public final class ReactTestUtil
     {
       disableViewNames();
       noCheckInvariants();
-      minimizePropKeys();
-      noValidatePropValues();
+      minimizeInputKeys();
+      noValidateInputValues();
       noStoreDebugDataAsState();
-      noFreezeProps();
+      noFreezeInputs();
     }
     else
     {
       enableViewNames();
       checkInvariants();
-      noMinimizePropKeys();
-      validatePropValues();
+      noMinimizeInputKeys();
+      validateInputValues();
       storeDebugDataAsState();
-      freezeProps();
+      freezeInputs();
     }
     Contexts.setContextProvider( new Contexts.DefaultContextProvider() );
     Contexts.clear();
@@ -74,55 +74,55 @@ public final class ReactTestUtil
   }
 
   /**
-   * Set the `react4j.minimize_prop_keys` setting to {@code true}.
+   * Set the `react4j.minimize_input_keys` setting to {@code true}.
    */
-  public static void minimizePropKeys()
+  public static void minimizeInputKeys()
   {
-    setMinimizePropKeys( true );
+    setMinimizeInputKeys( true );
   }
 
   /**
-   * Set the `react4j.minimize_prop_keys` setting to {@code false}.
+   * Set the `react4j.minimize_input_keys` setting to {@code false}.
    */
-  public static void noMinimizePropKeys()
+  public static void noMinimizeInputKeys()
   {
-    setMinimizePropKeys( false );
+    setMinimizeInputKeys( false );
   }
 
   /**
-   * Configure the `react4j.minimize_prop_keys` setting.
+   * Configure the `react4j.minimize_input_keys` setting.
    *
    * @param setting the setting.
    */
-  private static void setMinimizePropKeys( final boolean setting )
+  private static void setMinimizeInputKeys( final boolean setting )
   {
-    setConstant( "SHOULD_MINIMIZE_PROP_KEYS", setting );
+    setConstant( "MINIMIZE_INPUT_KEYS", setting );
   }
 
   /**
-   * Set the `react4j.validate_prop_values` setting to {@code true}.
+   * Set the `react4j.validate_input_values` setting to {@code true}.
    */
-  public static void validatePropValues()
+  public static void validateInputValues()
   {
-    setValidatePropValues( true );
+    setValidateInputValues( true );
   }
 
   /**
-   * Set the `react4j.validate_prop_values` setting to {@code false}.
+   * Set the `react4j.validate_input_values` setting to {@code false}.
    */
-  public static void noValidatePropValues()
+  public static void noValidateInputValues()
   {
-    setValidatePropValues( false );
+    setValidateInputValues( false );
   }
 
   /**
-   * Configure the `react4j.validate_prop_values` setting.
+   * Configure the `react4j.validate_input_values` setting.
    *
    * @param setting the setting.
    */
-  private static void setValidatePropValues( final boolean setting )
+  private static void setValidateInputValues( final boolean setting )
   {
-    setConstant( "SHOULD_VALIDATE_PROP_VALUES", setting );
+    setConstant( "SHOULD_VALIDATE_INPUT_VALUES", setting );
   }
 
   /**
@@ -152,29 +152,29 @@ public final class ReactTestUtil
   }
 
   /**
-   * Set the `react4j.freeze_props` setting to {@code true}.
+   * Set the `react4j.freeze_inputs` setting to {@code true}.
    */
-  public static void freezeProps()
+  public static void freezeInputs()
   {
-    setFreezeProps( true );
+    setFreezeInputs( true );
   }
 
   /**
-   * Set the `react4j.freeze_props` setting to {@code false}.
+   * Set the `react4j.freeze_inputs` setting to {@code false}.
    */
-  public static void noFreezeProps()
+  public static void noFreezeInputs()
   {
-    setFreezeProps( false );
+    setFreezeInputs( false );
   }
 
   /**
-   * Configure the `react4j.freeze_props` setting.
+   * Configure the `react4j.freeze_inputs` setting.
    *
    * @param setting the setting.
    */
-  private static void setFreezeProps( final boolean setting )
+  private static void setFreezeInputs( final boolean setting )
   {
-    setConstant( "SHOULD_FREEZE_PROPS", setting );
+    setConstant( "SHOULD_FREEZE_INPUTS", setting );
   }
 
   /**

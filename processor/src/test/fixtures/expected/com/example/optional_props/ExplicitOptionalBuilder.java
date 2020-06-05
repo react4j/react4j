@@ -42,21 +42,21 @@ final class ExplicitOptionalBuilder {
     @Override
     @Nonnull
     public final Step2 myRequiredProp(final String myRequiredProp) {
-      _element.props().set( React4j_ExplicitOptional.Props.myRequiredProp, myRequiredProp );
+      _element.input( React4j_ExplicitOptional.Inputs.myRequiredProp, myRequiredProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step2 myOptionalProp(final String myOptionalProp) {
-      _element.props().set( React4j_ExplicitOptional.Props.myOptionalProp, myOptionalProp );
+      _element.input( React4j_ExplicitOptional.Inputs.myOptionalProp, myOptionalProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step2 myOtherOptionalProp(final String myOtherOptionalProp) {
-      _element.props().set( React4j_ExplicitOptional.Props.myOtherOptionalProp, myOtherOptionalProp );
+      _element.input( React4j_ExplicitOptional.Inputs.myOtherOptionalProp, myOtherOptionalProp );
       return this;
     }
 

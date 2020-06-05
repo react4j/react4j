@@ -1,19 +1,19 @@
 package com.example.pre_update;
 
 import react4j.ReactNode;
-import react4j.annotations.OnPropChange;
+import react4j.annotations.Input;
+import react4j.annotations.OnInputChange;
 import react4j.annotations.PreUpdate;
-import react4j.annotations.Prop;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View
 abstract class OnPropChangeAndPreUpdateModel
 {
-  @Prop
+  @Input
   abstract int getMyProp();
 
-  @OnPropChange( phase = OnPropChange.Phase.PRE )
+  @OnInputChange( phase = OnInputChange.Phase.PRE )
   void onMyPropChange( int myProp )
   {
   }

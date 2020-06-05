@@ -31,7 +31,7 @@ final class MutablePropAndPostConstructWithSuppressComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_MutablePropAndPostConstructWithSuppressComponent.Props.myProp, myProp );
+      _element.input( React4j_MutablePropAndPostConstructWithSuppressComponent.Inputs.myProp, myProp );
       return build();
     }
 

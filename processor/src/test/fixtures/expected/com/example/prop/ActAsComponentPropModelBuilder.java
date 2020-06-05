@@ -31,7 +31,7 @@ final class ActAsComponentPropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode model(final ActAsComponentPropModel.Model model) {
-      _element.props().set( React4j_ActAsComponentPropModel.Props.model, model );
+      _element.input( React4j_ActAsComponentPropModel.Inputs.model, model );
       return build();
     }
 

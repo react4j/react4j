@@ -33,7 +33,7 @@ final class ImmutablePropTypePrimitiveCharBuilder {
     @Nonnull
     public final ReactNode myProp(final char myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveChar_acc92cbb" : ImmutablePropTypePrimitiveChar.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypePrimitiveChar.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypePrimitiveChar.Inputs.myProp, myProp );
       return build();
     }
 

@@ -55,28 +55,28 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     Builder() {
       _element = ReactElement.createViewElement( React4j_RequiredChildrenWithOptionalAndRequired.Factory.TYPE );
-      final JsPropertyMap<Object> props = _element.props();
-      props.set( React4j_RequiredChildrenWithOptionalAndRequired.Props.myProp, RequiredChildrenWithOptionalAndRequired.DEFAULT_MY_PROP );
+      final JsPropertyMap<Object> inputs = _element.inputs();
+      inputs.set( React4j_RequiredChildrenWithOptionalAndRequired.Inputs.myProp, RequiredChildrenWithOptionalAndRequired.DEFAULT_MY_PROP );
     }
 
     @Override
     @Nonnull
     public final Step2 myRequiredProp(final String myRequiredProp) {
-      _element.props().set( React4j_RequiredChildrenWithOptionalAndRequired.Props.myRequiredProp, myRequiredProp );
+      _element.input( React4j_RequiredChildrenWithOptionalAndRequired.Inputs.myRequiredProp, myRequiredProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_RequiredChildrenWithOptionalAndRequired.Props.myProp, myProp );
+      _element.input( React4j_RequiredChildrenWithOptionalAndRequired.Inputs.myProp, myProp );
       return build();
     }
 
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode... children) {
-      _element.props().set( React4j_RequiredChildrenWithOptionalAndRequired.Props.children, JsArray.of( children ) );
+      _element.input( React4j_RequiredChildrenWithOptionalAndRequired.Inputs.children, JsArray.of( children ) );
       return build();
     }
 

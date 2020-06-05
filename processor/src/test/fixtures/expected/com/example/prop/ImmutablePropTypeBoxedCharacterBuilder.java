@@ -33,7 +33,7 @@ final class ImmutablePropTypeBoxedCharacterBuilder {
     @Nonnull
     public final ReactNode myProp(final Character myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedCharacter_6cf55e57" : ImmutablePropTypeBoxedCharacter.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeBoxedCharacter.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeBoxedCharacter.Inputs.myProp, myProp );
       return build();
     }
 

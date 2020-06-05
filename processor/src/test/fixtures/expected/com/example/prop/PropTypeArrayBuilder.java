@@ -31,7 +31,7 @@ final class PropTypeArrayBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String[] myProp) {
-      _element.props().set( React4j_PropTypeArray.Props.myProp, myProp );
+      _element.input( React4j_PropTypeArray.Inputs.myProp, myProp );
       return build();
     }
 

@@ -32,7 +32,7 @@ final class OtherTypeOnPropChangeBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final BitSet myProp) {
-      _element.props().set( React4j_OtherTypeOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_OtherTypeOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

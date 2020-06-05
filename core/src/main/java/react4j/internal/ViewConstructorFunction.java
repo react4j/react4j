@@ -13,10 +13,10 @@ import jsinterop.base.JsPropertyMap;
 public interface ViewConstructorFunction
 {
   /**
-   * Construct a component based on specified properties.
+   * Construct a component based on specified inputs.
    *
-   * @param props the component props.
+   * @param inputs the component inputs.
    * @return the component.
    */
-  NativeView construct( JsPropertyMap<Object> props );
+  NativeView construct( JsPropertyMap<Object> inputs );
 }

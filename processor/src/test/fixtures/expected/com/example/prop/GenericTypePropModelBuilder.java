@@ -32,7 +32,7 @@ final class GenericTypePropModelBuilder {
     @Override
     @Nonnull
     public final ReactNode value(final T value) {
-      _element.props().set( React4j_GenericTypePropModel.Props.value, value );
+      _element.input( React4j_GenericTypePropModel.Inputs.value, value );
       return build();
     }
 

@@ -23,8 +23,8 @@ public @interface View
     /**
      * The view can store state in fields, can declared lifecycle methods and may contain methods annotated by
      * the {@link ScheduleRender} annotation.
-     * The view will be scheduled to re-render if the views container re-renders and any props with
-     * {@link Prop#shouldUpdateOnChange()} set to <code>true</code> has changed value from last render. A prop
+     * The view will be scheduled to re-render if the views container re-renders and any inputs with
+     * {@link Input#shouldUpdateOnChange()} set to <code>true</code> has changed value from last render. A input
      * is considered changed if when the new value and the old value are passed to
      * {@link Objects#equals(Object, Object)} and that method returns <code>false</code>. A view will also
      * be scheduled to re-render if the view invokes a method annotated by the {@link ScheduleRender} annotation.

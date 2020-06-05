@@ -36,7 +36,7 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "GenericTypeMultiPropModel" );
     }
@@ -46,18 +46,18 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
   @Override
   T getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.value ) ? $$react4j$$_nativeView.props().getAsAny( Props.value ).cast() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.value ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) );
     }
   }
 
   @Override
   String getValue2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.value2 ) ? $$react4j$$_nativeView.props().getAsAny( Props.value2 ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.value2 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.value2 ) );
     }
   }
 
@@ -65,9 +65,9 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
   @Override
   String getValue3() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.value3 ) ? $$react4j$$_nativeView.props().getAsAny( Props.value3 ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value3 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.value3 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.value3 ) );
     }
   }
 
@@ -75,26 +75,26 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
   @Override
   String getValue4() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.value4 ) ? $$react4j$$_nativeView.props().getAsAny( Props.value4 ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value4 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value4 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.value4 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.value4 ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.value ), nextProps.get( Props.value ) ) ) {
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.value ), nextInputs.get( Inputs.value ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.value2 ), nextProps.get( Props.value2 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.value2 ), nextInputs.get( Inputs.value2 ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.value3 ), nextProps.get( Props.value3 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.value3 ), nextInputs.get( Inputs.value3 ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( props.get( Props.value4 ), nextProps.get( Props.value4 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.value4 ), nextInputs.get( Inputs.value4 ) ) ) {
       return true;
     }
     return false;
@@ -115,14 +115,14 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String value = React.shouldMinimizePropKeys() ? "a" : "value";
+  static final class Inputs {
+    static final String value = React.shouldMinimizeInputKeys() ? "a" : "value";
 
-    static final String value2 = React.shouldMinimizePropKeys() ? "b" : "value2";
+    static final String value2 = React.shouldMinimizeInputKeys() ? "b" : "value2";
 
-    static final String value3 = React.shouldMinimizePropKeys() ? "c" : "value3";
+    static final String value3 = React.shouldMinimizeInputKeys() ? "c" : "value3";
 
-    static final String value4 = React.shouldMinimizePropKeys() ? "d" : "value4";
+    static final String value4 = React.shouldMinimizeInputKeys() ? "d" : "value4";
   }
 
   private static final class LiteNativeView<T> extends react4j.internal.NativeView implements OnShouldComponentUpdate {
@@ -130,14 +130,14 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
     private final React4j_GenericTypeMultiPropModel<T> $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_GenericTypeMultiPropModel<T>( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -152,14 +152,14 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
     private final React4j_GenericTypeMultiPropModel<T> $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_GenericTypeMultiPropModel<T>( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

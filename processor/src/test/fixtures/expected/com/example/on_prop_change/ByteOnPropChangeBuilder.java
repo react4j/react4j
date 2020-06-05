@@ -31,7 +31,7 @@ final class ByteOnPropChangeBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final byte myProp) {
-      _element.props().set( React4j_ByteOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_ByteOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

@@ -1,18 +1,18 @@
 package com.example.default_props;
 
 import react4j.ReactNode;
-import react4j.annotations.Prop;
-import react4j.annotations.PropDefault;
+import react4j.annotations.Input;
+import react4j.annotations.InputDefault;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View
 abstract class BadNameFieldPropDefault
 {
-  @PropDefault( name = "-myProp" )
+  @InputDefault( name = "-myProp" )
   static final String MY_PROP = "Foo";
 
-  @Prop
+  @Input
   protected abstract String getMyProp();
 
   @Render

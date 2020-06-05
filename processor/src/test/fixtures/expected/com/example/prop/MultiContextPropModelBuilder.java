@@ -49,7 +49,7 @@ final class MultiContextPropModelBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return ContextHolder.CONTEXT_stringContextValue.consumer().render( v0 -> ContextHolder.CONTEXT_intContextValue.consumer().render( v1 -> build( _element.prop( React4j_MultiContextPropModel.Props.stringContextValue, v0 ).prop( React4j_MultiContextPropModel.Props.intContextValue, v1 ).dup() ) ) );
+      return ContextHolder.CONTEXT_stringContextValue.consumer().render( v0 -> ContextHolder.CONTEXT_intContextValue.consumer().render( v1 -> build( _element.input( React4j_MultiContextPropModel.Inputs.stringContextValue, v0 ).input( React4j_MultiContextPropModel.Inputs.intContextValue, v1 ).dup() ) ) );
     }
   }
 }

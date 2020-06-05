@@ -35,7 +35,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypes" );
     }
@@ -45,47 +45,47 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   @Override
   ImmutablePropTypes.MyComponent getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.myProp ) ? $$react4j$$_nativeView.props().getAsAny( Props.myProp ).cast() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
     }
   }
 
   @Override
   String getMyOtherProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.myOtherProp ) ? $$react4j$$_nativeView.props().getAsAny( Props.myOtherProp ).asString() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.myOtherProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) );
     }
   }
 
   @Override
   int stillAnotherProp() {
-    return $$react4j$$_nativeView.props().getAsAny( Props.stillAnotherProp ).asInt();
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.stillAnotherProp ).asInt();
   }
 
   @Override
   ImmutablePropTypes.KeyedComponent BobsProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.BobsProp ) ? $$react4j$$_nativeView.props().getAsAny( Props.BobsProp ).cast() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.BobsProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) );
     }
   }
 
   @Override
   ImmutablePropTypes.Foo getSomeProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.props().getAsAny( Props.someProp ) ? $$react4j$$_nativeView.props().getAsAny( Props.someProp ).cast() : null;
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.props().getAsAny( Props.someProp ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
     return false;
   }
 
@@ -108,16 +108,16 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
-    static final String myProp = React.shouldMinimizePropKeys() ? "a" : "myProp";
+  static final class Inputs {
+    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
 
-    static final String myOtherProp = React.shouldMinimizePropKeys() ? "b" : "myOtherProp";
+    static final String myOtherProp = React.shouldMinimizeInputKeys() ? "b" : "myOtherProp";
 
-    static final String stillAnotherProp = React.shouldMinimizePropKeys() ? "c" : "stillAnotherProp";
+    static final String stillAnotherProp = React.shouldMinimizeInputKeys() ? "c" : "stillAnotherProp";
 
-    static final String BobsProp = React.shouldMinimizePropKeys() ? "d" : "BobsProp";
+    static final String BobsProp = React.shouldMinimizeInputKeys() ? "d" : "BobsProp";
 
-    static final String someProp = React.shouldMinimizePropKeys() ? "e" : "someProp";
+    static final String someProp = React.shouldMinimizeInputKeys() ? "e" : "someProp";
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
@@ -125,14 +125,14 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     private final React4j_ImmutablePropTypes $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_ImmutablePropTypes( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -147,14 +147,14 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     private final React4j_ImmutablePropTypes $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_ImmutablePropTypes( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

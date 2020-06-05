@@ -36,7 +36,7 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidatePropValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "NonnullChildPropComponent" );
     }
@@ -46,14 +46,14 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
   @Nonnull
   @Override
   ReactNode getChild() {
-    return $$react4j$$_nativeView.props().getAsAny( Props.child ).cast();
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.child ).cast();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextProps) {
-    assert null != nextProps;
-    final JsPropertyMap<Object> props = $$react4j$$_nativeView.props();
-    if ( !Js.isTripleEqual( props.get( Props.child ), nextProps.get( Props.child ) ) ) {
+      @Nullable final JsPropertyMap<Object> nextInputs) {
+    assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.child ), nextInputs.get( Inputs.child ) ) ) {
       return true;
     }
     return false;
@@ -74,7 +74,7 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  static final class Props {
+  static final class Inputs {
     static final String child = "children";
   }
 
@@ -83,14 +83,14 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
     private final React4j_NonnullChildPropComponent $$react4j$$_view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_NonnullChildPropComponent( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
@@ -105,14 +105,14 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
     private final React4j_NonnullChildPropComponent $$react4j$$_view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> props) {
-      super( props );
+    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+      super( inputs );
       $$react4j$$_view = new Arez_React4j_NonnullChildPropComponent( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextProps) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextProps );
+    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override

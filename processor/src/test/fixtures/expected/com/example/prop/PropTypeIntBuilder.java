@@ -31,7 +31,7 @@ final class PropTypeIntBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final int myProp) {
-      _element.props().set( React4j_PropTypeInt.Props.myProp, myProp );
+      _element.input( React4j_PropTypeInt.Inputs.myProp, myProp );
       return build();
     }
 

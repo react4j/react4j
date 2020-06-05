@@ -13,19 +13,19 @@ final class Constants
   @Nonnull
   static final String RENDER_ANNOTATION_CLASSNAME = "react4j.annotations.Render";
   @Nonnull
-  static final String PROP_ANNOTATION_CLASSNAME = "react4j.annotations.Prop";
+  static final String INPUT_CLASSNAME = "react4j.annotations.Input";
   @Nonnull
   static final String SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME = "react4j.annotations.SuppressReact4jWarnings";
   @Nonnull
-  static final String PROP_REF_ANNOTATION_CLASSNAME = "react4j.annotations.PropRef";
+  static final String INPUT_REF_CLASSNAME = "react4j.annotations.InputRef";
   @Nonnull
-  static final String PROP_DEFAULT_ANNOTATION_CLASSNAME = "react4j.annotations.PropDefault";
+  static final String INPUT_DEFAULT_CLASSNAME = "react4j.annotations.InputDefault";
   @Nonnull
-  static final String PROP_VALIDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PropValidate";
+  static final String INPUT_VALIDATE_CLASSNAME = "react4j.annotations.InputValidate";
   @Nonnull
   static final String ON_ERROR_ANNOTATION_CLASSNAME = "react4j.annotations.OnError";
   @Nonnull
-  static final String ON_PROP_CHANGE_ANNOTATION_CLASSNAME = "react4j.annotations.OnPropChange";
+  static final String ON_INPUT_CHANGE_CLASSNAME = "react4j.annotations.OnInputChange";
   @Nonnull
   static final String VIEW_CLASSNAME = "react4j.annotations.View";
   @Nonnull
@@ -69,8 +69,8 @@ final class Constants
   @Nonnull
   static final String JS_ERROR_CLASSNAME = "elemental2.core.JsError";
   @Nonnull
-  static final String WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT =
-    "React4j:MutablePropAccessedInPostConstruct";
+  static final String WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT =
+    "React4j:MutableInputAccessedInPostConstruct";
   @Nonnull
   static final String WARNING_PUBLIC_METHOD = "React4j:PublicMethod";
   @Nonnull

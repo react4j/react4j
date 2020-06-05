@@ -31,7 +31,7 @@ final class IntPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final int myProp) {
-      _element.props().set( React4j_IntPropValidate.Props.myProp, myProp );
+      _element.input( React4j_IntPropValidate.Inputs.myProp, myProp );
       return build();
     }
 

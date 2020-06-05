@@ -34,7 +34,7 @@ final class ImmutablePropTypeKeyedInterfaceBuilder {
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeKeyedInterface.KeyedInterface myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedInterface_3326071b" : ImmutablePropTypeKeyedInterface.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeKeyedInterface.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeKeyedInterface.Inputs.myProp, myProp );
       return build();
     }
 

@@ -31,7 +31,7 @@ final class StringPropValidateBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final String myProp) {
-      _element.props().set( React4j_StringPropValidate.Props.myProp, myProp );
+      _element.input( React4j_StringPropValidate.Inputs.myProp, myProp );
       return build();
     }
 

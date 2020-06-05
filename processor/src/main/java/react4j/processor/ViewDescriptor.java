@@ -45,23 +45,23 @@ final class ViewDescriptor
   @Nullable
   private ExecutableElement _onError;
   /**
-   * Methods that are props accessors.
-   * These should be implemented as accesses to the underlying props value.
+   * Methods that are inputs accessors.
+   * These should be implemented as accesses to the underlying inputs value.
    */
   @Nullable
-  private List<PropDescriptor> _props;
+  private List<InputDescriptor> _inputs;
   /**
-   * Methods that are props accessors.
-   * These should be implemented as accesses to the underlying props value.
+   * Methods that are inputs accessors.
+   * These should be implemented as accesses to the underlying inputs value.
    */
   @Nullable
-  private List<OnPropChangeDescriptor> _onPropChangeDescriptors;
+  private List<OnInputChangeDescriptor> _onInputChangeDescriptors;
   /**
    * Descriptors for methods annotated by @ScheduleRender.
    */
   @Nullable
   private List<ScheduleRenderDescriptor> _scheduleRenderDescriptors;
-  private Boolean _hasValidatedProps;
+  private Boolean _hasValidatedInputs;
   private Boolean _viewAccessesDeprecatedElements;
   private Boolean _builderAccessesDeprecatedElements;
   private boolean _hasArezElements;
@@ -215,61 +215,61 @@ final class ViewDescriptor
 
   int syntheticKeyParts()
   {
-    return (int) getProps().stream().filter( PropDescriptor::isImmutable ).count();
+    return (int) getInputs().stream().filter( InputDescriptor::isImmutable ).count();
   }
 
   @Nonnull
-  List<PropDescriptor> getProps()
+  List<InputDescriptor> getInputs()
   {
-    assert null != _props;
-    return _props;
+    assert null != _inputs;
+    return _inputs;
   }
 
-  void setProps( @Nonnull final List<PropDescriptor> events )
+  void setInputs( @Nonnull final List<InputDescriptor> events )
   {
-    _props = Objects.requireNonNull( events );
+    _inputs = Objects.requireNonNull( events );
   }
 
   @Nullable
-  PropDescriptor findPropNamed( @Nonnull final String name )
+  InputDescriptor findInputNamed( @Nonnull final String name )
   {
-    return getProps().stream().filter( p -> p.getName().equals( name ) ).findAny().orElse( null );
+    return getInputs().stream().filter( p -> p.getName().equals( name ) ).findAny().orElse( null );
   }
 
   /**
-   * Needs to be invoked after all the props have been completely constructed.
+   * Needs to be invoked after all the inputs have been completely constructed.
    */
-  void sortProps()
+  void sortInputs()
   {
-    assert null != _props;
-    _props.sort( PropComparator.COMPARATOR );
+    assert null != _inputs;
+    _inputs.sort( InputComparator.COMPARATOR );
   }
 
   @Nonnull
-  List<OnPropChangeDescriptor> getPreUpdateOnPropChangeDescriptors()
+  List<OnInputChangeDescriptor> getPreUpdateOnInputChangeDescriptors()
   {
-    return getOnPropChangeDescriptors()
+    return getOnInputChangeDescriptors()
       .stream()
-      .filter( OnPropChangeDescriptor::isPreUpdate )
+      .filter( OnInputChangeDescriptor::isPreUpdate )
       .collect( Collectors.toList() );
   }
 
   @Nonnull
-  List<OnPropChangeDescriptor> getPostUpdateOnPropChangeDescriptors()
+  List<OnInputChangeDescriptor> getPostUpdateOnInputChangeDescriptors()
   {
-    return getOnPropChangeDescriptors().stream().filter( o -> !o.isPreUpdate() ).collect( Collectors.toList() );
+    return getOnInputChangeDescriptors().stream().filter( o -> !o.isPreUpdate() ).collect( Collectors.toList() );
   }
 
   @Nonnull
-  private List<OnPropChangeDescriptor> getOnPropChangeDescriptors()
+  private List<OnInputChangeDescriptor> getOnInputChangeDescriptors()
   {
-    assert null != _onPropChangeDescriptors;
-    return _onPropChangeDescriptors;
+    assert null != _onInputChangeDescriptors;
+    return _onInputChangeDescriptors;
   }
 
-  void setOnPropChangeDescriptors( @Nonnull List<OnPropChangeDescriptor> onPropChangeDescriptors )
+  void setOnInputChangeDescriptors( @Nonnull List<OnInputChangeDescriptor> onInputChangeDescriptors )
   {
-    _onPropChangeDescriptors = Objects.requireNonNull( onPropChangeDescriptors );
+    _onInputChangeDescriptors = Objects.requireNonNull( onInputChangeDescriptors );
   }
 
   @Nonnull
@@ -284,9 +284,9 @@ final class ViewDescriptor
     _scheduleRenderDescriptors = Objects.requireNonNull( scheduleRenderDescriptors );
   }
 
-  boolean hasObservableProps()
+  boolean hasObservableInputs()
   {
-    return getProps().stream().anyMatch( PropDescriptor::isObservable );
+    return getInputs().stream().anyMatch( InputDescriptor::isObservable );
   }
 
   @Nullable
@@ -430,12 +430,12 @@ final class ViewDescriptor
 
   boolean generateShouldComponentUpdate()
   {
-    return generateShouldComponentUpdateInLiteLifecycle() || hasValidatedProps();
+    return generateShouldComponentUpdateInLiteLifecycle() || hasValidatedInputs();
   }
 
   boolean generateShouldComponentUpdateInLiteLifecycle()
   {
-    return true; // type != STATELESS || hasObservableProps() || hasUpdateOnChangeProps();
+    return true; // type != STATELESS || hasObservableInputs() || hasUpdateOnChangeInputs();
   }
 
   boolean generateComponentDidCatch()
@@ -455,7 +455,7 @@ final class ViewDescriptor
 
   boolean generateComponentPreUpdate()
   {
-    return hasPreUpdateOnPropChange() || null != _preUpdate;
+    return hasPreUpdateOnInputChange() || null != _preUpdate;
   }
 
   boolean generateComponentDidMount()
@@ -470,14 +470,14 @@ final class ViewDescriptor
     return null != _postMount || null != _postRender;
   }
 
-  boolean hasPreUpdateOnPropChange()
+  boolean hasPreUpdateOnInputChange()
   {
-    return !getPreUpdateOnPropChangeDescriptors().isEmpty();
+    return !getPreUpdateOnInputChangeDescriptors().isEmpty();
   }
 
-  boolean hasPostUpdateOnPropChange()
+  boolean hasPostUpdateOnInputChange()
   {
-    return !getPostUpdateOnPropChangeDescriptors().isEmpty();
+    return !getPostUpdateOnInputChangeDescriptors().isEmpty();
   }
 
   boolean generateComponentDidUpdate()
@@ -489,16 +489,16 @@ final class ViewDescriptor
 
   boolean generateComponentDidUpdateInLiteLifecycle()
   {
-    return hasPostUpdateOnPropChange() || null != _postUpdate || null != _postRender;
+    return hasPostUpdateOnInputChange() || null != _postUpdate || null != _postRender;
   }
 
-  boolean hasValidatedProps()
+  boolean hasValidatedInputs()
   {
-    if ( null == _hasValidatedProps )
+    if ( null == _hasValidatedInputs )
     {
-      _hasValidatedProps = getProps().stream().anyMatch( PropDescriptor::hasValidateMethod );
+      _hasValidatedInputs = getInputs().stream().anyMatch( InputDescriptor::hasValidateMethod );
     }
-    return _hasValidatedProps;
+    return _hasValidatedInputs;
   }
 
   boolean viewAccessesDeprecatedElements()
@@ -513,10 +513,10 @@ final class ViewDescriptor
         isDeprecated( _postMount ) ||
         isDeprecated( _postUpdate ) ||
         isDeprecated( _onError ) ||
-        getProps().stream()
+        getInputs().stream()
           .anyMatch( p -> isDeprecated( p.getMethod() ) ||
                           p.hasValidateMethod() && isDeprecated( p.getValidateMethod() ) ) ||
-        getPostUpdateOnPropChangeDescriptors().stream().anyMatch( d -> isDeprecated( d.getMethod() ) );
+        getPostUpdateOnInputChangeDescriptors().stream().anyMatch( d -> isDeprecated( d.getMethod() ) );
     }
     return _viewAccessesDeprecatedElements;
   }
@@ -527,7 +527,7 @@ final class ViewDescriptor
     {
       _builderAccessesDeprecatedElements =
         isDeprecated( _element ) ||
-        getProps().stream().anyMatch( p -> p.hasDefaultMethod() && isDeprecated( p.getDefaultMethod() ) ||
+        getInputs().stream().anyMatch( p -> p.hasDefaultMethod() && isDeprecated( p.getDefaultMethod() ) ||
                                            p.hasDefaultField() && isDeprecated( p.getDefaultField() ) );
     }
     return _builderAccessesDeprecatedElements;

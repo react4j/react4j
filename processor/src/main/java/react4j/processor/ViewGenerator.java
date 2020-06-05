@@ -93,7 +93,7 @@ final class ViewGenerator
   private static final String COMPONENT_DID_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidUpdate";
   private static final String COMPONENT_DID_MOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidMount";
   private static final String COMPONENT_WILL_UNMOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentWillUnmount";
-  private static final String VALIDATE_PROPS_METHOD = FRAMEWORK_INTERNAL_PREFIX + "validatePropValues";
+  private static final String VALIDATE_INPUTS_METHOD = FRAMEWORK_INTERNAL_PREFIX + "validateInputValues";
   private static final String STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
   private static final String VIEW_FIELD = FRAMEWORK_INTERNAL_PREFIX + "view";
   private static final String IS_READY_METHOD = FRAMEWORK_INTERNAL_PREFIX + "isReady";
@@ -173,30 +173,30 @@ final class ViewGenerator
     }
 
     builder.addType( buildFactory() );
-    if ( !descriptor.getProps().isEmpty() )
+    if ( !descriptor.getInputs().isEmpty() )
     {
-      builder.addType( buildPropsType( descriptor ) );
+      builder.addType( buildInputsType( descriptor ) );
     }
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
-    if ( descriptor.getProps().stream().anyMatch( PropDescriptor::needsMutablePropAccessedInPostConstructInvariant ) )
+    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::needsMutableInputAccessedInPostConstructInvariant ) )
     {
       builder.addMethod( buildIsReadyMethod().build() );
     }
 
-    for ( final PropDescriptor prop : descriptor.getProps() )
+    for ( final InputDescriptor input : descriptor.getInputs() )
     {
-      builder.addMethod( buildPropMethod( prop ).build() );
-      if ( prop.isObservable() )
+      builder.addMethod( buildInputMethod( input ).build() );
+      if ( input.isObservable() )
       {
-        builder.addMethod( buildPropObservableValueRefMethod( prop ).build() );
+        builder.addMethod( buildInputObservableValueRefMethod( input ).build() );
       }
     }
 
-    if ( descriptor.hasValidatedProps() )
+    if ( descriptor.hasValidatedInputs() )
     {
-      builder.addMethod( buildPropValidatorMethod( descriptor ).build() );
+      builder.addMethod( buildInputValidatorMethod( descriptor ).build() );
     }
 
     if ( descriptor.generateShouldComponentUpdate() )
@@ -290,7 +290,7 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static FieldSpec.Builder buildPropKeyConstantField( @Nonnull final PropDescriptor descriptor,
+  private static FieldSpec.Builder buildInputKeyConstantField( @Nonnull final InputDescriptor descriptor,
                                                               final int index )
   {
     final String name = descriptor.getName();
@@ -300,13 +300,13 @@ final class ViewGenerator
                          descriptor.getConstantName(),
                          Modifier.STATIC,
                          Modifier.FINAL );
-    if ( descriptor.isSpecialChildrenProp() )
+    if ( descriptor.isSpecialChildrenInput() )
     {
       return field.initializer( "$S", "children" );
     }
     else
     {
-      return field.initializer( "$T.shouldMinimizePropKeys() ? $S : $S",
+      return field.initializer( "$T.shouldMinimizeInputKeys() ? $S : $S",
                                 REACT_CLASSNAME,
                                 Character.toString( (char) ( 'a' + index ) ),
                                 name );
@@ -314,10 +314,10 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildPropMethod( @Nonnull final PropDescriptor prop )
+  private static MethodSpec.Builder buildInputMethod( @Nonnull final InputDescriptor input )
   {
-    final ExecutableElement methodElement = prop.getMethod();
-    final ExecutableType methodType = prop.getMethodType();
+    final ExecutableElement methodElement = input.getMethod();
+    final ExecutableType methodType = input.getMethodType();
     final TypeMirror returnType = methodType.getReturnType();
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( methodElement.getSimpleName().toString() ).
@@ -328,29 +328,29 @@ final class ViewGenerator
 
     method.addAnnotation( Override.class );
 
-    if ( prop.isObservable() )
+    if ( input.isObservable() )
     {
       final AnnotationSpec.Builder annotation =
         AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
-          addMember( "name", "$S", prop.getName() ).
+          addMember( "name", "$S", input.getName() ).
           addMember( "expectSetter", "false" ).
           addMember( "readOutsideTransaction", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
       method.addAnnotation( annotation.build() );
     }
 
-    if ( prop.needsMutablePropAccessedInPostConstructInvariant() )
+    if ( input.needsMutableInputAccessedInPostConstructInvariant() )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
       block.addStatement( "$T.apiInvariant( () -> $N(), " +
-                          "() -> \"The view '\" + this + \"' accessed the prop named '" + prop.getName() +
+                          "() -> \"The view '\" + this + \"' accessed the input named '" + input.getName() +
                           "' before the view is ready (possibly in a @PostConstruct annotated method?) and " +
-                          "does not have a @OnPropChange annotated method to cover the prop and reflect changes " +
-                          "of the prop onto the view. This is considered a likely bug and the @Prop should be " +
-                          "made immutable or an @OnPropChange method added to cover the prop. " +
-                          MemberChecks.suppressedBy( Constants.WARNING_MUTABLE_PROP_ACCESSED_IN_POST_CONSTRUCT,
+                          "does not have a @OnInputChange annotated method to cover the input and reflect changes " +
+                          "of the input onto the view. This is considered a likely bug and the @Input should be " +
+                          "made immutable or an @OnInputChange method added to cover the input. " +
+                          MemberChecks.suppressedBy( Constants.WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT,
                                                      Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ).
-                            replace( "\"", "\\\"" ) + " to the @Prop annotated method.\" )",
+                            replace( "\"", "\\\"" ) + " to the @Input annotated method.\" )",
                           GUARDS_CLASSNAME,
                           IS_READY_METHOD );
       block.endControlFlow();
@@ -364,25 +364,25 @@ final class ViewGenerator
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
       block.addStatement(
-        "return null != $N.props().getAsAny( Props.$N ) ? $N.props().getAsAny( Props.$N ).$N() : null",
+        "return null != $N.inputs().getAsAny( Inputs.$N ) ? $N.inputs().getAsAny( Inputs.$N ).$N() : null",
         NATIVE_VIEW_FIELD,
-        prop.getConstantName(),
+        input.getConstantName(),
         NATIVE_VIEW_FIELD,
-        prop.getConstantName(),
+        input.getConstantName(),
         convertMethodName );
       block.nextControlFlow( "else" );
-      block.addStatement( "return $T.uncheckedCast( $N.props().getAsAny( Props.$N ) )",
+      block.addStatement( "return $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
                           JS_CLASSNAME,
                           NATIVE_VIEW_FIELD,
-                          prop.getConstantName() );
+                          input.getConstantName() );
       block.endControlFlow();
       method.addCode( block.build() );
     }
     else
     {
-      method.addStatement( "return $N.props().getAsAny( Props.$N ).$N()",
+      method.addStatement( "return $N.inputs().getAsAny( Inputs.$N ).$N()",
                            NATIVE_VIEW_FIELD,
-                           prop.getConstantName(),
+                           input.getConstantName(),
                            convertMethodName );
     }
     return method;
@@ -422,15 +422,15 @@ final class ViewGenerator
           return "cast";
         }
       default:
-        throw new ProcessorException( "Return type of @Prop method is not yet " +
+        throw new ProcessorException( "Return type of @Input method is not yet " +
                                       "handled. Type: " + type.getKind(), element );
     }
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildPropObservableValueRefMethod( @Nonnull final PropDescriptor prop )
+  private static MethodSpec.Builder buildInputObservableValueRefMethod( @Nonnull final InputDescriptor input )
   {
-    return MethodSpec.methodBuilder( toObservableValueRefMethodName( prop ) ).
+    return MethodSpec.methodBuilder( toObservableValueRefMethodName( input ) ).
       addModifiers( Modifier.ABSTRACT ).
       addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).
       addAnnotation( OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME ).
@@ -438,59 +438,59 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static String toObservableValueRefMethodName( @Nonnull final PropDescriptor prop )
+  private static String toObservableValueRefMethodName( @Nonnull final InputDescriptor input )
   {
-    final String name = prop.getName();
+    final String name = input.getName();
     return "get" + Character.toUpperCase( name.charAt( 0 ) ) + name.substring( 1 ) + "ObservableValue";
   }
 
-  private static void buildOnPropChangeInvocations( @Nonnull final CodeBlock.Builder code,
-                                                    @Nonnull final List<OnPropChangeDescriptor> onPropChanges )
+  private static void buildOnInputChangeInvocations( @Nonnull final CodeBlock.Builder code,
+                                                    @Nonnull final List<OnInputChangeDescriptor> onInputChanges )
   {
-    // The list of props we need to check for changes
-    final List<PropDescriptor> props =
-      onPropChanges.stream().flatMap( d -> d.getProps().stream() ).distinct().collect( Collectors.toList() );
+    // The list of inputs we need to check for changes
+    final List<InputDescriptor> inputs =
+      onInputChanges.stream().flatMap( d -> d.getInputs().stream() ).distinct().collect( Collectors.toList() );
 
-    for ( final PropDescriptor prop : props )
+    for ( final InputDescriptor input : inputs )
     {
-      code.addStatement( "final boolean $N = !$T.isTripleEqual( props.get( Props.$N ), prevProps.get( Props.$N ) )",
-                         prop.getName(),
+      code.addStatement( "final boolean $N = !$T.isTripleEqual( inputs.get( Inputs.$N ), prevInputs.get( Inputs.$N ) )",
+                         input.getName(),
                          JS_CLASSNAME,
-                         prop.getConstantName(),
-                         prop.getConstantName() );
+                         input.getConstantName(),
+                         input.getConstantName() );
     }
-    for ( final OnPropChangeDescriptor onPropChange : onPropChanges )
+    for ( final OnInputChangeDescriptor onInputChange : onInputChanges )
     {
       final CodeBlock.Builder onChangeBlock = CodeBlock.builder();
       onChangeBlock.beginControlFlow( "if ( " +
-                                      onPropChange.getProps()
+                                      onInputChange.getInputs()
                                         .stream()
-                                        .map( PropDescriptor::getName )
+                                        .map( InputDescriptor::getName )
                                         .collect( Collectors.joining( " && " ) ) + " )" );
       final StringBuilder sb = new StringBuilder();
       final ArrayList<Object> params = new ArrayList<>();
       sb.append( "$N( " );
-      params.add( onPropChange.getMethod().getSimpleName().toString() );
+      params.add( onInputChange.getMethod().getSimpleName().toString() );
       boolean requireComma = false;
-      for ( final PropDescriptor prop : onPropChange.getProps() )
+      for ( final InputDescriptor input : onInputChange.getInputs() )
       {
         if ( requireComma )
         {
           sb.append( ", " );
         }
         requireComma = true;
-        final String convertMethodName = getConverter( prop.getMethod().getReturnType(), prop.getMethod() );
-        final TypeKind resultKind = prop.getMethod().getReturnType().getKind();
-        if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() ) )
+        final String convertMethodName = getConverter( input.getMethod().getReturnType(), input.getMethod() );
+        final TypeKind resultKind = input.getMethod().getReturnType().getKind();
+        if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( input.getMethod() ) )
         {
-          sb.append( "$T.uncheckedCast( props.getAsAny( Props.$N ) )" );
+          sb.append( "$T.uncheckedCast( inputs.getAsAny( Inputs.$N ) )" );
           params.add( JS_CLASSNAME );
-          params.add( prop.getConstantName() );
+          params.add( input.getConstantName() );
         }
         else
         {
-          sb.append( "props.getAsAny( Props.$N ).$N()" );
-          params.add( prop.getConstantName() );
+          sb.append( "inputs.getAsAny( Inputs.$N ).$N()" );
+          params.add( input.getConstantName() );
           params.add( convertMethodName );
         }
       }
@@ -541,17 +541,17 @@ final class ViewGenerator
         .methodBuilder( SHOULD_COMPONENT_UPDATE_METHOD )
         .returns( TypeName.BOOLEAN )
         .addParameter( ParameterSpec
-                         .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL )
+                         .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextInputs", Modifier.FINAL )
                          .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
                          .build() );
 
-    final List<PropDescriptor> observableProps =
-      descriptor.getProps()
+    final List<InputDescriptor> observableInputs =
+      descriptor.getInputs()
         .stream()
-        .filter( PropDescriptor::isObservable )
+        .filter( InputDescriptor::isObservable )
         .collect( Collectors.toList() );
 
-    if ( !observableProps.isEmpty() )
+    if ( !observableInputs.isEmpty() )
     {
       method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
     }
@@ -560,27 +560,27 @@ final class ViewGenerator
       method.addModifiers( Modifier.PRIVATE );
     }
 
-    method.addStatement( "assert null != nextProps" );
+    method.addStatement( "assert null != nextInputs" );
 
-    if ( descriptor.hasValidatedProps() )
+    if ( descriptor.hasValidatedInputs() )
     {
       final CodeBlock.Builder validateBlock = CodeBlock.builder();
-      validateBlock.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CLASSNAME );
-      validateBlock.addStatement( "$N( nextProps )", VALIDATE_PROPS_METHOD );
+      validateBlock.beginControlFlow( "if ( $T.shouldValidateInputValues() )", REACT_CLASSNAME );
+      validateBlock.addStatement( "$N( nextInputs )", VALIDATE_INPUTS_METHOD );
       validateBlock.endControlFlow();
       method.addCode( validateBlock.build() );
     }
 
-    final List<PropDescriptor> updateOnChangeProps =
+    final List<InputDescriptor> updateOnChangeInputs =
       descriptor
-        .getProps()
+        .getInputs()
         .stream()
-        .filter( PropDescriptor::shouldUpdateOnChange )
+        .filter( InputDescriptor::shouldUpdateOnChange )
         // Observable properties already checked above
         .filter( p -> !p.isObservable() )
         .collect( Collectors.toList() );
 
-    if ( observableProps.isEmpty() && updateOnChangeProps.isEmpty() )
+    if ( observableInputs.isEmpty() && updateOnChangeInputs.isEmpty() )
     {
       if ( descriptor.trackRender() )
       {
@@ -593,25 +593,25 @@ final class ViewGenerator
     }
     else
     {
-      method.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD );
+      method.addStatement( "final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD );
 
-      final boolean hasObservablePropsToUpdateOnChange =
-        observableProps.stream().anyMatch( PropDescriptor::shouldUpdateOnChange );
+      final boolean hasObservableInputsToUpdateOnChange =
+        observableInputs.stream().anyMatch( InputDescriptor::shouldUpdateOnChange );
 
-      if ( hasObservablePropsToUpdateOnChange )
+      if ( hasObservableInputsToUpdateOnChange )
       {
         method.addStatement( "boolean modified = false" );
       }
 
-      for ( final PropDescriptor prop : observableProps )
+      for ( final InputDescriptor input : observableInputs )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
-        block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( Props.$N ), nextProps.get( Props.$N ) ) )",
+        block.beginControlFlow( "if ( !$T.isTripleEqual( inputs.get( Inputs.$N ), nextInputs.get( Inputs.$N ) ) )",
                                 JS_CLASSNAME,
-                                prop.getConstantName(),
-                                prop.getConstantName() );
-        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( prop ) );
-        if ( prop.shouldUpdateOnChange() )
+                                input.getConstantName(),
+                                input.getConstantName() );
+        block.addStatement( "$N().reportChanged()", toObservableValueRefMethodName( input ) );
+        if ( input.shouldUpdateOnChange() )
         {
           block.addStatement( "modified = true" );
         }
@@ -619,18 +619,18 @@ final class ViewGenerator
         method.addCode( block.build() );
       }
 
-      for ( final PropDescriptor prop : updateOnChangeProps )
+      for ( final InputDescriptor input : updateOnChangeInputs )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
-        block.beginControlFlow( "if ( !$T.isTripleEqual( props.get( Props.$N ), nextProps.get( Props.$N ) ) )",
+        block.beginControlFlow( "if ( !$T.isTripleEqual( inputs.get( Inputs.$N ), nextInputs.get( Inputs.$N ) ) )",
                                 JS_CLASSNAME,
-                                prop.getConstantName(),
-                                prop.getConstantName() );
+                                input.getConstantName(),
+                                input.getConstantName() );
         block.addStatement( "return true" );
         block.endControlFlow();
         method.addCode( block.build() );
       }
-      if ( hasObservablePropsToUpdateOnChange )
+      if ( hasObservableInputsToUpdateOnChange )
       {
         if ( descriptor.trackRender() )
         {
@@ -667,16 +667,16 @@ final class ViewGenerator
         .methodBuilder( COMPONENT_PRE_UPDATE_METHOD )
         .addModifiers( Modifier.PRIVATE )
         .addParameter( ParameterSpec
-                         .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
+                         .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL )
                          .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
                          .build() );
-    final boolean hasPreUpdateOnPropChange = descriptor.hasPreUpdateOnPropChange();
-    if ( hasPreUpdateOnPropChange )
+    final boolean hasPreUpdateOnInputChange = descriptor.hasPreUpdateOnInputChange();
+    if ( hasPreUpdateOnInputChange )
     {
       final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( null != prevProps )" );
-      block.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD );
-      buildOnPropChangeInvocations( block, descriptor.getPreUpdateOnPropChangeDescriptors() );
+      block.beginControlFlow( "if ( null != prevInputs )" );
+      block.addStatement( "final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD );
+      buildOnInputChangeInvocations( block, descriptor.getPreUpdateOnInputChangeDescriptors() );
       block.endControlFlow();
       method.addCode( block.build() );
     }
@@ -696,16 +696,16 @@ final class ViewGenerator
         .methodBuilder( COMPONENT_DID_UPDATE_METHOD )
         .addModifiers( Modifier.PRIVATE );
 
-    if ( descriptor.hasPostUpdateOnPropChange() )
+    if ( descriptor.hasPostUpdateOnInputChange() )
     {
       method.addParameter( ParameterSpec
-                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
+                             .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL )
                              .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
                              .build() );
       final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( null != prevProps )" );
-      block.addStatement( "final $T props = $N.props()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD );
-      buildOnPropChangeInvocations( block, descriptor.getPostUpdateOnPropChangeDescriptors() );
+      block.beginControlFlow( "if ( null != prevInputs )" );
+      block.addStatement( "final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD );
+      buildOnInputChangeInvocations( block, descriptor.getPostUpdateOnInputChangeDescriptors() );
       block.endControlFlow();
       method.addCode( block.build() );
     }
@@ -770,7 +770,7 @@ final class ViewGenerator
           .addMember( "name", "$S", "render" )
           .addMember( "priority", "$T.LOW", PRIORITY_CLASSNAME )
           .addMember( "executor", "$T.EXTERNAL", EXECUTOR_CLASSNAME )
-          // Needs AREZ_OR_NONE in scenario where all props are disposed and view
+          // Needs AREZ_OR_NONE in scenario where all inputs are disposed and view
           // thus accesses no dependencies before exiting render
           .addMember( "depType", "$T.AREZ_OR_NONE", DEP_TYPE_CLASSNAME )
           .addMember( "observeLowerPriorityDependencies", "true" )
@@ -782,18 +782,18 @@ final class ViewGenerator
     }
     method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
-    final List<PropDescriptor> disposableProps =
-      descriptor.getProps().stream().filter( PropDescriptor::isDisposable ).collect( Collectors.toList() );
+    final List<InputDescriptor> disposableInputs =
+      descriptor.getInputs().stream().filter( InputDescriptor::isDisposable ).collect( Collectors.toList() );
 
-    for ( final PropDescriptor prop : disposableProps )
+    for ( final InputDescriptor input : disposableInputs )
     {
-      final String varName = "$$react4jv$$_" + prop.getMethod().getSimpleName();
+      final String varName = "$$react4jv$$_" + input.getMethod().getSimpleName();
       method.addStatement( "final $T $N = $N()",
-                           prop.getMethodType().getReturnType(),
+                           input.getMethodType().getReturnType(),
                            varName,
-                           prop.getMethod().getSimpleName().toString() );
+                           input.getMethod().getSimpleName().toString() );
       final CodeBlock.Builder block = CodeBlock.builder();
-      if ( prop.isOptional() )
+      if ( input.isOptional() )
       {
         block.beginControlFlow( "if ( null != $N && $T.isDisposed( $N ) )", varName, DISPOSABLE_CLASSNAME, varName );
       }
@@ -920,7 +920,7 @@ final class ViewGenerator
     final CodeBlock.Builder outer = CodeBlock.builder();
     outer.beginControlFlow( "if ( $T.IDLE == $N )", VIEW_STATE_CLASSNAME, STATE_FIELD );
     outer.addStatement( "$N = $T.SCHEDULED", STATE_FIELD, VIEW_STATE_CLASSNAME );
-    if ( descriptor.hasObservableProps() )
+    if ( descriptor.hasObservableInputs() )
     {
       outer.addStatement( "$N.setState( $T.of() )", NATIVE_VIEW_FIELD, JS_PROPERTY_MAP_CLASSNAME );
     }
@@ -943,47 +943,47 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildPropValidatorMethod( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec.Builder buildInputValidatorMethod( @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method =
-      MethodSpec.methodBuilder( VALIDATE_PROPS_METHOD ).
+      MethodSpec.methodBuilder( VALIDATE_INPUTS_METHOD ).
         addModifiers( Modifier.PRIVATE ).
-        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
+        addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "inputs", Modifier.FINAL ).
           addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() );
 
-    for ( final PropDescriptor prop : descriptor.getProps() )
+    for ( final InputDescriptor input : descriptor.getInputs() )
     {
-      final String name = prop.getName();
+      final String name = input.getName();
       final String rawName = "raw$" + name;
       final String typedName = "typed$" + name;
-      method.addStatement( "final $T $N = props.get( Props.$N )", Object.class, rawName, prop.getConstantName() );
-      final boolean isNonNull = AnnotationsUtil.hasNonnullAnnotation( prop.getMethod() );
-      if ( !prop.isOptional() && isNonNull )
+      method.addStatement( "final $T $N = inputs.get( Inputs.$N )", Object.class, rawName, input.getConstantName() );
+      final boolean isNonNull = AnnotationsUtil.hasNonnullAnnotation( input.getMethod() );
+      if ( !input.isOptional() && isNonNull )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-        block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required prop named '$N' is missing from " +
+        block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required input named '$N' is missing from " +
                             "view named '$N' so it was either incorrectly omitted or a null value has been " +
                             "incorrectly specified.\" ) ",
                             GUARDS_CLASSNAME,
                             rawName,
-                            prop.getName(),
+                            input.getName(),
                             descriptor.getName() );
         block.endControlFlow();
         method.addCode( block.build() );
       }
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( null != $N )", rawName );
-      final TypeMirror returnType = prop.getMethodType().getReturnType();
+      final TypeMirror returnType = input.getMethodType().getReturnType();
       block.addStatement( "final $T $N = $T.$N( $N )",
                           returnType,
                           typedName,
                           JS_CLASSNAME,
-                          getConverter( returnType, prop.getMethod() ),
+                          getConverter( returnType, input.getMethod() ),
                           rawName );
-      if ( prop.hasValidateMethod() )
+      if ( input.hasValidateMethod() )
       {
-        block.addStatement( "$N( $N )", prop.getValidateMethod().getSimpleName().toString(), typedName );
+        block.addStatement( "$N( $N )", input.getValidateMethod().getSimpleName().toString(), typedName );
       }
       block.endControlFlow();
       method.addCode( block.build() );
@@ -1004,7 +1004,7 @@ final class ViewGenerator
     if ( shouldGenerateLiteLifecycle )
     {
       method.addStatement( "final $T viewConstructor = ( $T.shouldStoreDebugDataAsState() || " +
-                           "$T.shouldValidatePropValues() ) ? $T::new : $T::new",
+                           "$T.shouldValidateInputValues() ) ? $T::new : $T::new",
                            VIEW_CONSTRUCTOR_FUNCTION_CLASSNAME,
                            REACT_CLASSNAME,
                            REACT_CLASSNAME,
@@ -1031,9 +1031,9 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static TypeSpec buildPropsType( @Nonnull final ViewDescriptor descriptor )
+  private static TypeSpec buildInputsType( @Nonnull final ViewDescriptor descriptor )
   {
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( "Props" );
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "Inputs" );
 
     //Ensure it can not be subclassed
     builder.addModifiers( Modifier.FINAL );
@@ -1041,11 +1041,11 @@ final class ViewGenerator
 
     // These fields have been moved to a separate class to avoid a <clinit> on containing class
 
-    final List<PropDescriptor> props = descriptor.getProps();
-    final int propCount = props.size();
-    for ( int i = 0; i < propCount; i++ )
+    final List<InputDescriptor> inputs = descriptor.getInputs();
+    final int inputCount = inputs.size();
+    for ( int i = 0; i < inputCount; i++ )
     {
-      builder.addField( buildPropKeyConstantField( props.get( i ), i ).build() );
+      builder.addField( buildInputKeyConstantField( inputs.get( i ), i ).build() );
     }
 
     return builder.build();
@@ -1151,12 +1151,12 @@ final class ViewGenerator
 
     // build the constructor
     {
-      final ParameterSpec.Builder props =
-        ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "props", Modifier.FINAL ).
+      final ParameterSpec.Builder inputs =
+        ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "inputs", Modifier.FINAL ).
           addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME );
       final MethodSpec.Builder method =
-        MethodSpec.constructorBuilder().addParameter( props.build() ).addAnnotation( JS_CONSTRUCTOR_CLASSNAME );
-      method.addStatement( "super( props )" );
+        MethodSpec.constructorBuilder().addParameter( inputs.build() ).addAnnotation( JS_CONSTRUCTOR_CLASSNAME );
+      method.addStatement( "super( inputs )" );
       if ( descriptor.needsInjection() )
       {
         method.addStatement( "$N = $T.create( this )", VIEW_FIELD, descriptor.getFactoryClassName() );
@@ -1167,12 +1167,12 @@ final class ViewGenerator
         method.addStatement( "$N = new $T" + infix + "( this )", VIEW_FIELD, descriptor.getArezClassName() );
       }
 
-      if ( descriptor.hasValidatedProps() )
+      if ( descriptor.hasValidatedInputs() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
-        block.beginControlFlow( "if ( $T.shouldValidatePropValues() )", REACT_CLASSNAME );
-        block.addStatement( "assert null != props" );
-        block.addStatement( "$N.$N( props )", VIEW_FIELD, VALIDATE_PROPS_METHOD );
+        block.beginControlFlow( "if ( $T.shouldValidateInputValues() )", REACT_CLASSNAME );
+        block.addStatement( "assert null != inputs" );
+        block.addStatement( "$N.$N( inputs )", VIEW_FIELD, VALIDATE_INPUTS_METHOD );
         block.endControlFlow();
         method.addCode( block.build() );
       }
@@ -1243,10 +1243,10 @@ final class ViewGenerator
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .returns( TypeName.BOOLEAN )
       .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextProps", Modifier.FINAL )
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextInputs", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() )
-      .addStatement( "return $N.$N( nextProps )", VIEW_FIELD, SHOULD_COMPONENT_UPDATE_METHOD );
+      .addStatement( "return $N.$N( nextInputs )", VIEW_FIELD, SHOULD_COMPONENT_UPDATE_METHOD );
   }
 
   @Nonnull
@@ -1258,14 +1258,14 @@ final class ViewGenerator
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .returns( TypeName.get( Object.class ) )
       .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() )
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() )
-      .addStatement( "$N.$N( prevProps )", VIEW_FIELD, COMPONENT_PRE_UPDATE_METHOD )
+      .addStatement( "$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_PRE_UPDATE_METHOD )
       .addStatement( "return null" );
   }
 
@@ -1277,12 +1277,12 @@ final class ViewGenerator
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevProps", Modifier.FINAL )
+                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
-    if ( descriptor.hasPostUpdateOnPropChange() )
+    if ( descriptor.hasPostUpdateOnInputChange() )
     {
-      return method.addStatement( "$N.$N( prevProps )", VIEW_FIELD, COMPONENT_DID_UPDATE_METHOD );
+      return method.addStatement( "$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_DID_UPDATE_METHOD );
     }
     else
     {

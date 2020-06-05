@@ -33,7 +33,7 @@ final class ImmutablePropTypePrimitiveByteBuilder {
     @Nonnull
     public final ReactNode myProp(final byte myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveByte_90aa81dc" : ImmutablePropTypePrimitiveByte.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypePrimitiveByte.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypePrimitiveByte.Inputs.myProp, myProp );
       return build();
     }
 

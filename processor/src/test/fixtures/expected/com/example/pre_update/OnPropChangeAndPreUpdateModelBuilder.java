@@ -31,7 +31,7 @@ final class OnPropChangeAndPreUpdateModelBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final int myProp) {
-      _element.props().set( React4j_OnPropChangeAndPreUpdateModel.Props.myProp, myProp );
+      _element.input( React4j_OnPropChangeAndPreUpdateModel.Inputs.myProp, myProp );
       return build();
     }
 

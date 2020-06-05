@@ -36,7 +36,7 @@ final class ImmutablePropTypeArezComponentWithExplicitRequireIdBuilder {
     public final ReactNode myProp(
         final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezComponentWithExplicitRequireId_a574b6c9" : ImmutablePropTypeArezComponentWithExplicitRequireId.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeArezComponentWithExplicitRequireId.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeArezComponentWithExplicitRequireId.Inputs.myProp, myProp );
       return build();
     }
 

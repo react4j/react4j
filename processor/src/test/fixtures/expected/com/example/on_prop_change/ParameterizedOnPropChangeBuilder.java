@@ -32,7 +32,7 @@ final class ParameterizedOnPropChangeBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final ArrayList<String> myProp) {
-      _element.props().set( React4j_ParameterizedOnPropChange.Props.myProp, myProp );
+      _element.input( React4j_ParameterizedOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 

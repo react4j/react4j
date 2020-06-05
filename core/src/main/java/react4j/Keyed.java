@@ -2,10 +2,10 @@ package react4j;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import react4j.annotations.Prop;
+import react4j.annotations.Input;
 
 /**
- * Interface implemented by objects so that they can be marked as {@link Prop#immutable()}
+ * Interface implemented by objects so that they can be marked as {@link Input#immutable()}
  */
 public interface Keyed
 {

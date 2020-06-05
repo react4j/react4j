@@ -31,7 +31,7 @@ final class PropTypeFloatBuilder {
     @Override
     @Nonnull
     public final ReactNode myProp(final float myProp) {
-      _element.props().set( React4j_PropTypeFloat.Props.myProp, myProp );
+      _element.input( React4j_PropTypeFloat.Inputs.myProp, myProp );
       return build();
     }
 

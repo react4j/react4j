@@ -51,28 +51,28 @@ final class GenericTypeMultiPropModelBuilder {
     @Override
     @Nonnull
     public final Step2<T> value(final T value) {
-      _element.props().set( React4j_GenericTypeMultiPropModel.Props.value, value );
+      _element.input( React4j_GenericTypeMultiPropModel.Inputs.value, value );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step3<T> value2(final String value2) {
-      _element.props().set( React4j_GenericTypeMultiPropModel.Props.value2, value2 );
+      _element.input( React4j_GenericTypeMultiPropModel.Inputs.value2, value2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step3<T> value3(@Nullable final String value3) {
-      _element.props().set( React4j_GenericTypeMultiPropModel.Props.value3, value3 );
+      _element.input( React4j_GenericTypeMultiPropModel.Inputs.value3, value3 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step3<T> value4(@Nullable final String value4) {
-      _element.props().set( React4j_GenericTypeMultiPropModel.Props.value4, value4 );
+      _element.input( React4j_GenericTypeMultiPropModel.Inputs.value4, value4 );
       return this;
     }
 

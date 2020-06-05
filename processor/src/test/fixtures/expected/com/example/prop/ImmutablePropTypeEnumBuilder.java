@@ -33,7 +33,7 @@ final class ImmutablePropTypeEnumBuilder {
     @Nonnull
     public final ReactNode myProp(final ImmutablePropTypeEnum.Foo myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeEnum_00ba1b5e" : ImmutablePropTypeEnum.class.getName() ) );
-      _element.props().set( React4j_ImmutablePropTypeEnum.Props.myProp, myProp );
+      _element.input( React4j_ImmutablePropTypeEnum.Inputs.myProp, myProp );
       return build();
     }
 

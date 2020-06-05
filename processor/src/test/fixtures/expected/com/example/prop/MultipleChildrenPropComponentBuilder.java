@@ -49,7 +49,7 @@ final class MultipleChildrenPropComponentBuilder {
     @Override
     @Nonnull
     public final ReactNode children(final ReactNode... children) {
-      _element.props().set( React4j_MultipleChildrenPropComponent.Props.children, JsArray.of( children ) );
+      _element.input( React4j_MultipleChildrenPropComponent.Inputs.children, JsArray.of( children ) );
       return build();
     }
 

@@ -50,35 +50,35 @@ final class MultiPropComponent4Builder {
     @Override
     @Nonnull
     public final Step2 myProp(final String myProp) {
-      _element.props().set( React4j_MultiPropComponent4.Props.myProp, myProp );
+      _element.input( React4j_MultiPropComponent4.Inputs.myProp, myProp );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step2 myProp2(@Nullable final String myProp2) {
-      _element.props().set( React4j_MultiPropComponent4.Props.myProp2, myProp2 );
+      _element.input( React4j_MultiPropComponent4.Inputs.myProp2, myProp2 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step2 myProp3(@Nullable final String myProp3) {
-      _element.props().set( React4j_MultiPropComponent4.Props.myProp3, myProp3 );
+      _element.input( React4j_MultiPropComponent4.Inputs.myProp3, myProp3 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step2 myProp4(@Nullable final String myProp4) {
-      _element.props().set( React4j_MultiPropComponent4.Props.myProp4, myProp4 );
+      _element.input( React4j_MultiPropComponent4.Inputs.myProp4, myProp4 );
       return this;
     }
 
     @Override
     @Nonnull
     public final Step2 child(@Nullable final ReactNode child) {
-      _element.props().set( React4j_MultiPropComponent4.Props.child, JsArray.of( child ) );
+      _element.input( React4j_MultiPropComponent4.Inputs.child, JsArray.of( child ) );
       return this;
     }
 
