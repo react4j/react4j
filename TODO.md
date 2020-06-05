@@ -44,5 +44,3 @@ complete as there is too much un-said.
   push it outside the commit phase of react rendering and have it run later
 
 * Collections returned from props should be made immutable.
-
-* Update docs to shortcut conversations like:
