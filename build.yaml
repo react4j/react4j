@@ -33,7 +33,7 @@ artifacts:
   sting_core: org.realityforge.sting:sting-core:jar:0.15
   sting_processor: org.realityforge.sting:sting-processor:jar:0.15
 
-  braincheck: org.realityforge.braincheck:braincheck:jar:1.28.0
+  braincheck: org.realityforge.braincheck:braincheck:jar:1.29.0
 
   grim_annotations: org.realityforge.grim:grim-annotations:jar:0.04
   grim_asserts: org.realityforge.grim:grim-asserts:jar:0.04
