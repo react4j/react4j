@@ -180,7 +180,9 @@ final class ViewGenerator
 
     builder.addMethod( buildConstructorFnMethod( descriptor ).build() );
 
-    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::needsMutableInputAccessedInPostConstructInvariant ) )
+    if ( descriptor.getInputs()
+      .stream()
+      .anyMatch( InputDescriptor::needsMutableInputAccessedInPostConstructInvariant ) )
     {
       builder.addMethod( buildIsReadyMethod().build() );
     }
@@ -291,7 +293,7 @@ final class ViewGenerator
 
   @Nonnull
   private static FieldSpec.Builder buildInputKeyConstantField( @Nonnull final InputDescriptor descriptor,
-                                                              final int index )
+                                                               final int index )
   {
     final String name = descriptor.getName();
 
@@ -445,7 +447,7 @@ final class ViewGenerator
   }
 
   private static void buildOnInputChangeInvocations( @Nonnull final CodeBlock.Builder code,
-                                                    @Nonnull final List<OnInputChangeDescriptor> onInputChanges )
+                                                     @Nonnull final List<OnInputChangeDescriptor> onInputChanges )
   {
     // The list of inputs we need to check for changes
     final List<InputDescriptor> inputs =
