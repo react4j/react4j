@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.sting` artifacts to version `0.16`.
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.29.0`.
 * Move the reference to the native react component out of the `react.Component` class and into the generated subclass. This involves removing the method `Component.bindComponent(NativeComponent)` and `Component.component()`.
 * Introduce a `@Render` annotation that is used to annotate the render method of a component. This makes it possible to completely remove the `react.Component` class.
