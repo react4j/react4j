@@ -896,10 +896,7 @@ final class ViewGenerator
     onUpdateBlock.beginControlFlow( "if ( $T.prepareStateUpdate( newState, $N.state() ) )",
                                     INTROSPECT_UTIL_CLASSNAME,
                                     NATIVE_VIEW_FIELD );
-    onUpdateBlock.addStatement( "$N.setState( $T.cast( $T.freeze( newState ) ) )",
-                                NATIVE_VIEW_FIELD,
-                                JS_CLASSNAME,
-                                JS_OBJECT_CLASSNAME );
+    onUpdateBlock.addStatement( "$N.setState( $T.freeze( newState ) )", NATIVE_VIEW_FIELD, JS_OBJECT_CLASSNAME );
     // Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
     onUpdateBlock.addStatement( "$N.forceUpdate()", NATIVE_VIEW_FIELD );
     onUpdateBlock.addStatement( "$N = true", flag );

@@ -133,7 +133,7 @@ abstract class React4j_ActionOnPostUpdateView extends ActionOnPostUpdateView {
       newState.set( "Arez.name", $$react4j$$_getComponentName() );
       IntrospectUtil.collectDependencyDebugData( $$react4j$$_getRenderObserver(), newState );
       if ( IntrospectUtil.prepareStateUpdate( newState, $$react4j$$_nativeView.state() ) ) {
-        $$react4j$$_nativeView.setState( Js.cast( JsObject.freeze( newState ) ) );
+        $$react4j$$_nativeView.setState( JsObject.freeze( newState ) );
         $$react4j$$_nativeView.forceUpdate();
         $$react4j$$_scheduledDebugStateUpdate = true;
       }
