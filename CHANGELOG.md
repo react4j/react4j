@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.arez.testng` artifact to version `0.14`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.182`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.16`.
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.29.0`.
