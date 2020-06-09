@@ -972,7 +972,7 @@ public final class React4jProcessor
 
   @Nullable
   private ImmutableInputKeyStrategy getImmutableInputKeyStrategy( @Nonnull final TypeName typeName,
-                                                                 @Nullable final Element element )
+                                                                  @Nullable final Element element )
   {
     if ( typeName.toString().equals( "java.lang.String" ) )
     {
