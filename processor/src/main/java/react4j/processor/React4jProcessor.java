@@ -867,7 +867,7 @@ public final class React4jProcessor
 
   @Nonnull
   private InputDescriptor createInputDescriptor( @Nonnull final ViewDescriptor descriptor,
-                                                @Nonnull final ExecutableElement method )
+                                                 @Nonnull final ExecutableElement method )
   {
     final String name = deriveInputName( method );
     final ExecutableType methodType = resolveMethodType( descriptor, method );
