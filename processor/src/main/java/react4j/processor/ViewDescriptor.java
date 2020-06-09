@@ -528,7 +528,7 @@ final class ViewDescriptor
       _builderAccessesDeprecatedElements =
         isDeprecated( _element ) ||
         getInputs().stream().anyMatch( p -> p.hasDefaultMethod() && isDeprecated( p.getDefaultMethod() ) ||
-                                           p.hasDefaultField() && isDeprecated( p.getDefaultField() ) );
+                                            p.hasDefaultField() && isDeprecated( p.getDefaultField() ) );
     }
     return _builderAccessesDeprecatedElements;
   }
