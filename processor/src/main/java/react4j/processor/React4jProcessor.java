@@ -1126,7 +1126,8 @@ public final class React4jProcessor
         MemberChecks.mustNotReturnAnyValue( Constants.SCHEDULE_RENDER_CLASSNAME, method );
         MemberChecks.mustNotThrowAnyExceptions( Constants.SCHEDULE_RENDER_CLASSNAME, method );
 
-        final boolean skipShouldViewUpdate = AnnotationsUtil.getAnnotationValueValue( annotation, "skipShouldViewUpdate" );
+        final boolean skipShouldViewUpdate =
+          AnnotationsUtil.getAnnotationValueValue( annotation, "skipShouldViewUpdate" );
 
         scheduleRenderDescriptors.add( new ScheduleRenderDescriptor( method, skipShouldViewUpdate ) );
       }
