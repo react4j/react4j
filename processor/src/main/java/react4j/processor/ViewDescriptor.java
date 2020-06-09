@@ -279,7 +279,7 @@ final class ViewDescriptor
     return _scheduleRenderDescriptors;
   }
 
-  public void setScheduleRenderDescriptors( @Nonnull final List<ScheduleRenderDescriptor> scheduleRenderDescriptors )
+  void setScheduleRenderDescriptors( @Nonnull final List<ScheduleRenderDescriptor> scheduleRenderDescriptors )
   {
     _scheduleRenderDescriptors = Objects.requireNonNull( scheduleRenderDescriptors );
   }
