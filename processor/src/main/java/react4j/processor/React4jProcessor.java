@@ -1354,9 +1354,9 @@ public final class React4jProcessor
   }
 
   private boolean isInputObservable( @Nonnull final ViewDescriptor descriptor,
-                                    @Nonnull final ExecutableElement method,
-                                    final boolean shouldUpdateOnChange,
-                                    final boolean immutable )
+                                     @Nonnull final ExecutableElement method,
+                                     final boolean shouldUpdateOnChange,
+                                     final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
       AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "observable" ).getValue();
