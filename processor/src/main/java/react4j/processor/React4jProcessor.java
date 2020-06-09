@@ -80,14 +80,14 @@ public final class React4jProcessor
 
   @Override
   @Nonnull
-  protected final String getIssueTrackerURL()
+  protected String getIssueTrackerURL()
   {
     return "https://github.com/react4j/react4j/issues";
   }
 
   @Nonnull
   @Override
-  protected final String getOptionPrefix()
+  protected String getOptionPrefix()
   {
     return "react4j";
   }
