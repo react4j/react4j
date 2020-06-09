@@ -351,7 +351,7 @@ final class ViewGenerator
                           "of the input onto the view. This is considered a likely bug and the @Input should be " +
                           "made immutable or an @OnInputChange method added to cover the input. " +
                           MemberChecks.suppressedBy( Constants.WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT,
-                                                     Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ).
+                                                     Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ).
                             replace( "\"", "\\\"" ) + " to the @Input annotated method.\" )",
                           GUARDS_CLASSNAME,
                           IS_READY_METHOD );

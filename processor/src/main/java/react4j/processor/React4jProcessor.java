@@ -112,7 +112,7 @@ public final class React4jProcessor
   {
     return getMethods( typeElement )
       .stream()
-      .anyMatch( e -> AnnotationsUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_ANNOTATION_CLASSNAME ) );
+      .anyMatch( e -> AnnotationsUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_CLASSNAME ) );
   }
 
   @Nonnull
@@ -213,38 +213,38 @@ public final class React4jProcessor
              MemberChecks.doesMethodNotOverrideInterfaceMethod( processingEnv, typeElement, method ) &&
              ElementsUtil.isWarningNotSuppressed( method,
                                                   Constants.WARNING_PUBLIC_METHOD,
-                                                  Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
+                                                  Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
         {
           final String message =
             MemberChecks.shouldNot( Constants.VIEW_CLASSNAME,
                                     "declare a public method. " +
                                     MemberChecks.suppressedBy( Constants.WARNING_PUBLIC_METHOD,
-                                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
+                                                               Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
           processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
         }
         if ( method.getModifiers().contains( Modifier.FINAL ) &&
              ElementsUtil.isWarningNotSuppressed( method,
                                                   Constants.WARNING_FINAL_METHOD,
-                                                  Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
+                                                  Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
         {
           final String message =
             MemberChecks.shouldNot( Constants.VIEW_CLASSNAME,
                                     "declare a final method. " +
                                     MemberChecks.suppressedBy( Constants.WARNING_FINAL_METHOD,
-                                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
+                                                               Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
           processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
         }
         if ( method.getModifiers().contains( Modifier.PROTECTED ) &&
              ElementsUtil.isWarningNotSuppressed( method,
                                                   Constants.WARNING_PROTECTED_METHOD,
-                                                  Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) &&
+                                                  Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) &&
              !isMethodAProtectedOverride( typeElement, method ) )
         {
           final String message =
             MemberChecks.shouldNot( Constants.VIEW_CLASSNAME,
                                     "declare a protected method. " +
                                     MemberChecks.suppressedBy( Constants.WARNING_PROTECTED_METHOD,
-                                                               Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) );
+                                                               Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
           processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
         }
       }
@@ -435,7 +435,7 @@ public final class React4jProcessor
              .asElement( typeMirror )
              .getAnnotationMirrors()
              .stream()
-             .anyMatch( a -> a.getAnnotationType().toString().equals( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) );
+             .anyMatch( a -> a.getAnnotationType().toString().equals( Constants.AREZ_COMPONENT_CLASSNAME ) );
   }
 
   private void verifyInputsNotAnnotatedWithArezAnnotations( @Nonnull final ViewDescriptor descriptor )
@@ -962,7 +962,7 @@ public final class React4jProcessor
     {
       if ( ElementsUtil.isWarningSuppressed( method,
                                              Constants.WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT,
-                                             Constants.SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME ) )
+                                             Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
       {
         inputDescriptor.suppressMutableInputAccessedInPostConstruct();
       }
@@ -992,8 +992,8 @@ public final class React4jProcessor
       else if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
                 (
                   isAssignableToIdentifiable( element ) ||
-                  AnnotationsUtil.hasAnnotationOfType( element, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME ) ||
-                  ( AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) &&
+                  AnnotationsUtil.hasAnnotationOfType( element, Constants.ACT_AS_COMPONENT_CLASSNAME ) ||
+                  ( AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_CLASSNAME ) &&
                     isIdRequired( (TypeElement) element ) )
                 ) )
       {
@@ -1027,7 +1027,7 @@ public final class React4jProcessor
   private boolean isIdRequired( @Nonnull final TypeElement element )
   {
     final VariableElement requireIdParameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME, "requireId" )
+      AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_CLASSNAME, "requireId" )
         .getValue();
     return !"DISABLE".equals( requireIdParameter.getSimpleName().toString() );
   }
@@ -1061,15 +1061,15 @@ public final class React4jProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.ON_ERROR_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.ON_ERROR_CLASSNAME ) )
       {
-        MemberChecks.mustNotBeAbstract( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotBeAbstract( Constants.ON_ERROR_CLASSNAME, method );
         MemberChecks.mustBeSubclassCallable( typeElement,
                                              Constants.VIEW_CLASSNAME,
-                                             Constants.ON_ERROR_ANNOTATION_CLASSNAME,
+                                             Constants.ON_ERROR_CLASSNAME,
                                              method );
-        MemberChecks.mustNotReturnAnyValue( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
-        MemberChecks.mustNotThrowAnyExceptions( Constants.ON_ERROR_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotReturnAnyValue( Constants.ON_ERROR_CLASSNAME, method );
+        MemberChecks.mustNotThrowAnyExceptions( Constants.ON_ERROR_CLASSNAME, method );
 
         boolean infoFound = false;
         boolean errorFound = false;
@@ -1115,16 +1115,16 @@ public final class React4jProcessor
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
       final AnnotationMirror annotation =
-        AnnotationsUtil.findAnnotationByType( method, Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME );
+        AnnotationsUtil.findAnnotationByType( method, Constants.SCHEDULE_RENDER_CLASSNAME );
       if ( null != annotation )
       {
-        MemberChecks.mustBeAbstract( Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustBeAbstract( Constants.SCHEDULE_RENDER_CLASSNAME, method );
         MemberChecks.mustBeSubclassCallable( typeElement,
                                              Constants.VIEW_CLASSNAME,
-                                             Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME,
+                                             Constants.SCHEDULE_RENDER_CLASSNAME,
                                              method );
-        MemberChecks.mustNotReturnAnyValue( Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME, method );
-        MemberChecks.mustNotThrowAnyExceptions( Constants.SCHEDULE_RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotReturnAnyValue( Constants.SCHEDULE_RENDER_CLASSNAME, method );
+        MemberChecks.mustNotThrowAnyExceptions( Constants.SCHEDULE_RENDER_CLASSNAME, method );
 
         final boolean skipShouldViewUpdate = AnnotationsUtil.getAnnotationValueValue( annotation, "skipShouldViewUpdate" );
 
@@ -1141,21 +1141,21 @@ public final class React4jProcessor
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
       final AnnotationMirror annotation =
-        AnnotationsUtil.findAnnotationByType( method, Constants.RENDER_ANNOTATION_CLASSNAME );
+        AnnotationsUtil.findAnnotationByType( method, Constants.RENDER_CLASSNAME );
       if ( null != annotation )
       {
-        MemberChecks.mustNotBeAbstract( Constants.RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotBeAbstract( Constants.RENDER_CLASSNAME, method );
         MemberChecks.mustBeSubclassCallable( typeElement,
                                              Constants.VIEW_CLASSNAME,
-                                             Constants.RENDER_ANNOTATION_CLASSNAME,
+                                             Constants.RENDER_CLASSNAME,
                                              method );
-        MemberChecks.mustNotHaveAnyParameters( Constants.RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotHaveAnyParameters( Constants.RENDER_CLASSNAME, method );
         MemberChecks.mustReturnAnInstanceOf( processingEnv,
                                              method,
-                                             Constants.RENDER_ANNOTATION_CLASSNAME,
+                                             Constants.RENDER_CLASSNAME,
                                              Constants.VNODE_CLASSNAME );
-        MemberChecks.mustNotThrowAnyExceptions( Constants.RENDER_ANNOTATION_CLASSNAME, method );
-        MemberChecks.mustNotHaveAnyTypeParameters( Constants.RENDER_ANNOTATION_CLASSNAME, method );
+        MemberChecks.mustNotThrowAnyExceptions( Constants.RENDER_CLASSNAME, method );
+        MemberChecks.mustNotHaveAnyTypeParameters( Constants.RENDER_CLASSNAME, method );
 
         descriptor.setRender( method );
         foundRender = true;
@@ -1165,7 +1165,7 @@ public final class React4jProcessor
     {
       throw new ProcessorException( MemberChecks.must( Constants.VIEW_CLASSNAME,
                                                        "contain a method annotated with the " +
-                                                       MemberChecks.toSimpleName( Constants.RENDER_ANNOTATION_CLASSNAME ) +
+                                                       MemberChecks.toSimpleName( Constants.RENDER_CLASSNAME ) +
                                                        " annotation" ),
                                     typeElement );
     }
@@ -1176,11 +1176,11 @@ public final class React4jProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_CLASSNAME ) )
       {
         MemberChecks.mustBeLifecycleHook( typeElement,
                                           Constants.VIEW_CLASSNAME,
-                                          Constants.POST_MOUNT_ANNOTATION_CLASSNAME,
+                                          Constants.POST_MOUNT_CLASSNAME,
                                           method );
         descriptor.setPostMount( method );
       }
@@ -1192,11 +1192,11 @@ public final class React4jProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_OR_UPDATE_CLASSNAME ) )
       {
         MemberChecks.mustBeLifecycleHook( typeElement,
                                           Constants.VIEW_CLASSNAME,
-                                          Constants.POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME,
+                                          Constants.POST_MOUNT_OR_UPDATE_CLASSNAME,
                                           method );
         descriptor.setPostRender( method );
       }
@@ -1208,11 +1208,11 @@ public final class React4jProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_UPDATE_CLASSNAME ) )
       {
         MemberChecks.mustBeLifecycleHook( typeElement,
                                           Constants.VIEW_CLASSNAME,
-                                          Constants.POST_UPDATE_ANNOTATION_CLASSNAME,
+                                          Constants.POST_UPDATE_CLASSNAME,
                                           method );
         descriptor.setPostUpdate( method );
       }
@@ -1224,11 +1224,11 @@ public final class React4jProcessor
   {
     for ( final ExecutableElement method : getMethods( typeElement ) )
     {
-      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_ANNOTATION_CLASSNAME ) )
+      if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_CLASSNAME ) )
       {
         MemberChecks.mustBeLifecycleHook( typeElement,
                                           Constants.VIEW_CLASSNAME,
-                                          Constants.PRE_UPDATE_ANNOTATION_CLASSNAME,
+                                          Constants.PRE_UPDATE_CLASSNAME,
                                           method );
         descriptor.setPreUpdate( method );
       }
@@ -1273,11 +1273,11 @@ public final class React4jProcessor
   private void determineViewCapabilities( @Nonnull final ViewDescriptor descriptor,
                                           @Nonnull final TypeElement typeElement )
   {
-    if ( AnnotationsUtil.hasAnnotationOfType( typeElement, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) )
+    if ( AnnotationsUtil.hasAnnotationOfType( typeElement, Constants.AREZ_COMPONENT_CLASSNAME ) )
     {
       throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
                                                           "be annotated with the " +
-                                                          MemberChecks.toSimpleName( Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME ) +
+                                                          MemberChecks.toSimpleName( Constants.AREZ_COMPONENT_CLASSNAME ) +
                                                           " as React4j will add the annotation." ),
                                     typeElement );
     }
@@ -1313,8 +1313,8 @@ public final class React4jProcessor
         .anyMatch( e -> e.getAnnotationMirrors()
           .stream()
           .map( a -> a.getAnnotationType().toString() )
-          .anyMatch( n -> n.equals( Constants.CASCADE_DISPOSE_ANNOTATION_CLASSNAME ) ||
-                          n.equals( Constants.COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME ) )
+          .anyMatch( n -> n.equals( Constants.CASCADE_DISPOSE_CLASSNAME ) ||
+                          n.equals( Constants.COMPONENT_DEPENDENCY_CLASSNAME ) )
         );
 
     descriptor.setHasArezElements( hasArezElements );
@@ -1381,8 +1381,8 @@ public final class React4jProcessor
   {
     return getMethods( typeElement )
       .stream()
-      .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
-                      ( AnnotationsUtil.hasAnnotationOfType( m, Constants.OBSERVE_ANNOTATION_CLASSNAME ) &&
+      .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.MEMOIZE_CLASSNAME ) ||
+                      ( AnnotationsUtil.hasAnnotationOfType( m, Constants.OBSERVE_CLASSNAME ) &&
                         ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
   }
 
@@ -1406,11 +1406,11 @@ public final class React4jProcessor
         return
           (
             ElementKind.CLASS == inputType.getKind() &&
-            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_ANNOTATION_CLASSNAME )
+            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_CLASSNAME )
           ) ||
           (
             ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
-            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_ANNOTATION_CLASSNAME )
+            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME )
           );
     }
   }
@@ -1428,8 +1428,8 @@ public final class React4jProcessor
     return methods
       .stream()
       .filter( method -> !method.getModifiers().contains( Modifier.PRIVATE ) )
-      .anyMatch( method -> AnnotationsUtil.hasAnnotationOfType( method, Constants.MEMOIZE_ANNOTATION_CLASSNAME ) ||
-                           AnnotationsUtil.hasAnnotationOfType( method, Constants.OBSERVE_ANNOTATION_CLASSNAME ) );
+      .anyMatch( method -> AnnotationsUtil.hasAnnotationOfType( method, Constants.MEMOIZE_CLASSNAME ) ||
+                           AnnotationsUtil.hasAnnotationOfType( method, Constants.OBSERVE_CLASSNAME ) );
   }
 
   private void verifyNoDuplicateAnnotations( @Nonnull final ExecutableElement method )

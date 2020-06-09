@@ -320,7 +320,7 @@ final class ViewDescriptor
   {
     if ( null != _render )
     {
-      throw new ProcessorException( MemberChecks.mustNot( Constants.RENDER_ANNOTATION_CLASSNAME,
+      throw new ProcessorException( MemberChecks.mustNot( Constants.RENDER_CLASSNAME,
                                                           "be present when another method named " +
                                                           _render.getSimpleName() +
                                                           " exists with the same annotation" ), render );

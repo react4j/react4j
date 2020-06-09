@@ -11,11 +11,11 @@ final class Constants
   @Nonnull
   static final String KEYED_CLASSNAME = "react4j.Keyed";
   @Nonnull
-  static final String RENDER_ANNOTATION_CLASSNAME = "react4j.annotations.Render";
+  static final String RENDER_CLASSNAME = "react4j.annotations.Render";
   @Nonnull
   static final String INPUT_CLASSNAME = "react4j.annotations.Input";
   @Nonnull
-  static final String SUPPRESS_REACT4J_WARNINGS_ANNOTATION_CLASSNAME = "react4j.annotations.SuppressReact4jWarnings";
+  static final String SUPPRESS_REACT4J_WARNINGS_CLASSNAME = "react4j.annotations.SuppressReact4jWarnings";
   @Nonnull
   static final String INPUT_REF_CLASSNAME = "react4j.annotations.InputRef";
   @Nonnull
@@ -23,37 +23,37 @@ final class Constants
   @Nonnull
   static final String INPUT_VALIDATE_CLASSNAME = "react4j.annotations.InputValidate";
   @Nonnull
-  static final String ON_ERROR_ANNOTATION_CLASSNAME = "react4j.annotations.OnError";
+  static final String ON_ERROR_CLASSNAME = "react4j.annotations.OnError";
   @Nonnull
   static final String ON_INPUT_CHANGE_CLASSNAME = "react4j.annotations.OnInputChange";
   @Nonnull
   static final String VIEW_CLASSNAME = "react4j.annotations.View";
   @Nonnull
-  static final String POST_MOUNT_ANNOTATION_CLASSNAME = "react4j.annotations.PostMount";
+  static final String POST_MOUNT_CLASSNAME = "react4j.annotations.PostMount";
   @Nonnull
-  static final String POST_MOUNT_OR_UPDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PostMountOrUpdate";
+  static final String POST_MOUNT_OR_UPDATE_CLASSNAME = "react4j.annotations.PostMountOrUpdate";
   @Nonnull
-  static final String POST_UPDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PostUpdate";
+  static final String POST_UPDATE_CLASSNAME = "react4j.annotations.PostUpdate";
   @Nonnull
-  static final String PRE_UPDATE_ANNOTATION_CLASSNAME = "react4j.annotations.PreUpdate";
+  static final String PRE_UPDATE_CLASSNAME = "react4j.annotations.PreUpdate";
   @Nonnull
-  static final String SCHEDULE_RENDER_ANNOTATION_CLASSNAME = "react4j.annotations.ScheduleRender";
+  static final String SCHEDULE_RENDER_CLASSNAME = "react4j.annotations.ScheduleRender";
   @Nonnull
   static final String IDENTIFIABLE_CLASSNAME = "arez.component.Identifiable";
   @Nonnull
-  static final String ACT_AS_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ActAsComponent";
+  static final String ACT_AS_COMPONENT_CLASSNAME = "arez.annotations.ActAsComponent";
   @Nonnull
-  static final String AREZ_COMPONENT_ANNOTATION_CLASSNAME = "arez.annotations.ArezComponent";
+  static final String AREZ_COMPONENT_CLASSNAME = "arez.annotations.ArezComponent";
   @Nonnull
-  static final String OBSERVE_ANNOTATION_CLASSNAME = "arez.annotations.Observe";
+  static final String OBSERVE_CLASSNAME = "arez.annotations.Observe";
   @Nonnull
-  static final String MEMOIZE_ANNOTATION_CLASSNAME = "arez.annotations.Memoize";
+  static final String MEMOIZE_CLASSNAME = "arez.annotations.Memoize";
   @Nonnull
-  static final String POST_CONSTRUCT_ANNOTATION_CLASSNAME = "arez.annotations.PostConstruct";
+  static final String POST_CONSTRUCT_CLASSNAME = "arez.annotations.PostConstruct";
   @Nonnull
-  static final String COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME = "arez.annotations.ComponentDependency";
+  static final String COMPONENT_DEPENDENCY_CLASSNAME = "arez.annotations.ComponentDependency";
   @Nonnull
-  static final String CASCADE_DISPOSE_ANNOTATION_CLASSNAME = "arez.annotations.CascadeDispose";
+  static final String CASCADE_DISPOSE_CLASSNAME = "arez.annotations.CascadeDispose";
   @Nonnull
   static final String JSR_330_INJECT_CLASSNAME = "javax.inject.Inject";
   @Nonnull
