@@ -68,6 +68,8 @@ final class ViewGenerator
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
   private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
+  private static final ClassName CONTEXT_CLASSNAME = ClassName.get( "react4j", "Context" );
+  private static final ClassName CONTEXTS_CLASSNAME = ClassName.get( "react4j", "Contexts" );
   private static final ClassName VIEW_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j.internal", "ViewConstructorFunction" );
   private static final ClassName ON_COMPONENT_DID_MOUNT_CLASSNAME =
@@ -144,6 +146,11 @@ final class ViewGenerator
 
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
     GeneratorUtil.addOriginatingTypes( typeElement, builder );
+
+    if ( !descriptor.getPublishDescriptors().isEmpty() )
+    {
+      builder.addType( buildContextHolder( descriptor ) );
+    }
 
     builder.addField( FieldSpec
                         .builder( NATIVE_VIEW_CLASSNAME,
@@ -808,9 +815,30 @@ final class ViewGenerator
       method.addCode( block.build() );
     }
 
+    final StringBuilder sb = new StringBuilder();
+    final List<Object> args = new ArrayList<>();
+    final List<PublishDescriptor> publishDescriptors = descriptor.getPublishDescriptors();
+    for ( final PublishDescriptor publish : publishDescriptors )
+    {
+      sb.append( "$T.$N.provide( $N(), " );
+      args.add( ClassName.bestGuess( "ContextHolder" ) );
+      args.add( "CONTEXT_" + publish.getMethod().getSimpleName().toString() );
+      args.add( publish.getMethod().getSimpleName() );
+    }
+
+    sb.append( "$N()" );
+    args.add( render.getSimpleName().toString() );
+
+    final int publishCount = publishDescriptors.size();
+    for ( int i = 0; i < publishCount; i++ )
+    {
+      sb.append( " )" );
+    }
+
     if ( ViewType.TRACKING == descriptor.getType() )
     {
-      method.addStatement( "final $T result = $N()", REACT_NODE_CLASSNAME, render.getSimpleName().toString() );
+      args.add( 0, REACT_NODE_CLASSNAME );
+      method.addStatement( "final $T result = " + sb, args.toArray() );
 
       final CodeBlock.Builder depCheckBlock = CodeBlock.builder();
       depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
@@ -832,7 +860,7 @@ final class ViewGenerator
     }
     else
     {
-      method.addStatement( "return $N()", render.getSimpleName().toString() );
+      method.addStatement( "return " + sb, args.toArray() );
     }
     return method;
   }
@@ -1328,5 +1356,38 @@ final class ViewGenerator
 
     method.addStatement( "$N.$N" + args, VIEW_FIELD, onError.getSimpleName() );
     return method;
+  }
+
+  @Nonnull
+  private static TypeSpec buildContextHolder( @Nonnull final ViewDescriptor descriptor )
+  {
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( "ContextHolder" );
+    GeneratorUtil.copyTypeParameters( descriptor.getElement(), builder );
+
+    builder.addModifiers( Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL );
+
+    builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
+
+    for ( final PublishDescriptor publish : descriptor.getPublishDescriptors() )
+    {
+      final TypeName type = TypeName.get( publish.getMethodType().getReturnType() ).box();
+      final FieldSpec.Builder field = FieldSpec
+        .builder( ParameterizedTypeName.get( CONTEXT_CLASSNAME, type ),
+                  "CONTEXT_" + publish.getMethod().getSimpleName().toString(),
+                  Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL )
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+      final String qualifier = publish.getQualifier();
+      if ( "".equals( qualifier ) )
+      {
+        field.initializer( "$T.get( $T.class )", CONTEXTS_CLASSNAME, type );
+      }
+      else
+      {
+        field.initializer( "$T.get( $T.class, $S )", CONTEXTS_CLASSNAME, type, qualifier );
+      }
+      builder.addField( field.build() );
+    }
+
+    return builder.build();
   }
 }

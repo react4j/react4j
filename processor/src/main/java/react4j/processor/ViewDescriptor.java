@@ -61,6 +61,11 @@ final class ViewDescriptor
    */
   @Nullable
   private List<ScheduleRenderDescriptor> _scheduleRenderDescriptors;
+  /**
+   * Descriptors for methods annotated by @Publish.
+   */
+  @Nullable
+  private List<PublishDescriptor> _publishDescriptors;
   private Boolean _hasValidatedInputs;
   private Boolean _viewAccessesDeprecatedElements;
   private Boolean _builderAccessesDeprecatedElements;
@@ -282,6 +287,18 @@ final class ViewDescriptor
   void setScheduleRenderDescriptors( @Nonnull final List<ScheduleRenderDescriptor> scheduleRenderDescriptors )
   {
     _scheduleRenderDescriptors = Objects.requireNonNull( scheduleRenderDescriptors );
+  }
+
+  @Nonnull
+  List<PublishDescriptor> getPublishDescriptors()
+  {
+    assert null != _publishDescriptors;
+    return _publishDescriptors;
+  }
+
+  void setPublishDescriptors( @Nonnull final List<PublishDescriptor> publishDescriptors )
+  {
+    _publishDescriptors = Objects.requireNonNull( publishDescriptors );
   }
 
   boolean hasObservableInputs()

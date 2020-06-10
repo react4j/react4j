@@ -206,6 +206,10 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop_validate.ShortPropValidate" },
         new Object[]{ "com.example.prop_validate.StringPropValidate" },
 
+        new Object[]{ "com.example.publish.BasicPublishView" },
+        new Object[]{ "com.example.publish.MultiPublishView" },
+        new Object[]{ "com.example.publish.QualifiedPublishView" },
+
         new Object[]{ "com.example.render.BaseRenderComponent" },
 
         new Object[]{ "com.example.schedule_render.BasicScheduleRenderComponent" },
@@ -480,6 +484,18 @@ public final class React4jProcessorTest
   }
 
   @Test
+  public void validProtectedAccessPublish()
+    throws Exception
+  {
+    final String input1 = toFilename( "input", "com.example.publish.ProtectedAccessFromBasePublishModel" );
+    final String input2 = toFilename( "input", "com.example.publish.other.BaseProtectedAccessPublishModel" );
+    final String output =
+      toFilename( "expected", "com.example.publish.React4j_ProtectedAccessFromBasePublishModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
   public void processSuccessfulServiceViaContributeToStingModel()
     throws Exception
   {
@@ -717,6 +733,15 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop_validate.TooManyParamsPropValidate",
                       "@InputValidate target must have exactly 1 parameter" },
 
+        new Object[]{ "com.example.publish.ParameterizedPublishView", "@Publish target must not have any parameters" },
+        new Object[]{ "com.example.publish.PrivatePublishView", "@Publish target must not be private" },
+        new Object[]{ "com.example.publish.StaticPublishView", "@Publish target must not be static" },
+        new Object[]{ "com.example.publish.ThrowingPublishView", "@Publish target must not throw any exceptions" },
+        new Object[]{ "com.example.publish.TypeParameterized1PublishView",
+                      "@Publish target must not have any type parameters" },
+        new Object[]{ "com.example.publish.TypeParameterized2PublishView", "XXXX" },
+        new Object[]{ "com.example.publish.VoidPublishView", "@Publish target must return a value" },
+
         new Object[]{ "com.example.render.AbstractComponent", "@Render target must not be abstract" },
         new Object[]{ "com.example.render.MethodParameterComponent", "@Render target must not have any parameters" },
         new Object[]{ "com.example.render.MissingRenderComponent",
@@ -841,6 +866,11 @@ public final class React4jProcessorTest
 
         new Object[]{ "com.example.default_inputs.ProtectedMethodInputDefaultView",
                       "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+
+        new Object[]{ "com.example.publish.ProtectedPublishView",
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.publish.PublicPublishView",
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.schedule_render.ProtectedScheduleRenderComponent",
                       "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },

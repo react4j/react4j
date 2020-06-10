@@ -262,6 +262,7 @@ public final class React4jProcessor
     determinePostMountMethod( typeElement, descriptor );
     determineOnErrorMethod( typeElement, descriptor );
     determineScheduleRenderMethods( typeElement, descriptor );
+    determinePublishMethods( typeElement, descriptor );
     determineRenderMethod( typeElement, descriptor );
 
     for ( final InputDescriptor input : descriptor.getInputs() )
@@ -1133,6 +1134,33 @@ public final class React4jProcessor
       }
     }
     descriptor.setScheduleRenderDescriptors( scheduleRenderDescriptors );
+  }
+
+  private void determinePublishMethods( @Nonnull final TypeElement typeElement,
+                                        @Nonnull final ViewDescriptor descriptor )
+  {
+    final List<PublishDescriptor> descriptors = new ArrayList<>();
+    for ( final ExecutableElement method : getMethods( typeElement ) )
+    {
+      final AnnotationMirror annotation = AnnotationsUtil.findAnnotationByType( method, Constants.PUBLISH_CLASSNAME );
+      if ( null != annotation )
+      {
+        MemberChecks.mustBeSubclassCallable( typeElement,
+                                             Constants.VIEW_CLASSNAME,
+                                             Constants.PUBLISH_CLASSNAME,
+                                             method );
+        MemberChecks.mustNotHaveAnyParameters( Constants.PUBLISH_CLASSNAME, method );
+        MemberChecks.mustNotHaveAnyTypeParameters( Constants.PUBLISH_CLASSNAME, method );
+        MemberChecks.mustReturnAValue( Constants.PUBLISH_CLASSNAME, method );
+        MemberChecks.mustNotThrowAnyExceptions( Constants.PUBLISH_CLASSNAME, method );
+
+        final String qualifier = AnnotationsUtil.getAnnotationValueValue( annotation, "qualifier" );
+        final ExecutableType methodType = resolveMethodType( descriptor, method );
+
+        descriptors.add( new PublishDescriptor( qualifier, method, methodType ) );
+      }
+    }
+    descriptor.setPublishDescriptors( descriptors );
   }
 
   private void determineRenderMethod( @Nonnull final TypeElement typeElement,

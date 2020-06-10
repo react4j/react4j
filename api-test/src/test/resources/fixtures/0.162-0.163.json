@@ -1,0 +1,17 @@
+[
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.Publish",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Publish",
+      "classSimpleName": "Publish",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  }
+]
