@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.163](https://github.com/react4j/react4j/tree/v0.163) (2020-06-10) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.162...v0.163) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.162&new=0.163)
+
+The release includes 1 non breaking API change.
+
+Changes in this release:
 
 * Add a `@Publish` annotation that simplifies publishing values from a view to child view.
 
