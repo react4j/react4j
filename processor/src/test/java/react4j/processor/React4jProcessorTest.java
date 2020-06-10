@@ -745,7 +745,8 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.publish.ThrowingPublishView", "@Publish target must not throw any exceptions" },
         new Object[]{ "com.example.publish.TypeParameterized1PublishView",
                       "@Publish target must not have any type parameters" },
-        new Object[]{ "com.example.publish.TypeParameterized2PublishView", "XXXX" },
+        new Object[]{ "com.example.publish.TypeParameterized2PublishView",
+                      "@Publish target must not return a type variable" },
         new Object[]{ "com.example.publish.VoidPublishView", "@Publish target must return a value" },
 
         new Object[]{ "com.example.render.AbstractComponent", "@Render target must not be abstract" },

@@ -1157,6 +1157,12 @@ public final class React4jProcessor
         final String qualifier = AnnotationsUtil.getAnnotationValueValue( annotation, "qualifier" );
         final ExecutableType methodType = resolveMethodType( descriptor, method );
 
+        if ( TypeKind.TYPEVAR == methodType.getReturnType().getKind() )
+        {
+          throw new ProcessorException( MemberChecks.mustNot( Constants.PUBLISH_CLASSNAME, "return a type variable" ),
+                                        method );
+        }
+
         descriptors.add( new PublishDescriptor( qualifier, method, methodType ) );
       }
     }
