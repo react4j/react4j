@@ -79,28 +79,28 @@ public final class Context<T>
      * @return the builder.
      */
     @Nonnull
-    public final ProviderBuilder<ST> key( @Nonnull final String key )
+    public ProviderBuilder<ST> key( @Nonnull final String key )
     {
       _element.setKey( Objects.requireNonNull( key ) );
       return this;
     }
 
     @Nonnull
-    public final ProviderBuilder<ST> value( @Nullable final ST value )
+    public ProviderBuilder<ST> value( @Nullable final ST value )
     {
       _element.input( "value", value );
       return this;
     }
 
     @Nonnull
-    public final ReactNode children( final ReactNode... children )
+    public ReactNode children( final ReactNode... children )
     {
       _element.input( "children", children );
       return build();
     }
 
     @Nonnull
-    public final ReactNode build()
+    public ReactNode build()
     {
       _element.complete();
       return _element;
@@ -144,7 +144,7 @@ public final class Context<T>
      * @return the builder.
      */
     @Nonnull
-    public final ConsumerBuilder<ST> key( @Nonnull final String key )
+    public ConsumerBuilder<ST> key( @Nonnull final String key )
     {
       _element.setKey( Objects.requireNonNull( key ) );
       return this;
@@ -157,7 +157,7 @@ public final class Context<T>
      * @return the creates react node.
      */
     @Nonnull
-    public final ReactNode render( @Nonnull final ConsumerRenderFunction<ST> render )
+    public ReactNode render( @Nonnull final ConsumerRenderFunction<ST> render )
     {
       _element.input( "children", render );
       _element.complete();
