@@ -171,6 +171,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.NonDisposableDisposableProp" },
         new Object[]{ "com.example.prop.NonJavaBeanPropComponent" },
         new Object[]{ "com.example.prop.NonnullChildPropComponent" },
+        new Object[]{ "com.example.prop.NonnullContextPropModel" },
         new Object[]{ "com.example.prop.NotObservableAsNotUpdateOnChangeProp" },
         new Object[]{ "com.example.prop.NullabilityPropsComponent" },
         new Object[]{ "com.example.prop.NullablePropAndNonnullChildComponent" },
@@ -191,6 +192,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.PropTypeString" },
         new Object[]{ "com.example.prop.SingleChildPropComponent" },
         new Object[]{ "com.example.prop.QualifiedContextPropModel" },
+        new Object[]{ "com.example.prop.QualifiedNonnullContextPropModel" },
 
         new Object[]{ "com.example.prop_validate.BooleanPropValidate" },
         new Object[]{ "com.example.prop_validate.BytePropValidate" },

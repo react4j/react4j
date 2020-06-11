@@ -66,7 +66,7 @@ final class ViewDescriptor
    */
   @Nullable
   private List<PublishDescriptor> _publishDescriptors;
-  private Boolean _hasValidatedInputs;
+  private Boolean _validateInputs;
   private Boolean _viewAccessesDeprecatedElements;
   private Boolean _builderAccessesDeprecatedElements;
   private boolean _hasArezElements;
@@ -447,7 +447,7 @@ final class ViewDescriptor
 
   boolean generateShouldComponentUpdate()
   {
-    return generateShouldComponentUpdateInLiteLifecycle() || hasValidatedInputs();
+    return generateShouldComponentUpdateInLiteLifecycle() || shouldValidateInputs();
   }
 
   boolean generateShouldComponentUpdateInLiteLifecycle()
@@ -509,15 +509,16 @@ final class ViewDescriptor
     return hasPostUpdateOnInputChange() || null != _postUpdate || null != _postRender;
   }
 
-  boolean hasValidatedInputs()
+  boolean shouldValidateInputs()
   {
-    if ( null == _hasValidatedInputs )
+    if ( null == _validateInputs )
     {
-      _hasValidatedInputs = getInputs()
+      _validateInputs = getInputs()
         .stream()
-        .anyMatch( input -> input.hasValidateMethod() || ( input.isRequired() && input.isNonNull() ) );
+        .anyMatch( input -> input.hasValidateMethod() ||
+                            ( input.isNonNull() && ( input.isRequired() || input.isContextSource() ) ) );
     }
-    return _hasValidatedInputs;
+    return _validateInputs;
   }
 
   boolean viewAccessesDeprecatedElements()

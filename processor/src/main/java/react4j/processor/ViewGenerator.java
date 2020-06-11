@@ -203,7 +203,7 @@ final class ViewGenerator
       }
     }
 
-    if ( descriptor.hasValidatedInputs() )
+    if ( descriptor.shouldValidateInputs() )
     {
       builder.addMethod( buildInputValidatorMethod( descriptor ).build() );
     }
@@ -571,7 +571,7 @@ final class ViewGenerator
 
     method.addStatement( "assert null != nextInputs" );
 
-    if ( descriptor.hasValidatedInputs() )
+    if ( descriptor.shouldValidateInputs() )
     {
       final CodeBlock.Builder validateBlock = CodeBlock.builder();
       validateBlock.beginControlFlow( "if ( $T.shouldValidateInputValues() )", REACT_CLASSNAME );
@@ -977,21 +977,50 @@ final class ViewGenerator
       final String rawName = "raw$" + name;
       final String typedName = "typed$" + name;
       method.addStatement( "final $T $N = inputs.get( Inputs.$N )", Object.class, rawName, input.getConstantName() );
-      if ( input.isRequired() && input.isNonNull() )
+      if ( input.isNonNull() && ( input.isRequired() || input.isContextSource() ) )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-        block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required input named '$N' is missing from " +
-                            "view named '$N' so it was either incorrectly omitted or a null value has been " +
-                            "incorrectly specified.\" ) ",
-                            GUARDS_CLASSNAME,
-                            rawName,
-                            input.getName(),
-                            descriptor.getName() );
+
+        if ( input.isContextSource() )
+        {
+          final String qualifier = input.getQualifier();
+          if ( qualifier.isEmpty() )
+          {
+            block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N is " +
+                                "missing when constructing view named '$N'. Ensure a parent view publishes " +
+                                "the value to the context.\" ) ",
+                                GUARDS_CLASSNAME,
+                                rawName,
+                                input.getMethodType().getReturnType().toString(),
+                                descriptor.getName() );
+          }
+          else
+          {
+            block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N with qualifier " +
+                                "'$N' is missing when constructing view named '$N'. Ensure a parent view publishes " +
+                                "the value to the context.\" ) ",
+                                GUARDS_CLASSNAME,
+                                rawName,
+                                input.getMethodType().getReturnType().toString(),
+                                qualifier,
+                                descriptor.getName() );
+          }
+        }
+        else
+        {
+          block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required input named '$N' is missing from " +
+                              "view named '$N' so it was either incorrectly omitted or a null value has been " +
+                              "incorrectly specified.\" ) ",
+                              GUARDS_CLASSNAME,
+                              rawName,
+                              input.getName(),
+                              descriptor.getName() );
+        }
         block.endControlFlow();
         method.addCode( block.build() );
       }
-      if( input.hasValidateMethod())
+      if ( input.hasValidateMethod() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( null != $N )", rawName );
@@ -1002,10 +1031,7 @@ final class ViewGenerator
                             JS_CLASSNAME,
                             getConverter( returnType, input.getMethod() ),
                             rawName );
-        if ( input.hasValidateMethod() )
-        {
-          block.addStatement( "$N( $N )", input.getValidateMethod().getSimpleName().toString(), typedName );
-        }
+        block.addStatement( "$N( $N )", input.getValidateMethod().getSimpleName().toString(), typedName );
         block.endControlFlow();
         method.addCode( block.build() );
       }
@@ -1189,7 +1215,7 @@ final class ViewGenerator
         method.addStatement( "$N = new $T" + infix + "( this )", VIEW_FIELD, descriptor.getArezClassName() );
       }
 
-      if ( descriptor.hasValidatedInputs() )
+      if ( descriptor.shouldValidateInputs() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.shouldValidateInputValues() )", REACT_CLASSNAME );
