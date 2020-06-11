@@ -802,14 +802,7 @@ final class ViewGenerator
                            varName,
                            input.getMethod().getSimpleName().toString() );
       final CodeBlock.Builder block = CodeBlock.builder();
-      if ( input.isOptional() )
-      {
-        block.beginControlFlow( "if ( null != $N && $T.isDisposed( $N ) )", varName, DISPOSABLE_CLASSNAME, varName );
-      }
-      else
-      {
-        block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
-      }
+      block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
       block.addStatement( "return null" );
       block.endControlFlow();
       method.addCode( block.build() );

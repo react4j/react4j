@@ -111,7 +111,7 @@ abstract class React4j_DisposableOptionalPropModel extends DisposableOptionalPro
     SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
     final Object $$react4jv$$_getValue = getValue();
-    if ( null != $$react4jv$$_getValue && Disposable.isDisposed( $$react4jv$$_getValue ) ) {
+    if ( Disposable.isDisposed( $$react4jv$$_getValue ) ) {
       return null;
     }
     final ReactNode result = render();
