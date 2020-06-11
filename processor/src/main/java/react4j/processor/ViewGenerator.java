@@ -490,7 +490,7 @@ final class ViewGenerator
         requireComma = true;
         final String convertMethodName = getConverter( input.getMethod().getReturnType(), input.getMethod() );
         final TypeKind resultKind = input.getMethod().getReturnType().getKind();
-        if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( input.getMethod() ) )
+        if ( !resultKind.isPrimitive() && !input.isNonNull() )
         {
           sb.append( "$T.uncheckedCast( inputs.getAsAny( Inputs.$N ) )" );
           params.add( JS_CLASSNAME );

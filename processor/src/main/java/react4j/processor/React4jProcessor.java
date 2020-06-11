@@ -514,7 +514,7 @@ public final class React4jProcessor
           ) ||
           (
             AnnotationsUtil.hasNullableAnnotation( parameter ) &&
-            AnnotationsUtil.hasNonnullAnnotation( input.getMethod() ) );
+            input.isNonNull() );
 
         if ( mismatchedNullability )
         {
@@ -610,7 +610,7 @@ public final class React4jProcessor
         ) ||
         (
           AnnotationsUtil.hasNullableAnnotation( param ) &&
-          AnnotationsUtil.hasNonnullAnnotation( input.getMethod() ) );
+          input.isNonNull() );
 
       if ( mismatchedNullability )
       {

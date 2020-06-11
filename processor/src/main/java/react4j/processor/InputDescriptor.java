@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
+import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
 
@@ -42,6 +43,8 @@ final class InputDescriptor
    * Flag set to true if input is optional.
    */
   private boolean _optional;
+  @Nullable
+  private Boolean _isNonNull;
 
   InputDescriptor( @Nonnull final ViewDescriptor descriptor,
                    @Nonnull final String name,
@@ -246,6 +249,15 @@ final class InputDescriptor
   boolean isOptional()
   {
     return _optional;
+  }
+
+  boolean isNonNull()
+  {
+    if ( null == _isNonNull )
+    {
+      _isNonNull = AnnotationsUtil.hasNonnullAnnotation( getMethod() );
+    }
+    return _isNonNull;
   }
 
   void markAsOptional()
