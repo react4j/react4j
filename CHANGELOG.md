@@ -3,7 +3,7 @@
 ### Unreleased
 
 * Remove unnecessary null-check in generated code for optional, disposable inputs.
-* Ensure that the input validation code is invoked if inputs are required and annotated with `@Nonnull`, even if there is methods annotated with `@InputValidate`.
+* Ensure that the input validation code is invoked if inputs are required and annotated with `@Nonnull`, even if there are methods annotated with `@InputValidate`.
 
 ### [v0.163](https://github.com/react4j/react4j/tree/v0.163) (2020-06-10) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.162...v0.163) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.162&new=0.163)
 
