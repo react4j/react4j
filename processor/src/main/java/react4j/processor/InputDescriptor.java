@@ -251,6 +251,11 @@ final class InputDescriptor
     return _optional;
   }
 
+  boolean isRequired()
+  {
+    return !isOptional();
+  }
+
   boolean isNonNull()
   {
     if ( null == _isNonNull )

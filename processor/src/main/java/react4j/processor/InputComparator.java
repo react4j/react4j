@@ -27,11 +27,11 @@ final class InputComparator
     {
       return -1;
     }
-    else if ( o2.isOptional() && !o1.isOptional() )
+    else if ( o2.isOptional() && o1.isRequired() )
     {
       return -1;
     }
-    else if ( o1.isOptional() && !o2.isOptional() )
+    else if ( o1.isOptional() && o2.isRequired() )
     {
       return 1;
     }

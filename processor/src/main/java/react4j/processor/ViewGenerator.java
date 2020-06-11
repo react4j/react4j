@@ -977,8 +977,7 @@ final class ViewGenerator
       final String rawName = "raw$" + name;
       final String typedName = "typed$" + name;
       method.addStatement( "final $T $N = inputs.get( Inputs.$N )", Object.class, rawName, input.getConstantName() );
-      final boolean isNonNull = AnnotationsUtil.hasNonnullAnnotation( input.getMethod() );
-      if ( !input.isOptional() && isNonNull )
+      if ( input.isRequired() && input.isNonNull() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
