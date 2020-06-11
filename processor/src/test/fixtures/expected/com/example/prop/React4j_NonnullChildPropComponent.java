@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.OnComponentWillUnmount;
@@ -49,9 +50,19 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
     return $$react4j$$_nativeView.inputs().getAsAny( Inputs.child ).cast();
   }
 
+  private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+    final Object raw$child = inputs.get( Inputs.child );
+    if ( React.shouldCheckInvariants() ) {
+      Guards.apiInvariant( () -> null != raw$child, () -> "Required input named 'child' is missing from view named 'NonnullChildPropComponent' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
+    }
+  }
+
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextInputs) {
     assert null != nextInputs;
+    if ( React.shouldValidateInputValues() ) {
+      $$react4j$$_validateInputValues( nextInputs );
+    }
     final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
     if ( !Js.isTripleEqual( inputs.get( Inputs.child ), nextInputs.get( Inputs.child ) ) ) {
       return true;
@@ -86,6 +97,10 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
     LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
       $$react4j$$_view = new Arez_React4j_NonnullChildPropComponent( this );
+      if ( React.shouldValidateInputValues() ) {
+        assert null != inputs;
+        $$react4j$$_view.$$react4j$$_validateInputValues( inputs );
+      }
     }
 
     @Override
@@ -108,6 +123,10 @@ abstract class React4j_NonnullChildPropComponent extends NonnullChildPropCompone
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
       $$react4j$$_view = new Arez_React4j_NonnullChildPropComponent( this );
+      if ( React.shouldValidateInputValues() ) {
+        assert null != inputs;
+        $$react4j$$_view.$$react4j$$_validateInputValues( inputs );
+      }
     }
 
     @Override

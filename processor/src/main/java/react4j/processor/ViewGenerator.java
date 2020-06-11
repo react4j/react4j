@@ -991,21 +991,24 @@ final class ViewGenerator
         block.endControlFlow();
         method.addCode( block.build() );
       }
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( null != $N )", rawName );
-      final TypeMirror returnType = input.getMethodType().getReturnType();
-      block.addStatement( "final $T $N = $T.$N( $N )",
-                          returnType,
-                          typedName,
-                          JS_CLASSNAME,
-                          getConverter( returnType, input.getMethod() ),
-                          rawName );
-      if ( input.hasValidateMethod() )
+      if( input.hasValidateMethod())
       {
-        block.addStatement( "$N( $N )", input.getValidateMethod().getSimpleName().toString(), typedName );
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( null != $N )", rawName );
+        final TypeMirror returnType = input.getMethodType().getReturnType();
+        block.addStatement( "final $T $N = $T.$N( $N )",
+                            returnType,
+                            typedName,
+                            JS_CLASSNAME,
+                            getConverter( returnType, input.getMethod() ),
+                            rawName );
+        if ( input.hasValidateMethod() )
+        {
+          block.addStatement( "$N( $N )", input.getValidateMethod().getSimpleName().toString(), typedName );
+        }
+        block.endControlFlow();
+        method.addCode( block.build() );
       }
-      block.endControlFlow();
-      method.addCode( block.build() );
     }
     return method;
   }

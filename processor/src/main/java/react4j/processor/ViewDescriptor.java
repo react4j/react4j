@@ -513,7 +513,9 @@ final class ViewDescriptor
   {
     if ( null == _hasValidatedInputs )
     {
-      _hasValidatedInputs = getInputs().stream().anyMatch( InputDescriptor::hasValidateMethod );
+      _hasValidatedInputs = getInputs()
+        .stream()
+        .anyMatch( input -> input.hasValidateMethod() || ( input.isRequired() && input.isNonNull() ) );
     }
     return _hasValidatedInputs;
   }
