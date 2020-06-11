@@ -18,7 +18,7 @@ import jsinterop.base.JsPropertyMap;
  * views without having to explicitly pass a input through every level of the tree.
  */
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-public class Context<T>
+public final class Context<T>
 {
   /**
    * Create a builder for the Provider component.
@@ -27,7 +27,7 @@ public class Context<T>
    */
   @JsOverlay
   @Nonnull
-  public final ProviderBuilder<T> provider()
+  public ProviderBuilder<T> provider()
   {
     return new ProviderBuilder<>( this );
   }
@@ -41,7 +41,7 @@ public class Context<T>
    */
   @JsOverlay
   @Nonnull
-  public final ReactNode provide( @Nullable final T value, final ReactNode... children )
+  public ReactNode provide( @Nullable final T value, final ReactNode... children )
   {
     return provider().value( value ).children( children );
   }
@@ -53,7 +53,7 @@ public class Context<T>
    */
   @JsOverlay
   @Nonnull
-  public final ConsumerBuilder<T> consumer()
+  public ConsumerBuilder<T> consumer()
   {
     return new ConsumerBuilder<>( this );
   }
