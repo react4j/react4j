@@ -1,0 +1,181 @@
+[
+  {
+    "code": "java.class.nowFinal",
+    "description": "Class is now final.",
+    "element": "class react4j.Context<T extends java.lang.Object>",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context",
+      "classSimpleName": "Context",
+      "elementKind": "class",
+      "newModifiers": "public final",
+      "oldModifiers": "public",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.noLongerFinal",
+    "description": "Method is no longer final.",
+    "element": "method react4j.Context.ConsumerBuilder<ST> react4j.Context.ConsumerBuilder<ST>::key(java.lang.String)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context.ConsumerBuilder",
+      "classSimpleName": "ConsumerBuilder",
+      "elementKind": "method",
+      "methodName": "key",
+      "newModifiers": "public",
+      "oldModifiers": "public final",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.noLongerFinal",
+    "description": "Method is no longer final.",
+    "element": "method react4j.Context.ConsumerBuilder<T> react4j.Context<T>::consumer()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context",
+      "classSimpleName": "Context",
+      "elementKind": "method",
+      "methodName": "consumer",
+      "newModifiers": "public",
+      "oldModifiers": "public final",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.noLongerFinal",
+    "description": "Method is no longer final.",
+    "element": "method react4j.Context.ProviderBuilder<ST> react4j.Context.ProviderBuilder<ST>::key(java.lang.String)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context.ProviderBuilder",
+      "classSimpleName": "ProviderBuilder",
+      "elementKind": "method",
+      "methodName": "key",
+      "newModifiers": "public",
+      "oldModifiers": "public final",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.noLongerFinal",
+    "description": "Method is no longer final.",
+    "element": "method react4j.Context.ProviderBuilder<ST> react4j.Context.ProviderBuilder<ST>::value(ST)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context.ProviderBuilder",
+      "classSimpleName": "ProviderBuilder",
+      "elementKind": "method",
+      "methodName": "value",
+      "newModifiers": "public",
+      "oldModifiers": "public final",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.noLongerFinal",
+    "description": "Method is no longer final.",
+    "element": "method react4j.Context.ProviderBuilder<T> react4j.Context<T>::provider()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context",
+      "classSimpleName": "Context",
+      "elementKind": "method",
+      "methodName": "provider",
+      "newModifiers": "public",
+      "oldModifiers": "public final",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.noLongerFinal",
+    "description": "Method is no longer final.",
+    "element": "method react4j.ReactNode react4j.Context.ConsumerBuilder<ST>::render(react4j.Context.ConsumerRenderFunction<ST>)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context.ConsumerBuilder",
+      "classSimpleName": "ConsumerBuilder",
+      "elementKind": "method",
+      "methodName": "render",
+      "newModifiers": "public",
+      "oldModifiers": "public final",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.noLongerFinal",
+    "description": "Method is no longer final.",
+    "element": "method react4j.ReactNode react4j.Context.ProviderBuilder<ST>::build()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context.ProviderBuilder",
+      "classSimpleName": "ProviderBuilder",
+      "elementKind": "method",
+      "methodName": "build",
+      "newModifiers": "public",
+      "oldModifiers": "public final",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.noLongerFinal",
+    "description": "Method is no longer final.",
+    "element": "method react4j.ReactNode react4j.Context.ProviderBuilder<ST>::children(react4j.ReactNode[])",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context.ProviderBuilder",
+      "classSimpleName": "ProviderBuilder",
+      "elementKind": "method",
+      "methodName": "children",
+      "newModifiers": "public",
+      "oldModifiers": "public final",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.noLongerFinal",
+    "description": "Method is no longer final.",
+    "element": "method react4j.ReactNode react4j.Context<T>::provide(T, react4j.ReactNode[])",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.Context",
+      "classSimpleName": "Context",
+      "elementKind": "method",
+      "methodName": "provide",
+      "newModifiers": "public",
+      "oldModifiers": "public final",
+      "package": "react4j"
+    }
+  }
+]
