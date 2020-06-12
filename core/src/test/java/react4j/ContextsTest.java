@@ -11,7 +11,7 @@ public final class ContextsTest
   public void basicOperation_withQualifier()
   {
     final Runnable defaultValue = mock( Runnable.class );
-    final Context<Runnable> context = mockContext();
+    final Context<Runnable> context = new Context<>();
 
     final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
     Contexts.setContextProvider( provider );
@@ -28,7 +28,7 @@ public final class ContextsTest
   @Test
   public void basicOperation_withoutDefaultValue()
   {
-    final Context<Runnable> context = mockContext();
+    final Context<Runnable> context = new Context<>();
 
     final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
     Contexts.setContextProvider( provider );
@@ -46,7 +46,7 @@ public final class ContextsTest
   public void basicOperation_withoutQualifier()
   {
     final Runnable defaultValue = mock( Runnable.class );
-    final Context<Runnable> context = mockContext();
+    final Context<Runnable> context = new Context<>();
 
     final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
     Contexts.setContextProvider( provider );
@@ -64,7 +64,7 @@ public final class ContextsTest
   @Test
   public void basicOperation_withoutDefaultValueOrQualifier()
   {
-    final Context<Runnable> context = mockContext();
+    final Context<Runnable> context = new Context<>();
 
     final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
     Contexts.setContextProvider( provider );
@@ -83,7 +83,7 @@ public final class ContextsTest
   public void register_duplicate()
   {
     final Runnable defaultValue = mock( Runnable.class );
-    final Context<Runnable> context = mockContext();
+    final Context<Runnable> context = new Context<>();
 
     final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
     Contexts.setContextProvider( provider );
@@ -147,11 +147,5 @@ public final class ContextsTest
       expectThrows( IllegalStateException.class, () -> Contexts.get( Runnable.class ) );
     assertEquals( exception.getMessage(),
                   "Attempting to retrieve React context with type interface java.lang.Runnable and qualifier '' but no such context exists with that type and name" );
-  }
-
-  @SuppressWarnings( "unchecked" )
-  private <T> Context<T> mockContext()
-  {
-    return mock( Context.class );
   }
 }
