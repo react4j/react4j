@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.165](https://github.com/react4j/react4j/tree/v0.165) (2020-06-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.164...v0.165) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.164&new=0.165)
+
+The release includes 9 non breaking API changes and 1 breaking API change.
+
+Changes in this release:
 
 * Mark the Context class as final.
 * Fix a bug in a builder where a component had a single optional `@Input` and a non-optional child/children `@Input` that made it impossible to supply the child/children input.
