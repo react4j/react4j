@@ -30,7 +30,7 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
 
   public interface Step2 {
     @Nonnull
-    ReactNode myProp(String myProp);
+    Step3 myProp(String myProp);
 
     @Nonnull
     ReactNode children(ReactNode... children);
@@ -68,9 +68,9 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(final String myProp) {
+    public final Step3 myProp(final String myProp) {
       _element.input( React4j_RequiredChildrenWithOptionalAndRequired.Inputs.myProp, myProp );
-      return build();
+      return this;
     }
 
     @Override

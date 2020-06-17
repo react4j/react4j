@@ -697,6 +697,8 @@ final class BuilderGenerator
     final int inputsSize = inputs.size();
 
     final boolean hasSingleOptional = inputs.stream().filter( InputDescriptor::isOptional ).count() == 1;
+    final boolean hasNonOptionalChild =
+      inputs.stream().filter( i -> i.isSpecialChildrenInput() && !i.isOptional() ).count() == 1;
     boolean hasRequiredAfterOptional = false;
     for ( int i = 0; i < inputsSize; i++ )
     {
@@ -712,7 +714,14 @@ final class BuilderGenerator
         {
           addChildrenStreamInputStepMethod( optionalInputStep );
         }
-        optionalInputStep.addMethod( input, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY );
+        if ( hasNonOptionalChild )
+        {
+          optionalInputStep.addMethod( input, hasSingleOptional ? StepMethodType.ADVANCE : StepMethodType.STAY );
+        }
+        else
+        {
+          optionalInputStep.addMethod( input, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY );
+        }
       }
       else
       {

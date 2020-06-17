@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Mark the Context class as final.
+* Fix a bug in a builder where a component had a single optional `@Input` and a non-optional child/children `@Input` that made it impossible to supply the child/children input.
 
 ### [v0.164](https://github.com/react4j/react4j/tree/v0.164) (2020-06-11) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.163...v0.164)
 

@@ -30,7 +30,7 @@ final class NullablePropAndNonnullChildComponentBuilder {
 
   public interface Step2 {
     @Nonnull
-    ReactNode myProp2(@Nullable String myProp2);
+    Step3 myProp2(@Nullable String myProp2);
 
     @Nonnull
     ReactNode child(ReactNode child);
@@ -54,9 +54,9 @@ final class NullablePropAndNonnullChildComponentBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp2(@Nullable final String myProp2) {
+    public final Step3 myProp2(@Nullable final String myProp2) {
       _element.input( React4j_NullablePropAndNonnullChildComponent.Inputs.myProp2, myProp2 );
-      return build();
+      return this;
     }
 
     @Override
