@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.167](https://github.com/react4j/react4j/tree/v0.167) (2020-06-23) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.166...v0.167)
+
+Changes in this release:
 
 * Replace usages of `@SuppressWarnings("Arez:UnnecessaryAllowEmpty")` with `@SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")` in generated code to work around unexpected behaviour in the IntelliJ IDEA v2020.1 incremental compiler. The compiler may run the annotation processors in different rounds which results in the `@SuppressWarnings` annotation being unavailable to the arez annotation compiler as it is source retention only.
 
