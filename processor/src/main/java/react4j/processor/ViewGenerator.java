@@ -41,6 +41,8 @@ final class ViewGenerator
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
+  private static final ClassName SUPPRESS_AREZ_WARNINGS_CLASSNAME =
+    ClassName.get( "arez.annotations", "SuppressArezWarnings" );
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
@@ -118,14 +120,20 @@ final class ViewGenerator
 
     builder.superclass( descriptor.getViewType() );
 
-    final AnnotationSpec suppression = SuppressWarningsUtil
-      .maybeSuppressWarningsAnnotation( descriptor.trackRender() ? null : "Arez:UnnecessaryAllowEmpty",
-                                        descriptor.viewAccessesDeprecatedElements() ?
-                                        "deprecation" :
-                                        null );
+    final AnnotationSpec suppression =
+      SuppressWarningsUtil.maybeSuppressWarningsAnnotation( descriptor.viewAccessesDeprecatedElements() ?
+                                                            "deprecation" :
+                                                            null );
     if ( null != suppression )
     {
       builder.addAnnotation( suppression );
+    }
+    if ( !descriptor.trackRender() )
+    {
+      builder.addAnnotation( AnnotationSpec
+                               .builder( SUPPRESS_AREZ_WARNINGS_CLASSNAME )
+                               .addMember( "value", "$S", "Arez:UnnecessaryAllowEmpty" )
+                               .build() );
     }
     final AnnotationSpec.Builder arezAnnotation =
       AnnotationSpec.builder( AREZ_COMPONENT_CLASSNAME ).

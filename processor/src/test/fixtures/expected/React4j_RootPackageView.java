@@ -1,6 +1,7 @@
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -14,7 +15,7 @@ import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
-@SuppressWarnings("Arez:UnnecessaryAllowEmpty")
+@SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
     name = "RootPackageView",
     disposeNotifier = Feature.DISABLE,

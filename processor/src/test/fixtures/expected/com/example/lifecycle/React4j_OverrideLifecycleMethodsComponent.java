@@ -3,6 +3,7 @@ package com.example.lifecycle;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import arez.annotations.SuppressArezWarnings;
 import elemental2.core.JsError;
 import java.util.Objects;
 import javax.annotation.Generated;
@@ -22,7 +23,7 @@ import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
-@SuppressWarnings("Arez:UnnecessaryAllowEmpty")
+@SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
     name = "OverrideLifecycleMethodsComponent",
     disposeNotifier = Feature.DISABLE,

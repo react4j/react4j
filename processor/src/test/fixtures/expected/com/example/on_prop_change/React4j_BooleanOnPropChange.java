@@ -3,6 +3,7 @@ package com.example.on_prop_change;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
+import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -17,7 +18,7 @@ import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
-@SuppressWarnings("Arez:UnnecessaryAllowEmpty")
+@SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
     name = "BooleanOnPropChange",
     disposeNotifier = Feature.DISABLE,
