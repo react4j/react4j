@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.arez.testng` artifact to version `0.15`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.183`.
 * Upgrade the `com.squareup` artifact to version `1.13.0`.
 
