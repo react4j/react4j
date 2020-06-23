@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Fix a bug where immutable, primitive, numeric inputs would cause a cast error when generating the key for the view. This occur as as a javascript number value is extracted from the inputs map which models the value as a `Double` and then attempts to cast to a primitive such as `int`. This is fixed by double casting ala `(int) (double) inputs.get(...)`.
+
 ### [v0.165](https://github.com/react4j/react4j/tree/v0.165) (2020-06-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.164...v0.165) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.164&new=0.165)
 
 The release includes 9 non breaking API changes and 1 breaking API change.

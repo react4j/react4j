@@ -24,6 +24,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.GeneratorUtil;
@@ -520,9 +521,18 @@ final class BuilderGenerator
         }
         else if ( ImmutableInputKeyStrategy.TO_STRING == strategy )
         {
-          sb.append( "$T.valueOf( ($T) inputs.get( $T.Inputs.$N ) )" );
+          final TypeMirror inputType = input.getMethodType().getReturnType();
+          final TypeKind kind = inputType.getKind();
+          if ( TypeKind.INT == kind || TypeKind.SHORT == kind || TypeKind.BYTE == kind || TypeKind.FLOAT == kind )
+          {
+            sb.append( "$T.valueOf( ($T) (double) inputs.get( $T.Inputs.$N ) )" );
+          }
+          else
+          {
+            sb.append( "$T.valueOf( ($T) inputs.get( $T.Inputs.$N ) )" );
+          }
           params.add( String.class );
-          params.add( input.getMethodType().getReturnType() );
+          params.add( inputType );
           params.add( descriptor.getEnhancedClassName() );
           params.add( input.getConstantName() );
         }
