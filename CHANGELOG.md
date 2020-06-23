@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.arez` artifacts to version `0.183`.
 * Upgrade the `com.squareup` artifact to version `1.13.0`.
 
 ### [v0.165](https://github.com/react4j/react4j/tree/v0.165) (2020-06-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.164...v0.165) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.164&new=0.165)
