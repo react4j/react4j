@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.arez.testng` artifact to version `0.15`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.183`.
 * Upgrade the `com.squareup` artifact to version `1.13.0`.
 * Fix a bug where immutable, primitive, numeric inputs would cause a cast error when generating the key for the view. This occur as as a javascript number value is extracted from the inputs map which models the value as a `Double` and then attempts to cast to a primitive such as `int`. This is fixed by double casting ala `(int) (double) inputs.get(...)`.
 
