@@ -66,7 +66,6 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Required input named 'myProp' is missing from view named 'NullabilityPropsComponent' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
     }
-    final Object raw$myProp2 = inputs.get( Inputs.myProp2 );
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

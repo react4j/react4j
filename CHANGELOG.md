@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Remove dead local stores from generated code where a nullable `@Input` exists with no validation exists. This triggers errors in source code analysis tools such as spotbugs in downstream projects.
+
 ### [v0.167](https://github.com/react4j/react4j/tree/v0.167) (2020-06-23) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.166...v0.167)
 
 Changes in this release:

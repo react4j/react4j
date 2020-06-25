@@ -981,67 +981,71 @@ final class ViewGenerator
 
     for ( final InputDescriptor input : descriptor.getInputs() )
     {
-      final String name = input.getName();
-      final String rawName = "raw$" + name;
-      final String typedName = "typed$" + name;
-      method.addStatement( "final $T $N = inputs.get( Inputs.$N )", Object.class, rawName, input.getConstantName() );
-      if ( input.isNonNull() && ( input.isRequired() || input.isContextSource() ) )
+      final boolean requiresNonnullInvariant = input.isNonNull() && ( input.isRequired() || input.isContextSource() );
+      if ( requiresNonnullInvariant || input.hasValidateMethod() )
       {
-        final CodeBlock.Builder block = CodeBlock.builder();
-        block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-
-        if ( input.isContextSource() )
+        final String name = input.getName();
+        final String rawName = "raw$" + name;
+        final String typedName = "typed$" + name;
+        method.addStatement( "final $T $N = inputs.get( Inputs.$N )", Object.class, rawName, input.getConstantName() );
+        if ( requiresNonnullInvariant )
         {
-          final String qualifier = input.getQualifier();
-          if ( qualifier.isEmpty() )
+          final CodeBlock.Builder block = CodeBlock.builder();
+          block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+
+          if ( input.isContextSource() )
           {
-            block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N is " +
-                                "missing when constructing view named '$N'. Ensure a parent view publishes " +
-                                "the value to the context.\" ) ",
-                                GUARDS_CLASSNAME,
-                                rawName,
-                                input.getMethodType().getReturnType().toString(),
-                                descriptor.getName() );
+            final String qualifier = input.getQualifier();
+            if ( qualifier.isEmpty() )
+            {
+              block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N is " +
+                                  "missing when constructing view named '$N'. Ensure a parent view publishes " +
+                                  "the value to the context.\" ) ",
+                                  GUARDS_CLASSNAME,
+                                  rawName,
+                                  input.getMethodType().getReturnType().toString(),
+                                  descriptor.getName() );
+            }
+            else
+            {
+              block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N with qualifier " +
+                                  "'$N' is missing when constructing view named '$N'. Ensure a parent view publishes " +
+                                  "the value to the context.\" ) ",
+                                  GUARDS_CLASSNAME,
+                                  rawName,
+                                  input.getMethodType().getReturnType().toString(),
+                                  qualifier,
+                                  descriptor.getName() );
+            }
           }
           else
           {
-            block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N with qualifier " +
-                                "'$N' is missing when constructing view named '$N'. Ensure a parent view publishes " +
-                                "the value to the context.\" ) ",
+            block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required input named '$N' is missing from " +
+                                "view named '$N' so it was either incorrectly omitted or a null value has been " +
+                                "incorrectly specified.\" ) ",
                                 GUARDS_CLASSNAME,
                                 rawName,
-                                input.getMethodType().getReturnType().toString(),
-                                qualifier,
+                                input.getName(),
                                 descriptor.getName() );
           }
+          block.endControlFlow();
+          method.addCode( block.build() );
         }
-        else
+        if ( input.hasValidateMethod() )
         {
-          block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required input named '$N' is missing from " +
-                              "view named '$N' so it was either incorrectly omitted or a null value has been " +
-                              "incorrectly specified.\" ) ",
-                              GUARDS_CLASSNAME,
-                              rawName,
-                              input.getName(),
-                              descriptor.getName() );
+          final CodeBlock.Builder block = CodeBlock.builder();
+          block.beginControlFlow( "if ( null != $N )", rawName );
+          final TypeMirror returnType = input.getMethodType().getReturnType();
+          block.addStatement( "final $T $N = $T.$N( $N )",
+                              returnType,
+                              typedName,
+                              JS_CLASSNAME,
+                              getConverter( returnType, input.getMethod() ),
+                              rawName );
+          block.addStatement( "$N( $N )", input.getValidateMethod().getSimpleName().toString(), typedName );
+          block.endControlFlow();
+          method.addCode( block.build() );
         }
-        block.endControlFlow();
-        method.addCode( block.build() );
-      }
-      if ( input.hasValidateMethod() )
-      {
-        final CodeBlock.Builder block = CodeBlock.builder();
-        block.beginControlFlow( "if ( null != $N )", rawName );
-        final TypeMirror returnType = input.getMethodType().getReturnType();
-        block.addStatement( "final $T $N = $T.$N( $N )",
-                            returnType,
-                            typedName,
-                            JS_CLASSNAME,
-                            getConverter( returnType, input.getMethod() ),
-                            rawName );
-        block.addStatement( "$N( $N )", input.getValidateMethod().getSimpleName().toString(), typedName );
-        block.endControlFlow();
-        method.addCode( block.build() );
       }
     }
     return method;

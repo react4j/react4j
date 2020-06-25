@@ -75,8 +75,6 @@ abstract class React4j_NullablePropAndNonnullChildComponent extends NullableProp
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Required input named 'myProp' is missing from view named 'NullablePropAndNonnullChildComponent' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
     }
-    final Object raw$myProp2 = inputs.get( Inputs.myProp2 );
-    final Object raw$child = inputs.get( Inputs.child );
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
