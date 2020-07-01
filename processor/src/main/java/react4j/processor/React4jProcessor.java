@@ -1127,6 +1127,16 @@ public final class React4jProcessor
         MemberChecks.mustNotReturnAnyValue( Constants.SCHEDULE_RENDER_CLASSNAME, method );
         MemberChecks.mustNotThrowAnyExceptions( Constants.SCHEDULE_RENDER_CLASSNAME, method );
 
+        final ViewType viewType = descriptor.getType();
+        if ( ViewType.STATEFUL != viewType )
+        {
+          final String message =
+            MemberChecks.mustNot( Constants.SCHEDULE_RENDER_CLASSNAME,
+                                  "be enclosed in a type if it is annotated by @View(type=" + viewType +
+                                  "). The type must be STATEFUL" );
+          throw new ProcessorException( message, method );
+        }
+
         final boolean skipShouldViewUpdate =
           AnnotationsUtil.getAnnotationValueValue( annotation, "skipShouldViewUpdate" );
 

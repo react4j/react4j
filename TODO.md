@@ -6,8 +6,6 @@ complete as there is too much un-said.
 
 ### Next Release
 
-* Generate an error if a view contains a `@ScheduleRender` annotated method and is not of type `STATEFUL`
-
 * Consider adding the ability to pass immutable `@Input` values in as constructor parameters. The
   `immutable` param on the `@Input` could simply be dropped and just anything passed in via constructor
   is by definition immutable. This would require a some rework in code generation, particularly when

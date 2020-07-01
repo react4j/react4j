@@ -761,10 +761,14 @@ public final class React4jProcessorTest
 
         new Object[]{ "com.example.schedule_render.ConcreteScheduleRenderComponent",
                       "@ScheduleRender target must be abstract" },
+        new Object[]{ "com.example.schedule_render.MaybeTrackingScheduleRenderComponent",
+                      "@ScheduleRender target must not be enclosed in a type if it is annotated by @View(type=MAYBE_TRACKING). The type must be STATEFUL" },
         new Object[]{ "com.example.schedule_render.PrivateScheduleRenderComponent",
                       "@ScheduleRender target must be abstract" },
         new Object[]{ "com.example.schedule_render.StaticScheduleRenderComponent",
-                      "@ScheduleRender target must be abstract" }
+                      "@ScheduleRender target must be abstract" },
+        new Object[]{ "com.example.schedule_render.TrackingScheduleRenderComponent",
+                      "@ScheduleRender target must not be enclosed in a type if it is annotated by @View(type=TRACKING). The type must be STATEFUL" }
       };
   }
 
