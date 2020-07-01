@@ -14,9 +14,6 @@ complete as there is too much un-said.
   interacting with the dependency injectors but it could simplify a lot of code. A lot of places
   we have a `@PostConstruct` simply so that we can process an immutable prop.
 
-* Add ability to `@Input` to add enhancers to builder. Convert several existing special cased methods in builder
-  (See TODOs in Generator.java) with the enhancers.
-
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
 
