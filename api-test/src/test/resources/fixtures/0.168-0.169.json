@@ -1,0 +1,18 @@
+[
+  {
+    "code": "java.method.attributeWithDefaultAddedToAnnotationType",
+    "description": "The annotation has a new attribute with a default value.",
+    "newElement": "method boolean react4j.annotations.View::requireRender()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.View",
+      "classSimpleName": "View",
+      "elementKind": "method",
+      "methodName": "requireRender",
+      "package": "react4j.annotations"
+    }
+  }
+]

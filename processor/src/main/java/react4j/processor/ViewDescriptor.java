@@ -30,6 +30,7 @@ final class ViewDescriptor
   private final boolean _sting;
   private final boolean _hasPostConstruct;
   private final boolean _shouldSetDefaultPriority;
+  private final boolean _requireRender;
   @Nonnull
   private final ExecutableElement _constructor;
   @Nullable
@@ -78,7 +79,8 @@ final class ViewDescriptor
                   final boolean inject,
                   final boolean sting,
                   final boolean hasPostConstruct,
-                  final boolean shouldSetDefaultPriority )
+                  final boolean shouldSetDefaultPriority,
+                  final boolean requireRender )
   {
     _name = Objects.requireNonNull( name );
     _element = Objects.requireNonNull( element );
@@ -88,6 +90,7 @@ final class ViewDescriptor
     _sting = sting;
     _hasPostConstruct = hasPostConstruct;
     _shouldSetDefaultPriority = shouldSetDefaultPriority;
+    _requireRender = requireRender;
   }
 
   @Nonnull
@@ -125,6 +128,11 @@ final class ViewDescriptor
   boolean shouldSetDefaultPriority()
   {
     return _shouldSetDefaultPriority;
+  }
+
+  boolean requireRender()
+  {
+    return _requireRender;
   }
 
   @Nonnull
@@ -204,7 +212,7 @@ final class ViewDescriptor
 
   boolean trackRender()
   {
-    return ViewType.MAYBE_TRACKING == _type || ViewType.TRACKING == _type;
+    return ( ViewType.MAYBE_TRACKING == _type || ViewType.TRACKING == _type ) && hasRender();
   }
 
   void setHasArezElements( final boolean hasArezElements )
@@ -324,6 +332,11 @@ final class ViewDescriptor
     {
       _preUpdate = preUpdate;
     }
+  }
+
+  boolean hasRender()
+  {
+    return null != _render;
   }
 
   @Nonnull

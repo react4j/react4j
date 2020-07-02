@@ -90,4 +90,13 @@ public @interface View
    * @return an enum controlling whether sting integration is generated for the view.
    */
   Feature sting() default Feature.AUTODETECT;
+
+  /**
+   * Flag controlling whether the view requires a method annotated with {@link Render}.
+   * Sometimes it is useful to have "view" instances that provide capabilities or interact
+   * with services and thus need not have a  render method.
+   *
+   * @return true to require that the view contains a method annotated with {@link Render}, false otherwise.
+   */
+  boolean requireRender() default true;
 }

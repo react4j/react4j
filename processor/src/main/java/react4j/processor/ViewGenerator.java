@@ -237,7 +237,10 @@ final class ViewGenerator
       builder.addMethod( buildComponentWillUnmount( descriptor ).build() );
     }
 
-    builder.addMethod( buildRender( descriptor ).build() );
+    if ( descriptor.hasRender() )
+    {
+      builder.addMethod( buildRender( descriptor ).build() );
+    }
 
     if ( descriptor.trackRender() )
     {
@@ -1267,21 +1270,28 @@ final class ViewGenerator
       builder.addMethod( buildNativeViewDidCatch( descriptor ).build() );
     }
 
-    builder.addMethod( buildNativeRender().build() );
+    builder.addMethod( buildNativeRender( descriptor ).build() );
 
     return builder.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeRender()
+  private static MethodSpec.Builder buildNativeRender( @Nonnull final ViewDescriptor descriptor )
   {
-    return MethodSpec
+    final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "render" )
       .addAnnotation( Override.class )
       .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .returns( REACT_NODE_CLASSNAME )
-      .addStatement( "return $N.$N()", VIEW_FIELD, RENDER_METHOD );
+      .returns( REACT_NODE_CLASSNAME );
+    if ( descriptor.hasRender() )
+    {
+      return method.addStatement( "return $N.$N()", VIEW_FIELD, RENDER_METHOD );
+    }
+    else
+    {
+      return method.addStatement( "return null" );
+    }
   }
 
   @Nonnull
