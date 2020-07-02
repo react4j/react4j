@@ -36,7 +36,7 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "MultiPropComponent4" );
     }
@@ -139,28 +139,6 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     static final String myProp4 = React.shouldMinimizeInputKeys() ? "d" : "myProp4";
 
     static final String child = "children";
-  }
-
-  private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
-    @Nonnull
-    private final React4j_MultiPropComponent4 $$react4j$$_view;
-
-    @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
-      super( inputs );
-      $$react4j$$_view = new Arez_React4j_MultiPropComponent4( this );
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
-    }
-
-    @Override
-    @Nullable
-    public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
-    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

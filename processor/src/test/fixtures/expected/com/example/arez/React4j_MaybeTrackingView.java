@@ -138,7 +138,7 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
     static final ViewConstructorFunction TYPE = getConstructorFunction();
   }
 
-  private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
+  private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
     private final React4j_MaybeTrackingView $$react4j$$_view;
 
@@ -151,6 +151,11 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
       return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      $$react4j$$_view.$$react4j$$_componentWillUnmount();
     }
 
     @Override

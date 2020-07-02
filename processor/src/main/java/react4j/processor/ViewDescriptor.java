@@ -70,7 +70,6 @@ final class ViewDescriptor
   private Boolean _validateInputs;
   private Boolean _viewAccessesDeprecatedElements;
   private Boolean _builderAccessesDeprecatedElements;
-  private boolean _hasArezElements;
 
   ViewDescriptor( @Nonnull final String name,
                   @Nonnull final TypeElement element,
@@ -213,11 +212,6 @@ final class ViewDescriptor
   boolean trackRender()
   {
     return ( ViewType.MAYBE_TRACKING == _type || ViewType.TRACKING == _type ) && hasRender();
-  }
-
-  void setHasArezElements( final boolean hasArezElements )
-  {
-    _hasArezElements = hasArezElements;
   }
 
   @Nonnull
@@ -475,12 +469,12 @@ final class ViewDescriptor
 
   boolean generateComponentWillUnmountInLiteLifecycle()
   {
-    return _hasArezElements;
+    return true; // type == STATELESS || type == TRACKING || MAYBE_TRACKING
   }
 
   boolean generateComponentWillUnmount()
   {
-    return true;
+    return true; // type == STATELESS || type == TRACKING || MAYBE_TRACKING
   }
 
   boolean generateComponentPreUpdate()

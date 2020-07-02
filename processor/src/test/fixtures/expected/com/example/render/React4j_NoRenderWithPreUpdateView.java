@@ -37,7 +37,7 @@ abstract class React4j_NoRenderWithPreUpdateView extends NoRenderWithPreUpdateVi
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "NoRenderWithPreUpdateView" );
     }
@@ -61,35 +61,6 @@ abstract class React4j_NoRenderWithPreUpdateView extends NoRenderWithPreUpdateVi
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
-  }
-
-  private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
-    @Nonnull
-    private final React4j_NoRenderWithPreUpdateView $$react4j$$_view;
-
-    @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
-      super( inputs );
-      $$react4j$$_view = new Arez_React4j_NoRenderWithPreUpdateView( this );
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
-    }
-
-    @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
-        @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
-      return null;
-    }
-
-    @Override
-    @Nullable
-    public final ReactNode render() {
-      return null;
-    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {

@@ -37,7 +37,7 @@ abstract class React4j_ProtectedAccessFromBasePropModel extends ProtectedAccessF
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ProtectedAccessFromBasePropModel" );
     }
@@ -80,28 +80,6 @@ abstract class React4j_ProtectedAccessFromBasePropModel extends ProtectedAccessF
 
   static final class Inputs {
     static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
-  }
-
-  private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
-    @Nonnull
-    private final React4j_ProtectedAccessFromBasePropModel $$react4j$$_view;
-
-    @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
-      super( inputs );
-      $$react4j$$_view = new Arez_React4j_ProtectedAccessFromBasePropModel( this );
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
-    }
-
-    @Override
-    @Nullable
-    public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
-    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

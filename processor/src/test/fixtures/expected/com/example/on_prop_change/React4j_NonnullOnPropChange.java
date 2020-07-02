@@ -38,7 +38,7 @@ abstract class React4j_NonnullOnPropChange extends NonnullOnPropChange {
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "NonnullOnPropChange" );
     }
@@ -98,39 +98,6 @@ abstract class React4j_NonnullOnPropChange extends NonnullOnPropChange {
 
   static final class Inputs {
     static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
-  }
-
-  private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnGetSnapshotBeforeUpdate {
-    @Nonnull
-    private final React4j_NonnullOnPropChange $$react4j$$_view;
-
-    @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
-      super( inputs );
-      $$react4j$$_view = new Arez_React4j_NonnullOnPropChange( this );
-      if ( React.shouldValidateInputValues() ) {
-        assert null != inputs;
-        $$react4j$$_view.$$react4j$$_validateInputValues( inputs );
-      }
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
-    }
-
-    @Override
-    public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
-        @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
-      return null;
-    }
-
-    @Override
-    @Nullable
-    public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
-    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {

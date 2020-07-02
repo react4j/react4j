@@ -36,7 +36,7 @@ abstract class React4j_GenericTypePropModel<T> extends GenericTypePropModel<T> {
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "GenericTypePropModel" );
     }
@@ -79,28 +79,6 @@ abstract class React4j_GenericTypePropModel<T> extends GenericTypePropModel<T> {
 
   static final class Inputs {
     static final String value = React.shouldMinimizeInputKeys() ? "a" : "value";
-  }
-
-  private static final class LiteNativeView<T> extends react4j.internal.NativeView implements OnShouldComponentUpdate {
-    @Nonnull
-    private final React4j_GenericTypePropModel<T> $$react4j$$_view;
-
-    @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
-      super( inputs );
-      $$react4j$$_view = new Arez_React4j_GenericTypePropModel<T>( this );
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
-    }
-
-    @Override
-    @Nullable
-    public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
-    }
   }
 
   private static final class NativeView<T> extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

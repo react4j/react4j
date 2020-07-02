@@ -1361,35 +1361,6 @@ public final class React4jProcessor
                                     "has type arguments which is incompatible with injection integration.",
                                     typeElement );
     }
-
-    final boolean hasArezElements =
-      descriptor.trackRender() ||
-      getMethods( typeElement ).stream().anyMatch( e -> e.getAnnotationMirrors()
-        .stream()
-        .map( a -> a.getAnnotationType().toString() )
-        .anyMatch( n -> n.startsWith( "arez.annotations." ) &&
-                        !(
-                          // Ignore these annotations as they do not create disposable elements
-                          n.endsWith( "PostConstruct" ) ||
-                          n.endsWith( "ContextRef" ) ||
-                          n.endsWith( "ComponentTypeNameRef" ) ||
-                          n.endsWith( "ComponentNameRef" ) ||
-                          n.endsWith( "ComponentIdRef" ) ||
-                          n.endsWith( "ComponentId" ) ||
-                          n.endsWith( "Action" )
-                        )
-        )
-      ) ||
-      ElementsUtil.getFields( typeElement )
-        .stream()
-        .anyMatch( e -> e.getAnnotationMirrors()
-          .stream()
-          .map( a -> a.getAnnotationType().toString() )
-          .anyMatch( n -> n.equals( Constants.CASCADE_DISPOSE_CLASSNAME ) ||
-                          n.equals( Constants.COMPONENT_DEPENDENCY_CLASSNAME ) )
-        );
-
-    descriptor.setHasArezElements( hasArezElements );
   }
 
   @Nonnull

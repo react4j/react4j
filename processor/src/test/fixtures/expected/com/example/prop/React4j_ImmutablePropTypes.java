@@ -36,7 +36,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
-    final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
+    final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypes" );
     }
@@ -119,28 +119,6 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     static final String BobsProp = React.shouldMinimizeInputKeys() ? "d" : "BobsProp";
 
     static final String someProp = React.shouldMinimizeInputKeys() ? "e" : "someProp";
-  }
-
-  private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate {
-    @Nonnull
-    private final React4j_ImmutablePropTypes $$react4j$$_view;
-
-    @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
-      super( inputs );
-      $$react4j$$_view = new Arez_React4j_ImmutablePropTypes( this );
-    }
-
-    @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
-    }
-
-    @Override
-    @Nullable
-    public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
-    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
