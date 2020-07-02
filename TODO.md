@@ -34,6 +34,3 @@ complete as there is too much un-said.
   Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
   method that calls dispose on previous return if any. (From react 17)
 
-* Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
-  will push the call into a task that is invoked at a later time. Roughly we want to be able to take an effect and
-  push it outside the commit phase of react rendering and have it run later
