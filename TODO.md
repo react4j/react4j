@@ -37,5 +37,3 @@ complete as there is too much un-said.
 * Consider making the methods annotated with `@PostRender`, `@PostUpdate` and `@PostMount` take a parameter that
   will push the call into a task that is invoked at a later time. Roughly we want to be able to take an effect and
   push it outside the commit phase of react rendering and have it run later
-
-* Collections returned from props should be made immutable.
