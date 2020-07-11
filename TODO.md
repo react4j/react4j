@@ -33,4 +33,3 @@ complete as there is too much un-said.
 * Add some way to define effects which is just method called after render that returns a disposable to stop action.
   Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
   method that calls dispose on previous return if any. (From react 17)
-
