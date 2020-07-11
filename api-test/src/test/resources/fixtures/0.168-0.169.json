@@ -14,5 +14,197 @@
       "methodName": "requireRender",
       "package": "react4j.annotations"
     }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(byte)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(double)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(float)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(int)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(java.util.stream.Stream<? extends react4j.ReactNode>)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(long)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(react4j.ReactNode[])",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(react4j.dom.proptypes.html.TextAreaProps, java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(react4j.dom.proptypes.html.TextAreaProps, java.util.stream.Stream<? extends react4j.ReactNode>)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(react4j.dom.proptypes.html.TextAreaProps, react4j.ReactNode[])",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::textarea(short)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "textarea",
+      "package": "react4j.dom"
+    }
   }
 ]
