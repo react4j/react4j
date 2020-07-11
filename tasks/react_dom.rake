@@ -1,47 +1,47 @@
 def dom_factory_types
   {
-    'a' => 'AnchorProps',
-    'article' => 'HtmlProps',
-    'audio' => 'AudioProps',
-    'br' => 'HtmlProps',
-    'button' => 'BtnProps',
-    'canvas' => 'HtmlProps',
-    'caption' => 'HtmlProps',
-    'col' => 'ColProps',
-    'colgroup' => 'HtmlProps',
-    'div' => 'HtmlProps',
-    'footer' => 'HtmlProps',
-    'form' => 'FormProps',
-    'header' => 'HtmlProps',
-    'h1' => 'HtmlProps',
-    'h2' => 'HtmlProps',
-    'h3' => 'HtmlProps',
-    'h4' => 'HtmlProps',
-    'h5' => 'HtmlProps',
-    'h6' => 'HtmlProps',
-    'i' => 'HtmlProps',
-    'iframe' => 'IFrameProps',
-    'img' => 'ImgProps',
-    'input' => 'InputProps',
-    'label' => 'LabelProps',
-    'li' => 'HtmlProps',
-    'ol' => 'HtmlProps',
-    'option' => 'OptionProps',
-    'optgroup' => 'OptGroupProps',
-    'p' => 'HtmlProps',
-    'span' => 'HtmlProps',
-    'select' => 'SelectProps',
-    'section' => 'HtmlProps',
-    'strong' => 'HtmlProps',
-    'source' => 'SourceProps',
-    'table' => 'HtmlProps',
-    'textarea' => 'TextAreaProps',
-    'tbody' => 'HtmlProps',
-    'td' => 'TdProps',
-    'th' => 'ThProps',
-    'thead' => 'HtmlProps',
-    'tr' => 'HtmlProps',
-    'ul' => 'HtmlProps'
+    'a' => { :prop_type => 'AnchorProps' },
+    'article' => { :prop_type => 'HtmlProps' },
+    'audio' => { :prop_type => 'AudioProps' },
+    'br' => { :prop_type => 'HtmlProps' },
+    'button' => { :prop_type => 'BtnProps' },
+    'canvas' => { :prop_type => 'HtmlProps' },
+    'caption' => { :prop_type => 'HtmlProps' },
+    'col' => { :prop_type => 'ColProps' },
+    'colgroup' => { :prop_type => 'HtmlProps' },
+    'div' => { :prop_type => 'HtmlProps' },
+    'footer' => { :prop_type => 'HtmlProps' },
+    'form' => { :prop_type => 'FormProps' },
+    'header' => { :prop_type => 'HtmlProps' },
+    'h1' => { :prop_type => 'HtmlProps' },
+    'h2' => { :prop_type => 'HtmlProps' },
+    'h3' => { :prop_type => 'HtmlProps' },
+    'h4' => { :prop_type => 'HtmlProps' },
+    'h5' => { :prop_type => 'HtmlProps' },
+    'h6' => { :prop_type => 'HtmlProps' },
+    'i' => { :prop_type => 'HtmlProps' },
+    'iframe' => { :prop_type => 'IFrameProps' },
+    'img' => { :prop_type => 'ImgProps' },
+    'input' => { :prop_type => 'InputProps' },
+    'label' => { :prop_type => 'LabelProps' },
+    'li' => { :prop_type => 'HtmlProps' },
+    'ol' => { :prop_type => 'HtmlProps' },
+    'option' => { :prop_type => 'OptionProps' },
+    'optgroup' => { :prop_type => 'OptGroupProps' },
+    'p' => { :prop_type => 'HtmlProps' },
+    'span' => { :prop_type => 'HtmlProps' },
+    'select' => { :prop_type => 'SelectProps' },
+    'section' => { :prop_type => 'HtmlProps' },
+    'strong' => { :prop_type => 'HtmlProps' },
+    'source' => { :prop_type => 'SourceProps' },
+    'table' => { :prop_type => 'HtmlProps' },
+    'textarea' => { :prop_type => 'TextAreaProps', :children => false },
+    'tbody' => { :prop_type => 'HtmlProps' },
+    'td' => { :prop_type => 'TdProps' },
+    'th' => { :prop_type => 'ThProps' },
+    'thead' => { :prop_type => 'HtmlProps' },
+    'tr' => { :prop_type => 'HtmlProps' },
+    'ul' => { :prop_type => 'HtmlProps' }
   }
 end
 
@@ -61,7 +61,7 @@ import jsinterop.base.JsPropertyMap;
 import react4j.ReactElement;
 import react4j.ReactNode;
 HEADER
-  factories.values.sort.uniq.each do |prop_type|
+  factories.values.collect { |v| v[:prop_type] }.sort.uniq.each do |prop_type|
     content += "import react4j.dom.proptypes.html.#{prop_type};\n"
   end
 
@@ -173,8 +173,26 @@ public final class DOM
     return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
   }
 HEADER
-  factories.each_pair do |key, prop_type|
+  factories.each_pair do |key, config|
+    prop_type = config[:prop_type]
+    children = config[:children].nil? ? true : !!config[:children]
     content += <<HEADER
+
+  @Nonnull
+  public static ReactNode #{key}()
+  {
+    return createElement( "#{key}", null, (ReactNode[]) null );
+  }
+
+  @Nonnull
+  public static ReactNode #{key}( @Nonnull final #{prop_type} props )
+  {
+    return createElement( "#{key}", Js.asPropertyMap( props ), (ReactNode[]) null );
+  }
+HEADER
+
+    if children
+      content += <<HEADER
 
   @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nullable final ReactNode... children )
@@ -192,12 +210,6 @@ HEADER
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final String content )
   {
     return createElement( "#{key}", Js.asPropertyMap( props ), text( content ) );
-  }
-
-  @Nonnull
-  public static ReactNode #{key}( @Nonnull final #{prop_type} props )
-  {
-    return createElement( "#{key}", Js.asPropertyMap( props ), (ReactNode[]) null );
   }
 
   @Nonnull
@@ -243,12 +255,6 @@ HEADER
   }
 
   @Nonnull
-  public static ReactNode #{key}()
-  {
-    return createElement( "#{key}", null, (ReactNode[]) null );
-  }
-
-  @Nonnull
   public static ReactNode #{key}( @Nonnull final #{prop_type} props, @Nonnull final Stream<? extends ReactNode> children )
   {
     return #{key}( props, toArray( children ) );
@@ -260,6 +266,7 @@ HEADER
     return #{key}( toArray( children ) );
   }
 HEADER
+    end
   end
 
   content += <<FOOTER

@@ -5,6 +5,7 @@
 * Generate an error if a view contains a `@ScheduleRender` annotated method and is not of type `STATEFUL`.
 * Allow `@View` instances to omit th `@Render` annotated method if they specify `@View(requireRender=false)`
 * Fix bug where `STATELESS` views were not disposed unless they had reactive components. This resulted in views being cached forever in development builds and errors in production builds if callbacks used `Disposable.isDisposed(this)` to determine whether the view was still mounted.
+* Rework `textarea` host element factor in the dom module to stop support child elements as the underlying react.development.js library will generate a warning if a child component is present.
 
 ### [v0.168](https://github.com/react4j/react4j/tree/v0.168) (2020-06-25) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.167...v0.168)
 
