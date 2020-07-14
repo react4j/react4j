@@ -29,3 +29,5 @@ built using React4j.
   in the [flux challenge](https://github.com/staltz/flux-challenge) using Arez and React4j.
 * [react-todomvc](https://github.com/react4j/react4j-todomvc) Several implementations of the [TodoMVC](todomvc.md)
   application rewritten using react4j and other supporting technologies.
+* [react-webspeechdemo](https://github.com/react4j/react4j-webspeechdemo) An experiment using the web speech
+  synthesis API written using Arez and React4j.

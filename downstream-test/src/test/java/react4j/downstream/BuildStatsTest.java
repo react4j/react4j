@@ -64,6 +64,13 @@ public class BuildStatsTest
     compareSizesForBranch( "drumloop", false );
   }
 
+  @Test
+  public void webspeechdemo()
+    throws Exception
+  {
+    compareSizesForBranch( "webspeechdemo", false );
+  }
+
   private void compareSizesForBranch( @Nonnull final String branch, final boolean includeBranchInFixtureKey )
     throws Exception
   {
