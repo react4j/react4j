@@ -25,7 +25,7 @@ built using React4j.
 * [react-drumploop](https://github.com/react4j/react4j-drumloop) A rewrite of the [hooks-drum-machine](https://github.com/kenwheeler/hooks-drum-machine)
   project presented as part of a talk. It was originally written in `react.js` using hooks and suspense. This
   was ported to react4j and continues to use the experimental suspense support and `react-cache`.
-* [react-sithtracker](https://github.com/react4j/react4j-flux-challenge) An solution for the problem presented
+* [react-sithtracker](https://github.com/react4j/react4j-flux-challenge) A solution for the problem presented
   in the [flux challenge](https://github.com/staltz/flux-challenge) using Arez and React4j.
 * [react-todomvc](https://github.com/react4j/react4j-todomvc) Several implementations of the [TodoMVC](todomvc.md)
   application rewritten using react4j and other supporting technologies.
