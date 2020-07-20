@@ -594,9 +594,10 @@ final class BuilderGenerator
         else
         {
           assert ImmutableInputKeyStrategy.AREZ_IDENTIFIABLE == strategy;
-          sb.append( "$T.valueOf( $T.<Object>getArezId( ($T) inputs.get( $T.Inputs.$N ) ) )" );
+          sb.append( "$T.valueOf( $T.<$T>getArezId( ($T) inputs.get( $T.Inputs.$N ) ) )" );
           params.add( String.class );
           params.add( IDENTIFIABLE_CLASSNAME );
+          params.add( Object.class );
           params.add( input.getMethodType().getReturnType() );
           params.add( descriptor.getEnhancedClassName() );
           params.add( input.getConstantName() );
