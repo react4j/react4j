@@ -119,7 +119,7 @@ public @interface Input
 
   /**
    * True if the input is not expected to change after initial value is set. If the value of the input does change
-   * then it is expected that the react view will be unmounted and a new view created. This is implemented
+   * then it is expected that the view will be unmounted and a new view created. This is implemented
    * by synthesizing a key for the view every time the view that is derived from this input. To enable this
    * the annotation processor must be able to identify the type of the input so that a key can be synthesized. The
    * following types are supported by the annotation processor;
