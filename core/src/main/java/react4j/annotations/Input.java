@@ -5,6 +5,7 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.Observe;
+import arez.component.Identifiable;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
@@ -130,7 +131,7 @@ public @interface Input
    * <li>any class that implements {@link Keyed}</li>
    * <li>any class that is annotated with {@link ArezComponent} where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
    * <li>any class or interface that is annotated with {@link ActAsComponent}. It is assumed that every implementation is an Arez component where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
-   * <li>any class or interface that is compatible with {@link arez.component.Identifiable}.</li>
+   * <li>any class or interface that is compatible with {@link Identifiable}</li>
    * </ul>
    *
    * <p>It should be noted that if a type implements {@link Keyed} and is annotated with either {@link ArezComponent}
