@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.170](https://github.com/react4j/react4j/tree/v0.170) (2020-07-20) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.169...v0.170)
+
+Changes in this release:
 
 * Remove the requirement that `@View(requireRender=false)` views implement a lifecycle method if they specify a constructor as these views may implement the required logic directly in the constructor.
 
