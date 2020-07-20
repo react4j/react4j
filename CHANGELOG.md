@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.169](https://github.com/react4j/react4j/tree/v0.169) (2020-07-20) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.168...v0.169) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.168&new=0.169)
+
+The release includes 1 non breaking API change and 12 breaking API changes.
+
+Changes in this release:
 
 * Generate an error if a view contains a `@ScheduleRender` annotated method and is not of type `STATEFUL`.
 * Allow `@View` instances to omit th `@Render` annotated method if they specify `@View(requireRender=false)`
