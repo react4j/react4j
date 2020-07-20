@@ -494,15 +494,20 @@ final class BuilderGenerator
       method.addStatement( "final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName );
 
       final StringBuilder sb = new StringBuilder();
-      sb.append( "$N.setKey( ( $T.enableViewNames() ? $S : $T.class.getName() )" );
+      sb.append( "$N.setKey( " );
       final List<Object> params = new ArrayList<>();
       params.add( elementName );
-      params.add( REACT_CLASSNAME );
-      params.add( descriptor.keySuffix() );
-      params.add( descriptor.getClassName() );
+      boolean firstInput = true;
       for ( final InputDescriptor input : syntheticInputs )
       {
-        sb.append( " + \"-\" + " );
+        if ( !firstInput )
+        {
+          sb.append( " + \"-\" + " );
+        }
+        else
+        {
+          firstInput = false;
+        }
         final ImmutableInputKeyStrategy strategy = input.getImmutableInputKeyStrategy();
         if ( ImmutableInputKeyStrategy.KEYED == strategy )
         {
@@ -547,7 +552,10 @@ final class BuilderGenerator
           params.add( input.getConstantName() );
         }
       }
-      sb.append( " )" );
+      sb.append( " + ( $T.enableViewNames() ? $S : $T.class.getName() ) )" );
+      params.add( REACT_CLASSNAME );
+      params.add( descriptor.keySuffix() );
+      params.add( descriptor.getClassName() );
       method.addStatement( sb.toString(), params.toArray() );
     }
 
