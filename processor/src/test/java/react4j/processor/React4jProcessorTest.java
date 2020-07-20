@@ -214,6 +214,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.publish.QualifiedPublishView" },
 
         new Object[]{ "com.example.render.BaseRenderComponent" },
+        new Object[]{ "com.example.render.NoRenderWithConstructorView" },
         new Object[]{ "com.example.render.NoRenderWithPostConstructView" },
         new Object[]{ "com.example.render.NoRenderWithPostMountOrUpdateView" },
         new Object[]{ "com.example.render.NoRenderWithPostMountView" },

@@ -149,6 +149,7 @@ public final class React4jProcessor
 
     final boolean inject = deriveInject( typeElement, constructor );
     final boolean sting = deriveSting( typeElement, constructor );
+    final boolean notSyntheticConstructor = ElementsUtil.isNotSynthetic( constructor );
 
     final List<? extends VariableElement> parameters = constructor.getParameters();
     if ( inject )
@@ -203,6 +204,7 @@ public final class React4jProcessor
                           type,
                           inject,
                           sting,
+                          notSyntheticConstructor,
                           hasPostConstruct,
                           shouldSetDefaultPriority,
                           requireRender );
@@ -1219,7 +1221,8 @@ public final class React4jProcessor
                                                             " annotation or must not specify requireRender=false" ),
                                       typeElement );
       }
-      else if ( !descriptor.hasPostConstruct() &&
+      else if ( !descriptor.hasConstructor() &&
+                !descriptor.hasPostConstruct() &&
                 null == descriptor.getPostMount() &&
                 null == descriptor.getPostRender() &&
                 null == descriptor.getPreUpdate() &&

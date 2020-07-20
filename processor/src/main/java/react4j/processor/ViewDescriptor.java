@@ -28,6 +28,7 @@ final class ViewDescriptor
   private final ViewType _type;
   private final boolean _inject;
   private final boolean _sting;
+  private final boolean _hasConstructor;
   private final boolean _hasPostConstruct;
   private final boolean _shouldSetDefaultPriority;
   private final boolean _requireRender;
@@ -77,6 +78,7 @@ final class ViewDescriptor
                   @Nonnull final ViewType type,
                   final boolean inject,
                   final boolean sting,
+                  final boolean hasConstructor,
                   final boolean hasPostConstruct,
                   final boolean shouldSetDefaultPriority,
                   final boolean requireRender )
@@ -87,6 +89,7 @@ final class ViewDescriptor
     _type = Objects.requireNonNull( type );
     _inject = inject;
     _sting = sting;
+    _hasConstructor = hasConstructor;
     _hasPostConstruct = hasPostConstruct;
     _shouldSetDefaultPriority = shouldSetDefaultPriority;
     _requireRender = requireRender;
@@ -117,6 +120,11 @@ final class ViewDescriptor
   boolean enableSting()
   {
     return _sting;
+  }
+
+  boolean hasConstructor()
+  {
+    return _hasConstructor;
   }
 
   boolean hasPostConstruct()
