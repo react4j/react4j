@@ -132,6 +132,7 @@ public @interface Input
    * <li>any class that is annotated with {@link ArezComponent} where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
    * <li>any class or interface that is annotated with {@link ActAsComponent}. It is assumed that every implementation is an Arez component where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
    * <li>any class or interface that is compatible with {@link Identifiable}</li>
+   * <li>if none of the above scenarios is valid then the code will attempt to derive the key at runtime. First via the {@link Keyed} interface, then the {@link Identifiable} interface and if these strategies are not possible then toString() will be invoked on the input.</li>
    * </ul>
    *
    * <p>It should be noted that if a type implements {@link Keyed} and is annotated with either {@link ArezComponent}

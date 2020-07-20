@@ -6,5 +6,6 @@ enum ImmutableInputKeyStrategy
   IS_STRING,
   TO_STRING,
   ENUM,
-  AREZ_IDENTIFIABLE
+  AREZ_IDENTIFIABLE,
+  DYNAMIC
 }

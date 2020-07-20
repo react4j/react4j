@@ -334,6 +334,26 @@ final class BuilderGenerator
                              descriptor.keySuffix(),
                              descriptor.getClassName() );
       }
+      else if ( ImmutableInputKeyStrategy.DYNAMIC == strategy )
+      {
+        method.addStatement( "_element.setKey( ( $N instanceof $T ? $T.getKey( $N ) : " +
+                             "$N instanceof $T ? $T.<$T>getArezId( $N ) : $T.valueOf( $N ) ) + " +
+                             "( $T.enableViewNames() ? $S : $T.class.getName() ) )",
+                             stepMethod.getName(),
+                             KEYED_CLASSNAME,
+                             KEYED_CLASSNAME,
+                             stepMethod.getName(),
+                             stepMethod.getName(),
+                             IDENTIFIABLE_CLASSNAME,
+                             IDENTIFIABLE_CLASSNAME,
+                             Object.class,
+                             stepMethod.getName(),
+                             String.class,
+                             stepMethod.getName(),
+                             REACT_CLASSNAME,
+                             descriptor.keySuffix(),
+                             descriptor.getClassName() );
+      }
       else
       {
         assert ImmutableInputKeyStrategy.AREZ_IDENTIFIABLE == strategy;
@@ -493,6 +513,18 @@ final class BuilderGenerator
     {
       method.addStatement( "final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName );
 
+      for ( final InputDescriptor input : syntheticInputs )
+      {
+        if ( ImmutableInputKeyStrategy.DYNAMIC == input.getImmutableInputKeyStrategy() )
+        {
+          method.addStatement( "final $T $N = inputs.get( $T.Inputs.$N )",
+                               Object.class,
+                               "$" + input.getName() + "$",
+                               descriptor.getEnhancedClassName(),
+                               input.getConstantName() );
+        }
+      }
+
       final StringBuilder sb = new StringBuilder();
       sb.append( "$N.setKey( " );
       final List<Object> params = new ArrayList<>();
@@ -540,6 +572,24 @@ final class BuilderGenerator
           params.add( inputType );
           params.add( descriptor.getEnhancedClassName() );
           params.add( input.getConstantName() );
+        }
+        else if ( ImmutableInputKeyStrategy.DYNAMIC == strategy )
+        {
+          final String name = "$" + input.getName() + "$";
+          sb.append( "( $N instanceof $T ? $T.getKey( $N ) : " +
+                     "$N instanceof $T ? $T.<$T>getArezId( $N ) : " +
+                     "$T.valueOf( $N ) )" );
+          params.add( name );
+          params.add( KEYED_CLASSNAME );
+          params.add( KEYED_CLASSNAME );
+          params.add( name );
+          params.add( name );
+          params.add( IDENTIFIABLE_CLASSNAME );
+          params.add( IDENTIFIABLE_CLASSNAME );
+          params.add( Object.class );
+          params.add( name );
+          params.add( String.class );
+          params.add( name );
         }
         else
         {

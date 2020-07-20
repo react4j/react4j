@@ -19,18 +19,19 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "ImmutablePropTypes",
+    name = "ImmutablePropTypeDynamicValue",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
+abstract class React4j_ImmutablePropTypeDynamicValue extends ImmutablePropTypeDynamicValue {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  React4j_ImmutablePropTypes(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+  React4j_ImmutablePropTypeDynamicValue(
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
 
@@ -38,58 +39,17 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypes" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypeDynamicValue" );
     }
     return viewConstructor;
   }
 
   @Override
-  ImmutablePropTypes.MyComponent getMyProp() {
+  Object getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
     } else {
       return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
-    }
-  }
-
-  @Override
-  String getMyOtherProp() {
-    if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ).asString() : null;
-    } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) );
-    }
-  }
-
-  @Override
-  int stillAnotherProp() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.stillAnotherProp ).asInt();
-  }
-
-  @Override
-  ImmutablePropTypes.KeyedComponent BobsProp() {
-    if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ).cast() : null;
-    } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) );
-    }
-  }
-
-  @Override
-  ImmutablePropTypes.Foo getSomeProp() {
-    if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ).cast() : null;
-    } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) );
-    }
-  }
-
-  @Override
-  Object getObject() {
-    if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ).cast() : null;
-    } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ) );
     }
   }
 
@@ -100,16 +60,12 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ImmutablePropTypes) this).dispose();
+    ((Arez_React4j_ImmutablePropTypeDynamicValue) this).dispose();
   }
 
   @Nullable
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
-    final ImmutablePropTypes.MyComponent $$react4jv$$_getMyProp = getMyProp();
-    if ( Disposable.isDisposed( $$react4jv$$_getMyProp ) ) {
-      return null;
-    }
     return render();
   }
 
@@ -120,26 +76,16 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
 
   static final class Inputs {
     static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
-
-    static final String myOtherProp = React.shouldMinimizeInputKeys() ? "b" : "myOtherProp";
-
-    static final String stillAnotherProp = React.shouldMinimizeInputKeys() ? "c" : "stillAnotherProp";
-
-    static final String BobsProp = React.shouldMinimizeInputKeys() ? "d" : "BobsProp";
-
-    static final String someProp = React.shouldMinimizeInputKeys() ? "e" : "someProp";
-
-    static final String object = React.shouldMinimizeInputKeys() ? "f" : "object";
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ImmutablePropTypes $$react4j$$_view;
+    private final React4j_ImmutablePropTypeDynamicValue $$react4j$$_view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_ImmutablePropTypes( this );
+      $$react4j$$_view = new Arez_React4j_ImmutablePropTypeDynamicValue( this );
     }
 
     @Override

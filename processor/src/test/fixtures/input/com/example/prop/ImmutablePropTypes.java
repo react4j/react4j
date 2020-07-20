@@ -59,6 +59,10 @@ abstract class ImmutablePropTypes
   @Input( immutable = true )
   abstract Foo getSomeProp();
 
+  // Dynamic detection of key
+  @Input( immutable = true )
+  abstract Object getObject();
+
   @Nullable
   @Render
   ReactNode render()

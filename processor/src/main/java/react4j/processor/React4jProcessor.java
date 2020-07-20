@@ -930,15 +930,6 @@ public final class React4jProcessor
                                     method );
     }
     final ImmutableInputKeyStrategy strategy = immutable ? getImmutableInputKeyStrategy( typeName, inputType ) : null;
-    if ( immutable && null == strategy )
-    {
-      throw new ProcessorException( "@Input named '" + name + "' has specified the 'immutable' parameter as " +
-                                    "true but the annotation processor can not extract a key part from the " +
-                                    "type. This is because the type is not recognized as conforming to the " +
-                                    "rules as documented in the javadocs for the immutable parameter of " +
-                                    "the @Input annotation.",
-                                    method );
-    }
     if ( !"".equals( qualifier ) && !contextInput )
     {
       throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_CLASSNAME,
@@ -974,7 +965,7 @@ public final class React4jProcessor
     return inputDescriptor;
   }
 
-  @Nullable
+  @Nonnull
   private ImmutableInputKeyStrategy getImmutableInputKeyStrategy( @Nonnull final TypeName typeName,
                                                                   @Nullable final Element element )
   {
@@ -1008,7 +999,7 @@ public final class React4jProcessor
         return ImmutableInputKeyStrategy.ENUM;
       }
     }
-    return null;
+    return ImmutableInputKeyStrategy.DYNAMIC;
   }
 
   private boolean isAssignableToKeyed( @Nonnull final Element element )
