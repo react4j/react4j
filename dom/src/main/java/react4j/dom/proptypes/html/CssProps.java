@@ -477,6 +477,34 @@ public class CssProps
   }
 
   @JsProperty
+  public native String getAnimationTimingFunction();
+
+  @JsProperty
+  public native void setAnimationTimingFunction( @Nonnull String animationTimingFunction );
+
+  @JsOverlay
+  @Nonnull
+  public final CssProps animationTimingFunction( @Nonnull final String animationTimingFunction )
+  {
+    setAnimationTimingFunction( animationTimingFunction );
+    return this;
+  }
+
+  @JsProperty
+  public native String getAnimationDuration();
+
+  @JsProperty
+  public native void setAnimationDuration( @Nonnull String animationDuration );
+
+  @JsOverlay
+  @Nonnull
+  public final CssProps animationDuration( @Nonnull final String animationDuration )
+  {
+    setAnimationDuration( animationDuration );
+    return this;
+  }
+
+  @JsProperty
   public native String getAnimationName();
 
   @JsProperty
