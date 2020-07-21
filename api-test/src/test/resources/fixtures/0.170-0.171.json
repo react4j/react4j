@@ -1,0 +1,242 @@
+[
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method T react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T>>>::onAnimationEnd(react4j.dom.events.ReactEventHandler)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.HtmlGlobalFields",
+      "classSimpleName": "HtmlGlobalFields",
+      "elementKind": "method",
+      "methodName": "onAnimationEnd",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method T react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T>>>::onAnimationIteration(react4j.dom.events.ReactEventHandler)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.HtmlGlobalFields",
+      "classSimpleName": "HtmlGlobalFields",
+      "elementKind": "method",
+      "methodName": "onAnimationIteration",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method T react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T>>>::onAnimationStart(react4j.dom.events.ReactEventHandler)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.HtmlGlobalFields",
+      "classSimpleName": "HtmlGlobalFields",
+      "elementKind": "method",
+      "methodName": "onAnimationStart",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method java.lang.String react4j.dom.proptypes.html.CssProps::getAnimationDuration()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.CssProps",
+      "classSimpleName": "CssProps",
+      "elementKind": "method",
+      "methodName": "getAnimationDuration",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method java.lang.String react4j.dom.proptypes.html.CssProps::getAnimationTimingFunction()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.CssProps",
+      "classSimpleName": "CssProps",
+      "elementKind": "method",
+      "methodName": "getAnimationTimingFunction",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method react4j.dom.events.ReactEventHandler react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T>>>::getOnAnimationEnd()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.HtmlGlobalFields",
+      "classSimpleName": "HtmlGlobalFields",
+      "elementKind": "method",
+      "methodName": "getOnAnimationEnd",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method react4j.dom.events.ReactEventHandler react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T>>>::getOnAnimationIteration()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.HtmlGlobalFields",
+      "classSimpleName": "HtmlGlobalFields",
+      "elementKind": "method",
+      "methodName": "getOnAnimationIteration",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method react4j.dom.events.ReactEventHandler react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T>>>::getOnAnimationStart()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.HtmlGlobalFields",
+      "classSimpleName": "HtmlGlobalFields",
+      "elementKind": "method",
+      "methodName": "getOnAnimationStart",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.CssProps react4j.dom.proptypes.html.CssProps::animationDuration(java.lang.String)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.CssProps",
+      "classSimpleName": "CssProps",
+      "elementKind": "method",
+      "methodName": "animationDuration",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.CssProps react4j.dom.proptypes.html.CssProps::animationTimingFunction(java.lang.String)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.CssProps",
+      "classSimpleName": "CssProps",
+      "elementKind": "method",
+      "methodName": "animationTimingFunction",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.dom.proptypes.html.CssProps::setAnimationDuration(java.lang.String)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.CssProps",
+      "classSimpleName": "CssProps",
+      "elementKind": "method",
+      "methodName": "setAnimationDuration",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.dom.proptypes.html.CssProps::setAnimationTimingFunction(java.lang.String)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.CssProps",
+      "classSimpleName": "CssProps",
+      "elementKind": "method",
+      "methodName": "setAnimationTimingFunction",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T>>>::setOnAnimationEnd(react4j.dom.events.ReactEventHandler)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.HtmlGlobalFields",
+      "classSimpleName": "HtmlGlobalFields",
+      "elementKind": "method",
+      "methodName": "setOnAnimationEnd",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T>>>::setOnAnimationIteration(react4j.dom.events.ReactEventHandler)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.HtmlGlobalFields",
+      "classSimpleName": "HtmlGlobalFields",
+      "elementKind": "method",
+      "methodName": "setOnAnimationIteration",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T extends react4j.dom.proptypes.html.HtmlGlobalFields<T>>>::setOnAnimationStart(react4j.dom.events.ReactEventHandler)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.HtmlGlobalFields",
+      "classSimpleName": "HtmlGlobalFields",
+      "elementKind": "method",
+      "methodName": "setOnAnimationStart",
+      "package": "react4j.dom.proptypes.html"
+    }
+  }
+]
