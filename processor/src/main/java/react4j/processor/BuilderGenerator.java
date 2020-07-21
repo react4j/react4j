@@ -1,5 +1,6 @@
 package react4j.processor;
 
+import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -257,7 +258,12 @@ final class BuilderGenerator
           {
             m.varargs();
           }
-          final ParameterSpec.Builder parameter = ParameterSpec.builder( stepMethod.getType(), stepMethod.getName() );
+          final TypeName type = stepMethod.getType();
+          if ( type instanceof ArrayTypeName )
+          {
+            m.varargs();
+          }
+          final ParameterSpec.Builder parameter = ParameterSpec.builder( type, stepMethod.getName() );
           final ExecutableElement inputMethod = stepMethod.getMethod();
           if ( null != inputMethod )
           {
@@ -295,8 +301,13 @@ final class BuilderGenerator
     {
       GeneratorUtil.copyTypeParameters( inputMethodType, method );
     }
+    final TypeName type = stepMethod.getType();
     final ParameterSpec.Builder parameter =
-      ParameterSpec.builder( stepMethod.getType(), stepMethod.getName(), Modifier.FINAL );
+      ParameterSpec.builder( type, stepMethod.getName(), Modifier.FINAL );
+    if ( type instanceof ArrayTypeName )
+    {
+      method.varargs();
+    }
     final ExecutableElement inputMethod = stepMethod.getMethod();
     if ( null != inputMethod )
     {
@@ -408,7 +419,7 @@ final class BuilderGenerator
     else
     {
       if ( ( null != inputMethod && AnnotationsUtil.hasNonnullAnnotation( inputMethod ) ) &&
-           !stepMethod.getType().isPrimitive() )
+           !type.isPrimitive() )
       {
         method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
       }

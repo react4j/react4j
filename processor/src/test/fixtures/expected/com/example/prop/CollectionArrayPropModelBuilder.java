@@ -22,7 +22,7 @@ final class CollectionArrayPropModelBuilder {
 
   public interface Step1 {
     @Nonnull
-    ReactNode myProp(String[] myProp);
+    ReactNode myProp(String... myProp);
   }
 
   private static class Builder implements Step1 {
@@ -30,7 +30,7 @@ final class CollectionArrayPropModelBuilder {
 
     @Override
     @Nonnull
-    public final ReactNode myProp(final String[] myProp) {
+    public final ReactNode myProp(final String... myProp) {
       _element.input( React4j_CollectionArrayPropModel.Inputs.myProp, myProp );
       return build();
     }

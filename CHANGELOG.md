@@ -4,6 +4,7 @@
 
 * Add support for the `onAnimationStart`, `onAnimationIteration` and `onAnimationEnd` event handlers.
 * Add `animationDuration` and `animationTimingFunction` to `CssProps`.
+* Generate methods for building arrays inputs as varargs methods to make it easy for downstream consumers to supply variable numbers of elements.
 
 ### [v0.170](https://github.com/react4j/react4j/tree/v0.170) (2020-07-20) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.169...v0.170)
 
