@@ -1079,6 +1079,51 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>>
   @JsProperty
   protected native void setUnselectable( boolean unselectable );
 
+  @JsProperty
+  @Nullable
+  public native ReactEventHandler getOnAnimationStart();
+
+  @JsOverlay
+  @Nonnull
+  public final T onAnimationStart( @Nullable final ReactEventHandler handler )
+  {
+    setOnAnimationStart( handler );
+    return self();
+  }
+
+  @JsProperty
+  protected native void setOnAnimationStart( @Nullable final ReactEventHandler onCopy );
+
+  @JsProperty
+  @Nullable
+  public native ReactEventHandler getOnAnimationEnd();
+
+  @JsOverlay
+  @Nonnull
+  public final T onAnimationEnd( @Nullable final ReactEventHandler handler )
+  {
+    setOnAnimationEnd( handler );
+    return self();
+  }
+
+  @JsProperty
+  protected native void setOnAnimationEnd( @Nullable final ReactEventHandler onCopy );
+
+  @JsProperty
+  @Nullable
+  public native ReactEventHandler getOnAnimationIteration();
+
+  @JsOverlay
+  @Nonnull
+  public final T onAnimationIteration( @Nullable final ReactEventHandler handler )
+  {
+    setOnAnimationIteration( handler );
+    return self();
+  }
+
+  @JsProperty
+  protected native void setOnAnimationIteration( @Nullable final ReactEventHandler onCopy );
+
   // Clipboard Events
 
   @JsProperty
