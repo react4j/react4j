@@ -8,6 +8,7 @@ DOWNSTREAM_EXAMPLES =
     'react4j-todomvc' => %w(raw arez spritz sting dagger sting_maven sting_maven_j2cl),
     'react4j-drumloop' => %w(master),
     'react4j-flux-challenge' => %w(master),
+    'react4j-heart-rate-monitor' => %w(master),
     'react4j-webspeechdemo' => %w(master)
   }
 
