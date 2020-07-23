@@ -42,7 +42,7 @@ public class BuildOutputTest
       final String message =
         "Symbols that were expected to be stripped from the output javascript have not been.\n" +
         "  Compile Time Properties: " + compileTimeProperties + "\n" +
-        "  Symbols exepcted to be omitted but present in output:\n" +
+        "  Symbols expected to be omitted but present in output:\n" +
         symbols.stream().map( s -> "    " + s + "\n" ).collect( Collectors.joining() );
       fail( message );
     }
