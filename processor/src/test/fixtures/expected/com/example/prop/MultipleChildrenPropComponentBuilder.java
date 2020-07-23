@@ -18,7 +18,7 @@ final class MultipleChildrenPropComponentBuilder {
   }
 
   @Nonnull
-  static ReactNode children(final ReactNode[] children) {
+  static ReactNode children(final ReactNode... children) {
     return newBuilder().children( children );
   }
 

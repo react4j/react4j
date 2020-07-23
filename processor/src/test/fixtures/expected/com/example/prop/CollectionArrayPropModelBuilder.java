@@ -16,7 +16,7 @@ final class CollectionArrayPropModelBuilder {
   }
 
   @Nonnull
-  static ReactNode myProp(final String[] myProp) {
+  static ReactNode myProp(final String... myProp) {
     return newBuilder().myProp( myProp );
   }
 

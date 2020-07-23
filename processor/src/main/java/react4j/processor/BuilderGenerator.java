@@ -141,8 +141,9 @@ final class BuilderGenerator
     }
     else
     {
+      final TypeName type = stepMethod.getType();
       final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( stepMethod.getType(), stepMethod.getName(), Modifier.FINAL );
+        ParameterSpec.builder( type, stepMethod.getName(), Modifier.FINAL );
       final ExecutableElement inputMethod = stepMethod.getMethod();
       if ( null != inputMethod )
       {
@@ -154,6 +155,10 @@ final class BuilderGenerator
       else if ( stepMethod.isChildrenStreamIntrinsic() )
       {
         parameter.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+      }
+      if ( type instanceof ArrayTypeName )
+      {
+        method.varargs();
       }
       method.addParameter( parameter.build() );
 
