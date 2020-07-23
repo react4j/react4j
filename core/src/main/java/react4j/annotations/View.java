@@ -39,7 +39,13 @@ public @interface View
      * The view is a {@link #TRACKING} view but it will not generate an invariant failure if a
      * render results in zero Arez dependencies.
      */
-    MAYBE_TRACKING
+    MAYBE_TRACKING,
+    /**
+     * The view must not have a method annotated with {@link Render}.
+     * This is useful for "view" instances that provide capabilities or interact
+     * with services and thus need not have a render method.
+     */
+    NO_RENDER
   }
 
   /**
@@ -90,13 +96,4 @@ public @interface View
    * @return an enum controlling whether sting integration is generated for the view.
    */
   Feature sting() default Feature.AUTODETECT;
-
-  /**
-   * Flag controlling whether the view requires a method annotated with {@link Render}.
-   * Sometimes it is useful to have "view" instances that provide capabilities or interact
-   * with services and thus need not have a  render method.
-   *
-   * @return true to require that the view contains a method annotated with {@link Render}, false otherwise.
-   */
-  boolean requireRender() default true;
 }

@@ -122,8 +122,6 @@ public final class React4jProcessor
     final ViewType type = extractViewType( typeElement );
     final boolean hasPostConstruct = hasPostConstruct( typeElement );
     final boolean shouldSetDefaultPriority = shouldSetDefaultPriority( typeElement );
-    final boolean requireRender =
-      (boolean) AnnotationsUtil.getAnnotationValue( typeElement, Constants.VIEW_CLASSNAME, "requireRender" ).getValue();
 
     MemberChecks.mustNotBeFinal( Constants.VIEW_CLASSNAME, typeElement );
     MemberChecks.mustBeAbstract( Constants.VIEW_CLASSNAME, typeElement );
@@ -206,8 +204,7 @@ public final class React4jProcessor
                           sting,
                           notSyntheticConstructor,
                           hasPostConstruct,
-                          shouldSetDefaultPriority,
-                          requireRender );
+                          shouldSetDefaultPriority );
 
     for ( final Element element : descriptor.getElement().getEnclosedElements() )
     {
@@ -1208,7 +1205,7 @@ public final class React4jProcessor
       throw new ProcessorException( MemberChecks.must( Constants.VIEW_CLASSNAME,
                                                        "contain a method annotated with the " +
                                                        MemberChecks.toSimpleName( Constants.RENDER_CLASSNAME ) +
-                                                       " annotation or must specify requireRender=false" ),
+                                                       " annotation or must specify type=NO_RENDER" ),
                                     typeElement );
     }
     else if ( !requireRender )
@@ -1218,7 +1215,7 @@ public final class React4jProcessor
         throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
                                                             "contain a method annotated with the " +
                                                             MemberChecks.toSimpleName( Constants.RENDER_CLASSNAME ) +
-                                                            " annotation or must not specify requireRender=false" ),
+                                                            " annotation or must not specify type=NO_RENDER" ),
                                       typeElement );
       }
       else if ( !descriptor.hasConstructor() &&
@@ -1231,7 +1228,7 @@ public final class React4jProcessor
                 !descriptor.hasPostUpdateOnInputChange() )
       {
         throw new ProcessorException( MemberChecks.must( Constants.VIEW_CLASSNAME,
-                                                         "contain lifecycle methods if the the @View(requireRender=false) parameter is specified" ),
+                                                         "contain lifecycle methods if the the @View(type=NO_RENDER) parameter is specified" ),
                                       typeElement );
       }
     }

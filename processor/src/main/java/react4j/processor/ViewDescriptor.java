@@ -31,7 +31,6 @@ final class ViewDescriptor
   private final boolean _hasConstructor;
   private final boolean _hasPostConstruct;
   private final boolean _shouldSetDefaultPriority;
-  private final boolean _requireRender;
   @Nonnull
   private final ExecutableElement _constructor;
   @Nullable
@@ -80,8 +79,7 @@ final class ViewDescriptor
                   final boolean sting,
                   final boolean hasConstructor,
                   final boolean hasPostConstruct,
-                  final boolean shouldSetDefaultPriority,
-                  final boolean requireRender )
+                  final boolean shouldSetDefaultPriority )
   {
     _name = Objects.requireNonNull( name );
     _element = Objects.requireNonNull( element );
@@ -92,7 +90,6 @@ final class ViewDescriptor
     _hasConstructor = hasConstructor;
     _hasPostConstruct = hasPostConstruct;
     _shouldSetDefaultPriority = shouldSetDefaultPriority;
-    _requireRender = requireRender;
   }
 
   @Nonnull
@@ -139,7 +136,7 @@ final class ViewDescriptor
 
   boolean requireRender()
   {
-    return _requireRender;
+    return ViewType.NO_RENDER != _type;
   }
 
   @Nonnull

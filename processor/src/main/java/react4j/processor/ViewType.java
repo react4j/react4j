@@ -8,5 +8,6 @@ enum ViewType
 {
   STATEFUL,
   TRACKING,
-  MAYBE_TRACKING
+  MAYBE_TRACKING,
+  NO_RENDER
 }

@@ -1,0 +1,34 @@
+[
+  {
+    "code": "java.field.addedStaticField",
+    "description": "Static field added to class.",
+    "newElement": "field react4j.annotations.View.Type.NO_RENDER",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.View.Type",
+      "classSimpleName": "Type",
+      "elementKind": "enumConstant",
+      "fieldName": "NO_RENDER",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.attributeRemovedFromAnnotationType",
+    "description": "The annotation no longer has an attribute.",
+    "oldElement": "method boolean react4j.annotations.View::requireRender()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.View",
+      "classSimpleName": "View",
+      "elementKind": "method",
+      "methodName": "requireRender",
+      "package": "react4j.annotations"
+    }
+  }
+]
