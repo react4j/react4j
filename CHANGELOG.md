@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.172](https://github.com/react4j/react4j/tree/v0.172) (2020-07-23) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.171...v0.172) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.171&new=0.172)
+
+The release includes 1 non breaking API change and 1 breaking API change.
+
+Changes in this release:
 
 * Ensure that the static methods for array inputs are generated as varargs methods. The equivalent instance methods were converted to vararg methods in `0.170`.
 * Change the way "no render" views are specified from `@View(requireRender=false)` to `@View(type=NO_RENDER)`.
