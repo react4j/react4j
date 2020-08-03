@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.173](https://github.com/react4j/react4j/tree/v0.173) (2020-08-03) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.172...v0.173) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.172&new=0.173)
+
+The release includes 2 non breaking API changes.
+
+Changes in this release:
 
 * Add the `react4j-heart-rate-monitor` to the variants tracked as part of the release process.
 * Upgrade the `org.realityforge.arez.testng` artifact to version `0.20`.
