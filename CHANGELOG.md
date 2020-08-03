@@ -5,6 +5,7 @@
 * Add the `react4j-heart-rate-monitor` to the variants tracked as part of the release process.
 * Upgrade the `org.realityforge.arez.testng` artifact to version `0.20`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.188`.
+* Add `ReactDOM.registerBatchedArezTaskInterceptor(...)` helper methods that will batch updates to the view when the arez task scheduler is triggered. 
 
 ### [v0.172](https://github.com/react4j/react4j/tree/v0.172) (2020-07-23) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.171...v0.172) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.171&new=0.172)
 

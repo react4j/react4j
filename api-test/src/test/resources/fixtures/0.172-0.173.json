@@ -1,0 +1,34 @@
+[
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.dom.ReactDOM::registerBatchedArezTaskInterceptor()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.ReactDOM",
+      "classSimpleName": "ReactDOM",
+      "elementKind": "method",
+      "methodName": "registerBatchedArezTaskInterceptor",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method void react4j.dom.ReactDOM::registerBatchedArezTaskInterceptor(arez.ArezContext)",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.ReactDOM",
+      "classSimpleName": "ReactDOM",
+      "elementKind": "method",
+      "methodName": "registerBatchedArezTaskInterceptor",
+      "package": "react4j.dom"
+    }
+  }
+]

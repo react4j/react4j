@@ -1,5 +1,7 @@
 package react4j.dom;
 
+import arez.Arez;
+import arez.ArezContext;
 import elemental2.dom.Element;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -145,6 +147,26 @@ public class ReactDOM
   public static void batchedUpdates( @Nonnull final BatchedUpdatesFn action )
   {
     unstable_batchedUpdates( action );
+  }
+
+  /**
+   * Register an task interceptor on the current Arez context that ensures any view updates are batched.
+   */
+  @JsOverlay
+  public static void registerBatchedArezTaskInterceptor()
+  {
+    registerBatchedArezTaskInterceptor( Arez.context() );
+  }
+
+  /**
+   * Register an task interceptor that ensures any view updates are batched.
+   *
+   * @param context the context to add interceptor to.
+   */
+  @JsOverlay
+  public static void registerBatchedArezTaskInterceptor( @Nonnull final ArezContext context )
+  {
+    context.setTaskInterceptor( new BatchingTaskInterceptor() );
   }
 
   /**
