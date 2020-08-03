@@ -25,6 +25,7 @@ public class DomJDependTest
 
     final DependencyConstraint constraint = new DependencyConstraint();
 
+    final JavaPackage arez = constraint.addPackage( "arez" );
     final JavaPackage react4j = constraint.addPackage( "react4j" );
     final JavaPackage react4jDom = constraint.addPackage( "react4j.dom" );
     final JavaPackage react4jDomEvents = constraint.addPackage( "react4j.dom.events" );
@@ -37,6 +38,7 @@ public class DomJDependTest
     final JavaPackage elemental2Core = constraint.addPackage( "elemental2.core" );
     final JavaPackage elemental2Dom = constraint.addPackage( "elemental2.dom" );
 
+    react4jDom.dependsUpon( arez );
     react4jDom.dependsUpon( react4j );
     react4jDom.dependsUpon( jsinteropAnnotations );
     react4jDom.dependsUpon( jsinteropBase );
