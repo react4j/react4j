@@ -11,7 +11,7 @@ public abstract class EmployeeDataLoader
   @ComponentDependency
   final EmployeeService _service;
 
-  public EmployeeDataLoader( final RemoteServiceAPI remote, final EmployeeService service )
+  EmployeeDataLoader( final RemoteServiceAPI remote, final EmployeeService service )
   {
     _remote = remote;
     _service = service;
