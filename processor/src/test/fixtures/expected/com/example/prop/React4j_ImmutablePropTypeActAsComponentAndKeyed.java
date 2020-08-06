@@ -70,9 +70,7 @@ abstract class React4j_ImmutablePropTypeActAsComponentAndKeyed extends Immutable
 
   @Nullable
   ReactNode $$react4j$$_render() {
-    if ( Disposable.isDisposed( this ) ) {
-      return null;
-    }
+    assert Disposable.isNotDisposed( this );
     return render();
   }
 
@@ -97,18 +95,28 @@ abstract class React4j_ImmutablePropTypeActAsComponentAndKeyed extends Immutable
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
+        return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      } else {
+        return false;
+      }
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_view.$$react4j$$_componentWillUnmount();
+      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
+        $$react4j$$_view.$$react4j$$_componentWillUnmount();
+      }
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
+      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
+        return $$react4j$$_view.$$react4j$$_render();
+      } else {
+        return null;
+      }
     }
   }
 }

@@ -876,18 +876,7 @@ final class ViewGenerator
 
       method.addStatement( "$N = $T.IDLE", STATE_FIELD, VIEW_STATE_CLASSNAME );
     }
-    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isDependency ) )
-    {
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( $T.isDisposed( this ) )", DISPOSABLE_CLASSNAME );
-      block.addStatement( "return null" );
-      block.endControlFlow();
-      method.addCode( block.build() );
-    }
-    else
-    {
-      method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
-    }
+    method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
     final List<InputDescriptor> disposableInputs =
       descriptor
@@ -1343,37 +1332,37 @@ final class ViewGenerator
     if ( lite ? descriptor.generateComponentDidMountInLiteLifecycle() : descriptor.generateComponentDidMount() )
     {
       // We add this so the DevTool sees any debug data saved
-      builder.addMethod( buildNativeViewDidMount().build() );
+      builder.addMethod( buildNativeViewDidMount( descriptor ) );
     }
     if ( lite ? descriptor.generateShouldComponentUpdateInLiteLifecycle() : descriptor.generateShouldComponentUpdate() )
     {
-      builder.addMethod( buildNativeShouldComponentUpdate().build() );
+      builder.addMethod( buildNativeShouldComponentUpdate( descriptor ) );
     }
     if ( descriptor.generateComponentPreUpdate() )
     {
-      builder.addMethod( buildNativeViewPreUpdate().build() );
+      builder.addMethod( buildNativeViewPreUpdate( descriptor ) );
     }
     if ( lite ? descriptor.generateComponentDidUpdateInLiteLifecycle() : descriptor.generateComponentDidUpdate() )
     {
       // We add this for Arez views so the DevTool sees any debug data saved
-      builder.addMethod( buildNativeViewDidUpdate( descriptor ).build() );
+      builder.addMethod( buildNativeViewDidUpdate( descriptor ) );
     }
     if ( lite ? descriptor.generateComponentWillUnmountInLiteLifecycle() : descriptor.generateComponentWillUnmount() )
     {
-      builder.addMethod( buildNativeViewWillUnmount().build() );
+      builder.addMethod( buildNativeViewWillUnmount( descriptor ) );
     }
     if ( descriptor.generateComponentDidCatch() )
     {
       builder.addMethod( buildNativeViewDidCatch( descriptor ).build() );
     }
 
-    builder.addMethod( buildNativeRender( descriptor ).build() );
+    builder.addMethod( buildNativeRender( descriptor ) );
 
     return builder.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeRender( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec buildNativeRender( @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "render" )
@@ -1383,28 +1372,55 @@ final class ViewGenerator
       .returns( REACT_NODE_CLASSNAME );
     if ( descriptor.hasRender() )
     {
-      return method.addStatement( "return $N.$N()", VIEW_FIELD, RENDER_METHOD );
+      if ( descriptor.hasDependencyInput() )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
+        block.addStatement( "return $N.$N()", VIEW_FIELD, RENDER_METHOD );
+        block.nextControlFlow("else");
+        block.addStatement( "return null" );
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
+      else
+      {
+        method.addStatement( "return $N.$N()", VIEW_FIELD, RENDER_METHOD );
+      }
     }
     else
     {
-      return method.addStatement( "return null" );
+      method.addStatement( "return null" );
     }
+    return method.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeViewDidMount()
+  private static MethodSpec buildNativeViewDidMount( @Nonnull final ViewDescriptor descriptor )
   {
-    return MethodSpec
-      .methodBuilder( "componentDidMount" )
-      .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .addStatement( "$N.$N()", VIEW_FIELD, COMPONENT_DID_MOUNT_METHOD );
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( "componentDidMount" )
+        .addAnnotation( Override.class )
+        .addModifiers( Modifier.FINAL, Modifier.PUBLIC );
+    if ( descriptor.hasDependencyInput() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
+      block.addStatement( "$N.$N()", VIEW_FIELD, COMPONENT_DID_MOUNT_METHOD );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    else
+    {
+      method.addStatement( "$N.$N()", VIEW_FIELD, COMPONENT_DID_MOUNT_METHOD );
+    }
+    return method.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeShouldComponentUpdate()
+  private static MethodSpec buildNativeShouldComponentUpdate( @Nonnull final ViewDescriptor descriptor )
   {
-    return MethodSpec
+    final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "shouldComponentUpdate" )
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
@@ -1412,32 +1428,59 @@ final class ViewGenerator
       .addParameter( ParameterSpec
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextInputs", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
-                       .build() )
-      .addStatement( "return $N.$N( nextInputs )", VIEW_FIELD, SHOULD_COMPONENT_UPDATE_METHOD );
+                       .build() );
+    if ( descriptor.hasDependencyInput() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
+      block.addStatement( "return $N.$N( nextInputs )", VIEW_FIELD, SHOULD_COMPONENT_UPDATE_METHOD );
+      block.nextControlFlow("else");
+      block.addStatement( "return false" );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    else
+    {
+      method.addStatement( "return $N.$N( nextInputs )", VIEW_FIELD, SHOULD_COMPONENT_UPDATE_METHOD );
+    }
+    return method.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeViewPreUpdate()
+  private static MethodSpec buildNativeViewPreUpdate( @Nonnull final ViewDescriptor descriptor )
   {
-    return MethodSpec
-      .methodBuilder( "getSnapshotBeforeUpdate" )
-      .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .returns( TypeName.get( Object.class ) )
-      .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL )
-                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
-                       .build() )
-      .addParameter( ParameterSpec
-                       .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
-                       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
-                       .build() )
-      .addStatement( "$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_PRE_UPDATE_METHOD )
-      .addStatement( "return null" );
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( "getSnapshotBeforeUpdate" )
+        .addAnnotation( Override.class )
+        .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
+        .returns( TypeName.get( Object.class ) )
+        .addParameter( ParameterSpec
+                         .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL )
+                         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+                         .build() )
+        .addParameter( ParameterSpec
+                         .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
+                         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+                         .build() );
+    if ( descriptor.hasDependencyInput() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
+      block.addStatement( "$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_PRE_UPDATE_METHOD );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    else
+    {
+      method.addStatement( "$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_PRE_UPDATE_METHOD );
+    }
+    method.addStatement( "return null" );
+    return method.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeViewDidUpdate( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec buildNativeViewDidUpdate( @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "componentDidUpdate" )
@@ -1447,24 +1490,55 @@ final class ViewGenerator
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
-    if ( descriptor.hasPostUpdateOnInputChange() )
+    if ( descriptor.hasDependencyInput() )
     {
-      return method.addStatement( "$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_DID_UPDATE_METHOD );
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
+      if ( descriptor.hasPostUpdateOnInputChange() )
+      {
+        block.addStatement( "$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_DID_UPDATE_METHOD );
+      }
+      else
+      {
+        block.addStatement( "$N.$N()", VIEW_FIELD, COMPONENT_DID_UPDATE_METHOD );
+      }
+      block.endControlFlow();
+      method.addCode( block.build() );
     }
     else
     {
-      return method.addStatement( "$N.$N()", VIEW_FIELD, COMPONENT_DID_UPDATE_METHOD );
+      if ( descriptor.hasPostUpdateOnInputChange() )
+      {
+        method.addStatement( "$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_DID_UPDATE_METHOD );
+      }
+      else
+      {
+        method.addStatement( "$N.$N()", VIEW_FIELD, COMPONENT_DID_UPDATE_METHOD );
+      }
     }
+    return method.build();
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeViewWillUnmount()
+  private static MethodSpec buildNativeViewWillUnmount( @Nonnull final ViewDescriptor descriptor )
   {
-    return MethodSpec
+    final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "componentWillUnmount" )
       .addAnnotation( Override.class )
-      .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
-      .addStatement( "$N.$N()", VIEW_FIELD, COMPONENT_WILL_UNMOUNT_METHOD );
+      .addModifiers( Modifier.FINAL, Modifier.PUBLIC );
+    if ( descriptor.hasDependencyInput() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
+      block.addStatement( "$N.$N()", VIEW_FIELD, COMPONENT_WILL_UNMOUNT_METHOD );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    else
+    {
+      method.addStatement( "$N.$N()", VIEW_FIELD, COMPONENT_WILL_UNMOUNT_METHOD );
+    }
+    return method.build();
   }
 
   @Nonnull
@@ -1494,7 +1568,18 @@ final class ViewGenerator
           Collectors.joining( ", " ) ) +
       " )";
 
-    method.addStatement( "$N.$N" + args, VIEW_FIELD, onError.getSimpleName() );
+    if ( descriptor.hasDependencyInput() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
+      block.addStatement( "$N.$N" + args, VIEW_FIELD, onError.getSimpleName() );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    else
+    {
+      method.addStatement( "$N.$N" + args, VIEW_FIELD, onError.getSimpleName() );
+    }
     return method;
   }
 

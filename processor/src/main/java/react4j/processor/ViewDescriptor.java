@@ -67,9 +67,14 @@ final class ViewDescriptor
    */
   @Nullable
   private List<PublishDescriptor> _publishDescriptors;
+  @Nullable
   private Boolean _validateInputs;
+  @Nullable
   private Boolean _viewAccessesDeprecatedElements;
+  @Nullable
   private Boolean _builderAccessesDeprecatedElements;
+  @Nullable
+  private Boolean _hasDependencyInput;
 
   ViewDescriptor( @Nonnull final String name,
                   @Nonnull final TypeElement element,
@@ -228,6 +233,16 @@ final class ViewDescriptor
   int syntheticKeyParts()
   {
     return (int) getInputs().stream().filter( InputDescriptor::isImmutable ).count();
+  }
+
+  boolean hasDependencyInput()
+  {
+    if ( null == _hasDependencyInput )
+    {
+      assert null != _inputs;
+      _hasDependencyInput = _inputs.stream().anyMatch( InputDescriptor::isDependency );
+    }
+    return _hasDependencyInput;
   }
 
   @Nonnull
