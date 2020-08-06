@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.Disposable;
 import arez.annotations.ArezComponent;
+import arez.annotations.ComponentDependency;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
@@ -30,8 +31,8 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final ImmutablePropTypes.MyComponent $$react4j_immutable_input$$_myProp;
+  @ComponentDependency
+  final ImmutablePropTypes.MyComponent $$react4j_immutable_input$$_myProp;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
   private final String $$react4j_immutable_input$$_myOtherProp;
@@ -129,9 +130,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
 
   @Nullable
   ReactNode $$react4j$$_render() {
-    assert Disposable.isNotDisposed( this );
-    final ImmutablePropTypes.MyComponent $$react4jv$$_getMyProp = getMyProp();
-    if ( Disposable.isDisposed( $$react4jv$$_getMyProp ) ) {
+    if ( Disposable.isDisposed( this ) ) {
       return null;
     }
     return render();

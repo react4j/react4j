@@ -940,6 +940,8 @@ public final class React4jProcessor
         .getValue() )
         .getSimpleName().toString();
 
+    final boolean dependency = isInputDependency( method, immutable, disposable );
+
     final InputDescriptor inputDescriptor =
       new InputDescriptor( descriptor,
                            name,
@@ -950,6 +952,7 @@ public final class React4jProcessor
                            shouldUpdateOnChange,
                            observable,
                            disposable,
+                           dependency,
                            strategy,
                            requiredValue );
     if ( inputDescriptor.mayNeedMutableInputAccessedInPostConstructInvariant() )
@@ -1424,6 +1427,33 @@ public final class React4jProcessor
   {
     return (Boolean) AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "immutable" )
       .getValue();
+  }
+
+  private boolean isInputDependency( @Nonnull final ExecutableElement method,
+                                     final boolean immutable,
+                                     final boolean disposable )
+  {
+    final VariableElement parameter = (VariableElement)
+      AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "dependency" ).getValue();
+    switch ( parameter.getSimpleName().toString() )
+    {
+      case "ENABLE":
+        if ( !immutable )
+        {
+          throw new ProcessorException( "@Input target must be immutable if dependency=ENABLE is specified",
+                                        method );
+        }
+        else if ( !disposable )
+        {
+          throw new ProcessorException( "@Input target must be disposable if dependency=ENABLE is specified",
+                                        method );
+        }
+        return true;
+      case "DISABLE":
+        return false;
+      default:
+        return immutable && disposable;
+    }
   }
 
   private boolean isInputDisposable( @Nonnull final ExecutableElement method, @Nonnull final Element inputType )

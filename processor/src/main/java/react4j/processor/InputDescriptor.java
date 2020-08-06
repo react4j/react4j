@@ -27,6 +27,7 @@ final class InputDescriptor
   private final boolean _shouldUpdateOnChange;
   private final boolean _observable;
   private final boolean _disposable;
+  private final boolean _dependency;
   @Nullable
   private final ImmutableInputKeyStrategy _immutableInputKeyStrategy;
   @Nonnull
@@ -55,6 +56,7 @@ final class InputDescriptor
                    final boolean shouldUpdateOnChange,
                    final boolean observable,
                    final boolean disposable,
+                   final boolean dependency,
                    @Nullable final ImmutableInputKeyStrategy immutableInputKeyStrategy,
                    @Nonnull final String requiredValue )
   {
@@ -67,6 +69,7 @@ final class InputDescriptor
     _shouldUpdateOnChange = shouldUpdateOnChange;
     _observable = observable;
     _disposable = disposable;
+    _dependency = dependency;
     _immutableInputKeyStrategy = immutableInputKeyStrategy;
     _requiredValue = Objects.requireNonNull( requiredValue );
   }
@@ -108,6 +111,11 @@ final class InputDescriptor
   boolean isDisposable()
   {
     return _disposable;
+  }
+
+  boolean isDependency()
+  {
+    return _dependency;
   }
 
   boolean isImmutable()

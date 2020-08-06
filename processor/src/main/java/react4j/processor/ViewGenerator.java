@@ -50,6 +50,8 @@ final class ViewGenerator
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
   private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
   private static final ClassName OBSERVER_REF_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "ObserverRef" );
+  private static final ClassName COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME =
+    ClassName.get( "arez.annotations", "ComponentDependency" );
   private static final ClassName COMPONENT_NAME_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ComponentNameRef" );
   private static final ClassName COMPONENT_ID_REF_ANNOTATION_CLASSNAME =
@@ -350,12 +352,19 @@ final class ViewGenerator
     final FieldSpec.Builder field =
       FieldSpec.builder( TypeName.get( input.getMethodType().getReturnType() ),
                          FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
-                         Modifier.PRIVATE,
-                         Modifier.FINAL )
-        // This suppression is not required once we add dependency on it
-        .addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
-                          .addMember( "value", "$S", "Arez:UnmanagedComponentReference" )
-                          .build() );
+                         Modifier.FINAL );
+
+    if ( input.isDependency() )
+    {
+      field.addAnnotation( COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME );
+    }
+    else
+    {
+      field.addModifiers( Modifier.PRIVATE );
+      field.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
+                             .addMember( "value", "$S", "Arez:UnmanagedComponentReference" )
+                             .build() );
+    }
 
     GeneratorUtil.copyWhitelistedAnnotations( input.getMethod(), field );
     return field.build();
@@ -942,10 +951,26 @@ final class ViewGenerator
       method.addStatement( "$N = $T.IDLE", STATE_FIELD, VIEW_STATE_CLASSNAME );
       method.addStatement( "$T.pauseUntilRenderLoopComplete()", SCHEDULER_UTIL_CLASSNAME );
     }
-    method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
+    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isDependency ) )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.isDisposed( this ) )", DISPOSABLE_CLASSNAME );
+      block.addStatement( "return null" );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    else
+    {
+      method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
+    }
 
     final List<InputDescriptor> disposableInputs =
-      descriptor.getInputs().stream().filter( InputDescriptor::isDisposable ).collect( Collectors.toList() );
+      descriptor
+        .getInputs()
+        .stream()
+        .filter( InputDescriptor::isDisposable )
+        .filter( input -> !input.isDependency() )
+        .collect( Collectors.toList() );
 
     for ( final InputDescriptor input : disposableInputs )
     {

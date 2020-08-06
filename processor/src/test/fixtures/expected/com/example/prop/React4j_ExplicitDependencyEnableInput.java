@@ -20,27 +20,27 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "ImmutablePropTypeActAsComponentClass",
+    name = "ExplicitDependencyEnableInput",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ImmutablePropTypeActAsComponentClass extends ImmutablePropTypeActAsComponentClass {
+abstract class React4j_ExplicitDependencyEnableInput extends ExplicitDependencyEnableInput {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @ComponentDependency
-  final ImmutablePropTypeActAsComponentClass.MyComponent $$react4j_immutable_input$$_myProp;
+  final ExplicitDependencyEnableInput.MyComponent $$react4j_immutable_input$$_myComponent;
 
-  React4j_ImmutablePropTypeActAsComponentClass(
+  React4j_ExplicitDependencyEnableInput(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_myProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
+      $$react4j_immutable_input$$_myComponent = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_myProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
+      $$react4j_immutable_input$$_myComponent = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ) );
     }
   }
 
@@ -48,14 +48,14 @@ abstract class React4j_ImmutablePropTypeActAsComponentClass extends ImmutablePro
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypeActAsComponentClass" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ExplicitDependencyEnableInput" );
     }
     return viewConstructor;
   }
 
   @Override
-  ImmutablePropTypeActAsComponentClass.MyComponent getMyProp() {
-    return $$react4j_immutable_input$$_myProp;
+  ExplicitDependencyEnableInput.MyComponent getMyComponent() {
+    return $$react4j_immutable_input$$_myComponent;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -65,7 +65,7 @@ abstract class React4j_ImmutablePropTypeActAsComponentClass extends ImmutablePro
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ImmutablePropTypeActAsComponentClass) this).dispose();
+    ((Arez_React4j_ExplicitDependencyEnableInput) this).dispose();
   }
 
   @Nullable
@@ -82,17 +82,17 @@ abstract class React4j_ImmutablePropTypeActAsComponentClass extends ImmutablePro
   }
 
   static final class Inputs {
-    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
+    static final String myComponent = React.shouldMinimizeInputKeys() ? "a" : "myComponent";
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ImmutablePropTypeActAsComponentClass $$react4j$$_view;
+    private final React4j_ExplicitDependencyEnableInput $$react4j$$_view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_ImmutablePropTypeActAsComponentClass( this );
+      $$react4j$$_view = new Arez_React4j_ExplicitDependencyEnableInput( this );
     }
 
     @Override

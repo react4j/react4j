@@ -1,0 +1,48 @@
+package com.example.prop;
+
+import arez.component.Identifiable;
+import javax.annotation.Generated;
+import javax.annotation.Nonnull;
+import react4j.React;
+import react4j.ReactElement;
+import react4j.ReactNode;
+
+@Generated("react4j.processor.React4jProcessor")
+final class ExplicitDependencyEnableInputBuilder {
+  private ExplicitDependencyEnableInputBuilder() {
+  }
+
+  @Nonnull
+  private static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
+  static ReactNode myComponent(final ExplicitDependencyEnableInput.MyComponent myComponent) {
+    return newBuilder().myComponent( myComponent );
+  }
+
+  public interface Step1 {
+    @Nonnull
+    ReactNode myComponent(ExplicitDependencyEnableInput.MyComponent myComponent);
+  }
+
+  private static class Builder implements Step1 {
+    private final ReactElement _element = ReactElement.createViewElement( React4j_ExplicitDependencyEnableInput.Factory.TYPE );
+
+    @Override
+    @Nonnull
+    public final ReactNode myComponent(
+        final ExplicitDependencyEnableInput.MyComponent myComponent) {
+      _element.setKey( Identifiable.<Object>getArezId( myComponent ) + ( React.enableViewNames() ? "_ExplicitDependencyEnableInput_ff4614c5" : ExplicitDependencyEnableInput.class.getName() ) );
+      _element.input( React4j_ExplicitDependencyEnableInput.Inputs.myComponent, myComponent );
+      return build();
+    }
+
+    @Nonnull
+    public final ReactNode build() {
+      _element.complete();
+      return _element;
+    }
+  }
+}

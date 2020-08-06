@@ -119,6 +119,18 @@ public @interface Input
   Feature disposable() default Feature.AUTODETECT;
 
   /**
+   * Return an enum indicating whether the view should be disposed if the input is disposed. To enable this feature,
+   * the input MUST set {@link #immutable()} to <code>true</code>, {@link #disposable()} MUST resolve to
+   * {@link Feature#ENABLE}. The type of the input is expected to implement the {@link arez.component.DisposeNotifier}
+   * interface either directly or indirectly. If this parameter is set to {@link Feature#AUTODETECT} then the
+   * annotation processor will treat it as {@link Feature#ENABLE} if {@link #immutable()} is <code>true</code> and
+   * {@link #disposable()} resolves to {@link Feature#ENABLE}.
+   *
+   * @return an enum indicating whether the view should be disposed if the input is disposed.
+   */
+  Feature dependency() default Feature.AUTODETECT;
+
+  /**
    * True if the input is not expected to change after initial value is set. If the value of the input does change
    * then it is expected that the view will be unmounted and a new view created. This is implemented
    * by synthesizing a key for the view every time the view that is derived from this input. To enable this

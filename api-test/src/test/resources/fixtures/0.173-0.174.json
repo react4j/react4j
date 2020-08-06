@@ -1,0 +1,18 @@
+[
+  {
+    "code": "java.method.attributeWithDefaultAddedToAnnotationType",
+    "description": "The annotation has a new attribute with a default value.",
+    "newElement": "method react4j.annotations.Feature react4j.annotations.Input::dependency()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Input",
+      "classSimpleName": "Input",
+      "elementKind": "method",
+      "methodName": "dependency",
+      "package": "react4j.annotations"
+    }
+  }
+]
