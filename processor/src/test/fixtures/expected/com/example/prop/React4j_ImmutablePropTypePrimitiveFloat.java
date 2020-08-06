@@ -30,9 +30,13 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  private final float $$react4j_immutable_input$$_myProp;
+
   React4j_ImmutablePropTypePrimitiveFloat(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
+    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asFloat();
   }
 
   @Nonnull
@@ -46,7 +50,7 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
 
   @Override
   float getMyProp() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asFloat();
+    return $$react4j_immutable_input$$_myProp;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

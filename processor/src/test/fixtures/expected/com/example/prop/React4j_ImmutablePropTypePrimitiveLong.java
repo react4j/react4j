@@ -30,9 +30,13 @@ abstract class React4j_ImmutablePropTypePrimitiveLong extends ImmutablePropTypeP
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  private final long $$react4j_immutable_input$$_myProp;
+
   React4j_ImmutablePropTypePrimitiveLong(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
+    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asLong();
   }
 
   @Nonnull
@@ -46,7 +50,7 @@ abstract class React4j_ImmutablePropTypePrimitiveLong extends ImmutablePropTypeP
 
   @Override
   long getMyProp() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asLong();
+    return $$react4j_immutable_input$$_myProp;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

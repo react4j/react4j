@@ -30,9 +30,17 @@ abstract class React4j_ImmutablePropTypeBoxedCharacter extends ImmutablePropType
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  private final Character $$react4j_immutable_input$$_myProp;
+
   React4j_ImmutablePropTypeBoxedCharacter(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
+    if ( React.shouldCheckInvariants() ) {
+      $$react4j_immutable_input$$_myProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
+    } else {
+      $$react4j_immutable_input$$_myProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
+    }
   }
 
   @Nonnull
@@ -46,11 +54,7 @@ abstract class React4j_ImmutablePropTypeBoxedCharacter extends ImmutablePropType
 
   @Override
   Character getMyProp() {
-    if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
-    } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
-    }
+    return $$react4j_immutable_input$$_myProp;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

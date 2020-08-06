@@ -30,9 +30,13 @@ abstract class React4j_ImmutablePropTypePrimitiveByte extends ImmutablePropTypeP
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  private final byte $$react4j_immutable_input$$_myProp;
+
   React4j_ImmutablePropTypePrimitiveByte(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
+    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asByte();
   }
 
   @Nonnull
@@ -46,7 +50,7 @@ abstract class React4j_ImmutablePropTypePrimitiveByte extends ImmutablePropTypeP
 
   @Override
   byte getMyProp() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asByte();
+    return $$react4j_immutable_input$$_myProp;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

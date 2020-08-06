@@ -30,9 +30,13 @@ abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTyp
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  private final double $$react4j_immutable_input$$_myProp;
+
   React4j_ImmutablePropTypePrimitiveDouble(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
+    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asDouble();
   }
 
   @Nonnull
@@ -46,7 +50,7 @@ abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTyp
 
   @Override
   double getMyProp() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asDouble();
+    return $$react4j_immutable_input$$_myProp;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

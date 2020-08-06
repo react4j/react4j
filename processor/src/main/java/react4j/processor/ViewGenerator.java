@@ -102,9 +102,84 @@ final class ViewGenerator
   private static final String VIEW_FIELD = FRAMEWORK_INTERNAL_PREFIX + "view";
   private static final String IS_READY_METHOD = FRAMEWORK_INTERNAL_PREFIX + "isReady";
   private static final String NATIVE_VIEW_FIELD = FRAMEWORK_INTERNAL_PREFIX + "nativeView";
+  private static final String FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX = "$$react4j_immutable_input$$_";
 
   private ViewGenerator()
   {
+  }
+
+  @Nonnull
+  private static MethodSpec.Builder XbuildInputMethod( @Nonnull final InputDescriptor input )
+  {
+    final ExecutableElement methodElement = input.getMethod();
+    final ExecutableType methodType = input.getMethodType();
+    final MethodSpec.Builder method =
+      MethodSpec.methodBuilder( methodElement.getSimpleName().toString() ).
+        returns( TypeName.get( methodType.getReturnType() ) );
+    GeneratorUtil.copyTypeParameters( methodType, method );
+    GeneratorUtil.copyAccessModifiers( methodElement, method );
+    GeneratorUtil.copyWhitelistedAnnotations( methodElement, method );
+
+    method.addAnnotation( Override.class );
+
+    if ( input.isObservable() )
+    {
+      final AnnotationSpec.Builder annotation =
+        AnnotationSpec.builder( OBSERVABLE_ANNOTATION_CLASSNAME ).
+          addMember( "name", "$S", input.getName() ).
+          addMember( "expectSetter", "false" ).
+          addMember( "readOutsideTransaction", "$T.ENABLE", AREZ_FEATURE_CLASSNAME );
+      method.addAnnotation( annotation.build() );
+    }
+
+    if ( input.needsMutableInputAccessedInPostConstructInvariant() )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+      block.addStatement( "$T.apiInvariant( () -> $N(), " +
+                          "() -> \"The view '\" + this + \"' accessed the input named '" + input.getName() +
+                          "' before the view is ready (possibly in a @PostConstruct annotated method?) and " +
+                          "does not have a @OnInputChange annotated method to cover the input and reflect changes " +
+                          "of the input onto the view. This is considered a likely bug and the @Input should be " +
+                          "made immutable or an @OnInputChange method added to cover the input. " +
+                          MemberChecks.suppressedBy( Constants.WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT,
+                                                     Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ).
+                            replace( "\"", "\\\"" ) + " to the @Input annotated method.\" )",
+                          GUARDS_CLASSNAME,
+                          IS_READY_METHOD );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+
+    final String convertMethodName = getConverter( methodType.getReturnType(), methodElement );
+    final TypeKind resultKind = methodElement.getReturnType().getKind();
+    if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( methodElement ) )
+    {
+      final CodeBlock.Builder block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+      block.addStatement(
+        "return null != $N.inputs().getAsAny( Inputs.$N ) ? $N.inputs().getAsAny( Inputs.$N ).$N() : null",
+        NATIVE_VIEW_FIELD,
+        input.getConstantName(),
+        NATIVE_VIEW_FIELD,
+        input.getConstantName(),
+        convertMethodName );
+      block.nextControlFlow( "else" );
+      block.addStatement( "return $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
+                          JS_CLASSNAME,
+                          NATIVE_VIEW_FIELD,
+                          input.getConstantName() );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
+    else
+    {
+      method.addStatement( "return $N.inputs().getAsAny( Inputs.$N ).$N()",
+                           NATIVE_VIEW_FIELD,
+                           input.getConstantName(),
+                           convertMethodName );
+    }
+    return method;
   }
 
   @Nonnull
@@ -167,6 +242,12 @@ final class ViewGenerator
                                   Modifier.FINAL )
                         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                         .build() );
+
+    for ( final InputDescriptor input : descriptor.getImmutableInputs() )
+    {
+      builder.addField( buildImmutableField( input ) );
+    }
+
     builder.addMethod( buildConstructor( processingEnv, descriptor ).build() );
 
     for ( final ScheduleRenderDescriptor element : descriptor.getScheduleRenderDescriptors() )
@@ -264,6 +345,23 @@ final class ViewGenerator
   }
 
   @Nonnull
+  private static FieldSpec buildImmutableField( @Nonnull final InputDescriptor input )
+  {
+    final FieldSpec.Builder field =
+      FieldSpec.builder( TypeName.get( input.getMethodType().getReturnType() ),
+                         FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
+                         Modifier.PRIVATE,
+                         Modifier.FINAL )
+        // This suppression is not required once we add dependency on it
+        .addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
+                          .addMember( "value", "$S", "Arez:UnmanagedComponentReference" )
+                          .build() );
+
+    GeneratorUtil.copyWhitelistedAnnotations( input.getMethod(), field );
+    return field.build();
+  }
+
+  @Nonnull
   private static MethodSpec.Builder buildConstructor( @Nonnull final ProcessingEnvironment processingEnv,
                                                       @Nonnull final ViewDescriptor descriptor )
   {
@@ -306,6 +404,43 @@ final class ViewGenerator
                        NATIVE_VIEW_FIELD,
                        Objects.class,
                        NATIVE_VIEW_FIELD );
+
+    for ( final InputDescriptor input : descriptor.getImmutableInputs() )
+    {
+      final ExecutableType methodType = input.getMethodType();
+      final ExecutableElement methodElement = input.getMethod();
+      final String convertMethodName = getConverter( methodType.getReturnType(), methodElement );
+      final TypeKind resultKind = methodElement.getReturnType().getKind();
+      if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( methodElement ) )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+        block.addStatement( "$N = null != $N.inputs().getAsAny( Inputs.$N ) ? " +
+                            "$N.inputs().getAsAny( Inputs.$N ).$N() : null",
+                            FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
+                            NATIVE_VIEW_FIELD,
+                            input.getConstantName(),
+                            NATIVE_VIEW_FIELD,
+                            input.getConstantName(),
+                            convertMethodName );
+        block.nextControlFlow( "else" );
+        block.addStatement( "$N = $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
+                            FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
+                            JS_CLASSNAME,
+                            NATIVE_VIEW_FIELD,
+                            input.getConstantName() );
+        block.endControlFlow();
+        ctor.addCode( block.build() );
+      }
+      else
+      {
+        ctor.addStatement( "$N = $N.inputs().getAsAny( Inputs.$N ).$N()",
+                           FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
+                           NATIVE_VIEW_FIELD,
+                           input.getConstantName(),
+                           convertMethodName );
+      }
+    }
     return ctor;
   }
 
@@ -377,33 +512,40 @@ final class ViewGenerator
       method.addCode( block.build() );
     }
 
-    final String convertMethodName = getConverter( returnType, methodElement );
-    final TypeKind resultKind = methodElement.getReturnType().getKind();
-    if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( methodElement ) )
+    if ( input.isImmutable() )
     {
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-      block.addStatement(
-        "return null != $N.inputs().getAsAny( Inputs.$N ) ? $N.inputs().getAsAny( Inputs.$N ).$N() : null",
-        NATIVE_VIEW_FIELD,
-        input.getConstantName(),
-        NATIVE_VIEW_FIELD,
-        input.getConstantName(),
-        convertMethodName );
-      block.nextControlFlow( "else" );
-      block.addStatement( "return $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
-                          JS_CLASSNAME,
-                          NATIVE_VIEW_FIELD,
-                          input.getConstantName() );
-      block.endControlFlow();
-      method.addCode( block.build() );
+      method.addStatement( "return $N", FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName() );
     }
     else
     {
-      method.addStatement( "return $N.inputs().getAsAny( Inputs.$N ).$N()",
-                           NATIVE_VIEW_FIELD,
-                           input.getConstantName(),
-                           convertMethodName );
+      final String convertMethodName = getConverter( returnType, methodElement );
+      final TypeKind resultKind = methodElement.getReturnType().getKind();
+      if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( methodElement ) )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+        block.addStatement( "return null != $N.inputs().getAsAny( Inputs.$N ) ? " +
+                            "$N.inputs().getAsAny( Inputs.$N ).$N() : null",
+                            NATIVE_VIEW_FIELD,
+                            input.getConstantName(),
+                            NATIVE_VIEW_FIELD,
+                            input.getConstantName(),
+                            convertMethodName );
+        block.nextControlFlow( "else" );
+        block.addStatement( "return $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
+                            JS_CLASSNAME,
+                            NATIVE_VIEW_FIELD,
+                            input.getConstantName() );
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
+      else
+      {
+        method.addStatement( "return $N.inputs().getAsAny( Inputs.$N ).$N()",
+                             NATIVE_VIEW_FIELD,
+                             input.getConstantName(),
+                             convertMethodName );
+      }
     }
     return method;
   }

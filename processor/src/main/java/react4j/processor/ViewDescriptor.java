@@ -231,6 +231,13 @@ final class ViewDescriptor
   }
 
   @Nonnull
+  List<InputDescriptor> getImmutableInputs()
+  {
+    assert null != _inputs;
+    return _inputs.stream().filter( InputDescriptor::isImmutable ).collect( Collectors.toList() );
+  }
+
+  @Nonnull
   List<InputDescriptor> getInputs()
   {
     assert null != _inputs;
