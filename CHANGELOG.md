@@ -4,6 +4,7 @@
 
 * Cache immutable inputs in the constructor of the generated `@View` sub-class. This reduces the runtime overhead and code size when using views with immutable inputs. The code transformation also opens up future feature development.
 * Add a `@View.dependency` parameter that controls whether a disposed input will result in the view being disposed.
+* Pause the Arez scheduler during a react4j render only after it has been determined that a render will occur. If a disposed `@Input` would abort the render then do not attempt to pause the Arez scheduler.
 
 ### [v0.173](https://github.com/react4j/react4j/tree/v0.173) (2020-08-03) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.172...v0.173) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.172&new=0.173)
 

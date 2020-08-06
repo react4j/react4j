@@ -875,7 +875,6 @@ final class ViewGenerator
       method.addAnnotation( observe.build() );
 
       method.addStatement( "$N = $T.IDLE", STATE_FIELD, VIEW_STATE_CLASSNAME );
-      method.addStatement( "$T.pauseUntilRenderLoopComplete()", SCHEDULER_UTIL_CLASSNAME );
     }
     if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isDependency ) )
     {
@@ -910,6 +909,11 @@ final class ViewGenerator
       block.addStatement( "return null" );
       block.endControlFlow();
       method.addCode( block.build() );
+    }
+
+    if ( descriptor.trackRender() )
+    {
+      method.addStatement( "$T.pauseUntilRenderLoopComplete()", SCHEDULER_UTIL_CLASSNAME );
     }
 
     final StringBuilder sb = new StringBuilder();

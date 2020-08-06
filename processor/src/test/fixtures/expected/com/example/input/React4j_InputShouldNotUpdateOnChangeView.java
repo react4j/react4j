@@ -104,8 +104,8 @@ abstract class React4j_InputShouldNotUpdateOnChangeView extends InputShouldNotUp
   )
   ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
-    SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
+    SchedulerUtil.pauseUntilRenderLoopComplete();
     final ReactNode result = render();
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
       Guards.invariant( () -> !$$react4j$$_getRenderObserver().getContext().getSpy().asObserverInfo( $$react4j$$_getRenderObserver() ).getDependencies().isEmpty(), () -> "View render completed on '" + this + "' without accessing any Arez dependencies but has a type set to TRACKING. The render method needs to access an Arez dependency or the type should be changed to STATEFUL or MAYBE_TRACKING." );

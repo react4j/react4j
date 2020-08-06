@@ -93,8 +93,8 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
   )
   ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
-    SchedulerUtil.pauseUntilRenderLoopComplete();
     assert Disposable.isNotDisposed( this );
+    SchedulerUtil.pauseUntilRenderLoopComplete();
     return render();
   }
 
