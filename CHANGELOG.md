@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.174](https://github.com/react4j/react4j/tree/v0.174) (2020-08-06) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.173...v0.174) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.173&new=0.174)
+
+The release includes 1 non breaking API change.
+
+Changes in this release:
 
 * Cache immutable inputs in the constructor of the generated `@View` sub-class. This reduces the runtime overhead and code size when using views with immutable inputs. The code transformation also opens up future feature development.
 * Add a `@View.dependency` parameter that controls whether a disposed input will result in the view being disposed.
