@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -282,7 +283,25 @@ final class ViewGenerator
 
     if ( input.isDependency() )
     {
-      field.addAnnotation( COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME );
+      final Element inputType = input.getInputType();
+      final boolean isTypeCompatible =
+        null != inputType &&
+        (
+          (
+            ElementKind.CLASS == inputType.getKind() &&
+            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_CLASSNAME )
+          ) ||
+          (
+            ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
+            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME )
+          )
+        );
+      final AnnotationSpec.Builder annotation = AnnotationSpec.builder( COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME );
+      if ( !isTypeCompatible )
+      {
+        annotation.addMember( "validateTypeAtRuntime", "true" );
+      }
+      field.addAnnotation( annotation.build() );
     }
     else
     {

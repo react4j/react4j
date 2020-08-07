@@ -126,6 +126,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.DisposableOptionalPropModel" },
         new Object[]{ "com.example.prop.GenericTypeMultiPropModel" },
         new Object[]{ "com.example.prop.GenericTypePropModel" },
+        new Object[]{ "com.example.prop.ImmutableDisposablePropModel" },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentWithExplicitRequireId" },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezIdentifiable" },
         new Object[]{ "com.example.prop.ImmutablePropTypeBoxedBoolean" },

@@ -948,6 +948,7 @@ public final class React4jProcessor
                            qualifier,
                            method,
                            methodType,
+                           inputType,
                            contextInput,
                            shouldUpdateOnChange,
                            observable,

@@ -3,6 +3,7 @@ package react4j.processor;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
@@ -23,6 +24,8 @@ final class InputDescriptor
   private final ExecutableElement _method;
   @Nonnull
   private final ExecutableType _methodType;
+  @Nullable
+  private final Element _inputType;
   private final boolean _contextSource;
   private final boolean _shouldUpdateOnChange;
   private final boolean _observable;
@@ -52,6 +55,7 @@ final class InputDescriptor
                    @Nonnull final String qualifier,
                    @Nonnull final ExecutableElement method,
                    @Nonnull final ExecutableType methodType,
+                   @Nullable final Element inputType,
                    final boolean contextSource,
                    final boolean shouldUpdateOnChange,
                    final boolean observable,
@@ -65,6 +69,7 @@ final class InputDescriptor
     _qualifier = Objects.requireNonNull( qualifier );
     _method = Objects.requireNonNull( method );
     _methodType = Objects.requireNonNull( methodType );
+    _inputType = inputType;
     _contextSource = contextSource;
     _shouldUpdateOnChange = shouldUpdateOnChange;
     _observable = observable;
@@ -96,6 +101,12 @@ final class InputDescriptor
   ExecutableType getMethodType()
   {
     return _methodType;
+  }
+
+  @Nullable
+  Element getInputType()
+  {
+    return _inputType;
   }
 
   boolean shouldUpdateOnChange()
