@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.175](https://github.com/react4j/react4j/tree/v0.175) (2020-08-07) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.174...v0.175)
+
+Changes in this release:
 
 * Add `validateTypeAtRuntime=true` to the `@ComponentDependency` annotation created when an immutable input is explicitly marked as `disposable=true` but the type of the input is not annotated with either `@ArezComponent` nor `@ActAsComponent`.
 
