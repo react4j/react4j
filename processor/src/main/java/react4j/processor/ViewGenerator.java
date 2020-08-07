@@ -1396,7 +1396,7 @@ final class ViewGenerator
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
         block.addStatement( "return $N.$N()", VIEW_FIELD, RENDER_METHOD );
-        block.nextControlFlow("else");
+        block.nextControlFlow( "else" );
         block.addStatement( "return null" );
         block.endControlFlow();
         method.addCode( block.build() );
@@ -1453,7 +1453,7 @@ final class ViewGenerator
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
       block.addStatement( "return $N.$N( nextInputs )", VIEW_FIELD, SHOULD_COMPONENT_UPDATE_METHOD );
-      block.nextControlFlow("else");
+      block.nextControlFlow( "else" );
       block.addStatement( "return false" );
       block.endControlFlow();
       method.addCode( block.build() );
