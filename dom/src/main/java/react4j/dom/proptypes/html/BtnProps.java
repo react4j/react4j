@@ -22,10 +22,24 @@ public class BtnProps
 {
   @JsOverlay
   @Nonnull
+  public final BtnProps autoFocus()
+  {
+    return autoFocus( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final BtnProps autoFocus( boolean b )
   {
     setAutoFocus( b );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final BtnProps disabled()
+  {
+    return disabled( true );
   }
 
   @JsOverlay
@@ -70,6 +84,13 @@ public class BtnProps
 
   @JsOverlay
   @Nonnull
+  public final BtnProps formNoValidate()
+  {
+    return formNoValidate( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final BtnProps formNoValidate( boolean b )
   {
     setFormNoValidate( b );
@@ -109,6 +130,13 @@ public class BtnProps
   }
 
   //React Specific
+
+  @JsOverlay
+  @Nonnull
+  public final BtnProps defaultChecked()
+  {
+    return defaultChecked( true );
+  }
 
   @JsOverlay
   @Nonnull

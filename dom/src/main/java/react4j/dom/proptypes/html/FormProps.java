@@ -72,6 +72,13 @@ public class FormProps
 
   @JsOverlay
   @Nonnull
+  public final FormProps formNoValidate()
+  {
+    return formNoValidate( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final FormProps formNoValidate( boolean b )
   {
     setFormNoValidate( b );

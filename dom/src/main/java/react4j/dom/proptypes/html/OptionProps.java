@@ -14,6 +14,13 @@ public class OptionProps
 {
   @JsOverlay
   @Nonnull
+  public final OptionProps disabled()
+  {
+    return disabled( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final OptionProps disabled( boolean b )
   {
     setDisabled( b );
@@ -26,6 +33,13 @@ public class OptionProps
   {
     setLabel( s );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final OptionProps selected()
+  {
+    return selected( true );
   }
 
   @JsOverlay

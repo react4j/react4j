@@ -22,10 +22,24 @@ public class SelectProps
 {
   @JsOverlay
   @Nonnull
+  public final SelectProps autoFocus()
+  {
+    return autoFocus( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final SelectProps autoFocus( boolean b )
   {
     setAutoFocus( b );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final SelectProps disabled()
+  {
+    return disabled( true );
   }
 
   @JsOverlay
@@ -46,6 +60,13 @@ public class SelectProps
 
   @JsOverlay
   @Nonnull
+  public final SelectProps multiple()
+  {
+    return multiple( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final SelectProps multiple( boolean b )
   {
     setMultiple( b );
@@ -58,6 +79,13 @@ public class SelectProps
   {
     setName( s );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final SelectProps required()
+  {
+    return required( true );
   }
 
   @JsOverlay

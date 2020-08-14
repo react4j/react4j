@@ -39,6 +39,13 @@ public class InputProps
 
   @JsOverlay
   @Nonnull
+  public final InputProps async()
+  {
+    return async( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final InputProps async( boolean b )
   {
     setAsync( b );
@@ -55,6 +62,13 @@ public class InputProps
 
   @JsOverlay
   @Nonnull
+  public final InputProps autoFocus()
+  {
+    return autoFocus( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final InputProps autoFocus( boolean b )
   {
     setAutoFocus( b );
@@ -63,10 +77,24 @@ public class InputProps
 
   @JsOverlay
   @Nonnull
+  public final InputProps checked()
+  {
+    return checked( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final InputProps checked( boolean b )
   {
     setChecked( b );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final InputProps disabled()
+  {
+    return disabled( true );
   }
 
   @JsOverlay
@@ -107,6 +135,13 @@ public class InputProps
   {
     setFormMethod( s );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final InputProps formNoValidate()
+  {
+    return formNoValidate( true );
   }
 
   @JsOverlay
@@ -167,6 +202,13 @@ public class InputProps
 
   @JsOverlay
   @Nonnull
+  public final InputProps multiple()
+  {
+    return multiple( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final InputProps multiple( boolean b )
   {
     setMultiple( b );
@@ -191,10 +233,24 @@ public class InputProps
 
   @JsOverlay
   @Nonnull
+  public final InputProps readonly()
+  {
+    return readonly( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final InputProps readonly( boolean b )
   {
     setReadOnly( b );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final InputProps required()
+  {
+    return required( true );
   }
 
   @JsOverlay
@@ -254,6 +310,13 @@ public class InputProps
   }
 
   //React Specific
+
+  @JsOverlay
+  @Nonnull
+  public final InputProps defaultChecked()
+  {
+    return defaultChecked( true );
+  }
 
   @JsOverlay
   @Nonnull

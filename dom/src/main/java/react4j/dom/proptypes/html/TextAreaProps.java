@@ -31,6 +31,13 @@ public class TextAreaProps
 
   @JsOverlay
   @Nonnull
+  public final TextAreaProps autoFocus()
+  {
+    return autoFocus( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final TextAreaProps autoFocus( boolean b )
   {
     setAutoFocus( b );
@@ -43,6 +50,13 @@ public class TextAreaProps
   {
     setCols( b );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final TextAreaProps disabled()
+  {
+    return disabled( true );
   }
 
   @JsOverlay
@@ -95,10 +109,24 @@ public class TextAreaProps
 
   @JsOverlay
   @Nonnull
+  public final TextAreaProps readonly()
+  {
+    return readonly( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final TextAreaProps readonly( boolean b )
   {
     setReadOnly( b );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final TextAreaProps required()
+  {
+    return required( true );
   }
 
   @JsOverlay

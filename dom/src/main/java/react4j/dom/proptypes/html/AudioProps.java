@@ -21,10 +21,24 @@ public class AudioProps
 {
   @JsOverlay
   @Nonnull
+  public final AudioProps autoPlay()
+  {
+    return autoPlay( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final AudioProps autoPlay( boolean b )
   {
     setAutoPlay( b );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final AudioProps controls()
+  {
+    return controls( true );
   }
 
   @JsOverlay
@@ -37,10 +51,24 @@ public class AudioProps
 
   @JsOverlay
   @Nonnull
+  public final AudioProps loop()
+  {
+    return loop( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final AudioProps loop( boolean b )
   {
     setLoop( b );
     return self();
+  }
+
+  @JsOverlay
+  @Nonnull
+  public final AudioProps muted()
+  {
+    return muted( true );
   }
 
   @JsOverlay

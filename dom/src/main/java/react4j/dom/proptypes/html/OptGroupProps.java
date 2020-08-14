@@ -14,6 +14,13 @@ public class OptGroupProps
 {
   @JsOverlay
   @Nonnull
+  public final OptGroupProps disabled()
+  {
+    return disabled( true );
+  }
+
+  @JsOverlay
+  @Nonnull
   public final OptGroupProps disabled( boolean b )
   {
     setDisabled( b );

@@ -1,0 +1,466 @@
+[
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.AudioProps react4j.dom.proptypes.html.AudioProps::autoPlay()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.AudioProps",
+      "classSimpleName": "AudioProps",
+      "elementKind": "method",
+      "methodName": "autoPlay",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.AudioProps react4j.dom.proptypes.html.AudioProps::controls()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.AudioProps",
+      "classSimpleName": "AudioProps",
+      "elementKind": "method",
+      "methodName": "controls",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.AudioProps react4j.dom.proptypes.html.AudioProps::loop()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.AudioProps",
+      "classSimpleName": "AudioProps",
+      "elementKind": "method",
+      "methodName": "loop",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.AudioProps react4j.dom.proptypes.html.AudioProps::muted()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.AudioProps",
+      "classSimpleName": "AudioProps",
+      "elementKind": "method",
+      "methodName": "muted",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.BtnProps react4j.dom.proptypes.html.BtnProps::autoFocus()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.BtnProps",
+      "classSimpleName": "BtnProps",
+      "elementKind": "method",
+      "methodName": "autoFocus",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.BtnProps react4j.dom.proptypes.html.BtnProps::defaultChecked()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.BtnProps",
+      "classSimpleName": "BtnProps",
+      "elementKind": "method",
+      "methodName": "defaultChecked",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.BtnProps react4j.dom.proptypes.html.BtnProps::disabled()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.BtnProps",
+      "classSimpleName": "BtnProps",
+      "elementKind": "method",
+      "methodName": "disabled",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.BtnProps react4j.dom.proptypes.html.BtnProps::formNoValidate()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.BtnProps",
+      "classSimpleName": "BtnProps",
+      "elementKind": "method",
+      "methodName": "formNoValidate",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.FormProps react4j.dom.proptypes.html.FormProps::formNoValidate()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.FormProps",
+      "classSimpleName": "FormProps",
+      "elementKind": "method",
+      "methodName": "formNoValidate",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::async()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "async",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::autoFocus()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "autoFocus",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::checked()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "checked",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::defaultChecked()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "defaultChecked",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::disabled()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "disabled",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::formNoValidate()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "formNoValidate",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::multiple()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "multiple",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::readonly()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "readonly",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::required()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "required",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.OptGroupProps react4j.dom.proptypes.html.OptGroupProps::disabled()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.OptGroupProps",
+      "classSimpleName": "OptGroupProps",
+      "elementKind": "method",
+      "methodName": "disabled",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.OptionProps react4j.dom.proptypes.html.OptionProps::disabled()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.OptionProps",
+      "classSimpleName": "OptionProps",
+      "elementKind": "method",
+      "methodName": "disabled",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.OptionProps react4j.dom.proptypes.html.OptionProps::selected()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.OptionProps",
+      "classSimpleName": "OptionProps",
+      "elementKind": "method",
+      "methodName": "selected",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.SelectProps react4j.dom.proptypes.html.SelectProps::autoFocus()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.SelectProps",
+      "classSimpleName": "SelectProps",
+      "elementKind": "method",
+      "methodName": "autoFocus",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.SelectProps react4j.dom.proptypes.html.SelectProps::disabled()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.SelectProps",
+      "classSimpleName": "SelectProps",
+      "elementKind": "method",
+      "methodName": "disabled",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.SelectProps react4j.dom.proptypes.html.SelectProps::multiple()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.SelectProps",
+      "classSimpleName": "SelectProps",
+      "elementKind": "method",
+      "methodName": "multiple",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.SelectProps react4j.dom.proptypes.html.SelectProps::required()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.SelectProps",
+      "classSimpleName": "SelectProps",
+      "elementKind": "method",
+      "methodName": "required",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.TextAreaProps react4j.dom.proptypes.html.TextAreaProps::autoFocus()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.TextAreaProps",
+      "classSimpleName": "TextAreaProps",
+      "elementKind": "method",
+      "methodName": "autoFocus",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.TextAreaProps react4j.dom.proptypes.html.TextAreaProps::disabled()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.TextAreaProps",
+      "classSimpleName": "TextAreaProps",
+      "elementKind": "method",
+      "methodName": "disabled",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.TextAreaProps react4j.dom.proptypes.html.TextAreaProps::readonly()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.TextAreaProps",
+      "classSimpleName": "TextAreaProps",
+      "elementKind": "method",
+      "methodName": "readonly",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.TextAreaProps react4j.dom.proptypes.html.TextAreaProps::required()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.TextAreaProps",
+      "classSimpleName": "TextAreaProps",
+      "elementKind": "method",
+      "methodName": "required",
+      "package": "react4j.dom.proptypes.html"
+    }
+  }
+]
