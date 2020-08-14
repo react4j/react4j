@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.176](https://github.com/react4j/react4j/tree/v0.176) (2020-08-14) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.175...v0.176) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.175&new=0.176)
+
+The release includes 30 potentially breaking API changes.
+
+Changes in this release:
 
 * Enhance the `*Props` objects so that every boolean parameter has an additional method override that defaults the parameter to true. So instead of `new InputProps().required( true )` you can write `new InputProps().required()`.
 * Add the `InputProps.pattern(String)` method.
