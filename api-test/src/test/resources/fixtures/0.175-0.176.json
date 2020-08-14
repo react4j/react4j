@@ -258,6 +258,22 @@
   {
     "code": "java.method.finalMethodAddedToNonFinalClass",
     "description": "A final method has been added to an inheritable class.",
+    "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::pattern(java.lang.String)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "method",
+      "methodName": "pattern",
+      "package": "react4j.dom.proptypes.html"
+    }
+  },
+  {
+    "code": "java.method.finalMethodAddedToNonFinalClass",
+    "description": "A final method has been added to an inheritable class.",
     "newElement": "method react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::readonly()",
     "classification": {
       "SOURCE": "POTENTIALLY_BREAKING",

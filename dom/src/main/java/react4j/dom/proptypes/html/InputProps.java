@@ -303,6 +303,14 @@ public class InputProps
 
   @JsOverlay
   @Nonnull
+  public final InputProps pattern( @Nonnull final String value )
+  {
+    setPattern( value );
+    return self();
+  }
+
+  @JsOverlay
+  @Nonnull
   public final InputProps width( int i )
   {
     setWidth( Integer.toString( i ) );
