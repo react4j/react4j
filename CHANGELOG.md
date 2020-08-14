@@ -4,6 +4,7 @@
 
 * Enhance the `*Props` objects so that every boolean parameter has an additional method override that defaults the parameter to true. So instead of `new InputProps().required( true )` you can write `new InputProps().required()`.
 * Add the `InputProps.pattern(String)` method.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.191`.
 
 ### [v0.175](https://github.com/react4j/react4j/tree/v0.175) (2020-08-07) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.174...v0.175)
 
