@@ -1,0 +1,194 @@
+[
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(byte)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(double)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(float)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(int)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(java.util.stream.Stream<? extends react4j.ReactNode>)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(long)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(react4j.ReactNode[])",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(react4j.dom.proptypes.html.InputProps, java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(react4j.dom.proptypes.html.InputProps, java.util.stream.Stream<? extends react4j.ReactNode>)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(react4j.dom.proptypes.html.InputProps, react4j.ReactNode[])",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.dom.DOM::input(short)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.DOM",
+      "classSimpleName": "DOM",
+      "elementKind": "method",
+      "methodName": "input",
+      "package": "react4j.dom"
+    }
+  }
+]

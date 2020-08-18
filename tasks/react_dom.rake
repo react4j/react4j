@@ -22,7 +22,7 @@ def dom_factory_types
     'i' => { :prop_type => 'HtmlProps' },
     'iframe' => { :prop_type => 'IFrameProps' },
     'img' => { :prop_type => 'ImgProps' },
-    'input' => { :prop_type => 'InputProps' },
+    'input' => { :prop_type => 'InputProps', :children => false },
     'label' => { :prop_type => 'LabelProps' },
     'li' => { :prop_type => 'HtmlProps' },
     'ol' => { :prop_type => 'HtmlProps' },
