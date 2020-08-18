@@ -2,13 +2,13 @@
 
 ### Unreleased
 
-* Remove children parameter from the `br`, `col`, `img` and `source` element factory methods as these are void elements that must not have any children.
-
 ### [v0.178](https://github.com/react4j/react4j/tree/v0.178) (2020-08-18) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.177...v0.178) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.177&new=0.178)
 
 The release includes 48 breaking API changes.
 
 Changes in this release:
+
+* Remove children parameter from the `br`, `col`, `img` and `source` element factory methods as these are void elements that must not have any children.
 
 ### [v0.177](https://github.com/react4j/react4j/tree/v0.177) (2020-08-18) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.176...v0.177) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.176&new=0.177)
 
