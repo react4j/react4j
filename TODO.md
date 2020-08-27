@@ -15,6 +15,12 @@ complete as there is too much un-said.
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
 
+* Generate new host element factories for svg types and potentially the remainder of html.
+  This would probably involve scanning the MDN docs or manually constructing the equivalent metadata
+  and writing a script to generate the inputs and factory methods from this metadata.
+  - https://developer.mozilla.org/en-US/docs/Web/SVG/Element
+  - https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+
 ### Enhancements
 
 * React17 - https://reactjs.org/blog/2020/08/10/react-v17-rc.html
