@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -66,6 +67,7 @@ public final class Fetch
 
   public static void main( @Nonnull final String[] args )
   {
+    setupLogger();
     if ( !processOptions( args ) )
     {
       System.exit( ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE );
@@ -225,5 +227,15 @@ public final class Fetch
     {
       c_logger.severe( line );
     }
+  }
+
+  static void setupLogger()
+  {
+    final ConsoleHandler handler = new ConsoleHandler();
+    handler.setFormatter( new RawFormatter() );
+    handler.setLevel( Level.ALL );
+    c_logger.setUseParentHandlers( false );
+    c_logger.addHandler( handler );
+    c_logger.setLevel( Level.INFO );
   }
 }
