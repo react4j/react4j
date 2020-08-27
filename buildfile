@@ -282,6 +282,15 @@ define 'react4j' do
                       :testng
   end
 
+  define 'host-factory-generator' do
+    compile.with :getopt4j,
+                 :jsoup,
+                 :jsonb_api,
+                 :yasson,
+                 :javax_json,
+                 :javax_annotation
+  end
+
   desc 'Examples that are only used to illustrate ideas in documentation'
   define 'doc-examples' do
     project.enable_annotation_processor = true
