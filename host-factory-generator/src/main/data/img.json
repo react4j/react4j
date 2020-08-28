@@ -3,10 +3,10 @@
     "name": "img",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img",
     "contentCategories": [
-        "Flow content",
         "embedded content",
+        "flow content",
         "it also is a part of the interactive content category",
-        "palpable content. If the element has a usemap attribute",
+        "palpable content. if the element has a usemap attribute",
         "phrasing content"
     ],
     "domInterface": "HTMLImageElement",

@@ -97,10 +97,11 @@ public final class Fetch
           {
             final String text = td.text().trim();
             model.getContentCategories().clear();
-            if ( !"None".equals( text ) )
+            final String contentCategoriesText = text.toLowerCase().replaceAll( "\\.$", "" );
+            if ( !"none".equals( contentCategoriesText ) )
             {
               // Example value:  Flow content, heading content, palpable content.
-              model.setContentCategories( Arrays.asList( text.replaceAll( "\\.$", "" ).split( ", " ) ) );
+              model.setContentCategories( Arrays.asList( contentCategoriesText.split( ", " ) ) );
             }
           }
           else if ( "Permitted content".equals( headerText ) )

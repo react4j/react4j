@@ -3,7 +3,7 @@
     "name": "pre",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/pre",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "palpable content"
     ],
     "domInterface": "HTMLPreElement",

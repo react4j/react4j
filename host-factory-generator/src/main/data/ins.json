@@ -3,7 +3,8 @@
     "name": "ins",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins",
     "contentCategories": [
-        "Phrasing content or flow content"
+        "flow content",
+        "phrasing content"
     ],
     "domInterface": "HTMLModElement",
     "omitEndTag": false

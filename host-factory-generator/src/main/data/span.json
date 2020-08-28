@@ -3,7 +3,7 @@
     "name": "span",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "phrasing content"
     ],
     "domInterface": "HTMLSpanElement (before HTML5, the interface was HTMLElement)",

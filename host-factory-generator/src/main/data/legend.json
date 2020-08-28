@@ -3,7 +3,6 @@
     "name": "legend",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/legend",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLLegendElement",
     "omitEndTag": false

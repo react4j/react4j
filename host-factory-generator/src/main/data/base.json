@@ -3,7 +3,7 @@
     "name": "base",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base",
     "contentCategories": [
-        "Metadata content"
+        "metadata content"
     ],
     "domInterface": "HTMLBaseElement",
     "omitEndTag": true

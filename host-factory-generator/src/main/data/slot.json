@@ -3,7 +3,7 @@
     "name": "slot",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "phrasing content"
     ],
     "domInterface": "HTMLSlotElement",

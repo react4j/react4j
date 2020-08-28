@@ -3,9 +3,9 @@
     "name": "textarea",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea",
     "contentCategories": [
-        "Flow content",
-        "Interactive content",
         "and submittable form-associated element",
+        "flow content",
+        "interactive content",
         "labelable",
         "listed",
         "phrasing content",

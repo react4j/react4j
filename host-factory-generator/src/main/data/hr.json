@@ -3,7 +3,7 @@
     "name": "hr",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hr",
     "contentCategories": [
-        "Flow content"
+        "flow content"
     ],
     "domInterface": "HTMLHRElement",
     "omitEndTag": false

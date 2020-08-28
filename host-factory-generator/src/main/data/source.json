@@ -3,7 +3,6 @@
     "name": "source",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLSourceElement",
     "omitEndTag": true

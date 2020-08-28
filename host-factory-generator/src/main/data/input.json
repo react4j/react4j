@@ -3,11 +3,11 @@
     "name": "input",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "form-associated element",
         "listed",
         "palpable content",
-        "phrasing content. If the type is not hidden",
+        "phrasing content. if the type is not hidden",
         "resettable",
         "submittable",
         "then labelable element"

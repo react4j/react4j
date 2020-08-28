@@ -3,7 +3,6 @@
     "name": "tbody",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLTableSectionElement",
     "omitEndTag": false

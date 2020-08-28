@@ -3,7 +3,7 @@
     "name": "table",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table",
     "contentCategories": [
-        "Flow content"
+        "flow content"
     ],
     "domInterface": "HTMLTableElement",
     "omitEndTag": false

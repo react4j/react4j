@@ -3,8 +3,8 @@
     "name": "canvas",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas",
     "contentCategories": [
-        "Flow content",
         "embedded content",
+        "flow content",
         "palpable content",
         "phrasing content"
     ],

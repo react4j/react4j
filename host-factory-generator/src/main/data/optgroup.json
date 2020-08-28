@@ -3,7 +3,6 @@
     "name": "optgroup",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLOptGroupElement",
     "omitEndTag": false

@@ -3,7 +3,6 @@
     "name": "col",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLTableColElement",
     "omitEndTag": false

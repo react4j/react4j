@@ -3,7 +3,6 @@
     "name": "li",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/li",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLLIElement",
     "omitEndTag": false

@@ -3,7 +3,7 @@
     "name": "meter",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "labelable content",
         "palpable content",
         "phrasing content"

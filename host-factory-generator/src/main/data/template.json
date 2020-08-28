@@ -3,8 +3,8 @@
     "name": "template",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template",
     "contentCategories": [
-        "Metadata content",
         "flow content",
+        "metadata content",
         "phrasing content",
         "script-supporting element"
     ],

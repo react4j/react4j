@@ -3,7 +3,6 @@
     "name": "th",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLTableHeaderCellElement",
     "omitEndTag": false

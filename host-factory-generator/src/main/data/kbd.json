@@ -3,7 +3,7 @@
     "name": "kbd",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "palpable content",
         "phrasing content"
     ],

@@ -3,7 +3,6 @@
     "name": "rb",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rb",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLElement",
     "omitEndTag": false

@@ -3,8 +3,8 @@
     "name": "ul",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ul",
     "contentCategories": [
-        "Flow content",
         "and if the <ul> element's children include at least one <li> element",
+        "flow content",
         "palpable content"
     ],
     "domInterface": "HTMLUListElement",

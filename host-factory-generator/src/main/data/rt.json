@@ -3,7 +3,6 @@
     "name": "rt",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rt",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLElement",
     "omitEndTag": false

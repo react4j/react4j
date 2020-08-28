@@ -3,7 +3,7 @@
     "name": "title",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title",
     "contentCategories": [
-        "Metadata content"
+        "metadata content"
     ],
     "domInterface": "HTMLTitleElement",
     "omitEndTag": false

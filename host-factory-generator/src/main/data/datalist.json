@@ -3,7 +3,7 @@
     "name": "datalist",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "phrasing content"
     ],
     "domInterface": "HTMLDataListElement",

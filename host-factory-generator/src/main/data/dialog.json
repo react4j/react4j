@@ -3,7 +3,7 @@
     "name": "dialog",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "sectioning root"
     ],
     "domInterface": "HTMLDialogElement",

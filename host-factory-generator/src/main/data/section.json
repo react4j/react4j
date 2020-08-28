@@ -3,9 +3,9 @@
     "name": "section",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section",
     "contentCategories": [
-        "Flow content",
-        "Sectioning content",
-        "palpable content"
+        "flow content",
+        "palpable content",
+        "sectioning content"
     ],
     "domInterface": "HTMLElement",
     "omitEndTag": false

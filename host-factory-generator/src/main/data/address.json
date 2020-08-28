@@ -3,7 +3,7 @@
     "name": "address",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/address",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "palpable content"
     ],
     "domInterface": "HTMLElement Prior to Gecko 2.0 (Firefox 4), Gecko implemented this element using the HTMLSpanElement interface",

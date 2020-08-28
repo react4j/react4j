@@ -3,7 +3,7 @@
     "name": "p",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "palpable content"
     ],
     "domInterface": "HTMLParagraphElement",

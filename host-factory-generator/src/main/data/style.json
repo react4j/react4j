@@ -3,8 +3,8 @@
     "name": "style",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style",
     "contentCategories": [
-        "Metadata content",
-        "and if the scoped attribute is present: flow content"
+        "and if the scoped attribute is present: flow content",
+        "metadata content"
     ],
     "domInterface": "HTMLStyleElement",
     "omitEndTag": false

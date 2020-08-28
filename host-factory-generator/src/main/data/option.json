@@ -3,7 +3,6 @@
     "name": "option",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLOptionElement",
     "omitEndTag": false

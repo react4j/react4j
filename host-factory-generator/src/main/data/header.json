@@ -3,7 +3,7 @@
     "name": "header",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "palpable content"
     ],
     "domInterface": "HTMLElement",

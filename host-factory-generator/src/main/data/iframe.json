@@ -3,8 +3,8 @@
     "name": "iframe",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe",
     "contentCategories": [
-        "Flow content",
         "embedded content",
+        "flow content",
         "interactive content",
         "palpable content",
         "phrasing content"

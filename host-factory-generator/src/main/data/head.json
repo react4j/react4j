@@ -3,7 +3,6 @@
     "name": "head",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLHeadElement",
     "omitEndTag": false

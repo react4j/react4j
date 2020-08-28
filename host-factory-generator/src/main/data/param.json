@@ -3,7 +3,6 @@
     "name": "param",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/param",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLParamElement",
     "omitEndTag": true

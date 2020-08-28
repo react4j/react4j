@@ -3,7 +3,6 @@
     "name": "rp",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rp",
     "contentCategories": [
-        "None"
     ],
     "domInterface": "HTMLElement",
     "omitEndTag": false

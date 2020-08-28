@@ -3,8 +3,8 @@
     "name": "picture",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture",
     "contentCategories": [
-        "Flow content",
         "embedded content",
+        "flow content",
         "phrasing content"
     ],
     "domInterface": "HTMLPictureElement",

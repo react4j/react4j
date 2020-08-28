@@ -3,7 +3,7 @@
     "name": "td",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td",
     "contentCategories": [
-        "Sectioning root"
+        "sectioning root"
     ],
     "domInterface": "HTMLTableDataCellElement",
     "omitEndTag": false

@@ -3,8 +3,8 @@
     "name": "select",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select",
     "contentCategories": [
-        "Flow content",
         "and submittable form-associated element",
+        "flow content",
         "interactive content",
         "labelable",
         "listed",

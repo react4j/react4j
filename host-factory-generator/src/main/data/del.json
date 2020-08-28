@@ -3,7 +3,8 @@
     "name": "del",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del",
     "contentCategories": [
-        "Phrasing content or flow content"
+        "flow content",
+        "phrasing content"
     ],
     "domInterface": "HTMLModElement",
     "omitEndTag": false

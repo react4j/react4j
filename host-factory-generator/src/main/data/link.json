@@ -3,7 +3,7 @@
     "name": "link",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link",
     "contentCategories": [
-        "Metadata content. If itemprop is present: Flow content and phrasing content"
+        "metadata content. if itemprop is present: flow content and phrasing content"
     ],
     "domInterface": "HTMLLinkElement",
     "omitEndTag": true

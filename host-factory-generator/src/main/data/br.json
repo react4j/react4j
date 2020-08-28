@@ -3,7 +3,7 @@
     "name": "br",
     "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br",
     "contentCategories": [
-        "Flow content",
+        "flow content",
         "phrasing content"
     ],
     "domInterface": "HTMLBRElement",
