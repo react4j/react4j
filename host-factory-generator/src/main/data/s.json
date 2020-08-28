@@ -4,5 +4,6 @@
         "Phrasing content or flow content"
     ],
     "name": "s",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLElement"
 }

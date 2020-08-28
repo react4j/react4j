@@ -4,5 +4,6 @@
         "Phrasing content or flow content"
     ],
     "name": "del",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLModElement"
 }

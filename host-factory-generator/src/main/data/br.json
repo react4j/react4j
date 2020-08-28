@@ -5,5 +5,6 @@
         "phrasing content"
     ],
     "name": "br",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLBRElement"
 }

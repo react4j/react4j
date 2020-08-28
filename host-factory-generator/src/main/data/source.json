@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "source",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLSourceElement"
 }

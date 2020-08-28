@@ -6,5 +6,6 @@
         "palpable content"
     ],
     "name": "h3",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLHeadingElement"
 }

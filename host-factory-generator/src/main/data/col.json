@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "col",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTableColElement"
 }

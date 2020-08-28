@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "tfoot",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTableSectionElement"
 }

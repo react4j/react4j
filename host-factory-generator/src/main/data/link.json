@@ -4,5 +4,6 @@
         "Metadata content. If itemprop is present: Flow content and phrasing content"
     ],
     "name": "link",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLLinkElement"
 }

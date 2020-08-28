@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "caption",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTableCaptionElement"
 }

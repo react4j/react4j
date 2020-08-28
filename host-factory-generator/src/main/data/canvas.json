@@ -7,5 +7,6 @@
         "phrasing content"
     ],
     "name": "canvas",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLCanvasElement"
 }

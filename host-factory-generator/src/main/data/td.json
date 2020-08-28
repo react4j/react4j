@@ -4,5 +4,6 @@
         "Sectioning root"
     ],
     "name": "td",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTableDataCellElement"
 }

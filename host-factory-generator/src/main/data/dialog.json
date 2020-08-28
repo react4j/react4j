@@ -5,5 +5,6 @@
         "sectioning root"
     ],
     "name": "dialog",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLDialogElement"
 }

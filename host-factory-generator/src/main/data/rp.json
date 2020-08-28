@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "rp",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLElement"
 }

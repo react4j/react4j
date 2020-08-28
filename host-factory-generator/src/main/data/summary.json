@@ -3,5 +3,6 @@
     "contentCategories": [
     ],
     "name": "summary",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLElement"
 }

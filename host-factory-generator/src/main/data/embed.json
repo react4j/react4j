@@ -8,5 +8,6 @@
         "phrasing content"
     ],
     "name": "embed",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLEmbedElement"
 }

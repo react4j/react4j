@@ -7,5 +7,6 @@
         "script-supporting element"
     ],
     "name": "template",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTemplateElement"
 }

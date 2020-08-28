@@ -9,5 +9,6 @@
         "resettable form-associated element"
     ],
     "name": "output",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLOutputElement"
 }

@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "option",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLOptionElement"
 }

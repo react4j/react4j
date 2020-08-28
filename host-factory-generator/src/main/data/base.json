@@ -4,5 +4,6 @@
         "Metadata content"
     ],
     "name": "base",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLBaseElement"
 }

@@ -6,5 +6,6 @@
         "palpable content"
     ],
     "name": "ol",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLOListElement"
 }

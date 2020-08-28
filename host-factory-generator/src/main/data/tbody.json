@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "tbody",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTableSectionElement"
 }

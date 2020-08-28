@@ -6,5 +6,6 @@
         "palpable content"
     ],
     "name": "h4",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLHeadingElement"
 }

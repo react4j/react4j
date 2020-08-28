@@ -8,5 +8,6 @@
         "phrasing content"
     ],
     "name": "img",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLImageElement"
 }

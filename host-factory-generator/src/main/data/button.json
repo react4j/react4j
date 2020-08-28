@@ -10,5 +10,6 @@
         "phrasing content"
     ],
     "name": "button",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLButtonElement"
 }

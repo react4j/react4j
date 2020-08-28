@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "li",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLLIElement"
 }

@@ -6,5 +6,6 @@
         "palpable content"
     ],
     "name": "hgroup",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLElement"
 }

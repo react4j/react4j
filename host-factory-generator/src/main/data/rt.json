@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "rt",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLElement"
 }

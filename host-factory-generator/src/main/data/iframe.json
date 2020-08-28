@@ -8,5 +8,6 @@
         "phrasing content"
     ],
     "name": "iframe",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLIFrameElement"
 }

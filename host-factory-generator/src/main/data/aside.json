@@ -6,5 +6,6 @@
         "sectioning content"
     ],
     "name": "aside",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLElement"
 }

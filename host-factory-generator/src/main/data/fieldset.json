@@ -8,5 +8,6 @@
         "sectioning root"
     ],
     "name": "fieldset",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLFieldSetElement"
 }

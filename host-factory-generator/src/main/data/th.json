@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "th",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTableHeaderCellElement"
 }

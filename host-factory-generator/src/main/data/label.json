@@ -8,5 +8,6 @@
         "phrasing content"
     ],
     "name": "label",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLLabelElement"
 }

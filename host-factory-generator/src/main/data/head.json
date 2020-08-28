@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "head",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLHeadElement"
 }

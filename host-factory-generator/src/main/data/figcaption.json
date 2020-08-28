@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "figcaption",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLElement"
 }

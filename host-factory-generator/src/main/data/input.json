@@ -11,5 +11,6 @@
         "then labelable element"
     ],
     "name": "input",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLInputElement"
 }

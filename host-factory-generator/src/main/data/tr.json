@@ -3,5 +3,6 @@
     "contentCategories": [
     ],
     "name": "tr",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTableRowElement"
 }

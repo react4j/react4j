@@ -10,5 +10,6 @@
         "resettable"
     ],
     "name": "select",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLSelectElement"
 }

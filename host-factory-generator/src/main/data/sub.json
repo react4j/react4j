@@ -6,5 +6,6 @@
         "phrasing content"
     ],
     "name": "sub",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLElement"
 }

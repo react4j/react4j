@@ -6,5 +6,6 @@
         "phrasing content"
     ],
     "name": "audio",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLAudioElement"
 }

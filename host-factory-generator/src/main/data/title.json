@@ -4,5 +4,6 @@
         "Metadata content"
     ],
     "name": "title",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTitleElement"
 }

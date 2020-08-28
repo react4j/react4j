@@ -7,5 +7,6 @@
         "sectioning root"
     ],
     "name": "details",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLDetailsElement"
 }

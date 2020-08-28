@@ -5,5 +5,6 @@
         "phrasing content"
     ],
     "name": "area",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLAreaElement"
 }

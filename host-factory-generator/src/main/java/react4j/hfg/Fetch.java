@@ -124,6 +124,7 @@ public final class Fetch
           }
           else if ( "DOM interface".equals( headerText ) || "DOM Interface".equals( headerText ) )
           {
+            model.setDomInterface( td.text() );
           }
         }
         model.save( c_dataDirectory );

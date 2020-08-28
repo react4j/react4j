@@ -3,5 +3,6 @@
     "contentCategories": [
     ],
     "name": "track",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLTrackElement"
 }

@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "optgroup",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLOptGroupElement"
 }

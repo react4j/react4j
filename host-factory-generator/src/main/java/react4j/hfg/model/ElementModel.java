@@ -16,7 +16,7 @@ import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.annotation.JsonbPropertyOrder;
 
-@JsonbPropertyOrder( { "contentCategories", "name", "omitEndTag" } )
+@JsonbPropertyOrder( { "contentCategories", "name", "omitEndTag", "domInterface" } )
 public final class ElementModel
 {
   /**
@@ -28,6 +28,7 @@ public final class ElementModel
   private final List<String> contentCategories = new ArrayList<>();
   private String name;
   private boolean omitEndTag;
+  private String domInterface;
 
   public String getName()
   {
@@ -59,6 +60,16 @@ public final class ElementModel
   public void setOmitEndTag( final boolean omitEndTag )
   {
     this.omitEndTag = omitEndTag;
+  }
+
+  public String getDomInterface()
+  {
+    return domInterface;
+  }
+
+  public void setDomInterface( final String domInterface )
+  {
+    this.domInterface = domInterface;
   }
 
   @Nonnull

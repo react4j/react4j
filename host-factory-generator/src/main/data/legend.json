@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "legend",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLLegendElement"
 }

@@ -4,5 +4,6 @@
         "Sectioning root"
     ],
     "name": "body",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLBodyElement The <body> element exposes the HTMLBodyElement interface. You can access the <body> element through the document.body property."
 }

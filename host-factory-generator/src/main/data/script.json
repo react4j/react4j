@@ -6,5 +6,6 @@
         "Phrasing content"
     ],
     "name": "script",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLScriptElement"
 }

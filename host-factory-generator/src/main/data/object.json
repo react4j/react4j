@@ -7,5 +7,6 @@
         "submittable form-associated element"
     ],
     "name": "object",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLObjectElement"
 }

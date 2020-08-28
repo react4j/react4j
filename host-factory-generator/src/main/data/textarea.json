@@ -10,5 +10,6 @@
         "resettable"
     ],
     "name": "textarea",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTextAreaElement"
 }

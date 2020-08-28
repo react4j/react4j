@@ -6,5 +6,6 @@
         "phrasing content"
     ],
     "name": "video",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLVideoElement"
 }

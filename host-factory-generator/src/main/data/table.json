@@ -4,5 +4,6 @@
         "Flow content"
     ],
     "name": "table",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTableElement"
 }

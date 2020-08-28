@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "param",
-    "omitEndTag": true
+    "omitEndTag": true,
+    "domInterface": "HTMLParamElement"
 }

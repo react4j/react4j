@@ -4,5 +4,6 @@
         "Flow content"
     ],
     "name": "hr",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLHRElement"
 }

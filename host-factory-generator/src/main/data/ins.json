@@ -4,5 +4,6 @@
         "Phrasing content or flow content"
     ],
     "name": "ins",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLModElement"
 }

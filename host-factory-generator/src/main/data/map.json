@@ -6,5 +6,6 @@
         "phrasing content"
     ],
     "name": "map",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLMapElement"
 }

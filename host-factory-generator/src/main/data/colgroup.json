@@ -4,5 +4,6 @@
         "None"
     ],
     "name": "colgroup",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLTableColElement"
 }

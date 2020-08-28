@@ -6,5 +6,6 @@
         "palpable content"
     ],
     "name": "ul",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLUListElement"
 }

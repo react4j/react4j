@@ -6,5 +6,6 @@
         "sectioning content"
     ],
     "name": "nav",
-    "omitEndTag": false
+    "omitEndTag": false,
+    "domInterface": "HTMLElement"
 }
