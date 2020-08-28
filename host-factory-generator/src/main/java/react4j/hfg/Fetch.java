@@ -111,7 +111,7 @@ public final class Fetch
         Files.delete( indexFile );
       }
     }
-    catch ( final FetchException | IOException | IndexException e )
+    catch ( final Exception e )
     {
       c_logger.log( Level.SEVERE, "Error building element index", e );
       System.exit( ExitCodes.ERROR_EXIT_CODE );
