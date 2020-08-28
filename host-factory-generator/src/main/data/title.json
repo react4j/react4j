@@ -1,9 +1,10 @@
 
 {
+    "name": "title",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title",
     "contentCategories": [
         "Metadata content"
     ],
-    "name": "title",
-    "omitEndTag": false,
-    "domInterface": "HTMLTitleElement"
+    "domInterface": "HTMLTitleElement",
+    "omitEndTag": false
 }

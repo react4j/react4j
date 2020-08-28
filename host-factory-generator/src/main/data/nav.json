@@ -1,11 +1,12 @@
 
 {
+    "name": "nav",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "sectioning content"
     ],
-    "name": "nav",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

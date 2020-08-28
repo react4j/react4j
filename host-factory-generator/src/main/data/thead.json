@@ -1,9 +1,10 @@
 
 {
+    "name": "thead",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead",
     "contentCategories": [
         "None"
     ],
-    "name": "thead",
-    "omitEndTag": false,
-    "domInterface": "HTMLTableSectionElement"
+    "domInterface": "HTMLTableSectionElement",
+    "omitEndTag": false
 }

@@ -1,11 +1,12 @@
 
 {
+    "name": "script",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script",
     "contentCategories": [
         "Flow content",
         "Metadata content",
         "Phrasing content"
     ],
-    "name": "script",
-    "omitEndTag": false,
-    "domInterface": "HTMLScriptElement"
+    "domInterface": "HTMLScriptElement",
+    "omitEndTag": false
 }

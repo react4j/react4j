@@ -1,10 +1,11 @@
 
 {
+    "name": "wbr",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/wbr",
     "contentCategories": [
         "Flow content",
         "phrasing content"
     ],
-    "name": "wbr",
-    "omitEndTag": true,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": true
 }

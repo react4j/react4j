@@ -1,9 +1,10 @@
 
 {
+    "name": "s",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/s",
     "contentCategories": [
         "Phrasing content or flow content"
     ],
-    "name": "s",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

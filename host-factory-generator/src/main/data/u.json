@@ -1,11 +1,12 @@
 
 {
+    "name": "u",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/u",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "u",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

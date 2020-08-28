@@ -1,5 +1,7 @@
 
 {
+    "name": "iframe",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe",
     "contentCategories": [
         "Flow content",
         "embedded content",
@@ -7,7 +9,6 @@
         "palpable content",
         "phrasing content"
     ],
-    "name": "iframe",
-    "omitEndTag": false,
-    "domInterface": "HTMLIFrameElement"
+    "domInterface": "HTMLIFrameElement",
+    "omitEndTag": false
 }

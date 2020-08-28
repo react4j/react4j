@@ -1,9 +1,10 @@
 
 {
+    "name": "option",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option",
     "contentCategories": [
         "None"
     ],
-    "name": "option",
-    "omitEndTag": false,
-    "domInterface": "HTMLOptionElement"
+    "domInterface": "HTMLOptionElement",
+    "omitEndTag": false
 }

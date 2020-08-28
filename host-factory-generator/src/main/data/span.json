@@ -1,10 +1,11 @@
 
 {
+    "name": "span",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span",
     "contentCategories": [
         "Flow content",
         "phrasing content"
     ],
-    "name": "span",
-    "omitEndTag": false,
-    "domInterface": "HTMLSpanElement (before HTML5, the interface was HTMLElement)"
+    "domInterface": "HTMLSpanElement (before HTML5, the interface was HTMLElement)",
+    "omitEndTag": false
 }

@@ -1,10 +1,11 @@
 
 {
+    "name": "area",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area",
     "contentCategories": [
         "Flow content",
         "phrasing content"
     ],
-    "name": "area",
-    "omitEndTag": true,
-    "domInterface": "HTMLAreaElement"
+    "domInterface": "HTMLAreaElement",
+    "omitEndTag": true
 }

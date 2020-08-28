@@ -1,10 +1,11 @@
 
 {
+    "name": "br",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br",
     "contentCategories": [
         "Flow content",
         "phrasing content"
     ],
-    "name": "br",
-    "omitEndTag": true,
-    "domInterface": "HTMLBRElement"
+    "domInterface": "HTMLBRElement",
+    "omitEndTag": true
 }

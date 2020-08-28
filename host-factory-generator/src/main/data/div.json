@@ -1,10 +1,11 @@
 
 {
+    "name": "div",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div",
     "contentCategories": [
         "Flow content",
         "palpable content"
     ],
-    "name": "div",
-    "omitEndTag": false,
-    "domInterface": "HTMLDivElement"
+    "domInterface": "HTMLDivElement",
+    "omitEndTag": false
 }

@@ -1,11 +1,12 @@
 
 {
+    "name": "h4",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h4",
     "contentCategories": [
         "Flow content",
         "heading content",
         "palpable content"
     ],
-    "name": "h4",
-    "omitEndTag": false,
-    "domInterface": "HTMLHeadingElement"
+    "domInterface": "HTMLHeadingElement",
+    "omitEndTag": false
 }

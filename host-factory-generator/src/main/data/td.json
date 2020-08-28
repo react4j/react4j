@@ -1,9 +1,10 @@
 
 {
+    "name": "td",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td",
     "contentCategories": [
         "Sectioning root"
     ],
-    "name": "td",
-    "omitEndTag": false,
-    "domInterface": "HTMLTableDataCellElement"
+    "domInterface": "HTMLTableDataCellElement",
+    "omitEndTag": false
 }

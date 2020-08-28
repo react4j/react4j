@@ -1,5 +1,7 @@
 
 {
+    "name": "img",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img",
     "contentCategories": [
         "Flow content",
         "embedded content",
@@ -7,7 +9,6 @@
         "palpable content. If the element has a usemap attribute",
         "phrasing content"
     ],
-    "name": "img",
-    "omitEndTag": true,
-    "domInterface": "HTMLImageElement"
+    "domInterface": "HTMLImageElement",
+    "omitEndTag": true
 }

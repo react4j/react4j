@@ -1,10 +1,11 @@
 
 {
+    "name": "address",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/address",
     "contentCategories": [
         "Flow content",
         "palpable content"
     ],
-    "name": "address",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement Prior to Gecko 2.0 (Firefox 4), Gecko implemented this element using the HTMLSpanElement interface"
+    "domInterface": "HTMLElement Prior to Gecko 2.0 (Firefox 4), Gecko implemented this element using the HTMLSpanElement interface",
+    "omitEndTag": false
 }

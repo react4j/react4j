@@ -1,11 +1,12 @@
 
 {
+    "name": "time",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "time",
-    "omitEndTag": false,
-    "domInterface": "HTMLTimeElement"
+    "domInterface": "HTMLTimeElement",
+    "omitEndTag": false
 }

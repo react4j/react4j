@@ -1,10 +1,11 @@
 
 {
+    "name": "dialog",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog",
     "contentCategories": [
         "Flow content",
         "sectioning root"
     ],
-    "name": "dialog",
-    "omitEndTag": false,
-    "domInterface": "HTMLDialogElement"
+    "domInterface": "HTMLDialogElement",
+    "omitEndTag": false
 }

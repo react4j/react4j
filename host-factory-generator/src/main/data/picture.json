@@ -1,11 +1,12 @@
 
 {
+    "name": "picture",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture",
     "contentCategories": [
         "Flow content",
         "embedded content",
         "phrasing content"
     ],
-    "name": "picture",
-    "omitEndTag": false,
-    "domInterface": "HTMLPictureElement"
+    "domInterface": "HTMLPictureElement",
+    "omitEndTag": false
 }

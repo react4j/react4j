@@ -1,11 +1,12 @@
 
 {
+    "name": "noscript",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript",
     "contentCategories": [
         "Metadata content",
         "flow content",
         "phrasing content"
     ],
-    "name": "noscript",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

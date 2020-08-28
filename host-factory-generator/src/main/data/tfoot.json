@@ -1,9 +1,10 @@
 
 {
+    "name": "tfoot",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tfoot",
     "contentCategories": [
         "None"
     ],
-    "name": "tfoot",
-    "omitEndTag": false,
-    "domInterface": "HTMLTableSectionElement"
+    "domInterface": "HTMLTableSectionElement",
+    "omitEndTag": false
 }

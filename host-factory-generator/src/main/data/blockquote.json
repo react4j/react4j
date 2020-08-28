@@ -1,11 +1,12 @@
 
 {
+    "name": "blockquote",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "sectioning root"
     ],
-    "name": "blockquote",
-    "omitEndTag": false,
-    "domInterface": "HTMLQuoteElement"
+    "domInterface": "HTMLQuoteElement",
+    "omitEndTag": false
 }

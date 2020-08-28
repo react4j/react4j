@@ -1,5 +1,7 @@
 
 {
+    "name": "fieldset",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset",
     "contentCategories": [
         "Flow content",
         "form-associated element",
@@ -7,7 +9,6 @@
         "palpable content",
         "sectioning root"
     ],
-    "name": "fieldset",
-    "omitEndTag": false,
-    "domInterface": "HTMLFieldSetElement"
+    "domInterface": "HTMLFieldSetElement",
+    "omitEndTag": false
 }

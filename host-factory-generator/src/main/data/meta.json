@@ -1,10 +1,11 @@
 
 {
+    "name": "meta",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta",
     "contentCategories": [
         "Metadata content. If the itemprop attribute is present: flow content",
         "phrasing content"
     ],
-    "name": "meta",
-    "omitEndTag": true,
-    "domInterface": "HTMLMetaElement"
+    "domInterface": "HTMLMetaElement",
+    "omitEndTag": true
 }

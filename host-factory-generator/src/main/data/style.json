@@ -1,10 +1,11 @@
 
 {
+    "name": "style",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style",
     "contentCategories": [
         "Metadata content",
         "and if the scoped attribute is present: flow content"
     ],
-    "name": "style",
-    "omitEndTag": false,
-    "domInterface": "HTMLStyleElement"
+    "domInterface": "HTMLStyleElement",
+    "omitEndTag": false
 }

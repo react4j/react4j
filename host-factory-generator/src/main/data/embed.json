@@ -1,5 +1,7 @@
 
 {
+    "name": "embed",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/embed",
     "contentCategories": [
         "Flow content",
         "embedded content",
@@ -7,7 +9,6 @@
         "palpable content",
         "phrasing content"
     ],
-    "name": "embed",
-    "omitEndTag": true,
-    "domInterface": "HTMLEmbedElement"
+    "domInterface": "HTMLEmbedElement",
+    "omitEndTag": true
 }

@@ -1,9 +1,10 @@
 
 {
+    "name": "hr",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hr",
     "contentCategories": [
         "Flow content"
     ],
-    "name": "hr",
-    "omitEndTag": false,
-    "domInterface": "HTMLHRElement"
+    "domInterface": "HTMLHRElement",
+    "omitEndTag": false
 }

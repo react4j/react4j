@@ -1,10 +1,11 @@
 
 {
+    "name": "main",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main",
     "contentCategories": [
         "Flow content",
         "palpable content"
     ],
-    "name": "main",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

@@ -1,11 +1,12 @@
 
 {
+    "name": "video",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video",
     "contentCategories": [
         "Flow content",
         "embedded content. If it has a controls attribute: interactive content and palpable content",
         "phrasing content"
     ],
-    "name": "video",
-    "omitEndTag": false,
-    "domInterface": "HTMLVideoElement"
+    "domInterface": "HTMLVideoElement",
+    "omitEndTag": false
 }

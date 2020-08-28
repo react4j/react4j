@@ -1,9 +1,10 @@
 
 {
+    "name": "dd",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dd",
     "contentCategories": [
         "None"
     ],
-    "name": "dd",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

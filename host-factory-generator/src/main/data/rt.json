@@ -1,9 +1,10 @@
 
 {
+    "name": "rt",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rt",
     "contentCategories": [
         "None"
     ],
-    "name": "rt",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

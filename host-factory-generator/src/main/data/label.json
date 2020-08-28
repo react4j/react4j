@@ -1,5 +1,7 @@
 
 {
+    "name": "label",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label",
     "contentCategories": [
         "Flow content",
         "form-associated element",
@@ -7,7 +9,6 @@
         "palpable content",
         "phrasing content"
     ],
-    "name": "label",
-    "omitEndTag": false,
-    "domInterface": "HTMLLabelElement"
+    "domInterface": "HTMLLabelElement",
+    "omitEndTag": false
 }

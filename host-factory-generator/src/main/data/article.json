@@ -1,11 +1,12 @@
 
 {
+    "name": "article",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/article",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "sectioning content"
     ],
-    "name": "article",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

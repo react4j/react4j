@@ -1,11 +1,12 @@
 
 {
+    "name": "h6",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h6",
     "contentCategories": [
         "Flow content",
         "heading content",
         "palpable content"
     ],
-    "name": "h6",
-    "omitEndTag": false,
-    "domInterface": "HTMLHeadingElement"
+    "domInterface": "HTMLHeadingElement",
+    "omitEndTag": false
 }

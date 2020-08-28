@@ -1,10 +1,11 @@
 
 {
+    "name": "p",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p",
     "contentCategories": [
         "Flow content",
         "palpable content"
     ],
-    "name": "p",
-    "omitEndTag": false,
-    "domInterface": "HTMLParagraphElement"
+    "domInterface": "HTMLParagraphElement",
+    "omitEndTag": false
 }

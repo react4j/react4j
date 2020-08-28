@@ -1,9 +1,10 @@
 
 {
+    "name": "base",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base",
     "contentCategories": [
         "Metadata content"
     ],
-    "name": "base",
-    "omitEndTag": true,
-    "domInterface": "HTMLBaseElement"
+    "domInterface": "HTMLBaseElement",
+    "omitEndTag": true
 }

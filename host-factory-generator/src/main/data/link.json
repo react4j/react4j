@@ -1,9 +1,10 @@
 
 {
+    "name": "link",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link",
     "contentCategories": [
         "Metadata content. If itemprop is present: Flow content and phrasing content"
     ],
-    "name": "link",
-    "omitEndTag": true,
-    "domInterface": "HTMLLinkElement"
+    "domInterface": "HTMLLinkElement",
+    "omitEndTag": true
 }

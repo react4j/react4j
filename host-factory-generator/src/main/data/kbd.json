@@ -1,11 +1,12 @@
 
 {
+    "name": "kbd",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "kbd",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

@@ -1,12 +1,13 @@
 
 {
+    "name": "details",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details",
     "contentCategories": [
         "Flow content",
         "interactive content",
         "palpable content",
         "sectioning root"
     ],
-    "name": "details",
-    "omitEndTag": false,
-    "domInterface": "HTMLDetailsElement"
+    "domInterface": "HTMLDetailsElement",
+    "omitEndTag": false
 }

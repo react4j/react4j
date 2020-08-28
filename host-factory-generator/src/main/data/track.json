@@ -1,8 +1,9 @@
 
 {
+    "name": "track",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track",
     "contentCategories": [
     ],
-    "name": "track",
-    "omitEndTag": true,
-    "domInterface": "HTMLTrackElement"
+    "domInterface": "HTMLTrackElement",
+    "omitEndTag": true
 }

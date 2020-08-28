@@ -1,8 +1,9 @@
 
 {
+    "name": "summary",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary",
     "contentCategories": [
     ],
-    "name": "summary",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

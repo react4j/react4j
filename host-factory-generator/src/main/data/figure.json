@@ -1,11 +1,12 @@
 
 {
+    "name": "figure",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "sectioning root"
     ],
-    "name": "figure",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

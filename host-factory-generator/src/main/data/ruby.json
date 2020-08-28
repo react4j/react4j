@@ -1,11 +1,12 @@
 
 {
+    "name": "ruby",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "ruby",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

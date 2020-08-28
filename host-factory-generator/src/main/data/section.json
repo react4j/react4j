@@ -1,11 +1,12 @@
 
 {
+    "name": "section",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section",
     "contentCategories": [
         "Flow content",
         "Sectioning content",
         "palpable content"
     ],
-    "name": "section",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

@@ -1,11 +1,12 @@
 
 {
+    "name": "bdi",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdi",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "bdi",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

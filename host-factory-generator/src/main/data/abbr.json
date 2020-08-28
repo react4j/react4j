@@ -1,11 +1,12 @@
 
 {
+    "name": "abbr",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "abbr",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

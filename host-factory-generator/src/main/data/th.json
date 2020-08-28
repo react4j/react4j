@@ -1,9 +1,10 @@
 
 {
+    "name": "th",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th",
     "contentCategories": [
         "None"
     ],
-    "name": "th",
-    "omitEndTag": false,
-    "domInterface": "HTMLTableHeaderCellElement"
+    "domInterface": "HTMLTableHeaderCellElement",
+    "omitEndTag": false
 }

@@ -1,9 +1,10 @@
 
 {
+    "name": "html",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html",
     "contentCategories": [
         "None"
     ],
-    "name": "html",
-    "omitEndTag": false,
-    "domInterface": "HTMLHtmlElement"
+    "domInterface": "HTMLHtmlElement",
+    "omitEndTag": false
 }

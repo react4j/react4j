@@ -1,12 +1,13 @@
 
 {
+    "name": "canvas",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas",
     "contentCategories": [
         "Flow content",
         "embedded content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "canvas",
-    "omitEndTag": false,
-    "domInterface": "HTMLCanvasElement"
+    "domInterface": "HTMLCanvasElement",
+    "omitEndTag": false
 }

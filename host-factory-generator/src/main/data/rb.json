@@ -1,9 +1,10 @@
 
 {
+    "name": "rb",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rb",
     "contentCategories": [
         "None"
     ],
-    "name": "rb",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

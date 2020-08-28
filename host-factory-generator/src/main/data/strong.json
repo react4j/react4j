@@ -1,11 +1,12 @@
 
 {
+    "name": "strong",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/strong",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "strong",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

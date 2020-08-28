@@ -1,9 +1,10 @@
 
 {
+    "name": "legend",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/legend",
     "contentCategories": [
         "None"
     ],
-    "name": "legend",
-    "omitEndTag": false,
-    "domInterface": "HTMLLegendElement"
+    "domInterface": "HTMLLegendElement",
+    "omitEndTag": false
 }

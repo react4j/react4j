@@ -1,5 +1,7 @@
 
 {
+    "name": "input",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input",
     "contentCategories": [
         "Flow content",
         "form-associated element",
@@ -10,7 +12,6 @@
         "submittable",
         "then labelable element"
     ],
-    "name": "input",
-    "omitEndTag": true,
-    "domInterface": "HTMLInputElement"
+    "domInterface": "HTMLInputElement",
+    "omitEndTag": true
 }

@@ -1,10 +1,11 @@
 
 {
+    "name": "header",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header",
     "contentCategories": [
         "Flow content",
         "palpable content"
     ],
-    "name": "header",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

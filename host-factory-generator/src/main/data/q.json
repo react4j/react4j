@@ -1,11 +1,12 @@
 
 {
+    "name": "q",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "q",
-    "omitEndTag": false,
-    "domInterface": "HTMLQuoteElement"
+    "domInterface": "HTMLQuoteElement",
+    "omitEndTag": false
 }

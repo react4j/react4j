@@ -1,11 +1,12 @@
 
 {
+    "name": "map",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/map",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "map",
-    "omitEndTag": false,
-    "domInterface": "HTMLMapElement"
+    "domInterface": "HTMLMapElement",
+    "omitEndTag": false
 }

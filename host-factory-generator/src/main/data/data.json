@@ -1,11 +1,12 @@
 
 {
+    "name": "data",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/data",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "data",
-    "omitEndTag": false,
-    "domInterface": "HTMLDataElement"
+    "domInterface": "HTMLDataElement",
+    "omitEndTag": false
 }

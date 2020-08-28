@@ -1,9 +1,10 @@
 
 {
+    "name": "optgroup",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup",
     "contentCategories": [
         "None"
     ],
-    "name": "optgroup",
-    "omitEndTag": false,
-    "domInterface": "HTMLOptGroupElement"
+    "domInterface": "HTMLOptGroupElement",
+    "omitEndTag": false
 }

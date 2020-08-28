@@ -1,9 +1,10 @@
 
 {
+    "name": "li",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/li",
     "contentCategories": [
         "None"
     ],
-    "name": "li",
-    "omitEndTag": false,
-    "domInterface": "HTMLLIElement"
+    "domInterface": "HTMLLIElement",
+    "omitEndTag": false
 }

@@ -16,9 +16,14 @@ import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.annotation.JsonbPropertyOrder;
 
-@JsonbPropertyOrder( { "contentCategories", "name", "omitEndTag", "domInterface" } )
+@JsonbPropertyOrder( { "name", "url", "contentCategories", "domInterface", "omitEndTag" } )
 public final class ElementModel
 {
+  private String name;
+  /**
+   * The url from which documentation was extracted.
+   */
+  private String url;
   /**
    * The set of content categories that classify the element.
    *
@@ -26,9 +31,8 @@ public final class ElementModel
    */
   @Nonnull
   private final List<String> contentCategories = new ArrayList<>();
-  private String name;
-  private boolean omitEndTag;
   private String domInterface;
+  private boolean omitEndTag;
 
   public String getName()
   {
@@ -38,6 +42,16 @@ public final class ElementModel
   public void setName( final String name )
   {
     this.name = name;
+  }
+
+  public String getUrl()
+  {
+    return url;
+  }
+
+  public void setUrl( final String url )
+  {
+    this.url = url;
   }
 
   @Nonnull
@@ -52,16 +66,6 @@ public final class ElementModel
     contentCategories.stream().sorted().distinct().forEach( this.contentCategories::add );
   }
 
-  public boolean isOmitEndTag()
-  {
-    return omitEndTag;
-  }
-
-  public void setOmitEndTag( final boolean omitEndTag )
-  {
-    this.omitEndTag = omitEndTag;
-  }
-
   public String getDomInterface()
   {
     return domInterface;
@@ -70,6 +74,16 @@ public final class ElementModel
   public void setDomInterface( final String domInterface )
   {
     this.domInterface = domInterface;
+  }
+
+  public boolean isOmitEndTag()
+  {
+    return omitEndTag;
+  }
+
+  public void setOmitEndTag( final boolean omitEndTag )
+  {
+    this.omitEndTag = omitEndTag;
   }
 
   @Nonnull

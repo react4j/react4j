@@ -1,11 +1,12 @@
 
 {
+    "name": "samp",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/samp",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "samp",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

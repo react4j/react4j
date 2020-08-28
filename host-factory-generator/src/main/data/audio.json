@@ -1,11 +1,12 @@
 
 {
+    "name": "audio",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio",
     "contentCategories": [
         "Flow content",
         "embedded content. If it has a controls attribute: interactive content and palpable content",
         "phrasing content"
     ],
-    "name": "audio",
-    "omitEndTag": false,
-    "domInterface": "HTMLAudioElement"
+    "domInterface": "HTMLAudioElement",
+    "omitEndTag": false
 }

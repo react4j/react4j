@@ -1,11 +1,12 @@
 
 {
+    "name": "mark",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "mark",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

@@ -1,11 +1,12 @@
 
 {
+    "name": "h3",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h3",
     "contentCategories": [
         "Flow content",
         "heading content",
         "palpable content"
     ],
-    "name": "h3",
-    "omitEndTag": false,
-    "domInterface": "HTMLHeadingElement"
+    "domInterface": "HTMLHeadingElement",
+    "omitEndTag": false
 }

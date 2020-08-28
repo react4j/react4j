@@ -1,9 +1,10 @@
 
 {
+    "name": "colgroup",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup",
     "contentCategories": [
         "None"
     ],
-    "name": "colgroup",
-    "omitEndTag": false,
-    "domInterface": "HTMLTableColElement"
+    "domInterface": "HTMLTableColElement",
+    "omitEndTag": false
 }

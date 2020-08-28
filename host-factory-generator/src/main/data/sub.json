@@ -1,11 +1,12 @@
 
 {
+    "name": "sub",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sub",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "sub",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

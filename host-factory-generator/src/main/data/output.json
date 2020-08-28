@@ -1,5 +1,7 @@
 
 {
+    "name": "output",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/output",
     "contentCategories": [
         "Flow content",
         "labelable",
@@ -8,7 +10,6 @@
         "phrasing content",
         "resettable form-associated element"
     ],
-    "name": "output",
-    "omitEndTag": false,
-    "domInterface": "HTMLOutputElement"
+    "domInterface": "HTMLOutputElement",
+    "omitEndTag": false
 }

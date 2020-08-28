@@ -1,11 +1,12 @@
 
 {
+    "name": "hgroup",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hgroup",
     "contentCategories": [
         "Flow content",
         "heading content",
         "palpable content"
     ],
-    "name": "hgroup",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }

@@ -85,6 +85,7 @@ public final class Fetch
         final Document document = Jsoup.parse( indexFile.toFile(), StandardCharsets.UTF_8.name() );
 
         final ElementModel model = ElementModel.open( c_dataDirectory, name );
+        model.setUrl( url );
         final Elements headers = document.select( "table.properties > tbody > tr > th" );
         for ( final Element th : headers )
         {
@@ -126,6 +127,10 @@ public final class Fetch
           else if ( "DOM interface".equals( headerText ) || "DOM Interface".equals( headerText ) )
           {
             model.setDomInterface( td.text() );
+          }
+          else
+          {
+            System.out.println( name + " has unexpected property " + headerText );
           }
         }
         model.save( c_dataDirectory );

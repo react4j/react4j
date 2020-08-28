@@ -1,11 +1,12 @@
 
 {
+    "name": "sup",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sup",
     "contentCategories": [
         "Flow content",
         "palpable content",
         "phrasing content"
     ],
-    "name": "sup",
-    "omitEndTag": false,
-    "domInterface": "HTMLElement"
+    "domInterface": "HTMLElement",
+    "omitEndTag": false
 }
