@@ -19,9 +19,8 @@ import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
 import org.realityforge.getopt4j.CLUtil;
-import react4j.hfg.model.ElementIndex;
+import react4j.hfg.model.ElementModel;
 import react4j.hfg.model.Index;
-import react4j.hfg.model.IndexException;
 import react4j.hfg.util.fetch.fetch.FetchException;
 import react4j.hfg.util.fetch.fetch.FetchResult;
 import react4j.hfg.util.fetch.fetch.FetchUtil;
@@ -72,6 +71,13 @@ public final class Fetch
     {
       System.exit( ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE );
     }
+    final Index index = fetchIndex();
+    System.exit( ExitCodes.SUCCESS_EXIT_CODE );
+  }
+
+  @Nonnull
+  private static Index fetchIndex()
+  {
     try
     {
       final Path indexFile = fetchData( HTML_DOCS_BASE_URL, 0, "element_index.html" );
@@ -110,13 +116,14 @@ public final class Fetch
       {
         Files.delete( indexFile );
       }
+      return index;
     }
     catch ( final Exception e )
     {
       c_logger.log( Level.SEVERE, "Error building element index", e );
       System.exit( ExitCodes.ERROR_EXIT_CODE );
+      throw new UnsupportedOperationException();
     }
-    System.exit( ExitCodes.SUCCESS_EXIT_CODE );
   }
 
   @SuppressWarnings( "SameParameterValue" )
