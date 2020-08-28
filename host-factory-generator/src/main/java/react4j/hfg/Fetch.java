@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
@@ -15,6 +16,7 @@ import javax.annotation.Nonnull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.realityforge.getopt4j.CLArgsParser;
 import org.realityforge.getopt4j.CLOption;
 import org.realityforge.getopt4j.CLOptionDescriptor;
@@ -72,6 +74,68 @@ public final class Fetch
       System.exit( ExitCodes.ERROR_PARSING_ARGS_EXIT_CODE );
     }
     final Index index = fetchIndex();
+
+    for ( final Index.ElementIndex entry : index.getElements().values() )
+    {
+      final String name = entry.getName();
+      try
+      {
+        final Path indexFile = fetchData( HTML_DOCS_BASE_URL + "/" + name, entry.getLastUpdatedAt(), name + ".html" );
+        final Document document = Jsoup.parse( indexFile.toFile(), StandardCharsets.UTF_8.name() );
+
+        final ElementModel model = ElementModel.open( c_dataDirectory, name );
+        final Elements headers = document.select( "table.properties > tbody > tr > th" );
+        for ( final Element th : headers )
+        {
+          final Element td = th.nextElementSibling();
+          assert "td".equals( td.tagName() );
+
+          final String headerText = th.text();
+          if ( "Content categories".equals( headerText ) )
+          {
+            final String text = td.text().trim();
+            model.getContentCategories().clear();
+            if ( !"None".equals( text ) )
+            {
+              // Example value:  Flow content, heading content, palpable content.
+              model.setContentCategories( Arrays.asList( text.replaceAll( "\\.$", "" ).split( ", " ) ) );
+            }
+          }
+          else if ( "Permitted content".equals( headerText ) )
+          {
+          }
+          else if ( "Tag omission".equals( headerText ) )
+          {
+            final String text = td.text().toLowerCase();
+            final boolean omitEndTag =
+              ( text.contains( "start tag must be present" ) && text.contains( "end tag must not be present" ) ) ||
+              text.contains( "there must be no closing tag" ) ||
+              ( text.contains( "must have a start tag" ) && text.contains( "must not have an end tag" ) );
+            model.setOmitEndTag( omitEndTag );
+          }
+          else if ( "Permitted parents".equals( headerText ) )
+          {
+          }
+          else if ( "Implicit ARIA role".equals( headerText ) )
+          {
+          }
+          else if ( "Permitted ARIA roles".equals( headerText ) )
+          {
+          }
+          else if ( "DOM interface".equals( headerText ) || "DOM Interface".equals( headerText ) )
+          {
+          }
+        }
+        model.save( c_dataDirectory );
+        entry.setLastUpdatedAt( System.currentTimeMillis() );
+      }
+      catch ( final Exception e )
+      {
+        c_logger.log( Level.SEVERE, "Error extracting data for element named '" + name + "'", e );
+        System.exit( ExitCodes.ERROR_EXIT_CODE );
+        throw new UnsupportedOperationException();
+      }
+    }
     System.exit( ExitCodes.SUCCESS_EXIT_CODE );
   }
 
