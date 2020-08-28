@@ -1,0 +1,12 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "form-associated element",
+        "listed",
+        "palpable content",
+        "sectioning root"
+    ],
+    "name": "fieldset",
+    "omitEndTag": false
+}

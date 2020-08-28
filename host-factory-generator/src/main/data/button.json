@@ -1,0 +1,14 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "Interactive content",
+        "and submittable form-associated element",
+        "labelable",
+        "listed",
+        "palpable content",
+        "phrasing content"
+    ],
+    "name": "button",
+    "omitEndTag": false
+}

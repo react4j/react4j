@@ -1,0 +1,10 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "embedded content. If it has a controls attribute: interactive content and palpable content",
+        "phrasing content"
+    ],
+    "name": "video",
+    "omitEndTag": false
+}

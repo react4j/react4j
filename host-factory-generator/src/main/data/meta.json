@@ -1,0 +1,9 @@
+
+{
+    "contentCategories": [
+        "Metadata content. If the itemprop attribute is present: flow content",
+        "phrasing content"
+    ],
+    "name": "meta",
+    "omitEndTag": true
+}

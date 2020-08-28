@@ -1,0 +1,8 @@
+
+{
+    "contentCategories": [
+        "Metadata content. If itemprop is present: Flow content and phrasing content"
+    ],
+    "name": "link",
+    "omitEndTag": true
+}

@@ -1,0 +1,13 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "labelable",
+        "listed",
+        "palpable content",
+        "phrasing content",
+        "resettable form-associated element"
+    ],
+    "name": "output",
+    "omitEndTag": false
+}

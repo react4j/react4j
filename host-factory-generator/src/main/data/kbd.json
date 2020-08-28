@@ -1,0 +1,10 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "palpable content",
+        "phrasing content"
+    ],
+    "name": "kbd",
+    "omitEndTag": false
+}

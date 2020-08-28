@@ -1,0 +1,14 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "Interactive content",
+        "and submittable form-associated element",
+        "labelable",
+        "listed",
+        "phrasing content",
+        "resettable"
+    ],
+    "name": "textarea",
+    "omitEndTag": false
+}

@@ -1,0 +1,10 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "palpable content",
+        "sectioning root"
+    ],
+    "name": "blockquote",
+    "omitEndTag": false
+}

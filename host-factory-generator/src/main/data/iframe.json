@@ -1,0 +1,12 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "embedded content",
+        "interactive content",
+        "palpable content",
+        "phrasing content"
+    ],
+    "name": "iframe",
+    "omitEndTag": false
+}

@@ -1,0 +1,10 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "Sectioning content",
+        "palpable content"
+    ],
+    "name": "section",
+    "omitEndTag": false
+}

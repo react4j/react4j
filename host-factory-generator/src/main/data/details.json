@@ -1,0 +1,11 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "interactive content",
+        "palpable content",
+        "sectioning root"
+    ],
+    "name": "details",
+    "omitEndTag": false
+}

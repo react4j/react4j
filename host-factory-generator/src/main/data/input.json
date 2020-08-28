@@ -1,0 +1,15 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "form-associated element",
+        "listed",
+        "palpable content",
+        "phrasing content. If the type is not hidden",
+        "resettable",
+        "submittable",
+        "then labelable element"
+    ],
+    "name": "input",
+    "omitEndTag": true
+}

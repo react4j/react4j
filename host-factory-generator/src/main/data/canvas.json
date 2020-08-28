@@ -1,0 +1,11 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "embedded content",
+        "palpable content",
+        "phrasing content"
+    ],
+    "name": "canvas",
+    "omitEndTag": false
+}

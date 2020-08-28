@@ -1,0 +1,11 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "labelable content",
+        "palpable content",
+        "phrasing content"
+    ],
+    "name": "progress",
+    "omitEndTag": false
+}

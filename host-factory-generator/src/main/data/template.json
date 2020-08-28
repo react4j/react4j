@@ -1,0 +1,11 @@
+
+{
+    "contentCategories": [
+        "Metadata content",
+        "flow content",
+        "phrasing content",
+        "script-supporting element"
+    ],
+    "name": "template",
+    "omitEndTag": false
+}

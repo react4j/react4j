@@ -1,0 +1,9 @@
+
+{
+    "contentCategories": [
+        "Metadata content",
+        "and if the scoped attribute is present: flow content"
+    ],
+    "name": "style",
+    "omitEndTag": false
+}

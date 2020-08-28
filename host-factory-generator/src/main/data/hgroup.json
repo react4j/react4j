@@ -1,0 +1,10 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "heading content",
+        "palpable content"
+    ],
+    "name": "hgroup",
+    "omitEndTag": false
+}

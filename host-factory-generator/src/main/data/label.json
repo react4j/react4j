@@ -1,0 +1,12 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "form-associated element",
+        "interactive content",
+        "palpable content",
+        "phrasing content"
+    ],
+    "name": "label",
+    "omitEndTag": false
+}

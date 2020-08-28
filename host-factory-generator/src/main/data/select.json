@@ -1,0 +1,14 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "and submittable form-associated element",
+        "interactive content",
+        "labelable",
+        "listed",
+        "phrasing content",
+        "resettable"
+    ],
+    "name": "select",
+    "omitEndTag": false
+}

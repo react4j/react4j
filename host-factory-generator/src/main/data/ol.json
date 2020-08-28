@@ -1,0 +1,10 @@
+
+{
+    "contentCategories": [
+        "Flow content",
+        "and if the <ol> element's children include at least one <li> element",
+        "palpable content"
+    ],
+    "name": "ol",
+    "omitEndTag": false
+}
