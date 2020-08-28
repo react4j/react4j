@@ -16,3 +16,4 @@
 /website/translated_docs
 /website/static/api
 /yarn-error.log
+host-factory-generator/src/main/data/*.html
