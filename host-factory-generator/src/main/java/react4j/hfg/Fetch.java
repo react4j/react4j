@@ -80,7 +80,8 @@ public final class Fetch
       final String name = entry.getName();
       try
       {
-        final Path indexFile = fetchData( HTML_DOCS_BASE_URL + "/" + name, entry.getLastUpdatedAt(), name + ".html" );
+        final String url = HTML_DOCS_BASE_URL + "/" + name;
+        final Path indexFile = fetchData( url, entry.getLastUpdatedAt(), name + ".html" );
         final Document document = Jsoup.parse( indexFile.toFile(), StandardCharsets.UTF_8.name() );
 
         final ElementModel model = ElementModel.open( c_dataDirectory, name );
