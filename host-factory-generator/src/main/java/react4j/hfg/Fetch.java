@@ -93,15 +93,15 @@ public final class Fetch
         elements.forEach( elementName -> c_logger.log( Level.FINE, () -> "  " + elementName ) );
       }
       final Index index = Index.open( c_dataDirectory );
-      final Map<String, ElementIndex> existing = index.getElements();
+      final Map<String, Index.ElementIndex> existing = index.getElements();
       for ( final String element : elements )
       {
         if ( !existing.containsKey( element ) )
         {
           c_logger.log( Level.INFO, () -> "Added " + element + " to the local index" );
-          final ElementIndex elementIndex = new ElementIndex();
-          elementIndex.setName( element );
-          existing.put( element, elementIndex );
+          final Index.ElementIndex elementEntry = new Index.ElementIndex();
+          elementEntry.setName( element );
+          existing.put( element, elementEntry );
         }
       }
       index.save();
