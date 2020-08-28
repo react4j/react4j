@@ -1,9 +1,0 @@
-
-{
-    "name": "col",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col",
-    "contentCategories": [
-    ],
-    "domInterface": "HTMLTableColElement",
-    "omitEndTag": false
-}

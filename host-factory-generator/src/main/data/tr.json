@@ -1,9 +1,0 @@
-
-{
-    "name": "tr",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tr",
-    "contentCategories": [
-    ],
-    "domInterface": "HTMLTableRowElement",
-    "omitEndTag": false
-}

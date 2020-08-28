@@ -1,9 +1,0 @@
-
-{
-    "name": "rtc",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rtc",
-    "contentCategories": [
-    ],
-    "domInterface": "HTMLElement",
-    "omitEndTag": false
-}

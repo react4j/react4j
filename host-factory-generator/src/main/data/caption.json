@@ -1,9 +1,0 @@
-
-{
-    "name": "caption",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption",
-    "contentCategories": [
-    ],
-    "domInterface": "HTMLTableCaptionElement",
-    "omitEndTag": false
-}

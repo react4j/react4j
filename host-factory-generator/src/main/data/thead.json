@@ -1,9 +1,0 @@
-
-{
-    "name": "thead",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead",
-    "contentCategories": [
-    ],
-    "domInterface": "HTMLTableSectionElement",
-    "omitEndTag": false
-}

@@ -1,9 +1,0 @@
-
-{
-    "name": "param",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/param",
-    "contentCategories": [
-    ],
-    "domInterface": "HTMLParamElement",
-    "omitEndTag": true
-}

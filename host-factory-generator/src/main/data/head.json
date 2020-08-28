@@ -1,9 +1,0 @@
-
-{
-    "name": "head",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head",
-    "contentCategories": [
-    ],
-    "domInterface": "HTMLHeadElement",
-    "omitEndTag": false
-}

@@ -1,9 +1,0 @@
-
-{
-    "name": "figcaption",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption",
-    "contentCategories": [
-    ],
-    "domInterface": "HTMLElement",
-    "omitEndTag": false
-}

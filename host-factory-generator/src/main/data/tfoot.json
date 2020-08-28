@@ -1,9 +1,0 @@
-
-{
-    "name": "tfoot",
-    "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tfoot",
-    "contentCategories": [
-    ],
-    "domInterface": "HTMLTableSectionElement",
-    "omitEndTag": false
-}
