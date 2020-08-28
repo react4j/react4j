@@ -122,7 +122,7 @@ public final class Fetch
   @SuppressWarnings( "SameParameterValue" )
   @Nonnull
   private static Path fetchData( @Nonnull final String url,
-                                 final int lastModifiedAt,
+                                 final long lastModifiedAt,
                                  @Nonnull final String targetFileName )
     throws FetchException
   {
