@@ -18,6 +18,8 @@ import javax.annotation.Nonnull;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
+import javax.json.bind.annotation.JsonbPropertyOrder;
+import javax.json.bind.annotation.JsonbTransient;
 
 public class Index
 {
@@ -63,7 +65,30 @@ public class Index
   public void save()
     throws IndexSaveException
   {
-    Index.save( this );
+    try
+    {
+      final Path directory = getDirectory();
+      Files.createDirectories( directory );
+      final JsonbConfig jsonbConfig = new JsonbConfig().withFormatting( true );
+      final Jsonb jsonb = JsonbBuilder.create( jsonbConfig );
+      final Path path = directory.resolve( FILENAME );
+      try ( final FileOutputStream outputStream = new FileOutputStream( path.toFile() ) )
+      {
+        jsonb.toJson( getElements()
+                        .values()
+                        .stream()
+                        .sorted( Comparator.comparing( ElementIndex::getName ) )
+                        .collect( Collectors.toList() ),
+                      outputStream );
+      }
+      jsonb.close();
+      // Add newline as json output omits trailing new line
+      Files.write( path, new byte[]{ '\n' }, StandardOpenOption.APPEND );
+    }
+    catch ( final Exception e )
+    {
+      throw new IndexSaveException( this, e );
+    }
   }
 
   @Nonnull
@@ -105,33 +130,50 @@ public class Index
     }
   }
 
-  static void save( @Nonnull final Index index )
-    throws IndexSaveException
+  @JsonbPropertyOrder( { "name", "lastUpdatedAt" } )
+  public static final class ElementIndex
   {
-    try
+    @JsonbTransient
+    private Index index;
+    private String name;
+    private long lastUpdatedAt;
+
+    public String getName()
     {
-      final Path directory = index.getDirectory();
-      Files.createDirectories( directory );
-      final JsonbConfig jsonbConfig = new JsonbConfig().withFormatting( true );
-      final Jsonb jsonb = JsonbBuilder.create( jsonbConfig );
-      final Path path = directory.resolve( FILENAME );
-      try ( final FileOutputStream outputStream = new FileOutputStream( path.toFile() ) )
-      {
-        jsonb.toJson( index
-                        .getElements()
-                        .values()
-                        .stream()
-                        .sorted( Comparator.comparing( ElementIndex::getName ) )
-                        .collect( Collectors.toList() ),
-                      outputStream );
-      }
-      jsonb.close();
-      // Add newline as json output omits trailing new line
-      Files.write( path, new byte[]{ '\n' }, StandardOpenOption.APPEND );
+      return name;
     }
-    catch ( final Exception e )
+
+    public void setName( final String name )
     {
-      throw new IndexSaveException( index, e );
+      this.name = name;
+    }
+
+    public long getLastUpdatedAt()
+    {
+      return lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt( final long lastUpdatedAt )
+    {
+      this.lastUpdatedAt = lastUpdatedAt;
+    }
+
+    @Nonnull
+    public Index getIndex()
+    {
+      assert null != index;
+      return index;
+    }
+
+    public void save()
+      throws IndexSaveException
+    {
+      getIndex().save();
+    }
+
+    void setIndex( @Nonnull final Index index )
+    {
+      this.index = Objects.requireNonNull( index );
     }
   }
 }
