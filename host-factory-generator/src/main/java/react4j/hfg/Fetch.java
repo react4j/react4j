@@ -131,6 +131,7 @@ public final class Fetch
     assert null != result;
     try
     {
+      Files.deleteIfExists( target );
       Files.move( result.getPath(), target );
     }
     catch ( final IOException ioe )
