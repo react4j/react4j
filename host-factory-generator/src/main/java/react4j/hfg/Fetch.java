@@ -113,7 +113,7 @@ public final class Fetch
     }
     catch ( final FetchException | IOException | IndexException e )
     {
-      c_logger.log( Level.SEVERE, "Error scanning element index", e );
+      c_logger.log( Level.SEVERE, "Error building element index", e );
       System.exit( ExitCodes.ERROR_EXIT_CODE );
     }
     System.exit( ExitCodes.SUCCESS_EXIT_CODE );
