@@ -109,7 +109,6 @@ public final class ElementModel
   }
 
   public void save( @Nonnull final Path dataDirectory )
-    throws IndexSaveException
   {
     try
     {
