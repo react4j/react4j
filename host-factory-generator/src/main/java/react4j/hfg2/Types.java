@@ -11,6 +11,8 @@ import javax.annotation.Nonnull;
 final class Types
 {
   @Nonnull
+  static final ClassName STRING = ClassName.get( String.class );
+  @Nonnull
   static final ClassName NONNULL = ClassName.get( "javax.annotation", "Nonnull" );
   @Nonnull
   static final ClassName NULLABLE = ClassName.get( "javax.annotation", "Nullable" );
