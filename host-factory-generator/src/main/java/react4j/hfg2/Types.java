@@ -31,7 +31,7 @@ final class Types
   static final ClassName STREAM = ClassName.get( Stream.class );
   @Nonnull
   static final ParameterizedTypeName STREAM_T_REACT_NODE =
-    ParameterizedTypeName.get( STREAM, WildcardTypeName.subtypeOf(REACT_NODE) );
+    ParameterizedTypeName.get( STREAM, WildcardTypeName.subtypeOf( REACT_NODE ) );
 
   private Types()
   {
