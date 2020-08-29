@@ -1,7 +1,6 @@
 package react4j.hfg2;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
