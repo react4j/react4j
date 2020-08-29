@@ -10,6 +10,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Set;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.lang.model.SourceVersion;
@@ -64,6 +65,29 @@ final class FactoryGenerator
                           .varargs()
                           .addStatement( "return createElement( $S, null, children )", element.getName() )
                           .build() );
+        type.addMethod( MethodSpec
+                          .methodBuilder( element.getName() )
+                          .returns( Types.REACT_NODE )
+                          .addModifiers( Modifier.PUBLIC, Modifier.STATIC )
+                          .addAnnotation( Types.NONNULL )
+                          .addParameter( ParameterSpec
+                                           .builder( Types.STREAM_T_REACT_NODE, "children", Modifier.FINAL )
+                                           .addAnnotation( Types.NULLABLE )
+                                           .build() )
+                          .varargs()
+                          .addStatement( "return $N( toArray( children ) )", element.getName() )
+                          .build() );
+        final Set<String> permittedContent = element.getPermittedContent();
+        if ( permittedContent.contains( "phrasing content" ) || permittedContent.contains( "flow content" ) )
+        {
+          type.addMethod( emitElementFactoryWithSimpleContent( element, Types.STRING ) );
+          type.addMethod( emitElementFactoryWithSimpleContent( element, TypeName.BYTE ) );
+          type.addMethod( emitElementFactoryWithSimpleContent( element, TypeName.SHORT ) );
+          type.addMethod( emitElementFactoryWithSimpleContent( element, TypeName.INT ) );
+          type.addMethod( emitElementFactoryWithSimpleContent( element, TypeName.LONG ) );
+          type.addMethod( emitElementFactoryWithSimpleContent( element, TypeName.FLOAT ) );
+          type.addMethod( emitElementFactoryWithSimpleContent( element, TypeName.DOUBLE ) );
+        }
       }
     }
 
@@ -77,8 +101,27 @@ final class FactoryGenerator
       writeTo( baseDirectory );
   }
 
-  /*
+  @Nonnull
+  private static MethodSpec emitElementFactoryWithSimpleContent( @Nonnull final Element element,
+                                                                 @Nonnull final TypeName paramType )
+  {
+    final ParameterSpec.Builder parameter = ParameterSpec.builder( paramType, "content", Modifier.FINAL );
+    if ( !paramType.isPrimitive() )
+    {
+      parameter.addAnnotation( Types.NULLABLE );
+    }
 
+    return MethodSpec
+      .methodBuilder( element.getName() )
+      .returns( Types.REACT_NODE )
+      .addModifiers( Modifier.PUBLIC, Modifier.STATIC )
+      .addAnnotation( Types.NONNULL )
+      .addParameter( parameter.build() )
+      .addStatement( "return $N( $T.of( content ) )", element.getName(), Types.REACT_NODE )
+      .build();
+  }
+
+  /*
     @Nonnull
     public static ReactNode ul( @Nonnull final HtmlProps props )
     {
@@ -98,59 +141,10 @@ final class FactoryGenerator
     }
 
     @Nonnull
-    public static ReactNode ul( @Nonnull final String content )
-    {
-      return ul( ReactNode.of( content ) );
-    }
-
-    @Nonnull
-    public static ReactNode ul( final byte content )
-    {
-      return ul( ReactNode.of( content ) );
-    }
-
-    @Nonnull
-    public static ReactNode ul( final short content )
-    {
-      return ul( ReactNode.of( content ) );
-    }
-
-    @Nonnull
-    public static ReactNode ul( final int content )
-    {
-      return ul( ReactNode.of( content ) );
-    }
-
-    @Nonnull
-    public static ReactNode ul( final long content )
-    {
-      return ul( ReactNode.of( content ) );
-    }
-
-    @Nonnull
-    public static ReactNode ul( final float content )
-    {
-      return ul( ReactNode.of( content ) );
-    }
-
-    @Nonnull
-    public static ReactNode ul( final double content )
-    {
-      return ul( ReactNode.of( content ) );
-    }
-
-    @Nonnull
     public static ReactNode ul( @Nonnull final HtmlProps props, @Nonnull final Stream<? extends ReactNode> children )
     {
       return ul( props, toArray( children ) );
     }
-
-    @Nonnull
-    public static ReactNode ul( @Nonnull final Stream<? extends ReactNode> children )
-    {
-      return ul( toArray( children ) );
-    }
-
    */
   @Nonnull
   private static MethodSpec emitToArray()
