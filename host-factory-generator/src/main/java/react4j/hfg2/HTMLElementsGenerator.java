@@ -15,6 +15,8 @@ public final class HTMLElementsGenerator
   @Nonnull
   public static ElementCollection create()
   {
+    // This metadata was built up from scraping https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+    // and related pages, stripping deprecated elements and massaging data
     final ElementCollection collection = new ElementCollection();
     collection.element( "a",
                         "HTMLAnchorElement",
