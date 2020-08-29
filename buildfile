@@ -284,10 +284,6 @@ define 'react4j' do
 
   define 'host-factory-generator' do
     compile.with :getopt4j,
-                 :jsoup,
-                 :jsonb_api,
-                 :yasson,
-                 :javax_json,
                  :javax_annotation
   end
 
