@@ -284,6 +284,7 @@ define 'react4j' do
 
   define 'host-factory-generator' do
     compile.with :getopt4j,
+                 :javapoet,
                  :javax_annotation
   end
 
