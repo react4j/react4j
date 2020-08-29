@@ -77,7 +77,10 @@ final class FactoryGenerator
                           .addStatement( "return $N( toArray( children ) )", element.getName() )
                           .build() );
         final Set<String> permittedContent = element.getPermittedContent();
-        if ( permittedContent.contains( "phrasing content" ) || permittedContent.contains( "flow content" ) )
+        if ( permittedContent.contains( "phrasing content" ) ||
+             permittedContent.contains( "text content" ) ||
+             permittedContent.contains( "transparent content" ) ||
+             permittedContent.contains( "flow content" ) )
         {
           type.addMethod( emitElementFactoryWithSimpleContent( element, Types.STRING ) );
           type.addMethod( emitElementFactoryWithSimpleContent( element, TypeName.BYTE ) );
