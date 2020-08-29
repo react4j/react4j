@@ -74,7 +74,6 @@ final class FactoryGenerator
                                            .builder( Types.STREAM_T_REACT_NODE, "children", Modifier.FINAL )
                                            .addAnnotation( Types.NULLABLE )
                                            .build() )
-                          .varargs()
                           .addStatement( "return $N( toArray( children ) )", element.getName() )
                           .build() );
         final Set<String> permittedContent = element.getPermittedContent();
