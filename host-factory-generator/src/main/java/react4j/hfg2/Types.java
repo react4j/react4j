@@ -19,7 +19,7 @@ final class Types
   @Nonnull
   static final ClassName REACT_NODE = ClassName.get( "react4j", "ReactNode" );
   @Nonnull
-  static final ArrayTypeName REACT_NODE_ARRAY = ArrayTypeName.of( Types.REACT_NODE );
+  static final ArrayTypeName REACT_NODE_ARRAY = ArrayTypeName.of( REACT_NODE );
   @Nonnull
   static final ClassName JS = ClassName.get( "jsinterop.base", "Js" );
   @Nonnull
