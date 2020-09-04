@@ -67,7 +67,7 @@ define 'react4j' do
     test.using :testng
     test.options[:properties] =
       REACT_TEST_OPTIONS.merge('react4j.core.compile_target' => compile.target.to_s)
-    test.options[:java_args] = ['-ea']
+    test.options[:java_args] = %w(-ea)
     test.compile.with :jdepend,
                       :mockito,
                       :arez_testng
@@ -97,7 +97,7 @@ define 'react4j' do
 
     test.using :testng
     test.options[:properties] = { 'react4j.dom.compile_target' => compile.target.to_s }
-    test.options[:java_args] = ['-ea']
+    test.options[:java_args] = %w(-ea)
     test.compile.with :jdepend
 
     package(:jar)
@@ -123,7 +123,7 @@ define 'react4j' do
         'react4j.api_test.fixture_dir' => _('src/test/resources/fixtures').to_s,
         'react4j.revapi.jar' => artifact(:revapi_diff).to_s
       }
-    test.options[:java_args] = ['-ea']
+    test.options[:java_args] = %w(-ea)
     test.using :testng
 
     test.compile.enhance do
@@ -193,7 +193,7 @@ define 'react4j' do
 
     test.using :testng
     test.options[:properties] = { 'react4j.fixture_dir' => _('src/test/fixtures') }
-    test.options[:java_args] = ['-ea']
+    test.options[:java_args] = %w(-ea)
 
     iml.test_source_directories << _('src/test/fixtures/input')
     iml.test_source_directories << _('src/test/fixtures/expected')
@@ -215,7 +215,7 @@ define 'react4j' do
         'react4j.deploy_test.fixture_dir' => _('src/test/resources/fixtures').to_s,
         'react4j.deploy_test.work_dir' => _(:target, 'deploy_test/workdir').to_s
       }
-    test.options[:java_args] = ['-ea']
+    test.options[:java_args] = %w(-ea)
 
     local_test_repository_url = URI.join('file:///', project._(:target, :local_test_repository)).to_s
     compile.enhance do
