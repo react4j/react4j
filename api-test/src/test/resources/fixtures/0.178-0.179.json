@@ -1,5 +1,2408 @@
 [
   {
+    "code": "java.class.kindChanged",
+    "description": "Class kind changed from 'enum' to 'class'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enum",
+      "newKind": "class",
+      "oldKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.io.Serializable'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enum",
+      "interface": "java.io.Serializable",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.AudioPreload>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enum",
+      "interface": "java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.AudioPreload>",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerInheritsFromClass",
+    "description": "Class no longer inherits from 'java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.AudioPreload>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "superClass": "java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.AudioPreload>"
+    }
+  },
+  {
+    "code": "java.class.kindChanged",
+    "description": "Class kind changed from 'enum' to 'class'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enum",
+      "newKind": "class",
+      "oldKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.io.Serializable'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enum",
+      "interface": "java.io.Serializable",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.ButtonType>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enum",
+      "interface": "java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.ButtonType>",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerInheritsFromClass",
+    "description": "Class no longer inherits from 'java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.ButtonType>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "superClass": "java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.ButtonType>"
+    }
+  },
+  {
+    "code": "java.class.kindChanged",
+    "description": "Class kind changed from 'enum' to 'class'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "enum",
+      "newKind": "class",
+      "oldKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.io.Serializable'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "enum",
+      "interface": "java.io.Serializable",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.FormMethod>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "enum",
+      "interface": "java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.FormMethod>",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerInheritsFromClass",
+    "description": "Class no longer inherits from 'java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.FormMethod>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "superClass": "java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.FormMethod>"
+    }
+  },
+  {
+    "code": "java.class.kindChanged",
+    "description": "Class kind changed from 'enum' to 'class'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enum",
+      "newKind": "class",
+      "oldKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.io.Serializable'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enum",
+      "interface": "java.io.Serializable",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.HeaderScope>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enum",
+      "interface": "java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.HeaderScope>",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerInheritsFromClass",
+    "description": "Class no longer inherits from 'java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.HeaderScope>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "superClass": "java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.HeaderScope>"
+    }
+  },
+  {
+    "code": "java.class.kindChanged",
+    "description": "Class kind changed from 'enum' to 'class'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.InputType",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.InputType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enum",
+      "newKind": "class",
+      "oldKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.io.Serializable'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.InputType",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.InputType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enum",
+      "interface": "java.io.Serializable",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.InputType>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.InputType",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.InputType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enum",
+      "interface": "java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.InputType>",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerInheritsFromClass",
+    "description": "Class no longer inherits from 'java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.InputType>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.InputType",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.InputType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "superClass": "java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.InputType>"
+    }
+  },
+  {
+    "code": "java.class.kindChanged",
+    "description": "Class kind changed from 'enum' to 'class'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "enum",
+      "newKind": "class",
+      "oldKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.io.Serializable'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "enum",
+      "interface": "java.io.Serializable",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerImplementsInterface",
+    "description": "Class no longer implements interface 'java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.OnOff>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "enum",
+      "interface": "java.lang.Comparable<react4j.dom.proptypes.html.attributeTypes.OnOff>",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.class.noLongerInheritsFromClass",
+    "description": "Class no longer inherits from 'java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.OnOff>'.",
+    "newElement": "class react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "oldElement": "enum react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "enum",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "superClass": "java.lang.Enum<react4j.dom.proptypes.html.attributeTypes.OnOff>"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.AudioPreload.auto",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "field",
+      "fieldName": "auto",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'auto'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.AudioPreload.auto",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enumConstant",
+      "fieldName": "auto",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "auto"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.AudioPreload' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.AudioPreload.auto",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enumConstant",
+      "fieldName": "auto",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.AudioPreload.metadata",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "field",
+      "fieldName": "metadata",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'metadata'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.AudioPreload.metadata",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enumConstant",
+      "fieldName": "metadata",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "metadata"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.AudioPreload' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.AudioPreload.metadata",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enumConstant",
+      "fieldName": "metadata",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.AudioPreload.none",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "field",
+      "fieldName": "none",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'none'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.AudioPreload.none",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enumConstant",
+      "fieldName": "none",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "none"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.AudioPreload' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.AudioPreload.none",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "enumConstant",
+      "fieldName": "none",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.button",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "field",
+      "fieldName": "button",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'button'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.button",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enumConstant",
+      "fieldName": "button",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "button"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.ButtonType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.button",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enumConstant",
+      "fieldName": "button",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.addedStaticField",
+    "description": "Static field added to class.",
+    "newElement": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.menu",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "field",
+      "fieldName": "menu",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.reset",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "field",
+      "fieldName": "reset",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'reset'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.reset",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enumConstant",
+      "fieldName": "reset",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "reset"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.ButtonType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.reset",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enumConstant",
+      "fieldName": "reset",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.submit",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "field",
+      "fieldName": "submit",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'submit'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.submit",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enumConstant",
+      "fieldName": "submit",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "submit"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.ButtonType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.ButtonType.submit",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "enumConstant",
+      "fieldName": "submit",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.addedStaticField",
+    "description": "Static field added to class.",
+    "newElement": "field react4j.dom.proptypes.html.attributeTypes.FormMethod.dialog",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "field",
+      "fieldName": "dialog",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.FormMethod.get",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "field",
+      "fieldName": "get",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'get'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.FormMethod.get",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "enumConstant",
+      "fieldName": "get",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "get"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.FormMethod' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.FormMethod.get",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "enumConstant",
+      "fieldName": "get",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.FormMethod.post",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "field",
+      "fieldName": "post",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'post'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.FormMethod.post",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "enumConstant",
+      "fieldName": "post",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "post"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.FormMethod' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.FormMethod.post",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "enumConstant",
+      "fieldName": "post",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.addedStaticField",
+    "description": "Static field added to class.",
+    "newElement": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.auto",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "field",
+      "fieldName": "auto",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.col",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "field",
+      "fieldName": "col",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'col'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.col",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enumConstant",
+      "fieldName": "col",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "col"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.HeaderScope' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.col",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enumConstant",
+      "fieldName": "col",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.colgroup",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "field",
+      "fieldName": "colgroup",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'colgroup'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.colgroup",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enumConstant",
+      "fieldName": "colgroup",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "colgroup"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.HeaderScope' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.colgroup",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enumConstant",
+      "fieldName": "colgroup",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.row",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "field",
+      "fieldName": "row",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'row'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.row",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enumConstant",
+      "fieldName": "row",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "row"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.HeaderScope' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.row",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enumConstant",
+      "fieldName": "row",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.rowgroup",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "field",
+      "fieldName": "rowgroup",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'rowgroup'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.rowgroup",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enumConstant",
+      "fieldName": "rowgroup",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "rowgroup"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.HeaderScope' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.HeaderScope.rowgroup",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "enumConstant",
+      "fieldName": "rowgroup",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.button",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "button",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'button'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.button",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "button",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "button"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.button",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "button",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.checkbox",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "checkbox",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'checkbox'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.checkbox",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "checkbox",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "checkbox"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.checkbox",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "checkbox",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.color",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "color",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'color'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.color",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "color",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "color"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.color",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "color",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.date",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "date",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'date'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.date",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "date",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "date"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.date",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "date",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.addedStaticField",
+    "description": "Static field added to class.",
+    "newElement": "field react4j.dom.proptypes.html.attributeTypes.InputType.datetime_local",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "datetime_local",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.email",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "email",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'email'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.email",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "email",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "email"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.email",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "email",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.file",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "file",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'file'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.file",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "file",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "file"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.file",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "file",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.hidden",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "hidden",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'hidden'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.hidden",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "hidden",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "hidden"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.hidden",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "hidden",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.image",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "image",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'image'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.image",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "image",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "image"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.image",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "image",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.month",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "month",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'month'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.month",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "month",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "month"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.month",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "month",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.number",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "number",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'number'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.number",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "number",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "number"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.number",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "number",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.password",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "password",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'password'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.password",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "password",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "password"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.password",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "password",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.radio",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "radio",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'radio'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.radio",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "radio",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "radio"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.radio",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "radio",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.range",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "range",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'range'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.range",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "range",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "range"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.range",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "range",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.reset",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "reset",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'reset'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.reset",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "reset",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "reset"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.reset",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "reset",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.search",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "search",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'search'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.search",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "search",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "search"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.search",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "search",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.submit",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "submit",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'submit'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.submit",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "submit",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "submit"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.submit",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "submit",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.tel",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "tel",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'tel'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.tel",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "tel",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "tel"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.tel",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "tel",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.text",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "text",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'text'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.text",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "text",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "text"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.text",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "text",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.time",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "time",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'time'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.time",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "time",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "time"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.time",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "time",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.url",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "url",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'url'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.url",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "url",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "url"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.url",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "url",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.week",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "field",
+      "fieldName": "week",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'week'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.week",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "week",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "week"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.InputType.week",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "week",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.OnOff.off",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "field",
+      "fieldName": "off",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'off'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.OnOff.off",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "enumConstant",
+      "fieldName": "off",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "off"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.OnOff' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.OnOff.off",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "enumConstant",
+      "fieldName": "off",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'javax.annotation.Nonnull'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.OnOff.on",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@javax.annotation.Nonnull",
+      "annotationType": "javax.annotation.Nonnull",
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "field",
+      "fieldName": "on",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.nowConstant",
+    "description": "Field now declares a compile time constant value 'on'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.OnOff.on",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "enumConstant",
+      "fieldName": "on",
+      "package": "react4j.dom.proptypes.html.attributeTypes",
+      "value": "on"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'react4j.dom.proptypes.html.attributeTypes.OnOff' to 'java.lang.String'.",
+    "element": "field react4j.dom.proptypes.html.attributeTypes.OnOff.on",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "enumConstant",
+      "fieldName": "on",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
     "code": "java.method.added",
     "description": "Method was added.",
     "newElement": "method java.lang.String react4j.dom.proptypes.html.attributeTypes.Target::getValue()",
@@ -13,6 +2416,854 @@
       "elementKind": "method",
       "methodName": "getValue",
       "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.field.removed",
+    "description": "Field removed from class.",
+    "oldElement": "field react4j.dom.proptypes.html.attributeTypes.InputType.datetime",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "enumConstant",
+      "fieldName": "datetime",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ react4j.dom.proptypes.html.attributeTypes.InputType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method <T extends java.lang.Enum<T extends java.lang.Enum<T>>> T java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::valueOf(java.lang.Class<T>, java.lang.String) @ react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "method",
+      "methodName": "compareTo",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "method",
+      "methodName": "compareTo",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "method",
+      "methodName": "compareTo",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "method",
+      "methodName": "compareTo",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ react4j.dom.proptypes.html.attributeTypes.InputType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "method",
+      "methodName": "compareTo",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::compareTo(E) @ react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "method",
+      "methodName": "compareTo",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "method",
+      "methodName": "ordinal",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "method",
+      "methodName": "ordinal",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "method",
+      "methodName": "ordinal",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "method",
+      "methodName": "ordinal",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ react4j.dom.proptypes.html.attributeTypes.InputType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "method",
+      "methodName": "ordinal",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method int java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::ordinal() @ react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "method",
+      "methodName": "ordinal",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "method",
+      "methodName": "getDeclaringClass",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "method",
+      "methodName": "getDeclaringClass",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "method",
+      "methodName": "getDeclaringClass",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "method",
+      "methodName": "getDeclaringClass",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ react4j.dom.proptypes.html.attributeTypes.InputType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "method",
+      "methodName": "getDeclaringClass",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.Class<E> java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::getDeclaringClass() @ react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "method",
+      "methodName": "getDeclaringClass",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "method",
+      "methodName": "name",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ react4j.dom.proptypes.html.attributeTypes.ButtonType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "method",
+      "methodName": "name",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ react4j.dom.proptypes.html.attributeTypes.FormMethod",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "method",
+      "methodName": "name",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "method",
+      "methodName": "name",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ react4j.dom.proptypes.html.attributeTypes.InputType",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "method",
+      "methodName": "name",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method java.lang.String java.lang.Enum<E extends java.lang.Enum<E extends java.lang.Enum<E>>>::name() @ react4j.dom.proptypes.html.attributeTypes.OnOff",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "method",
+      "methodName": "name",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.AudioPreload react4j.dom.proptypes.html.attributeTypes.AudioPreload::valueOf(java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.AudioPreload[] react4j.dom.proptypes.html.attributeTypes.AudioPreload::values()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "classSimpleName": "AudioPreload",
+      "elementKind": "method",
+      "methodName": "values",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.ButtonType react4j.dom.proptypes.html.attributeTypes.ButtonType::valueOf(java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.ButtonType[] react4j.dom.proptypes.html.attributeTypes.ButtonType::values()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "classSimpleName": "ButtonType",
+      "elementKind": "method",
+      "methodName": "values",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.FormMethod react4j.dom.proptypes.html.attributeTypes.FormMethod::valueOf(java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.FormMethod[] react4j.dom.proptypes.html.attributeTypes.FormMethod::values()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "classSimpleName": "FormMethod",
+      "elementKind": "method",
+      "methodName": "values",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.HeaderScope react4j.dom.proptypes.html.attributeTypes.HeaderScope::valueOf(java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.HeaderScope[] react4j.dom.proptypes.html.attributeTypes.HeaderScope::values()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "classSimpleName": "HeaderScope",
+      "elementKind": "method",
+      "methodName": "values",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.InputType react4j.dom.proptypes.html.attributeTypes.InputType::valueOf(java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.InputType[] react4j.dom.proptypes.html.attributeTypes.InputType::values()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "classSimpleName": "InputType",
+      "elementKind": "method",
+      "methodName": "values",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.OnOff react4j.dom.proptypes.html.attributeTypes.OnOff::valueOf(java.lang.String)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "method",
+      "methodName": "valueOf",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.dom.proptypes.html.attributeTypes.OnOff[] react4j.dom.proptypes.html.attributeTypes.OnOff::values()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "classSimpleName": "OnOff",
+      "elementKind": "method",
+      "methodName": "values",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'react4j.dom.proptypes.html.attributeTypes.AudioPreload' to 'java.lang.String'.",
+    "newElement": "parameter react4j.dom.proptypes.html.AudioProps react4j.dom.proptypes.html.AudioProps::preLoad(===java.lang.String===)",
+    "oldElement": "parameter react4j.dom.proptypes.html.AudioProps react4j.dom.proptypes.html.AudioProps::preLoad(===react4j.dom.proptypes.html.attributeTypes.AudioPreload===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.AudioProps",
+      "classSimpleName": "AudioProps",
+      "elementKind": "parameter",
+      "methodName": "preLoad",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.AudioPreload",
+      "package": "react4j.dom.proptypes.html",
+      "parameterIndex": "0"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'react4j.dom.proptypes.html.attributeTypes.ButtonType' to 'java.lang.String'.",
+    "newElement": "parameter react4j.dom.proptypes.html.BtnProps react4j.dom.proptypes.html.BtnProps::type(===java.lang.String===)",
+    "oldElement": "parameter react4j.dom.proptypes.html.BtnProps react4j.dom.proptypes.html.BtnProps::type(===react4j.dom.proptypes.html.attributeTypes.ButtonType===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.BtnProps",
+      "classSimpleName": "BtnProps",
+      "elementKind": "parameter",
+      "methodName": "type",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.ButtonType",
+      "package": "react4j.dom.proptypes.html",
+      "parameterIndex": "0"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'react4j.dom.proptypes.html.attributeTypes.OnOff' to 'java.lang.String'.",
+    "newElement": "parameter react4j.dom.proptypes.html.FormProps react4j.dom.proptypes.html.FormProps::autoComplete(===java.lang.String===)",
+    "oldElement": "parameter react4j.dom.proptypes.html.FormProps react4j.dom.proptypes.html.FormProps::autoComplete(===react4j.dom.proptypes.html.attributeTypes.OnOff===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.FormProps",
+      "classSimpleName": "FormProps",
+      "elementKind": "parameter",
+      "methodName": "autoComplete",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "package": "react4j.dom.proptypes.html",
+      "parameterIndex": "0"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'react4j.dom.proptypes.html.attributeTypes.FormMethod' to 'java.lang.String'.",
+    "newElement": "parameter react4j.dom.proptypes.html.FormProps react4j.dom.proptypes.html.FormProps::formMethod(===java.lang.String===)",
+    "oldElement": "parameter react4j.dom.proptypes.html.FormProps react4j.dom.proptypes.html.FormProps::formMethod(===react4j.dom.proptypes.html.attributeTypes.FormMethod===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.FormProps",
+      "classSimpleName": "FormProps",
+      "elementKind": "parameter",
+      "methodName": "formMethod",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.FormMethod",
+      "package": "react4j.dom.proptypes.html",
+      "parameterIndex": "0"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'react4j.dom.proptypes.html.attributeTypes.OnOff' to 'java.lang.String'.",
+    "newElement": "parameter react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::autoComplete(===java.lang.String===)",
+    "oldElement": "parameter react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::autoComplete(===react4j.dom.proptypes.html.attributeTypes.OnOff===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "parameter",
+      "methodName": "autoComplete",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "package": "react4j.dom.proptypes.html",
+      "parameterIndex": "0"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'react4j.dom.proptypes.html.attributeTypes.InputType' to 'java.lang.String'.",
+    "newElement": "parameter react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::type(===java.lang.String===)",
+    "oldElement": "parameter react4j.dom.proptypes.html.InputProps react4j.dom.proptypes.html.InputProps::type(===react4j.dom.proptypes.html.attributeTypes.InputType===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.InputProps",
+      "classSimpleName": "InputProps",
+      "elementKind": "parameter",
+      "methodName": "type",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.InputType",
+      "package": "react4j.dom.proptypes.html",
+      "parameterIndex": "0"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'react4j.dom.proptypes.html.attributeTypes.OnOff' to 'java.lang.String'.",
+    "newElement": "parameter react4j.dom.proptypes.html.TextAreaProps react4j.dom.proptypes.html.TextAreaProps::autoComplete(===java.lang.String===)",
+    "oldElement": "parameter react4j.dom.proptypes.html.TextAreaProps react4j.dom.proptypes.html.TextAreaProps::autoComplete(===react4j.dom.proptypes.html.attributeTypes.OnOff===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.TextAreaProps",
+      "classSimpleName": "TextAreaProps",
+      "elementKind": "parameter",
+      "methodName": "autoComplete",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.OnOff",
+      "package": "react4j.dom.proptypes.html",
+      "parameterIndex": "0"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'react4j.dom.proptypes.html.attributeTypes.HeaderScope' to 'java.lang.String'.",
+    "newElement": "parameter react4j.dom.proptypes.html.ThProps react4j.dom.proptypes.html.ThProps::scope(===java.lang.String===)",
+    "oldElement": "parameter react4j.dom.proptypes.html.ThProps react4j.dom.proptypes.html.ThProps::scope(===react4j.dom.proptypes.html.attributeTypes.HeaderScope===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.ThProps",
+      "classSimpleName": "ThProps",
+      "elementKind": "parameter",
+      "methodName": "scope",
+      "newType": "java.lang.String",
+      "oldType": "react4j.dom.proptypes.html.attributeTypes.HeaderScope",
+      "package": "react4j.dom.proptypes.html",
+      "parameterIndex": "0"
     }
   }
 ]

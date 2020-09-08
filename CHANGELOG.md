@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Fix incorrect value supplied when using the `Target` enum to specify target in `FormProps`.
+* Change the way the logical enumeration values such a `FormMethod`, `ButtonType` etc are represented from being a java enumeration to static string constants within a class. This makes it easier for GWT and J2CL to remove unused constants which results in smaller code-size. To maintain type safety, the `@MagicConstant` has been added to the parameters that accept the enums.  
 
 ### [v0.178](https://github.com/react4j/react4j/tree/v0.178) (2020-08-18) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.177...v0.178) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.177&new=0.178)
 
