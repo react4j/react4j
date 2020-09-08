@@ -1,0 +1,18 @@
+[
+  {
+    "code": "java.method.added",
+    "description": "Method was added.",
+    "newElement": "method java.lang.String react4j.dom.proptypes.html.attributeTypes.Target::getValue()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.proptypes.html.attributeTypes.Target",
+      "classSimpleName": "Target",
+      "elementKind": "method",
+      "methodName": "getValue",
+      "package": "react4j.dom.proptypes.html.attributeTypes"
+    }
+  }
+]
