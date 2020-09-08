@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Fix incorrect value supplied when using the `Target` enum to specify target in `FormProps`.
+
 ### [v0.178](https://github.com/react4j/react4j/tree/v0.178) (2020-08-18) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.177...v0.178) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.177&new=0.178)
 
 The release includes 48 breaking API changes.

@@ -14,7 +14,7 @@ public enum Target
     this.val = val;
   }
 
-  String getVal()
+  public String getValue()
   {
     return val;
   }

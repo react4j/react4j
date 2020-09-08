@@ -89,7 +89,7 @@ public class FormProps
   @Nonnull
   public final FormProps formTarget( Target t )
   {
-    setFormTarget( t.name() );
+    setFormTarget( t.getValue() );
     return self();
   }
 
