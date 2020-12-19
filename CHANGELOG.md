@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.6.0`.
+* Upgrade the `org.realityforge.org.jetbrains.annotations` artifact to version `1.7.0`.
 * Fix incorrect value supplied when using the `Target` enum to specify target in `FormProps`.
 * Change the way the logical enumeration values such a `FormMethod`, `ButtonType` etc are represented from being a java enumeration to static string constants within a class. This makes it easier for GWT and J2CL to remove unused constants which results in smaller code-size. To maintain type safety, the `@MagicConstant` has been added to the parameters that accept the enums.  
 
