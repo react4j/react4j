@@ -53,7 +53,7 @@ define 'react4j' do
 
   desc 'React4j core binding'
   define 'core' do
-    deps = artifacts(:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrains_annotations, :braincheck, :grim_annotations, :zemeckis, :elemental2_promise, :elemental2_core, :arez_core)
+    deps = artifacts(:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrains_annotations, :braincheck, :grim_annotations, :zemeckis, :elemental2_promise, :elemental2_core, :elemental2_dom, :arez_core)
     pom.include_transitive_dependencies << deps
     pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 
@@ -80,7 +80,7 @@ define 'react4j' do
 
   desc 'React4j DOM binding'
   define 'dom' do
-    deps = [project('core').package(:jar)] + artifacts(:elemental2_dom)
+    deps = [project('core').package(:jar)]
     pom.include_transitive_dependencies << deps
     pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 
