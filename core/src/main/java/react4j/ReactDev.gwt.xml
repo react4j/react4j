@@ -1,6 +1,7 @@
 <module>
   <inherits name='react4j.React'/>
   <inherits name='arez.ArezDev'/>
+  <inherits name='zemeckis.ZemeckisDev'/>
 
   <source path='ignored'/>
 

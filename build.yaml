@@ -39,6 +39,8 @@ artifacts:
   grim_asserts: org.realityforge.grim:grim-asserts:jar:0.04
   grim_processor: org.realityforge.grim:grim-processor:jar:0.04
 
+  zemeckis: org.realityforge.zemeckis:zemeckis-core:jar:0.05
+
   javax_json: org.glassfish:javax.json:jar:1.1
 
   javax_inject: javax.inject:javax.inject:jar:1

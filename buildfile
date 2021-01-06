@@ -31,6 +31,7 @@ EXAMPLES = {
 REACT_TEST_OPTIONS =
   {
     'braincheck.environment' => 'development',
+    'zemeckis.environment' => 'development',
     'arez.environment' => 'development',
     'react4j.environment' => 'development'
   }
@@ -52,7 +53,7 @@ define 'react4j' do
 
   desc 'React4j core binding'
   define 'core' do
-    deps = artifacts(:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrains_annotations, :braincheck, :grim_annotations, :elemental2_promise, :elemental2_core, :arez_core)
+    deps = artifacts(:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrains_annotations, :braincheck, :grim_annotations, :zemeckis, :elemental2_promise, :elemental2_core, :arez_core)
     pom.include_transitive_dependencies << deps
     pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 
@@ -331,14 +332,14 @@ define 'react4j' do
                               :launch_page => "http://127.0.0.1:8889/#{gwt_module}/index.html")
   end
 
-  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/fixtures -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes")
+  ipr.add_default_testng_configuration(:jvm_args => "-ea -Dbraincheck.environment=development -Dzemeckis.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.output_fixture_data=false -Dreact4j.fixture_dir=processor/src/test/fixtures -Dreact4j.current.version=X -Dreact4j.next.version=X -Dreact4j.deploy_test.work_dir=#{project('downstream-test')._(:target, 'deploy_test/workdir')} -Dreact4j.deploy_test.fixture_dir=#{project('downstream-test')._('src/test/resources/fixtures')} -Dreact4j.deploy_test.local_repository_url=#{URI.join('file:///', project('downstream-test')._(:target, :local_test_repository))} -Dreact4j.deploy_test.store_statistics=false -Dreact4j.core.compile_target=target/react4j_core/idea/classes -Dreact4j.dom.compile_target=target/react4j_dom/idea/classes")
 
   ipr.add_testng_configuration('core',
                                :module => 'core',
-                               :jvm_args => '-ea -Dbraincheck.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.core.compile_target=../target/react4j_core/idea/classes')
+                               :jvm_args => '-ea -Dbraincheck.environment=development -Dzemeckis.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.core.compile_target=../target/react4j_core/idea/classes')
   ipr.add_testng_configuration('dom',
                                :module => 'dom',
-                               :jvm_args => '-ea -Dbraincheck.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.dom.compile_target=../target/react4j_dom/idea/classes')
+                               :jvm_args => '-ea -Dbraincheck.environment=development -Dzemeckis.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.dom.compile_target=../target/react4j_dom/idea/classes')
   ipr.add_testng_configuration('processor',
                                :module => 'processor',
                                :jvm_args => '-ea -Dreact4j.output_fixture_data=true -Dreact4j.fixture_dir=src/test/fixtures')

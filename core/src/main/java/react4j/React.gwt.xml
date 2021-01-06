@@ -1,6 +1,7 @@
 <module>
   <inherits name='elemental2.core.Core'/>
   <inherits name='arez.component.Component'/>
+  <inherits name='zemeckis.Zemeckis'/>
 
   <source path='' includes='*.java'/>
   <source path='annotations' includes='*.java'/>

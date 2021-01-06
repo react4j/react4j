@@ -3,8 +3,8 @@ package react4j.internal;
 import arez.Arez;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
-import elemental2.promise.Promise;
 import javax.annotation.Nullable;
+import zemeckis.Zemeckis;
 
 /**
  * Utilities for interacting with the Arez scheduler.
@@ -39,12 +39,10 @@ public final class SchedulerUtil
     if ( null == c_schedulerLock )
     {
       c_schedulerLock = Arez.context().pauseScheduler();
-      // Use a hack of an empty promise that immediately resolves to
-      // schedule the block immediately after this call stack pops.
-      Promise.resolve( (Object) null ).then( ignored -> {
+      // schedule immediately after this call stack pops.
+      Zemeckis.microTask( () -> {
         c_schedulerLock.dispose();
         c_schedulerLock = null;
-        return null;
       } );
     }
   }

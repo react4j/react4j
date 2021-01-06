@@ -32,9 +32,9 @@ public class JDependTest
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
     final JavaPackage jsinteropBase = constraint.addPackage( "jsinterop.base" );
     final JavaPackage elemental2Core = constraint.addPackage( "elemental2.core" );
-    final JavaPackage elemental2Promise = constraint.addPackage( "elemental2.promise" );
     final JavaPackage arez = constraint.addPackage( "arez" );
     final JavaPackage arezSpy = constraint.addPackage( "arez.spy" );
+    final JavaPackage zemeckis = constraint.addPackage( "zemeckis" );
 
     react4j.dependsUpon( jsinteropAnnotations );
     react4j.dependsUpon( jsinteropBase );
@@ -44,11 +44,11 @@ public class JDependTest
 
     react4jInternal.dependsUpon( jsinteropAnnotations );
     react4jInternal.dependsUpon( jsinteropBase );
-    react4jInternal.dependsUpon( elemental2Promise );
     react4jInternal.dependsUpon( elemental2Core );
     react4jInternal.dependsUpon( react4j );
     react4jInternal.dependsUpon( arez );
     react4jInternal.dependsUpon( arezSpy );
+    react4jInternal.dependsUpon( zemeckis );
 
     final DependencyConstraint.MatchResult result = jdepend.analyzeDependencies( constraint );
 
