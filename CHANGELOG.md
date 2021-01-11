@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Upgrade the `org.realityforge.zemeckis` artifact to version `0.07`.
+* Upgrade the `org.realityforge.zemeckis` artifact to version `0.08`.
 * Upgrade the `org.realityforge.arez.testng` artifact to version `0.24`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.192`.
 
