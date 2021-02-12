@@ -18,7 +18,6 @@ install:
 - nvm use v6.10.3
 - npm install -g yarn
 - yarn install
-- rvm use 2.6.6
 - gem install bundler
 - bundle install
 script: bundle exec buildr ci
