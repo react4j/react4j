@@ -118,6 +118,11 @@ module URI
   end
 
   class FILE
+    def real_path #:nodoc:
+      real_path = Buildr::Util.win_os? && path =~ /^\/[a-zA-Z]:\// ? path[1..-1] : path
+      URI.decode(real_path)
+    end
+
     def upload(source, options = nil)
       super
       if ::File === source then
