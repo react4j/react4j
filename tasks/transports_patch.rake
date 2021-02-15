@@ -120,7 +120,7 @@ module URI
   class FILE
     def real_path #:nodoc:
       real_path = Buildr::Util.win_os? && path =~ /^\/[a-zA-Z]:\// ? path[1..-1] : path
-      URI.decode(real_path)
+      CGI.unescape(real_path)
     end
 
     def upload(source, options = nil)
