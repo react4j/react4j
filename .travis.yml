@@ -4,7 +4,7 @@ language: ruby
 jdk:
 - oraclejdk8
 rvm:
-- 2.6.6
+- 2.7.2
 node_js:
 - v6.10.3
 before_install:
