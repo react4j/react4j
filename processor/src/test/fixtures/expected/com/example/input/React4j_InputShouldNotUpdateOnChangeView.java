@@ -12,7 +12,6 @@ import arez.annotations.Feature;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
-import elemental2.core.JsObject;
 import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -141,7 +140,7 @@ abstract class React4j_InputShouldNotUpdateOnChangeView extends InputShouldNotUp
       newState.set( "Arez.name", $$react4j$$_getComponentName() );
       IntrospectUtil.collectDependencyDebugData( $$react4j$$_getRenderObserver(), newState );
       if ( IntrospectUtil.prepareStateUpdate( newState, $$react4j$$_nativeView.state() ) ) {
-        $$react4j$$_nativeView.setState( JsObject.freeze( newState ) );
+        $$react4j$$_nativeView.setState( newState );
         $$react4j$$_nativeView.forceUpdate();
         $$react4j$$_scheduledDebugStateUpdate = true;
       }

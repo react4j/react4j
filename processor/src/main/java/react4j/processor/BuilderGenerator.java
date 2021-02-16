@@ -627,7 +627,6 @@ final class BuilderGenerator
     }
 
     method
-      .addStatement( "$N.complete()", elementName )
       .addStatement( "return $N", elementName )
       .returns( REACT_NODE_CLASSNAME );
     return method.build();

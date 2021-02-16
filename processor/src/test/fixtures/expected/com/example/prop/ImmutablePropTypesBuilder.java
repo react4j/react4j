@@ -104,7 +104,6 @@ final class ImmutablePropTypesBuilder {
       final JsPropertyMap<Object> inputs = _element.inputs();
       final Object $object$ = inputs.get( React4j_ImmutablePropTypes.Inputs.object );
       _element.setKey( String.valueOf( Identifiable.<Object>getArezId( (ImmutablePropTypes.MyComponent) inputs.get( React4j_ImmutablePropTypes.Inputs.myProp ) ) ) + "-" + ( (String) inputs.get( React4j_ImmutablePropTypes.Inputs.myOtherProp ) ) + "-" + String.valueOf( (int) (double) inputs.get( React4j_ImmutablePropTypes.Inputs.stillAnotherProp ) ) + "-" + Keyed.getKey( (ImmutablePropTypes.KeyedComponent) inputs.get( React4j_ImmutablePropTypes.Inputs.BobsProp ) ) + "-" + ( (ImmutablePropTypes.Foo) inputs.get( React4j_ImmutablePropTypes.Inputs.someProp ) ) + "-" + ( $object$ instanceof Keyed ? Keyed.getKey( $object$ ) : $object$ instanceof Identifiable ? Identifiable.<Object>getArezId( $object$ ) : String.valueOf( $object$ ) ) + ( React.enableViewNames() ? "_ImmutablePropTypes_108bb2eb" : ImmutablePropTypes.class.getName() ) );
-      _element.complete();
       return _element;
     }
   }

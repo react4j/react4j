@@ -40,7 +40,6 @@ final class QualifiedNonnullContextPropModelBuilder {
 
     @Nonnull
     private ReactNode build(@Nonnull final ReactElement element) {
-      element.complete();
       return element;
     }
 

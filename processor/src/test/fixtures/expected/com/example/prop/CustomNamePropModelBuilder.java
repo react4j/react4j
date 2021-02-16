@@ -37,7 +37,6 @@ final class CustomNamePropModelBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

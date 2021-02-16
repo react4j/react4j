@@ -52,7 +52,6 @@ final class ColorfulNameInputDefaultViewBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

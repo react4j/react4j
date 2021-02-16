@@ -84,7 +84,6 @@ final class MultiPropComponent4Builder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

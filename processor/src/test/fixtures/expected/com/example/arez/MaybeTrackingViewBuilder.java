@@ -30,7 +30,6 @@ final class MaybeTrackingViewBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

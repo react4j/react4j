@@ -37,7 +37,6 @@ final class NestedCompleteComponent_BasicViewBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

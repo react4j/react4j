@@ -30,7 +30,6 @@ final class Jsr330NamedInjectComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

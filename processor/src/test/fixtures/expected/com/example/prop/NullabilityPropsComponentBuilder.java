@@ -55,7 +55,6 @@ final class NullabilityPropsComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

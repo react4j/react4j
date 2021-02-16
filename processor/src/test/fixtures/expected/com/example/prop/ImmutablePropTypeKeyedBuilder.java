@@ -40,7 +40,6 @@ final class ImmutablePropTypeKeyedBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

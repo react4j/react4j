@@ -34,7 +34,6 @@ public class BuildOutputTest
     compileTimeProperties.put( "react4j.minimize_input_keys", "true" );
     compileTimeProperties.put( "react4j.validate_input_values", "false" );
     compileTimeProperties.put( "react4j.store_debug_data_as_state", "false" );
-    compileTimeProperties.put( "react4j.freeze_inputs", "false" );
 
     final List<SymbolEntry> symbols = getInvalidSymbolEntries( index, ruleSet, compileTimeProperties );
     if ( !symbols.isEmpty() )

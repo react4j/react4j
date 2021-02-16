@@ -62,7 +62,6 @@ final class ExplicitOptionalBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

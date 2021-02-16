@@ -32,7 +32,6 @@ public final class ReactTestUtil
       minimizeInputKeys();
       noValidateInputValues();
       noStoreDebugDataAsState();
-      noFreezeInputs();
     }
     else
     {
@@ -41,7 +40,6 @@ public final class ReactTestUtil
       noMinimizeInputKeys();
       validateInputValues();
       storeDebugDataAsState();
-      freezeInputs();
     }
     Contexts.setContextProvider( new Contexts.DefaultContextProvider() );
     Contexts.clear();
@@ -149,32 +147,6 @@ public final class ReactTestUtil
   private static void setStoreDebugDataAsState( final boolean setting )
   {
     setConstant( "SHOULD_STORE_DEBUG_DATA_AS_STATE", setting );
-  }
-
-  /**
-   * Set the `react4j.freeze_inputs` setting to {@code true}.
-   */
-  public static void freezeInputs()
-  {
-    setFreezeInputs( true );
-  }
-
-  /**
-   * Set the `react4j.freeze_inputs` setting to {@code false}.
-   */
-  public static void noFreezeInputs()
-  {
-    setFreezeInputs( false );
-  }
-
-  /**
-   * Configure the `react4j.freeze_inputs` setting.
-   *
-   * @param setting the setting.
-   */
-  private static void setFreezeInputs( final boolean setting )
-  {
-    setConstant( "SHOULD_FREEZE_INPUTS", setting );
   }
 
   /**

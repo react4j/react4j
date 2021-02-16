@@ -63,7 +63,6 @@ final class ViewGenerator
     ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
-  private static final ClassName JS_OBJECT_CLASSNAME = ClassName.get( "elemental2.core", "JsObject" );
   private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
@@ -1033,7 +1032,7 @@ final class ViewGenerator
     onUpdateBlock.beginControlFlow( "if ( $T.prepareStateUpdate( newState, $N.state() ) )",
                                     INTROSPECT_UTIL_CLASSNAME,
                                     NATIVE_VIEW_FIELD );
-    onUpdateBlock.addStatement( "$N.setState( $T.freeze( newState ) )", NATIVE_VIEW_FIELD, JS_OBJECT_CLASSNAME );
+    onUpdateBlock.addStatement( "$N.setState( newState )", NATIVE_VIEW_FIELD );
     // Force an update so do not go through shouldComponentUpdate() as that would be wasted cycles.
     onUpdateBlock.addStatement( "$N.forceUpdate()", NATIVE_VIEW_FIELD );
     onUpdateBlock.addStatement( "$N = true", flag );

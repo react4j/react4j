@@ -102,7 +102,6 @@ public final class Context<T>
     @Nonnull
     public ReactNode build()
     {
-      _element.complete();
       return _element;
     }
   }
@@ -160,7 +159,6 @@ public final class Context<T>
     public ReactNode render( @Nonnull final ConsumerRenderFunction<ST> render )
     {
       _element.input( "children", render );
-      _element.complete();
       return _element;
     }
   }

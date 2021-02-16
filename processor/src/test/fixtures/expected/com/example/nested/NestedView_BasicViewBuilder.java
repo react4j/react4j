@@ -30,7 +30,6 @@ final class NestedView_BasicViewBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

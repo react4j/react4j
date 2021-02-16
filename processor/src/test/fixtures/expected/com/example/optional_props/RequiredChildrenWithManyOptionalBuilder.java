@@ -135,7 +135,6 @@ final class RequiredChildrenWithManyOptionalBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

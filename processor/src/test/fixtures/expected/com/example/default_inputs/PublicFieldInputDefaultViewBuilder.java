@@ -52,7 +52,6 @@ final class PublicFieldInputDefaultViewBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

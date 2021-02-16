@@ -39,7 +39,6 @@ final class ImmutablePropTypePrimitiveCharBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

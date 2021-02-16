@@ -49,7 +49,6 @@ final class InputShouldUpdateOnChangeViewBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

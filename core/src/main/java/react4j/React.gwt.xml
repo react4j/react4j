@@ -31,7 +31,4 @@
 
   <define-property name='react4j.store_debug_data_as_state' values='true,false'/>
   <set-property name='react4j.store_debug_data_as_state' value='false'/>
-
-  <define-property name='react4j.freeze_inputs' values='true,false'/>
-  <set-property name='react4j.freeze_inputs' value='false'/>
 </module>

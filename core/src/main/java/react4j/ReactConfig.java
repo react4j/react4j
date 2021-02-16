@@ -18,7 +18,6 @@ final class ReactConfig
   private static boolean MINIMIZE_INPUT_KEYS = PROVIDER.shouldMinimizeInputKeys();
   private static boolean SHOULD_VALIDATE_INPUT_VALUES = PROVIDER.shouldValidateInputValues();
   private static boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
-  private static boolean SHOULD_FREEZE_INPUTS = PROVIDER.shouldFreezeInputs();
   private static boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
 
   private ReactConfig()
@@ -85,16 +84,6 @@ final class ReactConfig
     return CHECK_INVARIANTS && BrainCheckConfig.checkInvariants();
   }
 
-  /**
-   * Return true if inputs should be frozen before being passed to react.
-   *
-   * @return true if inputs should be frozen before being passed to react.
-   */
-  static boolean shouldFreezeInputs()
-  {
-    return SHOULD_FREEZE_INPUTS;
-  }
-
   private static final class ConfigProvider
     extends AbstractConfigProvider
   {
@@ -141,13 +130,6 @@ final class ReactConfig
     {
       return "true".equals( System.getProperty( "react4j.check_invariants", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
-
-    @GwtIncompatible
-    @Override
-    boolean shouldFreezeInputs()
-    {
-      return "true".equals( System.getProperty( "react4j.freeze_inputs", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
-    }
   }
 
   @SuppressWarnings( { "unused", "StringEquality" } )
@@ -181,11 +163,6 @@ final class ReactConfig
     boolean shouldCheckInvariants()
     {
       return "true" == System.getProperty( "react4j.check_invariants" );
-    }
-
-    boolean shouldFreezeInputs()
-    {
-      return "true" == System.getProperty( "react4j.freeze_inputs" );
     }
   }
 }

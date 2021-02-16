@@ -61,7 +61,6 @@ final class CustomNamingOnPropChangeBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

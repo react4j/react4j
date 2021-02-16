@@ -41,7 +41,6 @@ final class ImmutablePropTypeDynamicValueBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

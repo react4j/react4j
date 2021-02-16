@@ -30,7 +30,6 @@ final class NoRenderWithPreUpdateViewBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

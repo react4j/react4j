@@ -12,7 +12,6 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.internal.ViewConstructorFunction;
-import static org.realityforge.braincheck.Guards.*;
 
 /**
  * Element represents either a view or a host component.
@@ -33,22 +32,6 @@ public class ReactElement
   // can be null if create happens outside of a render method (i.e. at the top level).
   @Nullable
   private Object _owner;
-
-  /**
-   * Complete the element.
-   * If {@link React#shouldFreezeInputs()} returns true this method will freeze the inputs and the
-   * element, otherwise this method is a no-op. This method should be called before returning the element
-   * to the react runtime.
-   */
-  @JsOverlay
-  public final void complete()
-  {
-    if ( React.shouldFreezeInputs() )
-    {
-      JsObject.freeze( this );
-      JsObject.freeze( inputs );
-    }
-  }
 
   @JsOverlay
   public final ReactElement dup()
@@ -113,8 +96,6 @@ public class ReactElement
     element.key = key;
     element.ref = ref;
     element.inputs = Objects.requireNonNull( inputs );
-
-    element.complete();
     return element;
   }
 
@@ -126,8 +107,6 @@ public class ReactElement
     element.key = key;
     element.ref = null;
     element.inputs = JsPropertyMap.of( "children", Objects.requireNonNull( children ) );
-
-    element.complete();
     return element;
   }
 
@@ -160,8 +139,6 @@ public class ReactElement
     element.inputs = JsPropertyMap.of( "children", Objects.requireNonNull( children ),
                                        "fallback", fallback,
                                        "ms", maxTimeToFallback );
-
-    element.complete();
     return element;
   }
 
@@ -185,11 +162,6 @@ public class ReactElement
   @JsOverlay
   public final void setKey( @Nullable final String key )
   {
-    if ( React.shouldCheckInvariants() && React.shouldFreezeInputs() )
-    {
-      invariant( () -> !JsObject.isFrozen( this ),
-                 () -> "Attempting to modify key of ReactElement after it has been frozen" );
-    }
     this.key = key;
   }
 

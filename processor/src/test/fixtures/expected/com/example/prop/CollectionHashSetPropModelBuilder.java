@@ -38,7 +38,6 @@ final class CollectionHashSetPropModelBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

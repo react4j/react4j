@@ -39,7 +39,6 @@ final class ImmutablePropTypeBoxedLongBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

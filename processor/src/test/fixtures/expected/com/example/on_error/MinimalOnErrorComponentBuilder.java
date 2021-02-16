@@ -30,7 +30,6 @@ final class MinimalOnErrorComponentBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      _element.complete();
       return _element;
     }
   }

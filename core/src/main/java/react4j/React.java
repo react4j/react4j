@@ -77,17 +77,6 @@ public final class React
     return ReactConfig.shouldCheckInvariants();
   }
 
-  /**
-   * Return true if inputs should be frozen before being passed to react.
-   *
-   * @return true if inputs should be frozen before being passed to react.
-   */
-  @JsOverlay
-  public static boolean shouldFreezeInputs()
-  {
-    return ReactConfig.shouldFreezeInputs();
-  }
-
   /*
    * WARNING: The following symbols are all imported from react which involves manually patching the js files
    * for each react release. We do this rather than trying to redefine them as Elemental2 does not correctly

@@ -16,5 +16,3 @@ react4j.minimize_input_keys = goog.define('react4j.minimize_input_keys', 'true')
 react4j.validate_input_values = goog.define('react4j.validate_input_values', 'false');
 /** @define {string} */
 react4j.store_debug_data_as_state = goog.define('react4j.store_debug_data_as_state', 'false');
-/** @define {string} */
-react4j.freeze_inputs = goog.define('react4j.freeze_inputs', 'false');
