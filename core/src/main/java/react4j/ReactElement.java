@@ -1,6 +1,5 @@
 package react4j;
 
-import elemental2.core.JsObject;
 import java.util.Objects;
 import javaemul.internal.annotations.DoNotAutobox;
 import javax.annotation.Nonnull;
@@ -9,7 +8,6 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.internal.ViewConstructorFunction;
 
@@ -40,8 +38,7 @@ public class ReactElement
     element.key = key;
     element.ref = ref;
     element.inputs = JsPropertyMap.of();
-    // Need to use an unchecked cast here otherwise it is cast to a java object array breaks assign
-    JsObject.assign( element.inputs, Js.uncheckedCast( this.inputs ) );
+    inputs.forEach( key -> element.inputs.set( key, inputs.get( key ) ) );
     return element;
   }
 
