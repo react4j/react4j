@@ -1,6 +1,10 @@
 # Change Log
 
-### Unreleased
+### [v0.180](https://github.com/react4j/react4j/tree/v0.180) (2021-02-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.179...v0.180) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.179&new=0.180)
+
+The release includes 4 breaking API changes.
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.zemeckis` artifact to version `0.08`.
 * Upgrade the `org.realityforge.arez.testng` artifact to version `0.24`.
