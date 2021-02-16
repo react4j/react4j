@@ -1,5 +1,8 @@
 # Patch qualifies File symbol as ::File and required to support later rubies
 
+# This require is needed to avoid partial loading of CGI library causing crashes
+require 'cgi'
+
 module URI
   class Generic
     def download(target, options = nil)
