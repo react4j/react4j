@@ -4,8 +4,6 @@ import arez.Arez;
 import arez.Observer;
 import arez.spy.ObservableValueInfo;
 import arez.spy.ObserverInfo;
-import elemental2.core.JsArray;
-import elemental2.core.JsObject;
 import grim.annotations.OmitType;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -130,26 +128,24 @@ public final class IntrospectUtil
      */
     if ( null != currentState )
     {
-      final JsArray<String> currentStateKeys = JsObject.keys( Js.uncheckedCast( currentState ) );
-      for ( final String key : currentStateKeys.asArray( new String[ currentStateKeys.length ] ) )
-      {
+      boolean[] needsSave = new boolean[ 1 ];
+      currentState.forEach( key -> {
         if ( !newState.has( key ) )
         {
           newState.set( key, Js.undefined() );
+          needsSave[ 0 ] = true;
         }
-      }
-
-      final JsArray<String> newStateKeys = JsObject.keys( Js.uncheckedCast( currentState ) );
-      for ( final String key : newStateKeys.asArray( new String[ newStateKeys.length ] ) )
-      {
-        final Any newValue = currentState.getAsAny( key );
-        final Any existingValue = newState.getAsAny( key );
-        if ( !Objects.equals( newValue, existingValue ) )
+        else
         {
-          return true;
+          final Any newValue = currentState.getAsAny( key );
+          final Any existingValue = newState.getAsAny( key );
+          if ( !Objects.equals( newValue, existingValue ) )
+          {
+            needsSave[ 0 ] = true;
+          }
         }
-      }
-      return false;
+      } );
+      return needsSave[ 0 ];
     }
     else
     {
