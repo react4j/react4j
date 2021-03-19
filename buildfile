@@ -58,11 +58,10 @@ define 'react4j' do
     pom.include_transitive_dependencies << deps
     pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 
-    project.processorpath << artifacts(:grim_processor, :javax_json)
-
     js_assets(project, :core)
 
     compile.with deps
+    compile.options[:processor_path] << [:grim_processor, :javax_json]
 
     gwt_enhance(project)
 
@@ -85,12 +84,11 @@ define 'react4j' do
     pom.include_transitive_dependencies << deps
     pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 
-    project.processorpath << artifacts(:grim_processor, :javax_json)
-
     js_assets(project, :dom)
 
     compile.with deps,
                  project('core').compile.dependencies
+    compile.options[:processor_path] << [:grim_processor, :javax_json]
 
     generate_factory_source(project)
     gwt_enhance(project)
@@ -146,10 +144,6 @@ define 'react4j' do
   define 'processor' do
     pom.dependency_filter = Proc.new { |_| false }
 
-    # Note: It is deliberate that Sting annotation processor is not present otherwise fixtures
-    # would not compile reliably due to the presence of @AutoFragment
-    project.processorpath << [:arez_processor]
-
     compile.with :proton_core,
                  :javapoet,
                  :javax_annotation
@@ -170,6 +164,10 @@ define 'react4j' do
               :sting_processor,
               :gwt_user,
               :gwt_dev
+
+    # Note: It is deliberate that Sting annotation processor is not present otherwise fixtures
+    # would not compile reliably due to the presence of @AutoFragment
+    test.compile.options[:processor_path] << [:arez_processor]
 
     package(:jar)
     package(:sources)
@@ -279,17 +277,17 @@ define 'react4j' do
 
   desc 'Examples that are only used to illustrate ideas in documentation'
   define 'doc-examples' do
-    project.enable_annotation_processor = true
-
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
-                 project('processor').package(:jar),
-                 project('processor').compile.dependencies,
-                 DAGGER_PROCESSOR_DEPS,
-                 :arez_processor,
-                 :sting_core,
-                 :sting_processor,
+                 DAGGER_RUNTIME_DEPS,
                  :gwt_user
+
+    compile.options[:processor_path] << [project('processor').package(:jar),
+                                         project('processor').compile.dependencies,
+                                         DAGGER_PROCESSOR_DEPS,
+                                         :arez_processor,
+                                         :sting_core,
+                                         :sting_processor]
 
     gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
   end
