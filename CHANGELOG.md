@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.grim` artifacts to version `0.05`.
 * Upgrade the `au.com.stocksoftware.idea.codestyle` artifact to version `1.17`.
 
 ### [v0.180](https://github.com/react4j/react4j/tree/v0.180) (2021-02-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.179...v0.180) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.179&new=0.180)
