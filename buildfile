@@ -6,6 +6,8 @@ require 'buildr/jacoco'
 require 'buildr/top_level_generate_dir'
 require 'buildr/shade'
 
+Buildr::MavenCentral.define_publish_tasks(:profile_name => 'org.realityforge', :username => 'realityforge')
+
 DAGGER_RUNTIME_DEPS = [:javax_inject, :dagger_core]
 DAGGER_PROCESSOR_DEPS =
   [
