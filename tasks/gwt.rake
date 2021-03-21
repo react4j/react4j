@@ -16,7 +16,7 @@ def gwt_enhance(project, options = {})
   end
 
   if !!project.compile.options[:processor] || (project.compile.options[:processor].nil? && !(project.compile.options[:processor_path] || []).empty?)
-    extra_deps += [project.file(project._(:target, :generated, 'processors/main/java'))]
+    extra_deps += [project.file(project._(:generated, 'processors/main/java'))]
   end
 
   project.compile.with Buildr::GWT.dependencies(project.gwt_detect_version(Buildr.artifacts(:gwt_user)))
@@ -37,7 +37,7 @@ def gwt_enhance(project, options = {})
   end
 
   unless modules_complete
-    base_synthetic_module_dir = project._(:generated, :synthetic_gwt_module, :main, :resources)
+    base_synthetic_module_dir = project._(:target, :generated, :synthetic_gwt_module, :main, :resources)
     t = project.task('gwt_synthetic_module') do
       gwt_modules.each do |gwt_module|
         file = "#{base_synthetic_module_dir}/#{gwt_module.gsub('.', '/')}Test.gwt.xml"
