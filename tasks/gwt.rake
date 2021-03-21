@@ -16,7 +16,7 @@ def gwt_enhance(project, options = {})
   end
 
   if !!project.compile.options[:processor] || (project.compile.options[:processor].nil? && !(project.compile.options[:processor_path] || []).empty?)
-    extra_deps += [project.file(project._(:generated, 'processors/main/java'))]
+    extra_deps += [project.file(project._(:target, :generated, 'processors/main/java'))]
   end
 
   project.compile.with Buildr::GWT.dependencies(project.gwt_detect_version(Buildr.artifacts(:gwt_user)))
