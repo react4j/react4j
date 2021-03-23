@@ -56,7 +56,7 @@ define 'react4j' do
 
   desc 'React4j core binding'
   define 'core' do
-    deps = artifacts(:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrains_annotations, :braincheck, :grim_annotations, :zemeckis, :elemental2_promise, :elemental2_core, :elemental2_dom, :arez_core)
+    deps = artifacts(:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrains_annotations, :braincheck, :grim_annotations, :zemeckis, :arez_core, :akasha)
     pom.include_transitive_dependencies << deps
     pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 

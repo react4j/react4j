@@ -1,8 +1,8 @@
 package react4j.dom;
 
+import akasha.Element;
 import arez.Arez;
 import arez.ArezContext;
-import elemental2.dom.Element;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;

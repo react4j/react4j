@@ -1,6 +1,6 @@
 package react4j.internal;
 
-import elemental2.core.JsError;
+import akasha.core.JsError;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;

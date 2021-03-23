@@ -1,6 +1,6 @@
 package com.example.optional_props;
 
-import elemental2.core.JsArray;
+import akasha.lang.JsArray;
 import java.util.stream.Stream;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;

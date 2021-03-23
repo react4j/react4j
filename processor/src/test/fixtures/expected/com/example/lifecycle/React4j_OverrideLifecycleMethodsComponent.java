@@ -1,10 +1,10 @@
 package com.example.lifecycle;
 
+import akasha.core.JsError;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
-import elemental2.core.JsError;
 import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;

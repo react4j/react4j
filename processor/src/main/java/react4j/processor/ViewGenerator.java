@@ -63,7 +63,7 @@ final class ViewGenerator
     ClassName.get( "arez.annotations", "ObservableValueRef" );
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
-  private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "elemental2.core", "JsError" );
+  private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "akasha.core", "JsError" );
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );

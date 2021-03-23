@@ -1,6 +1,6 @@
 package react4j;
 
-import elemental2.core.JsArray;
+import akasha.lang.JsArray;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;

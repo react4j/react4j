@@ -69,7 +69,7 @@ final class Constants
   @Nonnull
   static final String JSR_330_NAMED_CLASSNAME = "javax.inject.Named";
   @Nonnull
-  static final String JS_ERROR_CLASSNAME = "elemental2.core.JsError";
+  static final String JS_ERROR_CLASSNAME = "akasha.core.JsError";
   @Nonnull
   static final String WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT =
     "React4j:MutableInputAccessedInPostConstruct";

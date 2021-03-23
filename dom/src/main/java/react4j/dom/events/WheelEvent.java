@@ -7,7 +7,7 @@ import jsinterop.annotations.JsType;
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 @SuppressWarnings( "unused" )
 public class WheelEvent
-  extends SyntheticEvent<elemental2.dom.WheelEvent>
+  extends SyntheticEvent<akasha.WheelEvent>
 {
   private int deltaMode;
   private int deltaX;

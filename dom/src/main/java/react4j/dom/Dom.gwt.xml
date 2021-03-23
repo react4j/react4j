@@ -1,6 +1,5 @@
 <module>
   <inherits name='react4j.React'/>
-  <inherits name='elemental2.dom.Dom'/>
 
   <public path='public' includes='*'/>
 

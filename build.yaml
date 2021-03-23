@@ -20,9 +20,7 @@ artifacts:
 
   jsinterop_base: com.google.jsinterop:base:jar:1.0.0
 
-  elemental2_core: org.realityforge.com.google.elemental2:elemental2-core:jar:2.27
-  elemental2_dom: org.realityforge.com.google.elemental2:elemental2-dom:jar:2.27
-  elemental2_promise: org.realityforge.com.google.elemental2:elemental2-promise:jar:2.27
+  akasha: org.realityforge.akasha:akasha-java:jar:0.03
 
   arez_core: org.realityforge.arez:arez-core:jar:0.192
   arez_processor: org.realityforge.arez:arez-processor:jar:0.192

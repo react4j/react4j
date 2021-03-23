@@ -1,6 +1,6 @@
 package com.example.on_error;
 
-import elemental2.core.JsError;
+import akasha.core.JsError;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import react4j.ReactErrorInfo;

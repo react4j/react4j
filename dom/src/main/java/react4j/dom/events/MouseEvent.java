@@ -1,6 +1,6 @@
 package react4j.dom.events;
 
-import elemental2.dom.EventTarget;
+import akasha.EventTarget;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -9,7 +9,7 @@ import jsinterop.annotations.JsType;
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 @SuppressWarnings( "unused" )
 public class MouseEvent
-  extends SyntheticEvent<elemental2.dom.MouseEvent>
+  extends SyntheticEvent<akasha.MouseEvent>
 {
   private boolean altKey;
   private int button;

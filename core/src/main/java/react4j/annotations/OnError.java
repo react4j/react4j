@@ -1,6 +1,6 @@
 package react4j.annotations;
 
-import elemental2.core.JsError;
+import akasha.core.JsError;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;

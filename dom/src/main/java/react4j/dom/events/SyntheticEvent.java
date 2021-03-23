@@ -1,8 +1,8 @@
 package react4j.dom.events;
 
-import elemental2.core.JsDate;
-import elemental2.dom.Element;
-import elemental2.dom.Event;
+import akasha.Element;
+import akasha.Event;
+import akasha.core.JsDate;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;

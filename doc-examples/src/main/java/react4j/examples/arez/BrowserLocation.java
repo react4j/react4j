@@ -1,13 +1,14 @@
 package react4j.examples.arez;
 
+import akasha.Global;
+import akasha.HashChangeEvent;
+import akasha.HashChangeEventListener;
+import akasha.Location;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
 import arez.annotations.PostConstruct;
 import arez.annotations.PreDispose;
-import elemental2.dom.DomGlobal;
-import elemental2.dom.Event;
-import elemental2.dom.EventListener;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
@@ -28,7 +29,8 @@ import javax.annotation.Nonnull;
 @ArezComponent
 public abstract class BrowserLocation
 {
-  private final EventListener _listener = this::onHashChangeEvent;
+  @Nonnull
+  private final HashChangeEventListener _listener = this::onHashChangeEvent;
 
   /**
    * The location according to the application.
@@ -67,14 +69,14 @@ public abstract class BrowserLocation
   @PostConstruct
   void postConstruct()
   {
-    DomGlobal.window.addEventListener( "hashchange", _listener, false );
+    Global.addHashchangeListener(  _listener, false );
     _targetLocation = _browserLocation = _location = getHash();
   }
 
   @PreDispose
   void preDispose()
   {
-    DomGlobal.window.removeEventListener( "hashchange", _listener, false );
+    Global.removeHashchangeListener(  _listener, false );
   }
 
   /**
@@ -170,7 +172,7 @@ public abstract class BrowserLocation
     }
   }
 
-  private void onHashChangeEvent( @Nonnull final Event e )
+  private void onHashChangeEvent( @Nonnull final HashChangeEvent e )
   {
     if ( _preventDefault )
     {
@@ -182,24 +184,23 @@ public abstract class BrowserLocation
   @Nonnull
   private String getHash()
   {
-    final String hash = DomGlobal.window.location.hash;
-    return null == hash ? "" : hash.substring( 1 );
+    return Global.location().hash.substring( 1 );
   }
 
   private void setHash( @Nonnull final String hash )
   {
+    final Location location = Global.location();
     if ( 0 == hash.length() )
     {
       /*
        * This code is needed to remove the stray #.
        * See https://stackoverflow.com/questions/1397329/how-to-remove-the-hash-from-window-location-url-with-javascript-without-page-r/5298684#5298684
        */
-      final String url = DomGlobal.window.location.pathname + DomGlobal.window.location.search;
-      DomGlobal.window.history.pushState( "", DomGlobal.document.title, url );
+      Global.history().pushState( "", Global.document().title, location.pathname + location.search );
     }
     else
     {
-      DomGlobal.window.location.hash = hash;
+      location.hash = hash;
     }
   }
 }

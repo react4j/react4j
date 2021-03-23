@@ -1,6 +1,6 @@
 package com.example.input;
 
-import elemental2.core.JsArray;
+import akasha.lang.JsArray;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import react4j.ReactElement;

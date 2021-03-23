@@ -1,6 +1,6 @@
 package com.example.lifecycle;
 
-import elemental2.core.JsError;
+import akasha.core.JsError;
 import javax.annotation.Nonnull;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;

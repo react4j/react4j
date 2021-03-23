@@ -33,7 +33,7 @@ import org.realityforge.proton.SuppressWarningsUtil;
 
 final class BuilderGenerator
 {
-  private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "elemental2.core", "JsArray" );
+  private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "akasha.lang", "JsArray" );
   private static final ClassName IDENTIFIABLE_CLASSNAME = ClassName.get( "arez.component", "Identifiable" );
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
   private static final ClassName CONTEXT_CLASSNAME = ClassName.get( "react4j", "Context" );
