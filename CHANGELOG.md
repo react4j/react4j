@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.sting` artifacts to version `0.17`.
+
 ### [v0.181](https://github.com/react4j/react4j/tree/v0.181) (2021-03-23) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.180...v0.181) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.180&new=0.181)
 
 The release includes 30 potentially breaking API changes and 2 breaking API changes.
