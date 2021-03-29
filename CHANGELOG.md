@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade the `org.realityforge.akasha` artifact to version `0.04`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.193`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.17`.
 
