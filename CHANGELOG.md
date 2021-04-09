@@ -4,7 +4,7 @@
 
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.30.0`.
 * Upgrade the `org.realityforge.akasha` artifact to version `0.05`.
-* Upgrade the `org.realityforge.arez` artifacts to version `0.193`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.195`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.18`.
 
 ### [v0.181](https://github.com/react4j/react4j/tree/v0.181) (2021-03-23) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.180...v0.181) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.180&new=0.181)
