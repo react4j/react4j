@@ -39,6 +39,8 @@ REACT_TEST_OPTIONS =
     'react4j.environment' => 'development'
   }
 
+CORE_DEPS=[:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrains_annotations, :braincheck_core, :grim_annotations, :zemeckis, :arez_core, :akasha, :javaemul_internal_annotations]
+
 desc 'React4j: An opinionated Java binding for React'
 define 'react4j' do
   project.group = 'org.realityforge.react4j'
@@ -56,7 +58,7 @@ define 'react4j' do
 
   desc 'React4j core binding'
   define 'core' do
-    deps = artifacts(:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrains_annotations, :braincheck_core, :grim_annotations, :zemeckis, :arez_core, :akasha, :javaemul_internal_annotations)
+    deps = artifacts(CORE_DEPS)
     pom.include_transitive_dependencies << deps
     pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 
@@ -82,7 +84,7 @@ define 'react4j' do
 
   desc 'React4j DOM binding'
   define 'dom' do
-    deps = [project('core').package(:jar)]
+    deps = artifacts(CORE_DEPS) + [project('core').package(:jar)]
     pom.include_transitive_dependencies << deps
     pom.dependency_filter = Proc.new { |dep| dep[:scope].to_s != 'test' && deps.include?(dep[:artifact]) }
 
