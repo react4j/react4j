@@ -8,6 +8,7 @@
 * Upgrade the `org.realityforge.akasha` artifact to version `0.06`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.196`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.18`.
+* Explicitly specify the `javaemul.internal.annotations` dependency rather than inheriting it as an implicit dependency from GWT. Making this dependency explicit makes it easier to replace this dependency when using J2CL to compile the project.
 
 ### [v0.181](https://github.com/react4j/react4j/tree/v0.181) (2021-03-23) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.180...v0.181) · [API Differences](https://react4j.github.io/api-diff?key=react4j&old=0.180&new=0.181)
 
