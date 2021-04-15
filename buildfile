@@ -299,7 +299,7 @@ define 'react4j' do
           :windowtitle => 'React4j API Documentation',
           :linksource => true,
           :timestamp => false,
-          :link => %w(https://arez.github.io/api https://arez.github.io/spytools https://docs.oracle.com/javase/8/docs/api http://www.gwtproject.org/javadoc/latest/),
+          :link => %w(https://arez.github.io/api https://docs.oracle.com/javase/8/docs/api http://www.gwtproject.org/javadoc/latest/),
           :group => {
             'Core Packages' => 'react4j*',
             'DOM Packages' => 'react4j.dom*',
