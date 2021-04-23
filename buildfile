@@ -284,14 +284,15 @@ define 'react4j' do
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
                  DAGGER_RUNTIME_DEPS,
-                 :gwt_user
+                 :gwt_user,
+                 project('processor').package(:jar),
+                 project('processor').compile.dependencies,
+                 DAGGER_PROCESSOR_DEPS,
+                 :arez_processor,
+                 :sting_core,
+                 :sting_processor
 
-    compile.options[:processor_path] << [project('processor').package(:jar),
-                                         project('processor').compile.dependencies,
-                                         DAGGER_PROCESSOR_DEPS,
-                                         :arez_processor,
-                                         :sting_core,
-                                         :sting_processor]
+    compile.options[:processor] = true
 
     gwt_enhance(project, :modules_complete => true, :package_jars => false, :output_key => 'react4j-doc-examples')
   end
