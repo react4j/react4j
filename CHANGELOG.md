@@ -3,7 +3,7 @@
 ### Unreleased
 
 * Upgrade the `org.realityforge.zemeckis` artifact to version `0.11`.
-* Upgrade the `org.realityforge.arez.testng` artifact to version `0.28`.
+* Upgrade the `org.realityforge.arez.testng` artifact to version `0.29`.
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.31.0`.
 * Upgrade the `org.realityforge.akasha` artifact to version `0.10`.
 * Upgrade the `org.realityforge.arez` artifacts to version `0.196`.
