@@ -6,7 +6,7 @@
 * Upgrade the `org.realityforge.arez.testng` artifact to version `0.29`.
 * Upgrade the `org.realityforge.braincheck` artifact to version `1.31.0`.
 * Upgrade the `org.realityforge.akasha` artifact to version `0.10`.
-* Upgrade the `org.realityforge.arez` artifacts to version `0.196`.
+* Upgrade the `org.realityforge.arez` artifacts to version `0.197`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.19`.
 * Explicitly specify the `javaemul.internal.annotations` dependency rather than inheriting it as an implicit dependency from GWT. Making this dependency explicit makes it easier to replace this dependency when using J2CL to compile the project.
 
