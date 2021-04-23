@@ -1,9 +1,9 @@
 package react4j.examples.arez;
 
-import akasha.Global;
 import akasha.HashChangeEvent;
 import akasha.HashChangeEventListener;
 import akasha.Location;
+import akasha.WindowGlobal;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
@@ -69,14 +69,14 @@ public abstract class BrowserLocation
   @PostConstruct
   void postConstruct()
   {
-    Global.addHashchangeListener(  _listener, false );
+    WindowGlobal.addHashchangeListener( _listener, false );
     _targetLocation = _browserLocation = _location = getHash();
   }
 
   @PreDispose
   void preDispose()
   {
-    Global.removeHashchangeListener(  _listener, false );
+    WindowGlobal.removeHashchangeListener(  _listener, false );
   }
 
   /**
@@ -184,19 +184,19 @@ public abstract class BrowserLocation
   @Nonnull
   private String getHash()
   {
-    return Global.location().hash.substring( 1 );
+    return WindowGlobal.location().hash.substring( 1 );
   }
 
   private void setHash( @Nonnull final String hash )
   {
-    final Location location = Global.location();
+    final Location location = WindowGlobal.location();
     if ( 0 == hash.length() )
     {
       /*
        * This code is needed to remove the stray #.
        * See https://stackoverflow.com/questions/1397329/how-to-remove-the-hash-from-window-location-url-with-javascript-without-page-r/5298684#5298684
        */
-      Global.history().pushState( "", Global.document().title, location.pathname + location.search );
+      WindowGlobal.history().pushState( "", WindowGlobal.document().title, location.pathname + location.search );
     }
     else
     {
