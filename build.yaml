@@ -20,7 +20,7 @@ artifacts:
 
   jsinterop_base: com.google.jsinterop:base:jar:1.0.0
 
-  akasha: org.realityforge.akasha:akasha-java:jar:0.10
+  akasha: org.realityforge.akasha:akasha-gwt:jar:0.11
 
   arez_core: org.realityforge.arez:arez-core:jar:0.197
   arez_processor: org.realityforge.arez:arez-processor:jar:0.197
