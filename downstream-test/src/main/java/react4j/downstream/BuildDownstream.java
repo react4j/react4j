@@ -52,7 +52,7 @@ public final class BuildDownstream
                                c -> Buildr.patchMavenCoordinates( c, group, version ) );
       if ( patched )
       {
-        final String message = "Update the '" + group + "' dependencies to version '" + version + "'";
+        final String message = "Update the `" + group + "` artifacts to version `" + version + "`";
         final Function<String, String> patchFunction = c -> {
           if ( c.contains( "### Unreleased\n\n#" ) )
           {

@@ -64,7 +64,7 @@ public final class CollectBuildStats
       if ( isMaven )
       {
         Maven.patchPomProperty( context.appDirectory,
-                                () -> "Update the 'react4j' dependencies to version '" + version + "'",
+                                () -> "Update the `react4j` artifacts to version `" + version + "`",
                                 "react4j.version",
                                 version );
       }
