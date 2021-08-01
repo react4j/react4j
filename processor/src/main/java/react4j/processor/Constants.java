@@ -53,10 +53,6 @@ final class Constants
   @Nonnull
   static final String POST_CONSTRUCT_CLASSNAME = "arez.annotations.PostConstruct";
   @Nonnull
-  static final String COMPONENT_DEPENDENCY_CLASSNAME = "arez.annotations.ComponentDependency";
-  @Nonnull
-  static final String CASCADE_DISPOSE_CLASSNAME = "arez.annotations.CascadeDispose";
-  @Nonnull
   static final String JSR_330_INJECT_CLASSNAME = "javax.inject.Inject";
   @Nonnull
   static final String STING_INJECTABLE_CLASSNAME = "sting.Injectable";
