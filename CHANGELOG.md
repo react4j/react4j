@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.184](https://github.com/react4j/react4j/tree/v0.184) (2021-08-02) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.183...v0.184)
+
+Changes in this release:
 
 * Update the `org.realityforge.arez` artifacts to version `0.199`.
 * Update the `org.realityforge.gir` artifact to version `0.12`.
