@@ -19,7 +19,7 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "SkipScheduleRenderComponent",
+    name = "com_example_schedule_render_SkipScheduleRenderComponent",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,

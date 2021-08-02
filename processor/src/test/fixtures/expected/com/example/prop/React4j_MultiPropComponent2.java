@@ -19,7 +19,7 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "MultiPropComponent2",
+    name = "com_example_prop_MultiPropComponent2",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,

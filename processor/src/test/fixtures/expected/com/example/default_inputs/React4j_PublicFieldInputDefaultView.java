@@ -19,7 +19,7 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "PublicFieldInputDefaultView",
+    name = "com_example_default_inputs_PublicFieldInputDefaultView",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,

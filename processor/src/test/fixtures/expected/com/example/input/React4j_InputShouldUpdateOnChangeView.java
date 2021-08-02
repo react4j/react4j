@@ -32,7 +32,7 @@ import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
 @ArezComponent(
-    name = "InputShouldUpdateOnChangeView",
+    name = "com_example_input_InputShouldUpdateOnChangeView",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE

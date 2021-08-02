@@ -32,7 +32,7 @@ import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
 @ArezComponent(
-    name = "ActionOnPostUpdateView",
+    name = "com_example_post_update_ActionOnPostUpdateView",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE

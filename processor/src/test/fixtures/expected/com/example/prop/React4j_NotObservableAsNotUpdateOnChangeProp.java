@@ -32,7 +32,7 @@ import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
 @ArezComponent(
-    name = "NotObservableAsNotUpdateOnChangeProp",
+    name = "com_example_prop_NotObservableAsNotUpdateOnChangeProp",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,

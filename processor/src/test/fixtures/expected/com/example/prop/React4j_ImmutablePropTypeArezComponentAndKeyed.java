@@ -20,7 +20,7 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "ImmutablePropTypeArezComponentAndKeyed",
+    name = "com_example_prop_ImmutablePropTypeArezComponentAndKeyed",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,

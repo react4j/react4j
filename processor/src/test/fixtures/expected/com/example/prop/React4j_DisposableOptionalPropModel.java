@@ -32,7 +32,7 @@ import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
 @ArezComponent(
-    name = "DisposableOptionalPropModel",
+    name = "com_example_prop_DisposableOptionalPropModel",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE

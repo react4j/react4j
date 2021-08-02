@@ -4,6 +4,7 @@
 
 * Update the `org.realityforge.arez` artifacts to version `0.199`.
 * Update the `org.realityforge.gir` artifact to version `0.12`.
+* Use the fully qualified name of the `@View` annotated class to define the name of the Arez component to avoid naming collisions within Arez during development when multiple views have the same short name.
 
 ### [v0.183](https://github.com/react4j/react4j/tree/v0.183) (2021-07-27) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.182...v0.183)
 

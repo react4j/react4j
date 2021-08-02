@@ -36,7 +36,7 @@ import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
 @ArezComponent(
-    name = "InputAndMemoizeComponent",
+    name = "com_example_arez_InputAndMemoizeComponent",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,

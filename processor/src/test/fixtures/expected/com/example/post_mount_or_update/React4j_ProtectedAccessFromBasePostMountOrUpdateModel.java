@@ -21,7 +21,7 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "ProtectedAccessFromBasePostMountOrUpdateModel",
+    name = "com_example_post_mount_or_update_ProtectedAccessFromBasePostMountOrUpdateModel",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,

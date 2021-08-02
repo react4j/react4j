@@ -21,7 +21,7 @@ import react4j.internal.ViewConstructorFunction;
 @SuppressWarnings("deprecation")
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "DeprecatedPostMountModel",
+    name = "com_example_post_mount_DeprecatedPostMountModel",
     disposeNotifier = Feature.DISABLE,
     dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
