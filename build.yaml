@@ -25,7 +25,7 @@ artifacts:
   arez_core: org.realityforge.arez:arez-core:jar:0.200
   arez_processor: org.realityforge.arez:arez-processor:jar:0.200
 
-  arez_testng: org.realityforge.arez:arez-extras-testng:jar:0.198
+  arez_testng: org.realityforge.arez:arez-extras-testng:jar:0.200
   mockito: org.mockito:mockito-all:jar:1.10.19
 
   sting_core: org.realityforge.sting:sting-core:jar:0.19
