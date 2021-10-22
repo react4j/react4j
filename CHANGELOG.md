@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.arez` artifacts to version `0.200`.
 * Update the `org.realityforge.zemeckis` artifact to version `0.13`.
 * Update the `org.realityforge.akasha` artifacts to version `0.28`.
 
