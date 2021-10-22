@@ -1,0 +1,38 @@
+[
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'JsType'.",
+    "element": "interface react4j.internal.OnComponentWillUnmount",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@JsType",
+      "annotationType": "JsType",
+      "classQualifiedName": "react4j.internal.OnComponentWillUnmount",
+      "classSimpleName": "OnComponentWillUnmount",
+      "elementKind": "interface",
+      "package": "react4j.internal"
+    }
+  },
+  {
+    "code": "java.annotation.removed",
+    "description": "Element no longer annotated with 'jsinterop.annotations.JsType'.",
+    "element": "interface react4j.internal.OnComponentWillUnmount",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@jsinterop.annotations.JsType(isNative = true, namespace = \"<global>\", name = \"?\")",
+      "annotationType": "jsinterop.annotations.JsType",
+      "classQualifiedName": "react4j.internal.OnComponentWillUnmount",
+      "classSimpleName": "OnComponentWillUnmount",
+      "elementKind": "interface",
+      "package": "react4j.internal"
+    }
+  }
+]
