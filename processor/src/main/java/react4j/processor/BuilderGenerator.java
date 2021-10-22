@@ -713,7 +713,7 @@ final class BuilderGenerator
     {
       for ( final StepMethod stepMethod : step.getMethods() )
       {
-        if ( stepMethodsAdded.add( stepMethod.getName() + stepMethod.getType().toString() ) )
+        if ( stepMethodsAdded.add( stepMethod.getName() + stepMethod.getType() ) )
         {
           if ( !stepMethod.isBuildIntrinsic() )
           {
