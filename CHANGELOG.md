@@ -2018,7 +2018,7 @@ Changes in this release:
 
 ##### Added
 * **\[docs\]** Add initial documentation about integrating React4j components into dependency injection
-  frameworks such as [Dagger2](https://google.github.io/dagger).
+  frameworks such as [Dagger2](https://dagger.dev).
 * **\[docs\]** Add expected "Code of Conduct" documentation.
 
 ##### Changed

@@ -113,6 +113,7 @@ task 'site:link_check' do
     excludes << 'https://maven.apache.org'
     excludes << 'https://reactjs.org'
     excludes << 'https://todomvc.com'
+    excludes << 'https://dagger.dev'
     # This next line is required if updating docs in branch and adding new
     # pages then this url may not exist until it is merged to master
     excludes << 'https://github.com/react4j/react4j/tree/master/docs'

@@ -83,7 +83,7 @@ React4j looks like.
     <td><a href="/todomvc/dagger/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
     <td>
       <ul>
-        <li>Dependency Injection: <a href="https://google.github.io/dagger">Dagger2</a></li>
+        <li>Dependency Injection: <a href="https://dagger.dev/">Dagger2</a></li>
         <li>State Management: <a href="https://arez.github.io">Arez</a></li>
         <li>Build System: <a href="https://buildr.apache.org">Buildr</a></li>
       </ul>
