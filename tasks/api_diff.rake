@@ -15,3 +15,9 @@ task 'test_api_diff' do
 
   sh "buildr clean react4j:api-test:test TEST=only GWT=no PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} PREVIOUS_PRODUCT_VERSION=#{ENV['PREVIOUS_PRODUCT_VERSION']}"
 end
+
+task 'release_test_api_diff' do
+  derive_versions
+
+  sh "buildr react4j:api-test:test TEST=only GWT=no PRODUCT_VERSION=#{ENV['PRODUCT_VERSION']} PREVIOUS_PRODUCT_VERSION=#{ENV['PREVIOUS_PRODUCT_VERSION']}"
+end

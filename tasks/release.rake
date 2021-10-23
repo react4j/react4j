@@ -7,7 +7,7 @@ Buildr::ReleaseTool.define_release_task do |t|
   t.ensure_git_clean
   t.verify_no_todo
   t.cleanup_staging
-  t.build(:additional_tasks => "test_api_diff J2CL=#{ENV['J2CL']} STAGE_RELEASE=true")
+  t.build(:additional_tasks => "release_test_api_diff J2CL=#{ENV['J2CL']} STAGE_RELEASE=true")
   t.stage('ArchiveDownstream', 'Archive downstream projects that may need changes pushed') do
     FileUtils.rm_rf 'archive'
     FileUtils.mkdir_p 'archive'
