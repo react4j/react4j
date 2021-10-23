@@ -26,7 +26,7 @@ The simplest approach to defining an Arez enabled component is simply to extend
 within the scope of a read-only, tracking (Arez) transaction. Changes to the observable state accessed within the
 scope of the `render()` will schedule the component for re-rendering.
 
-Below is a `Footer` component extracted from a [TodoMVC](http://todomvc.com/) implementation. It accesses the
+Below is a `Footer` component extracted from a [TodoMVC](https://todomvc.com/) implementation. It accesses the
 observable state `AppData.model.totalCount()`, `AppData.viewService.getFilterMode()` and
 `AppData.model.completedCount()` and will re-render each time any of these values change.
 
@@ -44,7 +44,7 @@ Whether this inefficiency has any impact on the user experience will depend upon
 it will depend on how frequently the observable data changes, what other parts of the view are updated when the
 same observable data changes and how dynamic and complex the remainder of the view is. It is often the case that
 re-rendering the entire component is perfectly fine and will have no impact on the users experience, as in the
-case with a [TodoMVC](http://todomvc.com/) implementation.
+case with a [TodoMVC](https://todomvc.com/) implementation.
 
 However let's assume that this component needs to be optimized and walk through the steps that would be required to
 optimize the component to reduce the scope and frequency of re-renders.

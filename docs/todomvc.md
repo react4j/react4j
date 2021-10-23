@@ -4,7 +4,7 @@ title: TodoMVC
 
 ![TodoMVC](/img/todomvc.svg)
 
-The [TodoMVC](http://todomvc.com/) project specified a standard project that aims to help you select
+The [TodoMVC](https://todomvc.com/) project specified a standard project that aims to help you select
 frontend framework. The functionality is fixed as is the look and feel so that it easier to compare
 and contrast the different implementations of the application using different approaches.
 
