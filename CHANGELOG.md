@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.grim` artifacts to version `0.06`.
 * Update the `org.realityforge.akasha` artifacts to version `0.29`.
 
 ### [v0.185](https://github.com/react4j/react4j/tree/v0.185) (2021-10-23) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.184...v0.185)
