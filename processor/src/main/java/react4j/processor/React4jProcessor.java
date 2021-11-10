@@ -67,7 +67,7 @@ public final class React4jProcessor
   private final DeferredElementSet _deferredTypes = new DeferredElementSet();
 
   @Override
-  public boolean process( final Set<? extends TypeElement> annotations, final RoundEnvironment env )
+  public boolean process( @Nonnull final Set<? extends TypeElement> annotations, @Nonnull final RoundEnvironment env )
   {
     processTypeElements( annotations,
                          env,
