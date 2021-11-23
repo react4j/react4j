@@ -6,11 +6,5 @@ complete as there is too much un-said.
 
 ### Next Release
 
-* Consider adding the ability to pass immutable `@Input` values in as constructor parameters. The
-  `immutable` param on the `@Input` could simply be dropped and just anything passed in via constructor
-  is by definition immutable. This would require a some rework in code generation, particularly when
-  interacting with the dependency injectors but it could simplify a lot of code. A lot of places
-  we have a `@PostConstruct` simply so that we can process an immutable prop.
-
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
