@@ -17,8 +17,6 @@ complete as there is too much un-said.
 
 ### Enhancements
 
-* React17 - https://reactjs.org/blog/2020/08/10/react-v17-rc.html
-
 - EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
   schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
   this lower down in the react stack.
