@@ -14,11 +14,3 @@ complete as there is too much un-said.
 
 * Add to build process so that every published packaged is attempted to be built using bazel to
   ensure it's dependencies align.
-
-### Enhancements
-
-- EventHandlers in Arez based components should somehow detect Arez.isSchedulerPaused() and persist any event and
-  schedule onceoff action that will be re-run when scheduler is enabled. It is whether it would be possible to do
-  this lower down in the react stack.
-- EventHandlers should probably start profiler "interactions" by default with the ability to disable
-
