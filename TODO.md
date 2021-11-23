@@ -24,10 +24,6 @@ complete as there is too much un-said.
   this lower down in the react stack.
 - EventHandlers should probably start profiler "interactions" by default with the ability to disable
 
-* In base class have configuration that warns on re-renders that produced duplicate values through something
-  like [why-did-you-update](https://github.com/maicki/why-did-you-update) or
-  [why-did-you-render](https://github.com/welldone-software/why-did-you-render)
-
 * Add some way to define effects which is just method called after render that returns a disposable to stop action.
   Possibly look at Observe props and if they change then dispose and re-run? i.e. could be wrapped in `@Observe`
   method that calls dispose on previous return if any. (From react 17)
