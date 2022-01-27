@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.arez` artifacts to version `0.203`.
 * Update the `org.realityforge.guiceyloops` artifact to version `0.110`.
 
 ### [v0.186](https://github.com/react4j/react4j/tree/v0.186) (2021-11-10) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.185...v0.186)
