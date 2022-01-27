@@ -856,14 +856,15 @@ final class ViewGenerator
         .methodBuilder( COMPONENT_WILL_UNMOUNT_METHOD )
         .addModifiers( Modifier.PRIVATE );
 
-    if ( descriptor.trackRender() )
-    {
-      method.addStatement( "$N = $T.UNMOUNTED", STATE_FIELD, VIEW_STATE_CLASSNAME );
-    }
     // We always dispose here rather than checking hasArezElements()
     // as this code path is only invoked when there are Arez elements, when we are in non-production
     // mode (and thus this makes debugging easier). Thus no need to have a guard
     method.addStatement( "(($T) this).dispose()", descriptor.getArezClassName() );
+
+    if ( descriptor.trackRender() )
+    {
+      method.addStatement( "$N = $T.UNMOUNTED", STATE_FIELD, VIEW_STATE_CLASSNAME );
+    }
     return method;
   }
 

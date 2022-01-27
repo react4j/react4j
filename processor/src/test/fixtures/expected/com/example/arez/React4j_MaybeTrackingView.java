@@ -77,8 +77,8 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    $$react4j$$_state = ViewState.UNMOUNTED;
     ((Arez_React4j_MaybeTrackingView) this).dispose();
+    $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
   @Nullable

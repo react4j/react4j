@@ -92,8 +92,8 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    $$react4j$$_state = ViewState.UNMOUNTED;
     ((Arez_React4j_ActAsComponentPropModel) this).dispose();
+    $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
   @Nullable

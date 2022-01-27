@@ -110,8 +110,8 @@ abstract class React4j_InputAndMemoizeComponent extends InputAndMemoizeComponent
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    $$react4j$$_state = ViewState.UNMOUNTED;
     ((Arez_React4j_InputAndMemoizeComponent) this).dispose();
+    $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
   @Nullable

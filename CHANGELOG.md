@@ -4,6 +4,7 @@
 
 * Update the `org.realityforge.arez` artifacts to version `0.203`.
 * Update the `org.realityforge.guiceyloops` artifact to version `0.110`.
+* Reorder operations in `componentWillUnmount()` so that state is set to `UNMOUNTED` after dispose completes. This avoids an invalid state during dispose operation.
 
 ### [v0.186](https://github.com/react4j/react4j/tree/v0.186) (2021-11-10) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.185...v0.186)
 
