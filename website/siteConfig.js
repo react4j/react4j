@@ -193,8 +193,7 @@ const siteConfig = {
     { doc: 'overview', label: 'Docs' },
     { href: '/api', label: 'API' },
     { href: 'https://github.com/react4j/react4j/releases', label: 'Releases', external: true },
-    { href: 'https://github.com/react4j/react4j', label: 'GitHub', external: true },
-    { search: true }
+    { href: 'https://github.com/react4j/react4j', label: 'GitHub', external: true }
   ],
   users: [],
   /* path to images for header/footer */
