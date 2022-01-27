@@ -2,12 +2,9 @@
 title: Arez
 ---
 
-**WARNING**: This document is no longer up to date. We hope to fix this in the medium term.
-
 The combination of [Arez](https://arez.github.io) and React4j creates a powerful toolkit. Arez manages
-the application state and React4j transforms the application state into a view. The React4jArez library provides
-the mechanisms for synchronizing the application state with the view. Both React4j and Arez are based on functional
-principles and trade higher memory usage for faster execution speed.
+the application state and React4j transforms the application state into a view. React4j and Arez are based
+on functional principles and trade higher memory usage for faster execution speed.
 
 React reduces the number of expensive DOM updates through the use of a virtual DOM. The application builds a future
 view and this is reconciled against the current view and any differences are applied to the DOM.
@@ -15,16 +12,17 @@ view and this is reconciled against the current view and any differences are app
 Arez is built around a data flow graph where state modifications flow through the graph updating nodes only as
 required. Data nodes are always up to date and perform the minimum amount of work based on the graph definition.
 
-The React4jArez library bridges the two systems, triggering view updates when the state updates. Changes to observable
-data that a `ReactArezComponent` component uses during rendering will schedule the component for re-rendering. The
+The React4j library bridges the two systems, triggering view updates when the state updates. Changes to observable
+data that a `@View` component accesses during rendering will schedule the component for re-rendering. The
 developer controls the scope of the re-render by controlling the size of the component.
 
 ## Getting Started
 
-The simplest approach to defining an Arez enabled component is simply to extend
-`ReactArezComponent`. This will result in the `render()` method being invoked
+To trigger re-renders of a react4j component when observable Arez state is modified then set the `type`
+parameter of the `@View` annotation to `TRACKING` (i.e. Annotate the component with
+`@View( type = View.Type.TRACKING )`). This will result in the `@Render` annotated method being invoked
 within the scope of a read-only, tracking (Arez) transaction. Changes to the observable state accessed within the
-scope of the `render()` will schedule the component for re-rendering.
+scope of the `@Render` annotated method will schedule the component for re-rendering.
 
 Below is a `Footer` component extracted from a [TodoMVC](https://todomvc.com/) implementation. It accesses the
 observable state `AppData.model.totalCount()`, `AppData.viewService.getFilterMode()` and
@@ -56,8 +54,8 @@ a Todo is toggled from "complete" to "not complete" or vice-versa. However the h
 number of completed Todos changes from 0 to not zero or from not zero to zero.
 
 To eliminate these unnecessary renders, the simplest approach is to extract the expression
-`AppData.model.completedCount() > 0` into a separate `@Memoize` method. The `render()` method will only be scheduled
-to render if the value returned from the `@Memoize` method changes.
+`AppData.model.completedCount() > 0` into a separate `@Memoize` method. The `@Render` annotated method will only
+be scheduled to render if the value returned from the `@Memoize` method changes.
 
 This method will look like:
 
@@ -75,7 +73,7 @@ that encapsulates the html that changes.
 
 {@file_content: file=react4j/examples/arez/step2/FooterTodoCount.java start_line=@View}
 
-This component can be rendered via an expression such as `React.createElement( FooterTodoCount_.TYPE )`.
+This component can be rendered via an expression such as `FooterTodoCountBuilder.build()`.
 
 The `FooterTodoCount` component will still be re-rendered every time a Todo is added or removed but the scope
 of the re-render is much smaller and thus the amount of work that React4j has to do is much smaller.
@@ -113,10 +111,8 @@ In an ideal world, we should be able to persist the arez observable state, relau
 observable state and the application should appear just as it was before the relaunch.
 
 The question often arises, when should you use React4j component level state. In most cases this state is no
-longer necessary however it sometimes makes sense to use it if:
-
-* The component would otherwise be a generic component and need not extend `ReactArezComponent`.
-* The state never needs to be shared with any other component.
+longer necessary however it sometimes makes sense to use component state if the state never needs to be shared
+with any other component.
 
 ### Avoid writing "business logic" in your React4j components
 
@@ -142,7 +138,7 @@ strategy would be:
 
 Another approach that is even easier to test and arguably easier to understand is to have the the `@Action`
 annotated method set state the defines the "intent" to perform a remote service and then have a separate arez
-component that uses an `@Autorun` method that observes the "intent" and performs remote call when the intent
+component that uses an `@Observe` method that observes the "intent" and performs remote call when the intent
 indicates that it is required.
 
 So this results in some minor modifications to the employee service so that the action is implemented as follows:
@@ -162,4 +158,4 @@ level of abstraction.
 ### Avoid arez annotations other than @Memoize and @Action in React4j components
 
 Following the above best practices, you will find you rarely if ever need to annotate any methods in a
-`ReactArezComponent` subclass with any Arez annotations other than `@Memoize` and `@Action`.
+`@View` annotated class with any Arez annotations other than `@Memoize` and `@Action`.
