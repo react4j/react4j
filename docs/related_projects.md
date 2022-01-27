@@ -3,7 +3,7 @@ title: Related projects
 ---
 
 React4j is a relatively new toolkit but there are some other resources and related projects.
-This list will hopefully grap over time. Feel free to submit a pull request to add new projects
+This list will hopefully grow over time. Feel free to submit a pull request to add new projects
 to this page.
 
 * [arez](https://github.com/arez/arez) Arez is a simple, efficient and scalable state management library
