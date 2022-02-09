@@ -53,8 +53,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.input.ArezComponentInputView" },
         new Object[]{ "com.example.input.BasicInputView" },
         new Object[]{ "com.example.input.ChildInputView" },
-        new Object[]{ "com.example.input.InputShouldNotUpdateOnChangeView" },
-        new Object[]{ "com.example.input.InputShouldUpdateOnChangeView" },
 
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
 
@@ -176,7 +174,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.NonJavaBeanPropComponent" },
         new Object[]{ "com.example.prop.NonnullChildPropComponent" },
         new Object[]{ "com.example.prop.NonnullContextPropModel" },
-        new Object[]{ "com.example.prop.NotObservableAsNotUpdateOnChangeProp" },
         new Object[]{ "com.example.prop.NullabilityPropsComponent" },
         new Object[]{ "com.example.prop.NullablePropAndNonnullChildComponent" },
         new Object[]{ "com.example.prop.ObservableProp" },
@@ -710,8 +707,6 @@ public final class React4jProcessorTest
                       "@Input named 'value' is has a type variable as a return type that is declared on the method." },
         new Object[]{ "com.example.prop.ImmutableObservableProp",
                       "@Input target has specified both immutable=true and observable=ENABLE which is an invalid combination." },
-        new Object[]{ "com.example.prop.ImmutableShouldUpdateOnChangeProp",
-                      "@Input target has specified both immutable=true and shouldUpdateOnChange=ENABLE which is an invalid combination." },
         new Object[]{ "com.example.prop.MultipleChildrenPropsComponent",
                       "Multiple candidate children @Input annotated methods: getChildren and getChild" },
         new Object[]{ "com.example.prop.MutableDependencyInput",

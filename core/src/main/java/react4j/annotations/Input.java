@@ -86,20 +86,11 @@ public @interface Input
   Feature require() default Feature.AUTODETECT;
 
   /**
-   * Indicate whether changing the value of the input should schedule a re-render.
-   * If set to {@link Feature#AUTODETECT} then the annotation processor will treat it as
-   * {@link Feature#ENABLE} unless {@link #immutable()} is set to <code>true</code>.
-   *
-   * @return the enum indicating whether input should trigger a render if it is modified.
-   */
-  Feature shouldUpdateOnChange() default Feature.AUTODETECT;
-
-  /**
    * Indicate whether the input should be annotated by {@link Observable}.
    *
    * <p>If set to {@link Feature#AUTODETECT} then the input will be observable if and only if:</p>
    * <ul>
-   * <li>{@link #shouldUpdateOnChange()} is not set to {@link Feature#DISABLE}.</li>
+   * <li>{@link #immutable()} ()} is not set to {@code true}.</li>
    * <li>the view has at least one method annotated with {@link Memoize} or {@link Observe}.</li>
    * </ul>
    *

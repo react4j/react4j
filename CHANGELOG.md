@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Remove `@Input.shouldUpdateOnChange` parameter as it was extremely difficult to use and as a result was almost always misused and s source of errors.
+
 ### [v0.187](https://github.com/react4j/react4j/tree/v0.187) (2022-01-28) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.186...v0.187)
 
 Changes in this release:

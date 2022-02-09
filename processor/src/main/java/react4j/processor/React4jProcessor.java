@@ -921,8 +921,7 @@ public final class React4jProcessor
     final boolean contextInput = isContextInput( method );
     final Element inputType = processingEnv.getTypeUtils().asElement( returnType );
     final boolean immutable = isInputImmutable( method );
-    final boolean shouldUpdateOnChange = shouldUpdateOnChange( method, immutable );
-    final boolean observable = isInputObservable( descriptor, method, shouldUpdateOnChange, immutable );
+    final boolean observable = isInputObservable( descriptor, method, immutable );
     final boolean disposable = null != inputType && isInputDisposable( method, inputType );
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation( method ) )
@@ -953,7 +952,7 @@ public final class React4jProcessor
                            methodType,
                            inputType,
                            contextInput,
-                           shouldUpdateOnChange,
+                           !immutable,
                            observable,
                            disposable,
                            dependency,
@@ -1371,32 +1370,8 @@ public final class React4jProcessor
     return ViewType.valueOf( declaredTypeEnum.getSimpleName().toString() );
   }
 
-  private boolean shouldUpdateOnChange( @Nonnull final ExecutableElement method,
-                                        final boolean immutable )
-  {
-    final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "shouldUpdateOnChange" )
-        .getValue();
-    switch ( parameter.getSimpleName().toString() )
-    {
-      case "ENABLE":
-        if ( immutable )
-        {
-          throw new ProcessorException( "@Input target has specified both immutable=true and " +
-                                        "shouldUpdateOnChange=ENABLE which is an invalid combination.",
-                                        method );
-        }
-        return true;
-      case "DISABLE":
-        return false;
-      default:
-        return !immutable;
-    }
-  }
-
   private boolean isInputObservable( @Nonnull final ViewDescriptor descriptor,
                                      @Nonnull final ExecutableElement method,
-                                     final boolean shouldUpdateOnChange,
                                      final boolean immutable )
   {
     final VariableElement parameter = (VariableElement)
@@ -1414,7 +1389,7 @@ public final class React4jProcessor
       case "DISABLE":
         return false;
       default:
-        return shouldUpdateOnChange && hasAnyArezObserverMethods( descriptor.getElement() );
+        return hasAnyArezObserverMethods( descriptor.getElement() );
     }
   }
 
