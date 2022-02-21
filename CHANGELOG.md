@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.akasha` artifacts to version `0.30`.
+
 ### [v0.188](https://github.com/react4j/react4j/tree/v0.188) (2022-02-10) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.187...v0.188)
 
 Changes in this release:
