@@ -28,8 +28,8 @@ artifacts:
   arez_testng: org.realityforge.arez:arez-extras-testng:jar:0.203
   mockito: org.mockito:mockito-all:jar:1.10.19
 
-  sting_core: org.realityforge.sting:sting-core:jar:0.19
-  sting_processor: org.realityforge.sting:sting-processor:jar:0.19
+  sting_core: org.realityforge.sting:sting-core:jar:0.25
+  sting_processor: org.realityforge.sting:sting-processor:jar:0.25
 
   braincheck_core: org.realityforge.braincheck:braincheck-core:jar:1.31.0
 
