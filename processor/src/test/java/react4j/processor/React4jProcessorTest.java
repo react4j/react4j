@@ -1015,6 +1015,9 @@ public final class React4jProcessorTest
            !target.contains( "/Arez_" ) &&
            !target.startsWith( "Arez_" ) &&
            !target.contains( "_Arez_" ) &&
+           !target.contains( "/Sting_" ) &&
+           !target.startsWith( "Sting_" ) &&
+           !target.contains( "_Sting_" ) &&
            (
              target.startsWith( "React4j_" ) ||
              target.contains( "/React4j_" ) ||
