@@ -2,7 +2,6 @@ require 'buildr/git_auto_version'
 require 'buildr/gpg'
 require 'buildr/single_intermediate_layout'
 require 'buildr/gwt'
-require 'buildr/jacoco'
 require 'buildr/top_level_generate_dir'
 require 'buildr/shade'
 
@@ -124,8 +123,6 @@ define 'react4j' do
     end unless ENV['TEST'] == 'no' || ENV['PRODUCT_VERSION'].nil? || ENV['PREVIOUS_PRODUCT_VERSION'].nil?
 
     test.exclude '*ApiDiffTest' if ENV['PRODUCT_VERSION'].nil? || ENV['PREVIOUS_PRODUCT_VERSION'].nil?
-
-    project.jacoco.enabled = false
   end
 
   desc 'The Annotation processor'
@@ -315,8 +312,4 @@ define 'react4j' do
   ipr.add_code_insight_settings
   ipr.add_nullable_manager
   ipr.add_javac_settings('-Xlint:all,-processing,-serial -Werror -Xmaxerrs 10000 -Xmaxwarns 10000')
-end
-
-Buildr.projects.each do |project|
-  project.jacoco.enabled = false unless project.name == 'react4j:processor'
 end

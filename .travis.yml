@@ -23,7 +23,5 @@ install:
 - gem install bundler
 - bundle install
 script: bundle exec buildr ci
-after_success:
-- bash <(curl -s https://codecov.io/bash)
 git:
   depth: false
