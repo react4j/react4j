@@ -9,9 +9,11 @@ Buildr::ReleaseTool.define_release_task do |t|
   t.cleanup_staging
   t.build(:additional_tasks => "release_test_api_diff J2CL=#{ENV['J2CL']} STAGE_RELEASE=true")
   t.stage('ArchiveDownstream', 'Archive downstream projects that may need changes pushed') do
-    FileUtils.rm_rf 'archive'
-    FileUtils.mkdir_p 'archive'
-    mv 'target/react4j_downstream-test/deploy_test/workdir', 'archive/downstream'
+    unless ENV['DOWNSTREAM'] == 'no'
+      FileUtils.rm_rf 'archive'
+      FileUtils.mkdir_p 'archive'
+      mv 'target/react4j_downstream-test/deploy_test/workdir', 'archive/downstream'
+    end
   end
   t.patch_changelog('react4j/react4j',
                     :api_diff_directory => "#{WORKSPACE_DIR}/api-test",
@@ -47,8 +49,8 @@ Buildr::ReleaseTool.define_release_task do |t|
     lines = IO.read(filename).split("\n")
     lines +=
       lines
-        .select{|line| line =~ pattern}
-        .collect{|line| line.gsub("#{current_version}.","#{next_version}.")}
+        .select { |line| line =~ pattern }
+        .collect { |line| line.gsub("#{current_version}.", "#{next_version}.") }
 
     IO.write(filename, lines.sort.uniq.join("\n") + "\n")
 
@@ -59,28 +61,30 @@ Buildr::ReleaseTool.define_release_task do |t|
   t.push_changes
   t.github_release('react4j/react4j')
   t.stage('PushDownstreamChanges', 'Push downstream changes') do
-    # Push the changes that have been made locally in downstream projects.
-    # Artifacts have been pushed to staging repository by this time so they should build
-    # even if it has not made it through the Maven release process
+    unless ENV['DOWNSTREAM'] == 'no'
+      # Push the changes that have been made locally in downstream projects.
+      # Artifacts have been pushed to staging repository by this time so they should build
+      # even if it has not made it through the Maven release process
 
-    DOWNSTREAM_EXAMPLES.each_pair do |downstream_example, branches|
-      sh "cd archive/downstream/#{downstream_example} && git push --all"
-      branches.each do |branch|
-        full_branch = "#{branch}-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
-        `cd archive/downstream/#{downstream_example} && git push origin :#{full_branch} 2>&1`
-        puts "Completed remote branch #{downstream_example}/#{full_branch}. Removed." if 0 == $?.exitstatus
+      DOWNSTREAM_EXAMPLES.each_pair do |downstream_example, branches|
+        sh "cd archive/downstream/#{downstream_example} && git push --all"
+        branches.each do |branch|
+          full_branch = "#{branch}-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
+          `cd archive/downstream/#{downstream_example} && git push origin :#{full_branch} 2>&1`
+          puts "Completed remote branch #{downstream_example}/#{full_branch}. Removed." if 0 == $?.exitstatus
+        end
       end
-    end
 
-    DOWNSTREAM_PROJECTS.each do |downstream|
-      # Need to extract the version from that project
-      downstream_version = IO.read("archive/downstream/#{downstream}/CHANGELOG.md")[/^### \[v(\d+\.\d+)\]/, 1]
-      sh "cd archive/downstream/#{downstream} && bundle exec buildr perform_release STAGE=StageRelease PREVIOUS_PRODUCT_VERSION= PRODUCT_VERSION=#{downstream_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
-      full_branch = "master-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
-      `cd archive/downstream/#{downstream} && git push origin :#{full_branch} 2>&1`
-      puts "Completed remote branch #{downstream}/#{full_branch}. Removed." if 0 == $?.exitstatus
-    end
+      DOWNSTREAM_PROJECTS.each do |downstream|
+        # Need to extract the version from that project
+        downstream_version = IO.read("archive/downstream/#{downstream}/CHANGELOG.md")[/^### \[v(\d+\.\d+)\]/, 1]
+        sh "cd archive/downstream/#{downstream} && bundle exec buildr perform_release STAGE=StageRelease PREVIOUS_PRODUCT_VERSION= PRODUCT_VERSION=#{downstream_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
+        full_branch = "master-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
+        `cd archive/downstream/#{downstream} && git push origin :#{full_branch} 2>&1`
+        puts "Completed remote branch #{downstream}/#{full_branch}. Removed." if 0 == $?.exitstatus
+      end
 
-    FileUtils.rm_rf 'archive'
+      FileUtils.rm_rf 'archive'
+    end
   end
 end
