@@ -770,10 +770,10 @@ brace-expansion@^1.1.7:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
 
-broken-link-checker@0.7.6:
-  version "0.7.6"
-  resolved "https://registry.yarnpkg.com/broken-link-checker/-/broken-link-checker-0.7.6.tgz#94e3b4c814521104c4dab247d7e1a8dd14616093"
-  integrity sha1-lOO0yBRSEQTE2rJH1+Go3RRhYJM=
+broken-link-checker@^0.7.8:
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/broken-link-checker/-/broken-link-checker-0.7.8.tgz#47ea837e1b43ec2feac220207dc3f44c03b49ec0"
+  integrity sha512-/zH4/nLMNKDeDH5nVuf/R6WYd0Yjnar1NpcdAO2+VlwjGKzJa6y42C03UO+imBSHwe6BefSkVi82fImE2Rb7yg==
   dependencies:
     bhttp "^1.2.1"
     calmcard "~0.1.1"
@@ -795,8 +795,8 @@ broken-link-checker@0.7.6:
     robot-directives "~0.3.0"
     robots-txt-guard "~0.1.0"
     robots-txt-parse "~0.0.4"
-    urlcache "~0.6.0"
-    urlobj "0.0.10"
+    urlcache "~0.7.0"
+    urlobj "0.0.11"
 
 browserslist@^3.2.6:
   version "3.2.8"
@@ -1112,7 +1112,7 @@ diacritics-map@^0.1.0:
   resolved "https://registry.yarnpkg.com/diacritics-map/-/diacritics-map-0.1.0.tgz#6dfc0ff9d01000a2edf2865371cac316e94977af"
   integrity sha1-bfwP+dAQAKLt8oZTccrDFulJd68=
 
-docusaurus@1.0.3:
+"docusaurus@= 1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/docusaurus/-/docusaurus-1.0.3.tgz#6ee1cc463a7e4462fd40207d323ace2ee6b1dfd6"
   integrity sha512-SCzAI2hEaXwB7OVD6sBxVEOGGYA53CNo0rVTVixiDVEc40tEcVraQYevzSn4xT3LUuBdkPNvxYoLPZMsJDh2YQ==
@@ -1862,7 +1862,7 @@ markdown-link@^0.1.1:
   resolved "https://registry.yarnpkg.com/markdown-link/-/markdown-link-0.1.1.tgz#32c5c65199a6457316322d1e4229d13407c8c7cf"
   integrity sha1-MsXGUZmmRXMWMi0eQinRNAfIx88=
 
-markdown-toc@1.2.0:
+"markdown-toc@= 1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/markdown-toc/-/markdown-toc-1.2.0.tgz#44a15606844490314afc0444483f9e7b1122c339"
   integrity sha512-eOsq7EGd3asV0oBfmyqngeEIhrbkc7XVP63OwcJBIhH2EpG2PzFcbZdhy1jutXSlRBBVMNXHvMtSr5LAxSUvUg==
@@ -2013,7 +2013,7 @@ object-assign@^2.0.0:
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-2.1.1.tgz#43c36e5d569ff8e4816c4efa8be02d26967c18aa"
   integrity sha1-Q8NuXVaf+OSBbE76i+AtJpZ8GKo=
 
-object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
+object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
@@ -2300,7 +2300,7 @@ regjsparser@^0.1.4:
   dependencies:
     jsesc "~0.5.0"
 
-remarkable-embed@0.4.1:
+"remarkable-embed@= 0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/remarkable-embed/-/remarkable-embed-0.4.1.tgz#447d3ee8cd51adbe16883e79f045d67e04e47c4b"
   integrity sha1-RH0+6M1Rrb4WiD558EXWfgTkfEs=
@@ -2756,30 +2756,21 @@ url-join@^1.1.0:
   resolved "https://registry.yarnpkg.com/url-join/-/url-join-1.1.0.tgz#741c6c2f4596c4830d6718460920d0c92202dc78"
   integrity sha1-dBxsL0WWxIMNZxhGCSDQySIC3Hg=
 
-urlcache@~0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/urlcache/-/urlcache-0.6.0.tgz#6ea63562bce0cc821864d4452cfa07f82b02109c"
-  integrity sha1-bqY1YrzgzIIYZNRFLPoH+CsCEJw=
+urlcache@~0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/urlcache/-/urlcache-0.7.0.tgz#3ff6a1e10b3d200aba132efc9f41dc1ad6d91b80"
+  integrity sha512-xOW4t6wJDT07+VunsHwePemyXXRidCSOZ/1RIILJi2XnB+81FA5H0MRvS63/7joTWjGLajcJJGvR5odpbkV6hw==
   dependencies:
-    urlobj "0.0.8"
+    urlobj "0.0.11"
 
-urlobj@0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/urlobj/-/urlobj-0.0.10.tgz#9103d232dfd8a8d25b15995bae8beec6b9ab995b"
-  integrity sha1-kQPSMt/YqNJbFZlbrovuxrmrmVs=
+urlobj@0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/urlobj/-/urlobj-0.0.11.tgz#ddd3060876ae1cf0ff9e38a91d0574332b73794c"
+  integrity sha512-Ncck0WWtuFBbZhSYwKjK1AU2V51V98P/KHUPkaEc+mFy4xkpAHFNyVQT+S5SgtsJAr94e4wiKUucJSfasV2kBw==
   dependencies:
     is-object "^1.0.1"
     is-string "^1.0.4"
-    object-assign "^4.1.0"
-
-urlobj@0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/urlobj/-/urlobj-0.0.8.tgz#84fda38c2dc867805245c830e5063fb91e026f56"
-  integrity sha1-hP2jjC3IZ4BSRcgw5QY/uR4Cb1Y=
-  dependencies:
-    is-object "^1.0.1"
-    is-string "^1.0.4"
-    object-assign "^4.0.1"
+    object-assign "^4.1.1"
 
 useragent@^2.1.8:
   version "2.3.0"
