@@ -29,8 +29,8 @@ artifacts:
   byte_buddy: net.bytebuddy:byte-buddy:jar:1.12.9
   objenesis: org.objenesis:objenesis:jar:3.2
 
-  sting_core: org.realityforge.sting:sting-core:jar:0.25
-  sting_processor: org.realityforge.sting:sting-processor:jar:0.25
+  sting_core: org.realityforge.sting:sting-core:jar:0.27
+  sting_processor: org.realityforge.sting:sting-processor:jar:0.27
 
   braincheck_core: org.realityforge.braincheck:braincheck-core:jar:1.31.0
 

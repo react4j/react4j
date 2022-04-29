@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.sting` artifacts to version `0.27`.
+
 ### [v0.189](https://github.com/react4j/react4j/tree/v0.189) (2022-04-29) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.188...v0.189)
 
 Changes in this release:
