@@ -1,7 +1,7 @@
 package com.example.optional_props;
 
-import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import javax.annotation.processing.Generated;
 import react4j.ReactElement;
 import react4j.ReactNode;
 

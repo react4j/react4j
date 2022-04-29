@@ -1,5 +1,5 @@
-import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import react4j.ReactElement;
 import react4j.ReactNode;

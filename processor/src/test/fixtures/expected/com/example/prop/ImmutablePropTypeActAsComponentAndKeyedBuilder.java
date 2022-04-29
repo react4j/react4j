@@ -1,7 +1,7 @@
 package com.example.prop;
 
-import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import javax.annotation.processing.Generated;
 import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;

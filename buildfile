@@ -26,8 +26,8 @@ CORE_DEPS=[:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jetbrain
 desc 'React4j: An opinionated Java binding for React'
 define 'react4j' do
   project.group = 'org.realityforge.react4j'
-  compile.options.source = '1.8'
-  compile.options.target = '1.8'
+  compile.options.source = '17'
+  compile.options.target = '17'
   compile.options.lint = 'all,-processing,-serial'
   project.compile.options.warnings = true
   project.compile.options.other = %w(-Werror -Xmaxerrs 10000 -Xmaxwarns 10000)

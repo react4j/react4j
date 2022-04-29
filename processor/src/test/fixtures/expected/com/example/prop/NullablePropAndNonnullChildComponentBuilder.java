@@ -2,9 +2,9 @@ package com.example.prop;
 
 import akasha.lang.JsArray;
 import java.util.Objects;
-import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.processing.Generated;
 import react4j.ReactElement;
 import react4j.ReactNode;
 

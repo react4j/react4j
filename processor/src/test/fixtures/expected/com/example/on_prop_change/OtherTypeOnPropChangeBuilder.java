@@ -1,8 +1,8 @@
 package com.example.on_prop_change;
 
 import java.util.BitSet;
-import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import javax.annotation.processing.Generated;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
