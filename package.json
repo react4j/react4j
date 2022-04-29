@@ -6,8 +6,8 @@
   },
   "devDependencies": {
     "broken-link-checker": "0.7.6",
-    "docusaurus": "1.0.3",
-    "markdown-toc": "1.2.0",
-    "remarkable-embed": "0.4.1"
+    "docusaurus": "= 1.0.3",
+    "markdown-toc": "= 1.2.0",
+    "remarkable-embed": "= 0.4.1"
   }
 }
