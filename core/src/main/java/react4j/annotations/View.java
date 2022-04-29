@@ -49,7 +49,7 @@ public @interface View
 
   /**
    * Return the name of the view.
-   * The value defaults to the simple name name of the class. If the value is specified, the
+   * The value defaults to the simple name of the class. If the value is specified, the
    * value must conform to the requirements of a java identifier. It should also be unique
    * across the suite of views used within an application but this is not strictly
    * required as the name is only used for development purposes. (i.e. This is the name
