@@ -5,10 +5,8 @@ import arez.annotations.ArezComponent;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.inject.Singleton;
 
 @ArezComponent
-@Singleton
 public abstract class TodoService
 {
   @Nonnull

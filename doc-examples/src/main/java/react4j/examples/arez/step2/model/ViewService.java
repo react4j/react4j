@@ -4,10 +4,8 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import javax.inject.Singleton;
 
 @ArezComponent
-@Singleton
 public abstract class ViewService
 {
   @Nonnull
