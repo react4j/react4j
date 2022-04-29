@@ -1,10 +1,6 @@
 package react4j.processor;
 
 import arez.processor.ArezProcessor;
-import com.google.testing.compile.Compilation;
-import com.google.testing.compile.Compiler;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +9,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.processing.Processor;
 import javax.tools.JavaFileObject;
 import org.realityforge.proton.qa.AbstractProcessorTest;
+import org.realityforge.proton.qa.Compilation;
+import org.realityforge.proton.qa.CompileTestUtil;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import sting.processor.StingProcessor;
@@ -267,8 +265,8 @@ public final class React4jProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( "com.example.nested.NestedView",
-                             "expected/com/example/nested/NestedView_BasicViewBuilder.java",
-                             "expected/com/example/nested/NestedView_React4j_BasicView.java" );
+                             "com/example/nested/NestedView_BasicViewBuilder.java",
+                             "com/example/nested/NestedView_React4j_BasicView.java" );
   }
 
   @Test
@@ -276,8 +274,8 @@ public final class React4jProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( "com.example.nested.NestedNestedView",
-                             "expected/com/example/nested/NestedNestedView_DeepNesting_BasicViewBuilder.java",
-                             "expected/com/example/nested/NestedNestedView_DeepNesting_React4j_BasicView.java" );
+                             "com/example/nested/NestedNestedView_DeepNesting_BasicViewBuilder.java",
+                             "com/example/nested/NestedNestedView_DeepNesting_React4j_BasicView.java" );
   }
 
   @Test
@@ -285,9 +283,9 @@ public final class React4jProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( "com.example.nested.NestedCompleteComponent",
-                             "expected/com/example/nested/NestedCompleteComponent_BasicViewBuilder.java",
-                             "expected/com/example/nested/NestedCompleteComponent_BasicViewFactory.java",
-                             "expected/com/example/nested/NestedCompleteComponent_React4j_BasicView.java" );
+                             "com/example/nested/NestedCompleteComponent_BasicViewBuilder.java",
+                             "com/example/nested/NestedCompleteComponent_BasicViewFactory.java",
+                             "com/example/nested/NestedCompleteComponent_React4j_BasicView.java" );
   }
 
   @Test
@@ -296,7 +294,7 @@ public final class React4jProcessorTest
   {
     final JavaFileObject source1 = fixture( "input/com/example/render/MyParent.java" );
     final JavaFileObject source2 = fixture( "input/com/example/render/RenderFromParentComponent.java" );
-    final String output = "expected/com/example/render/React4j_RenderFromParentComponent.java";
+    final String output = "com/example/render/React4j_RenderFromParentComponent.java";
     assertSuccessfulCompile( Arrays.asList( source1, source2 ), Collections.singletonList( output ) );
   }
 
@@ -304,9 +302,9 @@ public final class React4jProcessorTest
   public void validProtectedAccessOnError()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.on_error.ProtectedAccessFromBaseOnErrorModel" );
-    final String input2 = toFilename( "input", "com.example.on_error.other.BaseProtectedAccessOnErrorModel" );
-    final String output = toFilename( "expected", "com.example.on_error.React4j_ProtectedAccessFromBaseOnErrorModel" );
+    final String input1 = "input/" + toFilename( "com.example.on_error.ProtectedAccessFromBaseOnErrorModel" );
+    final String input2 = "input/" + toFilename( "com.example.on_error.other.BaseProtectedAccessOnErrorModel" );
+    final String output = toFilename( "com.example.on_error.React4j_ProtectedAccessFromBaseOnErrorModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -315,9 +313,9 @@ public final class React4jProcessorTest
   public void validPublicAccessViaInterfaceOnError()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.on_error.PublicAccessViaInterfaceOnErrorModel" );
-    final String input2 = toFilename( "input", "com.example.on_error.OnErrorInterface" );
-    final String output = toFilename( "expected", "com.example.on_error.React4j_PublicAccessViaInterfaceOnErrorModel" );
+    final String input1 = "input/" + toFilename( "com.example.on_error.PublicAccessViaInterfaceOnErrorModel" );
+    final String input2 = "input/" + toFilename( "com.example.on_error.OnErrorInterface" );
+    final String output = toFilename( "com.example.on_error.React4j_PublicAccessViaInterfaceOnErrorModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -326,11 +324,12 @@ public final class React4jProcessorTest
   public void validProtectedAccessOnPropChange()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.on_prop_change.ProtectedAccessFromBaseOnPropChangeModel" );
+    final String input1 =
+      "input/" + toFilename( "com.example.on_prop_change.ProtectedAccessFromBaseOnPropChangeModel" );
     final String input2 =
-      toFilename( "input", "com.example.on_prop_change.other.BaseProtectedAccessOnPropChangeModel" );
+      "input/" + toFilename( "com.example.on_prop_change.other.BaseProtectedAccessOnPropChangeModel" );
     final String output =
-      toFilename( "expected", "com.example.on_prop_change.React4j_ProtectedAccessFromBaseOnPropChangeModel" );
+      toFilename( "com.example.on_prop_change.React4j_ProtectedAccessFromBaseOnPropChangeModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -339,10 +338,11 @@ public final class React4jProcessorTest
   public void validPublicAccessViaInterfaceOnPropChange()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.on_prop_change.PublicAccessViaInterfaceOnPropChangeModel" );
-    final String input2 = toFilename( "input", "com.example.on_prop_change.OnPropChangeInterface" );
+    final String input1 =
+      "input/" + toFilename( "com.example.on_prop_change.PublicAccessViaInterfaceOnPropChangeModel" );
+    final String input2 = "input/" + toFilename( "com.example.on_prop_change.OnPropChangeInterface" );
     final String output =
-      toFilename( "expected", "com.example.on_prop_change.React4j_PublicAccessViaInterfaceOnPropChangeModel" );
+      toFilename( "com.example.on_prop_change.React4j_PublicAccessViaInterfaceOnPropChangeModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -351,10 +351,10 @@ public final class React4jProcessorTest
   public void validProtectedAccessPostMount()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.post_mount.ProtectedAccessFromBasePostMountModel" );
-    final String input2 = toFilename( "input", "com.example.post_mount.other.BaseProtectedAccessPostMountModel" );
+    final String input1 = "input/" + toFilename( "com.example.post_mount.ProtectedAccessFromBasePostMountModel" );
+    final String input2 = "input/" + toFilename( "com.example.post_mount.other.BaseProtectedAccessPostMountModel" );
     final String output =
-      toFilename( "expected", "com.example.post_mount.React4j_ProtectedAccessFromBasePostMountModel" );
+      toFilename( "com.example.post_mount.React4j_ProtectedAccessFromBasePostMountModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -363,10 +363,10 @@ public final class React4jProcessorTest
   public void validPublicAccessViaInterfacePostMount()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.post_mount.PublicAccessViaInterfacePostMountModel" );
-    final String input2 = toFilename( "input", "com.example.post_mount.PostMountInterface" );
+    final String input1 = "input/" + toFilename( "com.example.post_mount.PublicAccessViaInterfacePostMountModel" );
+    final String input2 = "input/" + toFilename( "com.example.post_mount.PostMountInterface" );
     final String output =
-      toFilename( "expected", "com.example.post_mount.React4j_PublicAccessViaInterfacePostMountModel" );
+      toFilename( "com.example.post_mount.React4j_PublicAccessViaInterfacePostMountModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -376,11 +376,11 @@ public final class React4jProcessorTest
     throws Exception
   {
     final String input1 =
-      toFilename( "input", "com.example.post_mount_or_update.ProtectedAccessFromBasePostMountOrUpdateModel" );
+      "input/" + toFilename( "com.example.post_mount_or_update.ProtectedAccessFromBasePostMountOrUpdateModel" );
     final String input2 =
-      toFilename( "input", "com.example.post_mount_or_update.other.BaseProtectedAccessPostMountOrUpdateModel" );
-    final String output = toFilename( "expected",
-                                      "com.example.post_mount_or_update.React4j_ProtectedAccessFromBasePostMountOrUpdateModel" );
+      "input/" + toFilename( "com.example.post_mount_or_update.other.BaseProtectedAccessPostMountOrUpdateModel" );
+    final String output =
+      toFilename( "com.example.post_mount_or_update.React4j_ProtectedAccessFromBasePostMountOrUpdateModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -390,10 +390,10 @@ public final class React4jProcessorTest
     throws Exception
   {
     final String input1 =
-      toFilename( "input", "com.example.post_mount_or_update.PublicAccessViaInterfacePostMountOrUpdateModel" );
-    final String input2 = toFilename( "input", "com.example.post_mount_or_update.PostMountOrUpdateInterface" );
-    final String output = toFilename( "expected",
-                                      "com.example.post_mount_or_update.React4j_PublicAccessViaInterfacePostMountOrUpdateModel" );
+      "input/" + toFilename( "com.example.post_mount_or_update.PublicAccessViaInterfacePostMountOrUpdateModel" );
+    final String input2 = "input/" + toFilename( "com.example.post_mount_or_update.PostMountOrUpdateInterface" );
+    final String output =
+      toFilename( "com.example.post_mount_or_update.React4j_PublicAccessViaInterfacePostMountOrUpdateModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -402,10 +402,10 @@ public final class React4jProcessorTest
   public void validProtectedAccessPostUpdate()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.post_update.ProtectedAccessFromBasePostUpdateModel" );
-    final String input2 = toFilename( "input", "com.example.post_update.other.BaseProtectedAccessPostUpdateModel" );
+    final String input1 = "input/" + toFilename( "com.example.post_update.ProtectedAccessFromBasePostUpdateModel" );
+    final String input2 = "input/" + toFilename( "com.example.post_update.other.BaseProtectedAccessPostUpdateModel" );
     final String output =
-      toFilename( "expected", "com.example.post_update.React4j_ProtectedAccessFromBasePostUpdateModel" );
+      toFilename( "com.example.post_update.React4j_ProtectedAccessFromBasePostUpdateModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -414,10 +414,10 @@ public final class React4jProcessorTest
   public void validPublicAccessViaInterfacePostUpdate()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.post_update.PublicAccessViaInterfacePostUpdateModel" );
-    final String input2 = toFilename( "input", "com.example.post_update.PostUpdateInterface" );
+    final String input1 = "input/" + toFilename( "com.example.post_update.PublicAccessViaInterfacePostUpdateModel" );
+    final String input2 = "input/" + toFilename( "com.example.post_update.PostUpdateInterface" );
     final String output =
-      toFilename( "expected", "com.example.post_update.React4j_PublicAccessViaInterfacePostUpdateModel" );
+      toFilename( "com.example.post_update.React4j_PublicAccessViaInterfacePostUpdateModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -426,10 +426,10 @@ public final class React4jProcessorTest
   public void validProtectedAccessPreUpdate()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.pre_update.ProtectedAccessFromBasePreUpdateModel" );
-    final String input2 = toFilename( "input", "com.example.pre_update.other.BaseProtectedAccessPreUpdateModel" );
+    final String input1 = "input/" + toFilename( "com.example.pre_update.ProtectedAccessFromBasePreUpdateModel" );
+    final String input2 = "input/" + toFilename( "com.example.pre_update.other.BaseProtectedAccessPreUpdateModel" );
     final String output =
-      toFilename( "expected", "com.example.pre_update.React4j_ProtectedAccessFromBasePreUpdateModel" );
+      toFilename( "com.example.pre_update.React4j_ProtectedAccessFromBasePreUpdateModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -438,10 +438,10 @@ public final class React4jProcessorTest
   public void validPublicAccessViaInterfacePreUpdate()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.pre_update.PublicAccessViaInterfacePreUpdateModel" );
-    final String input2 = toFilename( "input", "com.example.pre_update.PreUpdateInterface" );
+    final String input1 = "input/" + toFilename( "com.example.pre_update.PublicAccessViaInterfacePreUpdateModel" );
+    final String input2 = "input/" + toFilename( "com.example.pre_update.PreUpdateInterface" );
     final String output =
-      toFilename( "expected", "com.example.pre_update.React4j_PublicAccessViaInterfacePreUpdateModel" );
+      toFilename( "com.example.pre_update.React4j_PublicAccessViaInterfacePreUpdateModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -450,9 +450,9 @@ public final class React4jProcessorTest
   public void validProtectedAccessProp()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.prop.ProtectedAccessFromBasePropModel" );
-    final String input2 = toFilename( "input", "com.example.prop.other.BaseProtectedAccessPropModel" );
-    final String output = toFilename( "expected", "com.example.prop.React4j_ProtectedAccessFromBasePropModel" );
+    final String input1 = "input/" + toFilename( "com.example.prop.ProtectedAccessFromBasePropModel" );
+    final String input2 = "input/" + toFilename( "com.example.prop.other.BaseProtectedAccessPropModel" );
+    final String output = toFilename( "com.example.prop.React4j_ProtectedAccessFromBasePropModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -461,9 +461,9 @@ public final class React4jProcessorTest
   public void validPublicAccessViaInterfaceProp()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.prop.PublicAccessViaInterfacePropModel" );
-    final String input2 = toFilename( "input", "com.example.prop.PropInterface" );
-    final String output = toFilename( "expected", "com.example.prop.React4j_PublicAccessViaInterfacePropModel" );
+    final String input1 = "input/" + toFilename( "com.example.prop.PublicAccessViaInterfacePropModel" );
+    final String input2 = "input/" + toFilename( "com.example.prop.PropInterface" );
+    final String output = toFilename( "com.example.prop.React4j_PublicAccessViaInterfacePropModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -472,10 +472,11 @@ public final class React4jProcessorTest
   public void validProtectedAccessPropValidate()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.prop_validate.ProtectedAccessFromBasePropValidateModel" );
-    final String input2 = toFilename( "input", "com.example.prop_validate.other.BaseProtectedAccessPropValidateModel" );
+    final String input1 = "input/" + toFilename( "com.example.prop_validate.ProtectedAccessFromBasePropValidateModel" );
+    final String input2 =
+      "input/" + toFilename( "com.example.prop_validate.other.BaseProtectedAccessPropValidateModel" );
     final String output =
-      toFilename( "expected", "com.example.prop_validate.React4j_ProtectedAccessFromBasePropValidateModel" );
+      toFilename( "com.example.prop_validate.React4j_ProtectedAccessFromBasePropValidateModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -484,10 +485,11 @@ public final class React4jProcessorTest
   public void validPublicAccessViaInterfacePropValidate()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.prop_validate.PublicAccessViaInterfacePropValidateModel" );
-    final String input2 = toFilename( "input", "com.example.prop_validate.PropValidateInterface" );
+    final String input1 =
+      "input/" + toFilename( "com.example.prop_validate.PublicAccessViaInterfacePropValidateModel" );
+    final String input2 = "input/" + toFilename( "com.example.prop_validate.PropValidateInterface" );
     final String output =
-      toFilename( "expected", "com.example.prop_validate.React4j_PublicAccessViaInterfacePropValidateModel" );
+      toFilename( "com.example.prop_validate.React4j_PublicAccessViaInterfacePropValidateModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -496,10 +498,10 @@ public final class React4jProcessorTest
   public void validProtectedAccessPublish()
     throws Exception
   {
-    final String input1 = toFilename( "input", "com.example.publish.ProtectedAccessFromBasePublishModel" );
-    final String input2 = toFilename( "input", "com.example.publish.other.BaseProtectedAccessPublishModel" );
+    final String input1 = "input/" + toFilename( "com.example.publish.ProtectedAccessFromBasePublishModel" );
+    final String input2 = "input/" + toFilename( "com.example.publish.other.BaseProtectedAccessPublishModel" );
     final String output =
-      toFilename( "expected", "com.example.publish.React4j_ProtectedAccessFromBasePublishModel" );
+      toFilename( "com.example.publish.React4j_ProtectedAccessFromBasePublishModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -517,7 +519,6 @@ public final class React4jProcessorTest
               // The following input exists so that the synthesizing processor has types to "process"
               pkg + ".MyFramework",
               pkg + ".MyFrameworkModel" );
-    outputFilesIfEnabled( inputs, this::emitGeneratedFile );
 
     // This one is just used to keep synthesizer running
     final Processor synthesizingProcessor1 =
@@ -532,10 +533,8 @@ public final class React4jProcessorTest
     processors.add( synthesizingProcessor1 );
     processors.add( synthesizingProcessor2 );
     final Compilation compilation =
-      Compiler.javac()
-        .withProcessors( processors )
-        .withOptions( getOptions() )
-        .compile( inputs );
+      CompileTestUtil.assertCompilesWithoutWarnings( inputs, getOptions(), processors, Collections.emptyList() );
+    outputFilesIfEnabled( compilation, this::emitGeneratedFile );
     assertCompilationSuccessful( compilation );
   }
 
@@ -1005,45 +1004,29 @@ public final class React4jProcessorTest
   private String[] deriveExpectedOutputs( @Nonnull final String classname, final boolean factory )
   {
     final List<String> expectedOutputs = new ArrayList<>();
-    expectedOutputs.add( toFilename( "expected", classname, "React4j_", ".java" ) );
-    expectedOutputs.add( toFilename( "expected", classname, "", "Builder.java" ) );
+    expectedOutputs.add( toFilename( classname, "React4j_", ".java" ) );
+    expectedOutputs.add( toFilename( classname, "", "Builder.java" ) );
     if ( factory )
     {
-      expectedOutputs.add( toFilename( "expected", classname, "", "Factory.java" ) );
+      expectedOutputs.add( toFilename( classname, "", "Factory.java" ) );
     }
     return expectedOutputs.toArray( new String[ 0 ] );
   }
 
   @Override
-  protected boolean emitGeneratedFile( @Nonnull final JavaFileObject target )
+  protected boolean emitGeneratedFile( @Nonnull final String target )
   {
-    if ( !super.emitGeneratedFile( target ) || target.getName().endsWith( ".sbf" ) )
-    {
-      return false;
-    }
-    else
-    {
-      try ( final BufferedReader reader = new BufferedReader( target.openReader( true ) ) )
-      {
-        String line = reader.readLine();
-        while ( null != line )
-        {
-          if ( line.contains( "arez.processor.ArezProcessor" ) || line.contains( "sting.processor.StingProcessor" ) )
-          {
-            return false;
-          }
-          else if ( line.contains( "@Generated" ) )
-          {
-            // If we get here then generated by React4j annotation processor
-            break;
-          }
-          line = reader.readLine();
-        }
-      }
-      catch ( final IOException ignored )
-      {
-      }
-      return true;
-    }
+    return super.emitGeneratedFile( target ) &&
+           !target.endsWith( ".sbf" ) &&
+           !target.contains( "/Arez_" ) &&
+           !target.startsWith( "Arez_" ) &&
+           !target.contains( "_Arez_" ) &&
+           (
+             target.startsWith( "React4j_" ) ||
+             target.contains( "/React4j_" ) ||
+             target.contains( "_React4j_" ) ||
+             target.endsWith( "Builder.java" ) ||
+             target.endsWith( "Factory.java" )
+           );
   }
 }

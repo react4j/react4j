@@ -36,6 +36,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import org.realityforge.proton.AbstractStandardProcessor;
@@ -44,6 +45,7 @@ import org.realityforge.proton.DeferredElementSet;
 import org.realityforge.proton.ElementsUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
+import org.realityforge.proton.StopWatch;
 
 /**
  * Annotation processor that analyzes React annotated source and generates models from the annotations.
@@ -65,6 +67,14 @@ public final class React4jProcessor
   private static final Pattern ISSER_PATTERN = Pattern.compile( "^is([A-Z].*)$" );
   @Nonnull
   private final DeferredElementSet _deferredTypes = new DeferredElementSet();
+  @Nonnull
+  private final StopWatch _analyzeViewStopWatch = new StopWatch( "Analyze View" );
+
+  @Override
+  protected void collectStopWatches( @Nonnull final Collection<StopWatch> stopWatches )
+  {
+    stopWatches.add( _analyzeViewStopWatch );
+  }
 
   @Override
   public boolean process( @Nonnull final Set<? extends TypeElement> annotations, @Nonnull final RoundEnvironment env )
@@ -75,7 +85,9 @@ public final class React4jProcessor
                          env,
                          Constants.VIEW_CLASSNAME,
                          _deferredTypes,
-                         this::process );
+                         _analyzeViewStopWatch.getName(),
+                         this::process,
+                         _analyzeViewStopWatch );
     errorIfProcessingOverAndInvalidTypesDetected( env );
     clearRootTypeNamesIfProcessingOver( env );
     return true;
@@ -150,7 +162,8 @@ public final class React4jProcessor
 
     final boolean inject = deriveInject( typeElement, constructor );
     final boolean sting = deriveSting( typeElement, constructor );
-    final boolean notSyntheticConstructor = ElementsUtil.isNotSynthetic( constructor );
+    final boolean notSyntheticConstructor =
+      Elements.Origin.EXPLICIT == processingEnv.getElementUtils().getOrigin( constructor );
 
     final List<? extends VariableElement> parameters = constructor.getParameters();
     if ( inject )
@@ -350,7 +363,7 @@ public final class React4jProcessor
 
   private boolean isConstructorValid( @Nonnull final ExecutableElement ctor )
   {
-    if ( ElementsUtil.isSynthetic( ctor ) )
+    if ( Elements.Origin.EXPLICIT != processingEnv.getElementUtils().getOrigin( ctor ) )
     {
       return true;
     }
