@@ -1,6 +1,6 @@
 language: ruby
 jdk:
-  - openjdk17
+- openjdk17
 rvm:
 - 2.7.2
 node_js:
