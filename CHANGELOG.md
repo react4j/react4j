@@ -5,6 +5,7 @@
 * Update the `org.realityforge.akasha` artifacts to version `0.30`.
 * Upgrade the `org.realityforge.sting` artifacts to version `0.25`.
 * Update the `org.realityforge.arez` artifacts to version `0.204`.
+* Update the `org.realityforge.zemeckis` artifact to version `0.14`.
 
 ### [v0.188](https://github.com/react4j/react4j/tree/v0.188) (2022-02-10) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.187...v0.188)
 

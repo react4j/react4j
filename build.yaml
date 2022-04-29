@@ -35,7 +35,7 @@ artifacts:
   grim_asserts: org.realityforge.grim:grim-asserts:jar:0.06
   grim_processor: org.realityforge.grim:grim-processor:jar:0.06
 
-  zemeckis: org.realityforge.zemeckis:zemeckis-core:jar:0.13
+  zemeckis: org.realityforge.zemeckis:zemeckis-core:jar:0.14
 
   javaemul_internal_annotations: org.realityforge.javaemul.internal.annotations:javaemul.internal.annotations:jar:0.01
 
