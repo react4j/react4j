@@ -1,5 +1,6 @@
 package react4j;
 
+import org.mockito.Mockito;
 import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
@@ -33,11 +34,11 @@ public final class ContextsTest
     final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
     Contexts.setContextProvider( provider );
 
-    when( provider.createContext( isNull( Runnable.class ) ) ).thenReturn( context );
+    Mockito.<Context<Runnable>>when( provider.createContext( isNull() ) ).thenReturn( context );
 
     Contexts.register( Runnable.class, "someQual" );
 
-    verify( provider, only() ).createContext( isNull( Runnable.class ) );
+    verify( provider, only() ).createContext( isNull() );
 
     assertSame( Contexts.get( Runnable.class, "someQual" ), context );
   }
@@ -69,11 +70,11 @@ public final class ContextsTest
     final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
     Contexts.setContextProvider( provider );
 
-    when( provider.createContext( isNull( Runnable.class ) ) ).thenReturn( context );
+    Mockito.<Context<Runnable>>when( provider.createContext( isNull() ) ).thenReturn( context );
 
     Contexts.register( Runnable.class );
 
-    verify( provider, only() ).createContext( isNull( Runnable.class ) );
+    verify( provider, only() ).createContext( isNull() );
 
     assertSame( Contexts.get( Runnable.class ), context );
     assertSame( Contexts.get( Runnable.class, "" ), context );

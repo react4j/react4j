@@ -24,7 +24,10 @@ artifacts:
   arez_processor: org.realityforge.arez:arez-processor:jar:0.204
   arez_testng: org.realityforge.arez:arez-extras-testng:jar:0.204
 
-  mockito: org.mockito:mockito-all:jar:1.10.19
+  # Mockito deps
+  mockito: org.mockito:mockito-core:jar:4.5.1
+  byte_buddy: net.bytebuddy:byte-buddy:jar:1.12.9
+  objenesis: org.objenesis:objenesis:jar:3.2
 
   sting_core: org.realityforge.sting:sting-core:jar:0.25
   sting_processor: org.realityforge.sting:sting-processor:jar:0.25

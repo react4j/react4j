@@ -75,6 +75,8 @@ define 'react4j' do
     test.options[:java_args] = %w(-ea)
     test.compile.with :jdepend,
                       :mockito,
+                      :byte_buddy,
+                      :objenesis,
                       :arez_testng
 
     package(:jar)
