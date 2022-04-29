@@ -21,7 +21,6 @@ import react4j.internal.ViewConstructorFunction;
 @ArezComponent(
     name = "com_example_default_inputs_PackageAccessMethodInputDefaultView",
     disposeNotifier = Feature.DISABLE,
-    dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

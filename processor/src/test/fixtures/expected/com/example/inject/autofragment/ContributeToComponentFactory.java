@@ -3,7 +3,6 @@ package com.example.inject.autofragment;
 import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.internal.NativeView;
@@ -19,8 +18,6 @@ public final class ContributeToComponentFactory {
   @Nonnull
   private final String someParam;
 
-  @Inject
-  @SuppressWarnings("Sting:Jsr330InjectPresent")
   ContributeToComponentFactory(@Nonnull final String someParam) {
     this.someParam = Objects.requireNonNull( someParam );
     InjectSupport.setFactory( this );

@@ -44,25 +44,12 @@ artifacts:
 
   javax_json: org.glassfish:javax.json:jar:1.1
 
-  javax_inject: javax.inject:javax.inject:jar:1
-  javax_inject_sources: javax.inject:javax.inject:jar:sources:1
-
   guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.110
 
   javapoet: com.squareup:javapoet:jar:1.13.0
 
   proton_core: org.realityforge.proton:proton-core:jar:0.58
   proton_qa: org.realityforge.proton:proton-qa:jar:0.58
-  dagger_core: com.google.dagger:dagger:jar:2.25.2
-  dagger_producers: com.google.dagger:dagger-producers:jar:2.25.2
-  dagger_spi: com.google.dagger:dagger-spi:jar:2.25.2
-  dagger_compiler: com.google.dagger:dagger-compiler:jar:2.25.2
-  googlejavaformat: com.google.googlejavaformat:google-java-format:jar:1.5
-  errorprone: com.google.errorprone:javac-shaded:jar:9-dev-r4023-3
-  guava_failureaccess: com.google.guava:failureaccess:jar:1.0.1
-  kotlinx_metadata_jvm: org.jetbrains.kotlinx:kotlinx-metadata-jvm:jar:0.1.0
-  kotlin_stdlib: org.jetbrains.kotlin:kotlin-stdlib:jar:1.3.50
-  kotlin_stdlib_common: org.jetbrains.kotlin:kotlin-stdlib-common:jar:1.3.50
 
   gir: org.realityforge.gir:gir-core:jar:0.12
 

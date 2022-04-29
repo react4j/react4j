@@ -6,7 +6,7 @@ import react4j.annotations.Feature;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@View( inject = Feature.DISABLE, sting = Feature.DISABLE )
+@View( sting = Feature.DISABLE )
 abstract class FactoryOnlyInjectComponent
 {
   FactoryOnlyInjectComponent( @Nonnull String someParam )

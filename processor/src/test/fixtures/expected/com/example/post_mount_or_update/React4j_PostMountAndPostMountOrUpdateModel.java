@@ -23,7 +23,6 @@ import react4j.internal.ViewConstructorFunction;
 @ArezComponent(
     name = "com_example_post_mount_or_update_PostMountAndPostMountOrUpdateModel",
     disposeNotifier = Feature.DISABLE,
-    dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

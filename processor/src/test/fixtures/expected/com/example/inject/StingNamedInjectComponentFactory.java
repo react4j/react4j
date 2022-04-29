@@ -3,7 +3,6 @@ package com.example.inject;
 import java.util.Objects;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.internal.NativeView;
@@ -18,8 +17,6 @@ public final class StingNamedInjectComponentFactory {
   @Nonnull
   private final String someParam;
 
-  @Inject
-  @SuppressWarnings("Sting:Jsr330InjectPresent")
   StingNamedInjectComponentFactory(@Nonnull @Named("blah") final String someParam) {
     this.someParam = Objects.requireNonNull( someParam );
     InjectSupport.setFactory( this );

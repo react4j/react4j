@@ -34,13 +34,6 @@ public class BuildStatsTest
   }
 
   @Test
-  public void dagger()
-    throws Exception
-  {
-    compareSizesForBranch( "dagger", true );
-  }
-
-  @Test
   public void sting_j2cl()
     throws Exception
   {

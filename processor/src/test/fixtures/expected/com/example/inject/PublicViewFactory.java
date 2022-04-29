@@ -2,7 +2,6 @@ package com.example.inject;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.internal.NativeView;
@@ -15,8 +14,6 @@ import sting.Injectable;
 public final class PublicViewFactory {
   private final String someParam;
 
-  @Inject
-  @SuppressWarnings("Sting:Jsr330InjectPresent")
   PublicViewFactory(final String someParam) {
     this.someParam = someParam;
     InjectSupport.setFactory( this );

@@ -8,24 +8,6 @@ require 'buildr/shade'
 
 Buildr::MavenCentral.define_publish_tasks(:profile_name => 'org.realityforge', :username => 'realityforge')
 
-DAGGER_RUNTIME_DEPS = [:javax_inject, :dagger_core]
-DAGGER_PROCESSOR_DEPS =
-  [
-    :javax_inject,
-    :dagger_core,
-    :dagger_producers,
-    :dagger_spi,
-    :dagger_compiler,
-    :guava_failureaccess,
-    :kotlinx_metadata_jvm,
-    :kotlin_stdlib,
-    :kotlin_stdlib_common,
-    :googlejavaformat,
-    :errorprone,
-    :javapoet,
-    :guava
-  ]
-
 EXAMPLES = {
   'hello_world' => 'react4j.examples.hello_world.HelloWorld'
 }
@@ -157,8 +139,6 @@ define 'react4j' do
     test.with :proton_qa,
               project('core').package(:jar),
               project('core').compile.dependencies,
-              :javax_inject,
-              DAGGER_PROCESSOR_DEPS,
               :arez_processor,
               :sting_core,
               :sting_processor,
@@ -279,11 +259,9 @@ define 'react4j' do
   define 'doc-examples' do
     compile.with project('dom').package(:jar),
                  project('dom').compile.dependencies,
-                 DAGGER_RUNTIME_DEPS,
                  :gwt_user,
                  project('processor').package(:jar),
                  project('processor').compile.dependencies,
-                 DAGGER_PROCESSOR_DEPS,
                  :arez_processor,
                  :sting_core,
                  :sting_processor

@@ -19,7 +19,6 @@ import react4j.internal.ViewConstructorFunction;
 @ArezComponent(
     name = "RootPackageView",
     disposeNotifier = Feature.DISABLE,
-    dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

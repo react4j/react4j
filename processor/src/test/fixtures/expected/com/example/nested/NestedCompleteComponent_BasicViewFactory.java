@@ -2,7 +2,6 @@ package com.example.nested;
 
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.internal.NativeView;
@@ -15,8 +14,6 @@ import sting.Injectable;
 public final class NestedCompleteComponent_BasicViewFactory {
   private final String value;
 
-  @Inject
-  @SuppressWarnings("Sting:Jsr330InjectPresent")
   NestedCompleteComponent_BasicViewFactory(final String value) {
     this.value = value;
     InjectSupport.setFactory( this );

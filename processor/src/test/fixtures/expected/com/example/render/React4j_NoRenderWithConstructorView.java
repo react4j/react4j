@@ -20,7 +20,6 @@ import react4j.internal.ViewConstructorFunction;
 @ArezComponent(
     name = "com_example_render_NoRenderWithConstructorView",
     disposeNotifier = Feature.DISABLE,
-    dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

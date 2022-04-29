@@ -24,7 +24,6 @@ import react4j.internal.ViewConstructorFunction;
 @ArezComponent(
     name = "com_example_on_error_ErrorOnlyOnErrorComponent",
     disposeNotifier = Feature.DISABLE,
-    dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

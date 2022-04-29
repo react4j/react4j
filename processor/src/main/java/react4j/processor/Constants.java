@@ -53,8 +53,6 @@ final class Constants
   @Nonnull
   static final String POST_CONSTRUCT_CLASSNAME = "arez.annotations.PostConstruct";
   @Nonnull
-  static final String JSR_330_INJECT_CLASSNAME = "javax.inject.Inject";
-  @Nonnull
   static final String STING_INJECTABLE_CLASSNAME = "sting.Injectable";
   @Nonnull
   static final String STING_EAGER_CLASSNAME = "sting.Eager";
@@ -62,8 +60,6 @@ final class Constants
   static final String STING_NAMED_CLASSNAME = "sting.Named";
   @Nonnull
   static final String STING_CONTRIBUTE_TO_CLASSNAME = "sting.ContributeTo";
-  @Nonnull
-  static final String JSR_330_NAMED_CLASSNAME = "javax.inject.Named";
   @Nonnull
   static final String JS_ERROR_CLASSNAME = "akasha.core.JsError";
   @Nonnull

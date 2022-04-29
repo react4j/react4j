@@ -71,24 +71,8 @@ final class FactoryGenerator
   {
     final MethodSpec.Builder ctor = MethodSpec.constructorBuilder();
 
-    final boolean inject = descriptor.enableInject();
-    if ( inject )
-    {
-      ctor.addAnnotation( ClassName.bestGuess( Constants.JSR_330_INJECT_CLASSNAME ) );
-    }
     final boolean sting = descriptor.enableSting();
     final ArrayList<String> additionalSuppressions = new ArrayList<>();
-    if ( inject && sting )
-    {
-      additionalSuppressions.add( "Sting:Jsr330InjectPresent" );
-    }
-    if ( sting &&
-         constructor.getParameters()
-           .stream()
-           .anyMatch( p -> AnnotationsUtil.hasAnnotationOfType( p, Constants.JSR_330_NAMED_CLASSNAME ) ) )
-    {
-      additionalSuppressions.add( "Sting:Jsr330NamedPresent" );
-    }
 
     SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv,
                                                         ctor,
@@ -96,7 +80,7 @@ final class FactoryGenerator
                                                         Collections.singletonList( constructor.asType() ) );
     GeneratorUtil.copyWhitelistedAnnotations( constructor, ctor );
 
-    if ( !inject && !sting )
+    if ( !sting )
     {
       ctor.addModifiers( Modifier.PUBLIC );
     }

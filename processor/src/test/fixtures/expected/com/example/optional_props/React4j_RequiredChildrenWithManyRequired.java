@@ -21,7 +21,6 @@ import react4j.internal.ViewConstructorFunction;
 @ArezComponent(
     name = "com_example_optional_props_RequiredChildrenWithManyRequired",
     disposeNotifier = Feature.DISABLE,
-    dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

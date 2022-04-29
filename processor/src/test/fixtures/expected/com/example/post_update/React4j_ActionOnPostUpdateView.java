@@ -34,7 +34,6 @@ import react4j.internal.ViewState;
 @ArezComponent(
     name = "com_example_post_update_ActionOnPostUpdateView",
     disposeNotifier = Feature.DISABLE,
-    dagger = Feature.DISABLE,
     sting = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")

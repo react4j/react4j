@@ -2,9 +2,8 @@ package com.example.inject;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-import javax.annotation.Generated;
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
+import javax.annotation.processing.Generated;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.internal.NativeView;
@@ -15,9 +14,8 @@ public final class ConstructorInjectRawTypeComponentFactory {
   @Nonnull
   private final Consumer someParam;
 
-  @Inject
   @SuppressWarnings("rawtypes")
-  ConstructorInjectRawTypeComponentFactory(@Nonnull final Consumer someParam) {
+  public ConstructorInjectRawTypeComponentFactory(@Nonnull final Consumer someParam) {
     this.someParam = Objects.requireNonNull( someParam );
     InjectSupport.setFactory( this );
   }

@@ -22,7 +22,6 @@ import react4j.internal.ViewConstructorFunction;
 @ArezComponent(
     name = "com_example_on_prop_change_IntOnPropChange",
     disposeNotifier = Feature.DISABLE,
-    dagger = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

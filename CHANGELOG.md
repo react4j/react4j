@@ -9,6 +9,7 @@
 * Update the `org.realityforge.grim` artifacts to version `0.09`.
 * Upgrade the `org.realityforge.proton` artifacts to version `0.57`.
 * Eliminate the dependency on `com.google.testing.compile:compile-testing` to avoid migration complexity when moving to a modern java version.
+* Remove integration with the Dagger injection framework. All downstream projects have migrated to Sting and upgrading to Java 17 necessitated changes.
 
 ### [v0.188](https://github.com/react4j/react4j/tree/v0.188) (2022-02-10) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.187...v0.188)
 

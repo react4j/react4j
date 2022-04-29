@@ -72,23 +72,6 @@ React4j looks like.
         </ul>
       </td>
     </tr>
-    <tr>
-    <td><a href="https://github.com/react4j/react4j-todomvc/tree/dagger">dagger</a></td>
-    <td>
-      <a href="https://travis-ci.org/react4j/react4j-todomvc">
-        <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=dagger" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
-      </a>
-    </td>
-    <td><a href="/todomvc/dagger/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
-    <td><a href="/todomvc/dagger/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
-    <td>
-      <ul>
-        <li>Dependency Injection: <a href="https://dagger.dev/">Dagger2</a></li>
-        <li>State Management: <a href="https://arez.github.io">Arez</a></li>
-        <li>Build System: <a href="https://buildr.apache.org">Buildr</a></li>
-      </ul>
-    </td>
-  </tr>
   <tr>
     <td><a href="https://github.com/react4j/react4j-todomvc/tree/sting_maven">sting_maven</a></td>
     <td>

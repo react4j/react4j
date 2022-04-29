@@ -143,7 +143,6 @@ final class ViewGenerator
         .builder( AREZ_COMPONENT_CLASSNAME ).
         addMember( "name", "$S", typeElement.getQualifiedName().toString().replace( ".", "_" ) ).
         addMember( "disposeNotifier", "$T.DISABLE", AREZ_FEATURE_CLASSNAME ).
-        addMember( "dagger", "$T.DISABLE", AREZ_FEATURE_CLASSNAME ).
         addMember( "sting", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
     if ( !descriptor.trackRender() )
     {

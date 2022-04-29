@@ -160,35 +160,11 @@ public final class React4jProcessor
     }
     final ExecutableElement constructor = constructors.get( 0 );
 
-    final boolean inject = deriveInject( typeElement, constructor );
     final boolean sting = deriveSting( typeElement, constructor );
     final boolean notSyntheticConstructor =
       Elements.Origin.EXPLICIT == processingEnv.getElementUtils().getOrigin( constructor );
 
     final List<? extends VariableElement> parameters = constructor.getParameters();
-    if ( inject )
-    {
-      if ( parameters.isEmpty() )
-      {
-        throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
-                                                            "have specified inject=ENABLED if the constructor has no parameters" ),
-                                      typeElement );
-      }
-    }
-    else
-    {
-      final boolean hasNamedAnnotation =
-        parameters.stream()
-          .anyMatch( p -> AnnotationsUtil.hasAnnotationOfType( p, Constants.JSR_330_NAMED_CLASSNAME ) );
-      if ( hasNamedAnnotation )
-      {
-        throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
-                                                            "have specified inject=DISABLED and have a constructor parameter annotated with the " +
-                                                            Constants.JSR_330_NAMED_CLASSNAME + " annotation" ),
-                                      constructor );
-      }
-    }
-
     if ( sting )
     {
       if ( parameters.isEmpty() )
@@ -216,7 +192,6 @@ public final class React4jProcessor
                           typeElement,
                           constructor,
                           type,
-                          inject,
                           sting,
                           notSyntheticConstructor,
                           hasPostConstruct,
@@ -317,27 +292,6 @@ public final class React4jProcessor
   {
     final ExecutableElement overriddenMethod = ElementsUtil.getOverriddenMethod( processingEnv, typeElement, method );
     return null != overriddenMethod && overriddenMethod.getModifiers().contains( Modifier.PROTECTED );
-  }
-
-  private boolean deriveInject( @Nonnull final TypeElement typeElement, final @Nonnull ExecutableElement constructor )
-  {
-    final String inject =
-      AnnotationsUtil.getEnumAnnotationParameter( typeElement,
-                                                  Constants.VIEW_CLASSNAME,
-                                                  "inject" );
-    if ( "ENABLE".equals( inject ) )
-    {
-      return true;
-    }
-    else if ( "DISABLE".equals( inject ) )
-    {
-      return false;
-    }
-    else
-    {
-      return !constructor.getParameters().isEmpty() &&
-             null != processingEnv.getElementUtils().getTypeElement( Constants.JSR_330_INJECT_CLASSNAME );
-    }
   }
 
   private boolean deriveSting( @Nonnull final TypeElement typeElement, final @Nonnull ExecutableElement constructor )
