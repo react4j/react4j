@@ -16,7 +16,7 @@ performance cost in production builds.
 React4j is under heavy development and sometimes the documentation does not keep up to date. However the goal of
 the toolkit is to be easy to use and this includes clear and concise documentation. If something is unclear
 please [report it as a bug](https://github.com/react4j/react4j/issues) because it *is* a bug. If a new user
-has a bad time then then we need to fix the problem.
+has a bad time then we need to fix the problem.
 
 For more information about React4j, please see the [Website](https://react4j.github.io/). For the source code
 and project support please visit the [GitHub project](https://github.com/react4j/react4j).
