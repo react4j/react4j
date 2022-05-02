@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.190](https://github.com/react4j/react4j/tree/v0.190) (2022-05-02) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.189...v0.190)
+
+Changes in this release:
 
 * Update the `org.realityforge.arez` artifacts to version `0.205`.
 * Update the `org.realityforge.sting` artifacts to version `0.27`.
