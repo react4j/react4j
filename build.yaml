@@ -20,17 +20,17 @@ artifacts:
 
   akasha: org.realityforge.akasha:akasha-gwt:jar:0.30
 
-  arez_core: org.realityforge.arez:arez-core:jar:0.204
-  arez_processor: org.realityforge.arez:arez-processor:jar:0.204
-  arez_testng: org.realityforge.arez:arez-extras-testng:jar:0.204
+  arez_core: org.realityforge.arez:arez-core:jar:0.205
+  arez_processor: org.realityforge.arez:arez-processor:jar:0.205
+  arez_testng: org.realityforge.arez:arez-extras-testng:jar:0.205
 
   # Mockito deps
   mockito: org.mockito:mockito-core:jar:4.5.1
   byte_buddy: net.bytebuddy:byte-buddy:jar:1.12.9
   objenesis: org.objenesis:objenesis:jar:3.2
 
-  sting_core: org.realityforge.sting:sting-core:jar:0.25
-  sting_processor: org.realityforge.sting:sting-processor:jar:0.25
+  sting_core: org.realityforge.sting:sting-core:jar:0.27
+  sting_processor: org.realityforge.sting:sting-processor:jar:0.27
 
   braincheck_core: org.realityforge.braincheck:braincheck-core:jar:1.31.0
 
