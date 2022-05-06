@@ -29,9 +29,9 @@ public class DomJDependTest
     final JavaPackage react4j = constraint.addPackage( "react4j" );
     final JavaPackage react4jDom = constraint.addPackage( "react4j.dom" );
     final JavaPackage react4jDomEvents = constraint.addPackage( "react4j.dom.events" );
-    final JavaPackage react4jDomCssPropTypes = constraint.addPackage( "react4j.dom.proptypes.cssPropertyTypes" );
+    constraint.addPackage( "react4j.dom.proptypes.cssPropertyTypes" );
     final JavaPackage react4jDomHtml = constraint.addPackage( "react4j.dom.proptypes.html" );
-    final JavaPackage react4jDomAttributeTypes = constraint.addPackage( "react4j.dom.proptypes.html.attributeTypes" );
+    constraint.addPackage( "react4j.dom.proptypes.html.attributeTypes" );
     final JavaPackage braincheck = constraint.addPackage( "org.realityforge.braincheck" );
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
     final JavaPackage jsinteropBase = constraint.addPackage( "jsinterop.base" );
@@ -53,9 +53,7 @@ public class DomJDependTest
     react4jDomHtml.dependsUpon( react4j );
     react4jDomHtml.dependsUpon( jsinteropAnnotations );
     react4jDomHtml.dependsUpon( jsinteropBase );
-    react4jDomHtml.dependsUpon( react4jDomCssPropTypes );
     react4jDomHtml.dependsUpon( react4jDomEvents );
-    react4jDomHtml.dependsUpon( react4jDomAttributeTypes );
 
     final DependencyConstraint.MatchResult result = jdepend.analyzeDependencies( constraint );
 
