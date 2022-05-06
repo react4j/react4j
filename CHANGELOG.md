@@ -3,6 +3,8 @@
 ### Unreleased
 
 * Change nullability on `callback` parameter to `HtmlGlobalFields.ref(callback)` to allow nulls as sometimes it is easier to specify a null ref.
+* Convert the classes in the proptypes packages into annotations annotated with `@MagicConstant` to simplify the specification of values that contain the values.
+* Change the enums in the cssPropertyTypes package into `@MagicConstant` annotated annotations to reduce code bloat in generated classes due to the forced presence of unused enum values.
 
 ### [v0.190](https://github.com/react4j/react4j/tree/v0.190) (2022-05-02) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.189...v0.190)
 

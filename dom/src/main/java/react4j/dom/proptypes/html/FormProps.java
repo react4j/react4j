@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import org.intellij.lang.annotations.MagicConstant;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.FormEventHandler;
@@ -41,7 +40,7 @@ public class FormProps
 
   @JsOverlay
   @Nonnull
-  public final FormProps autoComplete( @MagicConstant( valuesFromClass = OnOff.class ) final String value )
+  public final FormProps autoComplete( @OnOff final String value )
   {
     setAutoComplete( value );
     return self();
@@ -57,7 +56,7 @@ public class FormProps
 
   @JsOverlay
   @Nonnull
-  public final FormProps formMethod( @MagicConstant( valuesFromClass = FormMethod.class ) final String method )
+  public final FormProps formMethod( @Nonnull @FormMethod final String method )
   {
     setFormMethod( method );
     return self();
@@ -88,17 +87,9 @@ public class FormProps
 
   @JsOverlay
   @Nonnull
-  public final FormProps formTarget( Target t )
+  public final FormProps formTarget( @Nonnull @Target final String target )
   {
-    setFormTarget( t.getValue() );
-    return self();
-  }
-
-  @JsOverlay
-  @Nonnull
-  public final FormProps formTarget( String s )
-  {
-    setFormTarget( s );
+    setFormTarget( target );
     return self();
   }
 

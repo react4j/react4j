@@ -1,6 +1,15 @@
 package react4j.dom.proptypes.html.attributeTypes;
 
-public enum YesNo
+import java.lang.annotation.Documented;
+import javax.annotation.Nonnull;
+import org.intellij.lang.annotations.MagicConstant;
+
+@Documented
+@MagicConstant( valuesFromClass = YesNo.class )
+public @interface YesNo
 {
-  yes, no
+  @Nonnull
+  String yes = "yes";
+  @Nonnull
+  String no = "no";
 }

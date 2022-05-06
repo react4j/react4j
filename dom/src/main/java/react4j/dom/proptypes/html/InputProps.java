@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import org.intellij.lang.annotations.MagicConstant;
 import react4j.dom.events.DragEventHandler;
 import react4j.dom.events.FocusEventHandler;
 import react4j.dom.events.FormEventHandler;
@@ -55,7 +54,7 @@ public class InputProps
 
   @JsOverlay
   @Nonnull
-  public final InputProps autoComplete( @MagicConstant( valuesFromClass = OnOff.class ) final String value )
+  public final InputProps autoComplete( @OnOff final String value )
   {
     setAutoComplete( value );
     return self();
@@ -288,7 +287,7 @@ public class InputProps
 
   @JsOverlay
   @Nonnull
-  public final InputProps type( @MagicConstant( valuesFromClass = InputType.class ) final String value )
+  public final InputProps type( @Nonnull @InputType final String value )
   {
     setType( value );
     return self();

@@ -22,6 +22,7 @@ import react4j.dom.events.ReactEventHandler;
 import react4j.dom.events.TouchEventHandler;
 import react4j.dom.events.UIEventHandler;
 import react4j.dom.events.WheelEventHandler;
+import react4j.dom.proptypes.html.attributeTypes.InputType;
 import react4j.dom.proptypes.html.attributeTypes.YesNo;
 import static org.realityforge.braincheck.Guards.*;
 
@@ -909,16 +910,16 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>>
   public native String getType();
 
   @JsProperty
-  protected native void setType( String type );
+  protected native void setType( @Nonnull @InputType String type );
 
   @JsProperty
   public native String getTranslate();
 
   @JsOverlay
   @Nonnull
-  public final T translate( @Nonnull final YesNo s )
+  public final T translate( @Nonnull @YesNo final String s )
   {
-    setTranslate( s.name() );
+    setTranslate( s );
     return self();
   }
 

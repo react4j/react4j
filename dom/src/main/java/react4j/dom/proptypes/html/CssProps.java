@@ -25,9 +25,10 @@ public class CssProps
   public native void setAnimationFillMode( String mode );
 
   @JsOverlay
-  public final CssProps animationFillMode( @Nonnull final AnimationFillMode mode )
+  @Nonnull
+  public final CssProps animationFillMode( @Nonnull @AnimationFillMode final String mode )
   {
-    setAnimationFillMode( mode.name() );
+    setAnimationFillMode( mode );
     return this;
   }
 
@@ -4286,9 +4287,9 @@ public class CssProps
    */
   @JsOverlay
   @Nonnull
-  public final CssProps visibility( @Nonnull final Visibility visibility )
+  public final CssProps visibility( @Nonnull @Visibility final String visibility )
   {
-    setVisibility( visibility.name() );
+    setVisibility( visibility );
     return this;
   }
 

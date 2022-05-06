@@ -1,25 +1,19 @@
 package react4j.dom.proptypes.html.attributeTypes;
 
-import java.util.Objects;
+import java.lang.annotation.Documented;
 import javax.annotation.Nonnull;
+import org.intellij.lang.annotations.MagicConstant;
 
-public enum Target
+@Documented
+@MagicConstant( valuesFromClass = Target.class )
+public @interface Target
 {
-  blank( "_blank" ),
-  self( "_self" ),
-  parent( "_parent" ),
-  top( "_top" );
   @Nonnull
-  private final String _value;
-
-  Target( @Nonnull final String value )
-  {
-    _value = Objects.requireNonNull( value );
-  }
-
+  String blank = "_blank";
   @Nonnull
-  public String getValue()
-  {
-    return _value;
-  }
+  String self = "_self";
+  @Nonnull
+  String parent = "_parent";
+  @Nonnull
+  String top = "_top";
 }
