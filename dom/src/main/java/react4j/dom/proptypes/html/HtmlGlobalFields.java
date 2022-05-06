@@ -38,7 +38,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>>
 
   @JsOverlay
   @Nonnull
-  public final T ref( @Nonnull final RefConsumer callback )
+  public final T ref( @Nullable final RefConsumer callback )
   {
     ref = callback;
     return self();
