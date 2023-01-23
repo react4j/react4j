@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.192](https://github.com/react4j/react4j/tree/v0.192) (2023-01-23) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.191...v0.192)
+
+Changes in this release:
 
 * Update the `org.realityforge.arez` artifacts to version `0.206`.
 
