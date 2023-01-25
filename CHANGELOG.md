@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.arez` artifacts to version `0.207`.
 * Add `react4j.profile` and `react4j.verbose_out_of_round` to the list of processor options declared as supported. This was not required in Java 8 but is required in Java 17 to have these options accessed by processor without errors.
 
 ### [v0.192](https://github.com/react4j/react4j/tree/v0.192) (2023-01-23) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.191...v0.192)
