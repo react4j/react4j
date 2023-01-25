@@ -53,7 +53,11 @@ import org.realityforge.proton.StopWatch;
 @SuppressWarnings( "Duplicates" )
 @SupportedAnnotationTypes( Constants.VIEW_CLASSNAME )
 @SupportedSourceVersion( SourceVersion.RELEASE_17 )
-@SupportedOptions( { "react4j.defer.unresolved", "react4j.defer.errors", "react4j.debug" } )
+@SupportedOptions( { "react4j.defer.unresolved",
+                     "react4j.defer.errors",
+                     "react4j.debug",
+                     "react4j.profile",
+                     "react4j.verbose_out_of_round" } )
 public final class React4jProcessor
   extends AbstractStandardProcessor
 {
