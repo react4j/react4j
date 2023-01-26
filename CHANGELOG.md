@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.194](https://github.com/react4j/react4j/tree/v0.194) (2023-01-26) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.193...v0.194)
+
+Changes in this release:
 
 * Update the `org.realityforge.arez` artifacts to version `0.208`.
 * Rename `react4j.verbose_out_of_round` to `react4j.verbose_out_of_round.errors` in the list of processor options declared as supported to reflect actual key accessed.
