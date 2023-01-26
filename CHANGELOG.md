@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.arez` artifacts to version `0.208`.
+
 ### [v0.193](https://github.com/react4j/react4j/tree/v0.193) (2023-01-25) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.192...v0.193)
 
 Changes in this release:
