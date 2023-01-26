@@ -57,7 +57,7 @@ import org.realityforge.proton.StopWatch;
                      "react4j.defer.errors",
                      "react4j.debug",
                      "react4j.profile",
-                     "react4j.verbose_out_of_round" } )
+                     "react4j.verbose_out_of_round.errors" } )
 public final class React4jProcessor
   extends AbstractStandardProcessor
 {
