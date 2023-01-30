@@ -44,7 +44,7 @@ artifacts:
 
   javax_json: org.glassfish:javax.json:jar:1.1
 
-  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.110
+  guiceyloops: org.realityforge.guiceyloops:guiceyloops:jar:0.112
 
   javapoet: com.squareup:javapoet:jar:1.13.0
 

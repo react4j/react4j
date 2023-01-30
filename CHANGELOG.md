@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.guiceyloops` artifact to version `0.112`.
+
 ### [v0.194](https://github.com/react4j/react4j/tree/v0.194) (2023-01-26) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.193...v0.194)
 
 Changes in this release:
