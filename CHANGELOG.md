@@ -5,6 +5,7 @@
 * Update the `org.realityforge.arez` artifacts to version `0.209`.
 * Update the `org.realityforge.proton` artifacts to version `0.62`.
 * Update the `org.realityforge.guiceyloops` artifact to version `0.113`.
+* Update the `gwt` artifacts to version `2.11.0`.
 
 ### [v0.194](https://github.com/react4j/react4j/tree/v0.194) (2023-01-26) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.193...v0.194)
 
