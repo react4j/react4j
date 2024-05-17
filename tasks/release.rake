@@ -35,7 +35,6 @@ Buildr::ReleaseTool.define_release_task do |t|
     task('site:link_check').invoke
   end
   t.tag_project
-  t.stage_release(:release_to => { :url => 'https://stocksoftware.jfrog.io/stocksoftware/staging', :username => ENV['STAGING_USERNAME'], :password => ENV['STAGING_PASSWORD'] })
   t.stage('MavenCentralPublish', 'Publish artifacts to Maven Central') do
     sh "bundle exec buildr clean mcrt:publish_if_tagged site:deploy TEST=no GWT=react4j:doc-examples#{Buildr.application.options.trace ? ' --trace' : ''}"
   end
@@ -78,7 +77,7 @@ Buildr::ReleaseTool.define_release_task do |t|
       DOWNSTREAM_PROJECTS.each do |downstream|
         # Need to extract the version from that project
         downstream_version = IO.read("archive/downstream/#{downstream}/CHANGELOG.md")[/^### \[v(\d+\.\d+)\]/, 1]
-        sh "cd archive/downstream/#{downstream} && bundle exec buildr perform_release STAGE=StageRelease PREVIOUS_PRODUCT_VERSION= PRODUCT_VERSION=#{downstream_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
+        sh "cd archive/downstream/#{downstream} && bundle exec buildr perform_release STAGE=MavenCentralPublish PREVIOUS_PRODUCT_VERSION= PRODUCT_VERSION=#{downstream_version}#{Buildr.application.options.trace ? ' --trace' : ''}"
         full_branch = "master-React4jUpgrade-#{ENV['PRODUCT_VERSION']}"
         `cd archive/downstream/#{downstream} && git push origin :#{full_branch} 2>&1`
         puts "Completed remote branch #{downstream}/#{full_branch}. Removed." if 0 == $?.exitstatus

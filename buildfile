@@ -202,15 +202,6 @@ define 'react4j' do
             pkg.upload
           end
         end
-        if ENV['STAGE_RELEASE'] == 'true'
-          # Then we install it to a remote repository so that TravisCI can access the builds when it attempts
-          # to perform a release
-          repositories.release_to =
-            { :url => 'https://stocksoftware.jfrog.io/stocksoftware/staging', :username => ENV['STAGING_USERNAME'], :password => ENV['STAGING_PASSWORD'] }
-          projects_to_upload.each do |prj|
-            prj.packages.each(&:upload)
-          end
-        end
       ensure
         repositories.release_to = old_release_to
       end
