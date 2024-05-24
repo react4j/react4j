@@ -1,0 +1,47 @@
+[
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.PostRender",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.PostRender",
+      "classSimpleName": "PostRender",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "@interface react4j.annotations.PreRender",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.PreRender",
+      "classSimpleName": "PreRender",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.annotations.SortOrder",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.SortOrder",
+      "classSimpleName": "SortOrder",
+      "elementKind": "class",
+      "package": "react4j.annotations"
+    }
+  }
+]
