@@ -46,8 +46,8 @@ artifacts:
 
   javapoet: com.squareup:javapoet:jar:1.13.0
 
-  proton_core: org.realityforge.proton:proton-core:jar:0.62
-  proton_qa: org.realityforge.proton:proton-qa:jar:0.62
+  proton_core: org.realityforge.proton:proton-core:jar:0.63
+  proton_qa: org.realityforge.proton:proton-qa:jar:0.63
 
   gir: org.realityforge.gir:gir-core:jar:0.12
 

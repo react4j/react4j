@@ -3,7 +3,7 @@
 ### Unreleased
 
 * Update the `org.realityforge.arez` artifacts to version `0.209`.
-* Update the `org.realityforge.proton` artifacts to version `0.62`.
+* Update the `org.realityforge.proton` artifacts to version `0.63`.
 * Update the `org.realityforge.guiceyloops` artifact to version `0.113`.
 * Update the `gwt` artifacts to version `2.11.0`.
 
