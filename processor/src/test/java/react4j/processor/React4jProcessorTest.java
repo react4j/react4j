@@ -95,10 +95,20 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.post_mount_or_update.PostMountAndPostMountOrUpdateModel" },
         new Object[]{ "com.example.post_mount_or_update.PostUpdateAndPostMountOrUpdateModel" },
 
+        new Object[]{ "com.example.post_render.BasicPostRenderModel" },
+        new Object[]{ "com.example.post_render.MultiplePostRenderModel" },
+        new Object[]{ "com.example.post_render.MultipleSortedPostRenderModel" },
+        new Object[]{ "com.example.post_render.PackageAccessPostRenderModel" },
+
         new Object[]{ "com.example.post_update.ActionOnPostUpdateView" },
         new Object[]{ "com.example.post_update.BasicPostUpdateModel" },
         new Object[]{ "com.example.post_update.OnPropChangeAndPostUpdateModel" },
         new Object[]{ "com.example.post_update.PackageAccessPostUpdateModel" },
+
+        new Object[]{ "com.example.pre_render.BasicPreRenderModel" },
+        new Object[]{ "com.example.pre_render.MultiplePreRenderModel" },
+        new Object[]{ "com.example.pre_render.MultipleSortedPreRenderModel" },
+        new Object[]{ "com.example.pre_render.PackageAccessPreRenderModel" },
 
         new Object[]{ "com.example.pre_update.BasicPreUpdateModel" },
         new Object[]{ "com.example.pre_update.OnPropChangeAndPreUpdateModel" },
@@ -216,7 +226,9 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.render.NoRenderWithPostConstructView" },
         new Object[]{ "com.example.render.NoRenderWithPostMountOrUpdateView" },
         new Object[]{ "com.example.render.NoRenderWithPostMountView" },
+        new Object[]{ "com.example.render.NoRenderWithPostRenderView" },
         new Object[]{ "com.example.render.NoRenderWithPostUpdateView" },
+        new Object[]{ "com.example.render.NoRenderWithPreRenderView" },
         new Object[]{ "com.example.render.NoRenderWithPreUpdateView" },
 
         new Object[]{ "com.example.schedule_render.BasicScheduleRenderComponent" },
@@ -397,6 +409,31 @@ public final class React4jProcessorTest
   }
 
   @Test
+  public void validProtectedAccessPostRender()
+    throws Exception
+  {
+    final String input1 = "input/" + toFilename( "com.example.post_render.ProtectedAccessFromBasePostRenderModel" );
+    final String input2 = "input/" + toFilename( "com.example.post_render.other.BaseProtectedAccessPostRenderModel" );
+    final String output =
+      toFilename( "com.example.post_render.React4j_ProtectedAccessFromBasePostRenderModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+
+  @Test
+  public void validPublicAccessViaInterfacePostRender()
+    throws Exception
+  {
+    final String input1 = "input/" + toFilename( "com.example.post_render.PublicAccessViaInterfacePostRenderModel" );
+    final String input2 = "input/" + toFilename( "com.example.post_render.PostRenderInterface" );
+    final String output =
+      toFilename( "com.example.post_render.React4j_PublicAccessViaInterfacePostRenderModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
   public void validProtectedAccessPostUpdate()
     throws Exception
   {
@@ -416,6 +453,30 @@ public final class React4jProcessorTest
     final String input2 = "input/" + toFilename( "com.example.post_update.PostUpdateInterface" );
     final String output =
       toFilename( "com.example.post_update.React4j_PublicAccessViaInterfacePostUpdateModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void validProtectedAccessPreRender()
+    throws Exception
+  {
+    final String input1 = "input/" + toFilename( "com.example.pre_render.ProtectedAccessFromBasePreRenderModel" );
+    final String input2 = "input/" + toFilename( "com.example.pre_render.other.BaseProtectedAccessPreRenderModel" );
+    final String output =
+      toFilename( "com.example.pre_render.React4j_ProtectedAccessFromBasePreRenderModel" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
+                             Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void validPublicAccessViaInterfacePreRender()
+    throws Exception
+  {
+    final String input1 = "input/" + toFilename( "com.example.pre_render.PublicAccessViaInterfacePreRenderModel" );
+    final String input2 = "input/" + toFilename( "com.example.pre_render.PreRenderInterface" );
+    final String output =
+      toFilename( "com.example.pre_render.React4j_PublicAccessViaInterfacePreRenderModel" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ), fixture( input2 ) ),
                              Collections.singletonList( output ) );
   }
@@ -656,6 +717,14 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.post_mount_or_update.StaticModel", "@PostMountOrUpdate target must not be static" },
         new Object[]{ "com.example.post_mount_or_update.ThrowsModel",
                       "@PostMountOrUpdate target must not throw any exceptions" },
+        new Object[]{ "com.example.post_render.AbstractModel", "@PostRender target must not be abstract" },
+        new Object[]{ "com.example.post_render.ParametersModel", "@PostRender target must not have any parameters" },
+        new Object[]{ "com.example.post_render.PrivateModel", "@PostRender target must not be private" },
+        new Object[]{ "com.example.post_render.ReturnsValueModel", "@PostRender target must not return a value" },
+        new Object[]{ "com.example.post_render.StaticModel", "@PostRender target must not be static" },
+        new Object[]{ "com.example.post_render.ThrowsModel", "@PostRender target must not throw any exceptions" },
+        new Object[]{ "com.example.post_render.TypeParameterModel",
+                      "@PostRender target must not have any type parameters" },
         new Object[]{ "com.example.post_update.AbstractModel", "@PostUpdate target must not be abstract" },
         new Object[]{ "com.example.post_update.DuplicateModel",
                       "@PostUpdate target duplicates existing method named postUpdate" },
@@ -664,6 +733,14 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.post_update.ReturnsValueModel", "@PostUpdate target must not return a value" },
         new Object[]{ "com.example.post_update.StaticModel", "@PostUpdate target must not be static" },
         new Object[]{ "com.example.post_update.ThrowsModel", "@PostUpdate target must not throw any exceptions" },
+        new Object[]{ "com.example.pre_render.AbstractModel", "@PreRender target must not be abstract" },
+        new Object[]{ "com.example.pre_render.ParametersModel", "@PreRender target must not have any parameters" },
+        new Object[]{ "com.example.pre_render.PrivateModel", "@PreRender target must not be private" },
+        new Object[]{ "com.example.pre_render.ReturnsValueModel", "@PreRender target must not return a value" },
+        new Object[]{ "com.example.pre_render.StaticModel", "@PreRender target must not be static" },
+        new Object[]{ "com.example.pre_render.ThrowsModel", "@PreRender target must not throw any exceptions" },
+        new Object[]{ "com.example.pre_render.TypeParameterModel",
+                      "@PreRender target must not have any type parameters" },
         new Object[]{ "com.example.pre_update.AbstractModel", "@PreUpdate target must not be abstract" },
         new Object[]{ "com.example.pre_update.DuplicateModel",
                       "@PreUpdate target duplicates existing method named preUpdate" },
@@ -866,9 +943,19 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.post_mount_or_update.PublicAccessPostMountOrUpdateModel",
                       "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
+        new Object[]{ "com.example.post_render.ProtectedAccessPostRenderModel",
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.post_render.PublicAccessPostRenderModel",
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
         new Object[]{ "com.example.post_update.ProtectedAccessPostUpdateModel",
                       "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.post_update.PublicAccessPostUpdateModel",
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
+        new Object[]{ "com.example.pre_render.ProtectedAccessPreRenderModel",
+                      "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
+        new Object[]{ "com.example.pre_render.PublicAccessPreRenderModel",
                       "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
 
         new Object[]{ "com.example.pre_update.ProtectedAccessPreUpdateModel",
@@ -927,10 +1014,20 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.post_mount_or_update.Suppressed2ProtectedAccessPostMountOrUpdateModel" },
         new Object[]{ "com.example.post_mount_or_update.Suppressed2PublicAccessPostMountOrUpdateModel" },
 
+        new Object[]{ "com.example.post_render.Suppressed1ProtectedAccessPostRenderModel" },
+        new Object[]{ "com.example.post_render.Suppressed1PublicAccessPostRenderModel" },
+        new Object[]{ "com.example.post_render.Suppressed2ProtectedAccessPostRenderModel" },
+        new Object[]{ "com.example.post_render.Suppressed2PublicAccessPostRenderModel" },
+
         new Object[]{ "com.example.post_update.Suppressed1ProtectedAccessPostUpdateModel" },
         new Object[]{ "com.example.post_update.Suppressed1PublicAccessPostUpdateModel" },
         new Object[]{ "com.example.post_update.Suppressed2ProtectedAccessPostUpdateModel" },
         new Object[]{ "com.example.post_update.Suppressed2PublicAccessPostUpdateModel" },
+
+        new Object[]{ "com.example.pre_render.Suppressed1ProtectedAccessPreRenderModel" },
+        new Object[]{ "com.example.pre_render.Suppressed1PublicAccessPreRenderModel" },
+        new Object[]{ "com.example.pre_render.Suppressed2ProtectedAccessPreRenderModel" },
+        new Object[]{ "com.example.pre_render.Suppressed2PublicAccessPreRenderModel" },
 
         new Object[]{ "com.example.pre_update.Suppressed1ProtectedAccessPreUpdateModel" },
         new Object[]{ "com.example.pre_update.Suppressed1PublicAccessPreUpdateModel" },

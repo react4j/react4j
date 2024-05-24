@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -260,6 +261,8 @@ public final class React4jProcessor
     determineOnErrorMethod( typeElement, descriptor );
     determineScheduleRenderMethods( typeElement, descriptor );
     determinePublishMethods( typeElement, descriptor );
+    determinePreRenderMethods( typeElement, descriptor );
+    determinePostRenderMethods( typeElement, descriptor );
     determineRenderMethod( typeElement, descriptor );
 
     for ( final InputDescriptor input : descriptor.getInputs() )
@@ -1149,6 +1152,66 @@ public final class React4jProcessor
     descriptor.setPublishDescriptors( descriptors );
   }
 
+  private void determinePreRenderMethods( @Nonnull final TypeElement typeElement,
+                                          @Nonnull final ViewDescriptor descriptor )
+  {
+    final List<RenderHookDescriptor> descriptors = new ArrayList<>();
+    for ( final ExecutableElement method : getMethods( typeElement ) )
+    {
+      final AnnotationMirror annotation =
+        AnnotationsUtil.findAnnotationByType( method, Constants.PRE_RENDER_CLASSNAME );
+      if ( null != annotation )
+      {
+        MemberChecks.mustBeSubclassCallable( typeElement,
+                                             Constants.VIEW_CLASSNAME,
+                                             Constants.PRE_RENDER_CLASSNAME,
+                                             method );
+        MemberChecks.mustNotBeAbstract( Constants.PRE_RENDER_CLASSNAME, method );
+        MemberChecks.mustNotHaveAnyParameters( Constants.PRE_RENDER_CLASSNAME, method );
+        MemberChecks.mustNotHaveAnyTypeParameters( Constants.PRE_RENDER_CLASSNAME, method );
+        MemberChecks.mustNotReturnAnyValue( Constants.PRE_RENDER_CLASSNAME, method );
+        MemberChecks.mustNotThrowAnyExceptions( Constants.PRE_RENDER_CLASSNAME, method );
+
+        final int sortOrder = AnnotationsUtil.getAnnotationValueValue( annotation, "sortOrder" );
+        final ExecutableType methodType = resolveMethodType( descriptor, method );
+
+        descriptors.add( new RenderHookDescriptor( sortOrder, method, methodType ) );
+      }
+    }
+    descriptors.sort( Comparator.comparingInt( RenderHookDescriptor::getSortOrder ) );
+    descriptor.setPreRenderDescriptors( descriptors );
+  }
+
+  private void determinePostRenderMethods( @Nonnull final TypeElement typeElement,
+                                           @Nonnull final ViewDescriptor descriptor )
+  {
+    final List<RenderHookDescriptor> descriptors = new ArrayList<>();
+    for ( final ExecutableElement method : getMethods( typeElement ) )
+    {
+      final AnnotationMirror annotation =
+        AnnotationsUtil.findAnnotationByType( method, Constants.POST_RENDER_CLASSNAME );
+      if ( null != annotation )
+      {
+        MemberChecks.mustBeSubclassCallable( typeElement,
+                                             Constants.VIEW_CLASSNAME,
+                                             Constants.POST_RENDER_CLASSNAME,
+                                             method );
+        MemberChecks.mustNotBeAbstract( Constants.POST_RENDER_CLASSNAME, method );
+        MemberChecks.mustNotHaveAnyParameters( Constants.POST_RENDER_CLASSNAME, method );
+        MemberChecks.mustNotHaveAnyTypeParameters( Constants.POST_RENDER_CLASSNAME, method );
+        MemberChecks.mustNotReturnAnyValue( Constants.POST_RENDER_CLASSNAME, method );
+        MemberChecks.mustNotThrowAnyExceptions( Constants.POST_RENDER_CLASSNAME, method );
+
+        final int sortOrder = AnnotationsUtil.getAnnotationValueValue( annotation, "sortOrder" );
+        final ExecutableType methodType = resolveMethodType( descriptor, method );
+
+        descriptors.add( new RenderHookDescriptor( sortOrder, method, methodType ) );
+      }
+    }
+    descriptors.sort( Comparator.comparingInt( RenderHookDescriptor::getSortOrder ) );
+    descriptor.setPostRenderDescriptors( descriptors );
+  }
+
   private void determineRenderMethod( @Nonnull final TypeElement typeElement,
                                       @Nonnull final ViewDescriptor descriptor )
   {
@@ -1201,6 +1264,8 @@ public final class React4jProcessor
                 null == descriptor.getPostRender() &&
                 null == descriptor.getPreUpdate() &&
                 null == descriptor.getPostUpdate() &&
+                descriptor.getPreRenderDescriptors().isEmpty() &&
+                descriptor.getPostRenderDescriptors().isEmpty() &&
                 !descriptor.hasPreUpdateOnInputChange() &&
                 !descriptor.hasPostUpdateOnInputChange() )
       {

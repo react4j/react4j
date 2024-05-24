@@ -85,7 +85,16 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
   @Nullable
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
-    return render();
+    preRender1();
+    preRender2();
+    preRender3();
+    preRender4();
+    final ReactNode result = render();
+    postRender1();
+    postRender2();
+    postRender3();
+    postRender4();
+    return result;
   }
 
   static final class Factory {

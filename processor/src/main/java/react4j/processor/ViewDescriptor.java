@@ -66,6 +66,16 @@ final class ViewDescriptor
    */
   @Nullable
   private List<PublishDescriptor> _publishDescriptors;
+  /**
+   * Descriptors for methods annotated by @PreRender.
+   */
+  @Nullable
+  private List<RenderHookDescriptor> _preRenderHooks;
+  /**
+   * Descriptors for methods annotated by @PostRender.
+   */
+  @Nullable
+  private List<RenderHookDescriptor> _postRenderHooks;
   @Nullable
   private Boolean _validateInputs;
   @Nullable
@@ -322,6 +332,30 @@ final class ViewDescriptor
     _publishDescriptors = Objects.requireNonNull( publishDescriptors );
   }
 
+  @Nonnull
+  List<RenderHookDescriptor> getPreRenderDescriptors()
+  {
+    assert null != _preRenderHooks;
+    return _preRenderHooks;
+  }
+
+  void setPreRenderDescriptors( @Nonnull final List<RenderHookDescriptor> preRenderDescriptors )
+  {
+    _preRenderHooks = Objects.requireNonNull( preRenderDescriptors );
+  }
+
+  @Nonnull
+  List<RenderHookDescriptor> getPostRenderDescriptors()
+  {
+    assert null != _postRenderHooks;
+    return _postRenderHooks;
+  }
+
+  void setPostRenderDescriptors( @Nonnull final List<RenderHookDescriptor> postRenderDescriptors )
+  {
+    _postRenderHooks = Objects.requireNonNull( postRenderDescriptors );
+  }
+
   boolean hasObservableInputs()
   {
     return getInputs().stream().anyMatch( InputDescriptor::isObservable );
@@ -345,6 +379,13 @@ final class ViewDescriptor
     {
       _preUpdate = preUpdate;
     }
+  }
+
+  boolean shouldGenerateRender()
+  {
+    assert null != _preRenderHooks;
+    assert null != _postRenderHooks;
+    return hasRender() || !_preRenderHooks.isEmpty() || !_postRenderHooks.isEmpty();
   }
 
   boolean hasRender()

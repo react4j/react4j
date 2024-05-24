@@ -246,7 +246,7 @@ final class ViewGenerator
       builder.addMethod( buildComponentWillUnmount( descriptor ).build() );
     }
 
-    if ( descriptor.hasRender() )
+    if ( descriptor.shouldGenerateRender() )
     {
       builder.addMethod( buildRender( descriptor ).build() );
     }
@@ -870,7 +870,7 @@ final class ViewGenerator
   @Nonnull
   private static MethodSpec.Builder buildRender( @Nonnull final ViewDescriptor descriptor )
   {
-    final ExecutableElement render = descriptor.getRender();
+    final ExecutableElement render = descriptor.hasRender() ? descriptor.getRender() : null;
 
     final MethodSpec.Builder method =
       MethodSpec
@@ -934,9 +934,24 @@ final class ViewGenerator
       args.add( "CONTEXT_" + publish.getMethod().getSimpleName().toString() );
       args.add( publish.getMethod().getSimpleName() );
     }
+    for ( final RenderHookDescriptor hook : descriptor.getPreRenderDescriptors() )
+    {
+      method.addStatement( "$N()", hook.getMethod().getSimpleName().toString() );
+    }
 
-    sb.append( "$N()" );
-    args.add( render.getSimpleName().toString() );
+    final boolean isTrackingType = ViewType.TRACKING == descriptor.getType();
+    final List<RenderHookDescriptor> postRenderDescriptors = descriptor.getPostRenderDescriptors();
+    final boolean explicitReturnRequired = isTrackingType || !postRenderDescriptors.isEmpty();
+
+    if ( null != render )
+    {
+      sb.append( "$N()" );
+      args.add( render.getSimpleName().toString() );
+    }
+    else
+    {
+      sb.append( "null" );
+    }
 
     final int publishCount = publishDescriptors.size();
     for ( int i = 0; i < publishCount; i++ )
@@ -944,32 +959,41 @@ final class ViewGenerator
       sb.append( " )" );
     }
 
-    if ( ViewType.TRACKING == descriptor.getType() )
+    if ( !explicitReturnRequired )
+    {
+      method.addStatement( "return " + sb, args.toArray() );
+    }
+    else
     {
       args.add( 0, REACT_NODE_CLASSNAME );
       method.addStatement( "final $T result = " + sb, args.toArray() );
 
-      final CodeBlock.Builder depCheckBlock = CodeBlock.builder();
-      depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
-                                      AREZ_CLASSNAME,
-                                      AREZ_CLASSNAME );
-      final String getObserverMethodName = FRAMEWORK_INTERNAL_PREFIX + "getRenderObserver";
-      depCheckBlock.addStatement( "$T.invariant( () -> !$N().getContext().getSpy()." +
-                                  "asObserverInfo( $N() ).getDependencies().isEmpty(), " +
-                                  "() -> \"View render completed on '\" + this + \"' without accessing " +
-                                  "any Arez dependencies but has a type set to TRACKING. The render method " +
-                                  "needs to access an Arez dependency or the type should be changed to " +
-                                  "STATEFUL or MAYBE_TRACKING.\" )",
-                                  GUARDS_CLASSNAME,
-                                  getObserverMethodName,
-                                  getObserverMethodName );
-      depCheckBlock.endControlFlow();
-      method.addCode( depCheckBlock.build() );
+      if ( isTrackingType )
+      {
+        final CodeBlock.Builder depCheckBlock = CodeBlock.builder();
+        depCheckBlock.beginControlFlow( "if ( $T.shouldCheckInvariants() && $T.areSpiesEnabled() )",
+                                        AREZ_CLASSNAME,
+                                        AREZ_CLASSNAME );
+        final String getObserverMethodName = FRAMEWORK_INTERNAL_PREFIX + "getRenderObserver";
+        depCheckBlock.addStatement( "$T.invariant( () -> !$N().getContext().getSpy()." +
+                                    "asObserverInfo( $N() ).getDependencies().isEmpty(), " +
+                                    "() -> \"View render completed on '\" + this + \"' without accessing " +
+                                    "any Arez dependencies but has a type set to TRACKING. The render method " +
+                                    "needs to access an Arez dependency or the type should be changed to " +
+                                    "STATEFUL or MAYBE_TRACKING.\" )",
+                                    GUARDS_CLASSNAME,
+                                    getObserverMethodName,
+                                    getObserverMethodName );
+        depCheckBlock.endControlFlow();
+        method.addCode( depCheckBlock.build() );
+      }
+
+      for ( final RenderHookDescriptor hook : postRenderDescriptors )
+      {
+        method.addStatement( "$N()", hook.getMethod().getSimpleName().toString() );
+      }
+
       method.addStatement( "return result" );
-    }
-    else
-    {
-      method.addStatement( "return " + sb, args.toArray() );
     }
     return method;
   }
@@ -995,7 +1019,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildGetRenderObserver( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec.Builder buildGetRenderObserver(
+    @Nonnull final ViewDescriptor descriptor )
   {
     assert descriptor.trackRender();
     return MethodSpec
@@ -1020,7 +1045,9 @@ final class ViewGenerator
     block.beginControlFlow( "if ( $N )", flag );
     block.addStatement( "$N = false", flag );
     block.nextControlFlow( "else" );
-    block.addStatement( "final $T newState = $T.of()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, JS_PROPERTY_MAP_CLASSNAME );
+    block.addStatement( "final $T newState = $T.of()",
+                        JS_PROPERTY_MAP_T_OBJECT_CLASSNAME,
+                        JS_PROPERTY_MAP_CLASSNAME );
     // Present id as state. Useful to track when instance ids change.
     block.addStatement( "newState.set( $S, $N() )", "Arez.id", FRAMEWORK_INTERNAL_PREFIX + "getComponentId" );
     block.addStatement( "newState.set( $S, $N() )", "Arez.name", FRAMEWORK_INTERNAL_PREFIX + "getComponentName" );
@@ -1047,7 +1074,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildOnRenderDepsChange( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec.Builder buildOnRenderDepsChange(
+    @Nonnull final ViewDescriptor descriptor )
   {
     assert descriptor.trackRender();
     final MethodSpec.Builder method = MethodSpec
@@ -1079,13 +1107,14 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildInputValidatorMethod( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec.Builder buildInputValidatorMethod(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( VALIDATE_INPUTS_METHOD ).
         addModifiers( Modifier.PRIVATE ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "inputs", Modifier.FINAL ).
-          addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() );
+                        addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() );
 
     for ( final InputDescriptor input : descriptor.getInputs() )
     {
@@ -1095,7 +1124,10 @@ final class ViewGenerator
         final String name = input.getName();
         final String rawName = "raw$" + name;
         final String typedName = "typed$" + name;
-        method.addStatement( "final $T $N = inputs.get( Inputs.$N )", Object.class, rawName, input.getConstantName() );
+        method.addStatement( "final $T $N = inputs.get( Inputs.$N )",
+                             Object.class,
+                             rawName,
+                             input.getConstantName() );
         if ( requiresNonnullInvariant )
         {
           final CodeBlock.Builder block = CodeBlock.builder();
@@ -1116,25 +1148,27 @@ final class ViewGenerator
             }
             else
             {
-              block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N with qualifier " +
-                                  "'$N' is missing when constructing view named '$N'. Ensure a parent view publishes " +
-                                  "the value to the context.\" ) ",
-                                  GUARDS_CLASSNAME,
-                                  rawName,
-                                  input.getMethodType().getReturnType().toString(),
-                                  qualifier,
-                                  descriptor.getName() );
+              block.addStatement(
+                "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N with qualifier " +
+                "'$N' is missing when constructing view named '$N'. Ensure a parent view publishes " +
+                "the value to the context.\" ) ",
+                GUARDS_CLASSNAME,
+                rawName,
+                input.getMethodType().getReturnType().toString(),
+                qualifier,
+                descriptor.getName() );
             }
           }
           else
           {
-            block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required input named '$N' is missing from " +
-                                "view named '$N' so it was either incorrectly omitted or a null value has been " +
-                                "incorrectly specified.\" ) ",
-                                GUARDS_CLASSNAME,
-                                rawName,
-                                input.getName(),
-                                descriptor.getName() );
+            block.addStatement(
+              "$T.apiInvariant( () -> null != $N, () -> \"Required input named '$N' is missing from " +
+              "view named '$N' so it was either incorrectly omitted or a null value has been " +
+              "incorrectly specified.\" ) ",
+              GUARDS_CLASSNAME,
+              rawName,
+              input.getName(),
+              descriptor.getName() );
           }
           block.endControlFlow();
           method.addCode( block.build() );
@@ -1160,7 +1194,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec.Builder buildConstructorFnMethod(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "getConstructorFunction" ).
@@ -1199,7 +1234,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static TypeSpec buildInputsType( @Nonnull final ViewDescriptor descriptor )
+  private static TypeSpec buildInputsType(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "Inputs" );
 
@@ -1241,7 +1277,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static TypeSpec buildNativeView( @Nonnull final ViewDescriptor descriptor, final boolean lite )
+  private static TypeSpec buildNativeView(
+    @Nonnull final ViewDescriptor descriptor, final boolean lite )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( ( lite ? "Lite" : "" ) + "NativeView" );
 
@@ -1353,7 +1390,9 @@ final class ViewGenerator
       // We add this so the DevTool sees any debug data saved
       builder.addMethod( buildNativeViewDidMount( descriptor ) );
     }
-    if ( lite ? descriptor.generateShouldComponentUpdateInLiteLifecycle() : descriptor.generateShouldComponentUpdate() )
+    if ( lite ?
+         descriptor.generateShouldComponentUpdateInLiteLifecycle() :
+         descriptor.generateShouldComponentUpdate() )
     {
       builder.addMethod( buildNativeShouldComponentUpdate( descriptor ) );
     }
@@ -1381,7 +1420,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildNativeRender( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec buildNativeRender(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "render" )
@@ -1389,7 +1429,7 @@ final class ViewGenerator
       .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
       .returns( REACT_NODE_CLASSNAME );
-    if ( descriptor.hasRender() )
+    if ( descriptor.shouldGenerateRender() )
     {
       if ( descriptor.hasDependencyInput() )
       {
@@ -1414,7 +1454,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildNativeViewDidMount( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec buildNativeViewDidMount(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method =
       MethodSpec
@@ -1437,7 +1478,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildNativeShouldComponentUpdate( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec buildNativeShouldComponentUpdate(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "shouldComponentUpdate" )
@@ -1466,7 +1508,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildNativeViewPreUpdate( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec buildNativeViewPreUpdate(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method =
       MethodSpec
@@ -1499,7 +1542,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildNativeViewDidUpdate( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec buildNativeViewDidUpdate(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "componentDidUpdate" )
@@ -1539,7 +1583,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildNativeViewWillUnmount( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec buildNativeViewWillUnmount(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method = MethodSpec
       .methodBuilder( "componentWillUnmount" )
@@ -1561,7 +1606,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildNativeViewDidCatch( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec.Builder buildNativeViewDidCatch(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final ExecutableElement onError = descriptor.getOnError();
     assert null != onError;
@@ -1603,7 +1649,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static TypeSpec buildContextHolder( @Nonnull final ViewDescriptor descriptor )
+  private static TypeSpec buildContextHolder(
+    @Nonnull final ViewDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "ContextHolder" );
     GeneratorUtil.copyTypeParameters( descriptor.getElement(), builder );

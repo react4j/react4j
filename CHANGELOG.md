@@ -6,6 +6,7 @@
 * Update the `org.realityforge.proton` artifacts to version `0.63`.
 * Update the `org.realityforge.guiceyloops` artifact to version `0.113`.
 * Update the `gwt` artifacts to version `2.11.0`.
+* Add `@PreRender` and `@PostRender` annotations to support hookinto into the lifecycle of a View before and after a render call.
 
 ### [v0.194](https://github.com/react4j/react4j/tree/v0.194) (2023-01-26) · [Full Changelog](https://github.com/spritz/spritz/compare/v0.193...v0.194)
 

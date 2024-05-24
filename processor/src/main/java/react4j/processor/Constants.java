@@ -17,6 +17,10 @@ final class Constants
   @Nonnull
   static final String PUBLISH_CLASSNAME = "react4j.annotations.Publish";
   @Nonnull
+  static final String PRE_RENDER_CLASSNAME = "react4j.annotations.PreRender";
+  @Nonnull
+  static final String POST_RENDER_CLASSNAME = "react4j.annotations.PostRender";
+  @Nonnull
   static final String SUPPRESS_REACT4J_WARNINGS_CLASSNAME = "react4j.annotations.SuppressReact4jWarnings";
   @Nonnull
   static final String INPUT_REF_CLASSNAME = "react4j.annotations.InputRef";
