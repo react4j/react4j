@@ -6,7 +6,6 @@ Buildr::ReleaseTool.define_release_task do |t|
   t.zapwhite
   t.ensure_git_clean
   t.verify_no_todo
-  t.cleanup_staging
   t.build(:additional_tasks => "release_test_api_diff J2CL=#{ENV['J2CL']}")
   t.stage('ArchiveDownstream', 'Archive downstream projects that may need changes pushed') do
     unless ENV['DOWNSTREAM'] == 'no'
