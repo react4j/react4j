@@ -585,6 +585,24 @@ public final class React4jProcessorTest
                              Arrays.asList( output1, output2 ) );
   }
 
+
+  @Test
+  public void validInheritanceComplexInterface()
+    throws Exception
+  {
+    final String input1 = "input/" + toFilename( "com.example.inheritance.complex_interface.RootInterface" );
+    final String input2 = "input/" + toFilename( "com.example.inheritance.complex_interface.InnerInterface" );
+    final String input3 = "input/" + toFilename( "com.example.inheritance.complex_interface.LeafInterface" );
+    final String input4 = "input/" + toFilename( "com.example.inheritance.complex_interface.MyView" );
+    final String output1 = toFilename( "com.example.inheritance.complex_interface.React4j_MyView" );
+    final String output2 = toFilename( "com.example.inheritance.complex_interface.MyViewBuilder" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ),
+                                            fixture( input2 ),
+                                            fixture( input3 ),
+                                            fixture( input4 ) ),
+                             Arrays.asList( output1, output2 ) );
+  }
+
   @Test
   public void processSuccessfulServiceViaContributeToStingModel()
     throws Exception
