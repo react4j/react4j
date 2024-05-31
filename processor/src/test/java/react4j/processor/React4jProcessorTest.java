@@ -585,7 +585,6 @@ public final class React4jProcessorTest
                              Arrays.asList( output1, output2 ) );
   }
 
-
   @Test
   public void validInheritanceComplexInterface()
     throws Exception
