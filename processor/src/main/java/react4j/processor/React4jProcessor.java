@@ -128,11 +128,10 @@ public final class React4jProcessor
   /**
    * Return true if there is any method annotated with @PostConstruct.
    */
-  private boolean hasPostConstruct( @Nonnull final TypeElement typeElement )
+  private boolean hasPostConstruct( @Nonnull final List<ExecutableElement> methods )
   {
-    return getMethods( typeElement )
-      .stream()
-      .anyMatch( e -> AnnotationsUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_CLASSNAME ) );
+    return
+      methods.stream().anyMatch( e -> AnnotationsUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_CLASSNAME ) );
   }
 
   @Nonnull
@@ -140,8 +139,11 @@ public final class React4jProcessor
   {
     final String name = deriveViewName( typeElement );
     final ViewType type = extractViewType( typeElement );
-    final boolean hasPostConstruct = hasPostConstruct( typeElement );
-    final boolean shouldSetDefaultPriority = shouldSetDefaultPriority( typeElement );
+    final List<ExecutableElement> methods =
+      ElementsUtil.getMethods( typeElement, processingEnv.getElementUtils(), processingEnv.getTypeUtils() );
+
+    final boolean hasPostConstruct = hasPostConstruct( methods );
+    final boolean shouldSetDefaultPriority = shouldSetDefaultPriority( methods );
 
     MemberChecks.mustNotBeFinal( Constants.VIEW_CLASSNAME, typeElement );
     MemberChecks.mustBeAbstract( Constants.VIEW_CLASSNAME, typeElement );
@@ -249,21 +251,21 @@ public final class React4jProcessor
     }
 
     determineViewCapabilities( descriptor, typeElement );
-    determineInputs( descriptor );
-    determineInputValidatesMethods( descriptor );
-    determineOnInputChangeMethods( descriptor );
-    determineDefaultInputsMethods( descriptor );
+    determineInputs( descriptor, methods );
+    determineInputValidatesMethods( descriptor, methods );
+    determineOnInputChangeMethods( descriptor, methods );
+    determineDefaultInputsMethods( descriptor, methods );
     determineDefaultInputsFields( descriptor );
-    determinePreUpdateMethod( typeElement, descriptor );
-    determinePostMountOrUpdateMethod( typeElement, descriptor );
-    determinePostUpdateMethod( typeElement, descriptor );
-    determinePostMountMethod( typeElement, descriptor );
-    determineOnErrorMethod( typeElement, descriptor );
-    determineScheduleRenderMethods( typeElement, descriptor );
-    determinePublishMethods( typeElement, descriptor );
-    determinePreRenderMethods( typeElement, descriptor );
-    determinePostRenderMethods( typeElement, descriptor );
-    determineRenderMethod( typeElement, descriptor );
+    determinePreUpdateMethod( typeElement, descriptor, methods );
+    determinePostMountOrUpdateMethod( typeElement, descriptor, methods );
+    determinePostUpdateMethod( typeElement, descriptor, methods );
+    determinePostMountMethod( typeElement, descriptor, methods );
+    determineOnErrorMethod( typeElement, descriptor, methods );
+    determineScheduleRenderMethods( typeElement, descriptor, methods );
+    determinePublishMethods( typeElement, descriptor, methods );
+    determinePreRenderMethods( typeElement, descriptor, methods );
+    determinePostRenderMethods( typeElement, descriptor, methods );
+    determineRenderMethod( typeElement, descriptor, methods );
 
     for ( final InputDescriptor input : descriptor.getInputs() )
     {
@@ -435,15 +437,17 @@ public final class React4jProcessor
     }
   }
 
-  private void determineOnInputChangeMethods( @Nonnull final ViewDescriptor descriptor )
+  private void determineOnInputChangeMethods( @Nonnull final ViewDescriptor descriptor,
+                                              @Nonnull final List<ExecutableElement> methods )
   {
-    final List<ExecutableElement> methods =
-      getMethods( descriptor.getElement() ).stream()
+    final List<ExecutableElement> onInputChangeMethods =
+      methods
+        .stream()
         .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.ON_INPUT_CHANGE_CLASSNAME ) )
-        .collect( Collectors.toList() );
+        .toList();
 
     final ArrayList<OnInputChangeDescriptor> onInputChangeDescriptors = new ArrayList<>();
-    for ( final ExecutableElement method : methods )
+    for ( final ExecutableElement method : onInputChangeMethods )
     {
       final VariableElement phase = (VariableElement)
         AnnotationsUtil.getAnnotationValue( method, Constants.ON_INPUT_CHANGE_CLASSNAME, "phase" ).getValue();
@@ -547,14 +551,16 @@ public final class React4jProcessor
     }
   }
 
-  private void determineInputValidatesMethods( @Nonnull final ViewDescriptor descriptor )
+  private void determineInputValidatesMethods( @Nonnull final ViewDescriptor descriptor,
+                                               @Nonnull final List<ExecutableElement> methods )
   {
-    final List<ExecutableElement> methods =
-      getMethods( descriptor.getElement() ).stream()
+    final List<ExecutableElement> inputValidateMethods =
+      methods
+        .stream()
         .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.INPUT_VALIDATE_CLASSNAME ) )
-        .collect( Collectors.toList() );
+        .toList();
 
-    for ( final ExecutableElement method : methods )
+    for ( final ExecutableElement method : inputValidateMethods )
     {
       final String name = deriveInputValidateName( method );
       final InputDescriptor input = descriptor.findInputNamed( name );
@@ -635,12 +641,14 @@ public final class React4jProcessor
     }
   }
 
-  private void determineDefaultInputsMethods( @Nonnull final ViewDescriptor descriptor )
+  private void determineDefaultInputsMethods( @Nonnull final ViewDescriptor descriptor,
+                                              @Nonnull final List<ExecutableElement> methods )
   {
     final List<ExecutableElement> defaultInputsMethods =
-      getMethods( descriptor.getElement() ).stream()
+      methods
+        .stream()
         .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.INPUT_DEFAULT_CLASSNAME ) )
-        .collect( Collectors.toList() );
+        .toList();
 
     for ( final ExecutableElement method : defaultInputsMethods )
     {
@@ -675,7 +683,7 @@ public final class React4jProcessor
     final List<VariableElement> defaultInputsFields =
       ElementsUtil.getFields( descriptor.getElement() ).stream()
         .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.INPUT_DEFAULT_CLASSNAME ) )
-        .collect( Collectors.toList() );
+        .toList();
 
     for ( final VariableElement field : defaultInputsFields )
     {
@@ -799,12 +807,14 @@ public final class React4jProcessor
     return sb.toString();
   }
 
-  private void determineInputs( @Nonnull final ViewDescriptor descriptor )
+  private void determineInputs( @Nonnull final ViewDescriptor descriptor,
+                                @Nonnull final List<ExecutableElement> methods )
   {
     final List<InputDescriptor> inputs =
-      getMethods( descriptor.getElement() ).stream()
+      methods
+        .stream()
         .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.INPUT_CLASSNAME ) )
-        .map( m -> createInputDescriptor( descriptor, m ) )
+        .map( m -> createInputDescriptor( descriptor, methods, m ) )
         .collect( Collectors.toList() );
 
     final InputDescriptor childrenInput =
@@ -847,6 +857,7 @@ public final class React4jProcessor
 
   @Nonnull
   private InputDescriptor createInputDescriptor( @Nonnull final ViewDescriptor descriptor,
+                                                 @Nonnull final List<ExecutableElement> methods,
                                                  @Nonnull final ExecutableElement method )
   {
     final String name = deriveInputName( method );
@@ -895,7 +906,7 @@ public final class React4jProcessor
     final boolean contextInput = isContextInput( method );
     final Element inputType = processingEnv.getTypeUtils().asElement( returnType );
     final boolean immutable = isInputImmutable( method );
-    final boolean observable = isInputObservable( descriptor, method, immutable );
+    final boolean observable = isInputObservable( methods, method, immutable );
     final boolean disposable = null != inputType && isInputDisposable( method, inputType );
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation( method ) )
@@ -1031,9 +1042,10 @@ public final class React4jProcessor
   }
 
   private void determineOnErrorMethod( @Nonnull final TypeElement typeElement,
-                                       @Nonnull final ViewDescriptor descriptor )
+                                       @Nonnull final ViewDescriptor descriptor,
+                                       @Nonnull final List<ExecutableElement> methods )
   {
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.ON_ERROR_CLASSNAME ) )
       {
@@ -1083,10 +1095,11 @@ public final class React4jProcessor
   }
 
   private void determineScheduleRenderMethods( @Nonnull final TypeElement typeElement,
-                                               @Nonnull final ViewDescriptor descriptor )
+                                               @Nonnull final ViewDescriptor descriptor,
+                                               @Nonnull final List<ExecutableElement> methods )
   {
     final List<ScheduleRenderDescriptor> scheduleRenderDescriptors = new ArrayList<>();
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       final AnnotationMirror annotation =
         AnnotationsUtil.findAnnotationByType( method, Constants.SCHEDULE_RENDER_CLASSNAME );
@@ -1120,10 +1133,11 @@ public final class React4jProcessor
   }
 
   private void determinePublishMethods( @Nonnull final TypeElement typeElement,
-                                        @Nonnull final ViewDescriptor descriptor )
+                                        @Nonnull final ViewDescriptor descriptor,
+                                        @Nonnull final List<ExecutableElement> methods )
   {
     final List<PublishDescriptor> descriptors = new ArrayList<>();
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       final AnnotationMirror annotation = AnnotationsUtil.findAnnotationByType( method, Constants.PUBLISH_CLASSNAME );
       if ( null != annotation )
@@ -1153,10 +1167,11 @@ public final class React4jProcessor
   }
 
   private void determinePreRenderMethods( @Nonnull final TypeElement typeElement,
-                                          @Nonnull final ViewDescriptor descriptor )
+                                          @Nonnull final ViewDescriptor descriptor,
+                                          @Nonnull final List<ExecutableElement> methods )
   {
     final List<RenderHookDescriptor> descriptors = new ArrayList<>();
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       final AnnotationMirror annotation =
         AnnotationsUtil.findAnnotationByType( method, Constants.PRE_RENDER_CLASSNAME );
@@ -1183,10 +1198,11 @@ public final class React4jProcessor
   }
 
   private void determinePostRenderMethods( @Nonnull final TypeElement typeElement,
-                                           @Nonnull final ViewDescriptor descriptor )
+                                           @Nonnull final ViewDescriptor descriptor,
+                                           @Nonnull final List<ExecutableElement> methods )
   {
     final List<RenderHookDescriptor> descriptors = new ArrayList<>();
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       final AnnotationMirror annotation =
         AnnotationsUtil.findAnnotationByType( method, Constants.POST_RENDER_CLASSNAME );
@@ -1213,10 +1229,11 @@ public final class React4jProcessor
   }
 
   private void determineRenderMethod( @Nonnull final TypeElement typeElement,
-                                      @Nonnull final ViewDescriptor descriptor )
+                                      @Nonnull final ViewDescriptor descriptor,
+                                      @Nonnull final List<ExecutableElement> methods )
   {
     boolean foundRender = false;
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       final AnnotationMirror annotation =
         AnnotationsUtil.findAnnotationByType( method, Constants.RENDER_CLASSNAME );
@@ -1277,9 +1294,10 @@ public final class React4jProcessor
   }
 
   private void determinePostMountMethod( @Nonnull final TypeElement typeElement,
-                                         @Nonnull final ViewDescriptor descriptor )
+                                         @Nonnull final ViewDescriptor descriptor,
+                                         @Nonnull final List<ExecutableElement> methods )
   {
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_CLASSNAME ) )
       {
@@ -1293,9 +1311,10 @@ public final class React4jProcessor
   }
 
   private void determinePostMountOrUpdateMethod( @Nonnull final TypeElement typeElement,
-                                                 @Nonnull final ViewDescriptor descriptor )
+                                                 @Nonnull final ViewDescriptor descriptor,
+                                                 @Nonnull final List<ExecutableElement> methods )
   {
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_MOUNT_OR_UPDATE_CLASSNAME ) )
       {
@@ -1309,9 +1328,10 @@ public final class React4jProcessor
   }
 
   private void determinePostUpdateMethod( @Nonnull final TypeElement typeElement,
-                                          @Nonnull final ViewDescriptor descriptor )
+                                          @Nonnull final ViewDescriptor descriptor,
+                                          @Nonnull final List<ExecutableElement> methods )
   {
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.POST_UPDATE_CLASSNAME ) )
       {
@@ -1325,9 +1345,10 @@ public final class React4jProcessor
   }
 
   private void determinePreUpdateMethod( @Nonnull final TypeElement typeElement,
-                                         @Nonnull final ViewDescriptor descriptor )
+                                         @Nonnull final ViewDescriptor descriptor,
+                                         @Nonnull final List<ExecutableElement> methods )
   {
-    for ( final ExecutableElement method : getMethods( typeElement ) )
+    for ( final ExecutableElement method : methods )
     {
       if ( AnnotationsUtil.hasAnnotationOfType( method, Constants.PRE_UPDATE_CLASSNAME ) )
       {
@@ -1406,7 +1427,7 @@ public final class React4jProcessor
     return ViewType.valueOf( declaredTypeEnum.getSimpleName().toString() );
   }
 
-  private boolean isInputObservable( @Nonnull final ViewDescriptor descriptor,
+  private boolean isInputObservable( @Nonnull final List<ExecutableElement> methods,
                                      @Nonnull final ExecutableElement method,
                                      final boolean immutable )
   {
@@ -1425,17 +1446,18 @@ public final class React4jProcessor
       case "DISABLE":
         return false;
       default:
-        return hasAnyArezObserverMethods( descriptor.getElement() );
+        return hasAnyArezObserverMethods( methods );
     }
   }
 
-  private boolean hasAnyArezObserverMethods( @Nonnull final TypeElement typeElement )
+  private boolean hasAnyArezObserverMethods( @Nonnull final List<ExecutableElement> methods )
   {
-    return getMethods( typeElement )
-      .stream()
-      .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.MEMOIZE_CLASSNAME ) ||
-                      ( AnnotationsUtil.hasAnnotationOfType( m, Constants.OBSERVE_CLASSNAME ) &&
-                        ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
+    return
+      methods
+        .stream()
+        .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.MEMOIZE_CLASSNAME ) ||
+                        ( AnnotationsUtil.hasAnnotationOfType( m, Constants.OBSERVE_CLASSNAME ) &&
+                          ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
   }
 
   private boolean isInputImmutable( @Nonnull final ExecutableElement method )
@@ -1501,14 +1523,14 @@ public final class React4jProcessor
     return "CONTEXT".equals( parameter.getSimpleName().toString() );
   }
 
-  private boolean shouldSetDefaultPriority( @Nonnull final TypeElement typeElement )
+  private boolean shouldSetDefaultPriority( @Nonnull final List<ExecutableElement> methods )
   {
-    final List<ExecutableElement> methods = getMethods( typeElement );
-    return methods
-      .stream()
-      .filter( method -> !method.getModifiers().contains( Modifier.PRIVATE ) )
-      .anyMatch( method -> AnnotationsUtil.hasAnnotationOfType( method, Constants.MEMOIZE_CLASSNAME ) ||
-                           AnnotationsUtil.hasAnnotationOfType( method, Constants.OBSERVE_CLASSNAME ) );
+    return
+      methods
+        .stream()
+        .filter( method -> !method.getModifiers().contains( Modifier.PRIVATE ) )
+        .anyMatch( method -> AnnotationsUtil.hasAnnotationOfType( method, Constants.MEMOIZE_CLASSNAME ) ||
+                             AnnotationsUtil.hasAnnotationOfType( method, Constants.OBSERVE_CLASSNAME ) );
   }
 
   private void verifyNoDuplicateAnnotations( @Nonnull final ExecutableElement method )
@@ -1520,12 +1542,6 @@ public final class React4jProcessor
                      Constants.ON_INPUT_CHANGE_CLASSNAME,
                      Constants.INPUT_CLASSNAME );
     MemberChecks.verifyNoOverlappingAnnotations( method, annotations, Collections.emptyMap() );
-  }
-
-  @Nonnull
-  private List<ExecutableElement> getMethods( @Nonnull final TypeElement typeElement )
-  {
-    return ElementsUtil.getMethods( typeElement, processingEnv.getElementUtils(), processingEnv.getTypeUtils() );
   }
 
   private boolean isSentinelName( @Nonnull final String name )
