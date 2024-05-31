@@ -603,6 +603,21 @@ public final class React4jProcessorTest
   }
 
   @Test
+  public void validInheritanceRose()
+    throws Exception
+  {
+    final String input1 = "input/" + toFilename( "com.example.inheritance.rose.MyBaseView" );
+    final String input2 = "input/" + toFilename( "com.example.inheritance.rose.MyConsumerView" );
+    final String input3 = "input/" + toFilename( "com.example.inheritance.rose.MyView" );
+    final String output1 = toFilename( "com.example.inheritance.rose.React4j_MyView" );
+    final String output2 = toFilename( "com.example.inheritance.rose.MyViewBuilder" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ),
+                                            fixture( input2 ),
+                                            fixture( input3 ) ),
+                             Arrays.asList( output1, output2 ) );
+  }
+
+  @Test
   public void processSuccessfulServiceViaContributeToStingModel()
     throws Exception
   {
