@@ -890,9 +890,8 @@ public final class React4jProcessor
       throw new ProcessorException( "@Input named 'children' should be of type react4j.ReactNode[]", method );
     }
 
-    if ( returnType instanceof TypeVariable )
+    if ( returnType instanceof final TypeVariable typeVariable )
     {
-      final TypeVariable typeVariable = (TypeVariable) returnType;
       final String typeVariableName = typeVariable.asElement().getSimpleName().toString();
       List<? extends TypeParameterElement> typeParameters = method.getTypeParameters();
       if ( typeParameters.stream().anyMatch( p -> p.getSimpleName().toString().equals( typeVariableName ) ) )
@@ -1433,21 +1432,21 @@ public final class React4jProcessor
   {
     final VariableElement parameter = (VariableElement)
       AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "observable" ).getValue();
-    switch ( parameter.getSimpleName().toString() )
+    return switch ( parameter.getSimpleName().toString() )
     {
-      case "ENABLE":
+      case "ENABLE" ->
+      {
         if ( immutable )
         {
           throw new ProcessorException( "@Input target has specified both immutable=true and " +
                                         "observable=ENABLE which is an invalid combination.",
                                         method );
         }
-        return true;
-      case "DISABLE":
-        return false;
-      default:
-        return hasAnyArezObserverMethods( methods );
-    }
+        yield true;
+      }
+      case "DISABLE" -> false;
+      default -> hasAnyArezObserverMethods( methods );
+    };
   }
 
   private boolean hasAnyArezObserverMethods( @Nonnull final List<ExecutableElement> methods )
@@ -1472,9 +1471,10 @@ public final class React4jProcessor
   {
     final VariableElement parameter = (VariableElement)
       AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "dependency" ).getValue();
-    switch ( parameter.getSimpleName().toString() )
+    return switch ( parameter.getSimpleName().toString() )
     {
-      case "ENABLE":
+      case "ENABLE" ->
+      {
         if ( !immutable )
         {
           throw new ProcessorException( "@Input target must be immutable if dependency=ENABLE is specified",
@@ -1485,35 +1485,30 @@ public final class React4jProcessor
           throw new ProcessorException( "@Input target must be disposable if dependency=ENABLE is specified",
                                         method );
         }
-        return true;
-      case "DISABLE":
-        return false;
-      default:
-        return immutable && disposable;
-    }
+        yield true;
+      }
+      case "DISABLE" -> false;
+      default -> immutable && disposable;
+    };
   }
 
   private boolean isInputDisposable( @Nonnull final ExecutableElement method, @Nonnull final Element inputType )
   {
     final VariableElement parameter = (VariableElement)
       AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "disposable" ).getValue();
-    switch ( parameter.getSimpleName().toString() )
+    return switch ( parameter.getSimpleName().toString() )
     {
-      case "ENABLE":
-        return true;
-      case "DISABLE":
-        return false;
-      default:
-        return
-          (
-            ElementKind.CLASS == inputType.getKind() &&
-            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_CLASSNAME )
-          ) ||
-          (
-            ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
-            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME )
-          );
-    }
+      case "ENABLE" -> true;
+      case "DISABLE" -> false;
+      default -> (
+                   ElementKind.CLASS == inputType.getKind() &&
+                   AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_CLASSNAME )
+                 ) ||
+                 (
+                   ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
+                   AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME )
+                 );
+    };
   }
 
   private boolean isContextInput( @Nonnull final ExecutableElement method )
