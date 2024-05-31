@@ -420,7 +420,6 @@ public final class React4jProcessorTest
                              Collections.singletonList( output ) );
   }
 
-
   @Test
   public void validPublicAccessViaInterfacePostRender()
     throws Exception
