@@ -566,6 +566,27 @@ public final class React4jProcessorTest
   }
 
   @Test
+  public void validInheritanceSimple()
+    throws Exception
+  {
+    final String input1 = "input/" + toFilename( "com.example.inheritance.simple.RootView" );
+    final String input2 = "input/" + toFilename( "com.example.inheritance.simple.RootInterface" );
+    final String input3 = "input/" + toFilename( "com.example.inheritance.simple.InnerView" );
+    final String input4 = "input/" + toFilename( "com.example.inheritance.simple.InnerInterface" );
+    final String input5 = "input/" + toFilename( "com.example.inheritance.simple.LeafView" );
+    final String input6 = "input/" + toFilename( "com.example.inheritance.simple.LeafInterface" );
+    final String output1 = toFilename( "com.example.inheritance.simple.React4j_LeafView" );
+    final String output2 = toFilename( "com.example.inheritance.simple.LeafViewBuilder" );
+    assertSuccessfulCompile( Arrays.asList( fixture( input1 ),
+                                            fixture( input2 ),
+                                            fixture( input3 ),
+                                            fixture( input4 ),
+                                            fixture( input5 ),
+                                            fixture( input6 ) ),
+                             Arrays.asList( output1, output2 ) );
+  }
+
+  @Test
   public void processSuccessfulServiceViaContributeToStingModel()
     throws Exception
   {
