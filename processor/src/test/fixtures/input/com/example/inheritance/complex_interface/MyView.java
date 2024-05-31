@@ -9,7 +9,7 @@ import react4j.annotations.View;
 abstract class MyView
   implements LeafInterface
 {
-  @Input
+  @Input( immutable = true, source = Input.Source.CONTEXT )
   abstract boolean field1InLeaf();
 
   @Input

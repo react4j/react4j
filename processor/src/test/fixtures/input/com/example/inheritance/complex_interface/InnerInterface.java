@@ -5,7 +5,7 @@ import react4j.annotations.Input;
 interface InnerInterface
   extends RootInterface
 {
-  @Input
+  @Input(immutable = true, source = Input.Source.CONTEXT)
   boolean zzField1InInnerInterface();
 
   @Input

@@ -29,8 +29,24 @@ abstract class React4j_MyView extends MyView {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  private final boolean $$react4j_immutable_input$$_zzField1InRootInterface;
+
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  private final boolean $$react4j_immutable_input$$_zzField1InInnerInterface;
+
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  private final boolean $$react4j_immutable_input$$_zzField1InLeafInterface;
+
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  private final boolean $$react4j_immutable_input$$_field1InLeaf;
+
   React4j_MyView(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
+    $$react4j_immutable_input$$_zzField1InRootInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InRootInterface ).asBoolean();
+    $$react4j_immutable_input$$_zzField1InInnerInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InInnerInterface ).asBoolean();
+    $$react4j_immutable_input$$_zzField1InLeafInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InLeafInterface ).asBoolean();
+    $$react4j_immutable_input$$_field1InLeaf = $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
   }
 
   @Nonnull
@@ -43,18 +59,8 @@ abstract class React4j_MyView extends MyView {
   }
 
   @Override
-  public boolean zzField1InRootInterface() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InRootInterface ).asBoolean();
-  }
-
-  @Override
   public boolean aaField2InRootInterface() {
     return $$react4j$$_nativeView.inputs().getAsAny( Inputs.aaField2InRootInterface ).asBoolean();
-  }
-
-  @Override
-  public boolean zzField1InInnerInterface() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InInnerInterface ).asBoolean();
   }
 
   @Override
@@ -63,18 +69,8 @@ abstract class React4j_MyView extends MyView {
   }
 
   @Override
-  public boolean zzField1InLeafInterface() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InLeafInterface ).asBoolean();
-  }
-
-  @Override
   public boolean aaField2InLeafInterface() {
     return $$react4j$$_nativeView.inputs().getAsAny( Inputs.aaField2InLeafInterface ).asBoolean();
-  }
-
-  @Override
-  boolean field1InLeaf() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
   }
 
   @Override
@@ -82,29 +78,37 @@ abstract class React4j_MyView extends MyView {
     return $$react4j$$_nativeView.inputs().getAsAny( Inputs.field2InLeaf ).asBoolean();
   }
 
+  @Override
+  public boolean zzField1InRootInterface() {
+    return $$react4j_immutable_input$$_zzField1InRootInterface;
+  }
+
+  @Override
+  public boolean zzField1InInnerInterface() {
+    return $$react4j_immutable_input$$_zzField1InInnerInterface;
+  }
+
+  @Override
+  public boolean zzField1InLeafInterface() {
+    return $$react4j_immutable_input$$_zzField1InLeafInterface;
+  }
+
+  @Override
+  boolean field1InLeaf() {
+    return $$react4j_immutable_input$$_field1InLeaf;
+  }
+
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
-    if ( !Js.isTripleEqual( inputs.get( Inputs.zzField1InRootInterface ), nextInputs.get( Inputs.zzField1InRootInterface ) ) ) {
-      return true;
-    }
     if ( !Js.isTripleEqual( inputs.get( Inputs.aaField2InRootInterface ), nextInputs.get( Inputs.aaField2InRootInterface ) ) ) {
-      return true;
-    }
-    if ( !Js.isTripleEqual( inputs.get( Inputs.zzField1InInnerInterface ), nextInputs.get( Inputs.zzField1InInnerInterface ) ) ) {
       return true;
     }
     if ( !Js.isTripleEqual( inputs.get( Inputs.aaField2InInnerInterface ), nextInputs.get( Inputs.aaField2InInnerInterface ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( inputs.get( Inputs.zzField1InLeafInterface ), nextInputs.get( Inputs.zzField1InLeafInterface ) ) ) {
-      return true;
-    }
     if ( !Js.isTripleEqual( inputs.get( Inputs.aaField2InLeafInterface ), nextInputs.get( Inputs.aaField2InLeafInterface ) ) ) {
-      return true;
-    }
-    if ( !Js.isTripleEqual( inputs.get( Inputs.field1InLeaf ), nextInputs.get( Inputs.field1InLeaf ) ) ) {
       return true;
     }
     if ( !Js.isTripleEqual( inputs.get( Inputs.field2InLeaf ), nextInputs.get( Inputs.field2InLeaf ) ) ) {
@@ -129,21 +133,21 @@ abstract class React4j_MyView extends MyView {
   }
 
   static final class Inputs {
-    static final String zzField1InRootInterface = React.shouldMinimizeInputKeys() ? "a" : "zzField1InRootInterface";
+    static final String aaField2InRootInterface = React.shouldMinimizeInputKeys() ? "a" : "aaField2InRootInterface";
 
-    static final String aaField2InRootInterface = React.shouldMinimizeInputKeys() ? "b" : "aaField2InRootInterface";
+    static final String aaField2InInnerInterface = React.shouldMinimizeInputKeys() ? "b" : "aaField2InInnerInterface";
 
-    static final String zzField1InInnerInterface = React.shouldMinimizeInputKeys() ? "c" : "zzField1InInnerInterface";
+    static final String aaField2InLeafInterface = React.shouldMinimizeInputKeys() ? "c" : "aaField2InLeafInterface";
 
-    static final String aaField2InInnerInterface = React.shouldMinimizeInputKeys() ? "d" : "aaField2InInnerInterface";
+    static final String field2InLeaf = React.shouldMinimizeInputKeys() ? "d" : "field2InLeaf";
 
-    static final String zzField1InLeafInterface = React.shouldMinimizeInputKeys() ? "e" : "zzField1InLeafInterface";
+    static final String zzField1InRootInterface = React.shouldMinimizeInputKeys() ? "e" : "zzField1InRootInterface";
 
-    static final String aaField2InLeafInterface = React.shouldMinimizeInputKeys() ? "f" : "aaField2InLeafInterface";
+    static final String zzField1InInnerInterface = React.shouldMinimizeInputKeys() ? "f" : "zzField1InInnerInterface";
 
-    static final String field1InLeaf = React.shouldMinimizeInputKeys() ? "g" : "field1InLeaf";
+    static final String zzField1InLeafInterface = React.shouldMinimizeInputKeys() ? "g" : "zzField1InLeafInterface";
 
-    static final String field2InLeaf = React.shouldMinimizeInputKeys() ? "h" : "field2InLeaf";
+    static final String field1InLeaf = React.shouldMinimizeInputKeys() ? "h" : "field1InLeaf";
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
