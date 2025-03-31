@@ -451,10 +451,11 @@ final class BuilderGenerator
   @Nonnull
   private static MethodSpec buildBuildStepImpl( @Nonnull final ViewDescriptor descriptor )
   {
-    final MethodSpec.Builder method = MethodSpec
-      .methodBuilder( "build" )
-      .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
-      .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( "build" )
+        .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
     return buildBuildMethodContent( descriptor, method, "_element" );
   }
 
