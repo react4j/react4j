@@ -734,7 +734,9 @@ final class BuilderGenerator
     }
     builder.addField( field.build() );
 
-    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isContextSource ) )
+    final List<InputDescriptor> contextInputs =
+      descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).toList();
+    if ( !contextInputs.isEmpty() )
     {
       builder.addMethod( buildInternalBuildStepImpl( descriptor ) );
       builder.addMethod( buildContextBuildStepImpl( descriptor ) );
