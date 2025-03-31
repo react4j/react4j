@@ -685,7 +685,7 @@ final class BuilderGenerator
     final List<InputDescriptor> inputsWithDefaults = descriptor.getInputs()
       .stream()
       .filter( p -> p.hasDefaultField() || p.hasDefaultMethod() )
-      .collect( Collectors.toList() );
+      .toList();
     if ( !inputsWithDefaults.isEmpty() )
     {
       final MethodSpec.Builder method = MethodSpec.constructorBuilder();
