@@ -31,6 +31,7 @@ final class ArezComponentInputViewBuilder {
   }
 
   private static class Builder implements Step1, Step2 {
+    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_ArezComponentInputView.Factory.TYPE );
 
     @Override

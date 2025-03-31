@@ -51,6 +51,7 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
   }
 
   private static class Builder implements Step1, Step2, Step3 {
+    @Nonnull
     private final ReactElement _element;
 
     Builder() {

@@ -26,6 +26,7 @@ final class OverrideLifecycleMethodsComponentBuilder {
   }
 
   private static class Builder implements Step1 {
+    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_OverrideLifecycleMethodsComponent.Factory.TYPE );
 
     @Nonnull

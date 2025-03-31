@@ -725,7 +725,9 @@ final class BuilderGenerator
     }
 
     final FieldSpec.Builder field =
-      FieldSpec.builder( REACT_ELEMENT_CLASSNAME, "_element", Modifier.PRIVATE, Modifier.FINAL );
+      FieldSpec
+        .builder( REACT_ELEMENT_CLASSNAME, "_element", Modifier.PRIVATE, Modifier.FINAL )
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
     if ( inputsWithDefaults.isEmpty() )
     {
       field.initializer( "$T.createViewElement( $T.Factory.TYPE )",

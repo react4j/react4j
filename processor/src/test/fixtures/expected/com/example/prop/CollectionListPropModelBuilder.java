@@ -27,6 +27,7 @@ final class CollectionListPropModelBuilder {
   }
 
   private static class Builder implements Step1 {
+    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_CollectionListPropModel.Factory.TYPE );
 
     @Override

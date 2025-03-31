@@ -37,6 +37,7 @@ final class MultiPropComponent3Builder {
   }
 
   private static class Builder implements Step1, Step2, Step3 {
+    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_MultiPropComponent3.Factory.TYPE );
 
     @Override

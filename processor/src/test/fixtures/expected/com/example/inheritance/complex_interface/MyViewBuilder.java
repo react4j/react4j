@@ -62,6 +62,7 @@ final class MyViewBuilder {
   }
 
   private static class Builder implements Step1, Step2, Step3, Step4 {
+    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_MyView.Factory.TYPE );
 
     @Override

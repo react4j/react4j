@@ -26,6 +26,7 @@ final class BasicScheduleRenderComponentBuilder {
   }
 
   private static class Builder implements Step1 {
+    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_BasicScheduleRenderComponent.Factory.TYPE );
 
     @Nonnull

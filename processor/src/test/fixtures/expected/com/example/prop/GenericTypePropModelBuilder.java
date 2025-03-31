@@ -27,6 +27,7 @@ final class GenericTypePropModelBuilder {
   }
 
   private static class Builder<T> implements Step1<T> {
+    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_GenericTypePropModel.Factory.TYPE );
 
     @Override

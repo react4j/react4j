@@ -27,6 +27,7 @@ final class ChildInputViewBuilder {
   }
 
   private static class Builder implements Step1 {
+    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_ChildInputView.Factory.TYPE );
 
     @Override

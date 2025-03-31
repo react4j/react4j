@@ -36,6 +36,7 @@ final class NullabilityPropsComponentBuilder {
   }
 
   private static class Builder implements Step1, Step2 {
+    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_NullabilityPropsComponent.Factory.TYPE );
 
     @Override
