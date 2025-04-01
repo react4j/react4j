@@ -64,6 +64,14 @@ final class MyViewBuilder {
   private static class Builder implements Step1, Step2, Step3, Step4 {
     @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_MyView.Factory.TYPE );
+    @Nonnull
+    private final Context.ConsumerRenderFunction<Boolean> _$context_zzField1InRootInterface=v0 -> $context_zzField1InRootInterface( v0 );
+    @Nonnull
+    private final Context.ConsumerRenderFunction<Boolean> _$context_zzField1InInnerInterface = v1 -> $context_zzField1InInnerInterface( v1 );
+    @Nonnull
+    private final Context.ConsumerRenderFunction<Boolean> _$contex_zzField1InLeafInterface = v2 -> $context_zzField1InLeafInterface( v2 );
+    @Nonnull
+    private final Context.ConsumerRenderFunction<Boolean> _$context_field1InLeaf = v3 -> build( _element.input( React4j_MyView.Inputs.field1InLeaf, v3 ).dup() );
 
     @Override
     @Nonnull
@@ -102,7 +110,28 @@ final class MyViewBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return ContextHolder.CONTEXT_zzField1InRootInterface.consumer().render( v0 -> ContextHolder.CONTEXT_zzField1InInnerInterface.consumer().render( v1 -> ContextHolder.CONTEXT_zzField1InLeafInterface.consumer().render( v2 -> ContextHolder.CONTEXT_field1InLeaf.consumer().render( v3 -> build( _element.input( React4j_MyView.Inputs.zzField1InRootInterface, v0 ).input( React4j_MyView.Inputs.zzField1InInnerInterface, v1 ).input( React4j_MyView.Inputs.zzField1InLeafInterface, v2 ).input( React4j_MyView.Inputs.field1InLeaf, v3 ).dup() ) ) ) ) );
+      return ContextHolder.CONTEXT_zzField1InRootInterface.consumer().render( _$context_zzField1InRootInterface );
+    }
+
+    @Nonnull
+    private ReactNode $context_zzField1InRootInterface( final Boolean v0 )
+    {
+      _element.input( React4j_MyView.Inputs.zzField1InRootInterface, v0 );
+      return ContextHolder.CONTEXT_zzField1InInnerInterface.consumer().render( _$context_zzField1InInnerInterface );
+    }
+
+    @Nonnull
+    private ReactNode $context_zzField1InInnerInterface(final Boolean v1)
+    {
+      _element.input( React4j_MyView.Inputs.zzField1InInnerInterface, v1 );
+      return ContextHolder.CONTEXT_zzField1InLeafInterface.consumer().render( _$contex_zzField1InLeafInterface );
+    }
+
+    @Nonnull
+    private ReactNode $context_zzField1InLeafInterface(final Boolean v2)
+    {
+      _element.input( React4j_MyView.Inputs.zzField1InLeafInterface, v2 );
+      return ContextHolder.CONTEXT_field1InLeaf.consumer().render( _$context_field1InLeaf );
     }
   }
 }
