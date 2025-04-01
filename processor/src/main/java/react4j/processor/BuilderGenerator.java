@@ -31,6 +31,7 @@ import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.SuppressWarningsUtil;
 
+@SuppressWarnings( "DuplicatedCode" )
 final class BuilderGenerator
 {
   @Nonnull
