@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -43,6 +44,9 @@ final class BuilderGenerator
   @Nonnull
   private static final ClassName CONTEXT_CLASSNAME = ClassName.get( "react4j", "Context" );
   @Nonnull
+  private static final ClassName CONTEXT_RENDER_FUNCTION_CLASSNAME =
+    ClassName.get( "react4j", "Context", "ConsumerRenderFunction" );
+  @Nonnull
   private static final ClassName CONTEXTS_CLASSNAME = ClassName.get( "react4j", "Contexts" );
   @Nonnull
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
@@ -55,6 +59,10 @@ final class BuilderGenerator
   @Nonnull
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
+  @Nonnull
+  private static final String CONTEXT_METHOD_PREFIX = "$context_";
+  @Nonnull
+  private static final String CONTEXT_FIELD_PREFIX = "_" + CONTEXT_METHOD_PREFIX;
   @Nonnull
   private static final String CONTEXT_INPUT_PREFIX = "CONTEXT_";
   @Nonnull
@@ -475,49 +483,69 @@ final class BuilderGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildContextBuildStepImpl( @Nonnull final ViewDescriptor descriptor )
+  private static FieldSpec buildContextBuildField( @Nonnull final InputDescriptor current )
   {
-    final List<InputDescriptor> contextInputs =
-      descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).collect( Collectors.toList() );
+    final ParameterizedTypeName typeName =
+      ParameterizedTypeName.get( CONTEXT_RENDER_FUNCTION_CLASSNAME,
+                                 TypeName.get( current.getMethod().getReturnType() ).box() );
+    return
+      FieldSpec
+        .builder( typeName, CONTEXT_FIELD_PREFIX + current.getName(), Modifier.PRIVATE, Modifier.FINAL )
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+        .initializer( "this::$N", CONTEXT_METHOD_PREFIX + current.getName() )
+        .build();
+  }
 
-    final int count = contextInputs.size();
-
-    final StringBuilder sb = new StringBuilder();
-    final List<Object> args = new ArrayList<>();
-
-    sb.append( "return " );
-
-    for ( int i = 0; i < count; i++ )
+  @Nonnull
+  private static MethodSpec buildContextBuildStepImpl( @Nonnull final ViewDescriptor descriptor,
+                                                       @Nonnull final InputDescriptor current,
+                                                       @Nullable final InputDescriptor next )
+  {
+    final MethodSpec.Builder method =
+      MethodSpec
+        .methodBuilder( CONTEXT_METHOD_PREFIX + current.getName() )
+        .addModifiers( Modifier.PRIVATE )
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+        .returns( REACT_NODE_CLASSNAME )
+        .addParameter( ParameterSpec.builder( TypeName.get( current.getMethod().getReturnType() ),
+                                              current.getName(),
+                                              Modifier.FINAL )
+                         .build() )
+        .addStatement( "_element.input( $T.Inputs.$N, $N )",
+                       descriptor.getEnhancedClassName(),
+                       current.getConstantName(),
+                       current.getName() );
+    if ( null == next )
     {
-      sb.append( "$T.$N.consumer().render( $N -> " );
-      args.add( ClassName.bestGuess( CONTEXT_HOLDER ) );
-      args.add( CONTEXT_INPUT_PREFIX + contextInputs.get( i ).getConstantName() );
-      args.add( "v" + i );
+      method.addStatement( "return build( _element.dup() )" );
+    }
+    else
+    {
+      method.addStatement( "return $T.$N.consumer().render( $N )",
+                           ClassName.bestGuess( CONTEXT_HOLDER ),
+                           CONTEXT_INPUT_PREFIX + next.getConstantName(),
+                           CONTEXT_FIELD_PREFIX + next.getName() );
     }
 
-    sb.append( "build( _element" );
+    return
+      method
+        .build();
+  }
 
-    for ( int i = 0; i < count; i++ )
-    {
-      sb.append( ".input( $T.Inputs.$N, $N )" );
-      args.add( descriptor.getEnhancedClassName() );
-      args.add( contextInputs.get( i ).getConstantName() );
-      args.add( "v" + i );
-    }
-
-    sb.append( ".dup() )" );
-
-    for ( int i = 0; i < count; i++ )
-    {
-      sb.append( " )" );
-    }
-    return MethodSpec
-      .methodBuilder( "build" )
-      .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
-      .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
-      .addStatement( sb.toString(), args.toArray() )
-      .returns( REACT_NODE_CLASSNAME )
-      .build();
+  @Nonnull
+  private static MethodSpec buildContextBuildStepImpl( @Nonnull final InputDescriptor firstContextInput )
+  {
+    return
+      MethodSpec
+        .methodBuilder( "build" )
+        .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
+        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+        .returns( REACT_NODE_CLASSNAME )
+        .addStatement( "return $T.$N.consumer().render( $N )",
+                       ClassName.bestGuess( CONTEXT_HOLDER ),
+                       CONTEXT_INPUT_PREFIX + firstContextInput.getConstantName(),
+                       CONTEXT_FIELD_PREFIX + firstContextInput.getName() )
+        .build();
   }
 
   @Nonnull
@@ -756,7 +784,15 @@ final class BuilderGenerator
     if ( !contextInputs.isEmpty() )
     {
       builder.addMethod( buildInternalBuildStepImpl( descriptor ) );
-      builder.addMethod( buildContextBuildStepImpl( descriptor ) );
+      builder.addMethod( buildContextBuildStepImpl( contextInputs.get( 0 ) ) );
+      final int size = contextInputs.size();
+      for ( int i = 0; i < size; i++ )
+      {
+        final InputDescriptor current = contextInputs.get( i );
+        final InputDescriptor next = i == size - 1 ? null : contextInputs.get( i + 1 );
+        builder.addField( buildContextBuildField( current ) );
+        builder.addMethod( buildContextBuildStepImpl( descriptor, current, next ) );
+      }
     }
     else
     {

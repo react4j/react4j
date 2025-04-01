@@ -126,7 +126,7 @@ final class MyViewBuilder {
     @Nonnull
     private ReactNode $context_zzField1InInnerInterface(final boolean zzField1InInnerInterface) {
       _element.input( React4j_MyView.Inputs.zzField1InInnerInterface, zzField1InInnerInterface );
-      return ContextHolder.CONTEXT_zzField1InLeafInterface.consumer().render( _$contex_zzField1InLeafInterface );
+      return ContextHolder.CONTEXT_zzField1InLeafInterface.consumer().render( _$context_zzField1InLeafInterface );
     }
 
     @Nonnull

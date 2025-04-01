@@ -70,7 +70,19 @@ final class MyViewBuilder {
 
     @Nonnull
     public final ReactNode build() {
-      return ContextHolder.CONTEXT_dateRange.consumer().render( v0 -> ContextHolder.CONTEXT_field1InLeaf.consumer().render( v1 -> build( _element.input( React4j_MyView.Inputs.dateRange, v0 ).input( React4j_MyView.Inputs.field1InLeaf, v1 ).dup() ) ) );
+      return ContextHolder.CONTEXT_dateRange.consumer().render( _$context_dateRange );
+    }
+
+    @Nonnull
+    private ReactNode $context_dateRange(final Date dateRange) {
+      _element.input( React4j_MyView.Inputs.dateRange, dateRange );
+      return ContextHolder.CONTEXT_field1InLeaf.consumer().render( _$context_field1InLeaf );
+    }
+
+    @Nonnull
+    private ReactNode $context_field1InLeaf(final boolean field1InLeaf) {
+      _element.input( React4j_MyView.Inputs.field1InLeaf, field1InLeaf );
+      return build( _element.dup() );
     }
   }
 }
