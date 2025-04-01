@@ -139,9 +139,8 @@ final class MyViewBuilder {
     }
 
     @Nonnull
-    private ReactNode $context_field1InLeaf(final Boolean v3)
-    {
-      _element.input( React4j_MyView.Inputs.field1InLeaf, v3 );
+    private ReactNode $context_field1InLeaf(final boolean field1InLeaf) {
+      _element.input( React4j_MyView.Inputs.field1InLeaf, field1InLeaf );
       return build( _element.dup() );
     }
   }
