@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.proton` artifacts to version `0.65`.
+* Update the `org.realityforge.javax.annotation` artifact to version `1.1.1`.
+
 ### [v0.197](https://github.com/react4j/react4j/tree/v0.197) (2025-04-01) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.196...v0.197)
 
 Changes in this release:
