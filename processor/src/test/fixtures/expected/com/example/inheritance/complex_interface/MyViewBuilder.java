@@ -64,14 +64,18 @@ final class MyViewBuilder {
   private static class Builder implements Step1, Step2, Step3, Step4 {
     @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_MyView.Factory.TYPE );
+
     @Nonnull
-    private final Context.ConsumerRenderFunction<Boolean> _$context_zzField1InRootInterface=v0 -> $context_zzField1InRootInterface( v0 );
+    private final Context.ConsumerRenderFunction<Boolean> _$context_zzField1InRootInterface = this::$context_zzField1InRootInterface;
+
     @Nonnull
-    private final Context.ConsumerRenderFunction<Boolean> _$context_zzField1InInnerInterface = v1 -> $context_zzField1InInnerInterface( v1 );
+    private final Context.ConsumerRenderFunction<Boolean> _$context_zzField1InInnerInterface = this::$context_zzField1InInnerInterface;
+
     @Nonnull
-    private final Context.ConsumerRenderFunction<Boolean> _$contex_zzField1InLeafInterface = v2 -> $context_zzField1InLeafInterface( v2 );
+    private final Context.ConsumerRenderFunction<Boolean> _$context_zzField1InLeafInterface = this::$context_zzField1InLeafInterface;
+
     @Nonnull
-    private final Context.ConsumerRenderFunction<Boolean> _$context_field1InLeaf = v3 -> $context_field1InLeaf( v3 );
+    private final Context.ConsumerRenderFunction<Boolean> _$context_field1InLeaf = this::$context_field1InLeaf;
 
     @Override
     @Nonnull
