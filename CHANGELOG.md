@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.197](https://github.com/react4j/react4j/tree/v0.197) (2025-04-01) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.196...v0.197)
+
+Changes in this release:
 
 * Update the `org.realityforge.arez` artifacts to version `0.219`.
 * Update generator so that the lambdas passed to Context components are cached.
