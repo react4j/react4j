@@ -658,7 +658,7 @@ final class BuilderGenerator
     builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
 
     final List<InputDescriptor> contextInputs =
-      descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).collect( Collectors.toList() );
+      descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).toList();
 
     for ( final InputDescriptor input : contextInputs )
     {
