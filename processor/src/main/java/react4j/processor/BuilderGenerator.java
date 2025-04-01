@@ -540,7 +540,7 @@ final class BuilderGenerator
                                                      @Nonnull final String elementName )
   {
     final List<InputDescriptor> syntheticInputs =
-      descriptor.getInputs().stream().filter( InputDescriptor::isImmutable ).collect( Collectors.toList() );
+      descriptor.getInputs().stream().filter( InputDescriptor::isImmutable ).toList();
     if ( syntheticInputs.size() > 1 )
     {
       method.addStatement( "final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName );
