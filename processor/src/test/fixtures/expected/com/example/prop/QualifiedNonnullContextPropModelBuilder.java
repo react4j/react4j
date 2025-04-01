@@ -40,13 +40,22 @@ final class QualifiedNonnullContextPropModelBuilder {
     private final ReactElement _element = ReactElement.createViewElement( React4j_QualifiedNonnullContextPropModel.Factory.TYPE );
 
     @Nonnull
+    private final Context.ConsumerRenderFunction<String> _$context_myProp = this::$context_myProp;
+
+    @Nonnull
     private ReactNode build(@Nonnull final ReactElement element) {
       return element;
     }
 
     @Nonnull
     public final ReactNode build() {
-      return ContextHolder.CONTEXT_myProp.consumer().render( v0 -> build( _element.input( React4j_QualifiedNonnullContextPropModel.Inputs.myProp, v0 ).dup() ) );
+      return ContextHolder.CONTEXT_myProp.consumer().render( _$context_myProp );
+    }
+
+    @Nonnull
+    private ReactNode $context_myProp(final String myProp) {
+      _element.input( React4j_QualifiedNonnullContextPropModel.Inputs.myProp, myProp );
+      return build( _element.dup() );
     }
   }
 }

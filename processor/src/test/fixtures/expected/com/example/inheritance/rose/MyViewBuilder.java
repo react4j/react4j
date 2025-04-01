@@ -47,6 +47,12 @@ final class MyViewBuilder {
     @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_MyView.Factory.TYPE );
 
+    @Nonnull
+    private final Context.ConsumerRenderFunction<Date> _$context_dateRange = this::$context_dateRange;
+
+    @Nonnull
+    private final Context.ConsumerRenderFunction<Boolean> _$context_field1InLeaf = this::$context_field1InLeaf;
+
     @Override
     @Nonnull
     public final ReactNode field2InLeaf(final boolean field2InLeaf) {
