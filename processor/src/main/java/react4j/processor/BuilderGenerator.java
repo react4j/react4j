@@ -670,7 +670,7 @@ final class BuilderGenerator
                   Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
       final String qualifier = input.getQualifier();
-      if ( "".equals( qualifier ) )
+      if ( qualifier.isEmpty() )
       {
         field.initializer( "$T.get( $T.class )", CONTEXTS_CLASSNAME, type );
       }
