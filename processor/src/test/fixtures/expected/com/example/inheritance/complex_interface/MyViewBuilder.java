@@ -118,23 +118,20 @@ final class MyViewBuilder {
     }
 
     @Nonnull
-    private ReactNode $context_zzField1InRootInterface( final Boolean v0 )
-    {
-      _element.input( React4j_MyView.Inputs.zzField1InRootInterface, v0 );
+    private ReactNode $context_zzField1InRootInterface(final boolean zzField1InRootInterface) {
+      _element.input( React4j_MyView.Inputs.zzField1InRootInterface, zzField1InRootInterface );
       return ContextHolder.CONTEXT_zzField1InInnerInterface.consumer().render( _$context_zzField1InInnerInterface );
     }
 
     @Nonnull
-    private ReactNode $context_zzField1InInnerInterface(final Boolean v1)
-    {
-      _element.input( React4j_MyView.Inputs.zzField1InInnerInterface, v1 );
+    private ReactNode $context_zzField1InInnerInterface(final boolean zzField1InInnerInterface) {
+      _element.input( React4j_MyView.Inputs.zzField1InInnerInterface, zzField1InInnerInterface );
       return ContextHolder.CONTEXT_zzField1InLeafInterface.consumer().render( _$contex_zzField1InLeafInterface );
     }
 
     @Nonnull
-    private ReactNode $context_zzField1InLeafInterface(final Boolean v2)
-    {
-      _element.input( React4j_MyView.Inputs.zzField1InLeafInterface, v2 );
+    private ReactNode $context_zzField1InLeafInterface(final boolean zzField1InLeafInterface) {
+      _element.input( React4j_MyView.Inputs.zzField1InLeafInterface, zzField1InLeafInterface );
       return ContextHolder.CONTEXT_field1InLeaf.consumer().render( _$context_field1InLeaf );
     }
 
