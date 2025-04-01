@@ -54,6 +54,10 @@ final class BuilderGenerator
   @Nonnull
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
+  @Nonnull
+  private static final String CONTEXT_INPUT_PREFIX = "CONTEXT_";
+  @Nonnull
+  private static final String CONTEXT_HOLDER = "ContextHolder";
 
   private BuilderGenerator()
   {
@@ -485,8 +489,8 @@ final class BuilderGenerator
     for ( int i = 0; i < count; i++ )
     {
       sb.append( "$T.$N.consumer().render( $N -> " );
-      args.add( ClassName.bestGuess( "ContextHolder" ) );
-      args.add( "CONTEXT_" + contextInputs.get( i ).getConstantName() );
+      args.add( ClassName.bestGuess( CONTEXT_HOLDER ) );
+      args.add( CONTEXT_INPUT_PREFIX + contextInputs.get( i ).getConstantName() );
       args.add( "v" + i );
     }
 
@@ -646,7 +650,7 @@ final class BuilderGenerator
   @Nonnull
   private static TypeSpec buildContextHolder( @Nonnull final ViewDescriptor descriptor )
   {
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( "ContextHolder" );
+    final TypeSpec.Builder builder = TypeSpec.classBuilder( CONTEXT_HOLDER );
     GeneratorUtil.copyTypeParameters( descriptor.getElement(), builder );
 
     builder.addModifiers( Modifier.PRIVATE, Modifier.STATIC );
@@ -661,7 +665,7 @@ final class BuilderGenerator
       final TypeName type = TypeName.get( input.getMethodType().getReturnType() ).box();
       final FieldSpec.Builder field = FieldSpec
         .builder( ParameterizedTypeName.get( CONTEXT_CLASSNAME, type ),
-                  "CONTEXT_" + input.getConstantName(),
+                  CONTEXT_INPUT_PREFIX + input.getConstantName(),
                   Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
       final String qualifier = input.getQualifier();
