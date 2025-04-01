@@ -71,7 +71,7 @@ final class MyViewBuilder {
     @Nonnull
     private final Context.ConsumerRenderFunction<Boolean> _$contex_zzField1InLeafInterface = v2 -> $context_zzField1InLeafInterface( v2 );
     @Nonnull
-    private final Context.ConsumerRenderFunction<Boolean> _$context_field1InLeaf = v3 -> build( _element.input( React4j_MyView.Inputs.field1InLeaf, v3 ).dup() );
+    private final Context.ConsumerRenderFunction<Boolean> _$context_field1InLeaf = v3 -> $context_field1InLeaf( v3 );
 
     @Override
     @Nonnull
@@ -132,6 +132,13 @@ final class MyViewBuilder {
     {
       _element.input( React4j_MyView.Inputs.zzField1InLeafInterface, v2 );
       return ContextHolder.CONTEXT_field1InLeaf.consumer().render( _$context_field1InLeaf );
+    }
+
+    @Nonnull
+    private ReactNode $context_field1InLeaf(final Boolean v3)
+    {
+      _element.input( React4j_MyView.Inputs.field1InLeaf, v3 );
+      return build( _element.dup() );
     }
   }
 }
