@@ -796,7 +796,7 @@ final class BuilderGenerator
 
     Step optionalInputStep = null;
     final List<InputDescriptor> inputs =
-      descriptor.getInputs().stream().filter( p -> !p.isContextSource() ).collect( Collectors.toList() );
+      descriptor.getInputs().stream().filter( p -> !p.isContextSource() ).toList();
 
     final int inputsSize = inputs.size();
 
