@@ -33,15 +33,25 @@ import org.realityforge.proton.SuppressWarningsUtil;
 
 final class BuilderGenerator
 {
+  @Nonnull
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "akasha.lang", "JsArray" );
+  @Nonnull
   private static final ClassName IDENTIFIABLE_CLASSNAME = ClassName.get( "arez.component", "Identifiable" );
+  @Nonnull
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
+  @Nonnull
   private static final ClassName CONTEXT_CLASSNAME = ClassName.get( "react4j", "Context" );
+  @Nonnull
   private static final ClassName CONTEXTS_CLASSNAME = ClassName.get( "react4j", "Contexts" );
+  @Nonnull
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
+  @Nonnull
   private static final ClassName KEYED_CLASSNAME = ClassName.get( "react4j", "Keyed" );
+  @Nonnull
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
+  @Nonnull
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
+  @Nonnull
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
 
