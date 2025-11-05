@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Update the `org.realityforge.sting` artifacts to version `0.28`.
+* Update the `org.realityforge.sting` artifacts to version `0.29`.
 * Update the `org.realityforge.proton` artifacts to version `0.65`.
 * Update the `org.realityforge.javax.annotation` artifact to version `1.1.1`.
 
