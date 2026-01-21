@@ -30,21 +30,33 @@ final class MyViewBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 aaField2InRootInterface(boolean aaField2InRootInterface);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step3 aaField2InInnerInterface(boolean aaField2InInnerInterface);
   }
 
   public interface Step3 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step4 aaField2InLeafInterface(boolean aaField2InLeafInterface);
   }
 
   public interface Step4 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode field2InLeaf(boolean field2InLeaf);
   }
 
@@ -83,6 +95,9 @@ final class MyViewBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 aaField2InRootInterface(final boolean aaField2InRootInterface) {
       _element.input( React4j_MyView.Inputs.aaField2InRootInterface, aaField2InRootInterface );
       return this;
@@ -90,6 +105,9 @@ final class MyViewBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step3 aaField2InInnerInterface(final boolean aaField2InInnerInterface) {
       _element.input( React4j_MyView.Inputs.aaField2InInnerInterface, aaField2InInnerInterface );
       return this;
@@ -97,6 +115,9 @@ final class MyViewBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step4 aaField2InLeafInterface(final boolean aaField2InLeafInterface) {
       _element.input( React4j_MyView.Inputs.aaField2InLeafInterface, aaField2InLeafInterface );
       return this;
@@ -104,6 +125,9 @@ final class MyViewBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode field2InLeaf(final boolean field2InLeaf) {
       _element.input( React4j_MyView.Inputs.field2InLeaf, field2InLeaf );
       return build();
@@ -117,6 +141,9 @@ final class MyViewBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return ContextHolder.CONTEXT_zzField1InRootInterface.consumer().render( _$context_zzField1InRootInterface );
     }

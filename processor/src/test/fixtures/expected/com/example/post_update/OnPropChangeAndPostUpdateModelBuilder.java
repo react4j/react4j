@@ -26,6 +26,9 @@ final class OnPropChangeAndPostUpdateModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(int myProp);
   }
 
@@ -35,6 +38,9 @@ final class OnPropChangeAndPostUpdateModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final int myProp) {
       _element.input( React4j_OnPropChangeAndPostUpdateModel.Inputs.myProp, myProp );
       return build();

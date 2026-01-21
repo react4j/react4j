@@ -27,6 +27,9 @@ final class NonnullOnPropChangeBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(@Nonnull String myProp);
   }
 
@@ -36,6 +39,9 @@ final class NonnullOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(@Nonnull final String myProp) {
       Objects.requireNonNull( myProp );
       _element.input( React4j_NonnullOnPropChange.Inputs.myProp, myProp );

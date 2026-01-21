@@ -26,6 +26,9 @@ final class InputAndMemoizeComponentBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode value(String value);
   }
 
@@ -35,6 +38,9 @@ final class InputAndMemoizeComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode value(final String value) {
       _element.input( React4j_InputAndMemoizeComponent.Inputs.value, value );
       return build();

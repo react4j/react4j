@@ -27,6 +27,9 @@ final class OtherTypeOnPropChangeBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(BitSet myProp);
   }
 
@@ -36,6 +39,9 @@ final class OtherTypeOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final BitSet myProp) {
       _element.input( React4j_OtherTypeOnPropChange.Inputs.myProp, myProp );
       return build();

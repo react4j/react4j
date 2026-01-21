@@ -27,6 +27,9 @@ final class CollectionHashSetPropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(HashSet<String> myProp);
   }
 
@@ -36,6 +39,9 @@ final class CollectionHashSetPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final HashSet<String> myProp) {
       _element.input( React4j_CollectionHashSetPropModel.Inputs.myProp, myProp );
       return build();

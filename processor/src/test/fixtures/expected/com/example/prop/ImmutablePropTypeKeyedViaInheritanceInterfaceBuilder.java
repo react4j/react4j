@@ -29,6 +29,9 @@ final class ImmutablePropTypeKeyedViaInheritanceInterfaceBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp);
   }
 
@@ -38,6 +41,9 @@ final class ImmutablePropTypeKeyedViaInheritanceInterfaceBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(
         final ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedViaInheritanceInterface_4cd25d5b" : ImmutablePropTypeKeyedViaInheritanceInterface.class.getName() ) );

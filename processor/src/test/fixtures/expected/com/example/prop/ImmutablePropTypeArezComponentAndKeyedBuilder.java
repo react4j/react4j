@@ -28,6 +28,9 @@ final class ImmutablePropTypeArezComponentAndKeyedBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeArezComponentAndKeyed.MyComponent myProp);
   }
 
@@ -37,6 +40,9 @@ final class ImmutablePropTypeArezComponentAndKeyedBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final ImmutablePropTypeArezComponentAndKeyed.MyComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezComponentAndKeyed_ad8da370" : ImmutablePropTypeArezComponentAndKeyed.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeArezComponentAndKeyed.Inputs.myProp, myProp );

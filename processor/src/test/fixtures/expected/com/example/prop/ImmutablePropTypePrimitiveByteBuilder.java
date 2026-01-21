@@ -27,6 +27,9 @@ final class ImmutablePropTypePrimitiveByteBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(byte myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypePrimitiveByteBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final byte myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveByte_90aa81dc" : ImmutablePropTypePrimitiveByte.class.getName() ) );
       _element.input( React4j_ImmutablePropTypePrimitiveByte.Inputs.myProp, myProp );

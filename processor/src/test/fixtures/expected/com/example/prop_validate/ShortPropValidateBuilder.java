@@ -26,6 +26,9 @@ final class ShortPropValidateBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(short myProp);
   }
 
@@ -35,6 +38,9 @@ final class ShortPropValidateBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final short myProp) {
       _element.input( React4j_ShortPropValidate.Inputs.myProp, myProp );
       return build();

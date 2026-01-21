@@ -33,6 +33,9 @@ final class RootPackageCompleteComponentBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(int myProp);
 
     @Nonnull
@@ -54,6 +57,9 @@ final class RootPackageCompleteComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final int myProp) {
       _element.input( React4j_RootPackageCompleteComponent.Inputs.myProp, myProp );
       return build();

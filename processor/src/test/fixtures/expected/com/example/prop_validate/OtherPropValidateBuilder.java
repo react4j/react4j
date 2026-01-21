@@ -27,6 +27,9 @@ final class OtherPropValidateBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(BitSet myProp);
   }
 
@@ -36,6 +39,9 @@ final class OtherPropValidateBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final BitSet myProp) {
       _element.input( React4j_OtherPropValidate.Inputs.myProp, myProp );
       return build();

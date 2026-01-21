@@ -27,6 +27,9 @@ final class ImmutablePropTypeStringBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(String myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeStringBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final String myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeString_e57e44c1" : ImmutablePropTypeString.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeString.Inputs.myProp, myProp );

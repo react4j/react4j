@@ -27,6 +27,9 @@ final class ImmutablePropTypeBoxedByteBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Byte myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeBoxedByteBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Byte myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedByte_72d659be" : ImmutablePropTypeBoxedByte.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeBoxedByte.Inputs.myProp, myProp );

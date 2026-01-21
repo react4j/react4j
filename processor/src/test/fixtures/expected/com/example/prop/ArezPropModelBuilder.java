@@ -26,11 +26,17 @@ final class ArezPropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 value(String value);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode model(ArezPropModel.Model model);
   }
 
@@ -40,6 +46,9 @@ final class ArezPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 value(final String value) {
       _element.input( React4j_ArezPropModel.Inputs.value, value );
       return this;
@@ -47,6 +56,9 @@ final class ArezPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode model(final ArezPropModel.Model model) {
       _element.input( React4j_ArezPropModel.Inputs.model, model );
       return build();

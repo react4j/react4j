@@ -28,6 +28,9 @@ final class ImmutablePropTypeKeyedInheritedBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeKeyedInherited.KeyedComponent myProp);
   }
 
@@ -37,6 +40,9 @@ final class ImmutablePropTypeKeyedInheritedBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedInherited_62ec04af" : ImmutablePropTypeKeyedInherited.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeKeyedInherited.Inputs.myProp, myProp );

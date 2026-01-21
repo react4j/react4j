@@ -26,6 +26,9 @@ final class DisposablePropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode value(Object value);
   }
 
@@ -35,6 +38,9 @@ final class DisposablePropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode value(final Object value) {
       _element.input( React4j_DisposablePropModel.Inputs.value, value );
       return build();

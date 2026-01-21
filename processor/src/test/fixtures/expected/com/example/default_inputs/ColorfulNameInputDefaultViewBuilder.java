@@ -35,6 +35,9 @@ final class ColorfulNameInputDefaultViewBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp12$23(String myProp12$23);
 
     @Nonnull
@@ -56,6 +59,9 @@ final class ColorfulNameInputDefaultViewBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp12$23(final String myProp12$23) {
       _element.input( React4j_ColorfulNameInputDefaultView.Inputs.myProp12$23, myProp12$23 );
       return build();

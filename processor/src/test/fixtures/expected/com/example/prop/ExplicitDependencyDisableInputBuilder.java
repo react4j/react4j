@@ -26,6 +26,9 @@ final class ExplicitDependencyDisableInputBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myComponent(ExplicitDependencyDisableInput.MyComponent myComponent);
   }
 
@@ -35,6 +38,9 @@ final class ExplicitDependencyDisableInputBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myComponent(
         final ExplicitDependencyDisableInput.MyComponent myComponent) {
       _element.input( React4j_ExplicitDependencyDisableInput.Inputs.myComponent, myComponent );

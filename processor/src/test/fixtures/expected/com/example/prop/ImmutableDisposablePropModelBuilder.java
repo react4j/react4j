@@ -29,6 +29,9 @@ final class ImmutableDisposablePropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode value(Object value);
   }
 
@@ -38,6 +41,9 @@ final class ImmutableDisposablePropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode value(final Object value) {
       _element.setKey( ( value instanceof Keyed ? Keyed.getKey( value ) : value instanceof Identifiable ? Identifiable.<Object>getArezId( value ) : String.valueOf( value ) ) + ( React.enableViewNames() ? "_ImmutableDisposablePropModel_7b9bfe84" : ImmutableDisposablePropModel.class.getName() ) );
       _element.input( React4j_ImmutableDisposablePropModel.Inputs.value, value );

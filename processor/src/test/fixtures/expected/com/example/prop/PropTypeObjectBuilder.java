@@ -26,6 +26,9 @@ final class PropTypeObjectBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(PropTypeObject.MyObject myProp);
   }
 
@@ -35,6 +38,9 @@ final class PropTypeObjectBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final PropTypeObject.MyObject myProp) {
       _element.input( React4j_PropTypeObject.Inputs.myProp, myProp );
       return build();

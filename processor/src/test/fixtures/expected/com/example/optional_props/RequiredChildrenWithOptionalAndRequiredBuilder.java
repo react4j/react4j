@@ -29,25 +29,43 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myRequiredProp(String myRequiredProp);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step3 myProp(String myProp);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(ReactNode... children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
   }
 
   public interface Step3 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(ReactNode... children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
@@ -69,6 +87,9 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myRequiredProp(final String myRequiredProp) {
       _element.input( React4j_RequiredChildrenWithOptionalAndRequired.Inputs.myRequiredProp, myRequiredProp );
       return this;
@@ -76,6 +97,9 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step3 myProp(final String myProp) {
       _element.input( React4j_RequiredChildrenWithOptionalAndRequired.Inputs.myProp, myProp );
       return this;
@@ -83,6 +107,9 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode children(final ReactNode... children) {
       _element.input( React4j_RequiredChildrenWithOptionalAndRequired.Inputs.children, JsArray.of( children ) );
       return build();
@@ -90,6 +117,9 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
       children( children.toArray( ReactNode[]::new ) );
       return build();

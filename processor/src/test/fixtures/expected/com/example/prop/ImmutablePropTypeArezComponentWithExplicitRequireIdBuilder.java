@@ -29,6 +29,9 @@ final class ImmutablePropTypeArezComponentWithExplicitRequireIdBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp);
   }
 
@@ -38,6 +41,9 @@ final class ImmutablePropTypeArezComponentWithExplicitRequireIdBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(
         final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezComponentWithExplicitRequireId_a574b6c9" : ImmutablePropTypeArezComponentWithExplicitRequireId.class.getName() ) );

@@ -28,6 +28,9 @@ final class ExplicitDependencyEnableInputBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myComponent(ExplicitDependencyEnableInput.MyComponent myComponent);
   }
 
@@ -37,6 +40,9 @@ final class ExplicitDependencyEnableInputBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myComponent(
         final ExplicitDependencyEnableInput.MyComponent myComponent) {
       _element.setKey( Identifiable.<Object>getArezId( myComponent ) + ( React.enableViewNames() ? "_ExplicitDependencyEnableInput_ff4614c5" : ExplicitDependencyEnableInput.class.getName() ) );

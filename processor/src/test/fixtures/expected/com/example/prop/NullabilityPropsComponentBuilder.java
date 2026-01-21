@@ -28,11 +28,17 @@ final class NullabilityPropsComponentBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp(@Nonnull String myProp);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp2(@Nullable String myProp2);
 
     @Nonnull
@@ -48,6 +54,9 @@ final class NullabilityPropsComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp(@Nonnull final String myProp) {
       Objects.requireNonNull( myProp );
       _element.input( React4j_NullabilityPropsComponent.Inputs.myProp, myProp );
@@ -56,6 +65,9 @@ final class NullabilityPropsComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp2(@Nullable final String myProp2) {
       _element.input( React4j_NullabilityPropsComponent.Inputs.myProp2, myProp2 );
       return build();

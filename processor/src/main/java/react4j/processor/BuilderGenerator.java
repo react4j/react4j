@@ -217,10 +217,7 @@ final class BuilderGenerator
     final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
     method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
     method.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
-    if ( isPureBuild( descriptor ) && "build".equals( name ) )
-    {
-      addPureContract( method );
-    }
+    addPureContract( method );
     action.accept( method );
     configureStepMethodReturns( descriptor, method, step, stepMethodType );
     return method;
@@ -330,6 +327,7 @@ final class BuilderGenerator
     method.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
     method.addAnnotation( Override.class );
     method.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+    addPureContract( method );
 
     final InputDescriptor input = stepMethod.getInput();
     final ExecutableType inputMethodType = stepMethod.getMethodType();
@@ -487,10 +485,7 @@ final class BuilderGenerator
         .methodBuilder( "build" )
         .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
-    if ( isPureBuild( descriptor ) )
-    {
-      addPureContract( method );
-    }
+    addPureContract( method );
     return buildBuildMethodContent( descriptor, method, "_element" );
   }
 
@@ -557,6 +552,7 @@ final class BuilderGenerator
                        ClassName.bestGuess( CONTEXT_HOLDER ),
                        CONTEXT_INPUT_PREFIX + firstContextInput.getConstantName(),
                        CONTEXT_FIELD_PREFIX + firstContextInput.getName() );
+    addPureContract( method );
     return method.build();
   }
 
@@ -832,19 +828,6 @@ final class BuilderGenerator
   private static void addPureContract( @Nonnull final MethodSpec.Builder method )
   {
     method.addAnnotation( AnnotationSpec.builder( CONTRACT_CLASSNAME ).addMember( "pure", "true" ).build() );
-  }
-
-  private static boolean isPureBuild( @Nonnull final ViewDescriptor descriptor )
-  {
-    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isContextSource ) )
-    {
-      return false;
-    }
-    else
-    {
-      final long immutableInputs = descriptor.getInputs().stream().filter( InputDescriptor::isImmutable ).count();
-      return immutableInputs <= 1;
-    }
   }
 
   @Nonnull

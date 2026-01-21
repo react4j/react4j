@@ -27,6 +27,9 @@ final class ImmutablePropTypeBoxedLongBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Long myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeBoxedLongBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Long myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedLong_077dacd3" : ImmutablePropTypeBoxedLong.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeBoxedLong.Inputs.myProp, myProp );

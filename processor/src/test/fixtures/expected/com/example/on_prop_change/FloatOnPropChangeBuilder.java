@@ -26,6 +26,9 @@ final class FloatOnPropChangeBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(float myProp);
   }
 
@@ -35,6 +38,9 @@ final class FloatOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final float myProp) {
       _element.input( React4j_FloatOnPropChange.Inputs.myProp, myProp );
       return build();

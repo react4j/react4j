@@ -28,6 +28,9 @@ final class ImmutablePropTypeActAsComponentClassBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeActAsComponentClass.MyComponent myProp);
   }
 
@@ -37,6 +40,9 @@ final class ImmutablePropTypeActAsComponentClassBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final ImmutablePropTypeActAsComponentClass.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeActAsComponentClass_4cb28f6a" : ImmutablePropTypeActAsComponentClass.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeActAsComponentClass.Inputs.myProp, myProp );

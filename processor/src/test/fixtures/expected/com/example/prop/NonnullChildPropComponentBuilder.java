@@ -28,6 +28,9 @@ final class NonnullChildPropComponentBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode child(@Nonnull ReactNode child);
   }
 
@@ -37,6 +40,9 @@ final class NonnullChildPropComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode child(@Nonnull final ReactNode child) {
       _element.input( React4j_NonnullChildPropComponent.Inputs.child, JsArray.of( Objects.requireNonNull( child ) ) );
       return build();

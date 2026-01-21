@@ -26,6 +26,9 @@ final class NonJavaBeanPropComponentBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode window(String window);
   }
 
@@ -35,6 +38,9 @@ final class NonJavaBeanPropComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode window(final String window) {
       _element.input( React4j_NonJavaBeanPropComponent.Inputs.window, window );
       return build();

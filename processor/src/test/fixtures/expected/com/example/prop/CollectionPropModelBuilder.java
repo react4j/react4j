@@ -27,6 +27,9 @@ final class CollectionPropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Collection<String> myProp);
   }
 
@@ -36,6 +39,9 @@ final class CollectionPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Collection<String> myProp) {
       _element.input( React4j_CollectionPropModel.Inputs.myProp, myProp );
       return build();

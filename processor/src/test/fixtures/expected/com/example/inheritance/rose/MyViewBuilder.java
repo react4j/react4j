@@ -33,6 +33,9 @@ final class MyViewBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode field2InLeaf(boolean field2InLeaf);
   }
 
@@ -59,6 +62,9 @@ final class MyViewBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode field2InLeaf(final boolean field2InLeaf) {
       _element.input( React4j_MyView.Inputs.field2InLeaf, field2InLeaf );
       return build();
@@ -73,6 +79,9 @@ final class MyViewBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return ContextHolder.CONTEXT_dateRange.consumer().render( _$context_dateRange );
     }

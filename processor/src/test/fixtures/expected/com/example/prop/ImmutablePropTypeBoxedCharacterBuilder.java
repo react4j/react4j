@@ -27,6 +27,9 @@ final class ImmutablePropTypeBoxedCharacterBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Character myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeBoxedCharacterBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Character myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedCharacter_6cf55e57" : ImmutablePropTypeBoxedCharacter.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeBoxedCharacter.Inputs.myProp, myProp );

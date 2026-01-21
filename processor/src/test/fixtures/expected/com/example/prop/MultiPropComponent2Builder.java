@@ -28,19 +28,31 @@ final class MultiPropComponent2Builder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp(String myProp);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step3 myProp2(String myProp2);
   }
 
   public interface Step3 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(ReactNode... children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
@@ -56,6 +68,9 @@ final class MultiPropComponent2Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp(final String myProp) {
       _element.input( React4j_MultiPropComponent2.Inputs.myProp, myProp );
       return this;
@@ -63,6 +78,9 @@ final class MultiPropComponent2Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step3 myProp2(final String myProp2) {
       _element.input( React4j_MultiPropComponent2.Inputs.myProp2, myProp2 );
       return this;
@@ -70,6 +88,9 @@ final class MultiPropComponent2Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode children(final ReactNode... children) {
       _element.input( React4j_MultiPropComponent2.Inputs.children, JsArray.of( children ) );
       return build();
@@ -77,6 +98,9 @@ final class MultiPropComponent2Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
       children( children.toArray( ReactNode[]::new ) );
       return build();

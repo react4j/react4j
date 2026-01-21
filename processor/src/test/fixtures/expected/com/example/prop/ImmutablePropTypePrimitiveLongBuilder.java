@@ -27,6 +27,9 @@ final class ImmutablePropTypePrimitiveLongBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(long myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypePrimitiveLongBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final long myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveLong_ebf73d2b" : ImmutablePropTypePrimitiveLong.class.getName() ) );
       _element.input( React4j_ImmutablePropTypePrimitiveLong.Inputs.myProp, myProp );

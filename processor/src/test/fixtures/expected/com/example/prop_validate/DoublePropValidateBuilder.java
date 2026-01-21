@@ -26,6 +26,9 @@ final class DoublePropValidateBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(double myProp);
   }
 
@@ -35,6 +38,9 @@ final class DoublePropValidateBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final double myProp) {
       _element.input( React4j_DoublePropValidate.Inputs.myProp, myProp );
       return build();

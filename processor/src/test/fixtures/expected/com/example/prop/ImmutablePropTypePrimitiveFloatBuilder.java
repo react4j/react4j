@@ -27,6 +27,9 @@ final class ImmutablePropTypePrimitiveFloatBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(float myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypePrimitiveFloatBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final float myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveFloat_7757742f" : ImmutablePropTypePrimitiveFloat.class.getName() ) );
       _element.input( React4j_ImmutablePropTypePrimitiveFloat.Inputs.myProp, myProp );

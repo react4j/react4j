@@ -27,6 +27,9 @@ final class ImmutablePropTypePrimitiveShortBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(short myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypePrimitiveShortBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final short myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveShort_be261e8c" : ImmutablePropTypePrimitiveShort.class.getName() ) );
       _element.input( React4j_ImmutablePropTypePrimitiveShort.Inputs.myProp, myProp );

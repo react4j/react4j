@@ -27,16 +27,25 @@ final class MultiPropComponent3Builder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp(String myProp);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step3 myProp2(String myProp2);
   }
 
   public interface Step3 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode child(ReactNode child);
   }
 
@@ -46,6 +55,9 @@ final class MultiPropComponent3Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp(final String myProp) {
       _element.input( React4j_MultiPropComponent3.Inputs.myProp, myProp );
       return this;
@@ -53,6 +65,9 @@ final class MultiPropComponent3Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step3 myProp2(final String myProp2) {
       _element.input( React4j_MultiPropComponent3.Inputs.myProp2, myProp2 );
       return this;
@@ -60,6 +75,9 @@ final class MultiPropComponent3Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode child(final ReactNode child) {
       _element.input( React4j_MultiPropComponent3.Inputs.child, JsArray.of( child ) );
       return build();

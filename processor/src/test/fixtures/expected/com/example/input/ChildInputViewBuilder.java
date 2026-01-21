@@ -27,6 +27,9 @@ final class ChildInputViewBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode child(ReactNode child);
   }
 
@@ -36,6 +39,9 @@ final class ChildInputViewBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode child(final ReactNode child) {
       _element.input( React4j_ChildInputView.Inputs.child, JsArray.of( child ) );
       return build();

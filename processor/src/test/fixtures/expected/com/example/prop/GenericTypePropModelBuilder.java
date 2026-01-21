@@ -27,6 +27,9 @@ final class GenericTypePropModelBuilder {
   @SuppressWarnings("unused")
   public interface Step1<T> {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode value(T value);
   }
 
@@ -36,6 +39,9 @@ final class GenericTypePropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode value(final T value) {
       _element.input( React4j_GenericTypePropModel.Inputs.value, value );
       return build();

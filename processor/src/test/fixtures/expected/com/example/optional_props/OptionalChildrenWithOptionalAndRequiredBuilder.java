@@ -29,17 +29,29 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myRequiredProp(String myRequiredProp);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp(String myProp);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 children(ReactNode... children);
 
     @Nonnull
@@ -61,6 +73,9 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myRequiredProp(final String myRequiredProp) {
       _element.input( React4j_OptionalChildrenWithOptionalAndRequired.Inputs.myRequiredProp, myRequiredProp );
       return this;
@@ -68,6 +83,9 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp(final String myProp) {
       _element.input( React4j_OptionalChildrenWithOptionalAndRequired.Inputs.myProp, myProp );
       return this;
@@ -75,6 +93,9 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
       children( children.toArray( ReactNode[]::new ) );
       return build();
@@ -82,6 +103,9 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 children(final ReactNode... children) {
       _element.input( React4j_OptionalChildrenWithOptionalAndRequired.Inputs.children, JsArray.of( children ) );
       return this;

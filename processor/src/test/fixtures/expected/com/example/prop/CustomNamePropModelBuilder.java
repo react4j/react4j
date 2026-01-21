@@ -26,6 +26,9 @@ final class CustomNamePropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode foo(String foo);
   }
 
@@ -35,6 +38,9 @@ final class CustomNamePropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode foo(final String foo) {
       _element.input( React4j_CustomNamePropModel.Inputs.foo, foo );
       return build();

@@ -27,6 +27,9 @@ final class ImmutablePropTypeBoxedBooleanBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Boolean myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeBoxedBooleanBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Boolean myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedBoolean_c8609c6b" : ImmutablePropTypeBoxedBoolean.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeBoxedBoolean.Inputs.myProp, myProp );

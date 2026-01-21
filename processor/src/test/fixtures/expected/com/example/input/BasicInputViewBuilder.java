@@ -26,6 +26,9 @@ final class BasicInputViewBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode someField(boolean someField);
   }
 
@@ -35,6 +38,9 @@ final class BasicInputViewBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode someField(final boolean someField) {
       _element.input( React4j_BasicInputView.Inputs.someField, someField );
       return build();

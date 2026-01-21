@@ -26,6 +26,9 @@ final class NestedCompleteComponent_BasicViewBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(String myProp);
   }
 
@@ -35,6 +38,9 @@ final class NestedCompleteComponent_BasicViewBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final String myProp) {
       _element.input( NestedCompleteComponent_React4j_BasicView.Inputs.myProp, myProp );
       return build();

@@ -27,6 +27,9 @@ final class ImmutablePropTypePrimitiveBooleanBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(boolean myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypePrimitiveBooleanBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final boolean myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveBoolean_2e6a2a6d" : ImmutablePropTypePrimitiveBoolean.class.getName() ) );
       _element.input( React4j_ImmutablePropTypePrimitiveBoolean.Inputs.myProp, myProp );

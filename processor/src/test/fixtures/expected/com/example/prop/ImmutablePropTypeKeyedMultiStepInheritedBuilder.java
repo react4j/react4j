@@ -28,6 +28,9 @@ final class ImmutablePropTypeKeyedMultiStepInheritedBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp);
   }
 
@@ -37,6 +40,9 @@ final class ImmutablePropTypeKeyedMultiStepInheritedBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(
         final ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedMultiStepInherited_7d3cf3a5" : ImmutablePropTypeKeyedMultiStepInherited.class.getName() ) );

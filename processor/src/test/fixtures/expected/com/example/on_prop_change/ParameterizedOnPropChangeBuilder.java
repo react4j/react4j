@@ -27,6 +27,9 @@ final class ParameterizedOnPropChangeBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ArrayList<String> myProp);
   }
 
@@ -36,6 +39,9 @@ final class ParameterizedOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final ArrayList<String> myProp) {
       _element.input( React4j_ParameterizedOnPropChange.Inputs.myProp, myProp );
       return build();

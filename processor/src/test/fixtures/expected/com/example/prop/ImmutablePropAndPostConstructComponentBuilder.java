@@ -27,6 +27,9 @@ final class ImmutablePropAndPostConstructComponentBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(String myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropAndPostConstructComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final String myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropAndPostConstructComponent_48ad187e" : ImmutablePropAndPostConstructComponent.class.getName() ) );
       _element.input( React4j_ImmutablePropAndPostConstructComponent.Inputs.myProp, myProp );

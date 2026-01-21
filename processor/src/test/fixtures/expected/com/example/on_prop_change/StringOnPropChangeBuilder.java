@@ -26,6 +26,9 @@ final class StringOnPropChangeBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(String myProp);
   }
 
@@ -35,6 +38,9 @@ final class StringOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final String myProp) {
       _element.input( React4j_StringOnPropChange.Inputs.myProp, myProp );
       return build();

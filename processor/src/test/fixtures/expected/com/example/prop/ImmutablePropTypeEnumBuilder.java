@@ -27,6 +27,9 @@ final class ImmutablePropTypeEnumBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeEnum.Foo myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeEnumBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final ImmutablePropTypeEnum.Foo myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeEnum_00ba1b5e" : ImmutablePropTypeEnum.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeEnum.Inputs.myProp, myProp );

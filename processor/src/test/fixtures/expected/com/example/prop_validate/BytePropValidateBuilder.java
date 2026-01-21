@@ -26,6 +26,9 @@ final class BytePropValidateBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(byte myProp);
   }
 
@@ -35,6 +38,9 @@ final class BytePropValidateBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final byte myProp) {
       _element.input( React4j_BytePropValidate.Inputs.myProp, myProp );
       return build();

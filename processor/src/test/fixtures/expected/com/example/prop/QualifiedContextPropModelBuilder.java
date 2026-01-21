@@ -28,6 +28,9 @@ final class QualifiedContextPropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -52,6 +55,9 @@ final class QualifiedContextPropModelBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return ContextHolder.CONTEXT_myProp.consumer().render( _$context_myProp );
     }

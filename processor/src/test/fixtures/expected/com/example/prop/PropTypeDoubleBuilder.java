@@ -26,6 +26,9 @@ final class PropTypeDoubleBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(double myProp);
   }
 
@@ -35,6 +38,9 @@ final class PropTypeDoubleBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final double myProp) {
       _element.input( React4j_PropTypeDouble.Inputs.myProp, myProp );
       return build();

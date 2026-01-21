@@ -30,31 +30,49 @@ final class ImmutablePropTypesBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp(ImmutablePropTypes.MyComponent myProp);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step3 myOtherProp(String myOtherProp);
   }
 
   public interface Step3 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step4 stillAnotherProp(int stillAnotherProp);
   }
 
   public interface Step4 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step5 BobsProp(ImmutablePropTypes.KeyedComponent BobsProp);
   }
 
   public interface Step5 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step6 someProp(ImmutablePropTypes.Foo someProp);
   }
 
   public interface Step6 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode object(Object object);
   }
 
@@ -64,6 +82,9 @@ final class ImmutablePropTypesBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp(final ImmutablePropTypes.MyComponent myProp) {
       _element.input( React4j_ImmutablePropTypes.Inputs.myProp, myProp );
       return this;
@@ -71,6 +92,9 @@ final class ImmutablePropTypesBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step3 myOtherProp(final String myOtherProp) {
       _element.input( React4j_ImmutablePropTypes.Inputs.myOtherProp, myOtherProp );
       return this;
@@ -78,6 +102,9 @@ final class ImmutablePropTypesBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step4 stillAnotherProp(final int stillAnotherProp) {
       _element.input( React4j_ImmutablePropTypes.Inputs.stillAnotherProp, stillAnotherProp );
       return this;
@@ -85,6 +112,9 @@ final class ImmutablePropTypesBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step5 BobsProp(final ImmutablePropTypes.KeyedComponent BobsProp) {
       _element.input( React4j_ImmutablePropTypes.Inputs.BobsProp, BobsProp );
       return this;
@@ -92,6 +122,9 @@ final class ImmutablePropTypesBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step6 someProp(final ImmutablePropTypes.Foo someProp) {
       _element.input( React4j_ImmutablePropTypes.Inputs.someProp, someProp );
       return this;
@@ -99,12 +132,18 @@ final class ImmutablePropTypesBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode object(final Object object) {
       _element.input( React4j_ImmutablePropTypes.Inputs.object, object );
       return build();
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       final JsPropertyMap<Object> inputs = _element.inputs();
       final Object $object$ = inputs.get( React4j_ImmutablePropTypes.Inputs.object );

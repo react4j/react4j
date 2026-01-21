@@ -27,6 +27,9 @@ final class SingleChildPropComponentBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode child(ReactNode child);
   }
 
@@ -36,6 +39,9 @@ final class SingleChildPropComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode child(final ReactNode child) {
       _element.input( React4j_SingleChildPropComponent.Inputs.child, JsArray.of( child ) );
       return build();

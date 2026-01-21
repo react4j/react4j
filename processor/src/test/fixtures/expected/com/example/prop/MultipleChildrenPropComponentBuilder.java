@@ -44,9 +44,15 @@ final class MultipleChildrenPropComponentBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(ReactNode... children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
@@ -62,6 +68,9 @@ final class MultipleChildrenPropComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode children(final ReactNode... children) {
       _element.input( React4j_MultipleChildrenPropComponent.Inputs.children, JsArray.of( children ) );
       return build();
@@ -69,6 +78,9 @@ final class MultipleChildrenPropComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
       children( children.toArray( ReactNode[]::new ) );
       return build();

@@ -27,6 +27,9 @@ final class ImmutablePropTypeBoxedDoubleBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Double myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeBoxedDoubleBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Double myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedDouble_7e5f2de1" : ImmutablePropTypeBoxedDouble.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeBoxedDouble.Inputs.myProp, myProp );

@@ -27,6 +27,9 @@ final class ImmutablePropTypeBoxedIntegerBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Integer myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeBoxedIntegerBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Integer myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedInteger_5fafd942" : ImmutablePropTypeBoxedInteger.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeBoxedInteger.Inputs.myProp, myProp );

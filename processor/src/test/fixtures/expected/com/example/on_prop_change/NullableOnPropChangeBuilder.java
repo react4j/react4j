@@ -35,6 +35,9 @@ final class NullableOnPropChangeBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(@Nullable String myProp);
 
     @Nonnull
@@ -50,6 +53,9 @@ final class NullableOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(@Nullable final String myProp) {
       _element.input( React4j_NullableOnPropChange.Inputs.myProp, myProp );
       return build();

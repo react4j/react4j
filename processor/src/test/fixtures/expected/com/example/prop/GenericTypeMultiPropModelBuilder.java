@@ -28,21 +28,33 @@ final class GenericTypeMultiPropModelBuilder {
   @SuppressWarnings("unused")
   public interface Step1<T> {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2<T> value(T value);
   }
 
   @SuppressWarnings("unused")
   public interface Step2<T> {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step3<T> value2(String value2);
   }
 
   @SuppressWarnings("unused")
   public interface Step3<T> {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step3<T> value3(@Nullable String value3);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step3<T> value4(@Nullable String value4);
 
     @Nonnull
@@ -58,6 +70,9 @@ final class GenericTypeMultiPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2<T> value(final T value) {
       _element.input( React4j_GenericTypeMultiPropModel.Inputs.value, value );
       return this;
@@ -65,6 +80,9 @@ final class GenericTypeMultiPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step3<T> value2(final String value2) {
       _element.input( React4j_GenericTypeMultiPropModel.Inputs.value2, value2 );
       return this;
@@ -72,6 +90,9 @@ final class GenericTypeMultiPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step3<T> value3(@Nullable final String value3) {
       _element.input( React4j_GenericTypeMultiPropModel.Inputs.value3, value3 );
       return this;
@@ -79,6 +100,9 @@ final class GenericTypeMultiPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step3<T> value4(@Nullable final String value4) {
       _element.input( React4j_GenericTypeMultiPropModel.Inputs.value4, value4 );
       return this;

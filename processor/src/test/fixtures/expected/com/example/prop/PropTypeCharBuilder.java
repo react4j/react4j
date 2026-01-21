@@ -26,6 +26,9 @@ final class PropTypeCharBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(char myProp);
   }
 
@@ -35,6 +38,9 @@ final class PropTypeCharBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final char myProp) {
       _element.input( React4j_PropTypeChar.Inputs.myProp, myProp );
       return build();

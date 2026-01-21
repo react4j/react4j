@@ -27,6 +27,9 @@ final class ImmutablePropTypePrimitiveIntBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(int myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypePrimitiveIntBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final int myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveInt_c0c80f1a" : ImmutablePropTypePrimitiveInt.class.getName() ) );
       _element.input( React4j_ImmutablePropTypePrimitiveInt.Inputs.myProp, myProp );

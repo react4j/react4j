@@ -26,6 +26,9 @@ final class ActAsComponentPropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode model(ActAsComponentPropModel.Model model);
   }
 
@@ -35,6 +38,9 @@ final class ActAsComponentPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode model(final ActAsComponentPropModel.Model model) {
       _element.input( React4j_ActAsComponentPropModel.Inputs.model, model );
       return build();

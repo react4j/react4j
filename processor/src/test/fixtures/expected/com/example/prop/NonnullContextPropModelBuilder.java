@@ -28,6 +28,9 @@ final class NonnullContextPropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -52,6 +55,9 @@ final class NonnullContextPropModelBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return ContextHolder.CONTEXT_myProp.consumer().render( _$context_myProp );
     }

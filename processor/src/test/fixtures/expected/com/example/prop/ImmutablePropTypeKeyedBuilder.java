@@ -28,6 +28,9 @@ final class ImmutablePropTypeKeyedBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeKeyed.KeyedComponent myProp);
   }
 
@@ -37,6 +40,9 @@ final class ImmutablePropTypeKeyedBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final ImmutablePropTypeKeyed.KeyedComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyed_200a3d27" : ImmutablePropTypeKeyed.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeKeyed.Inputs.myProp, myProp );

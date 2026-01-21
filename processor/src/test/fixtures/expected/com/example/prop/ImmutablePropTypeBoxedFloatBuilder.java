@@ -27,6 +27,9 @@ final class ImmutablePropTypeBoxedFloatBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Float myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeBoxedFloatBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Float myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedFloat_0dca3d37" : ImmutablePropTypeBoxedFloat.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeBoxedFloat.Inputs.myProp, myProp );

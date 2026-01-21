@@ -26,6 +26,9 @@ final class NonDisposableDisposablePropBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode model(NonDisposableDisposableProp.Model model);
   }
 
@@ -35,6 +38,9 @@ final class NonDisposableDisposablePropBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode model(final NonDisposableDisposableProp.Model model) {
       _element.input( React4j_NonDisposableDisposableProp.Inputs.model, model );
       return build();

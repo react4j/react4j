@@ -26,6 +26,9 @@ final class BoolJavaBeanPropModelBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode foo(boolean foo);
   }
 
@@ -35,6 +38,9 @@ final class BoolJavaBeanPropModelBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode foo(final boolean foo) {
       _element.input( React4j_BoolJavaBeanPropModel.Inputs.foo, foo );
       return build();

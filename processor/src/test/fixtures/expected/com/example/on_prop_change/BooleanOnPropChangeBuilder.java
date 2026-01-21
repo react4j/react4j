@@ -26,6 +26,9 @@ final class BooleanOnPropChangeBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(boolean myProp);
   }
 
@@ -35,6 +38,9 @@ final class BooleanOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final boolean myProp) {
       _element.input( React4j_BooleanOnPropChange.Inputs.myProp, myProp );
       return build();

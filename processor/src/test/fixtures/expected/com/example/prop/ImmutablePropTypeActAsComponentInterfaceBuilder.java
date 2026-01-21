@@ -28,6 +28,9 @@ final class ImmutablePropTypeActAsComponentInterfaceBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeActAsComponentInterface.MyComponent myProp);
   }
 
@@ -37,6 +40,9 @@ final class ImmutablePropTypeActAsComponentInterfaceBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(
         final ImmutablePropTypeActAsComponentInterface.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeActAsComponentInterface_56c176ed" : ImmutablePropTypeActAsComponentInterface.class.getName() ) );

@@ -27,6 +27,9 @@ final class ImmutablePropTypeBoxedShortBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Short myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypeBoxedShortBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Short myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedShort_9954b60a" : ImmutablePropTypeBoxedShort.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeBoxedShort.Inputs.myProp, myProp );

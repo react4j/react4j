@@ -26,6 +26,9 @@ final class PropTypeByteBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(byte myProp);
   }
 
@@ -35,6 +38,9 @@ final class PropTypeByteBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final byte myProp) {
       _element.input( React4j_PropTypeByte.Inputs.myProp, myProp );
       return build();

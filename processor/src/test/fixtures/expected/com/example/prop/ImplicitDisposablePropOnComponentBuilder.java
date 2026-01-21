@@ -26,6 +26,9 @@ final class ImplicitDisposablePropOnComponentBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode model(ImplicitDisposablePropOnComponent.Model model);
   }
 
@@ -35,6 +38,9 @@ final class ImplicitDisposablePropOnComponentBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode model(final ImplicitDisposablePropOnComponent.Model model) {
       _element.input( React4j_ImplicitDisposablePropOnComponent.Inputs.model, model );
       return build();

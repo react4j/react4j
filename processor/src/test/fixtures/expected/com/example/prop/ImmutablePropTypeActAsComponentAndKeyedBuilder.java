@@ -28,6 +28,9 @@ final class ImmutablePropTypeActAsComponentAndKeyedBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeActAsComponentAndKeyed.MyComponent myProp);
   }
 
@@ -37,6 +40,9 @@ final class ImmutablePropTypeActAsComponentAndKeyedBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(
         final ImmutablePropTypeActAsComponentAndKeyed.MyComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeActAsComponentAndKeyed_fae2f037" : ImmutablePropTypeActAsComponentAndKeyed.class.getName() ) );

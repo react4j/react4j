@@ -26,16 +26,25 @@ final class CustomNamingOnPropChangeBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp1(boolean myProp1);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step3 myProp2(String myProp2);
   }
 
   public interface Step3 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp3(int myProp3);
   }
 
@@ -45,6 +54,9 @@ final class CustomNamingOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp1(final boolean myProp1) {
       _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp1, myProp1 );
       return this;
@@ -52,6 +64,9 @@ final class CustomNamingOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step3 myProp2(final String myProp2) {
       _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp2, myProp2 );
       return this;
@@ -59,6 +74,9 @@ final class CustomNamingOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp3(final int myProp3) {
       _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp3, myProp3 );
       return build();

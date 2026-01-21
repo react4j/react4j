@@ -26,6 +26,9 @@ final class DoubleOnPropChangeBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(double myProp);
   }
 
@@ -35,6 +38,9 @@ final class DoubleOnPropChangeBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final double myProp) {
       _element.input( React4j_DoubleOnPropChange.Inputs.myProp, myProp );
       return build();

@@ -28,20 +28,35 @@ final class MultiPropComponent4Builder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp(String myProp);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp2(@Nullable String myProp2);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp3(@Nullable String myProp3);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myProp4(@Nullable String myProp4);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 child(@Nullable ReactNode child);
 
     @Nonnull
@@ -57,6 +72,9 @@ final class MultiPropComponent4Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp(final String myProp) {
       _element.input( React4j_MultiPropComponent4.Inputs.myProp, myProp );
       return this;
@@ -64,6 +82,9 @@ final class MultiPropComponent4Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp2(@Nullable final String myProp2) {
       _element.input( React4j_MultiPropComponent4.Inputs.myProp2, myProp2 );
       return this;
@@ -71,6 +92,9 @@ final class MultiPropComponent4Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp3(@Nullable final String myProp3) {
       _element.input( React4j_MultiPropComponent4.Inputs.myProp3, myProp3 );
       return this;
@@ -78,6 +102,9 @@ final class MultiPropComponent4Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myProp4(@Nullable final String myProp4) {
       _element.input( React4j_MultiPropComponent4.Inputs.myProp4, myProp4 );
       return this;
@@ -85,6 +112,9 @@ final class MultiPropComponent4Builder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 child(@Nullable final ReactNode child) {
       _element.input( React4j_MultiPropComponent4.Inputs.child, JsArray.of( child ) );
       return this;

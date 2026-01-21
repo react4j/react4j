@@ -29,6 +29,9 @@ final class ImmutablePropTypeDynamicValueBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(Object myProp);
   }
 
@@ -38,6 +41,9 @@ final class ImmutablePropTypeDynamicValueBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final Object myProp) {
       _element.setKey( ( myProp instanceof Keyed ? Keyed.getKey( myProp ) : myProp instanceof Identifiable ? Identifiable.<Object>getArezId( myProp ) : String.valueOf( myProp ) ) + ( React.enableViewNames() ? "_ImmutablePropTypeDynamicValue_a98f656b" : ImmutablePropTypeDynamicValue.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeDynamicValue.Inputs.myProp, myProp );

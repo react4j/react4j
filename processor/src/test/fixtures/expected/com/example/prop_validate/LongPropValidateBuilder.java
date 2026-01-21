@@ -26,6 +26,9 @@ final class LongPropValidateBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(long myProp);
   }
 
@@ -35,6 +38,9 @@ final class LongPropValidateBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final long myProp) {
       _element.input( React4j_LongPropValidate.Inputs.myProp, myProp );
       return build();

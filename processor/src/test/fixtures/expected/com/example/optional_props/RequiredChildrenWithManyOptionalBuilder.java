@@ -69,29 +69,53 @@ final class RequiredChildrenWithManyOptionalBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step1 myPropA(String myPropA);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step1 myPropB(String myPropB);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step1 myPropC(String myPropC);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step1 myPropD(String myPropD);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(ReactNode... children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(ReactNode... children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
@@ -116,6 +140,9 @@ final class RequiredChildrenWithManyOptionalBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step1 myPropA(final String myPropA) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropA, myPropA );
       return this;
@@ -123,6 +150,9 @@ final class RequiredChildrenWithManyOptionalBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step1 myPropB(final String myPropB) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropB, myPropB );
       return this;
@@ -130,6 +160,9 @@ final class RequiredChildrenWithManyOptionalBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step1 myPropC(final String myPropC) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropC, myPropC );
       return this;
@@ -137,6 +170,9 @@ final class RequiredChildrenWithManyOptionalBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step1 myPropD(final String myPropD) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropD, myPropD );
       return this;
@@ -144,6 +180,9 @@ final class RequiredChildrenWithManyOptionalBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode children(final ReactNode... children) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.children, JsArray.of( children ) );
       return build();
@@ -151,6 +190,9 @@ final class RequiredChildrenWithManyOptionalBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
       children( children.toArray( ReactNode[]::new ) );
       return build();

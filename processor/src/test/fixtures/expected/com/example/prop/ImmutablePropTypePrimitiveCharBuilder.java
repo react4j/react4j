@@ -27,6 +27,9 @@ final class ImmutablePropTypePrimitiveCharBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(char myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypePrimitiveCharBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final char myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveChar_acc92cbb" : ImmutablePropTypePrimitiveChar.class.getName() ) );
       _element.input( React4j_ImmutablePropTypePrimitiveChar.Inputs.myProp, myProp );

@@ -28,6 +28,9 @@ final class ImmutablePropTypeArezIdentifiableBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(ImmutablePropTypeArezIdentifiable.MyComponent myProp);
   }
 
@@ -37,6 +40,9 @@ final class ImmutablePropTypeArezIdentifiableBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final ImmutablePropTypeArezIdentifiable.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezIdentifiable_30200f60" : ImmutablePropTypeArezIdentifiable.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeArezIdentifiable.Inputs.myProp, myProp );

@@ -26,14 +26,23 @@ final class ExplicitOptionalBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myRequiredProp(String myRequiredProp);
   }
 
   public interface Step2 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myOptionalProp(String myOptionalProp);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     Step2 myOtherOptionalProp(String myOtherOptionalProp);
 
     @Nonnull
@@ -49,6 +58,9 @@ final class ExplicitOptionalBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myRequiredProp(final String myRequiredProp) {
       _element.input( React4j_ExplicitOptional.Inputs.myRequiredProp, myRequiredProp );
       return this;
@@ -56,6 +68,9 @@ final class ExplicitOptionalBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myOptionalProp(final String myOptionalProp) {
       _element.input( React4j_ExplicitOptional.Inputs.myOptionalProp, myOptionalProp );
       return this;
@@ -63,6 +78,9 @@ final class ExplicitOptionalBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final Step2 myOtherOptionalProp(final String myOtherOptionalProp) {
       _element.input( React4j_ExplicitOptional.Inputs.myOtherOptionalProp, myOtherOptionalProp );
       return this;

@@ -27,6 +27,9 @@ final class ImmutablePropTypePrimitiveDoubleBuilder {
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode myProp(double myProp);
   }
 
@@ -36,6 +39,9 @@ final class ImmutablePropTypePrimitiveDoubleBuilder {
 
     @Override
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode myProp(final double myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypePrimitiveDouble_9191758c" : ImmutablePropTypePrimitiveDouble.class.getName() ) );
       _element.input( React4j_ImmutablePropTypePrimitiveDouble.Inputs.myProp, myProp );
