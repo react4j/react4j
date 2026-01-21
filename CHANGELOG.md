@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.198](https://github.com/react4j/react4j/tree/v0.198) (2026-01-21) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.197...v0.198)
+
+Changes in this release:
 
 * Add `@Contract( pure = true )` to factor elements that are effectively pure. These are methods that if the result of the method is not used then the call can be removed.
 * Update the `org.realityforge.braincheck` artifacts to version `1.32.0`.
