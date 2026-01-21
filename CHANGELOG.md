@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.200](https://github.com/react4j/react4j/tree/v0.200) (2026-01-21) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.199...v0.200)
+
+Changes in this release:
 
 * Add `@Contract( pure = true )` to all Buildr methods that can be consumed by downstream users. This is not entirely accurate as the steps could be cached but it is a reasonable approximation and it forces users to favour method chaining over successive method invocation which is the desired way to interact with the builders.
 
