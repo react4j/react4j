@@ -35,7 +35,7 @@ Buildr::ReleaseTool.define_release_task do |t|
   end
   t.tag_project
   t.stage('MavenCentralPublish', 'Publish artifacts to Maven Central') do
-    sh "bundle exec buildr clean mcrt:publish_if_tagged site:deploy TEST=no GWT=react4j:doc-examples#{Buildr.application.options.trace ? ' --trace' : ''}"
+    sh "bundle exec buildr clean upload_to_maven_central site:deploy TEST=no GWT=react4j:doc-examples#{Buildr.application.options.trace ? ' --trace' : ''}"
   end
   t.patch_changelog_post_release
   t.stage('PatchStatisticsPostRelease', 'Copy the statistics forward to prepare for next development iteration') do
