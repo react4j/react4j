@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -16,6 +17,9 @@ final class ExplicitDependencyDisableInputBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode myComponent(final ExplicitDependencyDisableInput.MyComponent myComponent) {
     return newBuilder().myComponent( myComponent );
   }
@@ -38,6 +42,9 @@ final class ExplicitDependencyDisableInputBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

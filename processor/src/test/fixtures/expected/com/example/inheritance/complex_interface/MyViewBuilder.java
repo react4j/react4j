@@ -3,6 +3,7 @@ package com.example.inheritance.complex_interface;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
+import org.jetbrains.annotations.Contract;
 import react4j.Context;
 import react4j.Contexts;
 import react4j.React;
@@ -20,6 +21,9 @@ final class MyViewBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step2 aaField2InRootInterface(final boolean aaField2InRootInterface) {
     return newBuilder().aaField2InRootInterface( aaField2InRootInterface );
   }

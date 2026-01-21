@@ -2,6 +2,7 @@ package com.example.on_prop_change;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -16,6 +17,9 @@ final class MultipleOnPropChangeBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step2 myProp1(final boolean myProp1) {
     return newBuilder().myProp1( myProp1 );
   }
@@ -61,6 +65,9 @@ final class MultipleOnPropChangeBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

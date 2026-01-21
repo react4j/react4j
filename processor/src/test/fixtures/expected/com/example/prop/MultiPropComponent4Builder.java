@@ -4,6 +4,7 @@ import akasha.lang.JsArray;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -18,6 +19,9 @@ final class MultiPropComponent4Builder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step2 myProp(final String myProp) {
     return newBuilder().myProp( myProp );
   }
@@ -41,6 +45,9 @@ final class MultiPropComponent4Builder {
     Step2 child(@Nullable ReactNode child);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -84,6 +91,9 @@ final class MultiPropComponent4Builder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

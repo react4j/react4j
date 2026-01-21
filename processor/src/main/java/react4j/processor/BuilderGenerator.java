@@ -1,5 +1,6 @@
 package react4j.processor;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -59,6 +60,8 @@ final class BuilderGenerator
   @Nonnull
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
+  @Nonnull
+  private static final ClassName CONTRACT_CLASSNAME = ClassName.get( "org.jetbrains.annotations", "Contract" );
   @Nonnull
   private static final String CONTEXT_METHOD_PREFIX = "$context_";
   @Nonnull
@@ -150,6 +153,7 @@ final class BuilderGenerator
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( stepMethod.getName() ).
         addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+    addPureContract( method );
 
     method.addModifiers( Modifier.STATIC );
     if ( descriptor.getDeclaredType().asElement().getModifiers().contains( Modifier.PUBLIC ) )
@@ -213,6 +217,10 @@ final class BuilderGenerator
     final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
     method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
     method.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+    if ( isPureBuild( descriptor ) && "build".equals( name ) )
+    {
+      addPureContract( method );
+    }
     action.accept( method );
     configureStepMethodReturns( descriptor, method, step, stepMethodType );
     return method;
@@ -479,6 +487,10 @@ final class BuilderGenerator
         .methodBuilder( "build" )
         .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+    if ( isPureBuild( descriptor ) )
+    {
+      addPureContract( method );
+    }
     return buildBuildMethodContent( descriptor, method, "_element" );
   }
 
@@ -535,7 +547,7 @@ final class BuilderGenerator
   @Nonnull
   private static MethodSpec buildContextBuildStepImpl( @Nonnull final InputDescriptor firstContextInput )
   {
-    return
+    final MethodSpec.Builder method =
       MethodSpec
         .methodBuilder( "build" )
         .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
@@ -544,8 +556,8 @@ final class BuilderGenerator
         .addStatement( "return $T.$N.consumer().render( $N )",
                        ClassName.bestGuess( CONTEXT_HOLDER ),
                        CONTEXT_INPUT_PREFIX + firstContextInput.getConstantName(),
-                       CONTEXT_FIELD_PREFIX + firstContextInput.getName() )
-        .build();
+                       CONTEXT_FIELD_PREFIX + firstContextInput.getName() );
+    return method.build();
   }
 
   @Nonnull
@@ -817,7 +829,26 @@ final class BuilderGenerator
     }
   }
 
-  static String asTypeArgumentsInfix( final DeclaredType declaredType )
+  private static void addPureContract( @Nonnull final MethodSpec.Builder method )
+  {
+    method.addAnnotation( AnnotationSpec.builder( CONTRACT_CLASSNAME ).addMember( "pure", "true" ).build() );
+  }
+
+  private static boolean isPureBuild( @Nonnull final ViewDescriptor descriptor )
+  {
+    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isContextSource ) )
+    {
+      return false;
+    }
+    else
+    {
+      final long immutableInputs = descriptor.getInputs().stream().filter( InputDescriptor::isImmutable ).count();
+      return immutableInputs <= 1;
+    }
+  }
+
+  @Nonnull
+  static String asTypeArgumentsInfix( @Nonnull final DeclaredType declaredType )
   {
     final List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
     return typeArguments.isEmpty() ?

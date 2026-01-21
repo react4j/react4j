@@ -1,5 +1,6 @@
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -14,12 +15,18 @@ final class RootPackageViewBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode build() {
     return newBuilder().build();
   }
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -28,6 +35,9 @@ final class RootPackageViewBuilder {
     private final ReactElement _element = ReactElement.createViewElement( React4j_RootPackageView.Factory.TYPE );
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

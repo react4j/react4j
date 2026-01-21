@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Add `@Contract( pure = true )` to factor elements that are effectively pure. These are methods that if the result of the method is not used then the call can be removed.
 * Update the `org.realityforge.braincheck` artifacts to version `1.32.0`.
 * Update the `org.realityforge.sting` artifacts to version `0.29`.
 * Update the `org.realityforge.proton` artifacts to version `0.65`.

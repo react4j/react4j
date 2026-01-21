@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -19,6 +20,9 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step2 myRequiredProp(final String myRequiredProp) {
     return newBuilder().myRequiredProp( myRequiredProp );
   }
@@ -47,6 +51,9 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -89,6 +96,9 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

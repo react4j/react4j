@@ -9,6 +9,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+import org.jetbrains.annotations.Contract;
 import react4j.internal.ViewConstructorFunction;
 
 /**
@@ -32,6 +33,8 @@ public class ReactElement
   private Object _owner;
 
   @JsOverlay
+  @Contract( pure = true )
+  @Nonnull
   public final ReactElement dup()
   {
     final ReactElement element = createRawNode( typeof, type );
@@ -42,8 +45,10 @@ public class ReactElement
     return element;
   }
 
+  @SuppressWarnings( "JavaExistingMethodCanBeUsed" )
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   public static ReactElement createViewElement( @Nonnull final ViewConstructorFunction type )
   {
     final ReactElement element = create( type );
@@ -55,6 +60,7 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   static ReactElement createContextElement( @Nonnull final Object type )
   {
     final ReactElement element = create( type );
@@ -66,6 +72,7 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   private static ReactElement create( @Nonnull final Object type )
   {
     return createRawNode( React.Element, type );
@@ -73,6 +80,7 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   private static ReactElement createRawNode( @Nonnull final Object typeof, @Nonnull final Object type )
   {
     final ReactElement element = new ReactElement();
@@ -84,6 +92,7 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   private static ReactElement createRawElement( @Nonnull final Object type,
                                                 @Nullable final String key,
                                                 @Nullable final Object ref,
@@ -98,6 +107,7 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   public static ReactElement createFragment( @Nullable final String key, @Nonnull final ReactNode... children )
   {
     final ReactElement element = createRawNode( React.Element, React.Fragment );
@@ -115,6 +125,7 @@ public class ReactElement
    */
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   public static ReactNode createStrictMode( @Nonnull final ReactNode... children )
   {
     return ReactElement.createRawElement( React.StrictMode,
@@ -125,6 +136,7 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   public static ReactElement createSuspense( @Nullable final String key,
                                              @Nullable final ReactNode fallback,
                                              final int maxTimeToFallback,
@@ -141,6 +153,7 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   public static ReactElement createHostElement( @Nonnull final String type,
                                                 @Nullable final String key,
                                                 @Nullable final Object ref,
@@ -151,6 +164,7 @@ public class ReactElement
 
   @JsOverlay
   @Nullable
+  @Contract( pure = true )
   public final String key()
   {
     return key;
@@ -164,6 +178,7 @@ public class ReactElement
 
   @JsOverlay
   @Nonnull
+  @Contract( pure = true )
   public final JsPropertyMap<Object> inputs()
   {
     return inputs;

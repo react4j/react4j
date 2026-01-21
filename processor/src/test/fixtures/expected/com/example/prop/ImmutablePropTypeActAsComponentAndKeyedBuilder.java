@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
@@ -18,6 +19,9 @@ final class ImmutablePropTypeActAsComponentAndKeyedBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode myProp(final ImmutablePropTypeActAsComponentAndKeyed.MyComponent myProp) {
     return newBuilder().myProp( myProp );
   }
@@ -41,6 +45,9 @@ final class ImmutablePropTypeActAsComponentAndKeyedBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

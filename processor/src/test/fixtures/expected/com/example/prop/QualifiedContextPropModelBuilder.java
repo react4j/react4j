@@ -2,6 +2,7 @@ package com.example.prop;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.Context;
 import react4j.Contexts;
 import react4j.ReactElement;
@@ -18,6 +19,9 @@ final class QualifiedContextPropModelBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode build() {
     return newBuilder().build();
   }

@@ -2,6 +2,7 @@ package com.example.inject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -16,12 +17,18 @@ public final class PublicViewBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   public static ReactNode build() {
     return newBuilder().build();
   }
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -30,6 +37,9 @@ public final class PublicViewBuilder {
     private final ReactElement _element = ReactElement.createViewElement( React4j_PublicView.Factory.TYPE );
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

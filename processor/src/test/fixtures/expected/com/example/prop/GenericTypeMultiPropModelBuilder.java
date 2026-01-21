@@ -3,6 +3,7 @@ package com.example.prop;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -17,6 +18,9 @@ final class GenericTypeMultiPropModelBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static <T> Step2<T> value(final T value) {
     return GenericTypeMultiPropModelBuilder.<T>newBuilder().value( value );
   }
@@ -42,6 +46,9 @@ final class GenericTypeMultiPropModelBuilder {
     Step3<T> value4(@Nullable String value4);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -78,6 +85,9 @@ final class GenericTypeMultiPropModelBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

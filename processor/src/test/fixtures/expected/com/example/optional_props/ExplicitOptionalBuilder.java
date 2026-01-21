@@ -2,6 +2,7 @@ package com.example.optional_props;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -16,6 +17,9 @@ final class ExplicitOptionalBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step2 myRequiredProp(final String myRequiredProp) {
     return newBuilder().myRequiredProp( myRequiredProp );
   }
@@ -33,6 +37,9 @@ final class ExplicitOptionalBuilder {
     Step2 myOtherOptionalProp(String myOtherOptionalProp);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -62,6 +69,9 @@ final class ExplicitOptionalBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

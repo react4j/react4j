@@ -2,6 +2,7 @@ package com.example.inheritance.simple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -16,6 +17,9 @@ final class LeafViewBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step2 zzField1InRootInterface(final boolean zzField1InRootInterface) {
     return newBuilder().zzField1InRootInterface( zzField1InRootInterface );
   }
@@ -169,6 +173,9 @@ final class LeafViewBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

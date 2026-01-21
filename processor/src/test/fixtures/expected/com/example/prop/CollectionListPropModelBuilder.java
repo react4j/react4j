@@ -3,6 +3,7 @@ package com.example.prop;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -17,6 +18,9 @@ final class CollectionListPropModelBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode myProp(final List<String> myProp) {
     return newBuilder().myProp( myProp );
   }
@@ -38,6 +42,9 @@ final class CollectionListPropModelBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

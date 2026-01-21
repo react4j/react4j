@@ -2,6 +2,7 @@ package com.example.prop_validate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -16,6 +17,9 @@ final class PackageAccessPropValidateBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode myProp(final String myProp) {
     return newBuilder().myProp( myProp );
   }
@@ -37,6 +41,9 @@ final class PackageAccessPropValidateBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

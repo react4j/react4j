@@ -3,6 +3,7 @@ package com.example.prop;
 import akasha.lang.JsArray;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -17,6 +18,9 @@ final class SingleChildPropComponentBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode child(final ReactNode child) {
     return newBuilder().child( child );
   }
@@ -38,6 +42,9 @@ final class SingleChildPropComponentBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

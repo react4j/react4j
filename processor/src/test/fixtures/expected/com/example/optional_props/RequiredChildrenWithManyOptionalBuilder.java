@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -19,31 +20,49 @@ final class RequiredChildrenWithManyOptionalBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step1 myPropA(final String myPropA) {
     return newBuilder().myPropA( myPropA );
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step1 myPropB(final String myPropB) {
     return newBuilder().myPropB( myPropB );
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step1 myPropC(final String myPropC) {
     return newBuilder().myPropC( myPropC );
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step1 myPropD(final String myPropD) {
     return newBuilder().myPropD( myPropD );
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode children(final ReactNode... children) {
     return newBuilder().children( children );
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
     return newBuilder().children( children );
   }
@@ -76,6 +95,9 @@ final class RequiredChildrenWithManyOptionalBuilder {
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -135,6 +157,9 @@ final class RequiredChildrenWithManyOptionalBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

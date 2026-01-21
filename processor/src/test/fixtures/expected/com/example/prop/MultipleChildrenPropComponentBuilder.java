@@ -4,6 +4,7 @@ import akasha.lang.JsArray;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -18,16 +19,25 @@ final class MultipleChildrenPropComponentBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode children(final ReactNode... children) {
     return newBuilder().children( children );
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
     return newBuilder().children( children );
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode build() {
     return newBuilder().build();
   }
@@ -40,6 +50,9 @@ final class MultipleChildrenPropComponentBuilder {
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -62,6 +75,9 @@ final class MultipleChildrenPropComponentBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

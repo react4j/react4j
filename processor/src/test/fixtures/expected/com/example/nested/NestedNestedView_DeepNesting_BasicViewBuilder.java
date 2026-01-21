@@ -2,6 +2,7 @@ package com.example.nested;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -16,12 +17,18 @@ final class NestedNestedView_DeepNesting_BasicViewBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode build() {
     return newBuilder().build();
   }
 
   public interface Step1 {
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -30,6 +37,9 @@ final class NestedNestedView_DeepNesting_BasicViewBuilder {
     private final ReactElement _element = ReactElement.createViewElement( NestedNestedView_DeepNesting_React4j_BasicView.Factory.TYPE );
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

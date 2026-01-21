@@ -3,6 +3,7 @@ package com.example.on_prop_change;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -17,11 +18,17 @@ final class NullableOnPropChangeBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode myProp(@Nullable final String myProp) {
     return newBuilder().myProp( myProp );
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static ReactNode build() {
     return newBuilder().build();
   }
@@ -31,6 +38,9 @@ final class NullableOnPropChangeBuilder {
     ReactNode myProp(@Nullable String myProp);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -46,6 +56,9 @@ final class NullableOnPropChangeBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }

@@ -4,6 +4,7 @@ import arez.component.Identifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
+import org.jetbrains.annotations.Contract;
 import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
@@ -20,6 +21,9 @@ final class ImmutablePropTypesBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step2 myProp(final ImmutablePropTypes.MyComponent myProp) {
     return newBuilder().myProp( myProp );
   }

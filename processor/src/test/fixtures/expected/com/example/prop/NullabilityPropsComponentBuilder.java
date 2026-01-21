@@ -4,6 +4,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -18,6 +19,9 @@ final class NullabilityPropsComponentBuilder {
   }
 
   @Nonnull
+  @Contract(
+      pure = true
+  )
   static Step2 myProp(@Nonnull final String myProp) {
     return newBuilder().myProp( myProp );
   }
@@ -32,6 +36,9 @@ final class NullabilityPropsComponentBuilder {
     ReactNode myProp2(@Nullable String myProp2);
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
@@ -55,6 +62,9 @@ final class NullabilityPropsComponentBuilder {
     }
 
     @Nonnull
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }
