@@ -53,7 +53,9 @@ Buildr::ReleaseTool.define_release_task do |t|
     IO.write(filename, lines.sort.uniq.join("\n") + "\n")
 
     sh "git add #{filename}"
-    sh 'git commit -m "Update statistics in preparation for next development iteration"'
+    if `git status --porcelain`.strip != ''
+      sh 'git commit -m "Update statistics in preparation for next development iteration"'
+    end
   end
 
   t.push_changes
