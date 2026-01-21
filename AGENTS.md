@@ -1,0 +1,135 @@
+# Repository Guidelines
+
+This guide helps contributors work effectively on the React4j codebase.
+
+## User Interaction
+
+When asked to perform a task, ask the user questions one at a time until you have enough context. Feel free to make
+reasonable assumptions based on patterns present in the code and ask the user to confirm the assumptions if there are
+reasonable alternatives.
+
+## Project Structure & Module Organization
+
+- Java modules:
+  - `core/` (React4j runtime + annotations)
+  - `dom/` (React DOM bindings, DOM props/events)
+  - `processor/` (annotation processor that generates view/builder/factory code)
+  - `api-test/` (Revapi diff tests against previous releases)
+  - `downstream-test/` (builds/validates downstream example apps and collects stats)
+  - `doc-examples/` (GWT examples embedded into the docs site)
+- Docs and site: `docs/` (Markdown), `website/` (Docusaurus v1), `assets/` (icons/favicons, api-diff assets).
+- Build configuration: `buildfile` (Buildr), `build.yaml` (artifact coordinates), `tasks/*.rake` (CI, GWT, release, docs).
+- Dependency coordinates are centralized in `build.yaml`; update there when adding or upgrading libraries.
+- Source layout: `*/src/main/java/...`; tests: `*/src/test/java/...`.
+- Generated or local-only directories: `target/`, `reports/`, `node_modules/` should not be edited or committed.
+- Encrypted secrets live in `etc/secrets`; do not edit or attempt to decode.
+
+### Module-specific notes
+
+- `core/`
+  - Core APIs live under `react4j.*` with internal helpers in `react4j.internal`.
+  - GWT module is `core/src/main/java/react4j/React.gwt.xml` with compile-time properties set in `react4j.ReactConfig`.
+  - `ReactDev.gwt.xml` sets development defaults and serves assets from `react4j/public/dev`.
+  - Uses Grim `@OmitPattern`/`@KeepPattern` in `core/src/main/java/react4j/package-info.java` to trim output.
+  - JS assets (React 16.6.0) are checked in under `core/generated/js_assets` and patched to expose `React.Element`.
+- `dom/`
+  - DOM bindings and ReactDOM live under `react4j.dom.*`; event wrappers under `react4j.dom.events`.
+  - GWT modules are `Dom.gwt.xml` and `DomDev.gwt.xml` in `dom/src/main/java/react4j/dom`.
+  - `react4j.dom.DOM` is generated from `tasks/react_dom.rake` into `dom/generated/reactgen/main/java/react4j/dom/DOM.java`.
+  - JS assets (react-dom 16.6.0) live under `dom/generated/js_assets`.
+- `processor/`
+  - Annotation processor targets `@react4j.annotations.View` and generates `React4j_*` types plus builders/factories.
+  - Integrates with Arez and Sting annotations (see `react4j.processor.Constants`).
+  - Processor options include `react4j.defer.unresolved`, `react4j.defer.errors`, `react4j.debug`, `react4j.profile`,
+    `react4j.verbose_out_of_round.errors`.
+  - The processor jar shades `javapoet` and `proton` under `react4j.processor.vendor.*` (see `buildfile`).
+  - Tests use fixtures under `processor/src/test/fixtures/{input,expected,bad_input}`.
+- `api-test/`
+  - Uses `revapi-diff` to compare previous/current core+dom jars; fixtures under
+    `api-test/src/test/resources/fixtures`.
+- `downstream-test/`
+  - Uses Gir to clone/build downstream apps and collect build statistics.
+  - Reads `react4j.deploy_test.*` and `react4j.build_j2cl_variants` system properties to control behaviour.
+- `doc-examples/`
+  - GWT example modules used in docs; `buildfile` defines `EXAMPLES` and `site:examples` copies outputs.
+
+## Build, Test, and Development Commands
+
+Prerequisites: JDK 17+, Ruby 2.7.x with Bundler, Node.js + Yarn (for docs site).
+
+- Bootstrap once: `bundle install` and `yarn install`.
+- Build all modules: `bundle exec buildr clean package`.
+- Run all tests: `bundle exec buildr test`.
+- CI task: `bundle exec buildr ci` (derives versions and runs package + site deploy).
+- Generate DOM factories: `bundle exec buildr react4j:dom:reactgen`.
+- Docs site:
+  - Serve: `bundle exec buildr site:serve` (runs `yarn start`).
+  - Build: `bundle exec buildr site:build` (outputs into `reports/site`).
+  - Link check: `bundle exec buildr site:link_check`.
+- API diff helpers:
+  - Update fixtures: `bundle exec buildr update_api_diff`.
+  - Test diff: `bundle exec buildr test_api_diff`.
+- Downstream build stats:
+  - Update stats: `bundle exec buildr update_downstream_build_stats`.
+  - Test stats: `bundle exec buildr test_downstream_build_stats`.
+
+Common environment flags used by build tasks:
+
+- `PRODUCT_VERSION`, `PREVIOUS_PRODUCT_VERSION` (release/versioned tasks).
+- `TEST=no` to skip tests, `GWT=no` to skip GWT compilation, `J2CL=no` to skip J2CL variants.
+- `DOWNSTREAM=no` to skip downstream builds, `BUILD_STATS=no` to skip build stat collection.
+- `STORE_API_DIFF=true` or `STORE_BUILD_STATISTICS=true` to update fixtures.
+
+## Generated Code & Assets
+
+- Do not hand-edit generated outputs in `core/generated`, `dom/generated`, or `processor` fixture outputs.
+- DOM factories are generated by `tasks/react_dom.rake` into `dom/generated/reactgen/main/java/react4j/dom/DOM.java`.
+- React/ReactDOM JS assets are downloaded via `tasks/js_asset.rake` into `core/generated/js_assets` and
+  `dom/generated/js_assets`, with small regex patches applied.
+
+## Configuration & Runtime Flags
+
+React4j uses both JVM system properties and GWT properties (see `core/src/main/java/react4j/React.gwt.xml` and
+`core/src/main/java/react4j/ReactConfig.java`):
+
+- `react4j.environment` = `development|production`
+- `react4j.enable_view_names` = `true|false`
+- `react4j.check_invariants` = `true|false`
+- `react4j.minimize_input_keys` = `true|false`
+- `react4j.validate_input_values` = `true|false`
+- `react4j.store_debug_data_as_state` = `true|false`
+- Closure/J2CL builds also read `goog.define` values from `core/src/main/java/react4j/react4j.js`
+  (retained via `core/src/main/java/react4j/ReactConfig.native.js`).
+
+Testing and tooling properties:
+
+- `react4j.core.compile_target`, `react4j.dom.compile_target` (used by JDepend tests).
+- `react4j.fixture_dir` and `react4j.output_fixture_data` (processor fixture inputs/outputs).
+- `react4j.api_test.*` (api diff paths) and `react4j.deploy_test.*` (downstream build paths).
+
+## Coding Style & Naming Conventions
+
+- Language level: Java 17; compilation uses `-Xlint:all,-processing,-serial` and `-Werror`.
+- Indentation: 2 spaces; braces on a new line for types/methods.
+- Nullability: prefer `@Nonnull`/`@Nullable` from `javax.annotation`.
+- GWT/J2CL compatibility: use `@GwtIncompatible` for JVM-only helpers (see `core/src/main/java/react4j/GwtIncompatible.java`).
+- Public API should have Javadoc; keep package docs in `package-info.java`.
+
+## Testing Guidelines
+
+- Framework: TestNG across modules.
+- Processor tests use `processor/src/test/fixtures` for inputs and expected generated outputs.
+- Core/dom tests include JDepend dependency checks, requiring compile target properties.
+- API diff tests compare against fixtures in `api-test/src/test/resources/fixtures`.
+- Downstream tests may require network access (Git clones); use `DOWNSTREAM=no` to skip.
+
+## Commit & Pull Request Guidelines
+
+- Follow `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
+- Keep commits small and focused; update `CHANGELOG.md` for user-visible changes.
+- Remove trailing whitespace and keep file endings with a newline.
+
+## Security & Release Notes
+
+- `etc/secrets` is encrypted; do not modify it.
+- Release automation lives in `tasks/release.rake` and publishes via `mcrt:publish_if_tagged`.
