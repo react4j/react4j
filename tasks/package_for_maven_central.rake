@@ -94,5 +94,5 @@ end
 
 desc 'Create Package and deploy to Maven Central'
 task 'upload_to_maven_central' do
-  release_to_maven_central('replicant', %w(arez:core arez:dom arez:processor))
+  release_to_maven_central('react4j', %w(react4j:core react4j:dom react4j:processor))
 end
