@@ -45,12 +45,12 @@ public class ReactElement
     return element;
   }
 
-  @SuppressWarnings( "JavaExistingMethodCanBeUsed" )
   @JsOverlay
   @Nonnull
   @Contract( pure = true )
   public static ReactElement createViewElement( @Nonnull final ViewConstructorFunction type )
   {
+    @SuppressWarnings( { "JavaExistingMethodCanBeUsed", "RedundantSuppression" } )
     final ReactElement element = create( type );
     element.inputs = JsPropertyMap.of();
     element.key = null;
