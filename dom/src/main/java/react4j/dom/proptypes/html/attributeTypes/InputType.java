@@ -6,8 +6,6 @@ import org.intellij.lang.annotations.MagicConstant;
 
 /**
  * An enumeration specifying the type of input control to render.
- *
- * @see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#%3Cinput%3E_types"><code>&lt;input&gt;</code> type - MDN</a>
  */
 @Documented
 @MagicConstant( valuesFromClass = InputType.class )
