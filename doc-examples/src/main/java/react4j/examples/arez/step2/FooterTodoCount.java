@@ -1,5 +1,6 @@
 package react4j.examples.arez.step2;
 
+import javax.annotation.Nonnull;
 import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
@@ -11,6 +12,7 @@ import static react4j.dom.DOM.*;
 abstract class FooterTodoCount
 {
   @Render
+  @Nonnull
   ReactNode render()
   {
     final int count = AppData.model.totalCount();
