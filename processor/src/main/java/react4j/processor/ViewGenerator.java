@@ -1512,6 +1512,7 @@ final class ViewGenerator
       MethodSpec
         .methodBuilder( "getSnapshotBeforeUpdate" )
         .addAnnotation( Override.class )
+        .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
         .addModifiers( Modifier.FINAL, Modifier.PUBLIC )
         .returns( TypeName.get( Object.class ) )
         .addParameter( ParameterSpec

@@ -84,6 +84,7 @@ abstract class React4j_BasicPreUpdateModel extends BasicPreUpdateModel {
     }
 
     @Override
+    @Nullable
     public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
         @Nonnull final JsPropertyMap<Object> prevState) {
       $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
