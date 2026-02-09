@@ -1264,6 +1264,20 @@ public final class React4jProcessor
                                              Constants.VNODE_CLASSNAME );
         MemberChecks.mustNotThrowAnyExceptions( Constants.RENDER_CLASSNAME, method );
         MemberChecks.mustNotHaveAnyTypeParameters( Constants.RENDER_CLASSNAME, method );
+        if ( !method.getReturnType().getKind().isPrimitive() &&
+             !AnnotationsUtil.hasNonnullAnnotation( method ) &&
+             !AnnotationsUtil.hasNullableAnnotation( method ) &&
+             ElementsUtil.isWarningNotSuppressed( method,
+                                                  Constants.WARNING_MISSING_RENDER_NULLABILITY,
+                                                  Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
+        {
+          final String message =
+            MemberChecks.shouldNot( Constants.RENDER_CLASSNAME,
+                                    "return a non-primitive type without a @Nonnull or @Nullable annotation. " +
+                                    MemberChecks.suppressedBy( Constants.WARNING_MISSING_RENDER_NULLABILITY,
+                                                               Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
+          processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+        }
 
         descriptor.setRender( method );
         foundRender = true;

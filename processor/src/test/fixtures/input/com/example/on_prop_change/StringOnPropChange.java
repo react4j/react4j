@@ -19,6 +19,7 @@ abstract class StringOnPropChange
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

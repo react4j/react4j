@@ -5,6 +5,7 @@ import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class PostUpdateAndPostMountOrUpdateModel
@@ -19,6 +20,7 @@ abstract class PostUpdateAndPostMountOrUpdateModel
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

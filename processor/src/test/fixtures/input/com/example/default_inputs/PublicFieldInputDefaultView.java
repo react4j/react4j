@@ -17,6 +17,7 @@ abstract class PublicFieldInputDefaultView
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

@@ -6,6 +6,7 @@ import react4j.annotations.Input;
 import react4j.annotations.InputDefault;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class ColorfulNameInputDefaultView
@@ -17,6 +18,7 @@ abstract class ColorfulNameInputDefaultView
   @Nonnull
   abstract String getMyProp12$23();
 
+  @Nullable
   @Render
   ReactNode render()
   {

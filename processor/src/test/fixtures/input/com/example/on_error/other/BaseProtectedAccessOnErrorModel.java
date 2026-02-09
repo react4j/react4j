@@ -6,9 +6,11 @@ import react4j.ReactErrorInfo;
 import react4j.ReactNode;
 import react4j.annotations.OnError;
 import react4j.annotations.Render;
+import javax.annotation.Nullable;
 
 public abstract class BaseProtectedAccessOnErrorModel
 {
+  @Nullable
   @Render
   protected ReactNode render()
   {

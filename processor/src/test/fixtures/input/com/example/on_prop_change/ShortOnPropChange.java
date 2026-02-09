@@ -5,6 +5,7 @@ import react4j.annotations.Input;
 import react4j.annotations.OnInputChange;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class ShortOnPropChange
@@ -17,6 +18,7 @@ abstract class ShortOnPropChange
   @Input
   abstract short getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

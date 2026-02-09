@@ -10,6 +10,7 @@ import react4j.annotations.PreUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.SortOrder;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class RootPackageCompleteComponent
@@ -25,6 +26,7 @@ abstract class RootPackageCompleteComponent
   @Input
   abstract int getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

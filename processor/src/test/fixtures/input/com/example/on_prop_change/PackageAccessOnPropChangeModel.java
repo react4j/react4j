@@ -19,6 +19,7 @@ abstract class PackageAccessOnPropChangeModel
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

@@ -20,6 +20,7 @@ abstract class PublicAccessViaInterfacePropValidateModel
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

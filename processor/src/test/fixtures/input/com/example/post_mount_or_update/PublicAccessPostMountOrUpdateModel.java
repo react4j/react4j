@@ -4,6 +4,7 @@ import react4j.ReactNode;
 import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class PublicAccessPostMountOrUpdateModel
@@ -13,6 +14,7 @@ abstract class PublicAccessPostMountOrUpdateModel
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

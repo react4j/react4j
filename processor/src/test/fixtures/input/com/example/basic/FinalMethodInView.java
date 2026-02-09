@@ -3,6 +3,7 @@ package com.example.basic;
 import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 public abstract class FinalMethodInView
@@ -11,6 +12,7 @@ public abstract class FinalMethodInView
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

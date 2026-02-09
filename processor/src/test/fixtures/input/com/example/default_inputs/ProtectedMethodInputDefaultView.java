@@ -22,6 +22,7 @@ abstract class ProtectedMethodInputDefaultView
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

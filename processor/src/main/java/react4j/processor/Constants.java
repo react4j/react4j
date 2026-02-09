@@ -73,6 +73,9 @@ final class Constants
   static final String WARNING_MISSING_INPUT_NULLABILITY =
     "React4j:MissingInputNullability";
   @Nonnull
+  static final String WARNING_MISSING_RENDER_NULLABILITY =
+    "React4j:MissingRenderNullability";
+  @Nonnull
   static final String WARNING_PUBLIC_METHOD = "React4j:PublicMethod";
   @Nonnull
   static final String WARNING_PROTECTED_METHOD = "React4j:ProtectedMethod";

@@ -5,6 +5,7 @@ import react4j.annotations.PostRender;
 import react4j.annotations.Render;
 import react4j.annotations.SortOrder;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class MultipleSortedPostRenderModel
@@ -29,6 +30,7 @@ abstract class MultipleSortedPostRenderModel
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

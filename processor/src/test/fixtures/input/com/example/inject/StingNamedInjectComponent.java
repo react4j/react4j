@@ -5,6 +5,7 @@ import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import sting.Named;
+import javax.annotation.Nullable;
 
 @View
 abstract class StingNamedInjectComponent
@@ -13,6 +14,7 @@ abstract class StingNamedInjectComponent
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

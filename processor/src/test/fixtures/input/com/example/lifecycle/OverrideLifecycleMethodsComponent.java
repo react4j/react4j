@@ -11,10 +11,12 @@ import react4j.annotations.PostUpdate;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class OverrideLifecycleMethodsComponent
 {
+  @Nullable
   @Render
   ReactNode render()
   {

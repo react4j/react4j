@@ -5,6 +5,7 @@ import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import sting.ContributeTo;
+import javax.annotation.Nullable;
 
 @ContributeTo( "MyAutoFragment" )
 @View
@@ -14,6 +15,7 @@ abstract class ContributeToComponent
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

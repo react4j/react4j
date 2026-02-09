@@ -21,6 +21,7 @@ abstract class DeprecatedMethodInputDefaultView
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

@@ -5,6 +5,7 @@ import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import sting.Named;
+import javax.annotation.Nullable;
 
 @Named( "blah" )
 @View
@@ -14,6 +15,7 @@ abstract class StingNamedTypeComponent
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

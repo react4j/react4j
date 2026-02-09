@@ -20,6 +20,7 @@ abstract class ParameterizedOnPropChange
   @Input
   abstract ArrayList<String> getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

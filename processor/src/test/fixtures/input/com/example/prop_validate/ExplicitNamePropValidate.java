@@ -19,6 +19,7 @@ abstract class ExplicitNamePropValidate
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

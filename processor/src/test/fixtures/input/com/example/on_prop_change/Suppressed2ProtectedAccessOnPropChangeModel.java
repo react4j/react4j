@@ -22,6 +22,7 @@ abstract class Suppressed2ProtectedAccessOnPropChangeModel
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

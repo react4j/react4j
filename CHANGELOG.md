@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Generate a warning when a method annotated with `@Input` is a non-primitve type is not explicitly annotated with a `@Nonnull` or `@Nullable` annotation. This invariant can be suppressed by adding a `@SuppressWarnings( "React4j:MissingInputNullability" )` annotation to either the `@Input` annotated method or the containing class.
+* Generate a warning when a method annotated with `@Render` is not explicitly annotated with a `@Nonnull` or `@Nullable` annotation. This invariant can be suppressed by adding a `@SuppressWarnings( "React4j:MissingRenderNullability" )` annotation to either the `@Render` annotated method or the containing class.
 
 ### [v0.202](https://github.com/react4j/react4j/tree/v0.202) (2026-02-09) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.201...v0.202)
 

@@ -1,12 +1,13 @@
+package com.example.render;
+
 import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
-import javax.annotation.Nullable;
 
 @View
-abstract class RootPackageView
+abstract class SuppressedNullabilityRenderView
 {
-  @Nullable
+  @SuppressWarnings( "React4j:MissingRenderNullability" )
   @Render
   ReactNode render()
   {

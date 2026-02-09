@@ -6,6 +6,7 @@ import react4j.annotations.OnInputChange;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class OnPropChangeAndPostUpdateModel
@@ -23,6 +24,7 @@ abstract class OnPropChangeAndPostUpdateModel
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

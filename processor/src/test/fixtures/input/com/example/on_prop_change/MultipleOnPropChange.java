@@ -25,6 +25,7 @@ abstract class MultipleOnPropChange
   @Input
   abstract int getMyProp3();
 
+  @Nullable
   @Render
   ReactNode render()
   {

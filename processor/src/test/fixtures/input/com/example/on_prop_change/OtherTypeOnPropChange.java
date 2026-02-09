@@ -20,6 +20,7 @@ abstract class OtherTypeOnPropChange
   @Input
   abstract BitSet getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

@@ -4,6 +4,7 @@ import react4j.ReactNode;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class PackageAccessPreUpdateModel
@@ -13,6 +14,7 @@ abstract class PackageAccessPreUpdateModel
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

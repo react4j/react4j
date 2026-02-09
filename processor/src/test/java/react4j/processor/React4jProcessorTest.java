@@ -1025,6 +1025,8 @@ public final class React4jProcessorTest
 
         new Object[]{ "com.example.input.UnspecifiedNullabilityInputView",
                       "@Input target should not return a non-primitive type without a @Nonnull or @Nullable annotation. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:MissingInputNullability\" ) or @SuppressReact4jWarnings( \"React4j:MissingInputNullability\" )" },
+        new Object[]{ "com.example.render.UnspecifiedNullabilityRenderView",
+                      "@Render target should not return a non-primitive type without a @Nonnull or @Nullable annotation. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:MissingRenderNullability\" ) or @SuppressReact4jWarnings( \"React4j:MissingRenderNullability\" )" },
 
         new Object[]{ "com.example.publish.ProtectedPublishView",
                       "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
@@ -1050,6 +1052,7 @@ public final class React4jProcessorTest
     return new Object[][]
       {
         new Object[]{ "com.example.input.SuppressedNullabilityInputView" },
+        new Object[]{ "com.example.render.SuppressedNullabilityRenderView" },
         new Object[]{ "com.example.on_error.Suppressed1ProtectedAccessOnErrorModel" },
         new Object[]{ "com.example.on_error.Suppressed1PublicAccessOnErrorModel" },
         new Object[]{ "com.example.on_error.Suppressed2ProtectedAccessOnErrorModel" },

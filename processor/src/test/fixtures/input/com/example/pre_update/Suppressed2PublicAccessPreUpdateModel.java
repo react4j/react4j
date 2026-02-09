@@ -5,6 +5,7 @@ import react4j.annotations.PreUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.SuppressReact4jWarnings;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class Suppressed2PublicAccessPreUpdateModel
@@ -16,6 +17,7 @@ abstract class Suppressed2PublicAccessPreUpdateModel
   {
   }
 
+  @Nullable
   @Render
   ReactNode render()
   {

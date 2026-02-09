@@ -4,6 +4,7 @@ import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.ScheduleRender;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class MultiScheduleRenderComponent
@@ -20,6 +21,7 @@ abstract class MultiScheduleRenderComponent
   @ScheduleRender( skipShouldViewUpdate = false )
   abstract void myScheduleRender4();
 
+  @Nullable
   @Render
   ReactNode render()
   {

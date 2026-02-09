@@ -4,6 +4,7 @@ import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.ScheduleRender;
 import react4j.annotations.View;
+import javax.annotation.Nullable;
 
 @View
 abstract class SuppressedPublicScheduleRenderComponent
@@ -13,6 +14,7 @@ abstract class SuppressedPublicScheduleRenderComponent
   @ScheduleRender
   public abstract void myScheduleRender();
 
+  @Nullable
   @Render
   ReactNode render()
   {

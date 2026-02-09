@@ -3,6 +3,7 @@ package com.example.post_update.other;
 import react4j.ReactNode;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.Render;
+import javax.annotation.Nullable;
 
 public abstract class BaseProtectedAccessPostUpdateModel
 {
@@ -11,6 +12,7 @@ public abstract class BaseProtectedAccessPostUpdateModel
   {
   }
 
+  @Nullable
   @Render
   protected ReactNode render()
   {

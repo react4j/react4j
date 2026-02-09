@@ -22,6 +22,7 @@ abstract class ExplicitOptional
   @Input( require = Feature.DISABLE )
   abstract String getMyOtherOptionalProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {
