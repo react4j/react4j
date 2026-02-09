@@ -1272,10 +1272,10 @@ public final class React4jProcessor
                                                   Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
         {
           final String message =
-            MemberChecks.shouldNot( Constants.RENDER_CLASSNAME,
-                                    "should be annotated by a @Nonnull or a @Nullable annotation. " +
-                                    MemberChecks.suppressedBy( Constants.WARNING_MISSING_RENDER_NULLABILITY,
-                                                               Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
+            MemberChecks.should( Constants.RENDER_CLASSNAME,
+                                 "be annotated by a @Nonnull or a @Nullable annotation. " +
+                                 MemberChecks.suppressedBy( Constants.WARNING_MISSING_RENDER_NULLABILITY,
+                                                            Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
           processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
         }
 
