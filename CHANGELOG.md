@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.arez` artifacts to version `0.225`.
+
 ### [v0.202](https://github.com/react4j/react4j/tree/v0.202) (2026-02-09) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.201...v0.202)
 
 Changes in this release:
