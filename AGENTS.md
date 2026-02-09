@@ -8,6 +8,10 @@ When asked to perform a task, ask the user questions one at a time until you hav
 reasonable assumptions based on patterns present in the code and ask the user to confirm the assumptions if there are
 reasonable alternatives.
 
+## Notes for the Agent
+
+When you learn something non-obvious, add it here if it would make future changes faster or of higher quality.
+
 ## Project Structure & Module Organization
 
 - Java modules:
