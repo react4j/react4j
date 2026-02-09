@@ -1,5 +1,6 @@
 package com.example.default_inputs;
 
+import javax.annotation.Nonnull;
 import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.InputDefault;
@@ -13,6 +14,7 @@ abstract class ColorfulNameInputDefaultView
   static final String DEFAULT_MY_PROP12$23 = "Foo";
 
   @Input
+  @Nonnull
   abstract String getMyProp12$23();
 
   @Render

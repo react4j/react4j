@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.Keyed;
@@ -22,8 +23,17 @@ final class ImmutablePropTypeKeyedMultiStepInheritedBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp) {
+  static ReactNode myProp(
+      @Nullable final ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,7 +41,13 @@ final class ImmutablePropTypeKeyedMultiStepInheritedBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp);
+    ReactNode myProp(@Nullable ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -44,7 +60,7 @@ final class ImmutablePropTypeKeyedMultiStepInheritedBuilder {
         pure = true
     )
     public final ReactNode myProp(
-        final ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp) {
+        @Nullable final ImmutablePropTypeKeyedMultiStepInherited.KeyedComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedMultiStepInherited_7d3cf3a5" : ImmutablePropTypeKeyedMultiStepInherited.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeKeyedMultiStepInherited.Inputs.myProp, myProp );
       return build();

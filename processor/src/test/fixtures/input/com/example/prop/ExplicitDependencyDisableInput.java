@@ -16,6 +16,7 @@ abstract class ExplicitDependencyDisableInput
   {
   }
 
+  @Nullable
   @Input( dependency = Feature.DISABLE )
   abstract MyComponent getMyComponent();
 

@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.component.Identifiable;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.React;
@@ -22,8 +23,17 @@ final class ExplicitDependencyEnableInputBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myComponent(final ExplicitDependencyEnableInput.MyComponent myComponent) {
+  static ReactNode myComponent(
+      @Nullable final ExplicitDependencyEnableInput.MyComponent myComponent) {
     return newBuilder().myComponent( myComponent );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,7 +41,13 @@ final class ExplicitDependencyEnableInputBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myComponent(ExplicitDependencyEnableInput.MyComponent myComponent);
+    ReactNode myComponent(@Nullable ExplicitDependencyEnableInput.MyComponent myComponent);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -44,7 +60,7 @@ final class ExplicitDependencyEnableInputBuilder {
         pure = true
     )
     public final ReactNode myComponent(
-        final ExplicitDependencyEnableInput.MyComponent myComponent) {
+        @Nullable final ExplicitDependencyEnableInput.MyComponent myComponent) {
       _element.setKey( Identifiable.<Object>getArezId( myComponent ) + ( React.enableViewNames() ? "_ExplicitDependencyEnableInput_ff4614c5" : ExplicitDependencyEnableInput.class.getName() ) );
       _element.input( React4j_ExplicitDependencyEnableInput.Inputs.myComponent, myComponent );
       return build();

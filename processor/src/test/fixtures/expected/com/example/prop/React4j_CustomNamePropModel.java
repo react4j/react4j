@@ -42,8 +42,8 @@ abstract class React4j_CustomNamePropModel extends CustomNamePropModel {
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.foo ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.foo ).asString() : null;

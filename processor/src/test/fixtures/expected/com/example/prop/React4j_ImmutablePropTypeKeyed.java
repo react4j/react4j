@@ -30,6 +30,7 @@ abstract class React4j_ImmutablePropTypeKeyed extends ImmutablePropTypeKeyed {
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final ImmutablePropTypeKeyed.KeyedComponent $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeKeyed(
@@ -51,6 +52,7 @@ abstract class React4j_ImmutablePropTypeKeyed extends ImmutablePropTypeKeyed {
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   ImmutablePropTypeKeyed.KeyedComponent getMyProp() {
     return $$react4j_immutable_input$$_myProp;

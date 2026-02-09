@@ -26,6 +26,7 @@ abstract class ImmutablePropTypeKeyedInherited
   {
   }
 
+  @Nullable
   @Input( immutable = true )
   abstract KeyedComponent getMyProp();
 

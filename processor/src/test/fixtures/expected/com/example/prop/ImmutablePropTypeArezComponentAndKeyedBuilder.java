@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.Keyed;
@@ -22,8 +23,17 @@ final class ImmutablePropTypeArezComponentAndKeyedBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final ImmutablePropTypeArezComponentAndKeyed.MyComponent myProp) {
+  static ReactNode myProp(
+      @Nullable final ImmutablePropTypeArezComponentAndKeyed.MyComponent myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,7 +41,13 @@ final class ImmutablePropTypeArezComponentAndKeyedBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeArezComponentAndKeyed.MyComponent myProp);
+    ReactNode myProp(@Nullable ImmutablePropTypeArezComponentAndKeyed.MyComponent myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -43,7 +59,8 @@ final class ImmutablePropTypeArezComponentAndKeyedBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final ImmutablePropTypeArezComponentAndKeyed.MyComponent myProp) {
+    public final ReactNode myProp(
+        @Nullable final ImmutablePropTypeArezComponentAndKeyed.MyComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezComponentAndKeyed_ad8da370" : ImmutablePropTypeArezComponentAndKeyed.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeArezComponentAndKeyed.Inputs.myProp, myProp );
       return build();

@@ -43,14 +43,10 @@ abstract class React4j_ColorfulNameInputDefaultView extends ColorfulNameInputDef
     return viewConstructor;
   }
 
+  @Nonnull
   @Override
-  @Nullable
   String getMyProp12$23() {
-    if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp12$23 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp12$23 ).asString() : null;
-    } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp12$23 ) );
-    }
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp12$23 ).asString();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(

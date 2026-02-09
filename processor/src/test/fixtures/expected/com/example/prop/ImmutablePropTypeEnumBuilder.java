@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.React;
@@ -21,8 +22,16 @@ final class ImmutablePropTypeEnumBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final ImmutablePropTypeEnum.Foo myProp) {
+  static ReactNode myProp(@Nullable final ImmutablePropTypeEnum.Foo myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -30,7 +39,13 @@ final class ImmutablePropTypeEnumBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeEnum.Foo myProp);
+    ReactNode myProp(@Nullable ImmutablePropTypeEnum.Foo myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -42,7 +57,7 @@ final class ImmutablePropTypeEnumBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final ImmutablePropTypeEnum.Foo myProp) {
+    public final ReactNode myProp(@Nullable final ImmutablePropTypeEnum.Foo myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeEnum_00ba1b5e" : ImmutablePropTypeEnum.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeEnum.Inputs.myProp, myProp );
       return build();

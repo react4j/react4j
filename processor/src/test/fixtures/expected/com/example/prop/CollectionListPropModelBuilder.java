@@ -2,6 +2,7 @@ package com.example.prop;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -21,8 +22,16 @@ final class CollectionListPropModelBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final List<String> myProp) {
+  static ReactNode myProp(@Nullable final List<String> myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -30,7 +39,13 @@ final class CollectionListPropModelBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(List<String> myProp);
+    ReactNode myProp(@Nullable List<String> myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -42,7 +57,7 @@ final class CollectionListPropModelBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final List<String> myProp) {
+    public final ReactNode myProp(@Nullable final List<String> myProp) {
       _element.input( React4j_CollectionListPropModel.Inputs.myProp, myProp );
       return build();
     }

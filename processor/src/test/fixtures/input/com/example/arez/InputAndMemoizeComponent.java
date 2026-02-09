@@ -10,6 +10,7 @@ import react4j.annotations.View;
 @View( type = View.Type.TRACKING )
 abstract class InputAndMemoizeComponent
 {
+  @Nullable
   @Input
   abstract String getValue();
 

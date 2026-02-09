@@ -12,6 +12,7 @@ import react4j.annotations.View;
 @View
 abstract class MultiPropComponent4
 {
+  @Nullable
   @Input
   abstract String getMyProp();
 

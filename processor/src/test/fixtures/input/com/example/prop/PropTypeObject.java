@@ -13,6 +13,7 @@ abstract class PropTypeObject
   {
   }
 
+  @Nullable
   @Input
   abstract MyObject getMyProp();
 

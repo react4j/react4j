@@ -31,6 +31,7 @@ abstract class React4j_ExplicitDependencyEnableInput extends ExplicitDependencyE
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @ComponentDependency
+  @Nullable
   final ExplicitDependencyEnableInput.MyComponent $$react4j_immutable_input$$_myComponent;
 
   React4j_ExplicitDependencyEnableInput(
@@ -52,6 +53,7 @@ abstract class React4j_ExplicitDependencyEnableInput extends ExplicitDependencyE
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   ExplicitDependencyEnableInput.MyComponent getMyComponent() {
     return $$react4j_immutable_input$$_myComponent;

@@ -7,6 +7,7 @@ import react4j.annotations.Render;
 
 public abstract class BaseProtectedAccessPropModel
 {
+  @Nullable
   @Input
   protected abstract String getMyProp();
 

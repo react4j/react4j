@@ -1,5 +1,6 @@
 package com.example.nested;
 
+import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.Render;
@@ -17,9 +18,11 @@ public class NestedCompleteComponent
       _value = value;
     }
 
+    @Nullable
     @Input
     abstract String getMyProp();
 
+    @Nullable
     @Render
     ReactNode render()
     {

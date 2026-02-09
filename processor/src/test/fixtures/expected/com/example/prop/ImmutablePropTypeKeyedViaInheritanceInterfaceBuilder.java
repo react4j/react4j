@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.Keyed;
@@ -23,8 +24,16 @@ final class ImmutablePropTypeKeyedViaInheritanceInterfaceBuilder {
       pure = true
   )
   static ReactNode myProp(
-      final ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp) {
+      @Nullable final ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -32,7 +41,13 @@ final class ImmutablePropTypeKeyedViaInheritanceInterfaceBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp);
+    ReactNode myProp(@Nullable ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -45,7 +60,7 @@ final class ImmutablePropTypeKeyedViaInheritanceInterfaceBuilder {
         pure = true
     )
     public final ReactNode myProp(
-        final ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp) {
+        @Nullable final ImmutablePropTypeKeyedViaInheritanceInterface.KeyedInterface myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedViaInheritanceInterface_4cd25d5b" : ImmutablePropTypeKeyedViaInheritanceInterface.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeKeyedViaInheritanceInterface.Inputs.myProp, myProp );
       return build();

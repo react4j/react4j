@@ -873,6 +873,20 @@ public final class React4jProcessor
                                                            Constants.INPUT_CLASSNAME,
                                                            method );
     final TypeMirror returnType = method.getReturnType();
+    if ( !returnType.getKind().isPrimitive() &&
+         !AnnotationsUtil.hasNonnullAnnotation( method ) &&
+         !AnnotationsUtil.hasNullableAnnotation( method ) &&
+         ElementsUtil.isWarningNotSuppressed( method,
+                                              Constants.WARNING_MISSING_INPUT_NULLABILITY,
+                                              Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
+    {
+      final String message =
+        MemberChecks.shouldNot( Constants.INPUT_CLASSNAME,
+                                "return a non-primitive type without a @Nonnull or @Nullable annotation. " +
+                                MemberChecks.suppressedBy( Constants.WARNING_MISSING_INPUT_NULLABILITY,
+                                                           Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
+      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+    }
     if ( "build".equals( name ) )
     {
       throw new ProcessorException( "@Input named 'build' is invalid as it conflicts with the method named " +

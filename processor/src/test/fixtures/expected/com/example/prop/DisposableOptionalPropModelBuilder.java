@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,7 +21,7 @@ final class DisposableOptionalPropModelBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode value(final Object value) {
+  static ReactNode value(@Nullable final Object value) {
     return newBuilder().value( value );
   }
 
@@ -37,7 +38,7 @@ final class DisposableOptionalPropModelBuilder {
     @Contract(
         pure = true
     )
-    ReactNode value(Object value);
+    ReactNode value(@Nullable Object value);
 
     @Nonnull
     @Contract(
@@ -55,7 +56,7 @@ final class DisposableOptionalPropModelBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode value(final Object value) {
+    public final ReactNode value(@Nullable final Object value) {
       _element.input( React4j_DisposableOptionalPropModel.Inputs.value, value );
       return build();
     }

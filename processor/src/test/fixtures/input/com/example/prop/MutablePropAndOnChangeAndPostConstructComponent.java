@@ -11,6 +11,7 @@ import react4j.annotations.View;
 @View
 abstract class MutablePropAndOnChangeAndPostConstructComponent
 {
+  @Nullable
   @Input
   abstract String getMyProp();
 

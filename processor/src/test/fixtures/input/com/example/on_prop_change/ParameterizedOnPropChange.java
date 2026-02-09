@@ -1,6 +1,7 @@
 package com.example.on_prop_change;
 
 import java.util.ArrayList;
+import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.OnInputChange;
@@ -15,6 +16,7 @@ abstract class ParameterizedOnPropChange
   {
   }
 
+  @Nullable
   @Input
   abstract ArrayList<String> getMyProp();
 

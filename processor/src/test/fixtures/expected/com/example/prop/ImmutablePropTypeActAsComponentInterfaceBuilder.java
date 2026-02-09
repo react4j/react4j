@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.component.Identifiable;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.React;
@@ -22,8 +23,17 @@ final class ImmutablePropTypeActAsComponentInterfaceBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final ImmutablePropTypeActAsComponentInterface.MyComponent myProp) {
+  static ReactNode myProp(
+      @Nullable final ImmutablePropTypeActAsComponentInterface.MyComponent myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,7 +41,13 @@ final class ImmutablePropTypeActAsComponentInterfaceBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeActAsComponentInterface.MyComponent myProp);
+    ReactNode myProp(@Nullable ImmutablePropTypeActAsComponentInterface.MyComponent myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -44,7 +60,7 @@ final class ImmutablePropTypeActAsComponentInterfaceBuilder {
         pure = true
     )
     public final ReactNode myProp(
-        final ImmutablePropTypeActAsComponentInterface.MyComponent myProp) {
+        @Nullable final ImmutablePropTypeActAsComponentInterface.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeActAsComponentInterface_56c176ed" : ImmutablePropTypeActAsComponentInterface.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeActAsComponentInterface.Inputs.myProp, myProp );
       return build();

@@ -12,6 +12,7 @@ import react4j.annotations.View;
 abstract class MutablePropAndPostConstructWithReact4jSuppressComponent
 {
   @SuppressReact4jWarnings( "React4j:MutablePropAccessedInPostConstruct" )
+  @Nullable
   @Input
   abstract String getMyProp();
 

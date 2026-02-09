@@ -1,5 +1,6 @@
 package com.example.on_prop_change;
 
+import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.OnInputChange;
@@ -17,9 +18,11 @@ abstract class Suppressed2PublicAccessOnPropChangeModel
   {
   }
 
+  @Nullable
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

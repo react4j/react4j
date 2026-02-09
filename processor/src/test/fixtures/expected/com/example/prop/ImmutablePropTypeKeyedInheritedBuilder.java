@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.Keyed;
@@ -22,8 +23,16 @@ final class ImmutablePropTypeKeyedInheritedBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
+  static ReactNode myProp(@Nullable final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,7 +40,13 @@ final class ImmutablePropTypeKeyedInheritedBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeKeyedInherited.KeyedComponent myProp);
+    ReactNode myProp(@Nullable ImmutablePropTypeKeyedInherited.KeyedComponent myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -43,7 +58,8 @@ final class ImmutablePropTypeKeyedInheritedBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
+    public final ReactNode myProp(
+        @Nullable final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedInherited_62ec04af" : ImmutablePropTypeKeyedInherited.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeKeyedInherited.Inputs.myProp, myProp );
       return build();

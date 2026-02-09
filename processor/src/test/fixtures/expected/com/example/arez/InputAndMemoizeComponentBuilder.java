@@ -1,6 +1,7 @@
 package com.example.arez;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,16 @@ final class InputAndMemoizeComponentBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode value(final String value) {
+  static ReactNode value(@Nullable final String value) {
     return newBuilder().value( value );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -29,7 +38,13 @@ final class InputAndMemoizeComponentBuilder {
     @Contract(
         pure = true
     )
-    ReactNode value(String value);
+    ReactNode value(@Nullable String value);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -41,7 +56,7 @@ final class InputAndMemoizeComponentBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode value(final String value) {
+    public final ReactNode value(@Nullable final String value) {
       _element.input( React4j_InputAndMemoizeComponent.Inputs.value, value );
       return build();
     }

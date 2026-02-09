@@ -15,6 +15,7 @@ abstract class ActAsComponentPropModel
   {
   }
 
+  @Nullable
   @Input
   abstract Model getModel();
 

@@ -18,6 +18,7 @@ abstract class ImmutablePropTypeActAsComponentAndKeyed
   }
 
   // Keyed should win over ArezId for immutable prop
+  @Nullable
   @Input( immutable = true )
   abstract MyComponent getMyProp();
 

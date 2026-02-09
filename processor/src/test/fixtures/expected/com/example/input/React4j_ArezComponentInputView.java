@@ -59,8 +59,8 @@ abstract class React4j_ArezComponentInputView extends ArezComponentInputView {
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   String getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).asString() : null;
@@ -69,8 +69,8 @@ abstract class React4j_ArezComponentInputView extends ArezComponentInputView {
     }
   }
 
-  @Override
   @Nullable
+  @Override
   ArezComponentInputView.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;

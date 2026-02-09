@@ -22,8 +22,48 @@ final class MultiPropComponent4Builder {
   @Contract(
       pure = true
   )
-  static Step2 myProp(final String myProp) {
+  static Step1 myProp(@Nullable final String myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 myProp2(@Nullable final String myProp2) {
+    return newBuilder().myProp2( myProp2 );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 myProp3(@Nullable final String myProp3) {
+    return newBuilder().myProp3( myProp3 );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 myProp4(@Nullable final String myProp4) {
+    return newBuilder().myProp4( myProp4 );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 child(@Nullable final ReactNode child) {
+    return newBuilder().child( child );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,33 +71,31 @@ final class MultiPropComponent4Builder {
     @Contract(
         pure = true
     )
-    Step2 myProp(String myProp);
-  }
-
-  public interface Step2 {
-    @Nonnull
-    @Contract(
-        pure = true
-    )
-    Step2 myProp2(@Nullable String myProp2);
+    Step1 myProp(@Nullable String myProp);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    Step2 myProp3(@Nullable String myProp3);
+    Step1 myProp2(@Nullable String myProp2);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    Step2 myProp4(@Nullable String myProp4);
+    Step1 myProp3(@Nullable String myProp3);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    Step2 child(@Nullable ReactNode child);
+    Step1 myProp4(@Nullable String myProp4);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    Step1 child(@Nullable ReactNode child);
 
     @Nonnull
     @Contract(
@@ -66,7 +104,7 @@ final class MultiPropComponent4Builder {
     ReactNode build();
   }
 
-  private static class Builder implements Step1, Step2 {
+  private static class Builder implements Step1 {
     @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_MultiPropComponent4.Factory.TYPE );
 
@@ -75,7 +113,7 @@ final class MultiPropComponent4Builder {
     @Contract(
         pure = true
     )
-    public final Step2 myProp(final String myProp) {
+    public final Step1 myProp(@Nullable final String myProp) {
       _element.input( React4j_MultiPropComponent4.Inputs.myProp, myProp );
       return this;
     }
@@ -85,7 +123,7 @@ final class MultiPropComponent4Builder {
     @Contract(
         pure = true
     )
-    public final Step2 myProp2(@Nullable final String myProp2) {
+    public final Step1 myProp2(@Nullable final String myProp2) {
       _element.input( React4j_MultiPropComponent4.Inputs.myProp2, myProp2 );
       return this;
     }
@@ -95,7 +133,7 @@ final class MultiPropComponent4Builder {
     @Contract(
         pure = true
     )
-    public final Step2 myProp3(@Nullable final String myProp3) {
+    public final Step1 myProp3(@Nullable final String myProp3) {
       _element.input( React4j_MultiPropComponent4.Inputs.myProp3, myProp3 );
       return this;
     }
@@ -105,7 +143,7 @@ final class MultiPropComponent4Builder {
     @Contract(
         pure = true
     )
-    public final Step2 myProp4(@Nullable final String myProp4) {
+    public final Step1 myProp4(@Nullable final String myProp4) {
       _element.input( React4j_MultiPropComponent4.Inputs.myProp4, myProp4 );
       return this;
     }
@@ -115,7 +153,7 @@ final class MultiPropComponent4Builder {
     @Contract(
         pure = true
     )
-    public final Step2 child(@Nullable final ReactNode child) {
+    public final Step1 child(@Nullable final ReactNode child) {
       _element.input( React4j_MultiPropComponent4.Inputs.child, JsArray.of( child ) );
       return this;
     }

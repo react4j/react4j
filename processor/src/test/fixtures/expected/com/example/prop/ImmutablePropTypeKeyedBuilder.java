@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.Keyed;
@@ -22,8 +23,16 @@ final class ImmutablePropTypeKeyedBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final ImmutablePropTypeKeyed.KeyedComponent myProp) {
+  static ReactNode myProp(@Nullable final ImmutablePropTypeKeyed.KeyedComponent myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,7 +40,13 @@ final class ImmutablePropTypeKeyedBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeKeyed.KeyedComponent myProp);
+    ReactNode myProp(@Nullable ImmutablePropTypeKeyed.KeyedComponent myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -43,7 +58,7 @@ final class ImmutablePropTypeKeyedBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final ImmutablePropTypeKeyed.KeyedComponent myProp) {
+    public final ReactNode myProp(@Nullable final ImmutablePropTypeKeyed.KeyedComponent myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyed_200a3d27" : ImmutablePropTypeKeyed.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeKeyed.Inputs.myProp, myProp );
       return build();

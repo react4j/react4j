@@ -1,6 +1,7 @@
 package com.example.optional_props;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,32 @@ final class ExplicitOptionalBuilder {
   @Contract(
       pure = true
   )
-  static Step2 myRequiredProp(final String myRequiredProp) {
+  static Step1 myOptionalProp(@Nullable final String myOptionalProp) {
+    return newBuilder().myOptionalProp( myOptionalProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 myRequiredProp(@Nullable final String myRequiredProp) {
     return newBuilder().myRequiredProp( myRequiredProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 myOtherOptionalProp(@Nullable final String myOtherOptionalProp) {
+    return newBuilder().myOtherOptionalProp( myOtherOptionalProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -29,21 +54,19 @@ final class ExplicitOptionalBuilder {
     @Contract(
         pure = true
     )
-    Step2 myRequiredProp(String myRequiredProp);
-  }
-
-  public interface Step2 {
-    @Nonnull
-    @Contract(
-        pure = true
-    )
-    Step2 myOptionalProp(String myOptionalProp);
+    Step1 myOptionalProp(@Nullable String myOptionalProp);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    Step2 myOtherOptionalProp(String myOtherOptionalProp);
+    Step1 myRequiredProp(@Nullable String myRequiredProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    Step1 myOtherOptionalProp(@Nullable String myOtherOptionalProp);
 
     @Nonnull
     @Contract(
@@ -52,7 +75,7 @@ final class ExplicitOptionalBuilder {
     ReactNode build();
   }
 
-  private static class Builder implements Step1, Step2 {
+  private static class Builder implements Step1 {
     @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_ExplicitOptional.Factory.TYPE );
 
@@ -61,17 +84,7 @@ final class ExplicitOptionalBuilder {
     @Contract(
         pure = true
     )
-    public final Step2 myRequiredProp(final String myRequiredProp) {
-      _element.input( React4j_ExplicitOptional.Inputs.myRequiredProp, myRequiredProp );
-      return this;
-    }
-
-    @Override
-    @Nonnull
-    @Contract(
-        pure = true
-    )
-    public final Step2 myOptionalProp(final String myOptionalProp) {
+    public final Step1 myOptionalProp(@Nullable final String myOptionalProp) {
       _element.input( React4j_ExplicitOptional.Inputs.myOptionalProp, myOptionalProp );
       return this;
     }
@@ -81,7 +94,17 @@ final class ExplicitOptionalBuilder {
     @Contract(
         pure = true
     )
-    public final Step2 myOtherOptionalProp(final String myOtherOptionalProp) {
+    public final Step1 myRequiredProp(@Nullable final String myRequiredProp) {
+      _element.input( React4j_ExplicitOptional.Inputs.myRequiredProp, myRequiredProp );
+      return this;
+    }
+
+    @Override
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    public final Step1 myOtherOptionalProp(@Nullable final String myOtherOptionalProp) {
       _element.input( React4j_ExplicitOptional.Inputs.myOtherOptionalProp, myOtherOptionalProp );
       return this;
     }

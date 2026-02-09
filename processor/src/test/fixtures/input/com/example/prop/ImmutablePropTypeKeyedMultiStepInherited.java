@@ -31,6 +31,7 @@ abstract class ImmutablePropTypeKeyedMultiStepInherited
   {
   }
 
+  @Nullable
   @Input( immutable = true )
   abstract KeyedComponent getMyProp();
 

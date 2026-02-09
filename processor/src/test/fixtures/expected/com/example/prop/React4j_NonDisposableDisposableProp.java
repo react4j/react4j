@@ -59,8 +59,8 @@ abstract class React4j_NonDisposableDisposableProp extends NonDisposableDisposab
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   NonDisposableDisposableProp.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;

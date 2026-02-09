@@ -9,6 +9,7 @@ import react4j.annotations.View;
 @View
 abstract class ImmutablePropTypeBoxedByte
 {
+  @Nullable
   @Input( immutable = true )
   abstract Byte getMyProp();
 

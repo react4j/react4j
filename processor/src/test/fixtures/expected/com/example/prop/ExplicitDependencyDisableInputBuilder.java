@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,17 @@ final class ExplicitDependencyDisableInputBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myComponent(final ExplicitDependencyDisableInput.MyComponent myComponent) {
+  static ReactNode myComponent(
+      @Nullable final ExplicitDependencyDisableInput.MyComponent myComponent) {
     return newBuilder().myComponent( myComponent );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -29,7 +39,13 @@ final class ExplicitDependencyDisableInputBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myComponent(ExplicitDependencyDisableInput.MyComponent myComponent);
+    ReactNode myComponent(@Nullable ExplicitDependencyDisableInput.MyComponent myComponent);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -42,7 +58,7 @@ final class ExplicitDependencyDisableInputBuilder {
         pure = true
     )
     public final ReactNode myComponent(
-        final ExplicitDependencyDisableInput.MyComponent myComponent) {
+        @Nullable final ExplicitDependencyDisableInput.MyComponent myComponent) {
       _element.input( React4j_ExplicitDependencyDisableInput.Inputs.myComponent, myComponent );
       return build();
     }

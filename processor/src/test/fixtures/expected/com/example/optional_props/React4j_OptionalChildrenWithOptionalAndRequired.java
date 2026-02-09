@@ -43,18 +43,8 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
     return viewConstructor;
   }
 
-  @Override
   @Nullable
-  String getMyRequiredProp() {
-    if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ).asString() : null;
-    } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ) );
-    }
-  }
-
   @Override
-  @Nullable
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;
@@ -63,8 +53,18 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
     }
   }
 
-  @Override
   @Nullable
+  @Override
+  String getMyRequiredProp() {
+    if ( React.shouldCheckInvariants() ) {
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ).asString() : null;
+    } else {
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ) );
+    }
+  }
+
+  @Nullable
+  @Override
   ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ).cast() : null;
@@ -77,10 +77,10 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
       @Nullable final JsPropertyMap<Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
-    if ( !Js.isTripleEqual( inputs.get( Inputs.myRequiredProp ), nextInputs.get( Inputs.myRequiredProp ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myRequiredProp ), nextInputs.get( Inputs.myRequiredProp ) ) ) {
       return true;
     }
     if ( !Js.isTripleEqual( inputs.get( Inputs.children ), nextInputs.get( Inputs.children ) ) ) {
@@ -105,9 +105,9 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
   }
 
   static final class Inputs {
-    static final String myRequiredProp = React.shouldMinimizeInputKeys() ? "a" : "myRequiredProp";
+    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
 
-    static final String myProp = React.shouldMinimizeInputKeys() ? "b" : "myProp";
+    static final String myRequiredProp = React.shouldMinimizeInputKeys() ? "b" : "myRequiredProp";
 
     static final String children = "children";
   }

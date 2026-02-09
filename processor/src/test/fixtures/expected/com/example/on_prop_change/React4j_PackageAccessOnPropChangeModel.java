@@ -44,8 +44,8 @@ abstract class React4j_PackageAccessOnPropChangeModel extends PackageAccessOnPro
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;

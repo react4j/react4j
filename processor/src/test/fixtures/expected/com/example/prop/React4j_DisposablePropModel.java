@@ -58,8 +58,8 @@ abstract class React4j_DisposablePropModel extends DisposablePropModel {
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   Object getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).cast() : null;

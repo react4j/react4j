@@ -59,8 +59,8 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   ActAsComponentPropModel.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;

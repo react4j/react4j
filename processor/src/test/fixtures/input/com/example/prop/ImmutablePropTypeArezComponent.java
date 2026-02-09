@@ -21,6 +21,7 @@ abstract class ImmutablePropTypeArezComponent
     }
   }
 
+  @Nullable
   @Input( immutable = true )
   abstract MyComponent getMyProp();
 

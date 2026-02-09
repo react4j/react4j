@@ -43,8 +43,8 @@ abstract class React4j_OtherPropValidate extends OtherPropValidate {
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   BitSet getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;

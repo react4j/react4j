@@ -1,6 +1,7 @@
 package com.example.prop_validate;
 
 import java.util.BitSet;
+import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.InputValidate;
@@ -15,9 +16,11 @@ abstract class OtherPropValidate
   {
   }
 
+  @Nullable
   @Input
   abstract BitSet getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

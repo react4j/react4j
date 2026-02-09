@@ -1,6 +1,7 @@
 package com.example.on_prop_change;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -37,7 +38,7 @@ final class CustomNamingOnPropChangeBuilder {
     @Contract(
         pure = true
     )
-    Step3 myProp2(String myProp2);
+    Step3 myProp3(int myProp3);
   }
 
   public interface Step3 {
@@ -45,7 +46,13 @@ final class CustomNamingOnPropChangeBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp3(int myProp3);
+    ReactNode myProp2(@Nullable String myProp2);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1, Step2, Step3 {
@@ -67,8 +74,8 @@ final class CustomNamingOnPropChangeBuilder {
     @Contract(
         pure = true
     )
-    public final Step3 myProp2(final String myProp2) {
-      _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp2, myProp2 );
+    public final Step3 myProp3(final int myProp3) {
+      _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp3, myProp3 );
       return this;
     }
 
@@ -77,8 +84,8 @@ final class CustomNamingOnPropChangeBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp3(final int myProp3) {
-      _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp3, myProp3 );
+    public final ReactNode myProp2(@Nullable final String myProp2) {
+      _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp2, myProp2 );
       return build();
     }
 

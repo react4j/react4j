@@ -1,4 +1,4 @@
-package com.example.prop;
+package com.example.input;
 
 import javax.annotation.Nullable;
 import react4j.ReactNode;
@@ -7,19 +7,10 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View
-abstract class MultiPropComponent2
+abstract class UnspecifiedNullabilityInputView
 {
-  @Nullable
   @Input
-  abstract String getMyProp();
-
-  @Nullable
-  @Input
-  abstract ReactNode[] getChildren();
-
-  @Nullable
-  @Input
-  abstract String getMyProp2();
+  abstract String getValue();
 
   @Nullable
   @Render

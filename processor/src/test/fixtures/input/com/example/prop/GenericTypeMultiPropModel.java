@@ -9,9 +9,11 @@ import react4j.annotations.View;
 @View
 abstract class GenericTypeMultiPropModel<T>
 {
+  @Nullable
   @Input
   abstract T getValue();
 
+  @Nullable
   @Input
   abstract String getValue2();
 

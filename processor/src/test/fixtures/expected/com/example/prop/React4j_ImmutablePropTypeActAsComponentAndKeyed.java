@@ -31,6 +31,7 @@ abstract class React4j_ImmutablePropTypeActAsComponentAndKeyed extends Immutable
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @ComponentDependency
+  @Nullable
   final ImmutablePropTypeActAsComponentAndKeyed.MyComponent $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeActAsComponentAndKeyed(
@@ -52,6 +53,7 @@ abstract class React4j_ImmutablePropTypeActAsComponentAndKeyed extends Immutable
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   ImmutablePropTypeActAsComponentAndKeyed.MyComponent getMyProp() {
     return $$react4j_immutable_input$$_myProp;

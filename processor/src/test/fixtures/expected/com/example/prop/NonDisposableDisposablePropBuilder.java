@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,16 @@ final class NonDisposableDisposablePropBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode model(final NonDisposableDisposableProp.Model model) {
+  static ReactNode model(@Nullable final NonDisposableDisposableProp.Model model) {
     return newBuilder().model( model );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -29,7 +38,13 @@ final class NonDisposableDisposablePropBuilder {
     @Contract(
         pure = true
     )
-    ReactNode model(NonDisposableDisposableProp.Model model);
+    ReactNode model(@Nullable NonDisposableDisposableProp.Model model);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -41,7 +56,7 @@ final class NonDisposableDisposablePropBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode model(final NonDisposableDisposableProp.Model model) {
+    public final ReactNode model(@Nullable final NonDisposableDisposableProp.Model model) {
       _element.input( React4j_NonDisposableDisposableProp.Inputs.model, model );
       return build();
     }

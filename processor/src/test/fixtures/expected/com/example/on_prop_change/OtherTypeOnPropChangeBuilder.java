@@ -2,6 +2,7 @@ package com.example.on_prop_change;
 
 import java.util.BitSet;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -21,8 +22,16 @@ final class OtherTypeOnPropChangeBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final BitSet myProp) {
+  static ReactNode myProp(@Nullable final BitSet myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -30,7 +39,13 @@ final class OtherTypeOnPropChangeBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(BitSet myProp);
+    ReactNode myProp(@Nullable BitSet myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -42,7 +57,7 @@ final class OtherTypeOnPropChangeBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final BitSet myProp) {
+    public final ReactNode myProp(@Nullable final BitSet myProp) {
       _element.input( React4j_OtherTypeOnPropChange.Inputs.myProp, myProp );
       return build();
     }

@@ -30,6 +30,7 @@ abstract class React4j_ImmutablePropTypeBoxedBoolean extends ImmutablePropTypeBo
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final Boolean $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeBoxedBoolean(
@@ -51,6 +52,7 @@ abstract class React4j_ImmutablePropTypeBoxedBoolean extends ImmutablePropTypeBo
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   Boolean getMyProp() {
     return $$react4j_immutable_input$$_myProp;

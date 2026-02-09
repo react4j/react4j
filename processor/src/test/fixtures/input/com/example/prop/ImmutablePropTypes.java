@@ -44,22 +44,27 @@ abstract class ImmutablePropTypes
     A, B, C
   }
 
+  @Nullable
   @Input( immutable = true )
   abstract MyComponent getMyProp();
 
+  @Nullable
   @Input( immutable = true )
   abstract String getMyOtherProp();
 
   @Input( immutable = true )
   abstract int stillAnotherProp();
 
+  @Nullable
   @Input( immutable = true )
   abstract KeyedComponent BobsProp();
 
+  @Nullable
   @Input( immutable = true )
   abstract Foo getSomeProp();
 
   // Dynamic detection of key
+  @Nullable
   @Input( immutable = true )
   abstract Object getObject();
 

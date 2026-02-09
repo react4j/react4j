@@ -43,8 +43,8 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   String getMyRequiredProp1() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp1 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp1 ).asString() : null;
@@ -53,8 +53,8 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
     }
   }
 
-  @Override
   @Nullable
+  @Override
   String getMyRequiredProp2() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp2 ).asString() : null;
@@ -63,8 +63,8 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
     }
   }
 
-  @Override
   @Nullable
+  @Override
   String getMyRequiredProp3() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp3 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp3 ).asString() : null;
@@ -73,8 +73,8 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
     }
   }
 
-  @Override
   @Nullable
+  @Override
   ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ).cast() : null;

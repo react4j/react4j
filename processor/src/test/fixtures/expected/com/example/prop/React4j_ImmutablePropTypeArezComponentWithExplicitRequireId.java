@@ -31,6 +31,7 @@ abstract class React4j_ImmutablePropTypeArezComponentWithExplicitRequireId exten
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @ComponentDependency
+  @Nullable
   final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeArezComponentWithExplicitRequireId(
@@ -52,6 +53,7 @@ abstract class React4j_ImmutablePropTypeArezComponentWithExplicitRequireId exten
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent getMyProp() {
     return $$react4j_immutable_input$$_myProp;

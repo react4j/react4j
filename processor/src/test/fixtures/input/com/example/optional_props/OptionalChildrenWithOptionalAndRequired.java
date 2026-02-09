@@ -1,5 +1,6 @@
 package com.example.optional_props;
 
+import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Feature;
 import react4j.annotations.Input;
@@ -13,15 +14,19 @@ abstract class OptionalChildrenWithOptionalAndRequired
   @InputDefault
   static final String DEFAULT_MY_PROP = "Foo";
 
+  @Nullable
   @Input( require = Feature.DISABLE )
   abstract ReactNode[] getChildren();
 
+  @Nullable
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Input
   abstract String getMyRequiredProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

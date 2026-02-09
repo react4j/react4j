@@ -30,6 +30,7 @@ abstract class React4j_ImmutablePropTypeEnum extends ImmutablePropTypeEnum {
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final ImmutablePropTypeEnum.Foo $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeEnum(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
@@ -50,6 +51,7 @@ abstract class React4j_ImmutablePropTypeEnum extends ImmutablePropTypeEnum {
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   ImmutablePropTypeEnum.Foo getMyProp() {
     return $$react4j_immutable_input$$_myProp;

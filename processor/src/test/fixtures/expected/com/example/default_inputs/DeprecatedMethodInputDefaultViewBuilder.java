@@ -1,6 +1,7 @@
 package com.example.default_inputs;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
@@ -22,7 +23,7 @@ final class DeprecatedMethodInputDefaultViewBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final String myProp) {
+  static ReactNode myProp(@Nullable final String myProp) {
     return newBuilder().myProp( myProp );
   }
 
@@ -39,7 +40,7 @@ final class DeprecatedMethodInputDefaultViewBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(String myProp);
+    ReactNode myProp(@Nullable String myProp);
 
     @Nonnull
     @Contract(
@@ -63,7 +64,7 @@ final class DeprecatedMethodInputDefaultViewBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final String myProp) {
+    public final ReactNode myProp(@Nullable final String myProp) {
       _element.input( React4j_DeprecatedMethodInputDefaultView.Inputs.myProp, myProp );
       return build();
     }

@@ -3,6 +3,7 @@ package com.example.prop;
 import akasha.lang.JsArray;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -22,8 +23,40 @@ final class MultiPropComponent2Builder {
   @Contract(
       pure = true
   )
-  static Step2 myProp(final String myProp) {
+  static Step1 myProp(@Nullable final String myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 myProp2(@Nullable final String myProp2) {
+    return newBuilder().myProp2( myProp2 );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+    return newBuilder().children( children );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 children(@Nullable final ReactNode... children) {
+    return newBuilder().children( children );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,23 +64,13 @@ final class MultiPropComponent2Builder {
     @Contract(
         pure = true
     )
-    Step2 myProp(String myProp);
-  }
+    Step1 myProp(@Nullable String myProp);
 
-  public interface Step2 {
     @Nonnull
     @Contract(
         pure = true
     )
-    Step3 myProp2(String myProp2);
-  }
-
-  public interface Step3 {
-    @Nonnull
-    @Contract(
-        pure = true
-    )
-    ReactNode children(ReactNode... children);
+    Step1 myProp2(@Nullable String myProp2);
 
     @Nonnull
     @Contract(
@@ -59,10 +82,16 @@ final class MultiPropComponent2Builder {
     @Contract(
         pure = true
     )
+    Step1 children(@Nullable ReactNode... children);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
-  private static class Builder implements Step1, Step2, Step3 {
+  private static class Builder implements Step1 {
     @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_MultiPropComponent2.Factory.TYPE );
 
@@ -71,7 +100,7 @@ final class MultiPropComponent2Builder {
     @Contract(
         pure = true
     )
-    public final Step2 myProp(final String myProp) {
+    public final Step1 myProp(@Nullable final String myProp) {
       _element.input( React4j_MultiPropComponent2.Inputs.myProp, myProp );
       return this;
     }
@@ -81,19 +110,9 @@ final class MultiPropComponent2Builder {
     @Contract(
         pure = true
     )
-    public final Step3 myProp2(final String myProp2) {
+    public final Step1 myProp2(@Nullable final String myProp2) {
       _element.input( React4j_MultiPropComponent2.Inputs.myProp2, myProp2 );
       return this;
-    }
-
-    @Override
-    @Nonnull
-    @Contract(
-        pure = true
-    )
-    public final ReactNode children(final ReactNode... children) {
-      _element.input( React4j_MultiPropComponent2.Inputs.children, JsArray.of( children ) );
-      return build();
     }
 
     @Override
@@ -104,6 +123,16 @@ final class MultiPropComponent2Builder {
     public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
       children( children.toArray( ReactNode[]::new ) );
       return build();
+    }
+
+    @Override
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    public final Step1 children(@Nullable final ReactNode... children) {
+      _element.input( React4j_MultiPropComponent2.Inputs.children, JsArray.of( children ) );
+      return this;
     }
 
     @Nonnull

@@ -43,8 +43,8 @@ abstract class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   String window() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.window ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.window ).asString() : null;

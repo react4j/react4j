@@ -43,8 +43,8 @@ abstract class React4j_ExplicitDependencyDisableInput extends ExplicitDependency
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   ExplicitDependencyDisableInput.MyComponent getMyComponent() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ).cast() : null;

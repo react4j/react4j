@@ -19,6 +19,7 @@ abstract class NullableOnPropChange
   @Nullable
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

@@ -15,9 +15,11 @@ abstract class ArezComponentInputView
   {
   }
 
+  @Nullable
   @Input
   abstract String getValue();
 
+  @Nullable
   @Input
   abstract Model getModel();
 

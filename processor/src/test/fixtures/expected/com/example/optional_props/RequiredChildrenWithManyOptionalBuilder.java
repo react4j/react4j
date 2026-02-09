@@ -3,6 +3,7 @@ package com.example.optional_props;
 import akasha.lang.JsArray;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
@@ -23,7 +24,7 @@ final class RequiredChildrenWithManyOptionalBuilder {
   @Contract(
       pure = true
   )
-  static Step1 myPropA(final String myPropA) {
+  static Step1 myPropA(@Nullable final String myPropA) {
     return newBuilder().myPropA( myPropA );
   }
 
@@ -31,7 +32,7 @@ final class RequiredChildrenWithManyOptionalBuilder {
   @Contract(
       pure = true
   )
-  static Step1 myPropB(final String myPropB) {
+  static Step1 myPropB(@Nullable final String myPropB) {
     return newBuilder().myPropB( myPropB );
   }
 
@@ -39,7 +40,7 @@ final class RequiredChildrenWithManyOptionalBuilder {
   @Contract(
       pure = true
   )
-  static Step1 myPropC(final String myPropC) {
+  static Step1 myPropC(@Nullable final String myPropC) {
     return newBuilder().myPropC( myPropC );
   }
 
@@ -47,16 +48,8 @@ final class RequiredChildrenWithManyOptionalBuilder {
   @Contract(
       pure = true
   )
-  static Step1 myPropD(final String myPropD) {
+  static Step1 myPropD(@Nullable final String myPropD) {
     return newBuilder().myPropD( myPropD );
-  }
-
-  @Nonnull
-  @Contract(
-      pure = true
-  )
-  static ReactNode children(final ReactNode... children) {
-    return newBuilder().children( children );
   }
 
   @Nonnull
@@ -67,56 +60,58 @@ final class RequiredChildrenWithManyOptionalBuilder {
     return newBuilder().children( children );
   }
 
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 children(@Nullable final ReactNode... children) {
+    return newBuilder().children( children );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
+  }
+
   public interface Step1 {
     @Nonnull
     @Contract(
         pure = true
     )
-    Step1 myPropA(String myPropA);
+    Step1 myPropA(@Nullable String myPropA);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    Step1 myPropB(String myPropB);
+    Step1 myPropB(@Nullable String myPropB);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    Step1 myPropC(String myPropC);
+    Step1 myPropC(@Nullable String myPropC);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    Step1 myPropD(String myPropD);
-
-    @Nonnull
-    @Contract(
-        pure = true
-    )
-    ReactNode children(ReactNode... children);
+    Step1 myPropD(@Nullable String myPropD);
 
     @Nonnull
     @Contract(
         pure = true
     )
     ReactNode children(@Nonnull Stream<? extends ReactNode> children);
-  }
-
-  public interface Step2 {
-    @Nonnull
-    @Contract(
-        pure = true
-    )
-    ReactNode children(ReactNode... children);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode children(@Nonnull Stream<? extends ReactNode> children);
+    Step1 children(@Nullable ReactNode... children);
 
     @Nonnull
     @Contract(
@@ -125,7 +120,7 @@ final class RequiredChildrenWithManyOptionalBuilder {
     ReactNode build();
   }
 
-  private static class Builder implements Step1, Step2 {
+  private static class Builder implements Step1 {
     @Nonnull
     private final ReactElement _element;
 
@@ -143,7 +138,7 @@ final class RequiredChildrenWithManyOptionalBuilder {
     @Contract(
         pure = true
     )
-    public final Step1 myPropA(final String myPropA) {
+    public final Step1 myPropA(@Nullable final String myPropA) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropA, myPropA );
       return this;
     }
@@ -153,7 +148,7 @@ final class RequiredChildrenWithManyOptionalBuilder {
     @Contract(
         pure = true
     )
-    public final Step1 myPropB(final String myPropB) {
+    public final Step1 myPropB(@Nullable final String myPropB) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropB, myPropB );
       return this;
     }
@@ -163,7 +158,7 @@ final class RequiredChildrenWithManyOptionalBuilder {
     @Contract(
         pure = true
     )
-    public final Step1 myPropC(final String myPropC) {
+    public final Step1 myPropC(@Nullable final String myPropC) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropC, myPropC );
       return this;
     }
@@ -173,19 +168,9 @@ final class RequiredChildrenWithManyOptionalBuilder {
     @Contract(
         pure = true
     )
-    public final Step1 myPropD(final String myPropD) {
+    public final Step1 myPropD(@Nullable final String myPropD) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropD, myPropD );
       return this;
-    }
-
-    @Override
-    @Nonnull
-    @Contract(
-        pure = true
-    )
-    public final ReactNode children(final ReactNode... children) {
-      _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.children, JsArray.of( children ) );
-      return build();
     }
 
     @Override
@@ -196,6 +181,16 @@ final class RequiredChildrenWithManyOptionalBuilder {
     public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
       children( children.toArray( ReactNode[]::new ) );
       return build();
+    }
+
+    @Override
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    public final Step1 children(@Nullable final ReactNode... children) {
+      _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.children, JsArray.of( children ) );
+      return this;
     }
 
     @Nonnull

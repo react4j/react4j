@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,24 @@ final class MultiPropComponentBuilder {
   @Contract(
       pure = true
   )
-  static Step2 myProp(final String myProp) {
+  static Step1 myProp(@Nullable final String myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 myProp2(@Nullable final String myProp2) {
+    return newBuilder().myProp2( myProp2 );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -29,18 +46,22 @@ final class MultiPropComponentBuilder {
     @Contract(
         pure = true
     )
-    Step2 myProp(String myProp);
-  }
+    Step1 myProp(@Nullable String myProp);
 
-  public interface Step2 {
     @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode myProp2(String myProp2);
+    Step1 myProp2(@Nullable String myProp2);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
-  private static class Builder implements Step1, Step2 {
+  private static class Builder implements Step1 {
     @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_MultiPropComponent.Factory.TYPE );
 
@@ -49,7 +70,7 @@ final class MultiPropComponentBuilder {
     @Contract(
         pure = true
     )
-    public final Step2 myProp(final String myProp) {
+    public final Step1 myProp(@Nullable final String myProp) {
       _element.input( React4j_MultiPropComponent.Inputs.myProp, myProp );
       return this;
     }
@@ -59,9 +80,9 @@ final class MultiPropComponentBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp2(final String myProp2) {
+    public final Step1 myProp2(@Nullable final String myProp2) {
       _element.input( React4j_MultiPropComponent.Inputs.myProp2, myProp2 );
-      return build();
+      return this;
     }
 
     @Nonnull

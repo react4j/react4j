@@ -10,6 +10,7 @@ import react4j.annotations.View;
 @View
 abstract class CollectionSetPropModel
 {
+  @Nullable
   @Input
   abstract Set<String> getMyProp();
 

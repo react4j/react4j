@@ -43,8 +43,8 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   T getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).cast() : null;
@@ -53,8 +53,8 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
     }
   }
 
-  @Override
   @Nullable
+  @Override
   String getValue2() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value2 ).asString() : null;

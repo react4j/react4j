@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,16 @@ final class CustomNamePropModelBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode foo(final String foo) {
+  static ReactNode foo(@Nullable final String foo) {
     return newBuilder().foo( foo );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -29,7 +38,13 @@ final class CustomNamePropModelBuilder {
     @Contract(
         pure = true
     )
-    ReactNode foo(String foo);
+    ReactNode foo(@Nullable String foo);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -41,7 +56,7 @@ final class CustomNamePropModelBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode foo(final String foo) {
+    public final ReactNode foo(@Nullable final String foo) {
       _element.input( React4j_CustomNamePropModel.Inputs.foo, foo );
       return build();
     }

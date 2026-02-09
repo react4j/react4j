@@ -1,6 +1,7 @@
 package com.example.default_inputs;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.InputDefault;
@@ -14,9 +15,11 @@ abstract class ProtectedFieldInputDefaultView
   @InputDefault
   protected static final String DEFAULT_MY_PROP = "Foo";
 
+  @Nullable
   @Input
   abstract String getMyProp();
 
+  @Nullable
   @Render
   ReactNode render()
   {

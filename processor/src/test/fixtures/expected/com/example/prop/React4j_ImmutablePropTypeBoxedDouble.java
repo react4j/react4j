@@ -30,6 +30,7 @@ abstract class React4j_ImmutablePropTypeBoxedDouble extends ImmutablePropTypeBox
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final Double $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeBoxedDouble(
@@ -51,6 +52,7 @@ abstract class React4j_ImmutablePropTypeBoxedDouble extends ImmutablePropTypeBox
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   Double getMyProp() {
     return $$react4j_immutable_input$$_myProp;

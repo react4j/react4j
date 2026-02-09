@@ -10,6 +10,7 @@ import react4j.annotations.View;
 abstract class PublicAccessViaInterfacePropModel
   implements PropInterface
 {
+  @Nullable
   @Input
   public abstract String getMyProp();
 

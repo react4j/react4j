@@ -9,6 +9,7 @@ import react4j.annotations.View;
 @View
 abstract class ImmutablePropTypeBoxedFloat
 {
+  @Nullable
   @Input( immutable = true )
   abstract Float getMyProp();
 

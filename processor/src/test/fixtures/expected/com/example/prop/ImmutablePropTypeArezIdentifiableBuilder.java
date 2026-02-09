@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.component.Identifiable;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.React;
@@ -22,8 +23,16 @@ final class ImmutablePropTypeArezIdentifiableBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final ImmutablePropTypeArezIdentifiable.MyComponent myProp) {
+  static ReactNode myProp(@Nullable final ImmutablePropTypeArezIdentifiable.MyComponent myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,7 +40,13 @@ final class ImmutablePropTypeArezIdentifiableBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeArezIdentifiable.MyComponent myProp);
+    ReactNode myProp(@Nullable ImmutablePropTypeArezIdentifiable.MyComponent myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -43,7 +58,8 @@ final class ImmutablePropTypeArezIdentifiableBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final ImmutablePropTypeArezIdentifiable.MyComponent myProp) {
+    public final ReactNode myProp(
+        @Nullable final ImmutablePropTypeArezIdentifiable.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezIdentifiable_30200f60" : ImmutablePropTypeArezIdentifiable.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeArezIdentifiable.Inputs.myProp, myProp );
       return build();

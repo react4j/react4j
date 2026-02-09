@@ -14,6 +14,7 @@ abstract class ImmutablePropTypeEnum
     A, B, C
   }
 
+  @Nullable
   @Input( immutable = true )
   abstract Foo getMyProp();
 

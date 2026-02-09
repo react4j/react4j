@@ -18,6 +18,7 @@ abstract class NullablePropAndNonnullChildComponent
   @Nullable
   abstract String getMyProp2();
 
+  @Nullable
   @Input
   abstract ReactNode getChild();
 

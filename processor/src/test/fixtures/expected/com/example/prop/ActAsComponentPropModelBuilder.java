@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,16 @@ final class ActAsComponentPropModelBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode model(final ActAsComponentPropModel.Model model) {
+  static ReactNode model(@Nullable final ActAsComponentPropModel.Model model) {
     return newBuilder().model( model );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -29,7 +38,13 @@ final class ActAsComponentPropModelBuilder {
     @Contract(
         pure = true
     )
-    ReactNode model(ActAsComponentPropModel.Model model);
+    ReactNode model(@Nullable ActAsComponentPropModel.Model model);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -41,7 +56,7 @@ final class ActAsComponentPropModelBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode model(final ActAsComponentPropModel.Model model) {
+    public final ReactNode model(@Nullable final ActAsComponentPropModel.Model model) {
       _element.input( React4j_ActAsComponentPropModel.Inputs.model, model );
       return build();
     }

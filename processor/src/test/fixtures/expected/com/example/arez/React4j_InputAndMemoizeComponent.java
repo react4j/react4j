@@ -64,13 +64,13 @@ abstract class React4j_InputAndMemoizeComponent extends InputAndMemoizeComponent
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   @Observable(
       name = "value",
       expectSetter = false,
       readOutsideTransaction = Feature.ENABLE
   )
-  @Nullable
   String getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).asString() : null;

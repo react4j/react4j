@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.component.Identifiable;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.React;
@@ -23,8 +24,16 @@ final class ImmutablePropTypeArezComponentWithExplicitRequireIdBuilder {
       pure = true
   )
   static ReactNode myProp(
-      final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp) {
+      @Nullable final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -32,7 +41,14 @@ final class ImmutablePropTypeArezComponentWithExplicitRequireIdBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp);
+    ReactNode myProp(
+        @Nullable ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -45,7 +61,7 @@ final class ImmutablePropTypeArezComponentWithExplicitRequireIdBuilder {
         pure = true
     )
     public final ReactNode myProp(
-        final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp) {
+        @Nullable final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeArezComponentWithExplicitRequireId_a574b6c9" : ImmutablePropTypeArezComponentWithExplicitRequireId.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeArezComponentWithExplicitRequireId.Inputs.myProp, myProp );
       return build();

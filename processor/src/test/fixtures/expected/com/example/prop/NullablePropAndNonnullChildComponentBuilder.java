@@ -40,24 +40,22 @@ final class NullablePropAndNonnullChildComponentBuilder {
     @Contract(
         pure = true
     )
-    Step3 myProp2(@Nullable String myProp2);
+    Step2 myProp2(@Nullable String myProp2);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode child(ReactNode child);
-  }
+    Step2 child(@Nullable ReactNode child);
 
-  public interface Step3 {
     @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode child(ReactNode child);
+    ReactNode build();
   }
 
-  private static class Builder implements Step1, Step2, Step3 {
+  private static class Builder implements Step1, Step2 {
     @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_NullablePropAndNonnullChildComponent.Factory.TYPE );
 
@@ -77,7 +75,7 @@ final class NullablePropAndNonnullChildComponentBuilder {
     @Contract(
         pure = true
     )
-    public final Step3 myProp2(@Nullable final String myProp2) {
+    public final Step2 myProp2(@Nullable final String myProp2) {
       _element.input( React4j_NullablePropAndNonnullChildComponent.Inputs.myProp2, myProp2 );
       return this;
     }
@@ -87,9 +85,9 @@ final class NullablePropAndNonnullChildComponentBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode child(final ReactNode child) {
+    public final Step2 child(@Nullable final ReactNode child) {
       _element.input( React4j_NullablePropAndNonnullChildComponent.Inputs.child, JsArray.of( child ) );
-      return build();
+      return this;
     }
 
     @Nonnull

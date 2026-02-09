@@ -15,6 +15,7 @@ abstract class ImmutablePropTypeActAsComponentClass
   {
   }
 
+  @Nullable
   @Input( immutable = true )
   abstract MyComponent getMyProp();
 

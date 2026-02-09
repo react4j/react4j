@@ -2,6 +2,7 @@ package com.example.prop;
 
 import java.util.HashSet;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -21,8 +22,16 @@ final class CollectionHashSetPropModelBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final HashSet<String> myProp) {
+  static ReactNode myProp(@Nullable final HashSet<String> myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -30,7 +39,13 @@ final class CollectionHashSetPropModelBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(HashSet<String> myProp);
+    ReactNode myProp(@Nullable HashSet<String> myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -42,7 +57,7 @@ final class CollectionHashSetPropModelBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final HashSet<String> myProp) {
+    public final ReactNode myProp(@Nullable final HashSet<String> myProp) {
       _element.input( React4j_CollectionHashSetPropModel.Inputs.myProp, myProp );
       return build();
     }

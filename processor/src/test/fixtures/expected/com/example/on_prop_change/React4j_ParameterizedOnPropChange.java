@@ -45,8 +45,8 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   ArrayList<String> getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;

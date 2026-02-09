@@ -31,6 +31,7 @@ abstract class React4j_ImmutablePropTypeArezComponent extends ImmutablePropTypeA
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @ComponentDependency
+  @Nullable
   final ImmutablePropTypeArezComponent.MyComponent $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeArezComponent(
@@ -52,6 +53,7 @@ abstract class React4j_ImmutablePropTypeArezComponent extends ImmutablePropTypeA
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   ImmutablePropTypeArezComponent.MyComponent getMyProp() {
     return $$react4j_immutable_input$$_myProp;

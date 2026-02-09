@@ -21,6 +21,7 @@ abstract class ImmutablePropTypeKeyedViaInheritanceInterface
     void SomeOtherMethod();
   }
 
+  @Nullable
   @Input( immutable = true )
   abstract KeyedInterface getMyProp();
 

@@ -1,6 +1,7 @@
 package com.example.input;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,24 @@ final class ArezComponentInputViewBuilder {
   @Contract(
       pure = true
   )
-  static Step2 value(final String value) {
+  static Step1 value(@Nullable final String value) {
     return newBuilder().value( value );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static Step1 model(@Nullable final ArezComponentInputView.Model model) {
+    return newBuilder().model( model );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -29,18 +46,22 @@ final class ArezComponentInputViewBuilder {
     @Contract(
         pure = true
     )
-    Step2 value(String value);
-  }
+    Step1 value(@Nullable String value);
 
-  public interface Step2 {
     @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode model(ArezComponentInputView.Model model);
+    Step1 model(@Nullable ArezComponentInputView.Model model);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
-  private static class Builder implements Step1, Step2 {
+  private static class Builder implements Step1 {
     @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_ArezComponentInputView.Factory.TYPE );
 
@@ -49,7 +70,7 @@ final class ArezComponentInputViewBuilder {
     @Contract(
         pure = true
     )
-    public final Step2 value(final String value) {
+    public final Step1 value(@Nullable final String value) {
       _element.input( React4j_ArezComponentInputView.Inputs.value, value );
       return this;
     }
@@ -59,9 +80,9 @@ final class ArezComponentInputViewBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode model(final ArezComponentInputView.Model model) {
+    public final Step1 model(@Nullable final ArezComponentInputView.Model model) {
       _element.input( React4j_ArezComponentInputView.Inputs.model, model );
-      return build();
+      return this;
     }
 
     @Nonnull

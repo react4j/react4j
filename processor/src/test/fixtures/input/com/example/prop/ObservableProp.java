@@ -10,6 +10,7 @@ import react4j.annotations.View;
 @View( type = View.Type.TRACKING )
 abstract class ObservableProp
 {
+  @Nullable
   @Input( observable = Feature.ENABLE )
   abstract Object getValue();
 

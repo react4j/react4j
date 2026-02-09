@@ -2,6 +2,7 @@ package com.example.input;
 
 import akasha.lang.JsArray;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -21,8 +22,16 @@ final class ChildInputViewBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode child(final ReactNode child) {
+  static ReactNode child(@Nullable final ReactNode child) {
     return newBuilder().child( child );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -30,7 +39,13 @@ final class ChildInputViewBuilder {
     @Contract(
         pure = true
     )
-    ReactNode child(ReactNode child);
+    ReactNode child(@Nullable ReactNode child);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -42,7 +57,7 @@ final class ChildInputViewBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode child(final ReactNode child) {
+    public final ReactNode child(@Nullable final ReactNode child) {
       _element.input( React4j_ChildInputView.Inputs.child, JsArray.of( child ) );
       return build();
     }

@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.React;
@@ -21,8 +22,16 @@ final class ImmutablePropTypeBoxedCharacterBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final Character myProp) {
+  static ReactNode myProp(@Nullable final Character myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -30,7 +39,13 @@ final class ImmutablePropTypeBoxedCharacterBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(Character myProp);
+    ReactNode myProp(@Nullable Character myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -42,7 +57,7 @@ final class ImmutablePropTypeBoxedCharacterBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final Character myProp) {
+    public final ReactNode myProp(@Nullable final Character myProp) {
       _element.setKey( myProp + ( React.enableViewNames() ? "_ImmutablePropTypeBoxedCharacter_6cf55e57" : ImmutablePropTypeBoxedCharacter.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeBoxedCharacter.Inputs.myProp, myProp );
       return build();

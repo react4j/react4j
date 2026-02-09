@@ -30,6 +30,7 @@ abstract class React4j_ImmutablePropTypeBoxedInteger extends ImmutablePropTypeBo
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final Integer $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeBoxedInteger(
@@ -51,6 +52,7 @@ abstract class React4j_ImmutablePropTypeBoxedInteger extends ImmutablePropTypeBo
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   Integer getMyProp() {
     return $$react4j_immutable_input$$_myProp;

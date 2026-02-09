@@ -10,6 +10,7 @@ import react4j.annotations.View;
 @View
 abstract class ObservableViaObservedProp
 {
+  @Nullable
   @Input
   abstract Object getValue();
 

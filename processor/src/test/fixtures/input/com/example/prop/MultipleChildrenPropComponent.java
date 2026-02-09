@@ -9,6 +9,7 @@ import react4j.annotations.View;
 @View
 abstract class MultipleChildrenPropComponent
 {
+  @Nullable
   @Input
   abstract ReactNode[] getChildren();
 

@@ -45,6 +45,7 @@ abstract class React4j_ImmutableDisposablePropModel extends ImmutableDisposableP
   @ComponentDependency(
       validateTypeAtRuntime = true
   )
+  @Nullable
   final Object $$react4j_immutable_input$$_value;
 
   private int $$react4j$$_state;
@@ -70,6 +71,7 @@ abstract class React4j_ImmutableDisposablePropModel extends ImmutableDisposableP
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   Object getValue() {
     return $$react4j_immutable_input$$_value;

@@ -9,6 +9,7 @@ import react4j.annotations.View;
 @View
 abstract class ImmutablePropTypeBoxedCharacter
 {
+  @Nullable
   @Input( immutable = true )
   abstract Character getMyProp();
 

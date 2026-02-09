@@ -42,8 +42,8 @@ abstract class React4j_PropTypeObject extends PropTypeObject {
     return viewConstructor;
   }
 
-  @Override
   @Nullable
+  @Override
   PropTypeObject.MyObject getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;

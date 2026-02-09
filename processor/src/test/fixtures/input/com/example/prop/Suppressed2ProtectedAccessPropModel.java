@@ -12,6 +12,7 @@ abstract class Suppressed2ProtectedAccessPropModel
 {
   // This uses the CLASS retention suppression
   @SuppressReact4jWarnings( "React4j:ProtectedMethod" )
+  @Nullable
   @Input
   protected abstract String getMyProp();
 

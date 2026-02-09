@@ -15,9 +15,11 @@ abstract class ArezPropModel
   {
   }
 
+  @Nullable
   @Input
   abstract String getValue();
 
+  @Nullable
   @Input
   abstract Model getModel();
 

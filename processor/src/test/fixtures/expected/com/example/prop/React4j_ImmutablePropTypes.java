@@ -30,26 +30,32 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @ComponentDependency
-  final ImmutablePropTypes.MyComponent $$react4j_immutable_input$$_myProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final String $$react4j_immutable_input$$_myOtherProp;
-
   @SuppressWarnings("Arez:UnmanagedComponentReference")
   private final int $$react4j_immutable_input$$_stillAnotherProp;
 
+  @ComponentDependency
+  @Nullable
+  final ImmutablePropTypes.MyComponent $$react4j_immutable_input$$_myProp;
+
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
+  private final String $$react4j_immutable_input$$_myOtherProp;
+
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final ImmutablePropTypes.KeyedComponent $$react4j_immutable_input$$_BobsProp;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final ImmutablePropTypes.Foo $$react4j_immutable_input$$_someProp;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final Object $$react4j_immutable_input$$_object;
 
   React4j_ImmutablePropTypes(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
+    $$react4j_immutable_input$$_stillAnotherProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.stillAnotherProp ).asInt();
     if ( React.shouldCheckInvariants() ) {
       $$react4j_immutable_input$$_myProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
     } else {
@@ -60,7 +66,6 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     } else {
       $$react4j_immutable_input$$_myOtherProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) );
     }
-    $$react4j_immutable_input$$_stillAnotherProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.stillAnotherProp ).asInt();
     if ( React.shouldCheckInvariants() ) {
       $$react4j_immutable_input$$_BobsProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ).cast() : null;
     } else {
@@ -88,30 +93,35 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   }
 
   @Override
+  int stillAnotherProp() {
+    return $$react4j_immutable_input$$_stillAnotherProp;
+  }
+
+  @Nullable
+  @Override
   ImmutablePropTypes.MyComponent getMyProp() {
     return $$react4j_immutable_input$$_myProp;
   }
 
+  @Nullable
   @Override
   String getMyOtherProp() {
     return $$react4j_immutable_input$$_myOtherProp;
   }
 
-  @Override
-  int stillAnotherProp() {
-    return $$react4j_immutable_input$$_stillAnotherProp;
-  }
-
+  @Nullable
   @Override
   ImmutablePropTypes.KeyedComponent BobsProp() {
     return $$react4j_immutable_input$$_BobsProp;
   }
 
+  @Nullable
   @Override
   ImmutablePropTypes.Foo getSomeProp() {
     return $$react4j_immutable_input$$_someProp;
   }
 
+  @Nullable
   @Override
   Object getObject() {
     return $$react4j_immutable_input$$_object;
@@ -139,11 +149,11 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   }
 
   static final class Inputs {
-    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
+    static final String stillAnotherProp = React.shouldMinimizeInputKeys() ? "a" : "stillAnotherProp";
 
-    static final String myOtherProp = React.shouldMinimizeInputKeys() ? "b" : "myOtherProp";
+    static final String myProp = React.shouldMinimizeInputKeys() ? "b" : "myProp";
 
-    static final String stillAnotherProp = React.shouldMinimizeInputKeys() ? "c" : "stillAnotherProp";
+    static final String myOtherProp = React.shouldMinimizeInputKeys() ? "c" : "myOtherProp";
 
     static final String BobsProp = React.shouldMinimizeInputKeys() ? "d" : "BobsProp";
 

@@ -30,6 +30,7 @@ abstract class React4j_ImmutablePropAndPostConstructComponent extends ImmutableP
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final String $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropAndPostConstructComponent(
@@ -51,6 +52,7 @@ abstract class React4j_ImmutablePropAndPostConstructComponent extends ImmutableP
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   String getMyProp() {
     return $$react4j_immutable_input$$_myProp;

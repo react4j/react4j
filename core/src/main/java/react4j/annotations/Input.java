@@ -36,6 +36,11 @@ import react4j.Keyed;
  *   expected to be invoked outside the view. A warning will be generated but can be suppressed by the
  *   {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key "React4j:ProtectedMethod".
  * </li>
+ * <li>
+ *   Should be annotated with either {@link javax.annotation.Nonnull} or {@link javax.annotation.Nullable} if the
+ *   return type is not a primitive. A warning will be generated but can be suppressed by the {@link SuppressWarnings}
+ *   or {@link SuppressReact4jWarnings} annotations with a key "React4j:MissingInputNullability".
+ * </li>
  * </ul>
  */
 @Documented

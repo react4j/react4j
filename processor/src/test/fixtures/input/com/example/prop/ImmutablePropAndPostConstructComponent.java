@@ -10,6 +10,7 @@ import react4j.annotations.View;
 @View
 abstract class ImmutablePropAndPostConstructComponent
 {
+  @Nullable
   @Input( immutable = true )
   abstract String getMyProp();
 

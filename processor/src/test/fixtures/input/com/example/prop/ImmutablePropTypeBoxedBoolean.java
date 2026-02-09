@@ -9,6 +9,7 @@ import react4j.annotations.View;
 @View
 abstract class ImmutablePropTypeBoxedBoolean
 {
+  @Nullable
   @Input( immutable = true )
   abstract Boolean getMyProp();
 

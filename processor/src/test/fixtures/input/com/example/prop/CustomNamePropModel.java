@@ -9,6 +9,7 @@ import react4j.annotations.View;
 @View
 abstract class CustomNamePropModel
 {
+  @Nullable
   @Input( name = "foo" )
   abstract String getMyProp();
 

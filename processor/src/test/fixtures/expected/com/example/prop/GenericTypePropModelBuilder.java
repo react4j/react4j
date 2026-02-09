@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,16 @@ final class GenericTypePropModelBuilder {
   @Contract(
       pure = true
   )
-  static <T> ReactNode value(final T value) {
+  static <T> ReactNode value(@Nullable final T value) {
     return GenericTypePropModelBuilder.<T>newBuilder().value( value );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static <T> ReactNode build() {
+    return newBuilder().build();
   }
 
   @SuppressWarnings("unused")
@@ -30,7 +39,13 @@ final class GenericTypePropModelBuilder {
     @Contract(
         pure = true
     )
-    ReactNode value(T value);
+    ReactNode value(@Nullable T value);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder<T> implements Step1<T> {
@@ -42,7 +57,7 @@ final class GenericTypePropModelBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode value(final T value) {
+    public final ReactNode value(@Nullable final T value) {
       _element.input( React4j_GenericTypePropModel.Inputs.value, value );
       return build();
     }

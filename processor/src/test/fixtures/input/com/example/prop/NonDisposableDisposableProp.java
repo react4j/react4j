@@ -16,6 +16,7 @@ abstract class NonDisposableDisposableProp
   {
   }
 
+  @Nullable
   @Input( disposable = Feature.DISABLE )
   abstract Model getModel();
 

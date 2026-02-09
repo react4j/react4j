@@ -15,6 +15,7 @@ abstract class ImplicitDisposablePropOnComponent
   {
   }
 
+  @Nullable
   @Input
   abstract Model getModel();
 

@@ -11,6 +11,7 @@ abstract class Suppressed1PublicAccessPropModel
 {
   // This uses the SOURCE retention suppression
   @SuppressWarnings( "React4j:PublicMethod" )
+  @Nullable
   @Input
   public abstract String getMyProp();
 

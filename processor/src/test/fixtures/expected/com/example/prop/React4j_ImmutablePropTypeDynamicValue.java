@@ -30,6 +30,7 @@ abstract class React4j_ImmutablePropTypeDynamicValue extends ImmutablePropTypeDy
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
+  @Nullable
   private final Object $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeDynamicValue(
@@ -51,6 +52,7 @@ abstract class React4j_ImmutablePropTypeDynamicValue extends ImmutablePropTypeDy
     return viewConstructor;
   }
 
+  @Nullable
   @Override
   Object getMyProp() {
     return $$react4j_immutable_input$$_myProp;

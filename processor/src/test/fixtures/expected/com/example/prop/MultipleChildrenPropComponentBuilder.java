@@ -3,6 +3,7 @@ package com.example.prop;
 import akasha.lang.JsArray;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -22,7 +23,7 @@ final class MultipleChildrenPropComponentBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode children(final ReactNode... children) {
+  static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
     return newBuilder().children( children );
   }
 
@@ -30,7 +31,7 @@ final class MultipleChildrenPropComponentBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+  static ReactNode children(@Nullable final ReactNode... children) {
     return newBuilder().children( children );
   }
 
@@ -47,13 +48,13 @@ final class MultipleChildrenPropComponentBuilder {
     @Contract(
         pure = true
     )
-    ReactNode children(ReactNode... children);
+    ReactNode children(@Nonnull Stream<? extends ReactNode> children);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode children(@Nonnull Stream<? extends ReactNode> children);
+    ReactNode children(@Nullable ReactNode... children);
 
     @Nonnull
     @Contract(
@@ -71,8 +72,8 @@ final class MultipleChildrenPropComponentBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode children(final ReactNode... children) {
-      _element.input( React4j_MultipleChildrenPropComponent.Inputs.children, JsArray.of( children ) );
+    public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+      children( children.toArray( ReactNode[]::new ) );
       return build();
     }
 
@@ -81,8 +82,8 @@ final class MultipleChildrenPropComponentBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
-      children( children.toArray( ReactNode[]::new ) );
+    public final ReactNode children(@Nullable final ReactNode... children) {
+      _element.input( React4j_MultipleChildrenPropComponent.Inputs.children, JsArray.of( children ) );
       return build();
     }
 

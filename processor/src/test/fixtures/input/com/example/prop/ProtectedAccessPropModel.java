@@ -9,6 +9,7 @@ import react4j.annotations.View;
 @View
 abstract class ProtectedAccessPropModel
 {
+  @Nullable
   @Input
   protected abstract String getMyProp();
 

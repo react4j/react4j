@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.ReactElement;
@@ -20,8 +21,16 @@ final class PropTypeArrayBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final String... myProp) {
+  static ReactNode myProp(@Nullable final String... myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -29,7 +38,13 @@ final class PropTypeArrayBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(String... myProp);
+    ReactNode myProp(@Nullable String... myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -41,7 +56,7 @@ final class PropTypeArrayBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final String... myProp) {
+    public final ReactNode myProp(@Nullable final String... myProp) {
       _element.input( React4j_PropTypeArray.Inputs.myProp, myProp );
       return build();
     }

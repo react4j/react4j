@@ -50,18 +50,18 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
   }
 
   @Override
+  int getMyProp3() {
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp3 ).asInt();
+  }
+
   @Nullable
+  @Override
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ).asString() : null;
     } else {
       return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) );
     }
-  }
-
-  @Override
-  int getMyProp3() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp3 ).asInt();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -71,10 +71,10 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
     if ( !Js.isTripleEqual( inputs.get( Inputs.myProp1 ), nextInputs.get( Inputs.myProp1 ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp2 ), nextInputs.get( Inputs.myProp2 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp3 ), nextInputs.get( Inputs.myProp3 ) ) ) {
       return true;
     }
-    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp3 ), nextInputs.get( Inputs.myProp3 ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp2 ), nextInputs.get( Inputs.myProp2 ) ) ) {
       return true;
     }
     return false;
@@ -116,9 +116,9 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
   static final class Inputs {
     static final String myProp1 = React.shouldMinimizeInputKeys() ? "a" : "myProp1";
 
-    static final String myProp2 = React.shouldMinimizeInputKeys() ? "b" : "myProp2";
+    static final String myProp3 = React.shouldMinimizeInputKeys() ? "b" : "myProp3";
 
-    static final String myProp3 = React.shouldMinimizeInputKeys() ? "c" : "myProp3";
+    static final String myProp2 = React.shouldMinimizeInputKeys() ? "c" : "myProp2";
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {

@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import react4j.Keyed;
@@ -22,8 +23,16 @@ final class ImmutablePropTypeKeyedInterfaceBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode myProp(final ImmutablePropTypeKeyedInterface.KeyedInterface myProp) {
+  static ReactNode myProp(@Nullable final ImmutablePropTypeKeyedInterface.KeyedInterface myProp) {
     return newBuilder().myProp( myProp );
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode build() {
+    return newBuilder().build();
   }
 
   public interface Step1 {
@@ -31,7 +40,13 @@ final class ImmutablePropTypeKeyedInterfaceBuilder {
     @Contract(
         pure = true
     )
-    ReactNode myProp(ImmutablePropTypeKeyedInterface.KeyedInterface myProp);
+    ReactNode myProp(@Nullable ImmutablePropTypeKeyedInterface.KeyedInterface myProp);
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode build();
   }
 
   private static class Builder implements Step1 {
@@ -43,7 +58,8 @@ final class ImmutablePropTypeKeyedInterfaceBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(final ImmutablePropTypeKeyedInterface.KeyedInterface myProp) {
+    public final ReactNode myProp(
+        @Nullable final ImmutablePropTypeKeyedInterface.KeyedInterface myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedInterface_3326071b" : ImmutablePropTypeKeyedInterface.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeKeyedInterface.Inputs.myProp, myProp );
       return build();
