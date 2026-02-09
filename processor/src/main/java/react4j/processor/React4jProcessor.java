@@ -1098,7 +1098,7 @@ public final class React4jProcessor
           else
           {
             throw new ProcessorException( "@OnError target has parameter of invalid type named " +
-                                          parameter.getSimpleName().toString(),
+                                          parameter.getSimpleName(),
                                           parameter );
           }
         }
