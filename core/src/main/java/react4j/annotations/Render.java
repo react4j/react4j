@@ -5,7 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 /**
- * Identifies the method that is invoked to render the view.
+ * Identifies the method invoked to render the view.
  * There must be exactly one method annotated with this annotation within the view.
  * The method must return a value of type {@link react4j.ReactNode}.
  *
