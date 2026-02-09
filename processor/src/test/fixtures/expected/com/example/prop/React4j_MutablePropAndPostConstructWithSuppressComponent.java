@@ -49,6 +49,7 @@ abstract class React4j_MutablePropAndPostConstructWithSuppressComponent extends 
   abstract boolean $$react4j$$_isReady();
 
   @Override
+  @Nullable
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> $$react4j$$_isReady(), () -> "The view '" + this + "' accessed the input named 'myProp' before the view is ready (possibly in a @PostConstruct annotated method?) and does not have a @OnInputChange annotated method to cover the input and reflect changes of the input onto the view. This is considered a likely bug and the @Input should be made immutable or an @OnInputChange method added to cover the input. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:MutableInputAccessedInPostConstruct\" ) or @SuppressReact4jWarnings( \"React4j:MutableInputAccessedInPostConstruct\" ) to the @Input annotated method." );

@@ -43,6 +43,7 @@ abstract class React4j_PropTypeArray extends PropTypeArray {
   }
 
   @Override
+  @Nullable
   String[] getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;

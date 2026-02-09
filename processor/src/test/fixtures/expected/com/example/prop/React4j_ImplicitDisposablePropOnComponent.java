@@ -44,6 +44,7 @@ abstract class React4j_ImplicitDisposablePropOnComponent extends ImplicitDisposa
   }
 
   @Override
+  @Nullable
   ImplicitDisposablePropOnComponent.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;

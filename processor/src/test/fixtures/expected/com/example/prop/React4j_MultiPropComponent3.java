@@ -43,6 +43,7 @@ abstract class React4j_MultiPropComponent3 extends MultiPropComponent3 {
   }
 
   @Override
+  @Nullable
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;
@@ -52,6 +53,7 @@ abstract class React4j_MultiPropComponent3 extends MultiPropComponent3 {
   }
 
   @Override
+  @Nullable
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ).asString() : null;
@@ -61,6 +63,7 @@ abstract class React4j_MultiPropComponent3 extends MultiPropComponent3 {
   }
 
   @Override
+  @Nullable
   ReactNode getChild() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.child ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.child ).cast() : null;

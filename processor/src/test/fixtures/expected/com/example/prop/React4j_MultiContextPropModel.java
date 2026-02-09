@@ -43,6 +43,7 @@ abstract class React4j_MultiContextPropModel extends MultiContextPropModel {
   }
 
   @Override
+  @Nullable
   String getStringContextValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.stringContextValue ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.stringContextValue ).asString() : null;

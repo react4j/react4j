@@ -68,6 +68,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
       expectSetter = false,
       readOutsideTransaction = Feature.ENABLE
   )
+  @Nullable
   Object getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).cast() : null;

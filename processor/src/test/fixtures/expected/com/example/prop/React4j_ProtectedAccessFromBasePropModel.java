@@ -44,6 +44,7 @@ abstract class React4j_ProtectedAccessFromBasePropModel extends ProtectedAccessF
   }
 
   @Override
+  @Nullable
   protected String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;

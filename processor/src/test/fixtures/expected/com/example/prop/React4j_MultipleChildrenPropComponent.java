@@ -44,6 +44,7 @@ abstract class React4j_MultipleChildrenPropComponent extends MultipleChildrenPro
   }
 
   @Override
+  @Nullable
   ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ).cast() : null;

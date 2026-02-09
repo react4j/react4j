@@ -44,6 +44,7 @@ abstract class React4j_SingleChildPropComponent extends SingleChildPropComponent
   }
 
   @Override
+  @Nullable
   ReactNode getChild() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.child ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.child ).cast() : null;

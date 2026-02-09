@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Ensure generated input method overrides and a `@Nullable` annotation if non `@Nonnull` or `@Nullable` present on the declared `@Input` method and the return type is not a primite.
+
 ### [v0.201](https://github.com/react4j/react4j/tree/v0.201) (2026-02-09) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.200...v0.201)
 
 Changes in this release:
