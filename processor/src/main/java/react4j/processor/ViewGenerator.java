@@ -1104,8 +1104,7 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildInputValidatorMethod(
-    @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec.Builder buildInputValidatorMethod( @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( VALIDATE_INPUTS_METHOD ).
@@ -1145,27 +1144,25 @@ final class ViewGenerator
             }
             else
             {
-              block.addStatement(
-                "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N with qualifier " +
-                "'$N' is missing when constructing view named '$N'. Ensure a parent view publishes " +
-                "the value to the context.\" ) ",
-                GUARDS_CLASSNAME,
-                rawName,
-                input.getMethodType().getReturnType().toString(),
-                qualifier,
-                descriptor.getName() );
+              block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Context value of type $N with qualifier " +
+                                  "'$N' is missing when constructing view named '$N'. Ensure a parent view publishes " +
+                                  "the value to the context.\" ) ",
+                                  GUARDS_CLASSNAME,
+                                  rawName,
+                                  input.getMethodType().getReturnType().toString(),
+                                  qualifier,
+                                  descriptor.getName() );
             }
           }
           else
           {
-            block.addStatement(
-              "$T.apiInvariant( () -> null != $N, () -> \"Required input named '$N' is missing from " +
-              "view named '$N' so it was either incorrectly omitted or a null value has been " +
-              "incorrectly specified.\" ) ",
-              GUARDS_CLASSNAME,
-              rawName,
-              input.getName(),
-              descriptor.getName() );
+            block.addStatement( "$T.apiInvariant( () -> null != $N, () -> \"Required input named '$N' is missing from " +
+                                "view named '$N' so it was either incorrectly omitted or a null value has been " +
+                                "incorrectly specified.\" ) ",
+                                GUARDS_CLASSNAME,
+                                rawName,
+                                input.getName(),
+                                descriptor.getName() );
           }
           block.endControlFlow();
           method.addCode( block.build() );
@@ -1191,8 +1188,7 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec.Builder buildConstructorFnMethod(
-    @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec.Builder buildConstructorFnMethod( @Nonnull final ViewDescriptor descriptor )
   {
     final MethodSpec.Builder method =
       MethodSpec.methodBuilder( "getConstructorFunction" ).
@@ -1231,8 +1227,7 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static TypeSpec buildInputsType(
-    @Nonnull final ViewDescriptor descriptor )
+  private static TypeSpec buildInputsType( @Nonnull final ViewDescriptor descriptor )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "Inputs" );
 
@@ -1241,7 +1236,6 @@ final class ViewGenerator
     builder.addModifiers( Modifier.STATIC );
 
     // These fields have been moved to a separate class to avoid a <clinit> on containing class
-
     final List<InputDescriptor> inputs = descriptor.getInputs();
     final int inputCount = inputs.size();
     for ( int i = 0; i < inputCount; i++ )
@@ -1274,8 +1268,7 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static TypeSpec buildNativeView(
-    @Nonnull final ViewDescriptor descriptor, final boolean lite )
+  private static TypeSpec buildNativeView( @Nonnull final ViewDescriptor descriptor, final boolean lite )
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( ( lite ? "Lite" : "" ) + "NativeView" );
 
