@@ -44,6 +44,7 @@ abstract class React4j_CollectionPropModel extends CollectionPropModel {
   }
 
   @Override
+  @Nullable
   Collection<String> getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;

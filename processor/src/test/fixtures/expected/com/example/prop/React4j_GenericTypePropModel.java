@@ -43,6 +43,7 @@ abstract class React4j_GenericTypePropModel<T> extends GenericTypePropModel<T> {
   }
 
   @Override
+  @Nullable
   T getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).cast() : null;

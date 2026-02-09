@@ -45,6 +45,7 @@ abstract class NestedCompleteComponent_React4j_BasicView extends NestedCompleteC
   }
 
   @Override
+  @Nullable
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;

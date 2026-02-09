@@ -43,6 +43,7 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   }
 
   @Override
+  @Nullable
   String getMyRequiredProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ).asString() : null;
@@ -52,6 +53,7 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   }
 
   @Override
+  @Nullable
   String getMyOptionalProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOptionalProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOptionalProp ).asString() : null;
@@ -61,6 +63,7 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   }
 
   @Override
+  @Nullable
   String getMyOtherOptionalProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherOptionalProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherOptionalProp ).asString() : null;

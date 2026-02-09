@@ -475,6 +475,12 @@ final class ViewGenerator
       final TypeKind resultKind = methodElement.getReturnType().getKind();
       if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( methodElement ) )
       {
+        // Need to add a nullable it not present as invariant path can return nulls.
+        if ( null == AnnotationsUtil.findAnnotationByType( methodElement, AnnotationsUtil.NULLABLE_CLASSNAME ) )
+        {
+          method.addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME );
+        }
+
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
         block.addStatement( "return null != $N.inputs().getAsAny( Inputs.$N ) ? " +

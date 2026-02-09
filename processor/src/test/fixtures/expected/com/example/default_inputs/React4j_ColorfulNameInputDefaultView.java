@@ -44,6 +44,7 @@ abstract class React4j_ColorfulNameInputDefaultView extends ColorfulNameInputDef
   }
 
   @Override
+  @Nullable
   String getMyProp12$23() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp12$23 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp12$23 ).asString() : null;

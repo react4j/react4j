@@ -60,6 +60,7 @@ abstract class React4j_DisposableOptionalPropModel extends DisposableOptionalPro
   }
 
   @Override
+  @Nullable
   Object getValue() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).cast() : null;

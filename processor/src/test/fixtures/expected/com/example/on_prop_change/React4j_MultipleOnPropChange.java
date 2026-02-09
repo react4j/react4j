@@ -49,6 +49,7 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
   }
 
   @Override
+  @Nullable
   String getMyProp2() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp2 ).asString() : null;

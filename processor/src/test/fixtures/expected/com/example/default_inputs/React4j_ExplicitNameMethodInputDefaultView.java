@@ -44,6 +44,7 @@ abstract class React4j_ExplicitNameMethodInputDefaultView extends ExplicitNameMe
   }
 
   @Override
+  @Nullable
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;

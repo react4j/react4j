@@ -44,6 +44,7 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
   }
 
   @Override
+  @Nullable
   String getMyRequiredProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp ).asString() : null;
@@ -53,6 +54,7 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
   }
 
   @Override
+  @Nullable
   String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;
@@ -62,6 +64,7 @@ abstract class React4j_OptionalChildrenWithOptionalAndRequired extends OptionalC
   }
 
   @Override
+  @Nullable
   ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ).cast() : null;

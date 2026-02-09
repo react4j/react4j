@@ -44,6 +44,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
+  @Nullable
   String getMyPropA() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myPropA ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myPropA ).asString() : null;
@@ -53,6 +54,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
+  @Nullable
   String getMyPropB() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myPropB ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myPropB ).asString() : null;
@@ -62,6 +64,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
+  @Nullable
   String getMyPropC() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myPropC ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myPropC ).asString() : null;
@@ -71,6 +74,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
+  @Nullable
   String getMyPropD() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myPropD ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myPropD ).asString() : null;
@@ -80,6 +84,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   @Override
+  @Nullable
   ReactNode[] getChildren() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ).cast() : null;
