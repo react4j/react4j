@@ -564,7 +564,7 @@ final class ViewGenerator
   {
     // The list of inputs we need to check for changes
     final List<InputDescriptor> inputs =
-      onInputChanges.stream().flatMap( d -> d.getInputs().stream() ).distinct().collect( Collectors.toList() );
+      onInputChanges.stream().flatMap( d -> d.getInputs().stream() ).distinct().toList();
 
     for ( final InputDescriptor input : inputs )
     {
@@ -664,7 +664,7 @@ final class ViewGenerator
       descriptor.getInputs()
         .stream()
         .filter( InputDescriptor::isObservable )
-        .collect( Collectors.toList() );
+        .toList();
 
     if ( !observableInputs.isEmpty() )
     {
@@ -693,7 +693,7 @@ final class ViewGenerator
         .filter( InputDescriptor::shouldUpdateOnChange )
         // Observable properties already checked above
         .filter( p -> !p.isObservable() )
-        .collect( Collectors.toList() );
+        .toList();
 
     if ( observableInputs.isEmpty() && updateOnChangeInputs.isEmpty() )
     {
@@ -903,7 +903,7 @@ final class ViewGenerator
         .stream()
         .filter( InputDescriptor::isDisposable )
         .filter( input -> !input.isDependency() )
-        .collect( Collectors.toList() );
+        .toList();
 
     for ( final InputDescriptor input : disposableInputs )
     {
@@ -931,7 +931,7 @@ final class ViewGenerator
     {
       sb.append( "$T.$N.provide( $N(), " );
       args.add( ClassName.bestGuess( "ContextHolder" ) );
-      args.add( "CONTEXT_" + publish.getMethod().getSimpleName().toString() );
+      args.add( "CONTEXT_" + publish.getMethod().getSimpleName() );
       args.add( publish.getMethod().getSimpleName() );
     }
     for ( final RenderHookDescriptor hook : descriptor.getPreRenderDescriptors() )
@@ -954,10 +954,7 @@ final class ViewGenerator
     }
 
     final int publishCount = publishDescriptors.size();
-    for ( int i = 0; i < publishCount; i++ )
-    {
-      sb.append( " )" );
-    }
+    sb.append( " )".repeat( publishCount ) );
 
     if ( !explicitReturnRequired )
     {
@@ -1664,11 +1661,11 @@ final class ViewGenerator
       final TypeName type = TypeName.get( publish.getMethodType().getReturnType() ).box();
       final FieldSpec.Builder field = FieldSpec
         .builder( ParameterizedTypeName.get( CONTEXT_CLASSNAME, type ),
-                  "CONTEXT_" + publish.getMethod().getSimpleName().toString(),
+                  "CONTEXT_" + publish.getMethod().getSimpleName(),
                   Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
       final String qualifier = publish.getQualifier();
-      if ( "".equals( qualifier ) )
+      if ( qualifier.isEmpty() )
       {
         field.initializer( "$T.get( $T.class )", CONTEXTS_CLASSNAME, type );
       }
