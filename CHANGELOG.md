@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.202](https://github.com/react4j/react4j/tree/v0.202) (2026-02-09) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.201...v0.202)
+
+Changes in this release:
 
 * Ensure generated input method overrides and a `@Nullable` annotation if non `@Nonnull` or `@Nullable` present on the declared `@Input` method and the return type is not a primite.
 
