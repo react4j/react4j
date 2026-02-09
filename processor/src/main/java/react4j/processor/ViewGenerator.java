@@ -1236,7 +1236,7 @@ final class ViewGenerator
   {
     final TypeSpec.Builder builder = TypeSpec.classBuilder( "Inputs" );
 
-    //Ensure it can not be subclassed
+    //Ensure it cannot be subclassed
     builder.addModifiers( Modifier.FINAL );
     builder.addModifiers( Modifier.STATIC );
 
