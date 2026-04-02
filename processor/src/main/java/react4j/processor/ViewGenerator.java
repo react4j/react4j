@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -53,6 +54,8 @@ final class ViewGenerator
   private static final ClassName OBSERVER_REF_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "ObserverRef" );
   private static final ClassName COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ComponentDependency" );
+  private static final ClassName COMPONENT_OBSERVABLE_CLASSNAME =
+    ClassName.get( "arez.component", "ComponentObservable" );
   private static final ClassName COMPONENT_NAME_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ComponentNameRef" );
   private static final ClassName COMPONENT_ID_REF_ANNOTATION_CLASSNAME =
@@ -282,21 +285,8 @@ final class ViewGenerator
 
     if ( input.isDependency() )
     {
-      final Element inputType = input.getInputType();
-      final boolean isTypeCompatible =
-        null != inputType &&
-        (
-          (
-            ElementKind.CLASS == inputType.getKind() &&
-            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_CLASSNAME )
-          ) ||
-          (
-            ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
-            AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME )
-          )
-        );
       final AnnotationSpec.Builder annotation = AnnotationSpec.builder( COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME );
-      if ( !isTypeCompatible )
+      if ( !isCompileTimeComponentLikeInputType( input.getInputType() ) )
       {
         annotation.addMember( "validateTypeAtRuntime", "true" );
       }
@@ -312,6 +302,21 @@ final class ViewGenerator
 
     GeneratorUtil.copyWhitelistedAnnotations( input.getMethod(), field );
     return field.build();
+  }
+
+  private static boolean isCompileTimeComponentLikeInputType( @Nullable final Element inputType )
+  {
+    return null != inputType &&
+           (
+             (
+               ElementKind.CLASS == inputType.getKind() &&
+               AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_CLASSNAME )
+             ) ||
+             (
+               ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
+               AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME )
+             )
+           );
   }
 
   @Nonnull
@@ -918,6 +923,26 @@ final class ViewGenerator
                            input.getMethodType().getReturnType(),
                            varName,
                            input.getMethod().getSimpleName().toString() );
+      if ( descriptor.trackRender() && isCompileTimeComponentLikeInputType( input.getInputType() ) )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        if ( input.isNonNull() )
+        {
+          block.beginControlFlow( "if ( !$T.observe( $N ) )",
+                                  COMPONENT_OBSERVABLE_CLASSNAME,
+                                  varName );
+        }
+        else
+        {
+          block.beginControlFlow( "if ( null != $N && !$T.observe( $N ) )",
+                                  varName,
+                                  COMPONENT_OBSERVABLE_CLASSNAME,
+                                  varName );
+        }
+        block.addStatement( "return null" );
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
       final CodeBlock.Builder block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
       block.addStatement( "return null" );

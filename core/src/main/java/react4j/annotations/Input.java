@@ -110,6 +110,10 @@ public @interface Input
    * type of the input and treat it as {@link Feature#ENABLE} if the type is annotated with the {@link ArezComponent}
    * annotation or the {@link ActAsComponent} annotation.
    *
+   * <p>For tracked renders, disposable inputs whose declared type is annotated with {@link ArezComponent} or
+   * {@link ActAsComponent} will also be observed during render so that disposing the input can invalidate the
+   * render and trigger a rerender.</p>
+   *
    * @return an enum indicating whether the view should check whether the value of the input is disposed prior to rendering.
    */
   Feature disposable() default Feature.AUTODETECT;

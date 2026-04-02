@@ -20,7 +20,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.IntrospectUtil;
@@ -33,12 +32,12 @@ import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
 @ArezComponent(
-    name = "com_example_prop_ActAsComponentPropModel",
+    name = "com_example_prop_MutableDisposableNullableArezComponentMaybeTrackingProp",
     disposeNotifier = Feature.DISABLE,
     sting = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
+abstract class React4j_MutableDisposableNullableArezComponentMaybeTrackingProp extends MutableDisposableNullableArezComponentMaybeTrackingProp {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
@@ -46,7 +45,7 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
 
   private boolean $$react4j$$_scheduledDebugStateUpdate;
 
-  React4j_ActAsComponentPropModel(
+  React4j_MutableDisposableNullableArezComponentMaybeTrackingProp(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
@@ -55,14 +54,14 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ActAsComponentPropModel" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "MutableDisposableNullableArezComponentMaybeTrackingProp" );
     }
     return viewConstructor;
   }
 
   @Nullable
   @Override
-  ActAsComponentPropModel.Model getModel() {
+  MutableDisposableNullableArezComponentMaybeTrackingProp.Model getModel() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;
     } else {
@@ -93,7 +92,7 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ActAsComponentPropModel) this).dispose();
+    ((Arez_React4j_MutableDisposableNullableArezComponentMaybeTrackingProp) this).dispose();
     $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
@@ -109,7 +108,7 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
   ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
-    final ActAsComponentPropModel.Model $$react4jv$$_getModel = getModel();
+    final MutableDisposableNullableArezComponentMaybeTrackingProp.Model $$react4jv$$_getModel = getModel();
     if ( null != $$react4jv$$_getModel && !ComponentObservable.observe( $$react4jv$$_getModel ) ) {
       return null;
     }
@@ -117,11 +116,7 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
       return null;
     }
     SchedulerUtil.pauseUntilRenderLoopComplete();
-    final ReactNode result = render();
-    if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
-      Guards.invariant( () -> !$$react4j$$_getRenderObserver().getContext().getSpy().asObserverInfo( $$react4j$$_getRenderObserver() ).getDependencies().isEmpty(), () -> "View render completed on '" + this + "' without accessing any Arez dependencies but has a type set to TRACKING. The render method needs to access an Arez dependency or the type should be changed to STATEFUL or MAYBE_TRACKING." );
-    }
-    return result;
+    return render();
   }
 
   void onRenderDepsChange() {
@@ -170,12 +165,12 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ActAsComponentPropModel $$react4j$$_view;
+    private final React4j_MutableDisposableNullableArezComponentMaybeTrackingProp $$react4j$$_view;
 
     @JsConstructor
     LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_ActAsComponentPropModel( this );
+      $$react4j$$_view = new Arez_React4j_MutableDisposableNullableArezComponentMaybeTrackingProp( this );
     }
 
     @Override
@@ -197,12 +192,12 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ActAsComponentPropModel $$react4j$$_view;
+    private final React4j_MutableDisposableNullableArezComponentMaybeTrackingProp $$react4j$$_view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_ActAsComponentPropModel( this );
+      $$react4j$$_view = new Arez_React4j_MutableDisposableNullableArezComponentMaybeTrackingProp( this );
     }
 
     @Override
