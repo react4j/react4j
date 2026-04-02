@@ -150,6 +150,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.ImmutablePropTypeKeyedInterface" },
         new Object[]{ "com.example.prop.ImmutablePropTypeKeyedMultiStepInherited" },
         new Object[]{ "com.example.prop.ImmutablePropTypeKeyedViaInheritanceInterface" },
+        new Object[]{ "com.example.prop.ImmutablePropTypeMultiple" },
         new Object[]{ "com.example.prop.ImmutablePropTypePrimitiveBoolean" },
         new Object[]{ "com.example.prop.ImmutablePropTypePrimitiveByte" },
         new Object[]{ "com.example.prop.ImmutablePropTypePrimitiveChar" },
@@ -248,6 +249,7 @@ public final class React4jProcessorTest
     assertSuccessfulCompile( classname, false );
   }
 
+  @Nonnull
   @DataProvider( name = "successfulDaggerCompiles" )
   public Object[][] successfulDaggerCompiles()
   {
