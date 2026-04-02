@@ -908,25 +908,33 @@ final class ViewGenerator
     }
     method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
-    final List<InputDescriptor> disposableInputs =
+    final List<InputDescriptor> inputsWithRenderPreludeChecks =
       descriptor
         .getInputs()
         .stream()
-        .filter( InputDescriptor::isDisposable )
+        .filter( input -> input.isDisposable() || input.shouldObserveOnRender() )
         .filter( input -> !input.isDependency() )
         .toList();
 
-    for ( final InputDescriptor input : disposableInputs )
+    for ( final InputDescriptor input : inputsWithRenderPreludeChecks )
     {
       final String varName = "$$react4jv$$_" + input.getMethod().getSimpleName();
       method.addStatement( "final $T $N = $N()",
                            input.getMethodType().getReturnType(),
                            varName,
                            input.getMethod().getSimpleName().toString() );
-      if ( descriptor.trackRender() && isCompileTimeComponentLikeInputType( input.getInputType() ) )
+      if ( descriptor.trackRender() && input.shouldObserveOnRender() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
-        if ( input.isNonNull() )
+        if ( input.observeOnRenderRequiresRuntimeCheck() )
+        {
+          block.beginControlFlow( "if ( $N instanceof $T && !$T.observe( $N ) )",
+                                  varName,
+                                  COMPONENT_OBSERVABLE_CLASSNAME,
+                                  COMPONENT_OBSERVABLE_CLASSNAME,
+                                  varName );
+        }
+        else if ( input.isNonNull() )
         {
           block.beginControlFlow( "if ( !$T.observe( $N ) )",
                                   COMPONENT_OBSERVABLE_CLASSNAME,
@@ -943,11 +951,14 @@ final class ViewGenerator
         block.endControlFlow();
         method.addCode( block.build() );
       }
-      final CodeBlock.Builder block = CodeBlock.builder();
-      block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
-      block.addStatement( "return null" );
-      block.endControlFlow();
-      method.addCode( block.build() );
+      if ( input.isDisposable() )
+      {
+        final CodeBlock.Builder block = CodeBlock.builder();
+        block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
+        block.addStatement( "return null" );
+        block.endControlFlow();
+        method.addCode( block.build() );
+      }
     }
 
     if ( descriptor.trackRender() )

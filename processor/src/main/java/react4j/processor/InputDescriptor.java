@@ -31,6 +31,8 @@ final class InputDescriptor
   private final boolean _observable;
   private final boolean _disposable;
   private final boolean _dependency;
+  private final boolean _observeOnRender;
+  private final boolean _observeOnRenderRequiresRuntimeCheck;
   @Nullable
   private final ImmutableInputKeyStrategy _immutableInputKeyStrategy;
   @Nonnull
@@ -61,6 +63,8 @@ final class InputDescriptor
                    final boolean observable,
                    final boolean disposable,
                    final boolean dependency,
+                   final boolean observeOnRender,
+                   final boolean observeOnRenderRequiresRuntimeCheck,
                    @Nullable final ImmutableInputKeyStrategy immutableInputKeyStrategy,
                    @Nonnull final String requiredValue )
   {
@@ -75,6 +79,8 @@ final class InputDescriptor
     _observable = observable;
     _disposable = disposable;
     _dependency = dependency;
+    _observeOnRender = observeOnRender;
+    _observeOnRenderRequiresRuntimeCheck = observeOnRenderRequiresRuntimeCheck;
     _immutableInputKeyStrategy = immutableInputKeyStrategy;
     _requiredValue = Objects.requireNonNull( requiredValue );
   }
@@ -127,6 +133,16 @@ final class InputDescriptor
   boolean isDependency()
   {
     return _dependency;
+  }
+
+  boolean shouldObserveOnRender()
+  {
+    return _observeOnRender;
+  }
+
+  boolean observeOnRenderRequiresRuntimeCheck()
+  {
+    return _observeOnRenderRequiresRuntimeCheck;
   }
 
   boolean isImmutable()

@@ -10,7 +10,7 @@ import react4j.annotations.View;
 @View( type = View.Type.MAYBE_TRACKING )
 abstract class MutableDisposableNullableArezComponentMaybeTrackingProp
 {
-  @ArezComponent( allowEmpty = true )
+  @ArezComponent( allowEmpty = true, disposeOnDeactivate = true )
   static abstract class Model
   {
   }

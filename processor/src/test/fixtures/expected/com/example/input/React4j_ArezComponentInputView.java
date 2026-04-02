@@ -12,7 +12,6 @@ import arez.annotations.Feature;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
-import arez.component.ComponentObservable;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -123,9 +122,6 @@ abstract class React4j_ArezComponentInputView extends ArezComponentInputView {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     final ArezComponentInputView.Model $$react4jv$$_getModel = getModel();
-    if ( null != $$react4jv$$_getModel && !ComponentObservable.observe( $$react4jv$$_getModel ) ) {
-      return null;
-    }
     if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {
       return null;
     }

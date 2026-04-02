@@ -62,6 +62,10 @@ import org.realityforge.proton.StopWatch;
 public final class React4jProcessor
   extends AbstractStandardProcessor
 {
+  private record ObserveOnRenderConfig(boolean enabled, boolean runtimeCheck)
+  {
+  }
+
   private static final String SENTINEL_NAME = "<default>";
   private static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
   private static final Pattern VALIDATE_INPUT_PATTERN = Pattern.compile( "^validate([A-Z].*)$" );
@@ -921,6 +925,7 @@ public final class React4jProcessor
     final boolean immutable = isInputImmutable( method );
     final boolean observable = isInputObservable( methods, method, immutable );
     final boolean disposable = null != inputType && isInputDisposable( method, inputType );
+    final ObserveOnRenderConfig observeOnRender = resolveObserveOnRender( method, returnType, inputType );
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation( method ) )
     {
@@ -954,6 +959,8 @@ public final class React4jProcessor
                            observable,
                            disposable,
                            dependency,
+                           observeOnRender.enabled(),
+                           observeOnRender.runtimeCheck(),
                            strategy,
                            requiredValue );
     if ( inputDescriptor.mayNeedMutableInputAccessedInPostConstructInvariant() )
@@ -1537,6 +1544,124 @@ public final class React4jProcessor
                    AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME )
                  );
     };
+  }
+
+  @Nonnull
+  private ObserveOnRenderConfig resolveObserveOnRender( @Nonnull final ExecutableElement method,
+                                                        @Nonnull final TypeMirror returnType,
+                                                        @Nullable final Element inputType )
+  {
+    final VariableElement parameter = (VariableElement)
+      AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "observeOnRender" ).getValue();
+    final String value = parameter.getSimpleName().toString();
+    if ( "DISABLE".equals( value ) )
+    {
+      return new ObserveOnRenderConfig( false, false );
+    }
+
+    final boolean assignableToComponentObservable = isAssignableToComponentObservable( returnType );
+    final TypeElement typeElement = inputType instanceof TypeElement ? (TypeElement) inputType : null;
+    final boolean isActAsComponentType = isActAsComponentType( inputType );
+    final ArezComponentObservableResolution arezObservableResolution =
+      null != typeElement ? resolveArezComponentObservable( typeElement ) : ArezComponentObservableResolution.NOT_AREZ_COMPONENT;
+
+    if ( "ENABLE".equals( value ) )
+    {
+      if ( ArezComponentObservableResolution.DISABLED == arezObservableResolution )
+      {
+        throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
+                                      "is annotated with @ArezComponent and resolves observable=DISABLE.",
+                                      method );
+      }
+      if ( assignableToComponentObservable )
+      {
+        return new ObserveOnRenderConfig( true, false );
+      }
+      if ( null == inputType || !canTypeUseRuntimeComponentObservableCheck( inputType ) )
+      {
+        throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
+                                      "can never implement arez.component.ComponentObservable.",
+                                      method );
+      }
+      if ( isFinalClass( inputType ) )
+      {
+        throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
+                                      "is a final class that does not implement arez.component.ComponentObservable.",
+                                      method );
+      }
+      return new ObserveOnRenderConfig( true, true );
+    }
+
+    if ( assignableToComponentObservable )
+    {
+      return new ObserveOnRenderConfig( true, false );
+    }
+    if ( ArezComponentObservableResolution.ENABLED == arezObservableResolution )
+    {
+      return new ObserveOnRenderConfig( true, false );
+    }
+    if ( isActAsComponentType )
+    {
+      return new ObserveOnRenderConfig( true, true );
+    }
+    return new ObserveOnRenderConfig( false, false );
+  }
+
+  private boolean canTypeUseRuntimeComponentObservableCheck( @Nonnull final Element inputType )
+  {
+    return ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind();
+  }
+
+  private boolean isFinalClass( @Nonnull final Element inputType )
+  {
+    return ElementKind.CLASS == inputType.getKind() && inputType.getModifiers().contains( Modifier.FINAL );
+  }
+
+  private boolean isAssignableToComponentObservable( @Nonnull final TypeMirror type )
+  {
+    final TypeElement typeElement =
+      processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_OBSERVABLE_CLASSNAME );
+    return null != typeElement && processingEnv.getTypeUtils().isAssignable( type, typeElement.asType() );
+  }
+
+  private boolean isActAsComponentType( @Nullable final Element inputType )
+  {
+    return null != inputType &&
+           ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
+           AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME );
+  }
+
+  @Nonnull
+  private ArezComponentObservableResolution resolveArezComponentObservable( @Nonnull final TypeElement element )
+  {
+    if ( !AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_CLASSNAME ) )
+    {
+      return ArezComponentObservableResolution.NOT_AREZ_COMPONENT;
+    }
+
+    final VariableElement observableParameter = (VariableElement)
+      AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_CLASSNAME, "observable" ).getValue();
+    return switch ( observableParameter.getSimpleName().toString() )
+    {
+      case "ENABLE" -> ArezComponentObservableResolution.ENABLED;
+      case "DISABLE" -> ArezComponentObservableResolution.DISABLED;
+      default ->
+      {
+        final boolean disposeOnDeactivate = (Boolean)
+          AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_CLASSNAME, "disposeOnDeactivate" )
+            .getValue();
+        yield disposeOnDeactivate ?
+          ArezComponentObservableResolution.ENABLED :
+          ArezComponentObservableResolution.DISABLED;
+      }
+    };
+  }
+
+  private enum ArezComponentObservableResolution
+  {
+    ENABLED,
+    DISABLED,
+    NOT_AREZ_COMPONENT
   }
 
   private boolean isContextInput( @Nonnull final ExecutableElement method )

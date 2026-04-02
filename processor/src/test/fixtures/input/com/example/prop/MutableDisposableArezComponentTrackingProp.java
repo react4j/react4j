@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
@@ -11,7 +12,7 @@ import react4j.annotations.View;
 @View( type = View.Type.TRACKING )
 abstract class MutableDisposableArezComponentTrackingProp
 {
-  @ArezComponent( allowEmpty = true )
+  @ArezComponent( allowEmpty = true, observable = Feature.ENABLE )
   static abstract class Model
   {
   }

@@ -9,15 +9,15 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View( type = View.Type.TRACKING )
-abstract class MutableDisposableNullableArezComponentTrackingProp
+abstract class ObserveOnRenderNonObservableArezEnableProp
 {
-  @ArezComponent( allowEmpty = true, observable = Feature.ENABLE )
+  @ArezComponent( allowEmpty = true, observable = Feature.DISABLE )
   static abstract class Model
   {
   }
 
   @Nullable
-  @Input
+  @Input( observeOnRender = react4j.annotations.Feature.ENABLE )
   abstract Model getModel();
 
   @Nullable

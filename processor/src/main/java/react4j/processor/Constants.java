@@ -47,6 +47,8 @@ final class Constants
   @Nonnull
   static final String IDENTIFIABLE_CLASSNAME = "arez.component.Identifiable";
   @Nonnull
+  static final String COMPONENT_OBSERVABLE_CLASSNAME = "arez.component.ComponentObservable";
+  @Nonnull
   static final String ACT_AS_COMPONENT_CLASSNAME = "arez.annotations.ActAsComponent";
   @Nonnull
   static final String AREZ_COMPONENT_CLASSNAME = "arez.annotations.ArezComponent";

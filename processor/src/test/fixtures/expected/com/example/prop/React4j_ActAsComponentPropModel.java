@@ -110,7 +110,7 @@ abstract class React4j_ActAsComponentPropModel extends ActAsComponentPropModel {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     final ActAsComponentPropModel.Model $$react4jv$$_getModel = getModel();
-    if ( null != $$react4jv$$_getModel && !ComponentObservable.observe( $$react4jv$$_getModel ) ) {
+    if ( $$react4jv$$_getModel instanceof ComponentObservable && !ComponentObservable.observe( $$react4jv$$_getModel ) ) {
       return null;
     }
     if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {

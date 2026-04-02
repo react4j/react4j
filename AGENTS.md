@@ -12,6 +12,8 @@ reasonable alternatives.
 
 When you learn something non-obvious, add it here if it would make future changes faster or of higher quality.
 
+- `@Input.observeOnRender()` is independent of `disposable()`. For `@ArezComponent` inputs, `AUTODETECT` only enables observe-on-render when Arez observability resolves enabled (`observable=ENABLE` or `disposeOnDeactivate=true` when `observable=AUTODETECT`). `@ActAsComponent` and explicit uncertain `observeOnRender=ENABLE` inputs use a runtime `instanceof ComponentObservable` guard in generated render preludes.
+
 ## Project Structure & Module Organization
 
 - Java modules:

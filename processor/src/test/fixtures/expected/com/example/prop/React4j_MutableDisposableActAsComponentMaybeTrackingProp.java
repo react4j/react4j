@@ -109,7 +109,7 @@ abstract class React4j_MutableDisposableActAsComponentMaybeTrackingProp extends 
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     final MutableDisposableActAsComponentMaybeTrackingProp.ActAsComponentComponent $$react4jv$$_model = model();
-    if ( null != $$react4jv$$_model && !ComponentObservable.observe( $$react4jv$$_model ) ) {
+    if ( $$react4jv$$_model instanceof ComponentObservable && !ComponentObservable.observe( $$react4jv$$_model ) ) {
       return null;
     }
     if ( Disposable.isDisposed( $$react4jv$$_model ) ) {
