@@ -628,7 +628,11 @@ final class BuilderGenerator
         {
           final TypeMirror inputType = input.getMethodType().getReturnType();
           final TypeKind kind = inputType.getKind();
-          if ( TypeKind.INT == kind || TypeKind.SHORT == kind || TypeKind.BYTE == kind || TypeKind.FLOAT == kind )
+          if ( TypeKind.LONG == kind ||
+               TypeKind.INT == kind ||
+               TypeKind.SHORT == kind ||
+               TypeKind.BYTE == kind ||
+               TypeKind.FLOAT == kind )
           {
             sb.append( "$T.valueOf( ($T) (double) inputs.get( $T.Inputs.$N ) )" );
           }
