@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.206](https://github.com/react4j/react4j/tree/v0.206) (2026-04-02) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.205...v0.206)
+
+Changes in this release:
 
 * Add `@Input.observeOnRender()` to opt tracked renders into observing input component liveness so disposal can invalidate render and trigger a rerender.
 * Make `observeOnRender = AUTODETECT` conservative for `@ArezComponent` inputs by honoring the Arez `observable` setting, while `@ActAsComponent` and explicit uncertain `ENABLE` cases use a runtime `ComponentObservable` guard.
