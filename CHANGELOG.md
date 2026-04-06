@@ -1,6 +1,6 @@
 # Change Log
 
-### [v0.206](https://github.com/react4j/react4j/tree/v0.207) (2026-04-02) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.206...v0.207)
+### [v0.207](https://github.com/react4j/react4j/tree/v0.207) (2026-04-02) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.206...v0.207)
 
 Changes in this release:
 
