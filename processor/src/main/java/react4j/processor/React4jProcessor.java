@@ -1651,8 +1651,8 @@ public final class React4jProcessor
           AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_CLASSNAME, "disposeOnDeactivate" )
             .getValue();
         yield disposeOnDeactivate ?
-          ArezComponentObservableResolution.ENABLED :
-          ArezComponentObservableResolution.DISABLED;
+              ArezComponentObservableResolution.ENABLED :
+              ArezComponentObservableResolution.DISABLED;
       }
     };
   }
