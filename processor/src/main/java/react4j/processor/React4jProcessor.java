@@ -1558,53 +1558,65 @@ public final class React4jProcessor
     {
       return new ObserveOnRenderConfig( false, false );
     }
+    else
+    {
+      final boolean assignableToComponentObservable = isAssignableToComponentObservable( returnType );
+      final ArezComponentObservableResolution arezObservableResolution =
+        inputType instanceof TypeElement ?
+        resolveArezComponentObservable( (TypeElement) inputType ) :
+        ArezComponentObservableResolution.NOT_AREZ_COMPONENT;
 
-    final boolean assignableToComponentObservable = isAssignableToComponentObservable( returnType );
-    final TypeElement typeElement = inputType instanceof TypeElement ? (TypeElement) inputType : null;
-    final boolean isActAsComponentType = isActAsComponentType( inputType );
-    final ArezComponentObservableResolution arezObservableResolution =
-      null != typeElement ? resolveArezComponentObservable( typeElement ) : ArezComponentObservableResolution.NOT_AREZ_COMPONENT;
+      if ( "ENABLE".equals( value ) )
+      {
+        if ( ArezComponentObservableResolution.DISABLED == arezObservableResolution )
+        {
+          throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
+                                        "is annotated with @ArezComponent and resolves observable=DISABLE.",
+                                        method );
+        }
+        else if ( assignableToComponentObservable )
+        {
+          return new ObserveOnRenderConfig( true, false );
+        }
+        else if ( null == inputType || !canTypeUseRuntimeComponentObservableCheck( inputType ) )
+        {
+          throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
+                                        "can never implement arez.component.ComponentObservable.",
+                                        method );
+        }
+        else if ( isFinalClass( inputType ) )
+        {
+          throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
+                                        "is a final class that does not implement arez.component.ComponentObservable.",
+                                        method );
+        }
+        else
+        {
+          return new ObserveOnRenderConfig( true, true );
+        }
+      }
+      else
+      {
+        assert "AUTODETECT".equals( value );
 
-    if ( "ENABLE".equals( value ) )
-    {
-      if ( ArezComponentObservableResolution.DISABLED == arezObservableResolution )
-      {
-        throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
-                                      "is annotated with @ArezComponent and resolves observable=DISABLE.",
-                                      method );
+        if ( assignableToComponentObservable )
+        {
+          return new ObserveOnRenderConfig( true, false );
+        }
+        else if ( ArezComponentObservableResolution.ENABLED == arezObservableResolution )
+        {
+          return new ObserveOnRenderConfig( true, false );
+        }
+        else if ( isActAsComponentType( inputType ) )
+        {
+          return new ObserveOnRenderConfig( true, true );
+        }
+        else
+        {
+          return new ObserveOnRenderConfig( false, false );
+        }
       }
-      if ( assignableToComponentObservable )
-      {
-        return new ObserveOnRenderConfig( true, false );
-      }
-      if ( null == inputType || !canTypeUseRuntimeComponentObservableCheck( inputType ) )
-      {
-        throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
-                                      "can never implement arez.component.ComponentObservable.",
-                                      method );
-      }
-      if ( isFinalClass( inputType ) )
-      {
-        throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
-                                      "is a final class that does not implement arez.component.ComponentObservable.",
-                                      method );
-      }
-      return new ObserveOnRenderConfig( true, true );
     }
-
-    if ( assignableToComponentObservable )
-    {
-      return new ObserveOnRenderConfig( true, false );
-    }
-    if ( ArezComponentObservableResolution.ENABLED == arezObservableResolution )
-    {
-      return new ObserveOnRenderConfig( true, false );
-    }
-    if ( isActAsComponentType )
-    {
-      return new ObserveOnRenderConfig( true, true );
-    }
-    return new ObserveOnRenderConfig( false, false );
   }
 
   private boolean canTypeUseRuntimeComponentObservableCheck( @Nonnull final Element inputType )
