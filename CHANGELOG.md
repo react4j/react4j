@@ -1,5 +1,9 @@
 # Change Log
 
+### Unreleased
+
+* Support `observeOnRender` and `immutable` combined in `@Input` annotation. Immutable properties will still be observed on render to ensure the react component is scheduled, even when the arez component aspect has been disposed.
+
 ### [v0.207](https://github.com/react4j/react4j/tree/v0.207) (2026-04-02) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.206...v0.207)
 
 Changes in this release:

@@ -70,7 +70,6 @@ abstract class React4j_ObserveOnRenderComponentObservableNonTrackingProp extends
   @Nullable
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
-    final ObserveOnRenderComponentObservableNonTrackingProp.Model $$react4jv$$_getModel = getModel();
     return render();
   }
 

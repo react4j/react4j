@@ -912,8 +912,8 @@ final class ViewGenerator
       descriptor
         .getInputs()
         .stream()
-        .filter( input -> input.isDisposable() || input.shouldObserveOnRender() )
-        .filter( input -> !input.isDependency() )
+        .filter( input -> ( input.isDisposable() && !input.isDependency() ) ||
+                          ( descriptor.trackRender() && input.shouldObserveOnRender() ) )
         .toList();
 
     for ( final InputDescriptor input : inputsWithRenderPreludeChecks )
@@ -951,7 +951,7 @@ final class ViewGenerator
         block.endControlFlow();
         method.addCode( block.build() );
       }
-      if ( input.isDisposable() )
+      if ( input.isDisposable() && !input.isDependency() )
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
@@ -1660,10 +1660,10 @@ final class ViewGenerator
       parameters.isEmpty() ?
       "()" :
       "( " +
-      parameters.stream()
+      parameters
+        .stream()
         .map( p -> TypeName.get( p.asType() ).toString().equals( Constants.JS_ERROR_CLASSNAME ) ? "error" : "info" )
-        .collect(
-          Collectors.joining( ", " ) ) +
+        .collect( Collectors.joining( ", " ) ) +
       " )";
 
     if ( descriptor.hasDependencyInput() )
