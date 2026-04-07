@@ -164,6 +164,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.ImplicitDisposableProp" },
         new Object[]{ "com.example.prop.MutableDisposableActAsComponentMaybeTrackingProp" },
         new Object[]{ "com.example.prop.MutableDisposableNullableActAsComponentTrackingProp" },
+        new Object[]{ "com.example.prop.MutableDisposableNullableGenericActAsComponentMaybeTrackingProp" },
         new Object[]{ "com.example.prop.MutableDisposableNullableActAsComponentMaybeTrackingProp" },
         new Object[]{ "com.example.prop.MutableDisposableActAsComponentTrackingProp" },
         new Object[]{ "com.example.prop.MutableDisposableNullableArezComponentMaybeTrackingProp" },
