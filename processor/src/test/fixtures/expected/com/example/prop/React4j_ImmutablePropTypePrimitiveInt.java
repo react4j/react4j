@@ -35,7 +35,7 @@ abstract class React4j_ImmutablePropTypePrimitiveInt extends ImmutablePropTypePr
   React4j_ImmutablePropTypePrimitiveInt(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    this.$$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asInt();
+    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asInt();
   }
 
   @Nonnull

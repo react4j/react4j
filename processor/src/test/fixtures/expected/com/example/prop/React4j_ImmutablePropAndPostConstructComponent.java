@@ -37,9 +37,9 @@ abstract class React4j_ImmutablePropAndPostConstructComponent extends ImmutableP
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
     if ( React.shouldCheckInvariants() ) {
-      this.$$react4j_immutable_input$$_myProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;
+      $$react4j_immutable_input$$_myProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString() : null;
     } else {
-      this.$$react4j_immutable_input$$_myProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
+      $$react4j_immutable_input$$_myProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
     }
   }
 

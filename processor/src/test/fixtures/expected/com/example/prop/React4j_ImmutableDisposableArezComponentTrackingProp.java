@@ -54,7 +54,7 @@ abstract class React4j_ImmutableDisposableArezComponentTrackingProp extends Immu
   React4j_ImmutableDisposableArezComponentTrackingProp(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    this.$$react4j_immutable_input$$_model = $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast();
+    $$react4j_immutable_input$$_model = $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast();
   }
 
   @Nonnull

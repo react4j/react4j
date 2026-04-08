@@ -35,7 +35,7 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
   React4j_ImmutablePropTypePrimitiveFloat(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    this.$$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asFloat();
+    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asFloat();
   }
 
   @Nonnull

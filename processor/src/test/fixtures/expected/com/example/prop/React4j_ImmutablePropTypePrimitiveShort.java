@@ -35,7 +35,7 @@ abstract class React4j_ImmutablePropTypePrimitiveShort extends ImmutablePropType
   React4j_ImmutablePropTypePrimitiveShort(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    this.$$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asShort();
+    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asShort();
   }
 
   @Nonnull

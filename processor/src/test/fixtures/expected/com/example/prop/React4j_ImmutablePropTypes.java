@@ -55,31 +55,31 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
 
   React4j_ImmutablePropTypes(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    this.$$react4j_immutable_input$$_stillAnotherProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.stillAnotherProp ).asInt();
+    $$react4j_immutable_input$$_stillAnotherProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.stillAnotherProp ).asInt();
     if ( React.shouldCheckInvariants() ) {
-      this.$$react4j_immutable_input$$_myProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
+      $$react4j_immutable_input$$_myProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
     } else {
-      this.$$react4j_immutable_input$$_myProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
+      $$react4j_immutable_input$$_myProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      this.$$react4j_immutable_input$$_myOtherProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ).asString() : null;
+      $$react4j_immutable_input$$_myOtherProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ).asString() : null;
     } else {
-      this.$$react4j_immutable_input$$_myOtherProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) );
+      $$react4j_immutable_input$$_myOtherProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      this.$$react4j_immutable_input$$_BobsProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ).cast() : null;
+      $$react4j_immutable_input$$_BobsProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ).cast() : null;
     } else {
-      this.$$react4j_immutable_input$$_BobsProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) );
+      $$react4j_immutable_input$$_BobsProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      this.$$react4j_immutable_input$$_someProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ).cast() : null;
+      $$react4j_immutable_input$$_someProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ).cast() : null;
     } else {
-      this.$$react4j_immutable_input$$_someProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) );
+      $$react4j_immutable_input$$_someProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      this.$$react4j_immutable_input$$_object = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ).cast() : null;
+      $$react4j_immutable_input$$_object = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ).cast() : null;
     } else {
-      this.$$react4j_immutable_input$$_object = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ) );
+      $$react4j_immutable_input$$_object = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ) );
     }
   }
 
@@ -169,7 +169,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutablePropTypes( this );
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.myProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypes( this );
     }
 
     @Override
