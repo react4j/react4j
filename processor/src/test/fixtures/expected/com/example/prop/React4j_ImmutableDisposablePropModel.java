@@ -56,9 +56,9 @@ abstract class React4j_ImmutableDisposablePropModel extends ImmutableDisposableP
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_value = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).cast() : null;
+      this.$$react4j_immutable_input$$_value = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_value = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) );
+      this.$$react4j_immutable_input$$_value = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) );
     }
   }
 

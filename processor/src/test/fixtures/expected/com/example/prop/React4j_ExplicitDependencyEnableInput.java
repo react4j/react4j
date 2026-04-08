@@ -38,9 +38,9 @@ abstract class React4j_ExplicitDependencyEnableInput extends ExplicitDependencyE
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_myComponent = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ).cast() : null;
+      this.$$react4j_immutable_input$$_myComponent = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_myComponent = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ) );
+      this.$$react4j_immutable_input$$_myComponent = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myComponent ) );
     }
   }
 

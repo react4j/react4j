@@ -142,90 +142,90 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
   React4j_ImmutablePropTypeMultiple(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_booleanProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.booleanProp ).asBoolean();
-    $$react4j_immutable_input$$_byteProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.byteProp ).asByte();
-    $$react4j_immutable_input$$_charProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.charProp ).asChar();
-    $$react4j_immutable_input$$_doubleProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.doubleProp ).asDouble();
-    $$react4j_immutable_input$$_floatProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.floatProp ).asFloat();
-    $$react4j_immutable_input$$_intProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.intProp ).asInt();
-    $$react4j_immutable_input$$_longProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.longProp ).asLong();
-    $$react4j_immutable_input$$_shortProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.shortProp ).asShort();
-    $$react4j_immutable_input$$_enumProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.enumProp ).cast();
-    $$react4j_immutable_input$$_keyedComponentProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.keyedComponentProp ).cast();
-    $$react4j_immutable_input$$_identifiableProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.identifiableProp ).cast();
-    $$react4j_immutable_input$$_objectProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.objectProp ).cast();
-    $$react4j_immutable_input$$_actAsComponentProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.actAsComponentProp ).cast();
-    $$react4j_immutable_input$$_arezComponentProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.arezComponentProp ).cast();
-    $$react4j_immutable_input$$_arezComponentWithExplicitRequireIdProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast();
+    this.$$react4j_immutable_input$$_booleanProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.booleanProp ).asBoolean();
+    this.$$react4j_immutable_input$$_byteProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.byteProp ).asByte();
+    this.$$react4j_immutable_input$$_charProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.charProp ).asChar();
+    this.$$react4j_immutable_input$$_doubleProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.doubleProp ).asDouble();
+    this.$$react4j_immutable_input$$_floatProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.floatProp ).asFloat();
+    this.$$react4j_immutable_input$$_intProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.intProp ).asInt();
+    this.$$react4j_immutable_input$$_longProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.longProp ).asLong();
+    this.$$react4j_immutable_input$$_shortProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.shortProp ).asShort();
+    this.$$react4j_immutable_input$$_enumProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.enumProp ).cast();
+    this.$$react4j_immutable_input$$_keyedComponentProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.keyedComponentProp ).cast();
+    this.$$react4j_immutable_input$$_identifiableProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.identifiableProp ).cast();
+    this.$$react4j_immutable_input$$_objectProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.objectProp ).cast();
+    this.$$react4j_immutable_input$$_actAsComponentProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.actAsComponentProp ).cast();
+    this.$$react4j_immutable_input$$_arezComponentProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.arezComponentProp ).cast();
+    this.$$react4j_immutable_input$$_arezComponentWithExplicitRequireIdProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast();
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableEnumProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableEnumProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableEnumProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableEnumProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableEnumProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableEnumProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableEnumProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableEnumProp ) );
+      this.$$react4j_immutable_input$$_nullableEnumProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableEnumProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableKeyedComponentProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableKeyedComponentProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableKeyedComponentProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableKeyedComponentProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableKeyedComponentProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableKeyedComponentProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableKeyedComponentProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableKeyedComponentProp ) );
+      this.$$react4j_immutable_input$$_nullableKeyedComponentProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableKeyedComponentProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableIdentifiableProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableIdentifiableProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableIdentifiableProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableIdentifiableProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableIdentifiableProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableIdentifiableProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableIdentifiableProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableIdentifiableProp ) );
+      this.$$react4j_immutable_input$$_nullableIdentifiableProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableIdentifiableProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedBooleanProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedBooleanProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedBooleanProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableBoxedBooleanProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedBooleanProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedBooleanProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableBoxedBooleanProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedBooleanProp ) );
+      this.$$react4j_immutable_input$$_nullableBoxedBooleanProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedBooleanProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedByteProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedByteProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedByteProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableBoxedByteProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedByteProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedByteProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableBoxedByteProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedByteProp ) );
+      this.$$react4j_immutable_input$$_nullableBoxedByteProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedByteProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedDoubleProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedDoubleProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedDoubleProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableBoxedDoubleProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedDoubleProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedDoubleProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableBoxedDoubleProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedDoubleProp ) );
+      this.$$react4j_immutable_input$$_nullableBoxedDoubleProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedDoubleProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedFloatProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedFloatProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedFloatProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableBoxedFloatProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedFloatProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedFloatProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableBoxedFloatProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedFloatProp ) );
+      this.$$react4j_immutable_input$$_nullableBoxedFloatProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedFloatProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedIntProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedIntProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedIntProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableBoxedIntProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedIntProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedIntProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableBoxedIntProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedIntProp ) );
+      this.$$react4j_immutable_input$$_nullableBoxedIntProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedIntProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedLongProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedLongProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedLongProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableBoxedLongProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedLongProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedLongProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableBoxedLongProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedLongProp ) );
+      this.$$react4j_immutable_input$$_nullableBoxedLongProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedLongProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedShortProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedShortProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedShortProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableBoxedShortProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedShortProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedShortProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableBoxedShortProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedShortProp ) );
+      this.$$react4j_immutable_input$$_nullableBoxedShortProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedShortProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableObjectProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableObjectProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableObjectProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableObjectProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableObjectProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableObjectProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableObjectProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableObjectProp ) );
+      this.$$react4j_immutable_input$$_nullableObjectProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableObjectProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableActAsComponentProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableActAsComponentProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableActAsComponentProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableActAsComponentProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableActAsComponentProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableActAsComponentProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableActAsComponentProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableActAsComponentProp ) );
+      this.$$react4j_immutable_input$$_nullableActAsComponentProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableActAsComponentProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableArezComponentProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableArezComponentProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableArezComponentProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentProp ) );
+      this.$$react4j_immutable_input$$_nullableArezComponentProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentProp ) );
     }
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ).cast() : null;
+      this.$$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) );
+      this.$$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) );
     }
   }
 

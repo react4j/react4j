@@ -54,9 +54,9 @@ abstract class React4j_ImmutableDisposableNullableActAsComponentMaybeTrackingPro
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
     if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_model = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;
+      this.$$react4j_immutable_input$$_model = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;
     } else {
-      $$react4j_immutable_input$$_model = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) );
+      this.$$react4j_immutable_input$$_model = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) );
     }
   }
 

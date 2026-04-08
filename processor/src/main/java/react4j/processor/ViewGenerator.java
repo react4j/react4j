@@ -373,7 +373,7 @@ final class ViewGenerator
       {
         final CodeBlock.Builder block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-        block.addStatement( "$N = null != $N.inputs().getAsAny( Inputs.$N ) ? " +
+        block.addStatement( "this.$N = null != $N.inputs().getAsAny( Inputs.$N ) ? " +
                             "$N.inputs().getAsAny( Inputs.$N ).$N() : null",
                             FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
                             NATIVE_VIEW_FIELD,
@@ -382,7 +382,7 @@ final class ViewGenerator
                             input.getConstantName(),
                             convertMethodName );
         block.nextControlFlow( "else" );
-        block.addStatement( "$N = $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
+        block.addStatement( "this.$N = $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
                             FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
                             JS_CLASSNAME,
                             NATIVE_VIEW_FIELD,
@@ -392,7 +392,7 @@ final class ViewGenerator
       }
       else
       {
-        ctor.addStatement( "$N = $N.inputs().getAsAny( Inputs.$N ).$N()",
+        ctor.addStatement( "this.$N = $N.inputs().getAsAny( Inputs.$N ).$N()",
                            FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
                            NATIVE_VIEW_FIELD,
                            input.getConstantName(),
