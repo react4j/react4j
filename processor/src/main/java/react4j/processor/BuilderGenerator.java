@@ -33,6 +33,8 @@ import org.realityforge.proton.SuppressWarningsUtil;
 final class BuilderGenerator
 {
   @Nonnull
+  private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
+  @Nonnull
   private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "akasha.lang", "JsArray" );
   @Nonnull
   private static final ClassName IDENTIFIABLE_CLASSNAME = ClassName.get( "arez.component", "Identifiable" );
@@ -405,6 +407,10 @@ final class BuilderGenerator
       }
     }
 
+    if ( null != input && input.isDependency() )
+    {
+      method.addStatement( "assert $T.isNotDisposed( $N )", DISPOSABLE_CLASSNAME, stepMethod.getName() );
+    }
     if ( stepMethod.isChildrenIntrinsic() )
     {
       method.varargs();

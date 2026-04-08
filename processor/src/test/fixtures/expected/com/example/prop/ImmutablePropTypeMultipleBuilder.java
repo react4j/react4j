@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.component.Identifiable;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -388,6 +389,7 @@ final class ImmutablePropTypeMultipleBuilder {
     )
     public final Step14 actAsComponentProp(
         @Nonnull final ImmutablePropTypeMultiple.ActAsComponentComponent actAsComponentProp) {
+      assert Disposable.isNotDisposed( actAsComponentProp );
       Objects.requireNonNull( actAsComponentProp );
       _element.input( React4j_ImmutablePropTypeMultiple.Inputs.actAsComponentProp, actAsComponentProp );
       return this;
@@ -400,6 +402,7 @@ final class ImmutablePropTypeMultipleBuilder {
     )
     public final Step15 arezComponentProp(
         @Nonnull final ImmutablePropTypeMultiple.ArezComponentComponent arezComponentProp) {
+      assert Disposable.isNotDisposed( arezComponentProp );
       Objects.requireNonNull( arezComponentProp );
       _element.input( React4j_ImmutablePropTypeMultiple.Inputs.arezComponentProp, arezComponentProp );
       return this;
@@ -412,6 +415,7 @@ final class ImmutablePropTypeMultipleBuilder {
     )
     public final Step16 arezComponentWithExplicitRequireIdProp(
         @Nonnull final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent arezComponentWithExplicitRequireIdProp) {
+      assert Disposable.isNotDisposed( arezComponentWithExplicitRequireIdProp );
       Objects.requireNonNull( arezComponentWithExplicitRequireIdProp );
       _element.input( React4j_ImmutablePropTypeMultiple.Inputs.arezComponentWithExplicitRequireIdProp, arezComponentWithExplicitRequireIdProp );
       return this;
@@ -537,6 +541,7 @@ final class ImmutablePropTypeMultipleBuilder {
     )
     public final Step16 nullableActAsComponentProp(
         @Nullable final ImmutablePropTypeMultiple.ActAsComponentComponent nullableActAsComponentProp) {
+      assert Disposable.isNotDisposed( nullableActAsComponentProp );
       _element.input( React4j_ImmutablePropTypeMultiple.Inputs.nullableActAsComponentProp, nullableActAsComponentProp );
       return this;
     }
@@ -548,6 +553,7 @@ final class ImmutablePropTypeMultipleBuilder {
     )
     public final Step16 nullableArezComponentProp(
         @Nullable final ImmutablePropTypeMultiple.ArezComponentComponent nullableArezComponentProp) {
+      assert Disposable.isNotDisposed( nullableArezComponentProp );
       _element.input( React4j_ImmutablePropTypeMultiple.Inputs.nullableArezComponentProp, nullableArezComponentProp );
       return this;
     }
@@ -559,6 +565,7 @@ final class ImmutablePropTypeMultipleBuilder {
     )
     public final Step16 nullableArezComponentWithExplicitRequireIdProp(
         @Nullable final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent nullableArezComponentWithExplicitRequireIdProp) {
+      assert Disposable.isNotDisposed( nullableArezComponentWithExplicitRequireIdProp );
       _element.input( React4j_ImmutablePropTypeMultiple.Inputs.nullableArezComponentWithExplicitRequireIdProp, nullableArezComponentWithExplicitRequireIdProp );
       return this;
     }

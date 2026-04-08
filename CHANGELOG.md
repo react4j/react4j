@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Avoid generating the arez aspect of a react4j component if a dependency input is disposed and instead rely on react aspect effectively no-opping at runtime.
+* Add assertion to ensure that disposed dependencies are not passed into react builders.
 
 ### [v0.208](https://github.com/react4j/react4j/tree/v0.208) (2026-04-07) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.207...v0.208)
 

@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.component.Identifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,6 +64,7 @@ final class ImmutableDisposableNullableArezComponentMaybeTrackingPropBuilder {
     public final ReactNode model(
         @Nullable final ImmutableDisposableNullableArezComponentMaybeTrackingProp.Model model) {
       _element.setKey( Identifiable.<Object>getArezId( model ) + ( React.enableViewNames() ? "_ImmutableDisposableNullableArezComponentMaybeTrackingProp_6339fc4d" : ImmutableDisposableNullableArezComponentMaybeTrackingProp.class.getName() ) );
+      assert Disposable.isNotDisposed( model );
       _element.input( React4j_ImmutableDisposableNullableArezComponentMaybeTrackingProp.Inputs.model, model );
       return build();
     }

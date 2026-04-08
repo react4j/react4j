@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.component.Identifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -95,6 +96,7 @@ final class ImmutablePropTypesBuilder {
         pure = true
     )
     public final Step2 myProp(@Nullable final ImmutablePropTypes.MyComponent myProp) {
+      assert Disposable.isNotDisposed( myProp );
       _element.input( React4j_ImmutablePropTypes.Inputs.myProp, myProp );
       return this;
     }

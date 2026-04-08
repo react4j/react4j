@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.component.Identifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,6 +63,7 @@ final class ExplicitDependencyEnableInputBuilder {
     public final ReactNode myComponent(
         @Nullable final ExplicitDependencyEnableInput.MyComponent myComponent) {
       _element.setKey( Identifiable.<Object>getArezId( myComponent ) + ( React.enableViewNames() ? "_ExplicitDependencyEnableInput_ff4614c5" : ExplicitDependencyEnableInput.class.getName() ) );
+      assert Disposable.isNotDisposed( myComponent );
       _element.input( React4j_ExplicitDependencyEnableInput.Inputs.myComponent, myComponent );
       return build();
     }

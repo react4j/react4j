@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.component.Identifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -61,6 +62,7 @@ final class ImmutableDisposablePropModelBuilder {
     )
     public final ReactNode value(@Nullable final Object value) {
       _element.setKey( ( value instanceof Keyed ? Keyed.getKey( value ) : value instanceof Identifiable ? Identifiable.<Object>getArezId( value ) : String.valueOf( value ) ) + ( React.enableViewNames() ? "_ImmutableDisposablePropModel_7b9bfe84" : ImmutableDisposablePropModel.class.getName() ) );
+      assert Disposable.isNotDisposed( value );
       _element.input( React4j_ImmutableDisposablePropModel.Inputs.value, value );
       return build();
     }

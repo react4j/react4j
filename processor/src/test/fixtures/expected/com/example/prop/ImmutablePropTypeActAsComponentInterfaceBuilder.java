@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import arez.component.Identifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,6 +63,7 @@ final class ImmutablePropTypeActAsComponentInterfaceBuilder {
     public final ReactNode myProp(
         @Nullable final ImmutablePropTypeActAsComponentInterface.MyComponent myProp) {
       _element.setKey( Identifiable.<Object>getArezId( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeActAsComponentInterface_56c176ed" : ImmutablePropTypeActAsComponentInterface.class.getName() ) );
+      assert Disposable.isNotDisposed( myProp );
       _element.input( React4j_ImmutablePropTypeActAsComponentInterface.Inputs.myProp, myProp );
       return build();
     }
