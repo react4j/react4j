@@ -40,8 +40,8 @@ abstract class React4j_MyView extends MyView {
 
   React4j_MyView(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    this.$$react4j_immutable_input$$_dateRange = $$react4j$$_nativeView.inputs().getAsAny( Inputs.dateRange ).cast();
-    this.$$react4j_immutable_input$$_field1InLeaf = $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
+    $$react4j_immutable_input$$_dateRange = $$react4j$$_nativeView.inputs().getAsAny( Inputs.dateRange ).cast();
+    $$react4j_immutable_input$$_field1InLeaf = $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
   }
 
   @Nonnull

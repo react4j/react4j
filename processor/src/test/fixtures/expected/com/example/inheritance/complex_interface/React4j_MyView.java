@@ -43,10 +43,10 @@ abstract class React4j_MyView extends MyView {
 
   React4j_MyView(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    this.$$react4j_immutable_input$$_zzField1InRootInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InRootInterface ).asBoolean();
-    this.$$react4j_immutable_input$$_zzField1InInnerInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InInnerInterface ).asBoolean();
-    this.$$react4j_immutable_input$$_zzField1InLeafInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InLeafInterface ).asBoolean();
-    this.$$react4j_immutable_input$$_field1InLeaf = $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
+    $$react4j_immutable_input$$_zzField1InRootInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InRootInterface ).asBoolean();
+    $$react4j_immutable_input$$_zzField1InInnerInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InInnerInterface ).asBoolean();
+    $$react4j_immutable_input$$_zzField1InLeafInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InLeafInterface ).asBoolean();
+    $$react4j_immutable_input$$_field1InLeaf = $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
   }
 
   @Nonnull
