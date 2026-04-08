@@ -36,77 +36,132 @@ import org.realityforge.proton.SuppressWarningsUtil;
 @SuppressWarnings( "Duplicates" )
 final class ViewGenerator
 {
+  @Nonnull
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
+  @Nonnull
   private static final ClassName AREZ_CLASSNAME = ClassName.get( "arez", "Arez" );
+  @Nonnull
   private static final ClassName OBSERVER_CLASSNAME = ClassName.get( "arez", "Observer" );
+  @Nonnull
   private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get( "arez", "ObservableValue" );
+  @Nonnull
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
+  @Nonnull
   private static final ClassName AREZ_FEATURE_CLASSNAME =
     ClassName.get( "arez.annotations", "Feature" );
+  @Nonnull
   private static final ClassName SUPPRESS_AREZ_WARNINGS_CLASSNAME =
     ClassName.get( "arez.annotations", "SuppressArezWarnings" );
+  @Nonnull
   private static final ClassName ACTION_CLASSNAME = ClassName.get( "arez.annotations", "Action" );
+  @Nonnull
   private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get( "arez.annotations", "DepType" );
+  @Nonnull
   private static final ClassName PRIORITY_CLASSNAME = ClassName.get( "arez.annotations", "Priority" );
+  @Nonnull
   private static final ClassName EXECUTOR_CLASSNAME = ClassName.get( "arez.annotations", "Executor" );
+  @Nonnull
   private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observable" );
+  @Nonnull
   private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
+  @Nonnull
   private static final ClassName OBSERVER_REF_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "ObserverRef" );
+  @Nonnull
   private static final ClassName COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ComponentDependency" );
+  @Nonnull
   private static final ClassName COMPONENT_OBSERVABLE_CLASSNAME =
     ClassName.get( "arez.component", "ComponentObservable" );
+  @Nonnull
   private static final ClassName COMPONENT_NAME_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ComponentNameRef" );
+  @Nonnull
   private static final ClassName COMPONENT_ID_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ComponentIdRef" );
+  @Nonnull
   private static final ClassName COMPONENT_STATE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ComponentStateRef" );
+  @Nonnull
   private static final ClassName OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME =
     ClassName.get( "arez.annotations", "ObservableValueRef" );
+  @Nonnull
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
+  @Nonnull
   private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "akasha.core", "JsError" );
+  @Nonnull
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
+  @Nonnull
   private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
+  @Nonnull
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
+  @Nonnull
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
     ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
+  @Nonnull
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
+  @Nonnull
   private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get( "react4j", "ReactErrorInfo" );
+  @Nonnull
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
+  @Nonnull
   private static final ClassName CONTEXT_CLASSNAME = ClassName.get( "react4j", "Context" );
+  @Nonnull
   private static final ClassName CONTEXTS_CLASSNAME = ClassName.get( "react4j", "Contexts" );
+  @Nonnull
   private static final ClassName VIEW_CONSTRUCTOR_FUNCTION_CLASSNAME =
     ClassName.get( "react4j.internal", "ViewConstructorFunction" );
+  @Nonnull
   private static final ClassName ON_COMPONENT_DID_MOUNT_CLASSNAME =
     ClassName.get( "react4j.internal", "OnComponentDidMount" );
+  @Nonnull
   private static final ClassName ON_COMPONENT_DID_UPDATE_CLASSNAME =
     ClassName.get( "react4j.internal", "OnComponentDidUpdate" );
+  @Nonnull
   private static final ClassName ON_COMPONENT_WILL_UNMOUNT_CLASSNAME =
     ClassName.get( "react4j.internal", "OnComponentWillUnmount" );
+  @Nonnull
   private static final ClassName ON_GET_SNAPSHOT_BEFORE_UPDATE_CLASSNAME =
     ClassName.get( "react4j.internal", "OnGetSnapshotBeforeUpdate" );
+  @Nonnull
   private static final ClassName ON_COMPONENT_SHOULD_UPDATE_CLASSNAME =
     ClassName.get( "react4j.internal", "OnShouldComponentUpdate" );
+  @Nonnull
   private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
     ClassName.get( "react4j.internal", "OnComponentDidCatch" );
+  @Nonnull
   private static final ClassName NATIVE_VIEW_CLASSNAME = ClassName.get( "react4j.internal", "NativeView" );
+  @Nonnull
   private static final ClassName VIEW_STATE_CLASSNAME = ClassName.get( "react4j.internal", "ViewState" );
+  @Nonnull
   private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get( "react4j.internal", "SchedulerUtil" );
+  @Nonnull
   private static final ClassName INTROSPECT_UTIL_CLASSNAME = ClassName.get( "react4j.internal", "IntrospectUtil" );
+  @Nonnull
   private static final String FRAMEWORK_INTERNAL_PREFIX = "$$react4j$$_";
+  @Nonnull
   private static final String RENDER_METHOD = FRAMEWORK_INTERNAL_PREFIX + "render";
+  @Nonnull
   private static final String SHOULD_COMPONENT_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "shouldComponentUpdate";
+  @Nonnull
   private static final String COMPONENT_PRE_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentPreUpdate";
+  @Nonnull
   private static final String COMPONENT_DID_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidUpdate";
+  @Nonnull
   private static final String COMPONENT_DID_MOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidMount";
+  @Nonnull
   private static final String COMPONENT_WILL_UNMOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentWillUnmount";
+  @Nonnull
   private static final String VALIDATE_INPUTS_METHOD = FRAMEWORK_INTERNAL_PREFIX + "validateInputValues";
+  @Nonnull
   private static final String STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
+  @Nonnull
   private static final String VIEW_FIELD = FRAMEWORK_INTERNAL_PREFIX + "view";
+  @Nonnull
   private static final String IS_READY_METHOD = FRAMEWORK_INTERNAL_PREFIX + "isReady";
+  @Nonnull
   private static final String NATIVE_VIEW_FIELD = FRAMEWORK_INTERNAL_PREFIX + "nativeView";
+  @Nonnull
   private static final String FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX = "$$react4j_immutable_input$$_";
 
   private ViewGenerator()
