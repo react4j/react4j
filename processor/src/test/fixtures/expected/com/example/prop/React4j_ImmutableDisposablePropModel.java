@@ -171,7 +171,7 @@ abstract class React4j_ImmutableDisposablePropModel extends ImmutableDisposableP
     @JsConstructor
     LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutableDisposablePropModel( this );
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.value ) ) ) ? null : new Arez_React4j_ImmutableDisposablePropModel( this );
     }
 
     @Override
@@ -208,7 +208,7 @@ abstract class React4j_ImmutableDisposablePropModel extends ImmutableDisposableP
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutableDisposablePropModel( this );
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.value ) ) ) ? null : new Arez_React4j_ImmutableDisposablePropModel( this );
     }
 
     @Override

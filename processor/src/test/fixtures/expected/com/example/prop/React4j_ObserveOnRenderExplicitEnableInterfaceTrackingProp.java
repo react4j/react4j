@@ -166,7 +166,6 @@ abstract class React4j_ObserveOnRenderExplicitEnableInterfaceTrackingProp extend
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_ObserveOnRenderExplicitEnableInterfaceTrackingProp view;
 
     @JsConstructor
@@ -193,7 +192,6 @@ abstract class React4j_ObserveOnRenderExplicitEnableInterfaceTrackingProp extend
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_ObserveOnRenderExplicitEnableInterfaceTrackingProp view;
 
     @JsConstructor

@@ -169,7 +169,7 @@ abstract class React4j_ImmutableDisposableActAsComponentMaybeTrackingProp extend
     @JsConstructor
     LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutableDisposableActAsComponentMaybeTrackingProp( this );
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.model ) ) ) ? null : new Arez_React4j_ImmutableDisposableActAsComponentMaybeTrackingProp( this );
     }
 
     @Override
@@ -206,7 +206,7 @@ abstract class React4j_ImmutableDisposableActAsComponentMaybeTrackingProp extend
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutableDisposableActAsComponentMaybeTrackingProp( this );
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.model ) ) ) ? null : new Arez_React4j_ImmutableDisposableActAsComponentMaybeTrackingProp( this );
     }
 
     @Override

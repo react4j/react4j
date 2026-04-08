@@ -528,7 +528,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutablePropTypeMultiple( this );
+      view = Disposable.isDisposed( inputs.getAsAny( Inputs.actAsComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast() ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableActAsComponentProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypeMultiple( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
         view.$$react4j$$_validateInputValues( inputs );

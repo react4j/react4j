@@ -78,7 +78,6 @@ abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTyp
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_ImmutablePropTypePrimitiveDouble view;
 
     @JsConstructor

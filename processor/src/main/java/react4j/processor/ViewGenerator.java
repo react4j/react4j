@@ -1387,10 +1387,12 @@ final class ViewGenerator
       viewFieldType = ParameterizedTypeName.get( descriptor.getEnhancedClassName(), typeNames );
     }
 
-    builder.addField( FieldSpec
-                        .builder( viewFieldType, VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL )
-                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
-                        .build() );
+    final var viewField = FieldSpec.builder( viewFieldType, VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL );
+    if ( descriptor.hasDependencyInput() )
+    {
+      viewField.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
+    }
+    builder.addField( viewField.build() );
 
     if ( lite )
     {
@@ -1447,14 +1449,62 @@ final class ViewGenerator
       final var method =
         MethodSpec.constructorBuilder().addParameter( inputs.build() ).addAnnotation( JS_CONSTRUCTOR_CLASSNAME );
       method.addStatement( "super( inputs )" );
+
+      final var prefix = new StringBuilder();
+      final var params = new ArrayList<>();
+      params.add( VIEW_FIELD );
+      for ( final var input : descriptor
+        .getImmutableInputs()
+        .stream()
+        .filter( InputDescriptor::isDependency )
+        .toList() )
+      {
+        if ( !prefix.isEmpty() )
+        {
+          prefix.append( " || " );
+        }
+        final var methodElement = input.getMethod();
+        if ( !methodElement.getReturnType().getKind().isPrimitive() &&
+             !AnnotationsUtil.hasNonnullAnnotation( methodElement ) )
+        {
+          prefix.append( "$T.isDisposed( $T.uncheckedCast( inputs.getAsAny( Inputs.$N ) ) )" );
+          params.add( DISPOSABLE_CLASSNAME );
+          params.add( JS_CLASSNAME );
+          params.add( input.getConstantName() );
+        }
+        else
+        {
+          prefix.append( "$T.isDisposed( inputs.getAsAny( Inputs.$N ).$N() )" );
+          params.add( DISPOSABLE_CLASSNAME );
+          params.add( input.getConstantName() );
+          params.add( getConverter( input.getMethodType().getReturnType(), methodElement ) );
+        }
+      }
+
       if ( descriptor.needsInjection() )
       {
-        method.addStatement( "$N = $T.create( this )", VIEW_FIELD, descriptor.getFactoryClassName() );
+        if ( prefix.isEmpty() )
+        {
+          method.addStatement( "$N = $T.create( this )", VIEW_FIELD, descriptor.getFactoryClassName() );
+        }
+        else
+        {
+          params.add( descriptor.getFactoryClassName() );
+          method.addStatement( "$N = " + prefix + " ? null : $T.create( this )", params.toArray() );
+        }
       }
       else
       {
         final var infix = BuilderGenerator.asTypeArgumentsInfix( descriptor.getDeclaredType() );
-        method.addStatement( "$N = new $T" + infix + "( this )", VIEW_FIELD, descriptor.getArezClassName() );
+        if ( prefix.isEmpty() )
+        {
+          method.addStatement( "$N = new $T" + infix + "( this )", VIEW_FIELD, descriptor.getArezClassName() );
+        }
+        else
+        {
+          params.add( descriptor.getArezClassName() );
+          method.addStatement( "$N = " + prefix + " ? null : new $T" + infix + "( this )", params.toArray() );
+        }
       }
 
       if ( descriptor.shouldValidateInputs() )
@@ -1707,9 +1757,9 @@ final class ViewGenerator
       "()" :
       "( " +
       parameters
-        .stream()
-        .map( p -> TypeName.get( p.asType() ).toString().equals( Constants.JS_ERROR_CLASSNAME ) ? "error" : "info" )
-        .collect( Collectors.joining( ", " ) ) +
+      .stream()
+      .map( p -> TypeName.get( p.asType() ).toString().equals( Constants.JS_ERROR_CLASSNAME ) ? "error" : "info" )
+      .collect( Collectors.joining( ", " ) ) +
       " )";
 
     if ( descriptor.hasDependencyInput() )

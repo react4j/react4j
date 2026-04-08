@@ -143,7 +143,6 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_RequiredChildrenWithManyOptional view;
 
     @JsConstructor

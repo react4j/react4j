@@ -67,7 +67,6 @@ abstract class React4j_StingOnlyInjectComponent extends StingOnlyInjectComponent
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_StingOnlyInjectComponent view;
 
     @JsConstructor

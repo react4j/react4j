@@ -85,7 +85,6 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate, OnComponentDidCatch {
-    @Nonnull
     private final React4j_OverrideLifecycleMethodsComponent view;
 
     @JsConstructor

@@ -176,7 +176,7 @@ abstract class React4j_ImmutableDisposableArezComponentMaybeTrackingProp extends
     @JsConstructor
     LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutableDisposableArezComponentMaybeTrackingProp( this );
+      view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : new Arez_React4j_ImmutableDisposableArezComponentMaybeTrackingProp( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
         view.$$react4j$$_validateInputValues( inputs );
@@ -217,7 +217,7 @@ abstract class React4j_ImmutableDisposableArezComponentMaybeTrackingProp extends
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutableDisposableArezComponentMaybeTrackingProp( this );
+      view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : new Arez_React4j_ImmutableDisposableArezComponentMaybeTrackingProp( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
         view.$$react4j$$_validateInputValues( inputs );

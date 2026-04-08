@@ -174,7 +174,7 @@ abstract class React4j_ImmutableDisposableNullableActAsComponentTrackingProp ext
     @JsConstructor
     LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutableDisposableNullableActAsComponentTrackingProp( this );
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.model ) ) ) ? null : new Arez_React4j_ImmutableDisposableNullableActAsComponentTrackingProp( this );
     }
 
     @Override
@@ -211,7 +211,7 @@ abstract class React4j_ImmutableDisposableNullableActAsComponentTrackingProp ext
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutableDisposableNullableActAsComponentTrackingProp( this );
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.model ) ) ) ? null : new Arez_React4j_ImmutableDisposableNullableActAsComponentTrackingProp( this );
     }
 
     @Override

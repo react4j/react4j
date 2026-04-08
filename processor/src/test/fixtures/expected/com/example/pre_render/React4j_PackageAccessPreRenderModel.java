@@ -66,7 +66,6 @@ abstract class React4j_PackageAccessPreRenderModel extends PackageAccessPreRende
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_PackageAccessPreRenderModel view;
 
     @JsConstructor

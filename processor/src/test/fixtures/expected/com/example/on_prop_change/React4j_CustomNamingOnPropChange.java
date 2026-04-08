@@ -122,7 +122,6 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @Nonnull
     private final React4j_CustomNamingOnPropChange view;
 
     @JsConstructor

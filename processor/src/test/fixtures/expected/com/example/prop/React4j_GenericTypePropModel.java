@@ -82,7 +82,6 @@ abstract class React4j_GenericTypePropModel<T> extends GenericTypePropModel<T> {
   }
 
   private static final class NativeView<T> extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_GenericTypePropModel<T> view;
 
     @JsConstructor

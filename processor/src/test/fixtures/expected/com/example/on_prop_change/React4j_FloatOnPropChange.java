@@ -88,7 +88,6 @@ abstract class React4j_FloatOnPropChange extends FloatOnPropChange {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @Nonnull
     private final React4j_FloatOnPropChange view;
 
     @JsConstructor

@@ -171,7 +171,6 @@ abstract class React4j_MutableDisposableArezComponentMaybeTrackingProp extends M
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_MutableDisposableArezComponentMaybeTrackingProp view;
 
     @JsConstructor
@@ -202,7 +201,6 @@ abstract class React4j_MutableDisposableArezComponentMaybeTrackingProp extends M
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_MutableDisposableArezComponentMaybeTrackingProp view;
 
     @JsConstructor

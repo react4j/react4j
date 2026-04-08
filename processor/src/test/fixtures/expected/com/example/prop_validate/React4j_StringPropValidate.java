@@ -93,7 +93,6 @@ abstract class React4j_StringPropValidate extends StringPropValidate {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_StringPropValidate view;
 
     @JsConstructor

@@ -94,7 +94,6 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @Nonnull
     private final React4j_OnPropChangeAndPostUpdateModel view;
 
     @JsConstructor

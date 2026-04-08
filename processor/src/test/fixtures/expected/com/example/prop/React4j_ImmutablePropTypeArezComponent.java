@@ -91,7 +91,7 @@ abstract class React4j_ImmutablePropTypeArezComponent extends ImmutablePropTypeA
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutablePropTypeArezComponent( this );
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.myProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypeArezComponent( this );
     }
 
     @Override

@@ -70,7 +70,6 @@ abstract class React4j_SkipScheduleRenderComponent extends SkipScheduleRenderCom
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_SkipScheduleRenderComponent view;
 
     @JsConstructor

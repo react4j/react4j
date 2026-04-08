@@ -77,7 +77,6 @@ abstract class React4j_PropTypeFloat extends PropTypeFloat {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_PropTypeFloat view;
 
     @JsConstructor

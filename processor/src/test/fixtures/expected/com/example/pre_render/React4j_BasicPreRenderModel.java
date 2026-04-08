@@ -65,7 +65,6 @@ abstract class React4j_BasicPreRenderModel extends BasicPreRenderModel {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_BasicPreRenderModel view;
 
     @JsConstructor

@@ -93,7 +93,6 @@ abstract class React4j_StringOnPropChange extends StringOnPropChange {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @Nonnull
     private final React4j_StringOnPropChange view;
 
     @JsConstructor

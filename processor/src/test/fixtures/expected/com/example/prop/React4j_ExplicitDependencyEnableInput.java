@@ -91,7 +91,7 @@ abstract class React4j_ExplicitDependencyEnableInput extends ExplicitDependencyE
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ExplicitDependencyEnableInput( this );
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.myComponent ) ) ) ? null : new Arez_React4j_ExplicitDependencyEnableInput( this );
     }
 
     @Override

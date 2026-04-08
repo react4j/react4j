@@ -83,7 +83,6 @@ abstract class React4j_QualifiedContextPropModel extends QualifiedContextPropMod
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_QualifiedContextPropModel view;
 
     @JsConstructor

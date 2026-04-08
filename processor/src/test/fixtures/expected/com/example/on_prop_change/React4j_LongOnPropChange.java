@@ -88,7 +88,6 @@ abstract class React4j_LongOnPropChange extends LongOnPropChange {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @Nonnull
     private final React4j_LongOnPropChange view;
 
     @JsConstructor

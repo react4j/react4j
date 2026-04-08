@@ -66,7 +66,6 @@ abstract class React4j_StingNamedTypeComponent extends StingNamedTypeComponent {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
     private final React4j_StingNamedTypeComponent view;
 
     @JsConstructor
