@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.209](https://github.com/react4j/react4j/tree/v0.209) (2026-04-08) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.208...v0.209)
+
+Changes in this release:
 
 * Avoid generating the arez aspect of a react4j component if a dependency input is disposed and instead rely on react aspect effectively no-opping at runtime.
 * Add assertion to ensure that disposed dependencies are not passed into react builders.
