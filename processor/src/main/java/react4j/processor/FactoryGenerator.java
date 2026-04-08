@@ -10,15 +10,12 @@ import com.squareup.javapoet.TypeSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.ElementsUtil;
 import org.realityforge.proton.GeneratorUtil;
@@ -88,7 +85,7 @@ final class FactoryGenerator
       ctor.addModifiers( Modifier.PUBLIC );
     }
 
-    final var whitelistedAnnotations = new ArrayList<String>( GeneratorUtil.ANNOTATION_WHITELIST );
+    final var whitelistedAnnotations = new ArrayList<>( GeneratorUtil.ANNOTATION_WHITELIST );
     whitelistedAnnotations.add( "sting.Named" );
     whitelistedAnnotations.add( "javax.inject.Named" );
     for ( final var parameter : constructor.getParameters() )
