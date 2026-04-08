@@ -240,8 +240,7 @@ final class ViewDescriptor
   {
     if ( null == _hasDependencyInput )
     {
-      assert null != _inputs;
-      _hasDependencyInput = _inputs.stream().anyMatch( InputDescriptor::isDependency );
+      _hasDependencyInput = getInputs().stream().anyMatch( InputDescriptor::isDependency );
     }
     return _hasDependencyInput;
   }
