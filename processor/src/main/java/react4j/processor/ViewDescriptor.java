@@ -505,6 +505,9 @@ final class ViewDescriptor
 
   boolean shouldGenerateLiteLifecycle()
   {
+    // A "Lite" lifecycle is the one used in production code and is a subset of the non-lite lifecycle. The
+    // non-lite exists if there are extra lifecycle methods generated for collecting debug information.
+    // If both modes have the same lifecycle hooks then we avoid generating a lite variant.
     return ( generateComponentDidUpdateInLiteLifecycle() != generateComponentDidUpdate() ||
              generateComponentWillUnmountInLiteLifecycle() != generateComponentWillUnmount() ||
              generateShouldComponentUpdateInLiteLifecycle() != generateShouldComponentUpdate() ||
