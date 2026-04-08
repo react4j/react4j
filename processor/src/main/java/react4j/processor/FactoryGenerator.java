@@ -26,8 +26,11 @@ import org.realityforge.proton.SuppressWarningsUtil;
 
 final class FactoryGenerator
 {
+  @Nonnull
   private static final ClassName NATIVE_VIEW_CLASSNAME = ClassName.get( "react4j.internal", "NativeView" );
+  @Nonnull
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
+  @Nonnull
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
 
   private FactoryGenerator()
