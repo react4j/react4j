@@ -213,7 +213,7 @@ final class FactoryGenerator
     return method.addStatement( "return new $T( view" +
                                 constructor.getParameters()
                                   .stream()
-                                  .map( p -> ", c_factory." + p.getSimpleName().toString() )
+                                  .map( p -> ", c_factory." + p.getSimpleName() )
                                   .collect( Collectors.joining() ) +
                                 " )", descriptor.getArezClassName() );
   }
