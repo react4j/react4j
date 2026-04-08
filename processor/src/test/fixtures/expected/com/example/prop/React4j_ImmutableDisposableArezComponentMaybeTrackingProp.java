@@ -171,22 +171,22 @@ abstract class React4j_ImmutableDisposableArezComponentMaybeTrackingProp extends
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ImmutableDisposableArezComponentMaybeTrackingProp $$react4j$$_view;
+    private final React4j_ImmutableDisposableArezComponentMaybeTrackingProp view;
 
     @JsConstructor
     LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_ImmutableDisposableArezComponentMaybeTrackingProp( this );
+      view = new Arez_React4j_ImmutableDisposableArezComponentMaybeTrackingProp( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        $$react4j$$_view.$$react4j$$_validateInputValues( inputs );
+        view.$$react4j$$_validateInputValues( inputs );
       }
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
-        return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      if ( Disposable.isNotDisposed( view ) ) {
+        return view.$$react4j$$_shouldComponentUpdate( nextInputs );
       } else {
         return false;
       }
@@ -194,16 +194,16 @@ abstract class React4j_ImmutableDisposableArezComponentMaybeTrackingProp extends
 
     @Override
     public final void componentWillUnmount() {
-      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
-        $$react4j$$_view.$$react4j$$_componentWillUnmount();
+      if ( Disposable.isNotDisposed( view ) ) {
+        view.$$react4j$$_componentWillUnmount();
       }
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
-        return $$react4j$$_view.$$react4j$$_render();
+      if ( Disposable.isNotDisposed( view ) ) {
+        return view.$$react4j$$_render();
       } else {
         return null;
       }
@@ -212,29 +212,29 @@ abstract class React4j_ImmutableDisposableArezComponentMaybeTrackingProp extends
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ImmutableDisposableArezComponentMaybeTrackingProp $$react4j$$_view;
+    private final React4j_ImmutableDisposableArezComponentMaybeTrackingProp view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_ImmutableDisposableArezComponentMaybeTrackingProp( this );
+      view = new Arez_React4j_ImmutableDisposableArezComponentMaybeTrackingProp( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        $$react4j$$_view.$$react4j$$_validateInputValues( inputs );
+        view.$$react4j$$_validateInputValues( inputs );
       }
     }
 
     @Override
     public final void componentDidMount() {
-      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
-        $$react4j$$_view.$$react4j$$_componentDidMount();
+      if ( Disposable.isNotDisposed( view ) ) {
+        view.$$react4j$$_componentDidMount();
       }
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
-        return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      if ( Disposable.isNotDisposed( view ) ) {
+        return view.$$react4j$$_shouldComponentUpdate( nextInputs );
       } else {
         return false;
       }
@@ -242,23 +242,23 @@ abstract class React4j_ImmutableDisposableArezComponentMaybeTrackingProp extends
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
-      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
-        $$react4j$$_view.$$react4j$$_componentDidUpdate();
+      if ( Disposable.isNotDisposed( view ) ) {
+        view.$$react4j$$_componentDidUpdate();
       }
     }
 
     @Override
     public final void componentWillUnmount() {
-      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
-        $$react4j$$_view.$$react4j$$_componentWillUnmount();
+      if ( Disposable.isNotDisposed( view ) ) {
+        view.$$react4j$$_componentWillUnmount();
       }
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      if ( Disposable.isNotDisposed( $$react4j$$_view ) ) {
-        return $$react4j$$_view.$$react4j$$_render();
+      if ( Disposable.isNotDisposed( view ) ) {
+        return view.$$react4j$$_render();
       } else {
         return null;
       }

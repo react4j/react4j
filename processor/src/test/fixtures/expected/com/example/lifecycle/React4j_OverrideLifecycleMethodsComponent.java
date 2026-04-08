@@ -86,52 +86,52 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate, OnComponentDidCatch {
     @Nonnull
-    private final React4j_OverrideLifecycleMethodsComponent $$react4j$$_view;
+    private final React4j_OverrideLifecycleMethodsComponent view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_OverrideLifecycleMethodsComponent( this );
+      view = new Arez_React4j_OverrideLifecycleMethodsComponent( this );
     }
 
     @Override
     public final void componentDidMount() {
-      $$react4j$$_view.$$react4j$$_componentDidMount();
+      view.$$react4j$$_componentDidMount();
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
     @Nullable
     public final Object getSnapshotBeforeUpdate(@Nonnull final JsPropertyMap<Object> prevInputs,
         @Nonnull final JsPropertyMap<Object> prevState) {
-      $$react4j$$_view.$$react4j$$_componentPreUpdate( prevInputs );
+      view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
-      $$react4j$$_view.$$react4j$$_componentDidUpdate();
+      view.$$react4j$$_componentDidUpdate();
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_view.$$react4j$$_componentWillUnmount();
+      view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     public final void componentDidCatch(@Nonnull final JsError error,
         @Nonnull final ReactErrorInfo info) {
-      $$react4j$$_view.onError( error, info );
+      view.onError( error, info );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
+      return view.$$react4j$$_render();
     }
   }
 }

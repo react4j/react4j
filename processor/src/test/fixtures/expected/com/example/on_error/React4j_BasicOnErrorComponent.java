@@ -68,34 +68,34 @@ abstract class React4j_BasicOnErrorComponent extends BasicOnErrorComponent {
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnComponentDidCatch {
     @Nonnull
-    private final React4j_BasicOnErrorComponent $$react4j$$_view;
+    private final React4j_BasicOnErrorComponent view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_BasicOnErrorComponent( this );
+      view = new Arez_React4j_BasicOnErrorComponent( this );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_view.$$react4j$$_componentWillUnmount();
+      view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     public final void componentDidCatch(@Nonnull final JsError error,
         @Nonnull final ReactErrorInfo info) {
-      $$react4j$$_view.onError( error, info );
+      view.onError( error, info );
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
+      return view.$$react4j$$_render();
     }
   }
 }

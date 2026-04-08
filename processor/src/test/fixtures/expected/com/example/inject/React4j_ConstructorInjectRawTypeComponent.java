@@ -70,28 +70,28 @@ abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInje
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ConstructorInjectRawTypeComponent $$react4j$$_view;
+    private final React4j_ConstructorInjectRawTypeComponent view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = ConstructorInjectRawTypeComponentFactory.create( this );
+      view = ConstructorInjectRawTypeComponentFactory.create( this );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_view.$$react4j$$_componentWillUnmount();
+      view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
+      return view.$$react4j$$_render();
     }
   }
 }

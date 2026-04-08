@@ -63,28 +63,28 @@ abstract class React4j_RootPackageView extends RootPackageView {
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_RootPackageView $$react4j$$_view;
+    private final React4j_RootPackageView view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_RootPackageView( this );
+      view = new Arez_React4j_RootPackageView( this );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_view.$$react4j$$_componentWillUnmount();
+      view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
+      return view.$$react4j$$_render();
     }
   }
 }

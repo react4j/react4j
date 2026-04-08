@@ -154,7 +154,7 @@ final class ViewGenerator
   @Nonnull
   private static final String STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
   @Nonnull
-  private static final String VIEW_FIELD = FRAMEWORK_INTERNAL_PREFIX + "view";
+  private static final String VIEW_FIELD = "view";
   @Nonnull
   private static final String IS_READY_METHOD = FRAMEWORK_INTERNAL_PREFIX + "isReady";
   @Nonnull

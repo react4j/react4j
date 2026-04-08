@@ -70,33 +70,33 @@ abstract class React4j_BasicPostMountModel extends BasicPostMountModel {
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_BasicPostMountModel $$react4j$$_view;
+    private final React4j_BasicPostMountModel view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      $$react4j$$_view = new Arez_React4j_BasicPostMountModel( this );
+      view = new Arez_React4j_BasicPostMountModel( this );
     }
 
     @Override
     public final void componentDidMount() {
-      $$react4j$$_view.$$react4j$$_componentDidMount();
+      view.$$react4j$$_componentDidMount();
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return $$react4j$$_view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
     public final void componentWillUnmount() {
-      $$react4j$$_view.$$react4j$$_componentWillUnmount();
+      view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return $$react4j$$_view.$$react4j$$_render();
+      return view.$$react4j$$_render();
     }
   }
 }
