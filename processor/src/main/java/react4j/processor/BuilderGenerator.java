@@ -9,21 +9,17 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.TypeVariableName;
 import com.squareup.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -79,7 +75,7 @@ final class BuilderGenerator
   static TypeSpec buildType( @Nonnull final ProcessingEnvironment processingEnv,
                              @Nonnull final ViewDescriptor descriptor )
   {
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
+    final var builder = TypeSpec.classBuilder( descriptor.getBuilderClassName() );
     GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
     builder.addModifiers( Modifier.FINAL );
@@ -95,13 +91,13 @@ final class BuilderGenerator
     // Private constructor so can not instantiate
     builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
 
-    final BuilderDescriptor builderDescriptor = buildBuilderDescriptor( descriptor );
+    final var builderDescriptor = buildBuilderDescriptor( descriptor );
 
-    final List<Step> steps = builderDescriptor.getSteps();
+    final var steps = builderDescriptor.getSteps();
 
     builder.addMethod( buildStaticNewBuilderMethod( descriptor ) );
 
-    for ( final Step step : steps )
+    for ( final var step : steps )
     {
       builder.addType( buildBuilderStepInterface( processingEnv, descriptor, step ) );
     }
@@ -124,7 +120,7 @@ final class BuilderGenerator
                                                     @Nonnull final TypeSpec.Builder builder,
                                                     @Nonnull final Step step )
   {
-    for ( final StepMethod method : step.getMethods() )
+    for ( final var method : step.getMethods() )
     {
       builder.addMethod( buildStaticStepMethodMethod( processingEnv, descriptor, step, method ) );
     }
@@ -133,8 +129,8 @@ final class BuilderGenerator
   @Nonnull
   private static MethodSpec buildStaticNewBuilderMethod( @Nonnull final ViewDescriptor descriptor )
   {
-    final String infix = descriptor.getDeclaredType().getTypeArguments().isEmpty() ? "" : "<>";
-    final MethodSpec.Builder method = MethodSpec
+    final var infix = descriptor.getDeclaredType().getTypeArguments().isEmpty() ? "" : "<>";
+    final var method = MethodSpec
       .methodBuilder( "newBuilder" )
       .addModifiers( Modifier.PRIVATE, Modifier.STATIC )
       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
@@ -150,7 +146,7 @@ final class BuilderGenerator
                                                          @Nonnull final Step step,
                                                          @Nonnull final StepMethod stepMethod )
   {
-    final MethodSpec.Builder method =
+    final var method =
       MethodSpec.methodBuilder( stepMethod.getName() ).
         addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
     addPureContract( method );
@@ -168,14 +164,13 @@ final class BuilderGenerator
     }
     else
     {
-      final TypeName type = stepMethod.getType();
-      final ParameterSpec.Builder parameter =
-        ParameterSpec.builder( type, stepMethod.getName(), Modifier.FINAL );
-      final ExecutableElement inputMethod = stepMethod.getMethod();
+      final var type = stepMethod.getType();
+      final var parameter = ParameterSpec.builder( type, stepMethod.getName(), Modifier.FINAL );
+      final var inputMethod = stepMethod.getMethod();
       if ( null != inputMethod )
       {
         GeneratorUtil.copyWhitelistedAnnotations( inputMethod, parameter );
-        final ExecutableType methodType = stepMethod.getMethodType();
+        final var methodType = stepMethod.getMethodType();
         assert null != methodType;
         SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
       }
@@ -189,7 +184,7 @@ final class BuilderGenerator
       }
       method.addParameter( parameter.build() );
 
-      final String infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
+      final var infix = asTypeArgumentsInfix( descriptor.getDeclaredType() );
       if ( infix.isEmpty() )
       {
         // No type parameters
@@ -214,7 +209,7 @@ final class BuilderGenerator
                                                               @Nonnull final StepMethodType stepMethodType,
                                                               @Nonnull final Consumer<MethodSpec.Builder> action )
   {
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( name );
+    final var method = MethodSpec.methodBuilder( name );
     method.addModifiers( Modifier.PUBLIC, Modifier.ABSTRACT );
     method.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
     addPureContract( method );
@@ -234,7 +229,7 @@ final class BuilderGenerator
     }
     else
     {
-      final int returnIndex = step.getIndex() + ( StepMethodType.STAY == stepMethodType ? 0 : 1 );
+      final var returnIndex = step.getIndex() + ( StepMethodType.STAY == stepMethodType ? 0 : 1 );
       method.returns( parameterizeIfRequired( descriptor, ClassName.bestGuess( "Step" + returnIndex ) ) );
     }
   }
@@ -243,8 +238,7 @@ final class BuilderGenerator
   private static TypeName parameterizeIfRequired( @Nonnull final ViewDescriptor descriptor,
                                                   @Nonnull final ClassName className )
   {
-    final List<TypeVariableName> variableNames =
-      GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() );
+    final var variableNames = GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() );
     if ( variableNames.isEmpty() )
     {
       return className;
@@ -260,8 +254,8 @@ final class BuilderGenerator
                                                      @Nonnull final ViewDescriptor descriptor,
                                                      @Nonnull final Step step )
   {
-    final int stepIndex = step.getIndex();
-    final TypeSpec.Builder builder = TypeSpec.interfaceBuilder( "Step" + stepIndex );
+    final var stepIndex = step.getIndex();
+    final var builder = TypeSpec.interfaceBuilder( "Step" + stepIndex );
     builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
     builder.addTypeVariables( GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
@@ -272,7 +266,7 @@ final class BuilderGenerator
 
     for ( final StepMethod stepMethod : step.getMethods() )
     {
-      final StepMethodType stepMethodType = stepMethod.getStepMethodType();
+      final var stepMethodType = stepMethod.getStepMethodType();
       // Magically handle the step method named build
       if ( stepMethod.isBuildIntrinsic() )
       {
@@ -282,7 +276,7 @@ final class BuilderGenerator
       else
       {
         builder.addMethod( buildStepInterfaceMethod( descriptor, stepMethod.getName(), step, stepMethodType, m -> {
-          final ExecutableType inputMethodType = stepMethod.getMethodType();
+          final var inputMethodType = stepMethod.getMethodType();
           if ( null != inputMethodType )
           {
             GeneratorUtil.copyTypeParameters( inputMethodType, m );
@@ -291,17 +285,17 @@ final class BuilderGenerator
           {
             m.varargs();
           }
-          final TypeName type = stepMethod.getType();
+          final var type = stepMethod.getType();
           if ( type instanceof ArrayTypeName )
           {
             m.varargs();
           }
-          final ParameterSpec.Builder parameter = ParameterSpec.builder( type, stepMethod.getName() );
-          final ExecutableElement inputMethod = stepMethod.getMethod();
+          final var parameter = ParameterSpec.builder( type, stepMethod.getName() );
+          final var inputMethod = stepMethod.getMethod();
           if ( null != inputMethod )
           {
             GeneratorUtil.copyWhitelistedAnnotations( inputMethod, parameter );
-            final ExecutableType methodType = stepMethod.getMethodType();
+            final var methodType = stepMethod.getMethodType();
             assert null != methodType;
             SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
           }
@@ -323,7 +317,7 @@ final class BuilderGenerator
                                                   @Nonnull final Step step,
                                                   @Nonnull final StepMethod stepMethod )
   {
-    final MethodSpec.Builder method = MethodSpec.methodBuilder( stepMethod.getName() );
+    final var method = MethodSpec.methodBuilder( stepMethod.getName() );
     method.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
     method.addAnnotation( Override.class );
     method.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
@@ -335,18 +329,17 @@ final class BuilderGenerator
     {
       GeneratorUtil.copyTypeParameters( inputMethodType, method );
     }
-    final TypeName type = stepMethod.getType();
-    final ParameterSpec.Builder parameter =
-      ParameterSpec.builder( type, stepMethod.getName(), Modifier.FINAL );
+    final var type = stepMethod.getType();
+    final var parameter = ParameterSpec.builder( type, stepMethod.getName(), Modifier.FINAL );
     if ( type instanceof ArrayTypeName )
     {
       method.varargs();
     }
-    final ExecutableElement inputMethod = stepMethod.getMethod();
+    final var inputMethod = stepMethod.getMethod();
     if ( null != inputMethod )
     {
       GeneratorUtil.copyWhitelistedAnnotations( inputMethod, parameter );
-      final ExecutableType methodType = stepMethod.getMethodType();
+      final var methodType = stepMethod.getMethodType();
       assert null != methodType;
       SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
     }
@@ -358,7 +351,7 @@ final class BuilderGenerator
 
     if ( null != input && input.isImmutable() && 1 == descriptor.syntheticKeyParts() )
     {
-      final ImmutableInputKeyStrategy strategy = input.getImmutableInputKeyStrategy();
+      final var strategy = input.getImmutableInputKeyStrategy();
       if ( ImmutableInputKeyStrategy.KEYED == strategy )
       {
         method.addStatement( "_element.setKey( $T.getKey( $N ) + " +
@@ -480,7 +473,7 @@ final class BuilderGenerator
   @Nonnull
   private static MethodSpec buildBuildStepImpl( @Nonnull final ViewDescriptor descriptor )
   {
-    final MethodSpec.Builder method =
+    final var method =
       MethodSpec
         .methodBuilder( "build" )
         .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
@@ -492,7 +485,7 @@ final class BuilderGenerator
   @Nonnull
   private static FieldSpec buildContextBuildField( @Nonnull final InputDescriptor current )
   {
-    final ParameterizedTypeName typeName =
+    final var typeName =
       ParameterizedTypeName.get( CONTEXT_RENDER_FUNCTION_CLASSNAME,
                                  TypeName.get( current.getMethod().getReturnType() ).box() );
     return
@@ -508,7 +501,7 @@ final class BuilderGenerator
                                                        @Nonnull final InputDescriptor current,
                                                        @Nullable final InputDescriptor next )
   {
-    final MethodSpec.Builder method =
+    final var method =
       MethodSpec
         .methodBuilder( CONTEXT_METHOD_PREFIX + current.getName() )
         .addModifiers( Modifier.PRIVATE )
@@ -534,15 +527,13 @@ final class BuilderGenerator
                            CONTEXT_FIELD_PREFIX + next.getName() );
     }
 
-    return
-      method
-        .build();
+    return method.build();
   }
 
   @Nonnull
   private static MethodSpec buildContextBuildStepImpl( @Nonnull final InputDescriptor firstContextInput )
   {
-    final MethodSpec.Builder method =
+    final var method =
       MethodSpec
         .methodBuilder( "build" )
         .addModifiers( Modifier.PUBLIC, Modifier.FINAL )
@@ -559,7 +550,7 @@ final class BuilderGenerator
   @Nonnull
   private static MethodSpec buildInternalBuildStepImpl( @Nonnull final ViewDescriptor descriptor )
   {
-    final MethodSpec.Builder method = MethodSpec
+    final var method = MethodSpec
       .methodBuilder( "build" )
       .addModifiers( Modifier.PRIVATE )
       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
@@ -575,13 +566,12 @@ final class BuilderGenerator
                                                      @Nonnull final MethodSpec.Builder method,
                                                      @Nonnull final String elementName )
   {
-    final List<InputDescriptor> syntheticInputs =
-      descriptor.getInputs().stream().filter( InputDescriptor::isImmutable ).toList();
+    final var syntheticInputs = descriptor.getInputs().stream().filter( InputDescriptor::isImmutable ).toList();
     if ( syntheticInputs.size() > 1 )
     {
       method.addStatement( "final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName );
 
-      for ( final InputDescriptor input : syntheticInputs )
+      for ( final var input : syntheticInputs )
       {
         if ( ImmutableInputKeyStrategy.DYNAMIC == input.getImmutableInputKeyStrategy() )
         {
@@ -593,12 +583,12 @@ final class BuilderGenerator
         }
       }
 
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
       sb.append( "$N.setKey( " );
-      final List<Object> params = new ArrayList<>();
+      final var params = new ArrayList<>();
       params.add( elementName );
       boolean firstInput = true;
-      for ( final InputDescriptor input : syntheticInputs )
+      for ( final var input : syntheticInputs )
       {
         if ( !firstInput )
         {
@@ -608,7 +598,7 @@ final class BuilderGenerator
         {
           firstInput = false;
         }
-        final ImmutableInputKeyStrategy strategy = input.getImmutableInputKeyStrategy();
+        final var strategy = input.getImmutableInputKeyStrategy();
         if ( ImmutableInputKeyStrategy.KEYED == strategy )
         {
           sb.append( "$T.getKey( ($T) inputs.get( $T.Inputs.$N ) )" );
@@ -626,8 +616,8 @@ final class BuilderGenerator
         }
         else if ( ImmutableInputKeyStrategy.TO_STRING == strategy )
         {
-          final TypeMirror inputType = input.getMethodType().getReturnType();
-          final TypeKind kind = inputType.getKind();
+          final var inputType = input.getMethodType().getReturnType();
+          final var kind = inputType.getKind();
           if ( TypeKind.LONG == kind ||
                TypeKind.INT == kind ||
                TypeKind.SHORT == kind ||
@@ -647,7 +637,7 @@ final class BuilderGenerator
         }
         else if ( ImmutableInputKeyStrategy.DYNAMIC == strategy )
         {
-          final String name = "$" + input.getName() + "$";
+          final var name = "$" + input.getName() + "$";
           sb.append( "( $N instanceof $T ? $T.getKey( $N ) : " +
                      "$N instanceof $T ? $T.<$T>getArezId( $N ) : " +
                      "$T.valueOf( $N ) )" );
@@ -691,25 +681,24 @@ final class BuilderGenerator
   @Nonnull
   private static TypeSpec buildContextHolder( @Nonnull final ViewDescriptor descriptor )
   {
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( CONTEXT_HOLDER );
+    final var builder = TypeSpec.classBuilder( CONTEXT_HOLDER );
     GeneratorUtil.copyTypeParameters( descriptor.getElement(), builder );
 
     builder.addModifiers( Modifier.PRIVATE, Modifier.STATIC );
 
     builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
 
-    final List<InputDescriptor> contextInputs =
-      descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).toList();
+    final var contextInputs = descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).toList();
 
-    for ( final InputDescriptor input : contextInputs )
+    for ( final var input : contextInputs )
     {
-      final TypeName type = TypeName.get( input.getMethodType().getReturnType() ).box();
-      final FieldSpec.Builder field = FieldSpec
+      final var type = TypeName.get( input.getMethodType().getReturnType() ).box();
+      final var field = FieldSpec
         .builder( ParameterizedTypeName.get( CONTEXT_CLASSNAME, type ),
                   CONTEXT_INPUT_PREFIX + input.getConstantName(),
                   Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
-      final String qualifier = input.getQualifier();
+      final var qualifier = input.getQualifier();
       if ( qualifier.isEmpty() )
       {
         field.initializer( "$T.get( $T.class )", CONTEXTS_CLASSNAME, type );
@@ -729,27 +718,27 @@ final class BuilderGenerator
                                         @Nonnull final ViewDescriptor descriptor,
                                         @Nonnull final BuilderDescriptor builderDescriptor )
   {
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( "Builder" );
+    final var builder = TypeSpec.classBuilder( "Builder" );
     GeneratorUtil.copyTypeParameters( descriptor.getElement(), builder );
     builder.addModifiers( Modifier.PRIVATE, Modifier.STATIC );
-    final List<Step> steps = builderDescriptor.getSteps();
-    for ( int i = 0; i < steps.size(); i++ )
+    final var steps = builderDescriptor.getSteps();
+    for ( var i = 0; i < steps.size(); i++ )
     {
       builder.addSuperinterface( getParameterizedTypeName( descriptor, ClassName.bestGuess( "Step" + ( i + 1 ) ) ) );
     }
 
-    final List<InputDescriptor> inputsWithDefaults = descriptor.getInputs()
+    final var inputsWithDefaults = descriptor.getInputs()
       .stream()
       .filter( p -> p.hasDefaultField() || p.hasDefaultMethod() )
       .toList();
     if ( !inputsWithDefaults.isEmpty() )
     {
-      final MethodSpec.Builder method = MethodSpec.constructorBuilder();
+      final var method = MethodSpec.constructorBuilder();
       method.addStatement( "_element = $T.createViewElement( $T.Factory.TYPE )",
                            REACT_ELEMENT_CLASSNAME,
                            descriptor.getEnhancedClassName() );
       method.addStatement( "final $T inputs = _element.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME );
-      for ( final InputDescriptor input : inputsWithDefaults )
+      for ( final var input : inputsWithDefaults )
       {
         method.addStatement( "inputs.set( $T.Inputs.$N, $T.$N" +
                              ( input.hasDefaultField() ? "" : "()" ) + " )",
@@ -764,10 +753,10 @@ final class BuilderGenerator
       builder.addMethod( method.build() );
     }
 
-    final Set<String> stepMethodsAdded = new HashSet<>();
-    for ( final Step step : steps )
+    final var stepMethodsAdded = new HashSet<String>();
+    for ( final var step : steps )
     {
-      for ( final StepMethod stepMethod : step.getMethods() )
+      for ( final var stepMethod : step.getMethods() )
       {
         if ( stepMethodsAdded.add( stepMethod.getName() + stepMethod.getType() ) )
         {
@@ -779,7 +768,7 @@ final class BuilderGenerator
       }
     }
 
-    final FieldSpec.Builder field =
+    final var field =
       FieldSpec
         .builder( REACT_ELEMENT_CLASSNAME, "_element", Modifier.PRIVATE, Modifier.FINAL )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
@@ -791,17 +780,16 @@ final class BuilderGenerator
     }
     builder.addField( field.build() );
 
-    final List<InputDescriptor> contextInputs =
-      descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).toList();
+    final var contextInputs = descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).toList();
     if ( !contextInputs.isEmpty() )
     {
       builder.addMethod( buildInternalBuildStepImpl( descriptor ) );
       builder.addMethod( buildContextBuildStepImpl( contextInputs.get( 0 ) ) );
-      final int size = contextInputs.size();
-      for ( int i = 0; i < size; i++ )
+      final var size = contextInputs.size();
+      for ( var i = 0; i < size; i++ )
       {
-        final InputDescriptor current = contextInputs.get( i );
-        final InputDescriptor next = i == size - 1 ? null : contextInputs.get( i + 1 );
+        final var current = contextInputs.get( i );
+        final var next = i == size - 1 ? null : contextInputs.get( i + 1 );
         builder.addField( buildContextBuildField( current ) );
         builder.addMethod( buildContextBuildStepImpl( descriptor, current, next ) );
       }
@@ -818,7 +806,7 @@ final class BuilderGenerator
   private static TypeName getParameterizedTypeName( @Nonnull final ViewDescriptor descriptor,
                                                     @Nonnull final ClassName baseName )
   {
-    final List<? extends TypeMirror> arguments = descriptor.getDeclaredType().getTypeArguments();
+    final var arguments = descriptor.getDeclaredType().getTypeArguments();
     if ( arguments.isEmpty() )
     {
       return baseName;
@@ -837,7 +825,7 @@ final class BuilderGenerator
   @Nonnull
   static String asTypeArgumentsInfix( @Nonnull final DeclaredType declaredType )
   {
-    final List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+    final var typeArguments = declaredType.getTypeArguments();
     return typeArguments.isEmpty() ?
            "" :
            "<" + typeArguments.stream().map( TypeMirror::toString ).collect( Collectors.joining( ", " ) ) + ">";
@@ -846,22 +834,21 @@ final class BuilderGenerator
   @Nonnull
   private static BuilderDescriptor buildBuilderDescriptor( @Nonnull final ViewDescriptor descriptor )
   {
-    final BuilderDescriptor builder = new BuilderDescriptor();
+    final var builder = new BuilderDescriptor();
 
     Step optionalInputStep = null;
-    final List<InputDescriptor> inputs =
-      descriptor.getInputs().stream().filter( p -> !p.isContextSource() ).toList();
+    final var inputs = descriptor.getInputs().stream().filter( p -> !p.isContextSource() ).toList();
 
-    final int inputsSize = inputs.size();
+    final var inputsSize = inputs.size();
 
-    final boolean hasSingleOptional = inputs.stream().filter( InputDescriptor::isOptional ).count() == 1;
-    final boolean hasNonOptionalChild =
+    final var hasSingleOptional = inputs.stream().filter( InputDescriptor::isOptional ).count() == 1;
+    final var hasNonOptionalChild =
       inputs.stream().filter( i -> i.isSpecialChildrenInput() && !i.isOptional() ).count() == 1;
-    boolean hasRequiredAfterOptional = false;
-    for ( int i = 0; i < inputsSize; i++ )
+    var hasRequiredAfterOptional = false;
+    for ( var i = 0; i < inputsSize; i++ )
     {
-      final InputDescriptor input = inputs.get( i );
-      final boolean isLast = i == inputsSize - 1;
+      final var input = inputs.get( i );
+      final var isLast = i == inputsSize - 1;
       if ( input.isOptional() )
       {
         if ( null == optionalInputStep )
@@ -895,7 +882,7 @@ final class BuilderGenerator
           hasRequiredAfterOptional = true;
         }
         // Single method step
-        final Step step = builder.addStep();
+        final var step = builder.addStep();
         step.addMethod( input, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE );
         if ( input.getName().equals( "children" ) )
         {

@@ -41,7 +41,7 @@ final class FactoryGenerator
   static TypeSpec buildType( @Nonnull final ProcessingEnvironment processingEnv,
                              @Nonnull final ViewDescriptor descriptor )
   {
-    final TypeSpec.Builder builder = TypeSpec.classBuilder( descriptor.getFactoryClassName() );
+    final var builder = TypeSpec.classBuilder( descriptor.getFactoryClassName() );
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
     GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
 
@@ -57,7 +57,7 @@ final class FactoryGenerator
                                                                Constants.STING_CONTRIBUTE_TO_CLASSNAME ) );
     }
 
-    final ExecutableElement constructor = ElementsUtil.getConstructors( descriptor.getElement() ).get( 0 );
+    final var constructor = ElementsUtil.getConstructors( descriptor.getElement() ).get( 0 );
 
     buildFields( processingEnv, builder, constructor );
     buildConstructor( processingEnv, descriptor, builder, constructor );
@@ -72,10 +72,10 @@ final class FactoryGenerator
                                         @Nonnull final TypeSpec.Builder builder,
                                         @Nonnull final ExecutableElement constructor )
   {
-    final MethodSpec.Builder ctor = MethodSpec.constructorBuilder();
+    final var ctor = MethodSpec.constructorBuilder();
 
-    final boolean sting = descriptor.enableSting();
-    final ArrayList<String> additionalSuppressions = new ArrayList<>();
+    final var sting = descriptor.enableSting();
+    final var additionalSuppressions = new ArrayList<String>();
 
     SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv,
                                                         ctor,
@@ -88,14 +88,13 @@ final class FactoryGenerator
       ctor.addModifiers( Modifier.PUBLIC );
     }
 
-    final List<String> whitelistedAnnotations = new ArrayList<>( GeneratorUtil.ANNOTATION_WHITELIST );
+    final var whitelistedAnnotations = new ArrayList<String>( GeneratorUtil.ANNOTATION_WHITELIST );
     whitelistedAnnotations.add( "sting.Named" );
     whitelistedAnnotations.add( "javax.inject.Named" );
-    for ( final VariableElement parameter : constructor.getParameters() )
+    for ( final var parameter : constructor.getParameters() )
     {
-      final String name = parameter.getSimpleName().toString();
-      final ParameterSpec.Builder param =
-        ParameterSpec.builder( TypeName.get( parameter.asType() ), name, Modifier.FINAL );
+      final var name = parameter.getSimpleName().toString();
+      final var param = ParameterSpec.builder( TypeName.get( parameter.asType() ), name, Modifier.FINAL );
 
       GeneratorUtil.copyWhitelistedAnnotations( parameter, param, whitelistedAnnotations );
       ctor.addParameter( param.build() );
@@ -115,16 +114,17 @@ final class FactoryGenerator
   }
 
   private static void buildFields( @Nonnull final ProcessingEnvironment processingEnv,
-                                   final TypeSpec.Builder builder, final ExecutableElement constructor )
+                                   @Nonnull final TypeSpec.Builder builder,
+                                   @Nonnull final ExecutableElement constructor )
   {
-    for ( final VariableElement parameter : constructor.getParameters() )
+    for ( final var parameter : constructor.getParameters() )
     {
-      final FieldSpec.Builder field = FieldSpec
+      final var field = FieldSpec
         .builder( TypeName.get( parameter.asType() ),
                   parameter.getSimpleName().toString(),
                   Modifier.PRIVATE,
                   Modifier.FINAL );
-      final List<TypeMirror> types = Arrays.asList( constructor.asType(), parameter.asType() );
+      final var types = Arrays.asList( constructor.asType(), parameter.asType() );
       SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, field, types );
       GeneratorUtil.copyWhitelistedAnnotations( parameter, field );
       builder.addField( field.build() );
@@ -152,7 +152,7 @@ final class FactoryGenerator
   {
     // We create a separate InjectSupport class to avoid generating a clinit for the factory class
     // which can block optimizations in GWT
-    final TypeSpec.Builder builder =
+    final var builder =
       TypeSpec.classBuilder( "InjectSupport" ).addModifiers( Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL );
 
     builder.addField( buildFactoryField( descriptor ).build() );
@@ -171,13 +171,13 @@ final class FactoryGenerator
   @Nonnull
   private static MethodSpec.Builder buildSetFactoryMethod( @Nonnull final ViewDescriptor descriptor )
   {
-    final MethodSpec.Builder method = MethodSpec
+    final var method = MethodSpec
       .methodBuilder( "setFactory" )
       .addModifiers( Modifier.PRIVATE, Modifier.STATIC )
       .addParameter( ParameterSpec
                        .builder( descriptor.getFactoryClassName(), "factory", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() );
-    final CodeBlock.Builder block = CodeBlock.builder();
+    final var block = CodeBlock.builder();
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
     block.addStatement( "$T.invariant( () -> null == c_factory, () -> \"Attempted to instantiate the React4j " +
                         "view factory for the view named '$N' a second time\" )",
@@ -192,7 +192,7 @@ final class FactoryGenerator
   @Nonnull
   private static MethodSpec.Builder buildInjectCreateMethod( @Nonnull final ViewDescriptor descriptor )
   {
-    final MethodSpec.Builder method =
+    final var method =
       MethodSpec
         .methodBuilder( "create" )
         .addModifiers( Modifier.PRIVATE, Modifier.STATIC )
@@ -201,7 +201,7 @@ final class FactoryGenerator
                          .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
         .returns( descriptor.getEnhancedClassName() );
-    final CodeBlock.Builder block = CodeBlock.builder();
+    final var block = CodeBlock.builder();
     block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
     block.addStatement(
       "$T.invariant( () -> null != c_factory, () -> \"Attempted to create an instance of the React4j " +
@@ -212,7 +212,7 @@ final class FactoryGenerator
       descriptor.getName() );
     block.endControlFlow();
     method.addCode( block.build() );
-    final ExecutableElement constructor = ElementsUtil.getConstructors( descriptor.getElement() ).get( 0 );
+    final var constructor = ElementsUtil.getConstructors( descriptor.getElement() ).get( 0 );
     return method.addStatement( "return new $T( view" +
                                 constructor.getParameters()
                                   .stream()
