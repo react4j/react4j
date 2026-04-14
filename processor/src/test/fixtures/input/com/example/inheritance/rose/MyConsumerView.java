@@ -4,6 +4,7 @@ import java.util.Date;
 import javax.annotation.Nonnull;
 import react4j.annotations.Input;
 
+@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 public interface MyConsumerView
   extends MyBaseView
 {

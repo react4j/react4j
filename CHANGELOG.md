@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Allow immutable `@Input` values to be declared on constructor parameters while retaining method-based immutable inputs during the migration window.
+* Warn when `immutable = true` is specified on method-based `@Input` declarations and allow the warning to be suppressed while downstream projects migrate.
 * Update the `org.realityforge.arez` artifacts to version `0.231`.
 
 ### [v0.209](https://github.com/react4j/react4j/tree/v0.209) (2026-04-08) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.208...v0.209)

@@ -39,12 +39,12 @@ tasks:
       - command: bundle exec buildr test_api_diff
         result: passed after adding 0.209-0.210 api diff fixture
     commit:
-      hash: pending
+      hash: b21e1540
       message: Add constructor-based immutable input support
 
   - id: PHASE-2
     title: Add method-based immutable input warning and suppression coverage
-    status: in_progress
+    status: completed
     priority: medium
     depends_on:
       - PHASE-1
@@ -57,14 +57,16 @@ tasks:
       - processor/src/test/**
       - docs/**
       - CHANGELOG.md
-    evidence: []
+    evidence:
+      - command: bundle exec buildr react4j:processor:test
+        result: passed with method-based immutable warning coverage and suppressions
     commit:
       hash: pending
-      message: pending
+      message: Warn on method-based immutable inputs
 
   - id: PHASE-3
     title: Remove method-based immutable inputs and delete Input.immutable
-    status: pending
+    status: in_progress
     priority: high
     depends_on:
       - PHASE-2
