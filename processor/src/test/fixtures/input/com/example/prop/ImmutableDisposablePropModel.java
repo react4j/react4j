@@ -10,9 +10,9 @@ import react4j.annotations.View;
 @View( type = View.Type.TRACKING )
 abstract class ImmutableDisposablePropModel
 {
-  @Nullable
-  @Input( disposable = Feature.ENABLE, immutable = true )
-  abstract Object getValue();
+  ImmutableDisposablePropModel( @Nullable @Input( immutable = true, disposable = Feature.ENABLE ) final Object value )
+  {
+  }
 
   @Nullable
   @Render

@@ -72,113 +72,37 @@ abstract class ImmutablePropTypeMultiple
     }
   }
 
-  @Input( immutable = true )
-  abstract boolean getBooleanProp();
-
-  @Input( immutable = true )
-  abstract byte getByteProp();
-
-  @Input( immutable = true )
-  abstract char getCharProp();
-
-  @Input( immutable = true )
-  abstract double getDoubleProp();
-
-  @Input( immutable = true )
-  abstract float getFloatProp();
-
-  @Input( immutable = true )
-  abstract int getIntProp();
-
-  @Input( immutable = true )
-  abstract long getLongProp();
-
-  @Input( immutable = true )
-  abstract short getShortProp();
-
-  @Nonnull
-  @Input( immutable = true )
-  abstract MyEnum getEnumProp();
-
-  @Nonnull
-  @Input( immutable = true )
-  abstract KeyedComponent getKeyedComponentProp();
-
-  @Nonnull
-  @Input( immutable = true )
-  abstract IdentifiableComponent getIdentifiableProp();
-
-  @Nonnull
-  @Input( immutable = true )
-  abstract Object getObjectProp();
-
-  @Nonnull
-  @Input( immutable = true )
-  abstract ActAsComponentComponent getActAsComponentProp();
-
-  @Nonnull
-  @Input( immutable = true )
-  abstract ArezComponentComponent getArezComponentProp();
-
-  @Nonnull
-  @Input( immutable = true )
-  abstract ArezComponentWithExplicitRequireIdComponent getArezComponentWithExplicitRequireIdProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract MyEnum getNullableEnumProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract KeyedComponent getNullableKeyedComponentProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract IdentifiableComponent getNullableIdentifiableProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract Boolean getNullableBoxedBooleanProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract Byte getNullableBoxedByteProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract Double getNullableBoxedDoubleProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract Float getNullableBoxedFloatProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract Integer getNullableBoxedIntProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract Long getNullableBoxedLongProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract Short getNullableBoxedShortProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract Object getNullableObjectProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract ActAsComponentComponent getNullableActAsComponentProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract ArezComponentComponent getNullableArezComponentProp();
-
-  @Nullable
-  @Input( immutable = true )
-  abstract ArezComponentWithExplicitRequireIdComponent getNullableArezComponentWithExplicitRequireIdProp();
+  ImmutablePropTypeMultiple( @Input( immutable = true ) final boolean booleanProp,
+                             @Input( immutable = true ) final byte byteProp,
+                             @Input( immutable = true ) final char charProp,
+                             @Input( immutable = true ) final double doubleProp,
+                             @Input( immutable = true ) final float floatProp,
+                             @Input( immutable = true ) final int intProp,
+                             @Input( immutable = true ) final long longProp,
+                             @Input( immutable = true ) final short shortProp,
+                             @Nonnull @Input( immutable = true ) final MyEnum enumProp,
+                             @Nonnull @Input( immutable = true ) final KeyedComponent keyedComponentProp,
+                             @Nonnull @Input( immutable = true ) final IdentifiableComponent identifiableProp,
+                             @Nonnull @Input( immutable = true ) final Object objectProp,
+                             @Nonnull @Input( immutable = true ) final ActAsComponentComponent actAsComponentProp,
+                             @Nonnull @Input( immutable = true ) final ArezComponentComponent arezComponentProp,
+                             @Nonnull @Input( immutable = true ) final ArezComponentWithExplicitRequireIdComponent arezComponentWithExplicitRequireIdProp,
+                             @Nullable @Input( immutable = true ) final MyEnum nullableEnumProp,
+                             @Nullable @Input( immutable = true ) final KeyedComponent nullableKeyedComponentProp,
+                             @Nullable @Input( immutable = true ) final IdentifiableComponent nullableIdentifiableProp,
+                             @Nullable @Input( immutable = true ) final Boolean nullableBoxedBooleanProp,
+                             @Nullable @Input( immutable = true ) final Byte nullableBoxedByteProp,
+                             @Nullable @Input( immutable = true ) final Double nullableBoxedDoubleProp,
+                             @Nullable @Input( immutable = true ) final Float nullableBoxedFloatProp,
+                             @Nullable @Input( immutable = true ) final Integer nullableBoxedIntProp,
+                             @Nullable @Input( immutable = true ) final Long nullableBoxedLongProp,
+                             @Nullable @Input( immutable = true ) final Short nullableBoxedShortProp,
+                             @Nullable @Input( immutable = true ) final Object nullableObjectProp,
+                             @Nullable @Input( immutable = true ) final ActAsComponentComponent nullableActAsComponentProp,
+                             @Nullable @Input( immutable = true ) final ArezComponentComponent nullableArezComponentProp,
+                             @Nullable @Input( immutable = true ) final ArezComponentWithExplicitRequireIdComponent nullableArezComponentWithExplicitRequireIdProp )
+  {
+  }
 
   @Nullable
   @Render

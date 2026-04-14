@@ -16,9 +16,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.VariableElement;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.ElementsUtil;
 import org.realityforge.proton.GeneratorUtil;
+import org.realityforge.proton.ProcessorException;
 import org.realityforge.proton.SuppressWarningsUtil;
 
 final class FactoryGenerator
@@ -29,6 +31,8 @@ final class FactoryGenerator
   private static final ClassName GUARDS_CLASSNAME = ClassName.get( "org.realityforge.braincheck", "Guards" );
   @Nonnull
   private static final ClassName REACT_CLASSNAME = ClassName.get( "react4j", "React" );
+  @Nonnull
+  private static final ClassName JS_CLASSNAME = ClassName.get( "jsinterop.base", "Js" );
 
   private FactoryGenerator()
   {
@@ -56,7 +60,7 @@ final class FactoryGenerator
 
     final var constructor = ElementsUtil.getConstructors( descriptor.getElement() ).get( 0 );
 
-    buildFields( processingEnv, builder, constructor );
+    buildFields( processingEnv, builder, descriptor, constructor );
     buildConstructor( processingEnv, descriptor, builder, constructor );
     buildCreateMethod( descriptor, builder );
     builder.addType( buildInjectSupport( descriptor ) );
@@ -88,7 +92,7 @@ final class FactoryGenerator
     final var whitelistedAnnotations = new ArrayList<>( GeneratorUtil.ANNOTATION_WHITELIST );
     whitelistedAnnotations.add( "sting.Named" );
     whitelistedAnnotations.add( "javax.inject.Named" );
-    for ( final var parameter : constructor.getParameters() )
+    for ( final var parameter : descriptor.getInjectableConstructorParameters() )
     {
       final var name = parameter.getSimpleName().toString();
       final var param = ParameterSpec.builder( TypeName.get( parameter.asType() ), name, Modifier.FINAL );
@@ -112,9 +116,10 @@ final class FactoryGenerator
 
   private static void buildFields( @Nonnull final ProcessingEnvironment processingEnv,
                                    @Nonnull final TypeSpec.Builder builder,
+                                   @Nonnull final ViewDescriptor descriptor,
                                    @Nonnull final ExecutableElement constructor )
   {
-    for ( final var parameter : constructor.getParameters() )
+    for ( final var parameter : descriptor.getInjectableConstructorParameters() )
     {
       final var field = FieldSpec
         .builder( TypeName.get( parameter.asType() ),
@@ -209,12 +214,90 @@ final class FactoryGenerator
       descriptor.getName() );
     block.endControlFlow();
     method.addCode( block.build() );
+    for ( final var input : descriptor.getConstructorInputs() )
+    {
+      final var parameter = input.getParameter();
+      assert null != parameter;
+      final var localName = parameter.getSimpleName().toString();
+      final var convertMethodName = getConverter( input );
+      if ( !input.getType().getKind().isPrimitive() && !input.isNonNull() )
+      {
+        final var extraction = CodeBlock.builder();
+        extraction.addStatement( "$T $N", TypeName.get( input.getType() ), localName );
+        extraction.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+        extraction.addStatement( "$N = null != view.inputs().getAsAny( $T.Inputs.$N ) ? " +
+                                 "view.inputs().getAsAny( $T.Inputs.$N ).$N() : null",
+                                 localName,
+                                 descriptor.getEnhancedClassName(),
+                                 input.getConstantName(),
+                                 descriptor.getEnhancedClassName(),
+                                 input.getConstantName(),
+                                 convertMethodName );
+        extraction.nextControlFlow( "else" );
+        extraction.addStatement( "$N = $T.uncheckedCast( view.inputs().getAsAny( $T.Inputs.$N ) )",
+                                 localName,
+                                 JS_CLASSNAME,
+                                 descriptor.getEnhancedClassName(),
+                                 input.getConstantName() );
+        extraction.endControlFlow();
+        method.addCode( extraction.build() );
+      }
+      else
+      {
+        method.addStatement( "final $T $N = view.inputs().getAsAny( $T.Inputs.$N ).$N()",
+                             TypeName.get( input.getType() ),
+                             localName,
+                             descriptor.getEnhancedClassName(),
+                             input.getConstantName(),
+                             convertMethodName );
+      }
+    }
+
     final var constructor = ElementsUtil.getConstructors( descriptor.getElement() ).get( 0 );
-    return method.addStatement( "return new $T( view" +
-                                constructor.getParameters()
-                                  .stream()
-                                  .map( p -> ", c_factory." + p.getSimpleName() )
-                                  .collect( Collectors.joining() ) +
-                                " )", descriptor.getArezClassName() );
+    final var args = new StringBuilder( "return new $T( view" );
+    final var params = new ArrayList<>();
+    params.add( descriptor.getArezClassName() );
+    for ( final VariableElement parameter : constructor.getParameters() )
+    {
+      args.append( ", " );
+      final var input = descriptor.getConstructorInputs()
+        .stream()
+        .filter( d -> parameter.equals( d.getParameter() ) )
+        .findAny()
+        .orElse( null );
+      if ( null != input )
+      {
+        args.append( "$N" );
+        params.add( parameter.getSimpleName().toString() );
+      }
+      else
+      {
+        args.append( "c_factory.$N" );
+        params.add( parameter.getSimpleName().toString() );
+      }
+    }
+    args.append( " )" );
+    return method.addStatement( args.toString(), params.toArray() );
+  }
+
+  @Nonnull
+  private static String getConverter( @Nonnull final InputDescriptor input )
+  {
+    return switch ( input.getType().getKind() )
+      {
+        case BOOLEAN -> "asBoolean";
+        case BYTE -> "asByte";
+        case CHAR -> "asChar";
+        case DOUBLE -> "asDouble";
+        case FLOAT -> "asFloat";
+        case INT -> "asInt";
+        case LONG -> "asLong";
+        case SHORT -> "asShort";
+        case TYPEVAR, ARRAY -> "cast";
+        case DECLARED -> input.getType().toString().equals( "java.lang.String" ) ? "asString" : "cast";
+        default -> throw new ProcessorException( "Return type of @Input method is not yet handled. Type: " +
+                                                 input.getType().getKind(),
+                                                 input.getElement() );
+      };
   }
 }

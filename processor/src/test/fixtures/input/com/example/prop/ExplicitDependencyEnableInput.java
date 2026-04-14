@@ -16,9 +16,9 @@ abstract class ExplicitDependencyEnableInput
   {
   }
 
-  @Nullable
-  @Input( immutable = true, dependency = Feature.ENABLE )
-  abstract MyComponent getMyComponent();
+  ExplicitDependencyEnableInput( @Nullable @Input( immutable = true, dependency = Feature.ENABLE ) final MyComponent myComponent )
+  {
+  }
 
   @Nullable
   @Render

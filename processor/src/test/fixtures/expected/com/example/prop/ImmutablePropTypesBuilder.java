@@ -55,7 +55,7 @@ final class ImmutablePropTypesBuilder {
     @Contract(
         pure = true
     )
-    Step2 BobsProp(@Nullable ImmutablePropTypes.KeyedComponent BobsProp);
+    Step2 bobsProp(@Nullable ImmutablePropTypes.KeyedComponent bobsProp);
 
     @Nonnull
     @Contract(
@@ -116,8 +116,8 @@ final class ImmutablePropTypesBuilder {
     @Contract(
         pure = true
     )
-    public final Step2 BobsProp(@Nullable final ImmutablePropTypes.KeyedComponent BobsProp) {
-      _element.input( React4j_ImmutablePropTypes.Inputs.BobsProp, BobsProp );
+    public final Step2 bobsProp(@Nullable final ImmutablePropTypes.KeyedComponent bobsProp) {
+      _element.input( React4j_ImmutablePropTypes.Inputs.bobsProp, bobsProp );
       return this;
     }
 
@@ -148,7 +148,7 @@ final class ImmutablePropTypesBuilder {
     public final ReactNode build() {
       final JsPropertyMap<Object> inputs = _element.inputs();
       final Object $object$ = inputs.get( React4j_ImmutablePropTypes.Inputs.object );
-      _element.setKey( String.valueOf( (int) (double) inputs.get( React4j_ImmutablePropTypes.Inputs.stillAnotherProp ) ) + "-" + String.valueOf( Identifiable.<Object>getArezId( (ImmutablePropTypes.MyComponent) inputs.get( React4j_ImmutablePropTypes.Inputs.myProp ) ) ) + "-" + ( (String) inputs.get( React4j_ImmutablePropTypes.Inputs.myOtherProp ) ) + "-" + Keyed.getKey( (ImmutablePropTypes.KeyedComponent) inputs.get( React4j_ImmutablePropTypes.Inputs.BobsProp ) ) + "-" + ( (ImmutablePropTypes.Foo) inputs.get( React4j_ImmutablePropTypes.Inputs.someProp ) ) + "-" + ( $object$ instanceof Keyed ? Keyed.getKey( $object$ ) : $object$ instanceof Identifiable ? Identifiable.<Object>getArezId( $object$ ) : String.valueOf( $object$ ) ) + ( React.enableViewNames() ? "_ImmutablePropTypes_108bb2eb" : ImmutablePropTypes.class.getName() ) );
+      _element.setKey( String.valueOf( (int) (double) inputs.get( React4j_ImmutablePropTypes.Inputs.stillAnotherProp ) ) + "-" + String.valueOf( Identifiable.<Object>getArezId( (ImmutablePropTypes.MyComponent) inputs.get( React4j_ImmutablePropTypes.Inputs.myProp ) ) ) + "-" + ( (String) inputs.get( React4j_ImmutablePropTypes.Inputs.myOtherProp ) ) + "-" + Keyed.getKey( (ImmutablePropTypes.KeyedComponent) inputs.get( React4j_ImmutablePropTypes.Inputs.bobsProp ) ) + "-" + ( (ImmutablePropTypes.Foo) inputs.get( React4j_ImmutablePropTypes.Inputs.someProp ) ) + "-" + ( $object$ instanceof Keyed ? Keyed.getKey( $object$ ) : $object$ instanceof Identifiable ? Identifiable.<Object>getArezId( $object$ ) : String.valueOf( $object$ ) ) + ( React.enableViewNames() ? "_ImmutablePropTypes_108bb2eb" : ImmutablePropTypes.class.getName() ) );
       return _element;
     }
   }

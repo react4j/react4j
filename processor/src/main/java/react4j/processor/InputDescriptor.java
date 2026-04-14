@@ -7,6 +7,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeMirror;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
@@ -14,16 +15,30 @@ import org.realityforge.proton.ProcessorException;
 @SuppressWarnings( "Duplicates" )
 final class InputDescriptor
 {
+  enum Origin
+  {
+    METHOD,
+    CONSTRUCTOR_PARAMETER
+  }
+
   @Nonnull
   private final ViewDescriptor _descriptor;
+  @Nonnull
+  private final Origin _origin;
   @Nonnull
   private final String _name;
   @Nonnull
   private final String _qualifier;
   @Nonnull
-  private final ExecutableElement _method;
+  private final Element _element;
   @Nonnull
+  private final TypeMirror _type;
+  @Nullable
+  private final ExecutableElement _method;
+  @Nullable
   private final ExecutableType _methodType;
+  @Nullable
+  private final VariableElement _parameter;
   @Nullable
   private final Element _inputType;
   private final boolean _contextSource;
@@ -53,10 +68,14 @@ final class InputDescriptor
   private Boolean _isNonNull;
 
   InputDescriptor( @Nonnull final ViewDescriptor descriptor,
+                   @Nonnull final Origin origin,
                    @Nonnull final String name,
                    @Nonnull final String qualifier,
-                   @Nonnull final ExecutableElement method,
-                   @Nonnull final ExecutableType methodType,
+                   @Nonnull final Element element,
+                   @Nonnull final TypeMirror type,
+                   @Nullable final ExecutableElement method,
+                   @Nullable final ExecutableType methodType,
+                   @Nullable final VariableElement parameter,
                    @Nullable final Element inputType,
                    final boolean contextSource,
                    final boolean shouldUpdateOnChange,
@@ -69,10 +88,14 @@ final class InputDescriptor
                    @Nonnull final String requiredValue )
   {
     _descriptor = Objects.requireNonNull( descriptor );
+    _origin = Objects.requireNonNull( origin );
     _name = Objects.requireNonNull( name );
     _qualifier = Objects.requireNonNull( qualifier );
-    _method = Objects.requireNonNull( method );
-    _methodType = Objects.requireNonNull( methodType );
+    _element = Objects.requireNonNull( element );
+    _type = Objects.requireNonNull( type );
+    _method = method;
+    _methodType = methodType;
+    _parameter = parameter;
     _inputType = inputType;
     _contextSource = contextSource;
     _shouldUpdateOnChange = shouldUpdateOnChange;
@@ -83,6 +106,12 @@ final class InputDescriptor
     _observeOnRenderRequiresRuntimeCheck = observeOnRenderRequiresRuntimeCheck;
     _immutableInputKeyStrategy = immutableInputKeyStrategy;
     _requiredValue = Objects.requireNonNull( requiredValue );
+  }
+
+  @Nonnull
+  Origin getOrigin()
+  {
+    return _origin;
   }
 
   @Nonnull
@@ -98,15 +127,43 @@ final class InputDescriptor
   }
 
   @Nonnull
+  Element getElement()
+  {
+    return _element;
+  }
+
+  @Nonnull
+  TypeMirror getType()
+  {
+    return _type;
+  }
+
+  boolean isMethodInput()
+  {
+    return Origin.METHOD == _origin;
+  }
+
+  boolean isConstructorParameterInput()
+  {
+    return Origin.CONSTRUCTOR_PARAMETER == _origin;
+  }
+
+  @Nullable
   ExecutableElement getMethod()
   {
     return _method;
   }
 
-  @Nonnull
+  @Nullable
   ExecutableType getMethodType()
   {
     return _methodType;
+  }
+
+  @Nullable
+  VariableElement getParameter()
+  {
+    return _parameter;
   }
 
   @Nullable
@@ -295,7 +352,7 @@ final class InputDescriptor
   {
     if ( null == _isNonNull )
     {
-      _isNonNull = AnnotationsUtil.hasNonnullAnnotation( getMethod() );
+      _isNonNull = AnnotationsUtil.hasNonnullAnnotation( getElement() );
     }
     return _isNonNull;
   }

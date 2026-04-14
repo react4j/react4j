@@ -1,0 +1,23 @@
+[
+  {
+    "code": "java.annotation.attributeValueChanged",
+    "description": "Attribute 'value' of annotation 'java.lang.annotation.Target' changed value from '{java.lang.annotation.ElementType.METHOD}' to '{java.lang.annotation.ElementType.METHOD, java.lang.annotation.ElementType.PARAMETER}'.",
+    "element": "@interface react4j.annotations.Input",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@java.lang.annotation.Target({java.lang.annotation.ElementType.METHOD, java.lang.annotation.ElementType.PARAMETER})",
+      "annotationType": "java.lang.annotation.Target",
+      "attribute": "value",
+      "classQualifiedName": "react4j.annotations.Input",
+      "classSimpleName": "Input",
+      "elementKind": "@interface",
+      "newValue": "{java.lang.annotation.ElementType.METHOD, java.lang.annotation.ElementType.PARAMETER}",
+      "oldValue": "{java.lang.annotation.ElementType.METHOD}",
+      "package": "react4j.annotations"
+    }
+  }
+]

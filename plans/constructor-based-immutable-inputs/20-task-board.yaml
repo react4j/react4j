@@ -1,0 +1,86 @@
+tasks:
+  - id: PLAN-SETUP
+    title: Create planning artifacts for constructor-based immutable input migration
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements, implementation plan, and task board exist.
+      - Phase boundaries and resolved decisions are recorded.
+    files_touched:
+      - plans/constructor-based-immutable-inputs/*
+    evidence:
+      - command: planning artifacts created in repository
+        result: completed
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PHASE-1
+    title: Implement constructor-based immutable inputs with parity and processor fixtures
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-SETUP
+    acceptance_criteria:
+      - Constructor parameters support immutable inputs.
+      - Mixed-mode immutable inputs work.
+      - Injection paths ignore constructor input parameters.
+      - Phase 1 processor fixtures cover success and failure cases.
+    files_touched:
+      - core/src/main/java/react4j/annotations/Input.java
+      - processor/src/main/java/react4j/processor/*
+      - processor/src/test/**
+      - docs/**
+      - CHANGELOG.md
+    evidence:
+      - command: bundle exec buildr react4j:processor:test
+        result: passed
+      - command: bundle exec buildr test_api_diff
+        result: passed after adding 0.209-0.210 api diff fixture
+    commit:
+      hash: pending
+      message: Add constructor-based immutable input support
+
+  - id: PHASE-2
+    title: Add method-based immutable input warning and suppression coverage
+    status: in_progress
+    priority: medium
+    depends_on:
+      - PHASE-1
+    acceptance_criteria:
+      - Method-based immutable inputs emit a suppressible warning.
+      - Constructor-based immutable inputs do not emit the warning.
+      - Warning fixtures cover normal and suppressed cases.
+    files_touched:
+      - processor/src/main/java/react4j/processor/*
+      - processor/src/test/**
+      - docs/**
+      - CHANGELOG.md
+    evidence: []
+    commit:
+      hash: pending
+      message: pending
+
+  - id: PHASE-3
+    title: Remove method-based immutable inputs and delete Input.immutable
+    status: pending
+    priority: high
+    depends_on:
+      - PHASE-2
+    acceptance_criteria:
+      - `Input#immutable()` is removed.
+      - Method-based immutable inputs are rejected/unsupported.
+      - Constructor-based immutable inputs use plain `@Input`.
+      - API diff and final docs are updated.
+    files_touched:
+      - core/src/main/java/react4j/annotations/Input.java
+      - processor/src/main/java/react4j/processor/*
+      - processor/src/test/**
+      - api-test/**
+      - docs/**
+      - CHANGELOG.md
+    evidence: []
+    commit:
+      hash: pending
+      message: pending

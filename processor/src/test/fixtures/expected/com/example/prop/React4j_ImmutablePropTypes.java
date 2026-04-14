@@ -43,7 +43,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
   @Nullable
-  private final ImmutablePropTypes.KeyedComponent $$react4j_immutable_input$$_BobsProp;
+  private final ImmutablePropTypes.KeyedComponent $$react4j_immutable_input$$_bobsProp;
 
   @SuppressWarnings("Arez:UnmanagedComponentReference")
   @Nullable
@@ -53,34 +53,18 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   @Nullable
   private final Object $$react4j_immutable_input$$_object;
 
-  React4j_ImmutablePropTypes(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+  React4j_ImmutablePropTypes(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
+      @Nullable final ImmutablePropTypes.MyComponent myProp, @Nullable final String myOtherProp,
+      final int stillAnotherProp, @Nullable final ImmutablePropTypes.KeyedComponent bobsProp,
+      @Nullable final ImmutablePropTypes.Foo someProp, @Nullable final Object object) {
+    super( myProp, myOtherProp, stillAnotherProp, bobsProp, someProp, object );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_stillAnotherProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.stillAnotherProp ).asInt();
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_myProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_myProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_myOtherProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ).asString() : null;
-    } else {
-      $$react4j_immutable_input$$_myOtherProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myOtherProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_BobsProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_BobsProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.BobsProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_someProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_someProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.someProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_object = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_object = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.object ) );
-    }
+    $$react4j_immutable_input$$_stillAnotherProp = stillAnotherProp;
+    $$react4j_immutable_input$$_myProp = myProp;
+    $$react4j_immutable_input$$_myOtherProp = myOtherProp;
+    $$react4j_immutable_input$$_bobsProp = bobsProp;
+    $$react4j_immutable_input$$_someProp = someProp;
+    $$react4j_immutable_input$$_object = object;
   }
 
   @Nonnull
@@ -90,41 +74,6 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypes" );
     }
     return viewConstructor;
-  }
-
-  @Override
-  int stillAnotherProp() {
-    return $$react4j_immutable_input$$_stillAnotherProp;
-  }
-
-  @Nullable
-  @Override
-  ImmutablePropTypes.MyComponent getMyProp() {
-    return $$react4j_immutable_input$$_myProp;
-  }
-
-  @Nullable
-  @Override
-  String getMyOtherProp() {
-    return $$react4j_immutable_input$$_myOtherProp;
-  }
-
-  @Nullable
-  @Override
-  ImmutablePropTypes.KeyedComponent BobsProp() {
-    return $$react4j_immutable_input$$_BobsProp;
-  }
-
-  @Nullable
-  @Override
-  ImmutablePropTypes.Foo getSomeProp() {
-    return $$react4j_immutable_input$$_someProp;
-  }
-
-  @Nullable
-  @Override
-  Object getObject() {
-    return $$react4j_immutable_input$$_object;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -155,7 +104,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
 
     static final String myOtherProp = React.shouldMinimizeInputKeys() ? "c" : "myOtherProp";
 
-    static final String BobsProp = React.shouldMinimizeInputKeys() ? "d" : "BobsProp";
+    static final String bobsProp = React.shouldMinimizeInputKeys() ? "d" : "bobsProp";
 
     static final String someProp = React.shouldMinimizeInputKeys() ? "e" : "someProp";
 
@@ -169,7 +118,38 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.myProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypes( this );
+      ImmutablePropTypes.MyComponent myProp;
+      if ( React.shouldCheckInvariants() ) {
+        myProp = null != inputs.getAsAny( Inputs.myProp ) ? inputs.getAsAny( Inputs.myProp ).cast() : null;
+      } else {
+        myProp = Js.uncheckedCast( inputs.getAsAny( Inputs.myProp ) );
+      }
+      String myOtherProp;
+      if ( React.shouldCheckInvariants() ) {
+        myOtherProp = null != inputs.getAsAny( Inputs.myOtherProp ) ? inputs.getAsAny( Inputs.myOtherProp ).asString() : null;
+      } else {
+        myOtherProp = Js.uncheckedCast( inputs.getAsAny( Inputs.myOtherProp ) );
+      }
+      final int stillAnotherProp = inputs.getAsAny( Inputs.stillAnotherProp ).asInt();
+      ImmutablePropTypes.KeyedComponent bobsProp;
+      if ( React.shouldCheckInvariants() ) {
+        bobsProp = null != inputs.getAsAny( Inputs.bobsProp ) ? inputs.getAsAny( Inputs.bobsProp ).cast() : null;
+      } else {
+        bobsProp = Js.uncheckedCast( inputs.getAsAny( Inputs.bobsProp ) );
+      }
+      ImmutablePropTypes.Foo someProp;
+      if ( React.shouldCheckInvariants() ) {
+        someProp = null != inputs.getAsAny( Inputs.someProp ) ? inputs.getAsAny( Inputs.someProp ).cast() : null;
+      } else {
+        someProp = Js.uncheckedCast( inputs.getAsAny( Inputs.someProp ) );
+      }
+      Object object;
+      if ( React.shouldCheckInvariants() ) {
+        object = null != inputs.getAsAny( Inputs.object ) ? inputs.getAsAny( Inputs.object ).cast() : null;
+      } else {
+        object = Js.uncheckedCast( inputs.getAsAny( Inputs.object ) );
+      }
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.myProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypes( this, myProp, myOtherProp, stillAnotherProp, bobsProp, someProp, object );
     }
 
     @Override
