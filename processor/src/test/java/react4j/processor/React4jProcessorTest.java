@@ -39,6 +39,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.basic.PublicView" },
 
         new Object[]{ "com.example.default_inputs.ColorfulNameInputDefaultView" },
+        new Object[]{ "com.example.default_inputs.ConstructorInputDefaultView" },
         new Object[]{ "com.example.default_inputs.DeprecatedFieldInputDefaultView" },
         new Object[]{ "com.example.default_inputs.DeprecatedMethodInputDefaultView" },
         new Object[]{ "com.example.default_inputs.ExplicitNameFieldInputDefaultView" },
@@ -133,6 +134,8 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.GenericTypeMultiPropModel" },
         new Object[]{ "com.example.prop.GenericTypePropModel" },
         new Object[]{ "com.example.prop.ImmutableDisposablePropModel" },
+        new Object[]{ "com.example.prop.ImmutableConstructorContextPropModel" },
+        new Object[]{ "com.example.prop.ImmutableMixedInputModel" },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentWithExplicitRequireId" },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezIdentifiable" },
         new Object[]{ "com.example.prop.ImmutablePropTypeBoxedBoolean" },
@@ -228,6 +231,7 @@ public final class React4jProcessorTest
 
         new Object[]{ "com.example.prop_validate.BooleanPropValidate" },
         new Object[]{ "com.example.prop_validate.BytePropValidate" },
+        new Object[]{ "com.example.prop_validate.ConstructorStringPropValidate" },
         new Object[]{ "com.example.prop_validate.CharPropValidate" },
         new Object[]{ "com.example.prop_validate.DoublePropValidate" },
         new Object[]{ "com.example.prop_validate.ExplicitNamePropValidate" },
@@ -278,6 +282,7 @@ public final class React4jProcessorTest
     return new Object[][]
       {
         new Object[]{ "com.example.inject.ConstructorInjectComponent" },
+        new Object[]{ "com.example.inject.ConstructorInputAndInjectComponent" },
         new Object[]{ "com.example.inject.ConstructorInjectRawTypeComponent" },
         new Object[]{ "com.example.inject.FactoryOnlyInjectComponent" },
         new Object[]{ "com.example.inject.PublicView" },
@@ -762,6 +767,8 @@ public final class React4jProcessorTest
                       "@OnInputChange target has a parameter named 'myProp' and the parameter type is not assignable to the return type of the associated @Input annotated method." },
         new Object[]{ "com.example.on_prop_change.ImmutableOnPropChange",
                       "@OnInputChange target has a parameter named 'myProp' that is associated with a @Input annotated method and the input is specified as immutable." },
+        new Object[]{ "com.example.on_prop_change.ConstructorImmutableOnPropChange",
+                      "@OnInputChange target has a parameter named 'myProp' that is associated with a @Input annotated method and the input is specified as immutable." },
         new Object[]{ "com.example.on_prop_change.MissingPropOnPropChange",
                       "@OnInputChange target has a parameter named 'myProp' and the parameter is associated with a @Input named 'myProp' but there is no corresponding @Input annotated method." },
         new Object[]{ "com.example.on_prop_change.NoPropRefOnPropChange",
@@ -853,6 +860,10 @@ public final class React4jProcessorTest
                       "@Input target is a collection that contains Arez components. This is not a safe pattern when the arez components can be disposed." },
         new Object[]{ "com.example.prop.CollectionSetArezProp",
                       "@Input target is a collection that contains Arez components. This is not a safe pattern when the arez components can be disposed." },
+        new Object[]{ "com.example.prop.ConstructorInputWithoutImmutableProp",
+                      "@Input constructor parameter must specify immutable=true" },
+        new Object[]{ "com.example.prop.DuplicateConstructorMethodImmutableProp",
+                      "Multiple @Input declarations for input named 'myProp': getMyProp and myProp" },
         new Object[]{ "com.example.prop.GenericPropComponent",
                       "@Input named 'value' is has a type variable as a return type that is declared on the method." },
         new Object[]{ "com.example.prop.ImmutableObservableProp",

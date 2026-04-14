@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import arez.annotations.PostConstruct;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
@@ -8,14 +7,9 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View
-abstract class ImmutablePropAndPostConstructComponent
+abstract class ImmutableConstructorContextPropModel
 {
-  ImmutablePropAndPostConstructComponent( @Nullable @Input( immutable = true ) final String myProp )
-  {
-  }
-
-  @PostConstruct
-  void postConstruct()
+  ImmutableConstructorContextPropModel( @Nullable @Input( immutable = true, source = Input.Source.CONTEXT ) final String myProp )
   {
   }
 

@@ -140,93 +140,57 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
   final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent $$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp;
 
   React4j_ImmutablePropTypeMultiple(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView, final boolean booleanProp,
+      final byte byteProp, final char charProp, final double doubleProp, final float floatProp,
+      final int intProp, final long longProp, final short shortProp,
+      @Nonnull final ImmutablePropTypeMultiple.MyEnum enumProp,
+      @Nonnull final ImmutablePropTypeMultiple.KeyedComponent keyedComponentProp,
+      @Nonnull final ImmutablePropTypeMultiple.IdentifiableComponent identifiableProp,
+      @Nonnull final Object objectProp,
+      @Nonnull final ImmutablePropTypeMultiple.ActAsComponentComponent actAsComponentProp,
+      @Nonnull final ImmutablePropTypeMultiple.ArezComponentComponent arezComponentProp,
+      @Nonnull final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent arezComponentWithExplicitRequireIdProp,
+      @Nullable final ImmutablePropTypeMultiple.MyEnum nullableEnumProp,
+      @Nullable final ImmutablePropTypeMultiple.KeyedComponent nullableKeyedComponentProp,
+      @Nullable final ImmutablePropTypeMultiple.IdentifiableComponent nullableIdentifiableProp,
+      @Nullable final Boolean nullableBoxedBooleanProp, @Nullable final Byte nullableBoxedByteProp,
+      @Nullable final Double nullableBoxedDoubleProp, @Nullable final Float nullableBoxedFloatProp,
+      @Nullable final Integer nullableBoxedIntProp, @Nullable final Long nullableBoxedLongProp,
+      @Nullable final Short nullableBoxedShortProp, @Nullable final Object nullableObjectProp,
+      @Nullable final ImmutablePropTypeMultiple.ActAsComponentComponent nullableActAsComponentProp,
+      @Nullable final ImmutablePropTypeMultiple.ArezComponentComponent nullableArezComponentProp,
+      @Nullable final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent nullableArezComponentWithExplicitRequireIdProp) {
+    super( booleanProp, byteProp, charProp, doubleProp, floatProp, intProp, longProp, shortProp, enumProp, keyedComponentProp, identifiableProp, objectProp, actAsComponentProp, arezComponentProp, arezComponentWithExplicitRequireIdProp, nullableEnumProp, nullableKeyedComponentProp, nullableIdentifiableProp, nullableBoxedBooleanProp, nullableBoxedByteProp, nullableBoxedDoubleProp, nullableBoxedFloatProp, nullableBoxedIntProp, nullableBoxedLongProp, nullableBoxedShortProp, nullableObjectProp, nullableActAsComponentProp, nullableArezComponentProp, nullableArezComponentWithExplicitRequireIdProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_booleanProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.booleanProp ).asBoolean();
-    $$react4j_immutable_input$$_byteProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.byteProp ).asByte();
-    $$react4j_immutable_input$$_charProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.charProp ).asChar();
-    $$react4j_immutable_input$$_doubleProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.doubleProp ).asDouble();
-    $$react4j_immutable_input$$_floatProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.floatProp ).asFloat();
-    $$react4j_immutable_input$$_intProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.intProp ).asInt();
-    $$react4j_immutable_input$$_longProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.longProp ).asLong();
-    $$react4j_immutable_input$$_shortProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.shortProp ).asShort();
-    $$react4j_immutable_input$$_enumProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.enumProp ).cast();
-    $$react4j_immutable_input$$_keyedComponentProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.keyedComponentProp ).cast();
-    $$react4j_immutable_input$$_identifiableProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.identifiableProp ).cast();
-    $$react4j_immutable_input$$_objectProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.objectProp ).cast();
-    $$react4j_immutable_input$$_actAsComponentProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.actAsComponentProp ).cast();
-    $$react4j_immutable_input$$_arezComponentProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.arezComponentProp ).cast();
-    $$react4j_immutable_input$$_arezComponentWithExplicitRequireIdProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast();
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableEnumProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableEnumProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableEnumProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableEnumProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableEnumProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableKeyedComponentProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableKeyedComponentProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableKeyedComponentProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableKeyedComponentProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableKeyedComponentProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableIdentifiableProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableIdentifiableProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableIdentifiableProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableIdentifiableProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableIdentifiableProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedBooleanProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedBooleanProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedBooleanProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableBoxedBooleanProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedBooleanProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedByteProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedByteProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedByteProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableBoxedByteProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedByteProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedDoubleProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedDoubleProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedDoubleProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableBoxedDoubleProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedDoubleProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedFloatProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedFloatProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedFloatProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableBoxedFloatProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedFloatProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedIntProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedIntProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedIntProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableBoxedIntProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedIntProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedLongProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedLongProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedLongProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableBoxedLongProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedLongProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableBoxedShortProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedShortProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedShortProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableBoxedShortProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableBoxedShortProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableObjectProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableObjectProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableObjectProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableObjectProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableObjectProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableActAsComponentProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableActAsComponentProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableActAsComponentProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableActAsComponentProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableActAsComponentProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableArezComponentProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableArezComponentProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentProp ) );
-    }
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) );
-    }
+    $$react4j_immutable_input$$_booleanProp = booleanProp;
+    $$react4j_immutable_input$$_byteProp = byteProp;
+    $$react4j_immutable_input$$_charProp = charProp;
+    $$react4j_immutable_input$$_doubleProp = doubleProp;
+    $$react4j_immutable_input$$_floatProp = floatProp;
+    $$react4j_immutable_input$$_intProp = intProp;
+    $$react4j_immutable_input$$_longProp = longProp;
+    $$react4j_immutable_input$$_shortProp = shortProp;
+    $$react4j_immutable_input$$_enumProp = enumProp;
+    $$react4j_immutable_input$$_keyedComponentProp = keyedComponentProp;
+    $$react4j_immutable_input$$_identifiableProp = identifiableProp;
+    $$react4j_immutable_input$$_objectProp = objectProp;
+    $$react4j_immutable_input$$_actAsComponentProp = actAsComponentProp;
+    $$react4j_immutable_input$$_arezComponentProp = arezComponentProp;
+    $$react4j_immutable_input$$_arezComponentWithExplicitRequireIdProp = arezComponentWithExplicitRequireIdProp;
+    $$react4j_immutable_input$$_nullableEnumProp = nullableEnumProp;
+    $$react4j_immutable_input$$_nullableKeyedComponentProp = nullableKeyedComponentProp;
+    $$react4j_immutable_input$$_nullableIdentifiableProp = nullableIdentifiableProp;
+    $$react4j_immutable_input$$_nullableBoxedBooleanProp = nullableBoxedBooleanProp;
+    $$react4j_immutable_input$$_nullableBoxedByteProp = nullableBoxedByteProp;
+    $$react4j_immutable_input$$_nullableBoxedDoubleProp = nullableBoxedDoubleProp;
+    $$react4j_immutable_input$$_nullableBoxedFloatProp = nullableBoxedFloatProp;
+    $$react4j_immutable_input$$_nullableBoxedIntProp = nullableBoxedIntProp;
+    $$react4j_immutable_input$$_nullableBoxedLongProp = nullableBoxedLongProp;
+    $$react4j_immutable_input$$_nullableBoxedShortProp = nullableBoxedShortProp;
+    $$react4j_immutable_input$$_nullableObjectProp = nullableObjectProp;
+    $$react4j_immutable_input$$_nullableActAsComponentProp = nullableActAsComponentProp;
+    $$react4j_immutable_input$$_nullableArezComponentProp = nullableArezComponentProp;
+    $$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp = nullableArezComponentWithExplicitRequireIdProp;
   }
 
   @Nonnull
@@ -236,174 +200,6 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypeMultiple" );
     }
     return viewConstructor;
-  }
-
-  @Override
-  boolean getBooleanProp() {
-    return $$react4j_immutable_input$$_booleanProp;
-  }
-
-  @Override
-  byte getByteProp() {
-    return $$react4j_immutable_input$$_byteProp;
-  }
-
-  @Override
-  char getCharProp() {
-    return $$react4j_immutable_input$$_charProp;
-  }
-
-  @Override
-  double getDoubleProp() {
-    return $$react4j_immutable_input$$_doubleProp;
-  }
-
-  @Override
-  float getFloatProp() {
-    return $$react4j_immutable_input$$_floatProp;
-  }
-
-  @Override
-  int getIntProp() {
-    return $$react4j_immutable_input$$_intProp;
-  }
-
-  @Override
-  long getLongProp() {
-    return $$react4j_immutable_input$$_longProp;
-  }
-
-  @Override
-  short getShortProp() {
-    return $$react4j_immutable_input$$_shortProp;
-  }
-
-  @Nonnull
-  @Override
-  ImmutablePropTypeMultiple.MyEnum getEnumProp() {
-    return $$react4j_immutable_input$$_enumProp;
-  }
-
-  @Nonnull
-  @Override
-  ImmutablePropTypeMultiple.KeyedComponent getKeyedComponentProp() {
-    return $$react4j_immutable_input$$_keyedComponentProp;
-  }
-
-  @Nonnull
-  @Override
-  ImmutablePropTypeMultiple.IdentifiableComponent getIdentifiableProp() {
-    return $$react4j_immutable_input$$_identifiableProp;
-  }
-
-  @Nonnull
-  @Override
-  Object getObjectProp() {
-    return $$react4j_immutable_input$$_objectProp;
-  }
-
-  @Nonnull
-  @Override
-  ImmutablePropTypeMultiple.ActAsComponentComponent getActAsComponentProp() {
-    return $$react4j_immutable_input$$_actAsComponentProp;
-  }
-
-  @Nonnull
-  @Override
-  ImmutablePropTypeMultiple.ArezComponentComponent getArezComponentProp() {
-    return $$react4j_immutable_input$$_arezComponentProp;
-  }
-
-  @Nonnull
-  @Override
-  ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent getArezComponentWithExplicitRequireIdProp(
-      ) {
-    return $$react4j_immutable_input$$_arezComponentWithExplicitRequireIdProp;
-  }
-
-  @Nullable
-  @Override
-  ImmutablePropTypeMultiple.MyEnum getNullableEnumProp() {
-    return $$react4j_immutable_input$$_nullableEnumProp;
-  }
-
-  @Nullable
-  @Override
-  ImmutablePropTypeMultiple.KeyedComponent getNullableKeyedComponentProp() {
-    return $$react4j_immutable_input$$_nullableKeyedComponentProp;
-  }
-
-  @Nullable
-  @Override
-  ImmutablePropTypeMultiple.IdentifiableComponent getNullableIdentifiableProp() {
-    return $$react4j_immutable_input$$_nullableIdentifiableProp;
-  }
-
-  @Nullable
-  @Override
-  Boolean getNullableBoxedBooleanProp() {
-    return $$react4j_immutable_input$$_nullableBoxedBooleanProp;
-  }
-
-  @Nullable
-  @Override
-  Byte getNullableBoxedByteProp() {
-    return $$react4j_immutable_input$$_nullableBoxedByteProp;
-  }
-
-  @Nullable
-  @Override
-  Double getNullableBoxedDoubleProp() {
-    return $$react4j_immutable_input$$_nullableBoxedDoubleProp;
-  }
-
-  @Nullable
-  @Override
-  Float getNullableBoxedFloatProp() {
-    return $$react4j_immutable_input$$_nullableBoxedFloatProp;
-  }
-
-  @Nullable
-  @Override
-  Integer getNullableBoxedIntProp() {
-    return $$react4j_immutable_input$$_nullableBoxedIntProp;
-  }
-
-  @Nullable
-  @Override
-  Long getNullableBoxedLongProp() {
-    return $$react4j_immutable_input$$_nullableBoxedLongProp;
-  }
-
-  @Nullable
-  @Override
-  Short getNullableBoxedShortProp() {
-    return $$react4j_immutable_input$$_nullableBoxedShortProp;
-  }
-
-  @Nullable
-  @Override
-  Object getNullableObjectProp() {
-    return $$react4j_immutable_input$$_nullableObjectProp;
-  }
-
-  @Nullable
-  @Override
-  ImmutablePropTypeMultiple.ActAsComponentComponent getNullableActAsComponentProp() {
-    return $$react4j_immutable_input$$_nullableActAsComponentProp;
-  }
-
-  @Nullable
-  @Override
-  ImmutablePropTypeMultiple.ArezComponentComponent getNullableArezComponentProp() {
-    return $$react4j_immutable_input$$_nullableArezComponentProp;
-  }
-
-  @Nullable
-  @Override
-  ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent getNullableArezComponentWithExplicitRequireIdProp(
-      ) {
-    return $$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp;
   }
 
   private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
@@ -528,7 +324,106 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = Disposable.isDisposed( inputs.getAsAny( Inputs.actAsComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast() ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableActAsComponentProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypeMultiple( this );
+      final boolean booleanProp = inputs.getAsAny( Inputs.booleanProp ).asBoolean();
+      final byte byteProp = inputs.getAsAny( Inputs.byteProp ).asByte();
+      final char charProp = inputs.getAsAny( Inputs.charProp ).asChar();
+      final double doubleProp = inputs.getAsAny( Inputs.doubleProp ).asDouble();
+      final float floatProp = inputs.getAsAny( Inputs.floatProp ).asFloat();
+      final int intProp = inputs.getAsAny( Inputs.intProp ).asInt();
+      final long longProp = inputs.getAsAny( Inputs.longProp ).asLong();
+      final short shortProp = inputs.getAsAny( Inputs.shortProp ).asShort();
+      final ImmutablePropTypeMultiple.MyEnum enumProp = inputs.getAsAny( Inputs.enumProp ).cast();
+      final ImmutablePropTypeMultiple.KeyedComponent keyedComponentProp = inputs.getAsAny( Inputs.keyedComponentProp ).cast();
+      final ImmutablePropTypeMultiple.IdentifiableComponent identifiableProp = inputs.getAsAny( Inputs.identifiableProp ).cast();
+      final Object objectProp = inputs.getAsAny( Inputs.objectProp ).cast();
+      final ImmutablePropTypeMultiple.ActAsComponentComponent actAsComponentProp = inputs.getAsAny( Inputs.actAsComponentProp ).cast();
+      final ImmutablePropTypeMultiple.ArezComponentComponent arezComponentProp = inputs.getAsAny( Inputs.arezComponentProp ).cast();
+      final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent arezComponentWithExplicitRequireIdProp = inputs.getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast();
+      ImmutablePropTypeMultiple.MyEnum nullableEnumProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableEnumProp = null != inputs.getAsAny( Inputs.nullableEnumProp ) ? inputs.getAsAny( Inputs.nullableEnumProp ).cast() : null;
+      } else {
+        nullableEnumProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableEnumProp ) );
+      }
+      ImmutablePropTypeMultiple.KeyedComponent nullableKeyedComponentProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableKeyedComponentProp = null != inputs.getAsAny( Inputs.nullableKeyedComponentProp ) ? inputs.getAsAny( Inputs.nullableKeyedComponentProp ).cast() : null;
+      } else {
+        nullableKeyedComponentProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableKeyedComponentProp ) );
+      }
+      ImmutablePropTypeMultiple.IdentifiableComponent nullableIdentifiableProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableIdentifiableProp = null != inputs.getAsAny( Inputs.nullableIdentifiableProp ) ? inputs.getAsAny( Inputs.nullableIdentifiableProp ).cast() : null;
+      } else {
+        nullableIdentifiableProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableIdentifiableProp ) );
+      }
+      Boolean nullableBoxedBooleanProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableBoxedBooleanProp = null != inputs.getAsAny( Inputs.nullableBoxedBooleanProp ) ? inputs.getAsAny( Inputs.nullableBoxedBooleanProp ).cast() : null;
+      } else {
+        nullableBoxedBooleanProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableBoxedBooleanProp ) );
+      }
+      Byte nullableBoxedByteProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableBoxedByteProp = null != inputs.getAsAny( Inputs.nullableBoxedByteProp ) ? inputs.getAsAny( Inputs.nullableBoxedByteProp ).cast() : null;
+      } else {
+        nullableBoxedByteProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableBoxedByteProp ) );
+      }
+      Double nullableBoxedDoubleProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableBoxedDoubleProp = null != inputs.getAsAny( Inputs.nullableBoxedDoubleProp ) ? inputs.getAsAny( Inputs.nullableBoxedDoubleProp ).cast() : null;
+      } else {
+        nullableBoxedDoubleProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableBoxedDoubleProp ) );
+      }
+      Float nullableBoxedFloatProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableBoxedFloatProp = null != inputs.getAsAny( Inputs.nullableBoxedFloatProp ) ? inputs.getAsAny( Inputs.nullableBoxedFloatProp ).cast() : null;
+      } else {
+        nullableBoxedFloatProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableBoxedFloatProp ) );
+      }
+      Integer nullableBoxedIntProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableBoxedIntProp = null != inputs.getAsAny( Inputs.nullableBoxedIntProp ) ? inputs.getAsAny( Inputs.nullableBoxedIntProp ).cast() : null;
+      } else {
+        nullableBoxedIntProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableBoxedIntProp ) );
+      }
+      Long nullableBoxedLongProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableBoxedLongProp = null != inputs.getAsAny( Inputs.nullableBoxedLongProp ) ? inputs.getAsAny( Inputs.nullableBoxedLongProp ).cast() : null;
+      } else {
+        nullableBoxedLongProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableBoxedLongProp ) );
+      }
+      Short nullableBoxedShortProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableBoxedShortProp = null != inputs.getAsAny( Inputs.nullableBoxedShortProp ) ? inputs.getAsAny( Inputs.nullableBoxedShortProp ).cast() : null;
+      } else {
+        nullableBoxedShortProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableBoxedShortProp ) );
+      }
+      Object nullableObjectProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableObjectProp = null != inputs.getAsAny( Inputs.nullableObjectProp ) ? inputs.getAsAny( Inputs.nullableObjectProp ).cast() : null;
+      } else {
+        nullableObjectProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableObjectProp ) );
+      }
+      ImmutablePropTypeMultiple.ActAsComponentComponent nullableActAsComponentProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableActAsComponentProp = null != inputs.getAsAny( Inputs.nullableActAsComponentProp ) ? inputs.getAsAny( Inputs.nullableActAsComponentProp ).cast() : null;
+      } else {
+        nullableActAsComponentProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableActAsComponentProp ) );
+      }
+      ImmutablePropTypeMultiple.ArezComponentComponent nullableArezComponentProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableArezComponentProp = null != inputs.getAsAny( Inputs.nullableArezComponentProp ) ? inputs.getAsAny( Inputs.nullableArezComponentProp ).cast() : null;
+      } else {
+        nullableArezComponentProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentProp ) );
+      }
+      ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent nullableArezComponentWithExplicitRequireIdProp;
+      if ( React.shouldCheckInvariants() ) {
+        nullableArezComponentWithExplicitRequireIdProp = null != inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ? inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ).cast() : null;
+      } else {
+        nullableArezComponentWithExplicitRequireIdProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) );
+      }
+      view = Disposable.isDisposed( inputs.getAsAny( Inputs.actAsComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast() ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableActAsComponentProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypeMultiple( this, booleanProp, byteProp, charProp, doubleProp, floatProp, intProp, longProp, shortProp, enumProp, keyedComponentProp, identifiableProp, objectProp, actAsComponentProp, arezComponentProp, arezComponentWithExplicitRequireIdProp, nullableEnumProp, nullableKeyedComponentProp, nullableIdentifiableProp, nullableBoxedBooleanProp, nullableBoxedByteProp, nullableBoxedDoubleProp, nullableBoxedFloatProp, nullableBoxedIntProp, nullableBoxedLongProp, nullableBoxedShortProp, nullableObjectProp, nullableActAsComponentProp, nullableArezComponentProp, nullableArezComponentWithExplicitRequireIdProp );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
         view.$$react4j$$_validateInputValues( inputs );

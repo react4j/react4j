@@ -13,7 +13,9 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
@@ -116,11 +118,6 @@ final class ViewDescriptor
     return _constructor;
   }
 
-  private boolean hasConstructorParams()
-  {
-    return !_constructor.getParameters().isEmpty();
-  }
-
   boolean enableSting()
   {
     return _sting;
@@ -217,7 +214,11 @@ final class ViewDescriptor
 
   boolean needsInjection()
   {
-    return hasConstructorParams();
+    return !_constructor.getParameters()
+      .stream()
+      .filter( parameter -> !AnnotationsUtil.hasAnnotationOfType( parameter, Constants.INPUT_CLASSNAME ) )
+      .toList()
+      .isEmpty();
   }
 
   boolean trackRender()
@@ -250,6 +251,31 @@ final class ViewDescriptor
   {
     assert null != _inputs;
     return _inputs.stream().filter( InputDescriptor::isImmutable ).collect( Collectors.toList() );
+  }
+
+  @Nonnull
+  List<InputDescriptor> getConstructorInputs()
+  {
+    return getConstructor().getParameters()
+      .stream()
+      .map( parameter -> (VariableElement) parameter )
+      .filter( parameter -> AnnotationsUtil.hasAnnotationOfType( parameter, Constants.INPUT_CLASSNAME ) )
+      .map( parameter -> {
+        final InputDescriptor input = findInputNamed( parameter.getSimpleName().toString() );
+        assert null != input;
+        return input;
+      } )
+      .toList();
+  }
+
+  @Nonnull
+  List<VariableElement> getInjectableConstructorParameters()
+  {
+    return getConstructor().getParameters()
+      .stream()
+      .map( parameter -> (VariableElement) parameter )
+      .filter( parameter -> !AnnotationsUtil.hasAnnotationOfType( parameter, Constants.INPUT_CLASSNAME ) )
+      .toList();
   }
 
   @Nonnull
@@ -602,7 +628,7 @@ final class ViewDescriptor
         isDeprecated( _postUpdate ) ||
         isDeprecated( _onError ) ||
         getInputs().stream()
-          .anyMatch( p -> isDeprecated( p.getMethod() ) ||
+          .anyMatch( p -> isDeprecated( p.getElement() ) ||
                           p.hasValidateMethod() && isDeprecated( p.getValidateMethod() ) ) ||
         getPostUpdateOnInputChangeDescriptors().stream().anyMatch( d -> isDeprecated( d.getMethod() ) );
     }

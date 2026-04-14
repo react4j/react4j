@@ -13,11 +13,14 @@ import javax.annotation.Nonnull;
 import react4j.Keyed;
 
 /**
- * Annotation used to specify an abstract method that returns a prop.
- * The property is extracted from Reacts underlying props object. By default the prop is passed as
- * a value in when creating the view but it can also be retrieved from the react context.
+ * Annotation used to specify an input.
+ * The property is extracted from Reacts underlying props object. By default the input is passed as a
+ * value in when creating the view but it can also be retrieved from the react context.
+ * When applied to an abstract method, the input can be mutable or immutable.
+ * When applied to a constructor parameter, the input must set {@link #immutable()} to {@code true}.
  *
- * <p>The method that is annotated with this annotation must also comply with the following constraints:</p>
+ * <p>If applied to a method, the method that is annotated with this annotation must also comply with the
+ * following constraints:</p>
  * <ul>
  * <li>Must not be annotated with any other react annotation</li>
  * <li>Must have 0 parameters</li>
@@ -44,7 +47,7 @@ import react4j.Keyed;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
+@Target( { ElementType.METHOD, ElementType.PARAMETER } )
 public @interface Input
 {
   /**

@@ -168,13 +168,13 @@ final class BuilderGenerator
     {
       final var type = stepMethod.getType();
       final var parameter = ParameterSpec.builder( type, stepMethod.getName(), Modifier.FINAL );
-      final var inputMethod = stepMethod.getMethod();
-      if ( null != inputMethod )
+      final var inputElement = stepMethod.getElement();
+      if ( null != inputElement )
       {
-        GeneratorUtil.copyWhitelistedAnnotations( inputMethod, parameter );
-        final var methodType = stepMethod.getMethodType();
-        assert null != methodType;
-        SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
+        GeneratorUtil.copyWhitelistedAnnotations( inputElement, parameter );
+        final var inputType = stepMethod.getTypeMirror();
+        assert null != inputType;
+        SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, inputType );
       }
       else if ( stepMethod.isChildrenStreamIntrinsic() )
       {
@@ -278,9 +278,11 @@ final class BuilderGenerator
       else
       {
         builder.addMethod( buildStepInterfaceMethod( descriptor, stepMethod.getName(), step, stepMethodType, m -> {
-          final var inputMethodType = stepMethod.getMethodType();
-          if ( null != inputMethodType )
+          final var inputMethod = stepMethod.getMethod();
+          if ( null != inputMethod )
           {
+            final var inputMethodType = stepMethod.getInput().getMethodType();
+            assert null != inputMethodType;
             GeneratorUtil.copyTypeParameters( inputMethodType, m );
           }
           if ( stepMethod.isChildrenIntrinsic() )
@@ -293,13 +295,13 @@ final class BuilderGenerator
             m.varargs();
           }
           final var parameter = ParameterSpec.builder( type, stepMethod.getName() );
-          final var inputMethod = stepMethod.getMethod();
-          if ( null != inputMethod )
+          final var inputElement = stepMethod.getElement();
+          if ( null != inputElement )
           {
-            GeneratorUtil.copyWhitelistedAnnotations( inputMethod, parameter );
-            final var methodType = stepMethod.getMethodType();
-            assert null != methodType;
-            SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
+            GeneratorUtil.copyWhitelistedAnnotations( inputElement, parameter );
+            final var inputType = stepMethod.getTypeMirror();
+            assert null != inputType;
+            SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, inputType );
           }
           else if ( stepMethod.isChildrenStreamIntrinsic() )
           {
@@ -326,7 +328,7 @@ final class BuilderGenerator
     addPureContract( method );
 
     final InputDescriptor input = stepMethod.getInput();
-    final ExecutableType inputMethodType = stepMethod.getMethodType();
+    final ExecutableType inputMethodType = null != input && input.isMethodInput() ? input.getMethodType() : null;
     if ( null != inputMethodType )
     {
       GeneratorUtil.copyTypeParameters( inputMethodType, method );
@@ -337,13 +339,13 @@ final class BuilderGenerator
     {
       method.varargs();
     }
-    final var inputMethod = stepMethod.getMethod();
-    if ( null != inputMethod )
+    final var inputElement = stepMethod.getElement();
+    if ( null != inputElement )
     {
-      GeneratorUtil.copyWhitelistedAnnotations( inputMethod, parameter );
-      final var methodType = stepMethod.getMethodType();
-      assert null != methodType;
-      SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, methodType.getReturnType() );
+      GeneratorUtil.copyWhitelistedAnnotations( inputElement, parameter );
+      final var inputType = stepMethod.getTypeMirror();
+      assert null != inputType;
+      SuppressWarningsUtil.addSuppressWarningsIfRequired( processingEnv, parameter, inputType );
     }
     else if ( stepMethod.isChildrenStreamIntrinsic() )
     {
@@ -429,9 +431,9 @@ final class BuilderGenerator
     }
     else if ( stepMethod.isChildIntrinsic() )
     {
-      assert null != inputMethod;
+      assert null != inputElement;
       assert null != input;
-      if ( AnnotationsUtil.hasNonnullAnnotation( inputMethod ) )
+      if ( AnnotationsUtil.hasNonnullAnnotation( inputElement ) )
       {
         method.addStatement( "_element.input( $T.Inputs.$N, $T.of( $T.requireNonNull( $N ) ) )",
                              descriptor.getEnhancedClassName(),
@@ -451,7 +453,7 @@ final class BuilderGenerator
     }
     else
     {
-      if ( ( null != inputMethod && AnnotationsUtil.hasNonnullAnnotation( inputMethod ) ) &&
+      if ( ( null != inputElement && AnnotationsUtil.hasNonnullAnnotation( inputElement ) ) &&
            !type.isPrimitive() )
       {
         method.addStatement( "$T.requireNonNull( $N )", Objects.class, stepMethod.getName() );
@@ -493,7 +495,7 @@ final class BuilderGenerator
   {
     final var typeName =
       ParameterizedTypeName.get( CONTEXT_RENDER_FUNCTION_CLASSNAME,
-                                 TypeName.get( current.getMethod().getReturnType() ).box() );
+                                 TypeName.get( current.getType() ).box() );
     return
       FieldSpec
         .builder( typeName, CONTEXT_FIELD_PREFIX + current.getName(), Modifier.PRIVATE, Modifier.FINAL )
@@ -513,7 +515,7 @@ final class BuilderGenerator
         .addModifiers( Modifier.PRIVATE )
         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
         .returns( REACT_NODE_CLASSNAME )
-        .addParameter( ParameterSpec.builder( TypeName.get( current.getMethod().getReturnType() ),
+        .addParameter( ParameterSpec.builder( TypeName.get( current.getType() ),
                                               current.getName(),
                                               Modifier.FINAL )
                          .build() )
@@ -609,20 +611,20 @@ final class BuilderGenerator
         {
           sb.append( "$T.getKey( ($T) inputs.get( $T.Inputs.$N ) )" );
           params.add( KEYED_CLASSNAME );
-          params.add( input.getMethodType().getReturnType() );
+          params.add( input.getType() );
           params.add( descriptor.getEnhancedClassName() );
           params.add( input.getConstantName() );
         }
         else if ( ImmutableInputKeyStrategy.IS_STRING == strategy || ImmutableInputKeyStrategy.ENUM == strategy )
         {
           sb.append( "( ($T) inputs.get( $T.Inputs.$N ) )" );
-          params.add( input.getMethodType().getReturnType() );
+          params.add( input.getType() );
           params.add( descriptor.getEnhancedClassName() );
           params.add( input.getConstantName() );
         }
         else if ( ImmutableInputKeyStrategy.TO_STRING == strategy )
         {
-          final var inputType = input.getMethodType().getReturnType();
+          final var inputType = input.getType();
           final var kind = inputType.getKind();
           if ( TypeKind.LONG == kind ||
                TypeKind.INT == kind ||
@@ -666,7 +668,7 @@ final class BuilderGenerator
           params.add( String.class );
           params.add( IDENTIFIABLE_CLASSNAME );
           params.add( Object.class );
-          params.add( input.getMethodType().getReturnType() );
+          params.add( input.getType() );
           params.add( descriptor.getEnhancedClassName() );
           params.add( input.getConstantName() );
         }
@@ -698,7 +700,7 @@ final class BuilderGenerator
 
     for ( final var input : contextInputs )
     {
-      final var type = TypeName.get( input.getMethodType().getReturnType() ).box();
+      final var type = TypeName.get( input.getType() ).box();
       final var field = FieldSpec
         .builder( ParameterizedTypeName.get( CONTEXT_CLASSNAME, type ),
                   CONTEXT_INPUT_PREFIX + input.getConstantName(),

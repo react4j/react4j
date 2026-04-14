@@ -2,7 +2,6 @@ package com.example.prop;
 
 import arez.Disposable;
 import arez.annotations.ArezComponent;
-import arez.annotations.ComponentDependency;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
@@ -20,45 +19,59 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "com_example_prop_ExplicitDependencyEnableInput",
+    name = "com_example_prop_ImmutableMixedInputModel",
     disposeNotifier = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ExplicitDependencyEnableInput extends ExplicitDependencyEnableInput {
+abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @ComponentDependency
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
   @Nullable
-  final ExplicitDependencyEnableInput.MyComponent $$react4j_immutable_input$$_myComponent;
+  private final String $$react4j_immutable_input$$_myImmutableProp;
 
-  React4j_ExplicitDependencyEnableInput(
+  React4j_ImmutableMixedInputModel(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
-      @Nullable final ExplicitDependencyEnableInput.MyComponent myComponent) {
-    super( myComponent );
+      @Nullable final String myImmutableProp) {
+    super( myImmutableProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_myComponent = myComponent;
+    $$react4j_immutable_input$$_myImmutableProp = myImmutableProp;
   }
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ExplicitDependencyEnableInput" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutableMixedInputModel" );
     }
     return viewConstructor;
+  }
+
+  @Nullable
+  @Override
+  String getMyMutableProp() {
+    if ( React.shouldCheckInvariants() ) {
+      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myMutableProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myMutableProp ).asString() : null;
+    } else {
+      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myMutableProp ) );
+    }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextInputs) {
     assert null != nextInputs;
+    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    if ( !Js.isTripleEqual( inputs.get( Inputs.myMutableProp ), nextInputs.get( Inputs.myMutableProp ) ) ) {
+      return true;
+    }
     return false;
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ExplicitDependencyEnableInput) this).dispose();
+    ((Arez_React4j_ImmutableMixedInputModel) this).dispose();
   }
 
   @Nullable
@@ -73,49 +86,40 @@ abstract class React4j_ExplicitDependencyEnableInput extends ExplicitDependencyE
   }
 
   static final class Inputs {
-    static final String myComponent = React.shouldMinimizeInputKeys() ? "a" : "myComponent";
+    static final String myMutableProp = React.shouldMinimizeInputKeys() ? "a" : "myMutableProp";
+
+    static final String myImmutableProp = React.shouldMinimizeInputKeys() ? "b" : "myImmutableProp";
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
-    private final React4j_ExplicitDependencyEnableInput view;
+    private final React4j_ImmutableMixedInputModel view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      ExplicitDependencyEnableInput.MyComponent myComponent;
+      String myImmutableProp;
       if ( React.shouldCheckInvariants() ) {
-        myComponent = null != inputs.getAsAny( Inputs.myComponent ) ? inputs.getAsAny( Inputs.myComponent ).cast() : null;
+        myImmutableProp = null != inputs.getAsAny( Inputs.myImmutableProp ) ? inputs.getAsAny( Inputs.myImmutableProp ).asString() : null;
       } else {
-        myComponent = Js.uncheckedCast( inputs.getAsAny( Inputs.myComponent ) );
+        myImmutableProp = Js.uncheckedCast( inputs.getAsAny( Inputs.myImmutableProp ) );
       }
-      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.myComponent ) ) ) ? null : new Arez_React4j_ExplicitDependencyEnableInput( this, myComponent );
+      view = new Arez_React4j_ImmutableMixedInputModel( this, myImmutableProp );
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if ( Disposable.isNotDisposed( view ) ) {
-        return view.$$react4j$$_shouldComponentUpdate( nextInputs );
-      } else {
-        return false;
-      }
+      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
     public final void componentWillUnmount() {
-      if ( Disposable.isNotDisposed( view ) ) {
-        view.$$react4j$$_componentWillUnmount();
-      }
+      view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      if ( Disposable.isNotDisposed( view ) ) {
-        return view.$$react4j$$_render();
-      } else {
-        return null;
-      }
+      return view.$$react4j$$_render();
     }
   }
 }

@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import arez.annotations.PostConstruct;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
@@ -8,16 +7,15 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View
-abstract class ImmutablePropAndPostConstructComponent
+abstract class DuplicateConstructorMethodImmutableProp
 {
-  ImmutablePropAndPostConstructComponent( @Nullable @Input( immutable = true ) final String myProp )
+  DuplicateConstructorMethodImmutableProp( @Nullable @Input( immutable = true ) final String myProp )
   {
   }
 
-  @PostConstruct
-  void postConstruct()
-  {
-  }
+  @Nullable
+  @Input( immutable = true )
+  abstract String getMyProp();
 
   @Nullable
   @Render

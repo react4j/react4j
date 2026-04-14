@@ -1,8 +1,7 @@
-package com.example.prop;
+package com.example.prop_validate;
 
 import arez.Disposable;
 import arez.annotations.ArezComponent;
-import arez.annotations.ComponentDependency;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
@@ -20,45 +19,56 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "com_example_prop_ExplicitDependencyEnableInput",
+    name = "com_example_prop_validate_ConstructorStringPropValidate",
     disposeNotifier = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ExplicitDependencyEnableInput extends ExplicitDependencyEnableInput {
+abstract class React4j_ConstructorStringPropValidate extends ConstructorStringPropValidate {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @ComponentDependency
+  @SuppressWarnings("Arez:UnmanagedComponentReference")
   @Nullable
-  final ExplicitDependencyEnableInput.MyComponent $$react4j_immutable_input$$_myComponent;
+  private final String $$react4j_immutable_input$$_myProp;
 
-  React4j_ExplicitDependencyEnableInput(
+  React4j_ConstructorStringPropValidate(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
-      @Nullable final ExplicitDependencyEnableInput.MyComponent myComponent) {
-    super( myComponent );
+      @Nullable final String myProp) {
+    super( myProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_myComponent = myComponent;
+    $$react4j_immutable_input$$_myProp = myProp;
   }
 
   @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ExplicitDependencyEnableInput" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ConstructorStringPropValidate" );
     }
     return viewConstructor;
+  }
+
+  private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+    final Object raw$myProp = inputs.get( Inputs.myProp );
+    if ( null != raw$myProp ) {
+      final String typed$myProp = Js.asString( raw$myProp );
+      validateMyProp( typed$myProp );
+    }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextInputs) {
     assert null != nextInputs;
+    if ( React.shouldValidateInputValues() ) {
+      $$react4j$$_validateInputValues( nextInputs );
+    }
     return false;
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ExplicitDependencyEnableInput) this).dispose();
+    ((Arez_React4j_ConstructorStringPropValidate) this).dispose();
   }
 
   @Nullable
@@ -73,49 +83,42 @@ abstract class React4j_ExplicitDependencyEnableInput extends ExplicitDependencyE
   }
 
   static final class Inputs {
-    static final String myComponent = React.shouldMinimizeInputKeys() ? "a" : "myComponent";
+    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
-    private final React4j_ExplicitDependencyEnableInput view;
+    private final React4j_ConstructorStringPropValidate view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      ExplicitDependencyEnableInput.MyComponent myComponent;
+      String myProp;
       if ( React.shouldCheckInvariants() ) {
-        myComponent = null != inputs.getAsAny( Inputs.myComponent ) ? inputs.getAsAny( Inputs.myComponent ).cast() : null;
+        myProp = null != inputs.getAsAny( Inputs.myProp ) ? inputs.getAsAny( Inputs.myProp ).asString() : null;
       } else {
-        myComponent = Js.uncheckedCast( inputs.getAsAny( Inputs.myComponent ) );
+        myProp = Js.uncheckedCast( inputs.getAsAny( Inputs.myProp ) );
       }
-      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.myComponent ) ) ) ? null : new Arez_React4j_ExplicitDependencyEnableInput( this, myComponent );
+      view = new Arez_React4j_ConstructorStringPropValidate( this, myProp );
+      if ( React.shouldValidateInputValues() ) {
+        assert null != inputs;
+        view.$$react4j$$_validateInputValues( inputs );
+      }
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if ( Disposable.isNotDisposed( view ) ) {
-        return view.$$react4j$$_shouldComponentUpdate( nextInputs );
-      } else {
-        return false;
-      }
+      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 
     @Override
     public final void componentWillUnmount() {
-      if ( Disposable.isNotDisposed( view ) ) {
-        view.$$react4j$$_componentWillUnmount();
-      }
+      view.$$react4j$$_componentWillUnmount();
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      if ( Disposable.isNotDisposed( view ) ) {
-        return view.$$react4j$$_render();
-      } else {
-        return null;
-      }
+      return view.$$react4j$$_render();
     }
   }
 }

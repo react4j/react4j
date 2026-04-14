@@ -4,8 +4,9 @@ import com.squareup.javapoet.TypeName;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Represents a step in the builder. There are a few "intrinsic" methods that are handled by generator
@@ -47,7 +48,7 @@ final class StepMethod
   {
     this( input.getName(),
           input.getName(),
-          TypeName.get( input.getMethodType().getReturnType() ),
+          TypeName.get( input.getType() ),
           input,
           stepMethodType );
   }
@@ -84,15 +85,21 @@ final class StepMethod
   }
 
   @Nullable
-  ExecutableElement getMethod()
+  Element getElement()
   {
-    return null != _input ? _input.getMethod() : null;
+    return null != _input ? _input.getElement() : null;
   }
 
   @Nullable
-  ExecutableType getMethodType()
+  TypeMirror getTypeMirror()
   {
-    return null != _input ? _input.getMethodType() : null;
+    return null != _input ? _input.getType() : null;
+  }
+
+  @Nullable
+  ExecutableElement getMethod()
+  {
+    return null != _input ? _input.getMethod() : null;
   }
 
   @Nonnull
