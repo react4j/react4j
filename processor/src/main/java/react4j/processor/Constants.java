@@ -71,8 +71,6 @@ final class Constants
   @Nonnull
   static final String WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT = "React4j:MutableInputAccessedInPostConstruct";
   @Nonnull
-  static final String WARNING_METHOD_BASED_IMMUTABLE_INPUT = "React4j:MethodBasedImmutableInput";
-  @Nonnull
   static final String WARNING_MISSING_INPUT_NULLABILITY = "React4j:MissingInputNullability";
   @Nonnull
   static final String WARNING_MISSING_RENDER_NULLABILITY = "React4j:MissingRenderNullability";

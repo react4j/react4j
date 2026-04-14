@@ -9,7 +9,7 @@ import react4j.annotations.View;
 @View
 abstract class ConstructorImmutableOnPropChange
 {
-  ConstructorImmutableOnPropChange( @Input( immutable = true ) final String myProp )
+  ConstructorImmutableOnPropChange( @Input final String myProp )
   {
   }
 

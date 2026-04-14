@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import react4j.annotations.Input;
 
 /**
- * Interface implemented by objects so that they can be marked as {@link Input#immutable()}
+ * Interface implemented by objects so that they can contribute to the synthetic key for immutable inputs.
  */
 public interface Keyed
 {

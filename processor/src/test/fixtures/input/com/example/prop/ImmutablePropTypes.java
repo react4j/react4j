@@ -11,7 +11,6 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutablePropTypes
 {
@@ -45,12 +44,12 @@ abstract class ImmutablePropTypes
     A, B, C
   }
 
-  ImmutablePropTypes( @Nullable @Input( immutable = true ) final MyComponent myProp,
-                      @Nullable @Input( immutable = true ) final String myOtherProp,
-                      @Input( immutable = true ) final int stillAnotherProp,
-                      @Nullable @Input( immutable = true ) final KeyedComponent bobsProp,
-                      @Nullable @Input( immutable = true ) final Foo someProp,
-                      @Nullable @Input( immutable = true ) final Object object )
+  ImmutablePropTypes( @Nullable @Input final MyComponent myProp,
+                      @Nullable @Input final String myOtherProp,
+                      @Input final int stillAnotherProp,
+                      @Nullable @Input final KeyedComponent bobsProp,
+                      @Nullable @Input final Foo someProp,
+                      @Nullable @Input final Object object )
   {
   }
 

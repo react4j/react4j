@@ -7,7 +7,6 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutablePropTypeKeyedViaInheritanceInterface
 {
@@ -22,9 +21,9 @@ abstract class ImmutablePropTypeKeyedViaInheritanceInterface
     void SomeOtherMethod();
   }
 
-  @Nullable
-  @Input( immutable = true )
-  abstract KeyedInterface getMyProp();
+  ImmutablePropTypeKeyedViaInheritanceInterface( @Nullable @Input final KeyedInterface myProp )
+  {
+  }
 
   @Nullable
   @Render

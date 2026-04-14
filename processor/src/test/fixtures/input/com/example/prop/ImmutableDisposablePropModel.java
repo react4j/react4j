@@ -7,11 +7,10 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View( type = View.Type.TRACKING )
 abstract class ImmutableDisposablePropModel
 {
-  ImmutableDisposablePropModel( @Nullable @Input( immutable = true, disposable = Feature.ENABLE ) final Object value )
+  ImmutableDisposablePropModel( @Nullable @Input( disposable = Feature.ENABLE ) final Object value )
   {
   }
 

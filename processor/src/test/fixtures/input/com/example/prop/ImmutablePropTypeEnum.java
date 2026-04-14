@@ -6,7 +6,6 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutablePropTypeEnum
 {
@@ -15,9 +14,9 @@ abstract class ImmutablePropTypeEnum
     A, B, C
   }
 
-  @Nullable
-  @Input( immutable = true )
-  abstract Foo getMyProp();
+  ImmutablePropTypeEnum( @Nullable @Input final Foo myProp )
+  {
+  }
 
   @Nullable
   @Render

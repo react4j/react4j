@@ -7,7 +7,6 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View( type = View.Type.TRACKING )
 abstract class ImmutableDisposableActAsComponentTrackingProp
 {
@@ -16,9 +15,9 @@ abstract class ImmutableDisposableActAsComponentTrackingProp
   {
   }
 
-  @Nullable
-  @Input( immutable = true )
-  abstract ActAsComponentComponent model();
+  ImmutableDisposableActAsComponentTrackingProp( @Nullable @Input final ActAsComponentComponent model )
+  {
+  }
 
   @Nullable
   @Render

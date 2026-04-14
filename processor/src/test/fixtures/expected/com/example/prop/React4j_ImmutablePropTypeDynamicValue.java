@@ -34,13 +34,11 @@ abstract class React4j_ImmutablePropTypeDynamicValue extends ImmutablePropTypeDy
   private final Object $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypeDynamicValue(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
+      @Nullable final Object myProp) {
+    super( myProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_myProp = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_myProp = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ) );
-    }
+    $$react4j_immutable_input$$_myProp = myProp;
   }
 
   @Nonnull
@@ -50,12 +48,6 @@ abstract class React4j_ImmutablePropTypeDynamicValue extends ImmutablePropTypeDy
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypeDynamicValue" );
     }
     return viewConstructor;
-  }
-
-  @Nullable
-  @Override
-  Object getMyProp() {
-    return $$react4j_immutable_input$$_myProp;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -89,7 +81,13 @@ abstract class React4j_ImmutablePropTypeDynamicValue extends ImmutablePropTypeDy
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutablePropTypeDynamicValue( this );
+      Object myProp;
+      if ( React.shouldCheckInvariants() ) {
+        myProp = null != inputs.getAsAny( Inputs.myProp ) ? inputs.getAsAny( Inputs.myProp ).cast() : null;
+      } else {
+        myProp = Js.uncheckedCast( inputs.getAsAny( Inputs.myProp ) );
+      }
+      view = new Arez_React4j_ImmutablePropTypeDynamicValue( this, myProp );
     }
 
     @Override

@@ -5,19 +5,17 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.Observe;
-import arez.component.Identifiable;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import javax.annotation.Nonnull;
-import react4j.Keyed;
 
 /**
  * Annotation used to specify an input.
  * The property is extracted from Reacts underlying props object. By default the input is passed as a
  * value in when creating the view but it can also be retrieved from the react context.
- * When applied to an abstract method, the input can be mutable or immutable.
- * When applied to a constructor parameter, the input must set {@link #immutable()} to {@code true}.
+ * When applied to an abstract method, the input is mutable.
+ * When applied to a constructor parameter, the input is immutable.
  *
  * <p>If applied to a method, the method that is annotated with this annotation must also comply with the
  * following constraints:</p>
@@ -98,7 +96,7 @@ public @interface Input
    *
    * <p>If set to {@link Feature#AUTODETECT} then the input will be observable if and only if:</p>
    * <ul>
-   * <li>{@link #immutable()} ()} is not set to {@code true}.</li>
+   * <li>the input is not immutable.</li>
    * <li>the view has at least one method annotated with {@link Memoize} or {@link Observe}.</li>
    * </ul>
    *
@@ -138,40 +136,15 @@ public @interface Input
 
   /**
    * Return an enum indicating whether the view should be disposed if the input is disposed. To enable this feature,
-   * the input MUST set {@link #immutable()} to <code>true</code>, {@link #disposable()} MUST resolve to
+   * the input MUST be immutable, {@link #disposable()} MUST resolve to
    * {@link Feature#ENABLE}. The type of the input is expected to implement the {@link arez.component.DisposeNotifier}
    * interface either directly or indirectly. If this parameter is set to {@link Feature#AUTODETECT} then the
-   * annotation processor will treat it as {@link Feature#ENABLE} if {@link #immutable()} is <code>true</code> and
+   * annotation processor will treat it as {@link Feature#ENABLE} if the input is immutable and
    * {@link #disposable()} resolves to {@link Feature#ENABLE}.
    *
    * @return an enum indicating whether the view should be disposed if the input is disposed.
    */
   Feature dependency() default Feature.AUTODETECT;
-
-  /**
-   * True if the input is not expected to change after initial value is set. If the value of the input does change
-   * then it is expected that the view will be unmounted and a new view created. This is implemented
-   * by synthesizing a key for the view every time the view that is derived from this input. To enable this
-   * the annotation processor must be able to identify the type of the input so that a key can be synthesized. The
-   * following types are supported by the annotation processor;
-   *
-   * <ul>
-   * <li>primitive types (i.e. boolean, short etc) and their corresponding boxed types (i.e. {@link java.lang.Boolean}, {@link java.lang.Short} etc).</li>
-   * <li>the {@link java.lang.String} type</li>
-   * <li>any class that implements {@link Keyed}</li>
-   * <li>any class that is annotated with {@link ArezComponent} where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
-   * <li>any class or interface that is annotated with {@link ActAsComponent}. It is assumed that every implementation is an Arez component where the {@link ArezComponent#requireId()} parameter does not resolve to {@link arez.annotations.Feature#DISABLE}</li>
-   * <li>any class or interface that is compatible with {@link Identifiable}</li>
-   * <li>if none of the above scenarios is valid then the code will attempt to derive the key at runtime. First via the {@link Keyed} interface, then the {@link Identifiable} interface and if these strategies are not possible then toString() will be invoked on the input.</li>
-   * </ul>
-   *
-   * <p>It should be noted that if a type implements {@link Keyed} and is annotated with either {@link ArezComponent}
-   * or {@link ActAsComponent} then the annotation processor will assume the {@link Keyed} interface is to used in
-   * preference to other alternative strategies.</p>
-   *
-   * @return true if changing the input recreates the view.
-   */
-  boolean immutable() default false;
 
   /**
    * Enum where the input is sourced from.

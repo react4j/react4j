@@ -6,12 +6,12 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutablePropTypePrimitiveDouble
 {
-  @Input( immutable = true )
-  abstract double getMyProp();
+  ImmutablePropTypePrimitiveDouble( @Input final double myProp )
+  {
+  }
 
   @Nullable
   @Render

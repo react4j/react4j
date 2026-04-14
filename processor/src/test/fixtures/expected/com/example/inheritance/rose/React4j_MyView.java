@@ -31,17 +31,8 @@ abstract class React4j_MyView extends MyView {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nonnull
-  private final Date $$react4j_immutable_input$$_dateRange;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final boolean $$react4j_immutable_input$$_field1InLeaf;
-
   React4j_MyView(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_dateRange = $$react4j$$_nativeView.inputs().getAsAny( Inputs.dateRange ).cast();
-    $$react4j_immutable_input$$_field1InLeaf = $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
   }
 
   @Nonnull
@@ -61,12 +52,12 @@ abstract class React4j_MyView extends MyView {
   @Nonnull
   @Override
   public Date dateRange() {
-    return $$react4j_immutable_input$$_dateRange;
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.dateRange ).cast();
   }
 
   @Override
   boolean field1InLeaf() {
-    return $$react4j_immutable_input$$_field1InLeaf;
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
   }
 
   private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
@@ -84,6 +75,12 @@ abstract class React4j_MyView extends MyView {
     }
     final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
     if ( !Js.isTripleEqual( inputs.get( Inputs.field2InLeaf ), nextInputs.get( Inputs.field2InLeaf ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( inputs.get( Inputs.dateRange ), nextInputs.get( Inputs.dateRange ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( inputs.get( Inputs.field1InLeaf ), nextInputs.get( Inputs.field1InLeaf ) ) ) {
       return true;
     }
     return false;

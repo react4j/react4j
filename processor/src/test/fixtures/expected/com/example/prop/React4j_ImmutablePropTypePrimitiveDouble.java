@@ -33,9 +33,10 @@ abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTyp
   private final double $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypePrimitiveDouble(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView, final double myProp) {
+    super( myProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asDouble();
+    $$react4j_immutable_input$$_myProp = myProp;
   }
 
   @Nonnull
@@ -45,11 +46,6 @@ abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTyp
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypePrimitiveDouble" );
     }
     return viewConstructor;
-  }
-
-  @Override
-  double getMyProp() {
-    return $$react4j_immutable_input$$_myProp;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -83,7 +79,8 @@ abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTyp
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutablePropTypePrimitiveDouble( this );
+      final double myProp = inputs.getAsAny( Inputs.myProp ).asDouble();
+      view = new Arez_React4j_ImmutablePropTypePrimitiveDouble( this, myProp );
     }
 
     @Override

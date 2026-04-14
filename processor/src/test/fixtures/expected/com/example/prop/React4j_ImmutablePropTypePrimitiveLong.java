@@ -33,9 +33,10 @@ abstract class React4j_ImmutablePropTypePrimitiveLong extends ImmutablePropTypeP
   private final long $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypePrimitiveLong(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView, final long myProp) {
+    super( myProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asLong();
+    $$react4j_immutable_input$$_myProp = myProp;
   }
 
   @Nonnull
@@ -45,11 +46,6 @@ abstract class React4j_ImmutablePropTypePrimitiveLong extends ImmutablePropTypeP
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypePrimitiveLong" );
     }
     return viewConstructor;
-  }
-
-  @Override
-  long getMyProp() {
-    return $$react4j_immutable_input$$_myProp;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -83,7 +79,8 @@ abstract class React4j_ImmutablePropTypePrimitiveLong extends ImmutablePropTypeP
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutablePropTypePrimitiveLong( this );
+      final long myProp = inputs.getAsAny( Inputs.myProp ).asLong();
+      view = new Arez_React4j_ImmutablePropTypePrimitiveLong( this, myProp );
     }
 
     @Override

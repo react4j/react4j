@@ -13,6 +13,7 @@ reasonable alternatives.
 When you learn something non-obvious, add it here if it would make future changes faster or of higher quality.
 
 - `@Input.observeOnRender()` is independent of `disposable()`. For `@ArezComponent` inputs, `AUTODETECT` only enables observe-on-render when Arez observability resolves enabled (`observable=ENABLE` or `disposeOnDeactivate=true` when `observable=AUTODETECT`). `@ActAsComponent` and explicit uncertain `observeOnRender=ENABLE` inputs use a runtime `instanceof ComponentObservable` guard in generated render preludes.
+- `bundle exec buildr test` includes `downstream-test` builds of external example repos pinned to their GitHub `master` branches via `tasks/util.rb`, so breaking annotation/API changes can fail there until those downstream repos are migrated even when local processor and api-diff tests pass.
 
 ## Project Structure & Module Organization
 

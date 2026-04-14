@@ -61,12 +61,12 @@ tasks:
       - command: bundle exec buildr react4j:processor:test
         result: passed with method-based immutable warning coverage and suppressions
     commit:
-      hash: pending
+      hash: eb879219
       message: Warn on method-based immutable inputs
 
   - id: PHASE-3
     title: Remove method-based immutable inputs and delete Input.immutable
-    status: in_progress
+    status: completed
     priority: high
     depends_on:
       - PHASE-2
@@ -82,7 +82,15 @@ tasks:
       - api-test/**
       - docs/**
       - CHANGELOG.md
-    evidence: []
+    evidence:
+      - command: _JAVA_OPTIONS='-Dreact4j.output_fixture_data=true' bundle exec buildr react4j:processor:test
+        result: passed and regenerated expected processor fixtures for constructor-parameter immutable inputs
+      - command: bundle exec buildr react4j:processor:test
+        result: passed after removing method-based immutable input support and warning coverage
+      - command: bundle exec buildr test_api_diff
+        result: passed after adding the annotation-member removal fixture for Input.immutable()
+      - command: bundle exec buildr test
+        result: failed in downstream-test because external downstream repositories on master still compile against @Input( immutable = true ); processor and api-diff modules passed
     commit:
       hash: pending
-      message: pending
+      message: Remove method-based immutable inputs

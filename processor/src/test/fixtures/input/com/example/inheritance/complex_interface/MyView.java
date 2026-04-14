@@ -6,12 +6,11 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 import javax.annotation.Nullable;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class MyView
   implements LeafInterface
 {
-  @Input( immutable = true, source = Input.Source.CONTEXT )
+  @Input( source = Input.Source.CONTEXT )
   abstract boolean field1InLeaf();
 
   @Input

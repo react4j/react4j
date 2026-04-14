@@ -29,24 +29,8 @@ abstract class React4j_MyView extends MyView {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final boolean $$react4j_immutable_input$$_zzField1InRootInterface;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final boolean $$react4j_immutable_input$$_zzField1InInnerInterface;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final boolean $$react4j_immutable_input$$_zzField1InLeafInterface;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final boolean $$react4j_immutable_input$$_field1InLeaf;
-
   React4j_MyView(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_zzField1InRootInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InRootInterface ).asBoolean();
-    $$react4j_immutable_input$$_zzField1InInnerInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InInnerInterface ).asBoolean();
-    $$react4j_immutable_input$$_zzField1InLeafInterface = $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InLeafInterface ).asBoolean();
-    $$react4j_immutable_input$$_field1InLeaf = $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
   }
 
   @Nonnull
@@ -80,22 +64,22 @@ abstract class React4j_MyView extends MyView {
 
   @Override
   public boolean zzField1InRootInterface() {
-    return $$react4j_immutable_input$$_zzField1InRootInterface;
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InRootInterface ).asBoolean();
   }
 
   @Override
   public boolean zzField1InInnerInterface() {
-    return $$react4j_immutable_input$$_zzField1InInnerInterface;
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InInnerInterface ).asBoolean();
   }
 
   @Override
   public boolean zzField1InLeafInterface() {
-    return $$react4j_immutable_input$$_zzField1InLeafInterface;
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.zzField1InLeafInterface ).asBoolean();
   }
 
   @Override
   boolean field1InLeaf() {
-    return $$react4j_immutable_input$$_field1InLeaf;
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -112,6 +96,18 @@ abstract class React4j_MyView extends MyView {
       return true;
     }
     if ( !Js.isTripleEqual( inputs.get( Inputs.field2InLeaf ), nextInputs.get( Inputs.field2InLeaf ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( inputs.get( Inputs.zzField1InRootInterface ), nextInputs.get( Inputs.zzField1InRootInterface ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( inputs.get( Inputs.zzField1InInnerInterface ), nextInputs.get( Inputs.zzField1InInnerInterface ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( inputs.get( Inputs.zzField1InLeafInterface ), nextInputs.get( Inputs.zzField1InLeafInterface ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( inputs.get( Inputs.field1InLeaf ), nextInputs.get( Inputs.field1InLeaf ) ) ) {
       return true;
     }
     return false;

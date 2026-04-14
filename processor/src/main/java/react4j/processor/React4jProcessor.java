@@ -528,8 +528,8 @@ public final class React4jProcessor
         if ( input.isImmutable() )
         {
           throw new ProcessorException( "@OnInputChange target has a parameter named '" +
-                                        parameter.getSimpleName() + "' that is associated with a @Input " +
-                                        "annotated method and the input is specified as immutable.", method );
+                                        parameter.getSimpleName() + "' that is associated with an immutable @Input.",
+                                        method );
         }
         inputDescriptors.add( input );
       }
@@ -938,20 +938,7 @@ public final class React4jProcessor
       .getAnnotationValue( method, Constants.INPUT_CLASSNAME, "qualifier" ).getValue();
     final boolean contextInput = isContextInput( method );
     final Element inputType = processingEnv.getTypeUtils().asElement( returnType );
-    final boolean immutable = isInputImmutable( method );
-    if ( immutable &&
-         ElementsUtil.isWarningNotSuppressed( method,
-                                              Constants.WARNING_METHOD_BASED_IMMUTABLE_INPUT,
-                                              Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
-    {
-      final String message =
-        MemberChecks.shouldNot( Constants.INPUT_CLASSNAME,
-                                "specify immutable=true on a method. Method-based immutable inputs are deprecated " +
-                                "and constructor parameters should be used instead. " +
-                                MemberChecks.suppressedBy( Constants.WARNING_METHOD_BASED_IMMUTABLE_INPUT,
-                                                           Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
-      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
-    }
+    final boolean immutable = false;
     final boolean observable = isInputObservable( methods, method, immutable );
     final boolean disposable = null != inputType && isInputDisposable( method, inputType );
     final ObserveOnRenderConfig observeOnRender = resolveObserveOnRender( method, returnType, inputType );
@@ -1015,11 +1002,7 @@ public final class React4jProcessor
   {
     final String name = deriveInputName( parameter );
     final TypeMirror type = parameter.asType();
-    final boolean immutable = isInputImmutable( parameter );
-    if ( !immutable )
-    {
-      throw new ProcessorException( "@Input constructor parameter must specify immutable=true", parameter );
-    }
+    final boolean immutable = true;
     if ( !type.getKind().isPrimitive() &&
          !AnnotationsUtil.hasNonnullAnnotation( parameter ) &&
          !AnnotationsUtil.hasNullableAnnotation( parameter ) &&
@@ -1613,8 +1596,7 @@ public final class React4jProcessor
       {
         if ( immutable )
         {
-          throw new ProcessorException( "@Input target has specified both immutable=true and " +
-                                        "observable=ENABLE which is an invalid combination.",
+          throw new ProcessorException( "@Input target must not specify observable=ENABLE for an immutable input.",
                                         element );
         }
         yield true;
@@ -1632,12 +1614,6 @@ public final class React4jProcessor
         .anyMatch( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.MEMOIZE_CLASSNAME ) ||
                         ( AnnotationsUtil.hasAnnotationOfType( m, Constants.OBSERVE_CLASSNAME ) &&
                           ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
-  }
-
-  private boolean isInputImmutable( @Nonnull final Element element )
-  {
-    return (Boolean) AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_CLASSNAME, "immutable" )
-      .getValue();
   }
 
   private boolean isInputDependency( @Nonnull final Element element,

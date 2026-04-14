@@ -9,12 +9,12 @@ import react4j.annotations.View;
 @View
 abstract class DuplicateConstructorMethodImmutableProp
 {
-  DuplicateConstructorMethodImmutableProp( @Nullable @Input( immutable = true ) final String myProp )
+  DuplicateConstructorMethodImmutableProp( @Nullable @Input final String myProp )
   {
   }
 
   @Nullable
-  @Input( immutable = true )
+  @Input
   abstract String getMyProp();
 
   @Nullable
