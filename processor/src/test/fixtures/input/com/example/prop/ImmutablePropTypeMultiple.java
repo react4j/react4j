@@ -1,8 +1,8 @@
 package com.example.prop;
 
-import arez.annotations.ActAsComponent;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
+import arez.annotations.ArezComponentLike;
 import arez.annotations.ComponentId;
 import arez.annotations.Feature;
 import arez.component.Identifiable;
@@ -43,8 +43,8 @@ abstract class ImmutablePropTypeMultiple
     }
   }
 
-  @ActAsComponent
-  interface ActAsComponentComponent
+  @ArezComponentLike
+  interface ArezComponentLikeComponent
   {
   }
 
@@ -84,7 +84,7 @@ abstract class ImmutablePropTypeMultiple
                              @Nonnull @Input final KeyedComponent keyedComponentProp,
                              @Nonnull @Input final IdentifiableComponent identifiableProp,
                              @Nonnull @Input final Object objectProp,
-                             @Nonnull @Input final ActAsComponentComponent actAsComponentProp,
+                             @Nonnull @Input final ArezComponentLikeComponent actAsComponentProp,
                              @Nonnull @Input final ArezComponentComponent arezComponentProp,
                              @Nonnull @Input final ArezComponentWithExplicitRequireIdComponent arezComponentWithExplicitRequireIdProp,
                              @Nullable @Input final MyEnum nullableEnumProp,
@@ -98,7 +98,7 @@ abstract class ImmutablePropTypeMultiple
                              @Nullable @Input final Long nullableBoxedLongProp,
                              @Nullable @Input final Short nullableBoxedShortProp,
                              @Nullable @Input final Object nullableObjectProp,
-                             @Nullable @Input final ActAsComponentComponent nullableActAsComponentProp,
+                             @Nullable @Input final ArezComponentLikeComponent nullableArezComponentLikeProp,
                              @Nullable @Input final ArezComponentComponent nullableArezComponentProp,
                              @Nullable @Input final ArezComponentWithExplicitRequireIdComponent nullableArezComponentWithExplicitRequireIdProp )
   {

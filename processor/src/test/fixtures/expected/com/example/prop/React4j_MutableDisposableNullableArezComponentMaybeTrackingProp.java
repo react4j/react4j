@@ -109,7 +109,7 @@ abstract class React4j_MutableDisposableNullableArezComponentMaybeTrackingProp e
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     final MutableDisposableNullableArezComponentMaybeTrackingProp.Model $$react4jv$$_getModel = getModel();
-    if ( null != $$react4jv$$_getModel && !ComponentObservable.observe( $$react4jv$$_getModel ) ) {
+    if ( !ComponentObservable.maybeObserve( $$react4jv$$_getModel ) ) {
       return null;
     }
     if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {

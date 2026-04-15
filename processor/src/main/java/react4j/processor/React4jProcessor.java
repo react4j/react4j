@@ -1087,7 +1087,7 @@ public final class React4jProcessor
       else if ( ( ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind() ) &&
                 (
                   isAssignableToIdentifiable( element ) ||
-                  AnnotationsUtil.hasAnnotationOfType( element, Constants.ACT_AS_COMPONENT_CLASSNAME ) ||
+                  AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_LIKE_CLASSNAME ) ||
                   ( AnnotationsUtil.hasAnnotationOfType( element, Constants.AREZ_COMPONENT_CLASSNAME ) &&
                     isIdRequired( (TypeElement) element ) )
                 ) )
@@ -1654,7 +1654,7 @@ public final class React4jProcessor
                  ) ||
                  (
                    ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
-                   AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME )
+                   AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_LIKE_CLASSNAME )
                  );
     };
   }
@@ -1720,7 +1720,7 @@ public final class React4jProcessor
         {
           return new ObserveOnRenderConfig( true, false );
         }
-        else if ( isActAsComponentType( inputType ) )
+        else if ( isArezComponentLike( inputType ) )
         {
           return new ObserveOnRenderConfig( true, true );
         }
@@ -1749,11 +1749,11 @@ public final class React4jProcessor
     return null != typeElement && processingEnv.getTypeUtils().isAssignable( type, typeElement.asType() );
   }
 
-  private boolean isActAsComponentType( @Nullable final Element inputType )
+  private boolean isArezComponentLike( @Nullable final Element inputType )
   {
     return null != inputType &&
            ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
-           AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME );
+           AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_LIKE_CLASSNAME );
   }
 
   @Nonnull

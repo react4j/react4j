@@ -33,12 +33,12 @@ import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
 @ArezComponent(
-    name = "com_example_prop_ObserveOnRenderComponentObservableTrackingProp",
+    name = "com_example_prop_MutableDisposableNullableArezComponentLikeTrackingProp",
     disposeNotifier = Feature.DISABLE,
     sting = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ObserveOnRenderComponentObservableTrackingProp extends ObserveOnRenderComponentObservableTrackingProp {
+abstract class React4j_MutableDisposableNullableArezComponentLikeTrackingProp extends MutableDisposableNullableArezComponentLikeTrackingProp {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
@@ -46,7 +46,7 @@ abstract class React4j_ObserveOnRenderComponentObservableTrackingProp extends Ob
 
   private boolean $$react4j$$_scheduledDebugStateUpdate;
 
-  React4j_ObserveOnRenderComponentObservableTrackingProp(
+  React4j_MutableDisposableNullableArezComponentLikeTrackingProp(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
@@ -55,14 +55,14 @@ abstract class React4j_ObserveOnRenderComponentObservableTrackingProp extends Ob
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ObserveOnRenderComponentObservableTrackingProp" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "MutableDisposableNullableArezComponentLikeTrackingProp" );
     }
     return viewConstructor;
   }
 
   @Nullable
   @Override
-  ObserveOnRenderComponentObservableTrackingProp.Model getModel() {
+  MutableDisposableNullableArezComponentLikeTrackingProp.ArezComponentLikeComponent model() {
     if ( React.shouldCheckInvariants() ) {
       return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;
     } else {
@@ -93,7 +93,7 @@ abstract class React4j_ObserveOnRenderComponentObservableTrackingProp extends Ob
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ObserveOnRenderComponentObservableTrackingProp) this).dispose();
+    ((Arez_React4j_MutableDisposableNullableArezComponentLikeTrackingProp) this).dispose();
     $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
@@ -109,8 +109,11 @@ abstract class React4j_ObserveOnRenderComponentObservableTrackingProp extends Ob
   ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
-    final ObserveOnRenderComponentObservableTrackingProp.Model $$react4jv$$_getModel = getModel();
-    if ( !ComponentObservable.maybeObserve( $$react4jv$$_getModel ) ) {
+    final MutableDisposableNullableArezComponentLikeTrackingProp.ArezComponentLikeComponent $$react4jv$$_model = model();
+    if ( $$react4jv$$_model instanceof ComponentObservable && !ComponentObservable.observe( $$react4jv$$_model ) ) {
+      return null;
+    }
+    if ( Disposable.isDisposed( $$react4jv$$_model ) ) {
       return null;
     }
     SchedulerUtil.pauseUntilRenderLoopComplete();
@@ -166,12 +169,12 @@ abstract class React4j_ObserveOnRenderComponentObservableTrackingProp extends Ob
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    private final React4j_ObserveOnRenderComponentObservableTrackingProp view;
+    private final React4j_MutableDisposableNullableArezComponentLikeTrackingProp view;
 
     @JsConstructor
     LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ObserveOnRenderComponentObservableTrackingProp( this );
+      view = new Arez_React4j_MutableDisposableNullableArezComponentLikeTrackingProp( this );
     }
 
     @Override
@@ -192,12 +195,12 @@ abstract class React4j_ObserveOnRenderComponentObservableTrackingProp extends Ob
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
-    private final React4j_ObserveOnRenderComponentObservableTrackingProp view;
+    private final React4j_MutableDisposableNullableArezComponentLikeTrackingProp view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ObserveOnRenderComponentObservableTrackingProp( this );
+      view = new Arez_React4j_MutableDisposableNullableArezComponentLikeTrackingProp( this );
     }
 
     @Override

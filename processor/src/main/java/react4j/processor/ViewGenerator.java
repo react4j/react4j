@@ -370,7 +370,7 @@ final class ViewGenerator
              ) ||
              (
                ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
-               AnnotationsUtil.hasAnnotationOfType( inputType, Constants.ACT_AS_COMPONENT_CLASSNAME )
+               AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_LIKE_CLASSNAME )
              )
            );
   }
@@ -1008,16 +1008,11 @@ final class ViewGenerator
           }
           else if ( input.isNonNull() )
           {
-            block.beginControlFlow( "if ( !$T.observe( $N ) )",
-                                    COMPONENT_OBSERVABLE_CLASSNAME,
-                                    varName );
+            block.beginControlFlow( "if ( !$T.observe( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
           }
           else
           {
-            block.beginControlFlow( "if ( null != $N && !$T.observe( $N ) )",
-                                    varName,
-                                    COMPONENT_OBSERVABLE_CLASSNAME,
-                                    varName );
+            block.beginControlFlow( "if ( !$T.maybeObserve( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
           }
           block.addStatement( "return null" );
           block.endControlFlow();
@@ -1052,16 +1047,11 @@ final class ViewGenerator
           }
           else if ( input.isNonNull() )
           {
-            block.beginControlFlow( "if ( !$T.observe( $N ) )",
-                                    COMPONENT_OBSERVABLE_CLASSNAME,
-                                    varName );
+            block.beginControlFlow( "if ( !$T.observe( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
           }
           else
           {
-            block.beginControlFlow( "if ( null != $N && !$T.observe( $N ) )",
-                                    varName,
-                                    COMPONENT_OBSERVABLE_CLASSNAME,
-                                    varName );
+            block.beginControlFlow( "if ( !$T.maybeObserve( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
           }
           block.addStatement( "return null" );
           block.endControlFlow();

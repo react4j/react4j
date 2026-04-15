@@ -1,7 +1,7 @@
 package react4j.annotations;
 
-import arez.annotations.ActAsComponent;
 import arez.annotations.ArezComponent;
+import arez.annotations.ArezComponentLike;
 import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.Observe;
@@ -109,7 +109,7 @@ public @interface Input
    * prior to rendering. If the value is disposed then the render method will exit early and return null.
    * If this parameter is set to {@link Feature#AUTODETECT} then the annotation processor will inspect the
    * type of the input and treat it as {@link Feature#ENABLE} if the type is annotated with the {@link ArezComponent}
-   * annotation or the {@link ActAsComponent} annotation.
+   * annotation or the {@link ArezComponentLike} annotation.
    *
    * @return an enum indicating whether the view should check whether the value of the input is disposed prior to rendering.
    */
@@ -126,7 +126,7 @@ public @interface Input
    * <li>the type is compatible with {@code arez.component.ComponentObservable}.</li>
    * <li>the type is annotated with {@link ArezComponent} and the {@link ArezComponent#observable()} parameter
    * resolves to enabled.</li>
-   * <li>the type is annotated with {@link ActAsComponent}. In this scenario the generated code will verify
+   * <li>the type is annotated with {@link ArezComponentLike}. In this scenario the generated code will verify
    * compatibility with {@code arez.component.ComponentObservable} at runtime before observing the value.</li>
    * </ul>
    *

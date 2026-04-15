@@ -103,7 +103,7 @@ abstract class React4j_ImmutableDisposableNullableArezComponentMaybeTrackingProp
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     final ImmutableDisposableNullableArezComponentMaybeTrackingProp.Model $$react4jv$$_model = $$react4j_immutable_input$$_model;
-    if ( null != $$react4jv$$_model && !ComponentObservable.observe( $$react4jv$$_model ) ) {
+    if ( !ComponentObservable.maybeObserve( $$react4jv$$_model ) ) {
       return null;
     }
     SchedulerUtil.pauseUntilRenderLoopComplete();

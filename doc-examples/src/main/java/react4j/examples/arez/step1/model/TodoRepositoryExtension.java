@@ -1,7 +1,9 @@
 package react4j.examples.arez.step1.model;
 
+import arez.annotations.ArezComponentLike;
 import arez.annotations.Memoize;
 
+@ArezComponentLike
 public interface TodoRepositoryExtension
 {
   @Memoize
