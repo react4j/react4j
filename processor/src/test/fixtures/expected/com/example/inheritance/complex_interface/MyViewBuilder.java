@@ -2,11 +2,9 @@ package com.example.inheritance.complex_interface;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
-import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import react4j.Context;
 import react4j.Contexts;
-import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -135,8 +133,6 @@ final class MyViewBuilder {
 
     @Nonnull
     private ReactNode build(@Nonnull final ReactElement element) {
-      final JsPropertyMap<Object> inputs = element.inputs();
-      element.setKey( String.valueOf( (boolean) inputs.get( React4j_MyView.Inputs.zzField1InRootInterface ) ) + "-" + String.valueOf( (boolean) inputs.get( React4j_MyView.Inputs.zzField1InInnerInterface ) ) + "-" + String.valueOf( (boolean) inputs.get( React4j_MyView.Inputs.zzField1InLeafInterface ) ) + "-" + String.valueOf( (boolean) inputs.get( React4j_MyView.Inputs.field1InLeaf ) ) + ( React.enableViewNames() ? "_MyView_106d73cd" : MyView.class.getName() ) );
       return element;
     }
 

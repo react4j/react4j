@@ -9,13 +9,14 @@ import react4j.annotations.View;
 @View
 abstract class ImmutableOnPropChange
 {
+  ImmutableOnPropChange( @Input final String myProp )
+  {
+  }
+
   @OnInputChange
   void onMyPropChange( String myProp )
   {
   }
-
-  @Input( immutable = true )
-  protected abstract String getMyProp();
 
   @Render
   ReactNode render()

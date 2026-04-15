@@ -7,7 +7,6 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutablePropTypeActAsComponentInterface
 {
@@ -16,9 +15,9 @@ abstract class ImmutablePropTypeActAsComponentInterface
   {
   }
 
-  @Nullable
-  @Input( immutable = true )
-  abstract MyComponent getMyProp();
+  ImmutablePropTypeActAsComponentInterface( @Nullable @Input final MyComponent myProp )
+  {
+  }
 
   @Nullable
   @Render

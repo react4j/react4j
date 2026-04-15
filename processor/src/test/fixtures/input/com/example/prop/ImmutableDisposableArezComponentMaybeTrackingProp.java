@@ -8,7 +8,6 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View( type = View.Type.MAYBE_TRACKING )
 abstract class ImmutableDisposableArezComponentMaybeTrackingProp
 {
@@ -17,9 +16,9 @@ abstract class ImmutableDisposableArezComponentMaybeTrackingProp
   {
   }
 
-  @Nonnull
-  @Input( immutable = true )
-  abstract Model getModel();
+  ImmutableDisposableArezComponentMaybeTrackingProp( @Nonnull @Input final Model model )
+  {
+  }
 
   @Nullable
   @Render

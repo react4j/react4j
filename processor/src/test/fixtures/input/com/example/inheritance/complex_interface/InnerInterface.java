@@ -2,11 +2,10 @@ package com.example.inheritance.complex_interface;
 
 import react4j.annotations.Input;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 interface InnerInterface
   extends RootInterface
 {
-  @Input(immutable = true, source = Input.Source.CONTEXT)
+  @Input( source = Input.Source.CONTEXT )
   boolean zzField1InInnerInterface();
 
   @Input

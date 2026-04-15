@@ -33,9 +33,10 @@ abstract class React4j_ImmutablePropTypePrimitiveChar extends ImmutablePropTypeP
   private final char $$react4j_immutable_input$$_myProp;
 
   React4j_ImmutablePropTypePrimitiveChar(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView, final char myProp) {
+    super( myProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_myProp = $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asChar();
+    $$react4j_immutable_input$$_myProp = myProp;
   }
 
   @Nonnull
@@ -45,11 +46,6 @@ abstract class React4j_ImmutablePropTypePrimitiveChar extends ImmutablePropTypeP
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypePrimitiveChar" );
     }
     return viewConstructor;
-  }
-
-  @Override
-  char getMyProp() {
-    return $$react4j_immutable_input$$_myProp;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -83,7 +79,8 @@ abstract class React4j_ImmutablePropTypePrimitiveChar extends ImmutablePropTypeP
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_ImmutablePropTypePrimitiveChar( this );
+      final char myProp = inputs.getAsAny( Inputs.myProp ).asChar();
+      view = new Arez_React4j_ImmutablePropTypePrimitiveChar( this, myProp );
     }
 
     @Override

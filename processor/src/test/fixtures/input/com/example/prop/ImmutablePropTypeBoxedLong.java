@@ -6,13 +6,12 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutablePropTypeBoxedLong
 {
-  @Nullable
-  @Input( immutable = true )
-  abstract Long getMyProp();
+  ImmutablePropTypeBoxedLong( @Nullable @Input final Long myProp )
+  {
+  }
 
   @Nullable
   @Render

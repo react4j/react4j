@@ -10,8 +10,9 @@ import react4j.annotations.View;
 @View
 abstract class ImmutableObservableProp
 {
-  @Input( immutable = true, observable = Feature.ENABLE )
-  protected abstract String getMyKey();
+  ImmutableObservableProp( @Input( observable = Feature.ENABLE ) final String myKey )
+  {
+  }
 
   @Nullable
   @Render

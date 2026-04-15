@@ -9,12 +9,11 @@ import react4j.annotations.View;
 import sting.Named;
 
 @Named( "blah" )
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ConstructorInputAndInjectComponent
 {
   ConstructorInputAndInjectComponent( @Nonnull final String someParam,
-                                      @Nullable @Input( immutable = true ) final String myProp )
+                                      @Nullable @Input final String myProp )
   {
   }
 

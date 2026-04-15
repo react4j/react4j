@@ -6,13 +6,12 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutablePropTypeDynamicValue
 {
-  @Nullable
-  @Input( immutable = true )
-  abstract Object getMyProp();
+  ImmutablePropTypeDynamicValue( @Nullable @Input final Object myProp )
+  {
+  }
 
   @Nullable
   @Render

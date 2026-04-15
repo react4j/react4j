@@ -7,11 +7,10 @@ import react4j.annotations.InputDefault;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ConstructorInputDefaultView
 {
-  ConstructorInputDefaultView( @Nullable @Input( immutable = true ) final String myInput )
+  ConstructorInputDefaultView( @Nullable @Input final String myInput )
   {
   }
 

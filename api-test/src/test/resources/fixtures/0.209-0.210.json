@@ -19,5 +19,21 @@
       "oldValue": "{java.lang.annotation.ElementType.METHOD}",
       "package": "react4j.annotations"
     }
+  },
+  {
+    "code": "java.method.attributeRemovedFromAnnotationType",
+    "description": "The annotation no longer has an attribute.",
+    "oldElement": "method boolean react4j.annotations.Input::immutable()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Input",
+      "classSimpleName": "Input",
+      "elementKind": "method",
+      "methodName": "immutable",
+      "package": "react4j.annotations"
+    }
   }
 ]

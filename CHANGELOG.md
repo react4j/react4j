@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Move immutable `@Input` declarations to constructor parameters, remove method-based immutable inputs, and drop `Input.immutable()`.
+
 ### [v0.211](https://github.com/react4j/react4j/tree/v0.211) (2026-04-15) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.210...v0.211)
 
 Changes in this release:

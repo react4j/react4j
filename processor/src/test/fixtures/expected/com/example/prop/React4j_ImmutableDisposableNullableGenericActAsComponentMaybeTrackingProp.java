@@ -51,13 +51,11 @@ abstract class React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrac
   private boolean $$react4j$$_scheduledDebugStateUpdate;
 
   React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
+      @Nullable final ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp.ActAsComponentComponent<?> model) {
+    super( model );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    if ( React.shouldCheckInvariants() ) {
-      $$react4j_immutable_input$$_model = null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;
-    } else {
-      $$react4j_immutable_input$$_model = Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) );
-    }
+    $$react4j_immutable_input$$_model = model;
   }
 
   @Nonnull
@@ -67,13 +65,6 @@ abstract class React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrac
       Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp" );
     }
     return viewConstructor;
-  }
-
-  @Nullable
-  @Override
-  ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp.ActAsComponentComponent<?> model(
-      ) {
-    return $$react4j_immutable_input$$_model;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
@@ -111,7 +102,7 @@ abstract class React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrac
   ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
-    final ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp.ActAsComponentComponent<?> $$react4jv$$_model = model();
+    final ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp.ActAsComponentComponent<?> $$react4jv$$_model = $$react4j_immutable_input$$_model;
     if ( $$react4jv$$_model instanceof ComponentObservable && !ComponentObservable.observe( $$react4jv$$_model ) ) {
       return null;
     }
@@ -170,7 +161,13 @@ abstract class React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrac
     @JsConstructor
     LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.model ) ) ) ? null : new Arez_React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp( this );
+      ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp.ActAsComponentComponent<?> model;
+      if ( React.shouldCheckInvariants() ) {
+        model = null != inputs.getAsAny( Inputs.model ) ? inputs.getAsAny( Inputs.model ).cast() : null;
+      } else {
+        model = Js.uncheckedCast( inputs.getAsAny( Inputs.model ) );
+      }
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.model ) ) ) ? null : new Arez_React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp( this, model );
     }
 
     @Override
@@ -207,7 +204,13 @@ abstract class React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrac
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.model ) ) ) ? null : new Arez_React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp( this );
+      ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp.ActAsComponentComponent<?> model;
+      if ( React.shouldCheckInvariants() ) {
+        model = null != inputs.getAsAny( Inputs.model ) ? inputs.getAsAny( Inputs.model ).cast() : null;
+      } else {
+        model = Js.uncheckedCast( inputs.getAsAny( Inputs.model ) );
+      }
+      view = Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.model ) ) ) ? null : new Arez_React4j_ImmutableDisposableNullableGenericActAsComponentMaybeTrackingProp( this, model );
     }
 
     @Override

@@ -7,11 +7,10 @@ import react4j.annotations.InputValidate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ConstructorStringPropValidate
 {
-  ConstructorStringPropValidate( @Nullable @Input( immutable = true ) final String myProp )
+  ConstructorStringPropValidate( @Nullable @Input final String myProp )
   {
   }
 

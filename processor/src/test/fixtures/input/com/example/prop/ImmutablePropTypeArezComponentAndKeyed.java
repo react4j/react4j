@@ -11,7 +11,6 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutablePropTypeArezComponentAndKeyed
 {
@@ -32,9 +31,9 @@ abstract class ImmutablePropTypeArezComponentAndKeyed
     }
   }
 
-  @Nullable
-  @Input( immutable = true )
-  abstract MyComponent getMyProp();
+  ImmutablePropTypeArezComponentAndKeyed( @Nullable @Input final MyComponent myProp )
+  {
+  }
 
   @Nullable
   @Render

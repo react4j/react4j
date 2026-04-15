@@ -1,15 +1,11 @@
 package com.example.inheritance.rose;
 
-import arez.component.Identifiable;
 import java.util.Date;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
-import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import react4j.Context;
 import react4j.Contexts;
-import react4j.Keyed;
-import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -72,9 +68,6 @@ final class MyViewBuilder {
 
     @Nonnull
     private ReactNode build(@Nonnull final ReactElement element) {
-      final JsPropertyMap<Object> inputs = element.inputs();
-      final Object $dateRange$ = inputs.get( React4j_MyView.Inputs.dateRange );
-      element.setKey( ( $dateRange$ instanceof Keyed ? Keyed.getKey( $dateRange$ ) : $dateRange$ instanceof Identifiable ? Identifiable.<Object>getArezId( $dateRange$ ) : String.valueOf( $dateRange$ ) ) + "-" + String.valueOf( (boolean) inputs.get( React4j_MyView.Inputs.field1InLeaf ) ) + ( React.enableViewNames() ? "_MyView_479d2c9f" : MyView.class.getName() ) );
       return element;
     }
 

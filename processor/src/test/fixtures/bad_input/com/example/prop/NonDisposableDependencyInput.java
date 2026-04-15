@@ -10,8 +10,9 @@ import react4j.annotations.View;
 @View
 abstract class NonDisposableDependencyInput
 {
-  @Input( immutable = true, dependency = Feature.ENABLE )
-  protected abstract String getMyComponent();
+  NonDisposableDependencyInput( @Input( dependency = Feature.ENABLE ) final String myComponent )
+  {
+  }
 
   @Nullable
   @Render

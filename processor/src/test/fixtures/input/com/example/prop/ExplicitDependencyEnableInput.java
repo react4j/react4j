@@ -8,7 +8,6 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ExplicitDependencyEnableInput
 {
@@ -17,7 +16,7 @@ abstract class ExplicitDependencyEnableInput
   {
   }
 
-  ExplicitDependencyEnableInput( @Nullable @Input( immutable = true, dependency = Feature.ENABLE ) final MyComponent myComponent )
+  ExplicitDependencyEnableInput( @Nullable @Input( dependency = Feature.ENABLE ) final MyComponent myComponent )
   {
   }
 

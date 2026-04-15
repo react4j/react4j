@@ -6,11 +6,10 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutableMixedInputModel
 {
-  ImmutableMixedInputModel( @Nullable @Input( immutable = true ) final String myImmutableProp )
+  ImmutableMixedInputModel( @Nullable @Input final String myImmutableProp )
   {
   }
 

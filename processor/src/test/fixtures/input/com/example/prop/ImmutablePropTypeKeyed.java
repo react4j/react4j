@@ -8,7 +8,6 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ImmutablePropTypeKeyed
 {
@@ -22,9 +21,9 @@ abstract class ImmutablePropTypeKeyed
     }
   }
 
-  @Nullable
-  @Input( immutable = true )
-  abstract KeyedComponent getMyProp();
+  ImmutablePropTypeKeyed( @Nullable @Input final KeyedComponent myProp )
+  {
+  }
 
   @Nullable
   @Render

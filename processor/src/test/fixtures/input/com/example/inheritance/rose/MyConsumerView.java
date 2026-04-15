@@ -4,11 +4,10 @@ import java.util.Date;
 import javax.annotation.Nonnull;
 import react4j.annotations.Input;
 
-@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 public interface MyConsumerView
   extends MyBaseView
 {
-  @Input( immutable = true, source = Input.Source.CONTEXT )
+  @Input( source = Input.Source.CONTEXT )
   @Override
   @Nonnull
   Date dateRange();
