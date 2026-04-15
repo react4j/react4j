@@ -13,6 +13,11 @@ task 'site:javadocs' do
   cp_r javadocs_dir, "#{WORKSPACE_DIR}/website/static/api"
 end
 
+task('clean') do
+  rm_rf SITE_DIR
+  rm_rf "#{WORKSPACE_DIR}/website/static/api"
+end
+
 desc 'Copy the compiled examples to docs dir'
 task 'site:examples' do
   project = Buildr.project('react4j:doc-examples')
