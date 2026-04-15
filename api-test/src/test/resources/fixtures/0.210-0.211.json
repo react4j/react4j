@@ -1,0 +1,20 @@
+[
+  {
+    "code": "java.annotation.added",
+    "description": "Element newly annotated with 'react4j.annotations.ActAsArezComponent'.",
+    "element": "@interface react4j.annotations.View",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@react4j.annotations.ActAsArezComponent",
+      "annotationType": "react4j.annotations.ActAsArezComponent",
+      "classQualifiedName": "react4j.annotations.View",
+      "classSimpleName": "View",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  }
+]
