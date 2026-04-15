@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 // An example of inheritance that appears all over Rose
 // That was being broken so added in here to avoid in future
+@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class MyView
   implements MyConsumerView

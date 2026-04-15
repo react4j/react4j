@@ -9,6 +9,7 @@ import react4j.annotations.View;
 import sting.Named;
 
 @Named( "blah" )
+@SuppressWarnings( "React4j:MethodBasedImmutableInput" )
 @View
 abstract class ConstructorInputAndInjectComponent
 {

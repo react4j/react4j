@@ -1058,6 +1058,8 @@ public final class React4jProcessorTest
                       "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.prop.PublicAccessPropModel",
                       "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+        new Object[]{ "com.example.prop.MethodImmutableInputWarningModel",
+                      "@Input target should not specify immutable=true on a method. Method-based immutable inputs are deprecated and constructor parameters should be used instead. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:MethodBasedImmutableInput\" ) or @SuppressReact4jWarnings( \"React4j:MethodBasedImmutableInput\" )" },
 
         new Object[]{ "com.example.default_inputs.ProtectedMethodInputDefaultView",
                       "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
@@ -1136,6 +1138,8 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.Suppressed1PublicAccessPropModel" },
         new Object[]{ "com.example.prop.Suppressed2ProtectedAccessPropModel" },
         new Object[]{ "com.example.prop.Suppressed2PublicAccessPropModel" },
+        new Object[]{ "com.example.prop.SuppressedMethodImmutableInputWarningModel" },
+        new Object[]{ "com.example.prop.SuppressedReact4jMethodImmutableInputWarningModel" },
 
         new Object[]{ "com.example.prop_validate.Suppressed1ProtectedAccessPropValidateModel" },
         new Object[]{ "com.example.prop_validate.Suppressed1PublicAccessPropValidateModel" },

@@ -939,6 +939,19 @@ public final class React4jProcessor
     final boolean contextInput = isContextInput( method );
     final Element inputType = processingEnv.getTypeUtils().asElement( returnType );
     final boolean immutable = isInputImmutable( method );
+    if ( immutable &&
+         ElementsUtil.isWarningNotSuppressed( method,
+                                              Constants.WARNING_METHOD_BASED_IMMUTABLE_INPUT,
+                                              Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
+    {
+      final String message =
+        MemberChecks.shouldNot( Constants.INPUT_CLASSNAME,
+                                "specify immutable=true on a method. Method-based immutable inputs are deprecated " +
+                                "and constructor parameters should be used instead. " +
+                                MemberChecks.suppressedBy( Constants.WARNING_METHOD_BASED_IMMUTABLE_INPUT,
+                                                           Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
+      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+    }
     final boolean observable = isInputObservable( methods, method, immutable );
     final boolean disposable = null != inputType && isInputDisposable( method, inputType );
     final ObserveOnRenderConfig observeOnRender = resolveObserveOnRender( method, returnType, inputType );

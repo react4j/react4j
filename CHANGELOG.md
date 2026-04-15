@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Warn when `immutable = true` is specified on method-based `@Input` declarations and allow the warning to be suppressed while downstream projects migrate.
+
 ### [v0.210](https://github.com/react4j/react4j/tree/v0.210) (2026-04-15) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.209...v0.210)
 
 Changes in this release:
