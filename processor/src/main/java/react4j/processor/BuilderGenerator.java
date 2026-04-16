@@ -281,7 +281,9 @@ final class BuilderGenerator
           final var inputMethod = stepMethod.getMethod();
           if ( null != inputMethod )
           {
-            final var inputMethodType = stepMethod.getInput().getMethodType();
+            final InputDescriptor input = stepMethod.getInput();
+            assert null != input;
+            final var inputMethodType = input.getMethodType();
             assert null != inputMethodType;
             GeneratorUtil.copyTypeParameters( inputMethodType, m );
           }
