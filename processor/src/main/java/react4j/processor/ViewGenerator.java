@@ -16,10 +16,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -64,9 +63,6 @@ final class ViewGenerator
   private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "Observe" );
   @Nonnull
   private static final ClassName OBSERVER_REF_ANNOTATION_CLASSNAME = ClassName.get( "arez.annotations", "ObserverRef" );
-  @Nonnull
-  private static final ClassName COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME =
-    ClassName.get( "arez.annotations", "ComponentDependency" );
   @Nonnull
   private static final ClassName COMPONENT_OBSERVABLE_CLASSNAME =
     ClassName.get( "arez.component", "ComponentObservable" );
@@ -159,8 +155,6 @@ final class ViewGenerator
   private static final String IS_READY_METHOD = FRAMEWORK_INTERNAL_PREFIX + "isReady";
   @Nonnull
   private static final String NATIVE_VIEW_FIELD = FRAMEWORK_INTERNAL_PREFIX + "nativeView";
-  @Nonnull
-  private static final String FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX = "$$react4j_immutable_input$$_";
 
   private ViewGenerator()
   {
@@ -226,11 +220,6 @@ final class ViewGenerator
                                   Modifier.FINAL )
                         .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                         .build() );
-
-    for ( final var input : descriptor.getImmutableInputs() )
-    {
-      builder.addField( buildImmutableField( input ) );
-    }
 
     builder.addMethod( buildConstructor( processingEnv, descriptor ).build() );
 
@@ -332,50 +321,6 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static FieldSpec buildImmutableField( @Nonnull final InputDescriptor input )
-  {
-    final var field =
-      FieldSpec.builder( TypeName.get( input.getType() ),
-                         FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
-                         Modifier.FINAL );
-
-    if ( input.isDependency() )
-    {
-      final AnnotationSpec.Builder annotation = AnnotationSpec.builder( COMPONENT_DEPENDENCY_ANNOTATION_CLASSNAME );
-      if ( !isCompileTimeComponentLikeInputType( input.getInputType() ) )
-      {
-        annotation.addMember( "validateTypeAtRuntime", "true" );
-      }
-      field.addAnnotation( annotation.build() );
-    }
-    else
-    {
-      field.addModifiers( Modifier.PRIVATE );
-      field.addAnnotation( AnnotationSpec.builder( SuppressWarnings.class )
-                             .addMember( "value", "$S", "Arez:UnmanagedComponentReference" )
-                             .build() );
-    }
-
-    GeneratorUtil.copyWhitelistedAnnotations( input.getElement(), field );
-    return field.build();
-  }
-
-  private static boolean isCompileTimeComponentLikeInputType( @Nullable final Element inputType )
-  {
-    return null != inputType &&
-           (
-             (
-               ElementKind.CLASS == inputType.getKind() &&
-               AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_CLASSNAME )
-             ) ||
-             (
-               ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
-               AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_LIKE_CLASSNAME )
-             )
-           );
-  }
-
-  @Nonnull
   private static MethodSpec.Builder buildConstructor( @Nonnull final ProcessingEnvironment processingEnv,
                                                       @Nonnull final ViewDescriptor descriptor )
   {
@@ -419,51 +364,6 @@ final class ViewGenerator
                        Objects.class,
                        NATIVE_VIEW_FIELD );
 
-    for ( final var input : descriptor.getImmutableInputs() )
-    {
-      if ( input.isConstructorParameterInput() )
-      {
-        final var parameter = input.getParameter();
-        assert null != parameter;
-        ctor.addStatement( "$N = $N",
-                           FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
-                           parameter.getSimpleName().toString() );
-      }
-      else
-      {
-        final var convertMethodName = getConverter( input.getType(), input.getElement() );
-        final var resultKind = input.getType().getKind();
-        if ( !resultKind.isPrimitive() && !input.isNonNull() )
-        {
-          final var block = CodeBlock.builder();
-          block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-          block.addStatement( "$N = null != $N.inputs().getAsAny( Inputs.$N ) ? " +
-                              "$N.inputs().getAsAny( Inputs.$N ).$N() : null",
-                              FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
-                              NATIVE_VIEW_FIELD,
-                              input.getConstantName(),
-                              NATIVE_VIEW_FIELD,
-                              input.getConstantName(),
-                              convertMethodName );
-          block.nextControlFlow( "else" );
-          block.addStatement( "$N = $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
-                              FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
-                              JS_CLASSNAME,
-                              NATIVE_VIEW_FIELD,
-                              input.getConstantName() );
-          block.endControlFlow();
-          ctor.addCode( block.build() );
-        }
-        else
-        {
-          ctor.addStatement( "$N = $N.inputs().getAsAny( Inputs.$N ).$N()",
-                             FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName(),
-                             NATIVE_VIEW_FIELD,
-                             input.getConstantName(),
-                             convertMethodName );
-        }
-      }
-    }
     return ctor;
   }
 
@@ -495,6 +395,7 @@ final class ViewGenerator
   private static MethodSpec.Builder buildInputMethod( @Nonnull final InputDescriptor input )
   {
     assert input.isMethodInput();
+    assert !input.isImmutable();
     final var methodElement = input.getMethod();
     final ExecutableType methodType = input.getMethodType();
     assert null != methodElement;
@@ -538,46 +439,39 @@ final class ViewGenerator
       method.addCode( block.build() );
     }
 
-    if ( input.isImmutable() )
+    final var convertMethodName = getConverter( returnType, methodElement );
+    final var resultKind = methodElement.getReturnType().getKind();
+    if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( methodElement ) )
     {
-      method.addStatement( "return $N", FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName() );
+      // Need to add a Nullable if it is not present as invariant path can return nulls.
+      if ( null == AnnotationsUtil.findAnnotationByType( methodElement, AnnotationsUtil.NULLABLE_CLASSNAME ) )
+      {
+        method.addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME );
+      }
+
+      final var block = CodeBlock.builder();
+      block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
+      block.addStatement( "return null != $N.inputs().getAsAny( Inputs.$N ) ? " +
+                          "$N.inputs().getAsAny( Inputs.$N ).$N() : null",
+                          NATIVE_VIEW_FIELD,
+                          input.getConstantName(),
+                          NATIVE_VIEW_FIELD,
+                          input.getConstantName(),
+                          convertMethodName );
+      block.nextControlFlow( "else" );
+      block.addStatement( "return $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
+                          JS_CLASSNAME,
+                          NATIVE_VIEW_FIELD,
+                          input.getConstantName() );
+      block.endControlFlow();
+      method.addCode( block.build() );
     }
     else
     {
-      final var convertMethodName = getConverter( returnType, methodElement );
-      final var resultKind = methodElement.getReturnType().getKind();
-      if ( !resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation( methodElement ) )
-      {
-        // Need to add a nullable it not present as invariant path can return nulls.
-        if ( null == AnnotationsUtil.findAnnotationByType( methodElement, AnnotationsUtil.NULLABLE_CLASSNAME ) )
-        {
-          method.addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME );
-        }
-
-        final var block = CodeBlock.builder();
-        block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
-        block.addStatement( "return null != $N.inputs().getAsAny( Inputs.$N ) ? " +
-                            "$N.inputs().getAsAny( Inputs.$N ).$N() : null",
-                            NATIVE_VIEW_FIELD,
-                            input.getConstantName(),
-                            NATIVE_VIEW_FIELD,
-                            input.getConstantName(),
-                            convertMethodName );
-        block.nextControlFlow( "else" );
-        block.addStatement( "return $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
-                            JS_CLASSNAME,
-                            NATIVE_VIEW_FIELD,
-                            input.getConstantName() );
-        block.endControlFlow();
-        method.addCode( block.build() );
-      }
-      else
-      {
-        method.addStatement( "return $N.inputs().getAsAny( Inputs.$N ).$N()",
-                             NATIVE_VIEW_FIELD,
-                             input.getConstantName(),
-                             convertMethodName );
-      }
+      method.addStatement( "return $N.inputs().getAsAny( Inputs.$N ).$N()",
+                           NATIVE_VIEW_FIELD,
+                           input.getConstantName(),
+                           convertMethodName );
     }
     return method;
   }
@@ -936,7 +830,7 @@ final class ViewGenerator
 
     // We always dispose here rather than checking hasArezElements()
     // as this code path is only invoked when there are Arez elements, when we are in non-production
-    // mode (and thus this makes debugging easier). Thus no need to have a guard
+    // mode (and thus this makes debugging easier). Thus, no need to have a guard
     method.addStatement( "(($T) this).dispose()", descriptor.getArezClassName() );
 
     if ( descriptor.trackRender() )
@@ -976,95 +870,18 @@ final class ViewGenerator
     }
     method.addStatement( "assert $T.isNotDisposed( this )", DISPOSABLE_CLASSNAME );
 
-    final var inputsWithRenderPreludeChecks =
-      descriptor
-        .getInputs()
-        .stream()
-        .filter( input -> ( input.isDisposable() && !input.isDependency() ) ||
-                          ( descriptor.trackRender() && input.shouldObserveOnRender() ) )
-        .toList();
-
-    for ( final var input : inputsWithRenderPreludeChecks )
+    if ( descriptor.trackRender() )
     {
-      if ( input.isMethodInput() )
+      var candidateIndex = 0;
+      for ( final var candidate : descriptor.getPreludeCheckCandidates() )
       {
-        final var inputMethod = input.getMethod();
-        assert null != inputMethod;
-        final var varName = "$$react4jv$$_" + inputMethod.getSimpleName();
-        method.addStatement( "final $T $N = $N()",
-                             input.getType(),
+        final var varName = "$$react4jv$$_candidate" + candidateIndex++;
+        final var memberName = candidate.element().getSimpleName().toString();
+        method.addStatement( "final $T $N = $N" + ( candidate.element() instanceof ExecutableElement ? "()" : "" ),
+                             candidate.type(),
                              varName,
-                             inputMethod.getSimpleName().toString() );
-        if ( descriptor.trackRender() && input.shouldObserveOnRender() )
-        {
-          final var block = CodeBlock.builder();
-          if ( input.observeOnRenderRequiresRuntimeCheck() )
-          {
-            block.beginControlFlow( "if ( $N instanceof $T && !$T.observe( $N ) )",
-                                    varName,
-                                    COMPONENT_OBSERVABLE_CLASSNAME,
-                                    COMPONENT_OBSERVABLE_CLASSNAME,
-                                    varName );
-          }
-          else if ( input.isNonNull() )
-          {
-            block.beginControlFlow( "if ( !$T.observe( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
-          }
-          else
-          {
-            block.beginControlFlow( "if ( !$T.maybeObserve( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
-          }
-          block.addStatement( "return null" );
-          block.endControlFlow();
-          method.addCode( block.build() );
-        }
-        if ( input.isDisposable() && !input.isDependency() )
-        {
-          final var block = CodeBlock.builder();
-          block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
-          block.addStatement( "return null" );
-          block.endControlFlow();
-          method.addCode( block.build() );
-        }
-      }
-      else
-      {
-        final var varName = "$$react4jv$$_" + input.getName();
-        method.addStatement( "final $T $N = $N",
-                             input.getType(),
-                             varName,
-                             FRAMEWORK_INTERNAL_IMMUTABLE_INPUT_PREFIX + input.getName() );
-        if ( descriptor.trackRender() && input.shouldObserveOnRender() )
-        {
-          final var block = CodeBlock.builder();
-          if ( input.observeOnRenderRequiresRuntimeCheck() )
-          {
-            block.beginControlFlow( "if ( $N instanceof $T && !$T.observe( $N ) )",
-                                    varName,
-                                    COMPONENT_OBSERVABLE_CLASSNAME,
-                                    COMPONENT_OBSERVABLE_CLASSNAME,
-                                    varName );
-          }
-          else if ( input.isNonNull() )
-          {
-            block.beginControlFlow( "if ( !$T.observe( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
-          }
-          else
-          {
-            block.beginControlFlow( "if ( !$T.maybeObserve( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
-          }
-          block.addStatement( "return null" );
-          block.endControlFlow();
-          method.addCode( block.build() );
-        }
-        if ( input.isDisposable() && !input.isDependency() )
-        {
-          final var block = CodeBlock.builder();
-          block.beginControlFlow( "if ( $T.isDisposed( $N ) )", DISPOSABLE_CLASSNAME, varName );
-          block.addStatement( "return null" );
-          block.endControlFlow();
-          method.addCode( block.build() );
-        }
+                             memberName );
+        addRenderPreludeObservationCheck( method, candidate, varName );
       }
     }
 
@@ -1400,7 +1217,7 @@ final class ViewGenerator
   {
     final var builder = TypeSpec.classBuilder( "Factory" );
 
-    //Ensure it can not be subclassed
+    // Ensure it cannot be subclassed
     builder.addModifiers( Modifier.FINAL );
     builder.addModifiers( Modifier.STATIC );
 
@@ -1421,7 +1238,7 @@ final class ViewGenerator
   {
     final var builder = TypeSpec.classBuilder( ( lite ? "Lite" : "" ) + "NativeView" );
 
-    //Ensure it can not be subclassed
+    //Ensure it cannot be subclassed
     builder.addModifiers( Modifier.FINAL );
     builder.addModifiers( Modifier.STATIC );
     builder.addModifiers( Modifier.PRIVATE );
@@ -1441,12 +1258,10 @@ final class ViewGenerator
       viewFieldType = ParameterizedTypeName.get( descriptor.getEnhancedClassName(), typeNames );
     }
 
-    final var viewField = FieldSpec.builder( viewFieldType, VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL );
-    if ( descriptor.hasDependencyInput() )
-    {
-      viewField.addAnnotation( GeneratorUtil.NONNULL_CLASSNAME );
-    }
-    builder.addField( viewField.build() );
+    builder.addField( FieldSpec
+                        .builder( viewFieldType, VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL )
+                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+                        .build() );
 
     if ( lite )
     {
@@ -1507,11 +1322,9 @@ final class ViewGenerator
       final var prefix = new StringBuilder();
       final var params = new ArrayList<>();
       params.add( VIEW_FIELD );
-      for ( final var input : descriptor
-        .getImmutableInputs()
-        .stream()
-        .filter( InputDescriptor::isDependency )
-        .toList() )
+      final var disposableInputs =
+        descriptor.getImmutableInputs().stream().filter( InputDescriptor::isDisposable ).toList();
+      for ( final var input : disposableInputs )
       {
         if ( !prefix.isEmpty() )
         {
@@ -1666,7 +1479,7 @@ final class ViewGenerator
       .returns( REACT_NODE_CLASSNAME );
     if ( descriptor.shouldGenerateRender() )
     {
-      if ( descriptor.hasDependencyInput() )
+      if ( descriptor.hasDisposableInput() )
       {
         final var block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
@@ -1696,7 +1509,7 @@ final class ViewGenerator
         .methodBuilder( "componentDidMount" )
         .addAnnotation( Override.class )
         .addModifiers( Modifier.FINAL, Modifier.PUBLIC );
-    if ( descriptor.hasDependencyInput() )
+    if ( descriptor.hasDisposableInput() )
     {
       final var block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
@@ -1723,7 +1536,7 @@ final class ViewGenerator
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextInputs", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
-    if ( descriptor.hasDependencyInput() )
+    if ( descriptor.hasDisposableInput() )
     {
       final var block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
@@ -1758,7 +1571,7 @@ final class ViewGenerator
                          .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL )
                          .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                          .build() );
-    if ( descriptor.hasDependencyInput() )
+    if ( descriptor.hasDisposableInput() )
     {
       final var block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
@@ -1785,7 +1598,7 @@ final class ViewGenerator
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
-    if ( descriptor.hasDependencyInput() )
+    if ( descriptor.hasDisposableInput() )
     {
       final var block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
@@ -1821,7 +1634,7 @@ final class ViewGenerator
       .methodBuilder( "componentWillUnmount" )
       .addAnnotation( Override.class )
       .addModifiers( Modifier.FINAL, Modifier.PUBLIC );
-    if ( descriptor.hasDependencyInput() )
+    if ( descriptor.hasDisposableInput() )
     {
       final var block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
@@ -1863,7 +1676,7 @@ final class ViewGenerator
       .collect( Collectors.joining( ", " ) ) +
       " )";
 
-    if ( descriptor.hasDependencyInput() )
+    if ( descriptor.hasDisposableInput() )
     {
       final var block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
@@ -1876,6 +1689,37 @@ final class ViewGenerator
       method.addStatement( "$N.$N" + args, VIEW_FIELD, onError.getSimpleName() );
     }
     return method;
+  }
+
+  private static void addRenderPreludeObservationCheck( @Nonnull final MethodSpec.Builder method,
+                                                        @Nonnull final PreludeChecksDescriptor candidate,
+                                                        @Nonnull final String varName )
+  {
+    final ObserveMode mode = candidate.observeMode();
+    if ( ObserveMode.NO_OBSERVE != mode )
+    {
+      final var block = CodeBlock.builder();
+      if ( ObserveMode.RUNTIME_CHECK == mode )
+      {
+        block.beginControlFlow( "if ( $N instanceof $T && !$T.observe( $N ) )",
+                                varName,
+                                COMPONENT_OBSERVABLE_CLASSNAME,
+                                COMPONENT_OBSERVABLE_CLASSNAME,
+                                varName );
+      }
+      else if ( ObserveMode.OBSERVE_NONNULL == mode )
+      {
+        block.beginControlFlow( "if ( !$T.observe( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
+      }
+      else if ( ObserveMode.OBSERVE_NULLABLE == mode )
+      {
+        block.beginControlFlow( "if ( !$T.maybeObserve( $N ) )", COMPONENT_OBSERVABLE_CLASSNAME, varName );
+      }
+
+      block.addStatement( "return null" );
+      block.endControlFlow();
+      method.addCode( block.build() );
+    }
   }
 
   @Nonnull

@@ -91,6 +91,7 @@ abstract class React4j_MutablePropAndPostConstructWithSuppressComponent extends 
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_MutablePropAndPostConstructWithSuppressComponent view;
 
     @JsConstructor

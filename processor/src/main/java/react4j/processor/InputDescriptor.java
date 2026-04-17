@@ -15,16 +15,8 @@ import org.realityforge.proton.ProcessorException;
 @SuppressWarnings( "Duplicates" )
 final class InputDescriptor
 {
-  enum Origin
-  {
-    METHOD,
-    CONSTRUCTOR_PARAMETER
-  }
-
   @Nonnull
   private final ViewDescriptor _descriptor;
-  @Nonnull
-  private final Origin _origin;
   @Nonnull
   private final String _name;
   @Nonnull
@@ -39,15 +31,10 @@ final class InputDescriptor
   private final ExecutableType _methodType;
   @Nullable
   private final VariableElement _parameter;
-  @Nullable
-  private final Element _inputType;
   private final boolean _contextSource;
   private final boolean _shouldUpdateOnChange;
   private final boolean _observable;
   private final boolean _disposable;
-  private final boolean _dependency;
-  private final boolean _observeOnRender;
-  private final boolean _observeOnRenderRequiresRuntimeCheck;
   @Nullable
   private final ImmutableInputKeyStrategy _immutableInputKeyStrategy;
   @Nonnull
@@ -68,7 +55,6 @@ final class InputDescriptor
   private Boolean _isNonNull;
 
   InputDescriptor( @Nonnull final ViewDescriptor descriptor,
-                   @Nonnull final Origin origin,
                    @Nonnull final String name,
                    @Nonnull final String qualifier,
                    @Nonnull final Element element,
@@ -76,19 +62,14 @@ final class InputDescriptor
                    @Nullable final ExecutableElement method,
                    @Nullable final ExecutableType methodType,
                    @Nullable final VariableElement parameter,
-                   @Nullable final Element inputType,
                    final boolean contextSource,
                    final boolean shouldUpdateOnChange,
                    final boolean observable,
                    final boolean disposable,
-                   final boolean dependency,
-                   final boolean observeOnRender,
-                   final boolean observeOnRenderRequiresRuntimeCheck,
                    @Nullable final ImmutableInputKeyStrategy immutableInputKeyStrategy,
                    @Nonnull final String requiredValue )
   {
     _descriptor = Objects.requireNonNull( descriptor );
-    _origin = Objects.requireNonNull( origin );
     _name = Objects.requireNonNull( name );
     _qualifier = Objects.requireNonNull( qualifier );
     _element = Objects.requireNonNull( element );
@@ -96,22 +77,12 @@ final class InputDescriptor
     _method = method;
     _methodType = methodType;
     _parameter = parameter;
-    _inputType = inputType;
     _contextSource = contextSource;
     _shouldUpdateOnChange = shouldUpdateOnChange;
     _observable = observable;
     _disposable = disposable;
-    _dependency = dependency;
-    _observeOnRender = observeOnRender;
-    _observeOnRenderRequiresRuntimeCheck = observeOnRenderRequiresRuntimeCheck;
     _immutableInputKeyStrategy = immutableInputKeyStrategy;
     _requiredValue = Objects.requireNonNull( requiredValue );
-  }
-
-  @Nonnull
-  Origin getOrigin()
-  {
-    return _origin;
   }
 
   @Nonnull
@@ -140,12 +111,7 @@ final class InputDescriptor
 
   boolean isMethodInput()
   {
-    return Origin.METHOD == _origin;
-  }
-
-  boolean isConstructorParameterInput()
-  {
-    return Origin.CONSTRUCTOR_PARAMETER == _origin;
+    return !isImmutable();
   }
 
   @Nullable
@@ -166,12 +132,6 @@ final class InputDescriptor
     return _parameter;
   }
 
-  @Nullable
-  Element getInputType()
-  {
-    return _inputType;
-  }
-
   boolean shouldUpdateOnChange()
   {
     return _shouldUpdateOnChange;
@@ -185,21 +145,6 @@ final class InputDescriptor
   boolean isDisposable()
   {
     return _disposable;
-  }
-
-  boolean isDependency()
-  {
-    return _dependency;
-  }
-
-  boolean shouldObserveOnRender()
-  {
-    return _observeOnRender;
-  }
-
-  boolean observeOnRenderRequiresRuntimeCheck()
-  {
-    return _observeOnRenderRequiresRuntimeCheck;
   }
 
   boolean isImmutable()

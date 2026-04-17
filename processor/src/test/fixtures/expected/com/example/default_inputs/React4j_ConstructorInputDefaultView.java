@@ -29,16 +29,11 @@ abstract class React4j_ConstructorInputDefaultView extends ConstructorInputDefau
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final String $$react4j_immutable_input$$_myInput;
-
   React4j_ConstructorInputDefaultView(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
       @Nullable final String myInput) {
     super( myInput );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_myInput = myInput;
   }
 
   @Nonnull
@@ -76,6 +71,7 @@ abstract class React4j_ConstructorInputDefaultView extends ConstructorInputDefau
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_ConstructorInputDefaultView view;
 
     @JsConstructor

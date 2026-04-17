@@ -100,6 +100,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_ObservableViaObservedProp view;
 
     @JsConstructor

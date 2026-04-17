@@ -84,7 +84,7 @@ abstract class ImmutablePropTypeMultiple
                              @Nonnull @Input final KeyedComponent keyedComponentProp,
                              @Nonnull @Input final IdentifiableComponent identifiableProp,
                              @Nonnull @Input final Object objectProp,
-                             @Nonnull @Input final ArezComponentLikeComponent actAsComponentProp,
+                             @Nonnull @Input final ArezComponentLikeComponent arezComponentLikeProp,
                              @Nonnull @Input final ArezComponentComponent arezComponentProp,
                              @Nonnull @Input final ArezComponentWithExplicitRequireIdComponent arezComponentWithExplicitRequireIdProp,
                              @Nullable @Input final MyEnum nullableEnumProp,

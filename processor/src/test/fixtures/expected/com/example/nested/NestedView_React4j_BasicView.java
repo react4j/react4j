@@ -64,6 +64,7 @@ abstract class NestedView_React4j_BasicView extends NestedView.BasicView {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final NestedView_React4j_BasicView view;
 
     @JsConstructor

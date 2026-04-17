@@ -26,8 +26,11 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.arez.ActionOnPostMountView" },
         new Object[]{ "com.example.arez.InputAndMemoizeComponent" },
         new Object[]{ "com.example.arez.KeepAliveMemoizeOnView" },
+        new Object[]{ "com.example.arez.MaybeTrackingHasComponentDependencyFieldView" },
+        new Object[]{ "com.example.arez.NonObservableComponentDependencyView" },
         new Object[]{ "com.example.arez.MaybeTrackingView" },
         new Object[]{ "com.example.arez.NonTrackingHasActionView" },
+        new Object[]{ "com.example.arez.NonTrackingHasAutoObserveFieldView" },
         new Object[]{ "com.example.arez.NonTrackingHasFieldCascadeDisposeView" },
         new Object[]{ "com.example.arez.ObserveOnView" },
         new Object[]{ "com.example.arez.TrackingView" },
@@ -127,13 +130,8 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.CollectionSetPropModel" },
         new Object[]{ "com.example.prop.ContextPropModel" },
         new Object[]{ "com.example.prop.CustomNamePropModel" },
-        new Object[]{ "com.example.prop.DisposablePropModel" },
-        new Object[]{ "com.example.prop.ExplicitDependencyDisableInput" },
-        new Object[]{ "com.example.prop.ExplicitDependencyEnableInput" },
-        new Object[]{ "com.example.prop.DisposableOptionalPropModel" },
         new Object[]{ "com.example.prop.GenericTypeMultiPropModel" },
         new Object[]{ "com.example.prop.GenericTypePropModel" },
-        new Object[]{ "com.example.prop.ImmutableDisposablePropModel" },
         new Object[]{ "com.example.prop.ImmutableConstructorContextPropModel" },
         new Object[]{ "com.example.prop.ImmutableMixedInputModel" },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentWithExplicitRequireId" },
@@ -164,26 +162,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.ImmutablePropTypePrimitiveShort" },
         new Object[]{ "com.example.prop.ImmutablePropTypes" },
         new Object[]{ "com.example.prop.ImmutablePropTypeString" },
-        new Object[]{ "com.example.prop.ImplicitDisposableProp" },
-        new Object[]{ "com.example.prop.MutableDisposableArezComponentLikeMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.MutableDisposableNullableArezComponentLikeTrackingProp" },
-        new Object[]{ "com.example.prop.MutableDisposableNullableGenericArezComponentLikeMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.MutableDisposableNullableArezComponentLikeMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.MutableDisposableArezComponentLikeTrackingProp" },
-        new Object[]{ "com.example.prop.MutableDisposableNullableArezComponentMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.MutableDisposableArezComponentMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.MutableDisposableNullableArezComponentTrackingProp" },
-        new Object[]{ "com.example.prop.MutableDisposableArezComponentTrackingProp" },
-        new Object[]{ "com.example.prop.ImmutableDisposableArezComponentLikeMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.ImmutableDisposableNullableArezComponentLikeTrackingProp" },
-        new Object[]{ "com.example.prop.ImmutableDisposableNullableGenericArezComponentLikeMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.ImmutableDisposableNullableArezComponentLikeMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.ImmutableDisposableArezComponentLikeTrackingProp" },
-        new Object[]{ "com.example.prop.ImmutableDisposableNullableArezComponentMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.ImmutableDisposableArezComponentMaybeTrackingProp" },
-        new Object[]{ "com.example.prop.ImmutableDisposableNullableArezComponentTrackingProp" },
-        new Object[]{ "com.example.prop.ImmutableDisposableArezComponentTrackingProp" },
-        new Object[]{ "com.example.prop.ImplicitDisposablePropOnComponent" },
         new Object[]{ "com.example.prop.MultiContextPropModel" },
         new Object[]{ "com.example.prop.MultipleChildrenPropComponent" },
         new Object[]{ "com.example.prop.MultiPropComponent" },
@@ -200,7 +178,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentLikeInterface" },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponent" },
         new Object[]{ "com.example.prop.ImmutablePropTypeArezComponentAndKeyed" },
-        new Object[]{ "com.example.prop.NonDisposableDisposableProp" },
         new Object[]{ "com.example.prop.NonJavaBeanPropComponent" },
         new Object[]{ "com.example.prop.NonnullChildPropComponent" },
         new Object[]{ "com.example.prop.NonnullContextPropModel" },
@@ -209,10 +186,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop.ObservableProp" },
         new Object[]{ "com.example.prop.ObservableViaMemoizeProp" },
         new Object[]{ "com.example.prop.ObservableViaObservedProp" },
-        new Object[]{ "com.example.prop.ObserveOnRenderAutodetectInterfaceTrackingProp" },
-        new Object[]{ "com.example.prop.ObserveOnRenderComponentObservableNonTrackingProp" },
-        new Object[]{ "com.example.prop.ObserveOnRenderComponentObservableTrackingProp" },
-        new Object[]{ "com.example.prop.ObserveOnRenderExplicitEnableInterfaceTrackingProp" },
         new Object[]{ "com.example.prop.PackageAccessPropModel" },
         new Object[]{ "com.example.prop.PropTypeArray" },
         new Object[]{ "com.example.prop.PropTypeBoolean" },
@@ -276,13 +249,14 @@ public final class React4jProcessorTest
   }
 
   @Nonnull
-  @DataProvider( name = "successfulDaggerCompiles" )
-  public Object[][] successfulDaggerCompiles()
+  @DataProvider( name = "successfulStingCompiles" )
+  public Object[][] successfulStingCompiles()
   {
     return new Object[][]
       {
         new Object[]{ "com.example.inject.ConstructorInjectComponent" },
         new Object[]{ "com.example.inject.ConstructorInputAndInjectComponent" },
+        new Object[]{ "com.example.inject.ConstructorInputAndInjectArezComponentTypeComponent" },
         new Object[]{ "com.example.inject.ConstructorInjectRawTypeComponent" },
         new Object[]{ "com.example.inject.FactoryOnlyInjectComponent" },
         new Object[]{ "com.example.inject.PublicView" },
@@ -292,8 +266,8 @@ public final class React4jProcessorTest
       };
   }
 
-  @Test( dataProvider = "successfulDaggerCompiles" )
-  public void processSuccessfulDaggerCompile( @Nonnull final String classname )
+  @Test( dataProvider = "successfulStingCompiles" )
+  public void processSuccessfulStingCompile( @Nonnull final String classname )
     throws Exception
   {
     assertSuccessfulCompile( classname, true );
@@ -335,6 +309,17 @@ public final class React4jProcessorTest
     final JavaFileObject source2 = fixture( "input/com/example/render/RenderFromParentComponent.java" );
     final String output = "com/example/render/React4j_RenderFromParentComponent.java";
     assertSuccessfulCompile( Arrays.asList( source1, source2 ), Collections.singletonList( output ) );
+  }
+
+  @Test
+  public void trackingInheritedAutoObserveMethodView()
+    throws Exception
+  {
+    final JavaFileObject source1 = fixture( "input/com/example/arez/TrackingInheritedAutoObserveMethodBase.java" );
+    final JavaFileObject source2 = fixture( "input/com/example/arez/TrackingInheritedAutoObserveMethodView.java" );
+    assertSuccessfulCompile( Arrays.asList( source1, source2 ),
+                             Arrays.asList( "com/example/arez/React4j_TrackingInheritedAutoObserveMethodView.java",
+                                            "com/example/arez/TrackingInheritedAutoObserveMethodViewBuilder.java" ) );
   }
 
   @Test
@@ -779,10 +764,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.on_prop_change.StaticOnPropChange", "@OnInputChange target must not be static" },
         new Object[]{ "com.example.on_prop_change.ThrowsOnPropChange",
                       "@OnInputChange target must not throw any exceptions" },
-        new Object[]{ "com.example.prop.ObserveOnRenderFinalNonObservableEnableProp",
-                      "@Input target has specified observeOnRender=ENABLE but the return type is a final class that does not implement arez.component.ComponentObservable." },
-        new Object[]{ "com.example.prop.ObserveOnRenderNonObservableArezEnableProp",
-                      "@Input target has specified observeOnRender=ENABLE but the return type is annotated with @ArezComponent and resolves observable=DISABLE." },
         new Object[]{ "com.example.post_mount.AbstractModel", "@PostMount target must not be abstract" },
         new Object[]{ "com.example.post_mount.DuplicateModel",
                       "@PostMount target duplicates existing method named postMount" },
@@ -848,18 +829,6 @@ public final class React4jProcessorTest
                       "@Input named 'children' should be of type react4j.ReactNode[]" },
         new Object[]{ "com.example.prop.ChildPropBadTypeComponent",
                       "@Input named 'child' should be of type react4j.ReactNode" },
-        new Object[]{ "com.example.prop.CollectionArezProp",
-                      "@Input target is a collection that contains Arez components. This is not a safe pattern when the arez components can be disposed." },
-        new Object[]{ "com.example.prop.CollectionArrayArezProp",
-                      "@Input target is an array that contains Arez components. This is not a safe pattern when the arez components can be disposed." },
-        new Object[]{ "com.example.prop.CollectionArrayListArezProp",
-                      "@Input target is a collection that contains Arez components. This is not a safe pattern when the arez components can be disposed." },
-        new Object[]{ "com.example.prop.CollectionHashSetArezProp",
-                      "@Input target is a collection that contains Arez components. This is not a safe pattern when the arez components can be disposed." },
-        new Object[]{ "com.example.prop.CollectionListArezProp",
-                      "@Input target is a collection that contains Arez components. This is not a safe pattern when the arez components can be disposed." },
-        new Object[]{ "com.example.prop.CollectionSetArezProp",
-                      "@Input target is a collection that contains Arez components. This is not a safe pattern when the arez components can be disposed." },
         new Object[]{ "com.example.prop.DuplicateConstructorMethodImmutableProp",
                       "Multiple @Input declarations for input named 'myProp': getMyProp and myProp" },
         new Object[]{ "com.example.prop.GenericPropComponent",
@@ -868,10 +837,6 @@ public final class React4jProcessorTest
                       "@Input target must not specify observable=ENABLE for an immutable input." },
         new Object[]{ "com.example.prop.MultipleChildrenPropsComponent",
                       "Multiple candidate children @Input annotated methods: getChildren and getChild" },
-        new Object[]{ "com.example.prop.MutableDependencyInput",
-                      "@Input target must be immutable if dependency=ENABLE is specified" },
-        new Object[]{ "com.example.prop.NonDisposableDependencyInput",
-                      "@Input target must be disposable if dependency=ENABLE is specified" },
         new Object[]{ "com.example.prop.PropHasParameterComponent", "@Input target must not have any parameters" },
         new Object[]{ "com.example.prop.PropNamedBuild",
                       "@Input named 'build' is invalid as it conflicts with the method named build() that is used in the generated Builder classes" },

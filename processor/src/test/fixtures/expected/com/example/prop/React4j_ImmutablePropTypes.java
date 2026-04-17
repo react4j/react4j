@@ -2,7 +2,6 @@ package com.example.prop;
 
 import arez.Disposable;
 import arez.annotations.ArezComponent;
-import arez.annotations.ComponentDependency;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
@@ -30,41 +29,12 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final int $$react4j_immutable_input$$_stillAnotherProp;
-
-  @ComponentDependency
-  @Nullable
-  final ImmutablePropTypes.MyComponent $$react4j_immutable_input$$_myProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final String $$react4j_immutable_input$$_myOtherProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final ImmutablePropTypes.KeyedComponent $$react4j_immutable_input$$_bobsProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final ImmutablePropTypes.Foo $$react4j_immutable_input$$_someProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Object $$react4j_immutable_input$$_object;
-
   React4j_ImmutablePropTypes(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
       @Nullable final ImmutablePropTypes.MyComponent myProp, @Nullable final String myOtherProp,
       final int stillAnotherProp, @Nullable final ImmutablePropTypes.KeyedComponent bobsProp,
       @Nullable final ImmutablePropTypes.Foo someProp, @Nullable final Object object) {
     super( myProp, myOtherProp, stillAnotherProp, bobsProp, someProp, object );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_stillAnotherProp = stillAnotherProp;
-    $$react4j_immutable_input$$_myProp = myProp;
-    $$react4j_immutable_input$$_myOtherProp = myOtherProp;
-    $$react4j_immutable_input$$_bobsProp = bobsProp;
-    $$react4j_immutable_input$$_someProp = someProp;
-    $$react4j_immutable_input$$_object = object;
   }
 
   @Nonnull

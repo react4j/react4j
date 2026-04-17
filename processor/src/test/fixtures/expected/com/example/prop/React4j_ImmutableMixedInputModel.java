@@ -29,16 +29,11 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final String $$react4j_immutable_input$$_myImmutableProp;
-
   React4j_ImmutableMixedInputModel(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
       @Nullable final String myImmutableProp) {
     super( myImmutableProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_myImmutableProp = myImmutableProp;
   }
 
   @Nonnull
@@ -92,6 +87,7 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_ImmutableMixedInputModel view;
 
     @JsConstructor

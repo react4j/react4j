@@ -68,6 +68,7 @@ abstract class React4j_MultiplePostRenderModel extends MultiplePostRenderModel {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_MultiplePostRenderModel view;
 
     @JsConstructor

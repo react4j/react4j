@@ -83,6 +83,7 @@ abstract class React4j_PackageAccessFieldInputDefaultView extends PackageAccessF
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_PackageAccessFieldInputDefaultView view;
 
     @JsConstructor

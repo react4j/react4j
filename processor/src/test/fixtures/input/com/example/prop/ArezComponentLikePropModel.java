@@ -1,6 +1,7 @@
 package com.example.prop;
 
 import arez.annotations.ArezComponentLike;
+import arez.annotations.ComponentDependency;
 import javax.annotation.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
@@ -18,6 +19,13 @@ abstract class ArezComponentLikePropModel
   @Nullable
   @Input
   abstract Model getModel();
+
+  @Nullable
+  @ComponentDependency( validateTypeAtRuntime = true )
+  Model observedModel()
+  {
+    return getModel();
+  }
 
   @Nullable
   @Render

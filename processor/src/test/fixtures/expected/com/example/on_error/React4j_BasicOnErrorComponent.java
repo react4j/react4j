@@ -67,6 +67,7 @@ abstract class React4j_BasicOnErrorComponent extends BasicOnErrorComponent {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnComponentDidCatch {
+    @Nonnull
     private final React4j_BasicOnErrorComponent view;
 
     @JsConstructor

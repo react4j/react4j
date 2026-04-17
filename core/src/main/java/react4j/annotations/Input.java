@@ -1,7 +1,7 @@
 package react4j.annotations;
 
-import arez.annotations.ArezComponent;
-import arez.annotations.ArezComponentLike;
+import arez.annotations.AutoObserve;
+import arez.annotations.ComponentDependency;
 import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.Observe;
@@ -103,48 +103,6 @@ public @interface Input
    * @return the enum indicating whether input is observable.
    */
   Feature observable() default Feature.AUTODETECT;
-
-  /**
-   * Return an enum indicating whether the view should check whether the value of the input is disposed
-   * prior to rendering. If the value is disposed then the render method will exit early and return null.
-   * If this parameter is set to {@link Feature#AUTODETECT} then the annotation processor will inspect the
-   * type of the input and treat it as {@link Feature#ENABLE} if the type is annotated with the {@link ArezComponent}
-   * annotation or the {@link ArezComponentLike} annotation.
-   *
-   * @return an enum indicating whether the view should check whether the value of the input is disposed prior to rendering.
-   */
-  Feature disposable() default Feature.AUTODETECT;
-
-  /**
-   * Return an enum indicating whether tracked renders should observe the input value during the generated render
-   * prelude so that disposing the input can invalidate the render and trigger a rerender.
-   * This parameter is independent of {@link #disposable()} and is only relevant to views with render tracking enabled.
-   *
-   * <p>If this parameter is set to {@link Feature#AUTODETECT} then the annotation processor will inspect the
-   * type of the input and treat it as {@link Feature#ENABLE} in the following circumstances:</p>
-   * <ul>
-   * <li>the type is compatible with {@code arez.component.ComponentObservable}.</li>
-   * <li>the type is annotated with {@link ArezComponent} and the {@link ArezComponent#observable()} parameter
-   * resolves to enabled.</li>
-   * <li>the type is annotated with {@link ArezComponentLike}. In this scenario the generated code will verify
-   * compatibility with {@code arez.component.ComponentObservable} at runtime before observing the value.</li>
-   * </ul>
-   *
-   * @return an enum indicating whether tracked renders should observe the input value during render.
-   */
-  Feature observeOnRender() default Feature.AUTODETECT;
-
-  /**
-   * Return an enum indicating whether the view should be disposed if the input is disposed. To enable this feature,
-   * the input MUST be immutable, {@link #disposable()} MUST resolve to
-   * {@link Feature#ENABLE}. The type of the input is expected to implement the {@link arez.component.DisposeNotifier}
-   * interface either directly or indirectly. If this parameter is set to {@link Feature#AUTODETECT} then the
-   * annotation processor will treat it as {@link Feature#ENABLE} if the input is immutable and
-   * {@link #disposable()} resolves to {@link Feature#ENABLE}.
-   *
-   * @return an enum indicating whether the view should be disposed if the input is disposed.
-   */
-  Feature dependency() default Feature.AUTODETECT;
 
   /**
    * Enum where the input is sourced from.

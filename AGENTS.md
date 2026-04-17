@@ -12,7 +12,7 @@ reasonable alternatives.
 
 When you learn something non-obvious, add it here if it would make future changes faster or of higher quality.
 
-- `@Input.observeOnRender()` is independent of `disposable()`. For `@ArezComponent` inputs, `AUTODETECT` only enables observe-on-render when Arez observability resolves enabled (`observable=ENABLE` or `disposeOnDeactivate=true` when `observable=AUTODETECT`). `@ActAsComponent` and explicit uncertain `observeOnRender=ENABLE` inputs use a runtime `instanceof ComponentObservable` guard in generated render preludes.
+- Render-prelude observation no longer comes from `@Input`. For `TRACKING` and `MAYBE_TRACKING` views, React4j scans subclass-accessible declared/inherited instance fields and zero-arg instance methods annotated with `@ComponentDependency` or `@AutoObserve`; known nullable candidates use `ComponentObservable.maybeObserve(...)`, uncertain types use a runtime `instanceof ComponentObservable` guard, and `@CascadeDispose` is ignored.
 - `bundle exec buildr test` includes `downstream-test` builds of external example repos pinned to their GitHub `master` branches via `tasks/util.rb`, so breaking annotation/API changes can fail there until those downstream repos are migrated even when local processor and api-diff tests pass.
 
 ## Project Structure & Module Organization

@@ -71,6 +71,7 @@ abstract class React4j_DeprecatedPostMountModel extends DeprecatedPostMountModel
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_DeprecatedPostMountModel view;
 
     @JsConstructor

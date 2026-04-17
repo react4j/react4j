@@ -77,6 +77,7 @@ abstract class React4j_PropTypeDouble extends PropTypeDouble {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_PropTypeDouble view;
 
     @JsConstructor

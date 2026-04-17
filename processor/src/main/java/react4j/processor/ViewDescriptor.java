@@ -85,7 +85,9 @@ final class ViewDescriptor
   @Nullable
   private Boolean _builderAccessesDeprecatedElements;
   @Nullable
-  private Boolean _hasDependencyInput;
+  private List<PreludeChecksDescriptor> _preludeCheckCandidates;
+  @Nullable
+  private Boolean _hasDisposableInput;
 
   ViewDescriptor( @Nonnull final String name,
                   @Nonnull final TypeElement element,
@@ -237,13 +239,13 @@ final class ViewDescriptor
     return (int) getInputs().stream().filter( InputDescriptor::isImmutable ).count();
   }
 
-  boolean hasDependencyInput()
+  boolean hasDisposableInput()
   {
-    if ( null == _hasDependencyInput )
+    if ( null == _hasDisposableInput )
     {
-      _hasDependencyInput = getInputs().stream().anyMatch( InputDescriptor::isDependency );
+      _hasDisposableInput = getInputs().stream().anyMatch( InputDescriptor::isDisposable );
     }
-    return _hasDependencyInput;
+    return _hasDisposableInput;
   }
 
   @Nonnull
@@ -288,6 +290,18 @@ final class ViewDescriptor
   void setInputs( @Nonnull final List<InputDescriptor> events )
   {
     _inputs = Objects.requireNonNull( events );
+  }
+
+  @Nonnull
+  List<PreludeChecksDescriptor> getPreludeCheckCandidates()
+  {
+    assert null != _preludeCheckCandidates;
+    return _preludeCheckCandidates;
+  }
+
+  void setPreludeCheckCandidates( @Nonnull final List<PreludeChecksDescriptor> preludeCheckCandidates )
+  {
+    _preludeCheckCandidates = Objects.requireNonNull( preludeCheckCandidates );
   }
 
   @Nullable

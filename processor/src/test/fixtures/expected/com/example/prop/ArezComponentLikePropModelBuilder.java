@@ -1,5 +1,6 @@
 package com.example.prop;
 
+import arez.Disposable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
@@ -57,6 +58,7 @@ final class ArezComponentLikePropModelBuilder {
         pure = true
     )
     public final ReactNode model(@Nullable final ArezComponentLikePropModel.Model model) {
+      assert Disposable.isNotDisposed( model );
       _element.input( React4j_ArezComponentLikePropModel.Inputs.model, model );
       return build();
     }

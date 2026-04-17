@@ -75,6 +75,7 @@ abstract class React4j_ProtectedAccessFromBasePostMountOrUpdateModel extends Pro
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_ProtectedAccessFromBasePostMountOrUpdateModel view;
 
     @JsConstructor

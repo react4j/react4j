@@ -1,0 +1,50 @@
+[
+  {
+    "code": "java.method.attributeRemovedFromAnnotationType",
+    "description": "The annotation no longer has an attribute.",
+    "oldElement": "method react4j.annotations.Feature react4j.annotations.Input::dependency()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Input",
+      "classSimpleName": "Input",
+      "elementKind": "method",
+      "methodName": "dependency",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.attributeRemovedFromAnnotationType",
+    "description": "The annotation no longer has an attribute.",
+    "oldElement": "method react4j.annotations.Feature react4j.annotations.Input::disposable()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Input",
+      "classSimpleName": "Input",
+      "elementKind": "method",
+      "methodName": "disposable",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.attributeRemovedFromAnnotationType",
+    "description": "The annotation no longer has an attribute.",
+    "oldElement": "method react4j.annotations.Feature react4j.annotations.Input::observeOnRender()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Input",
+      "classSimpleName": "Input",
+      "elementKind": "method",
+      "methodName": "observeOnRender",
+      "package": "react4j.annotations"
+    }
+  }
+]

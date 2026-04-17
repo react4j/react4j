@@ -83,6 +83,7 @@ abstract class React4j_NonJavaBeanPropComponent extends NonJavaBeanPropComponent
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_NonJavaBeanPropComponent view;
 
     @JsConstructor

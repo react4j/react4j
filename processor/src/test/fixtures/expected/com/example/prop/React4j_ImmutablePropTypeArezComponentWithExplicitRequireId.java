@@ -2,7 +2,6 @@ package com.example.prop;
 
 import arez.Disposable;
 import arez.annotations.ArezComponent;
-import arez.annotations.ComponentDependency;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
@@ -30,16 +29,11 @@ abstract class React4j_ImmutablePropTypeArezComponentWithExplicitRequireId exten
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @ComponentDependency
-  @Nullable
-  final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent $$react4j_immutable_input$$_myProp;
-
   React4j_ImmutablePropTypeArezComponentWithExplicitRequireId(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
       @Nullable final ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp) {
     super( myProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_myProp = myProp;
   }
 
   @Nonnull

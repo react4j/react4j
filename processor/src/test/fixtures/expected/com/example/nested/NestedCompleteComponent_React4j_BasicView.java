@@ -84,6 +84,7 @@ abstract class NestedCompleteComponent_React4j_BasicView extends NestedCompleteC
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final NestedCompleteComponent_React4j_BasicView view;
 
     @JsConstructor

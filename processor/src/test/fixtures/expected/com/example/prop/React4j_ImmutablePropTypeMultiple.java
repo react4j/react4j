@@ -2,7 +2,6 @@ package com.example.prop;
 
 import arez.Disposable;
 import arez.annotations.ArezComponent;
-import arez.annotations.ComponentDependency;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
@@ -31,114 +30,6 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final boolean $$react4j_immutable_input$$_booleanProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final byte $$react4j_immutable_input$$_byteProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final char $$react4j_immutable_input$$_charProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final double $$react4j_immutable_input$$_doubleProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final float $$react4j_immutable_input$$_floatProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final int $$react4j_immutable_input$$_intProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final long $$react4j_immutable_input$$_longProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  private final short $$react4j_immutable_input$$_shortProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nonnull
-  private final ImmutablePropTypeMultiple.MyEnum $$react4j_immutable_input$$_enumProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nonnull
-  private final ImmutablePropTypeMultiple.KeyedComponent $$react4j_immutable_input$$_keyedComponentProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nonnull
-  private final ImmutablePropTypeMultiple.IdentifiableComponent $$react4j_immutable_input$$_identifiableProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nonnull
-  private final Object $$react4j_immutable_input$$_objectProp;
-
-  @ComponentDependency
-  @Nonnull
-  final ImmutablePropTypeMultiple.ArezComponentLikeComponent $$react4j_immutable_input$$_actAsComponentProp;
-
-  @ComponentDependency
-  @Nonnull
-  final ImmutablePropTypeMultiple.ArezComponentComponent $$react4j_immutable_input$$_arezComponentProp;
-
-  @ComponentDependency
-  @Nonnull
-  final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent $$react4j_immutable_input$$_arezComponentWithExplicitRequireIdProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final ImmutablePropTypeMultiple.MyEnum $$react4j_immutable_input$$_nullableEnumProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final ImmutablePropTypeMultiple.KeyedComponent $$react4j_immutable_input$$_nullableKeyedComponentProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final ImmutablePropTypeMultiple.IdentifiableComponent $$react4j_immutable_input$$_nullableIdentifiableProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Boolean $$react4j_immutable_input$$_nullableBoxedBooleanProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Byte $$react4j_immutable_input$$_nullableBoxedByteProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Double $$react4j_immutable_input$$_nullableBoxedDoubleProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Float $$react4j_immutable_input$$_nullableBoxedFloatProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Integer $$react4j_immutable_input$$_nullableBoxedIntProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Long $$react4j_immutable_input$$_nullableBoxedLongProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Short $$react4j_immutable_input$$_nullableBoxedShortProp;
-
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Object $$react4j_immutable_input$$_nullableObjectProp;
-
-  @ComponentDependency
-  @Nullable
-  final ImmutablePropTypeMultiple.ArezComponentLikeComponent $$react4j_immutable_input$$_nullableArezComponentLikeProp;
-
-  @ComponentDependency
-  @Nullable
-  final ImmutablePropTypeMultiple.ArezComponentComponent $$react4j_immutable_input$$_nullableArezComponentProp;
-
-  @ComponentDependency
-  @Nullable
-  final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent $$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp;
-
   React4j_ImmutablePropTypeMultiple(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView, final boolean booleanProp,
       final byte byteProp, final char charProp, final double doubleProp, final float floatProp,
@@ -147,7 +38,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
       @Nonnull final ImmutablePropTypeMultiple.KeyedComponent keyedComponentProp,
       @Nonnull final ImmutablePropTypeMultiple.IdentifiableComponent identifiableProp,
       @Nonnull final Object objectProp,
-      @Nonnull final ImmutablePropTypeMultiple.ArezComponentLikeComponent actAsComponentProp,
+      @Nonnull final ImmutablePropTypeMultiple.ArezComponentLikeComponent arezComponentLikeProp,
       @Nonnull final ImmutablePropTypeMultiple.ArezComponentComponent arezComponentProp,
       @Nonnull final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent arezComponentWithExplicitRequireIdProp,
       @Nullable final ImmutablePropTypeMultiple.MyEnum nullableEnumProp,
@@ -160,37 +51,8 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
       @Nullable final ImmutablePropTypeMultiple.ArezComponentLikeComponent nullableArezComponentLikeProp,
       @Nullable final ImmutablePropTypeMultiple.ArezComponentComponent nullableArezComponentProp,
       @Nullable final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent nullableArezComponentWithExplicitRequireIdProp) {
-    super( booleanProp, byteProp, charProp, doubleProp, floatProp, intProp, longProp, shortProp, enumProp, keyedComponentProp, identifiableProp, objectProp, actAsComponentProp, arezComponentProp, arezComponentWithExplicitRequireIdProp, nullableEnumProp, nullableKeyedComponentProp, nullableIdentifiableProp, nullableBoxedBooleanProp, nullableBoxedByteProp, nullableBoxedDoubleProp, nullableBoxedFloatProp, nullableBoxedIntProp, nullableBoxedLongProp, nullableBoxedShortProp, nullableObjectProp, nullableArezComponentLikeProp, nullableArezComponentProp, nullableArezComponentWithExplicitRequireIdProp );
+    super( booleanProp, byteProp, charProp, doubleProp, floatProp, intProp, longProp, shortProp, enumProp, keyedComponentProp, identifiableProp, objectProp, arezComponentLikeProp, arezComponentProp, arezComponentWithExplicitRequireIdProp, nullableEnumProp, nullableKeyedComponentProp, nullableIdentifiableProp, nullableBoxedBooleanProp, nullableBoxedByteProp, nullableBoxedDoubleProp, nullableBoxedFloatProp, nullableBoxedIntProp, nullableBoxedLongProp, nullableBoxedShortProp, nullableObjectProp, nullableArezComponentLikeProp, nullableArezComponentProp, nullableArezComponentWithExplicitRequireIdProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_booleanProp = booleanProp;
-    $$react4j_immutable_input$$_byteProp = byteProp;
-    $$react4j_immutable_input$$_charProp = charProp;
-    $$react4j_immutable_input$$_doubleProp = doubleProp;
-    $$react4j_immutable_input$$_floatProp = floatProp;
-    $$react4j_immutable_input$$_intProp = intProp;
-    $$react4j_immutable_input$$_longProp = longProp;
-    $$react4j_immutable_input$$_shortProp = shortProp;
-    $$react4j_immutable_input$$_enumProp = enumProp;
-    $$react4j_immutable_input$$_keyedComponentProp = keyedComponentProp;
-    $$react4j_immutable_input$$_identifiableProp = identifiableProp;
-    $$react4j_immutable_input$$_objectProp = objectProp;
-    $$react4j_immutable_input$$_actAsComponentProp = actAsComponentProp;
-    $$react4j_immutable_input$$_arezComponentProp = arezComponentProp;
-    $$react4j_immutable_input$$_arezComponentWithExplicitRequireIdProp = arezComponentWithExplicitRequireIdProp;
-    $$react4j_immutable_input$$_nullableEnumProp = nullableEnumProp;
-    $$react4j_immutable_input$$_nullableKeyedComponentProp = nullableKeyedComponentProp;
-    $$react4j_immutable_input$$_nullableIdentifiableProp = nullableIdentifiableProp;
-    $$react4j_immutable_input$$_nullableBoxedBooleanProp = nullableBoxedBooleanProp;
-    $$react4j_immutable_input$$_nullableBoxedByteProp = nullableBoxedByteProp;
-    $$react4j_immutable_input$$_nullableBoxedDoubleProp = nullableBoxedDoubleProp;
-    $$react4j_immutable_input$$_nullableBoxedFloatProp = nullableBoxedFloatProp;
-    $$react4j_immutable_input$$_nullableBoxedIntProp = nullableBoxedIntProp;
-    $$react4j_immutable_input$$_nullableBoxedLongProp = nullableBoxedLongProp;
-    $$react4j_immutable_input$$_nullableBoxedShortProp = nullableBoxedShortProp;
-    $$react4j_immutable_input$$_nullableObjectProp = nullableObjectProp;
-    $$react4j_immutable_input$$_nullableArezComponentLikeProp = nullableArezComponentLikeProp;
-    $$react4j_immutable_input$$_nullableArezComponentProp = nullableArezComponentProp;
-    $$react4j_immutable_input$$_nullableArezComponentWithExplicitRequireIdProp = nullableArezComponentWithExplicitRequireIdProp;
   }
 
   @Nonnull
@@ -219,9 +81,9 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$objectProp, () -> "Required input named 'objectProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
     }
-    final Object raw$actAsComponentProp = inputs.get( Inputs.actAsComponentProp );
+    final Object raw$arezComponentLikeProp = inputs.get( Inputs.arezComponentLikeProp );
     if ( React.shouldCheckInvariants() ) {
-      Guards.apiInvariant( () -> null != raw$actAsComponentProp, () -> "Required input named 'actAsComponentProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
+      Guards.apiInvariant( () -> null != raw$arezComponentLikeProp, () -> "Required input named 'arezComponentLikeProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
     }
     final Object raw$arezComponentProp = inputs.get( Inputs.arezComponentProp );
     if ( React.shouldCheckInvariants() ) {
@@ -282,7 +144,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
 
     static final String objectProp = React.shouldMinimizeInputKeys() ? "l" : "objectProp";
 
-    static final String actAsComponentProp = React.shouldMinimizeInputKeys() ? "m" : "actAsComponentProp";
+    static final String arezComponentLikeProp = React.shouldMinimizeInputKeys() ? "m" : "arezComponentLikeProp";
 
     static final String arezComponentProp = React.shouldMinimizeInputKeys() ? "n" : "arezComponentProp";
 
@@ -336,7 +198,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
       final ImmutablePropTypeMultiple.KeyedComponent keyedComponentProp = inputs.getAsAny( Inputs.keyedComponentProp ).cast();
       final ImmutablePropTypeMultiple.IdentifiableComponent identifiableProp = inputs.getAsAny( Inputs.identifiableProp ).cast();
       final Object objectProp = inputs.getAsAny( Inputs.objectProp ).cast();
-      final ImmutablePropTypeMultiple.ArezComponentLikeComponent actAsComponentProp = inputs.getAsAny( Inputs.actAsComponentProp ).cast();
+      final ImmutablePropTypeMultiple.ArezComponentLikeComponent arezComponentLikeProp = inputs.getAsAny( Inputs.arezComponentLikeProp ).cast();
       final ImmutablePropTypeMultiple.ArezComponentComponent arezComponentProp = inputs.getAsAny( Inputs.arezComponentProp ).cast();
       final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent arezComponentWithExplicitRequireIdProp = inputs.getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast();
       ImmutablePropTypeMultiple.MyEnum nullableEnumProp;
@@ -423,7 +285,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
       } else {
         nullableArezComponentWithExplicitRequireIdProp = Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) );
       }
-      view = Disposable.isDisposed( inputs.getAsAny( Inputs.actAsComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast() ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentLikeProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypeMultiple( this, booleanProp, byteProp, charProp, doubleProp, floatProp, intProp, longProp, shortProp, enumProp, keyedComponentProp, identifiableProp, objectProp, actAsComponentProp, arezComponentProp, arezComponentWithExplicitRequireIdProp, nullableEnumProp, nullableKeyedComponentProp, nullableIdentifiableProp, nullableBoxedBooleanProp, nullableBoxedByteProp, nullableBoxedDoubleProp, nullableBoxedFloatProp, nullableBoxedIntProp, nullableBoxedLongProp, nullableBoxedShortProp, nullableObjectProp, nullableArezComponentLikeProp, nullableArezComponentProp, nullableArezComponentWithExplicitRequireIdProp );
+      view = Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentLikeProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast() ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentLikeProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypeMultiple( this, booleanProp, byteProp, charProp, doubleProp, floatProp, intProp, longProp, shortProp, enumProp, keyedComponentProp, identifiableProp, objectProp, arezComponentLikeProp, arezComponentProp, arezComponentWithExplicitRequireIdProp, nullableEnumProp, nullableKeyedComponentProp, nullableIdentifiableProp, nullableBoxedBooleanProp, nullableBoxedByteProp, nullableBoxedDoubleProp, nullableBoxedFloatProp, nullableBoxedIntProp, nullableBoxedLongProp, nullableBoxedShortProp, nullableObjectProp, nullableArezComponentLikeProp, nullableArezComponentProp, nullableArezComponentWithExplicitRequireIdProp );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
         view.$$react4j$$_validateInputValues( inputs );

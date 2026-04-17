@@ -29,16 +29,11 @@ abstract class React4j_ImmutablePropTypeBoxedFloat extends ImmutablePropTypeBoxe
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @SuppressWarnings("Arez:UnmanagedComponentReference")
-  @Nullable
-  private final Float $$react4j_immutable_input$$_myProp;
-
   React4j_ImmutablePropTypeBoxedFloat(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
       @Nullable final Float myProp) {
     super( myProp );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
-    $$react4j_immutable_input$$_myProp = myProp;
   }
 
   @Nonnull
@@ -76,6 +71,7 @@ abstract class React4j_ImmutablePropTypeBoxedFloat extends ImmutablePropTypeBoxe
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_ImmutablePropTypeBoxedFloat view;
 
     @JsConstructor

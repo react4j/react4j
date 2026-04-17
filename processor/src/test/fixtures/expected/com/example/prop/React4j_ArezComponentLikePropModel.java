@@ -109,11 +109,8 @@ abstract class React4j_ArezComponentLikePropModel extends ArezComponentLikePropM
   ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
-    final ArezComponentLikePropModel.Model $$react4jv$$_getModel = getModel();
-    if ( $$react4jv$$_getModel instanceof ComponentObservable && !ComponentObservable.observe( $$react4jv$$_getModel ) ) {
-      return null;
-    }
-    if ( Disposable.isDisposed( $$react4jv$$_getModel ) ) {
+    final ArezComponentLikePropModel.Model $$react4jv$$_candidate0 = observedModel();
+    if ( $$react4jv$$_candidate0 instanceof ComponentObservable && !ComponentObservable.observe( $$react4jv$$_candidate0 ) ) {
       return null;
     }
     SchedulerUtil.pauseUntilRenderLoopComplete();
@@ -169,6 +166,7 @@ abstract class React4j_ArezComponentLikePropModel extends ArezComponentLikePropM
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_ArezComponentLikePropModel view;
 
     @JsConstructor
@@ -179,22 +177,33 @@ abstract class React4j_ArezComponentLikePropModel extends ArezComponentLikePropM
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      if ( Disposable.isNotDisposed( view ) ) {
+        return view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      } else {
+        return false;
+      }
     }
 
     @Override
     public final void componentWillUnmount() {
-      view.$$react4j$$_componentWillUnmount();
+      if ( Disposable.isNotDisposed( view ) ) {
+        view.$$react4j$$_componentWillUnmount();
+      }
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return view.$$react4j$$_render();
+      if ( Disposable.isNotDisposed( view ) ) {
+        return view.$$react4j$$_render();
+      } else {
+        return null;
+      }
     }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_ArezComponentLikePropModel view;
 
     @JsConstructor
@@ -205,28 +214,42 @@ abstract class React4j_ArezComponentLikePropModel extends ArezComponentLikePropM
 
     @Override
     public final void componentDidMount() {
-      view.$$react4j$$_componentDidMount();
+      if ( Disposable.isNotDisposed( view ) ) {
+        view.$$react4j$$_componentDidMount();
+      }
     }
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      if ( Disposable.isNotDisposed( view ) ) {
+        return view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      } else {
+        return false;
+      }
     }
 
     @Override
     public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
-      view.$$react4j$$_componentDidUpdate();
+      if ( Disposable.isNotDisposed( view ) ) {
+        view.$$react4j$$_componentDidUpdate();
+      }
     }
 
     @Override
     public final void componentWillUnmount() {
-      view.$$react4j$$_componentWillUnmount();
+      if ( Disposable.isNotDisposed( view ) ) {
+        view.$$react4j$$_componentWillUnmount();
+      }
     }
 
     @Override
     @Nullable
     public final ReactNode render() {
-      return view.$$react4j$$_render();
+      if ( Disposable.isNotDisposed( view ) ) {
+        return view.$$react4j$$_render();
+      } else {
+        return null;
+      }
     }
   }
 }

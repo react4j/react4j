@@ -1,0 +1,137 @@
+tasks:
+  - id: PLAN-SETUP
+    title: Create planning artifacts for removing input liveness flags
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements, implementation plan, and task board exist in `plans/remove-input-liveness-flags/`.
+      - Resolved Phase 4 decisions are recorded in the planning artifacts.
+    files_touched:
+      - plans/remove-input-liveness-flags/*
+    evidence:
+      - command: planning artifacts created in repository
+        result: completed
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PLAN-APPROVAL
+    title: Capture user review of the Phase 4 plan
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-SETUP
+    acceptance_criteria:
+      - User reviewed the proposed Phase 4 direction.
+      - Immediate-removal rollout and handwritten-member contract are confirmed.
+    files_touched:
+      - plans/remove-input-liveness-flags/*
+    evidence:
+      - command: conversational plan review with user
+        result: approved with immediate removal, `@AutoObserve`, and subclass-accessible member-only contract
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PHASE-4A
+    title: Remove `@Input` liveness members and update API surface artifacts
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - `Input.disposable()`, `Input.observeOnRender()`, and `Input.dependency()` are removed.
+      - `@Input` Javadoc no longer describes liveness flags.
+      - API diff fixtures reflect the three removed annotation members.
+    files_touched:
+      - core/src/main/java/react4j/annotations/Input.java
+      - api-test/**
+      - docs/**
+      - CHANGELOG.md
+    evidence:
+      - command: execution started
+        result: task moved to in_progress before API surface edits
+      - command: update `core/src/main/java/react4j/annotations/Input.java`
+        result: removed `disposable()`, `observeOnRender()`, and `dependency()` and replaced Javadoc with handwritten-member guidance
+      - command: update `api-test/src/test/resources/fixtures/0.212-0.213.json`
+        result: recorded the three removed annotation attributes as breaking api-diff changes
+      - command: bundle exec buildr test_api_diff
+        result: passed; 3 expected breaking annotation-attribute removals matched fixture
+    commit:
+      hash: not_required
+      message: Remove liveness flags from Input
+
+  - id: PHASE-4B
+    title: Add handwritten-member observation discovery and validation
+    status: completed
+    priority: high
+    depends_on:
+      - PHASE-4A
+    acceptance_criteria:
+      - Processor discovers declared and inherited subclass-accessible candidate fields and methods.
+      - Candidate annotations are `@ComponentDependency` and `@AutoObserve`.
+      - Invalid private members and impossible-to-observe candidates fail with processor errors.
+    files_touched:
+      - processor/src/main/java/react4j/processor/*
+      - processor/src/test/**
+    evidence:
+      - command: update processor discovery/validation model
+        result: added handwritten candidate descriptors plus declared/inherited subclass-accessible field/method discovery for `@ComponentDependency` and `@AutoObserve`
+      - command: bundle exec buildr react4j:processor:test
+        result: passed; success/failure fixtures cover inherited members, private-member rejection, runtime-check candidates, and impossible-to-observe cases
+    commit:
+      hash: not_required
+      message: Discover handwritten observation candidates
+
+  - id: PHASE-4C
+    title: Rebuild tracked-render prelude from handwritten candidates
+    status: completed
+    priority: high
+    depends_on:
+      - PHASE-4B
+    acceptance_criteria:
+      - Tracked and maybe-tracking render preludes use handwritten candidate descriptors.
+      - Nullable direct-observation cases use `ComponentObservable.maybeObserve(...)`.
+      - Input-derived prelude, dependency wrapper, constructor disposed check, and builder assertion branches are removed.
+    files_touched:
+      - processor/src/main/java/react4j/processor/*
+      - processor/src/test/**
+    evidence:
+      - command: update `ViewGenerator`, `BuilderGenerator`, `ViewDescriptor`, and `InputDescriptor`
+        result: removed input-derived prelude/lifecycle branches and rebuilt tracking/maybe-tracking prelude generation on handwritten candidates using `observe(...)`, `maybeObserve(...)`, and runtime `instanceof ComponentObservable` checks
+      - command: bundle exec buildr react4j:processor:test
+        result: passed with regenerated fixtures for tracking-only render-prelude behavior
+    commit:
+      hash: not_required
+      message: Generate render observation from handwritten Arez members
+
+  - id: PHASE-4D
+    title: Refresh fixtures, docs, and validation for Phase 4
+    status: completed
+    priority: medium
+    depends_on:
+      - PHASE-4C
+    acceptance_criteria:
+      - Processor fixtures cover success, failure, inherited members, and tracking-only behavior.
+      - Docs and changelog describe the new handwritten-member contract and intentional semantic reduction.
+      - Fast, compatibility, and full validation gates are recorded.
+    files_touched:
+      - processor/src/test/**
+      - docs/**
+      - CHANGELOG.md
+      - api-test/**
+    evidence:
+      - command: refresh processor fixtures and expected outputs
+        result: added/updated success and failure fixtures for handwritten candidate discovery, inherited members, nullable observation, and non-tracking behavior
+      - command: update `CHANGELOG.md`, `AGENTS.md`, and `core/src/main/java/react4j/annotations/Input.java`
+        result: documented the breaking removal and the new handwritten-member contract, including the exclusion of `@CascadeDispose`
+      - command: bundle exec buildr react4j:processor:test
+        result: passed
+      - command: bundle exec buildr test_api_diff
+        result: passed
+      - command: bundle exec buildr test
+        result: failed in downstream-test while building pinned external repo `react4j-drumloop` on branch `master`; downstream `StepButton._cell` uses `@ComponentDependency` on a type that now resolves to `@ArezComponent(observable=DISABLE)`, which is an intentional immediate-breaking Phase 4 incompatibility requiring downstream migration
+    commit:
+      hash: not_required
+      message: Document and validate removal of input liveness flags

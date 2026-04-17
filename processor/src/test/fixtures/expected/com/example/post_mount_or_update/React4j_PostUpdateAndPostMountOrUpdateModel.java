@@ -76,6 +76,7 @@ abstract class React4j_PostUpdateAndPostMountOrUpdateModel extends PostUpdateAnd
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_PostUpdateAndPostMountOrUpdateModel view;
 
     @JsConstructor

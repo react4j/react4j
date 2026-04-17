@@ -89,6 +89,7 @@ abstract class React4j_ExplicitNameOnPropChange extends ExplicitNameOnPropChange
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
+    @Nonnull
     private final React4j_ExplicitNameOnPropChange view;
 
     @JsConstructor

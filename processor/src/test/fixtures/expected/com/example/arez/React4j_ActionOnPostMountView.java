@@ -143,6 +143,7 @@ abstract class React4j_ActionOnPostMountView extends ActionOnPostMountView {
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_ActionOnPostMountView view;
 
     @JsConstructor
@@ -174,6 +175,7 @@ abstract class React4j_ActionOnPostMountView extends ActionOnPostMountView {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_ActionOnPostMountView view;
 
     @JsConstructor

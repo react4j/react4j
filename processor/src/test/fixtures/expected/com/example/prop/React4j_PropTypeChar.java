@@ -77,6 +77,7 @@ abstract class React4j_PropTypeChar extends PropTypeChar {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_PropTypeChar view;
 
     @JsConstructor

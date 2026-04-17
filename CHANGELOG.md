@@ -3,6 +3,8 @@
 ### Unreleased
 
 * Update the `org.realityforge.arez` artifacts to version `0.234`.
+* Breaking: remove `Input.disposable()`, `Input.observeOnRender()`, and `Input.dependency()`.
+* Breaking: tracked render preludes now observe only subclass-accessible handwritten instance fields and zero-arg instance methods annotated with `@ComponentDependency` or `@AutoObserve`; `@CascadeDispose` is not a render-prelude signal and forwarded immutable inputs receive no special liveness handling unless retained in one of those members.
 
 ### [v0.212](https://github.com/react4j/react4j/tree/v0.212) (2026-04-15) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.211...v0.212)
 

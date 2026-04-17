@@ -93,6 +93,7 @@ abstract class React4j_NonnullPropValidate extends NonnullPropValidate {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_NonnullPropValidate view;
 
     @JsConstructor

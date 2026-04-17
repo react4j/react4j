@@ -7,10 +7,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,8 +28,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -48,7 +44,7 @@ import org.realityforge.proton.ProcessorException;
 import org.realityforge.proton.StopWatch;
 
 /**
- * Annotation processor that analyzes React annotated source and generates models from the annotations.
+ * Annotation processor that analyzes React4j annotated source code and generates models from the annotations.
  */
 @SuppressWarnings( "Duplicates" )
 @SupportedAnnotationTypes( Constants.VIEW_CLASSNAME )
@@ -61,10 +57,6 @@ import org.realityforge.proton.StopWatch;
 public final class React4jProcessor
   extends AbstractStandardProcessor
 {
-  private record ObserveOnRenderConfig(boolean enabled, boolean runtimeCheck)
-  {
-  }
-
   private static final String SENTINEL_NAME = "<default>";
   private static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile( "^get([A-Z].*)Default$" );
   private static final Pattern VALIDATE_INPUT_PATTERN = Pattern.compile( "^validate([A-Z].*)$" );
@@ -256,6 +248,7 @@ public final class React4jProcessor
 
     determineViewCapabilities( descriptor, typeElement );
     determineInputs( descriptor, methods );
+    determinePreludeCheckCandidates( descriptor, typeElement, methods );
     determineInputValidatesMethods( descriptor, methods );
     determineOnInputChangeMethods( descriptor, methods );
     determineDefaultInputsMethods( descriptor, methods );
@@ -295,7 +288,6 @@ public final class React4jProcessor
     descriptor.sortInputs();
 
     verifyInputsNotAnnotatedWithArezAnnotations( descriptor );
-    verifyInputsNotCollectionOfArezComponents( descriptor );
 
     return descriptor;
   }
@@ -356,86 +348,6 @@ public final class React4jProcessor
         !modifiers.contains( Modifier.PUBLIC ) &&
         !modifiers.contains( Modifier.PROTECTED );
     }
-  }
-
-  private void verifyInputsNotCollectionOfArezComponents( @Nonnull final ViewDescriptor descriptor )
-  {
-    for ( final InputDescriptor input : descriptor.getInputs() )
-    {
-      final Element element = input.getElement();
-      final TypeMirror returnType = input.getType();
-      if ( TypeKind.DECLARED == returnType.getKind() )
-      {
-        final DeclaredType declaredType = (DeclaredType) returnType;
-        final List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
-        if ( isCollection( declaredType ) )
-        {
-          if ( 1 == typeArguments.size() && isArezComponent( typeArguments.get( 0 ) ) )
-          {
-            throw new ProcessorException( "@Input target is a collection that contains Arez components. " +
-                                          "This is not a safe pattern when the arez components can be disposed.",
-                                          element );
-          }
-        }
-        else if ( isMap( declaredType ) )
-        {
-          if ( 2 == typeArguments.size() &&
-               ( isArezComponent( typeArguments.get( 0 ) ) ||
-                 isArezComponent( typeArguments.get( 1 ) ) ) )
-          {
-            throw new ProcessorException( "@Input target is a collection that contains Arez components. " +
-                                          "This is not a safe pattern when the arez components can be disposed.",
-                                          element );
-          }
-        }
-      }
-      else if ( TypeKind.ARRAY == returnType.getKind() )
-      {
-        final ArrayType arrayType = (ArrayType) returnType;
-        if ( isArezComponent( arrayType.getComponentType() ) )
-        {
-          throw new ProcessorException( "@Input target is an array that contains Arez components. " +
-                                        "This is not a safe pattern when the arez components can be disposed.",
-                                        element );
-        }
-      }
-    }
-  }
-
-  private boolean isCollection( @Nonnull final DeclaredType declaredType )
-  {
-    final TypeElement returnType = (TypeElement) processingEnv.getTypeUtils().asElement( declaredType );
-    final String classname = returnType.getQualifiedName().toString();
-    /*
-     * For the time being lets just list out a bunch of collections. We can ge more specific when/if
-     * it is ever required
-     */
-    return Collection.class.getName().equals( classname ) ||
-           Set.class.getName().equals( classname ) ||
-           List.class.getName().equals( classname ) ||
-           HashSet.class.getName().equals( classname ) ||
-           ArrayList.class.getName().equals( classname );
-  }
-
-  private boolean isMap( @Nonnull final DeclaredType declaredType )
-  {
-    final TypeElement returnType = (TypeElement) processingEnv.getTypeUtils().asElement( declaredType );
-    final String classname = returnType.getQualifiedName().toString();
-    /*
-     * For the time being lets just list out a bunch of collections. We can ge more specific when/if
-     * it is ever required
-     */
-    return Map.class.getName().equals( classname ) || HashMap.class.getName().equals( classname );
-  }
-
-  private boolean isArezComponent( @Nonnull final TypeMirror typeMirror )
-  {
-    return typeMirror instanceof DeclaredType &&
-           processingEnv.getTypeUtils()
-             .asElement( typeMirror )
-             .getAnnotationMirrors()
-             .stream()
-             .anyMatch( a -> a.getAnnotationType().toString().equals( Constants.AREZ_COMPONENT_CLASSNAME ) );
   }
 
   private void verifyInputsNotAnnotatedWithArezAnnotations( @Nonnull final ViewDescriptor descriptor )
@@ -832,16 +744,16 @@ public final class React4jProcessor
       .filter( m -> AnnotationsUtil.hasAnnotationOfType( m, Constants.INPUT_CLASSNAME ) )
       .map( m -> createMethodInputDescriptor( descriptor, methods, m ) )
       .forEach( input -> addInputDescriptor( inputs, input ) );
-    descriptor.getConstructor().getParameters()
+    descriptor
+      .getConstructor()
+      .getParameters()
       .stream()
       .filter( this::isInputParameter )
-      .map( p -> createConstructorInputDescriptor( descriptor, methods, p ) )
+      .map( p -> createConstructorInputDescriptor( descriptor, p ) )
       .forEach( input -> addInputDescriptor( inputs, input ) );
 
-    final InputDescriptor childrenInput =
-      inputs.stream().filter( p -> p.getName().equals( "children" ) ).findAny().orElse( null );
-    final InputDescriptor childInput =
-      inputs.stream().filter( p -> p.getName().equals( "child" ) ).findAny().orElse( null );
+    final var childrenInput = inputs.stream().filter( p -> p.getName().equals( "children" ) ).findAny().orElse( null );
+    final var childInput = inputs.stream().filter( p -> p.getName().equals( "child" ) ).findAny().orElse( null );
     if ( null != childrenInput && null != childInput )
     {
       throw new ProcessorException( "Multiple candidate children @Input annotated methods: " +
@@ -853,9 +765,89 @@ public final class React4jProcessor
     descriptor.setInputs( inputs );
   }
 
+  private boolean isDisposableDerivableAtCompileTime( @Nonnull final Element type )
+  {
+    final var kind = type.getKind();
+    if ( ElementKind.CLASS == kind &&
+         AnnotationsUtil.hasAnnotationOfType( type, Constants.AREZ_COMPONENT_CLASSNAME ) )
+    {
+      return true;
+    }
+    else if ( ElementKind.CLASS == kind || ElementKind.INTERFACE == kind )
+    {
+      if ( AnnotationsUtil.hasAnnotationOfType( type, Constants.AREZ_COMPONENT_LIKE_CLASSNAME ) )
+      {
+        return true;
+      }
+      else
+      {
+        final var typeElement = processingEnv.getElementUtils().getTypeElement( Constants.DISPOSABLE_CLASSNAME );
+        return null != typeElement &&
+               processingEnv.getTypeUtils().isAssignable( type.asType(), typeElement.asType() );
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  private void determinePreludeCheckCandidates( @Nonnull final ViewDescriptor descriptor,
+                                                @Nonnull final TypeElement typeElement,
+                                                @Nonnull final List<ExecutableElement> methods )
+  {
+    final var candidates = new ArrayList<PreludeChecksDescriptor>();
+
+    final var fields = new LinkedHashMap<String, VariableElement>();
+    for ( final var member : processingEnv.getElementUtils().getAllMembers( typeElement ) )
+    {
+      if ( ElementKind.FIELD == member.getKind() )
+      {
+        fields.putIfAbsent( member.getSimpleName().toString(), (VariableElement) member );
+      }
+    }
+
+    for ( final var field : fields.values() )
+    {
+      for ( final var annotation : new String[]{ Constants.COMPONENT_DEPENDENCY_CLASSNAME,
+                                                 Constants.AUTO_OBSERVE_CLASSNAME } )
+      {
+        if ( AnnotationsUtil.hasAnnotationOfType( field, annotation ) )
+        {
+          MemberChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
+                                                                 Constants.VIEW_CLASSNAME,
+                                                                 annotation,
+                                                                 field );
+          final var fieldType = processingEnv.getTypeUtils().asMemberOf( descriptor.getDeclaredType(), field );
+          final var observationMode = determinePreludeCheckObservationMode( field, fieldType );
+          candidates.add( new PreludeChecksDescriptor( field, fieldType, observationMode ) );
+        }
+      }
+    }
+    for ( final var method : methods )
+    {
+      for ( final var annotation : new String[]{ Constants.COMPONENT_DEPENDENCY_CLASSNAME,
+                                                 Constants.AUTO_OBSERVE_CLASSNAME } )
+      {
+        if ( AnnotationsUtil.hasAnnotationOfType( method, annotation ) )
+        {
+          MemberChecks.mustNotBePackageAccessInDifferentPackage( descriptor.getElement(),
+                                                                 Constants.VIEW_CLASSNAME,
+                                                                 annotation,
+                                                                 method );
+          final var returnType = resolveMethodType( descriptor, method ).getReturnType();
+          final var observationMode = determinePreludeCheckObservationMode( method, returnType );
+          candidates.add( new PreludeChecksDescriptor( method, returnType, observationMode ) );
+        }
+      }
+    }
+
+    descriptor.setPreludeCheckCandidates( candidates );
+  }
+
   private void addInputDescriptor( @Nonnull final List<InputDescriptor> inputs, @Nonnull final InputDescriptor input )
   {
-    final InputDescriptor existing = inputs.stream().filter( p -> p.getName().equals( input.getName() ) ).findAny().orElse( null );
+    final var existing = inputs.stream().filter( p -> p.getName().equals( input.getName() ) ).findAny().orElse( null );
     if ( null != existing )
     {
       throw new ProcessorException( "Multiple @Input declarations for input named '" + input.getName() +
@@ -937,9 +929,8 @@ public final class React4jProcessor
       .getAnnotationValue( method, Constants.INPUT_CLASSNAME, "qualifier" ).getValue();
     final boolean contextInput = isContextInput( method );
     final Element inputType = processingEnv.getTypeUtils().asElement( returnType );
-    final boolean observable = isInputObservable( methods, method, false );
-    final boolean disposable = null != inputType && isInputDisposable( method, inputType );
-    final ObserveOnRenderConfig observeOnRender = resolveObserveOnRender( method, returnType, inputType );
+    final boolean observable = isInputObservable( methods, method );
+    final boolean disposable = null != inputType && isDisposableDerivableAtCompileTime( inputType );
     final TypeName typeName = TypeName.get( returnType );
     if ( typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation( method ) )
     {
@@ -958,11 +949,8 @@ public final class React4jProcessor
         .getValue() )
         .getSimpleName().toString();
 
-    final boolean dependency = isInputDependency( method, false, disposable );
-
     final InputDescriptor inputDescriptor =
       new InputDescriptor( descriptor,
-                           InputDescriptor.Origin.METHOD,
                            name,
                            qualifier,
                            method,
@@ -970,14 +958,10 @@ public final class React4jProcessor
                            method,
                            methodType,
                            null,
-                           inputType,
                            contextInput,
                            true,
                            observable,
                            disposable,
-                           dependency,
-                           observeOnRender.enabled(),
-                           observeOnRender.runtimeCheck(),
                            null,
                            requiredValue );
     if ( inputDescriptor.mayNeedMutableInputAccessedInPostConstructInvariant() )
@@ -994,12 +978,10 @@ public final class React4jProcessor
 
   @Nonnull
   private InputDescriptor createConstructorInputDescriptor( @Nonnull final ViewDescriptor descriptor,
-                                                            @Nonnull final List<ExecutableElement> methods,
                                                             @Nonnull final VariableElement parameter )
   {
     final String name = deriveInputName( parameter );
     final TypeMirror type = parameter.asType();
-    final boolean immutable = true;
     if ( !type.getKind().isPrimitive() &&
          !AnnotationsUtil.hasNonnullAnnotation( parameter ) &&
          !AnnotationsUtil.hasNullableAnnotation( parameter ) &&
@@ -1020,10 +1002,19 @@ public final class React4jProcessor
       .getAnnotationValue( parameter, Constants.INPUT_CLASSNAME, "qualifier" ).getValue();
     final boolean contextInput = isContextInput( parameter );
     final Element inputType = processingEnv.getTypeUtils().asElement( type );
-    isInputObservable( methods, parameter, immutable );
-    final boolean observable = false;
-    final boolean disposable = null != inputType && isInputDisposable( parameter, inputType );
-    final ObserveOnRenderConfig observeOnRender = resolveObserveOnRender( parameter, type, inputType );
+    //final boolean observable = isInputObservable( methods, method );
+    final var observable =
+      ( (VariableElement) AnnotationsUtil
+        .getAnnotationValue( parameter, Constants.INPUT_CLASSNAME, "observable" )
+        .getValue() )
+        .getSimpleName()
+        .toString();
+    if ( "ENABLE".equals( observable ) )
+    {
+      throw new ProcessorException( "@Input target must not specify observable=ENABLE " +
+                                    "for an immutable input.", parameter );
+    }
+    final boolean disposable = null != inputType && isDisposableDerivableAtCompileTime( inputType );
     final TypeName typeName = TypeName.get( type );
     if ( typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation( parameter ) )
     {
@@ -1042,10 +1033,8 @@ public final class React4jProcessor
       ( (VariableElement) AnnotationsUtil.getAnnotationValue( parameter, Constants.INPUT_CLASSNAME, "require" )
         .getValue() )
         .getSimpleName().toString();
-    final boolean dependency = isInputDependency( parameter, true, disposable );
 
     return new InputDescriptor( descriptor,
-                                InputDescriptor.Origin.CONSTRUCTOR_PARAMETER,
                                 name,
                                 qualifier,
                                 parameter,
@@ -1053,14 +1042,10 @@ public final class React4jProcessor
                                 null,
                                 null,
                                 parameter,
-                                inputType,
                                 contextInput,
                                 false,
-                                observable,
+                                false,
                                 disposable,
-                                dependency,
-                                observeOnRender.enabled(),
-                                observeOnRender.runtimeCheck(),
                                 strategy,
                                 requiredValue );
   }
@@ -1582,22 +1567,13 @@ public final class React4jProcessor
   }
 
   private boolean isInputObservable( @Nonnull final List<ExecutableElement> methods,
-                                     @Nonnull final Element element,
-                                     final boolean immutable )
+                                     @Nonnull final Element element )
   {
-    final VariableElement parameter = (VariableElement)
+    final var parameter = (VariableElement)
       AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_CLASSNAME, "observable" ).getValue();
     return switch ( parameter.getSimpleName().toString() )
     {
-      case "ENABLE" ->
-      {
-        if ( immutable )
-        {
-          throw new ProcessorException( "@Input target must not specify observable=ENABLE for an immutable input.",
-                                        element );
-        }
-        yield true;
-      }
+      case "ENABLE" -> true;
       case "DISABLE" -> false;
       default -> hasAnyArezObserverMethods( methods );
     };
@@ -1613,147 +1589,62 @@ public final class React4jProcessor
                           ( !m.getParameters().isEmpty() || !m.getSimpleName().toString().equals( "trackRender" ) ) ) );
   }
 
-  private boolean isInputDependency( @Nonnull final Element element,
-                                     final boolean immutable,
-                                     final boolean disposable )
-  {
-    final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_CLASSNAME, "dependency" ).getValue();
-    return switch ( parameter.getSimpleName().toString() )
-    {
-      case "ENABLE" ->
-      {
-        if ( !immutable )
-        {
-          throw new ProcessorException( "@Input target must be immutable if dependency=ENABLE is specified",
-                                        element );
-        }
-        else if ( !disposable )
-        {
-          throw new ProcessorException( "@Input target must be disposable if dependency=ENABLE is specified",
-                                        element );
-        }
-        yield true;
-      }
-      case "DISABLE" -> false;
-      default -> immutable && disposable;
-    };
-  }
-
-  private boolean isInputDisposable( @Nonnull final Element element, @Nonnull final Element inputType )
-  {
-    final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_CLASSNAME, "disposable" ).getValue();
-    return switch ( parameter.getSimpleName().toString() )
-    {
-      case "ENABLE" -> true;
-      case "DISABLE" -> false;
-      default -> (
-                   ElementKind.CLASS == inputType.getKind() &&
-                   AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_CLASSNAME )
-                 ) ||
-                 (
-                   ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
-                   AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_LIKE_CLASSNAME )
-                 );
-    };
-  }
-
   @Nonnull
-  private ObserveOnRenderConfig resolveObserveOnRender( @Nonnull final Element element,
-                                                        @Nonnull final TypeMirror returnType,
-                                                        @Nullable final Element inputType )
+  private ObserveMode determinePreludeCheckObservationMode( @Nonnull final Element element,
+                                                            @Nonnull final TypeMirror type )
   {
-    final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_CLASSNAME, "observeOnRender" ).getValue();
-    final String value = parameter.getSimpleName().toString();
-    if ( "DISABLE".equals( value ) )
+    if ( type.getKind().isPrimitive() )
     {
-      return new ObserveOnRenderConfig( false, false );
+      return ObserveMode.NO_OBSERVE;
     }
     else
     {
-      final boolean assignableToComponentObservable = isAssignableToComponentObservable( returnType );
-      final ArezComponentObservableResolution arezObservableResolution =
-        inputType instanceof TypeElement ?
-        resolveArezComponentObservable( (TypeElement) inputType ) :
-        ArezComponentObservableResolution.NOT_AREZ_COMPONENT;
-
-      if ( "ENABLE".equals( value ) )
+      final var typeElement = processingEnv.getTypeUtils().asElement( type );
+      if ( typeElement instanceof TypeElement )
       {
-        if ( ArezComponentObservableResolution.DISABLED == arezObservableResolution )
+        final var resolution = resolveArezComponentObservable( (TypeElement) typeElement );
+        if ( ArezComponentObservableResolution.DISABLED == resolution )
         {
-          throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
-                                        "is annotated with @ArezComponent and resolves observable=DISABLE.",
-                                        element );
+          return ObserveMode.NO_OBSERVE;
         }
-        else if ( assignableToComponentObservable )
+        else if ( ArezComponentObservableResolution.ENABLED == resolution || isAssignableToComponentObservable( type ) )
         {
-          return new ObserveOnRenderConfig( true, false );
+          return AnnotationsUtil.hasNonnullAnnotation( element ) ?
+                 ObserveMode.OBSERVE_NONNULL :
+                 ObserveMode.OBSERVE_NULLABLE;
         }
-        else if ( null == inputType || !canTypeUseRuntimeComponentObservableCheck( inputType ) )
+        else if ( canTypeUseRuntimeComponentObservableCheck( type, typeElement ) )
         {
-          throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
-                                        "can never implement arez.component.ComponentObservable.",
-                                        element );
-        }
-        else if ( isFinalClass( inputType ) )
-        {
-          throw new ProcessorException( "@Input target has specified observeOnRender=ENABLE but the return type " +
-                                        "is a final class that does not implement arez.component.ComponentObservable.",
-                                        element );
+          // Type does not implement `arez.component.ComponentObservable` but it is not final so try at runtime
+          return ObserveMode.RUNTIME_CHECK;
         }
         else
         {
-          return new ObserveOnRenderConfig( true, true );
+          // Can never implement arez.component.ComponentObservable
+          return ObserveMode.NO_OBSERVE;
         }
       }
       else
       {
-        assert "AUTODETECT".equals( value );
-
-        if ( assignableToComponentObservable )
-        {
-          return new ObserveOnRenderConfig( true, false );
-        }
-        else if ( ArezComponentObservableResolution.ENABLED == arezObservableResolution )
-        {
-          return new ObserveOnRenderConfig( true, false );
-        }
-        else if ( isArezComponentLike( inputType ) )
-        {
-          return new ObserveOnRenderConfig( true, true );
-        }
-        else
-        {
-          return new ObserveOnRenderConfig( false, false );
-        }
+        return ObserveMode.NO_OBSERVE;
       }
     }
   }
 
-  private boolean canTypeUseRuntimeComponentObservableCheck( @Nonnull final Element inputType )
+  private boolean canTypeUseRuntimeComponentObservableCheck( @Nonnull final TypeMirror type,
+                                                             @Nullable final Element typeElement )
   {
-    return ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind();
-  }
-
-  private boolean isFinalClass( @Nonnull final Element inputType )
-  {
-    return ElementKind.CLASS == inputType.getKind() && inputType.getModifiers().contains( Modifier.FINAL );
+    return TypeKind.TYPEVAR == type.getKind() ||
+           null != typeElement &&
+           ( ElementKind.INTERFACE == typeElement.getKind() ||
+             ( ElementKind.CLASS == typeElement.getKind() &&
+               !typeElement.getModifiers().contains( Modifier.FINAL ) ) );
   }
 
   private boolean isAssignableToComponentObservable( @Nonnull final TypeMirror type )
   {
-    final TypeElement typeElement =
-      processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_OBSERVABLE_CLASSNAME );
+    final var typeElement = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_OBSERVABLE_CLASSNAME );
     return null != typeElement && processingEnv.getTypeUtils().isAssignable( type, typeElement.asType() );
-  }
-
-  private boolean isArezComponentLike( @Nullable final Element inputType )
-  {
-    return null != inputType &&
-           ( ElementKind.CLASS == inputType.getKind() || ElementKind.INTERFACE == inputType.getKind() ) &&
-           AnnotationsUtil.hasAnnotationOfType( inputType, Constants.AREZ_COMPONENT_LIKE_CLASSNAME );
   }
 
   @Nonnull

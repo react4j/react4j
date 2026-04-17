@@ -1,5 +1,6 @@
 package com.example.input;
 
+import arez.Disposable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
@@ -81,6 +82,7 @@ final class ArezComponentInputViewBuilder {
         pure = true
     )
     public final Step1 model(@Nullable final ArezComponentInputView.Model model) {
+      assert Disposable.isNotDisposed( model );
       _element.input( React4j_ArezComponentInputView.Inputs.model, model );
       return this;
     }

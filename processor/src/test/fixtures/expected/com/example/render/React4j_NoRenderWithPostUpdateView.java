@@ -63,6 +63,7 @@ abstract class React4j_NoRenderWithPostUpdateView extends NoRenderWithPostUpdate
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
+    @Nonnull
     private final React4j_NoRenderWithPostUpdateView view;
 
     @JsConstructor

@@ -411,7 +411,7 @@ final class BuilderGenerator
       }
     }
 
-    if ( null != input && input.isDependency() )
+    if ( null != input && input.isDisposable() )
     {
       method.addStatement( "assert $T.isNotDisposed( $N )", DISPOSABLE_CLASSNAME, stepMethod.getName() );
     }
