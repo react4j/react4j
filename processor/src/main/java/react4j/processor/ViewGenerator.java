@@ -1,15 +1,15 @@
 package react4j.processor;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.WildcardTypeName;
+import com.palantir.javapoet.AnnotationSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.FieldSpec;
+import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.ParameterSpec;
+import com.palantir.javapoet.ParameterizedTypeName;
+import com.palantir.javapoet.TypeName;
+import com.palantir.javapoet.TypeSpec;
+import com.palantir.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -90,8 +90,10 @@ final class ViewGenerator
   @Nonnull
   private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get( "jsinterop.base", "JsPropertyMap" );
   @Nonnull
+  public static final ClassName OBJECT = ClassName.get( "java.lang", "Object" );
+  @Nonnull
   private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
-    ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, TypeName.OBJECT );
+    ParameterizedTypeName.get( JS_PROPERTY_MAP_CLASSNAME, OBJECT );
   @Nonnull
   private static final ClassName REACT_NODE_CLASSNAME = ClassName.get( "react4j", "ReactNode" );
   @Nonnull
@@ -522,7 +524,8 @@ final class ViewGenerator
       addModifiers( Modifier.ABSTRACT ).
       addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).
       addAnnotation( OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME ).
-      returns( ParameterizedTypeName.get( OBSERVABLE_CLASSNAME, WildcardTypeName.subtypeOf( TypeName.OBJECT ) ) );
+      returns( ParameterizedTypeName.get( OBSERVABLE_CLASSNAME,
+                                          WildcardTypeName.subtypeOf( OBJECT ) ) );
   }
 
   @Nonnull

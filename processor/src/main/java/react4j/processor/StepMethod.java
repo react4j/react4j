@@ -1,6 +1,6 @@
 package react4j.processor;
 
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.TypeName;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

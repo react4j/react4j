@@ -1,17 +1,16 @@
 package react4j.processor;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.FieldSpec;
+import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.ParameterSpec;
+import com.palantir.javapoet.TypeName;
+import com.palantir.javapoet.TypeSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
@@ -145,7 +144,7 @@ final class FactoryGenerator
                                           .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                                           .build() )
                          .returns( descriptor.getEnhancedClassName() )
-                         .addStatement( "return InjectSupport.create( view )", descriptor.getArezClassName() )
+                         .addStatement( "return InjectSupport.create( view )" )
                          .build() );
   }
 
@@ -284,20 +283,20 @@ final class FactoryGenerator
   private static String getConverter( @Nonnull final InputDescriptor input )
   {
     return switch ( input.getType().getKind() )
-      {
-        case BOOLEAN -> "asBoolean";
-        case BYTE -> "asByte";
-        case CHAR -> "asChar";
-        case DOUBLE -> "asDouble";
-        case FLOAT -> "asFloat";
-        case INT -> "asInt";
-        case LONG -> "asLong";
-        case SHORT -> "asShort";
-        case TYPEVAR, ARRAY -> "cast";
-        case DECLARED -> input.getType().toString().equals( "java.lang.String" ) ? "asString" : "cast";
-        default -> throw new ProcessorException( "Return type of @Input method is not yet handled. Type: " +
-                                                 input.getType().getKind(),
-                                                 input.getElement() );
-      };
+    {
+      case BOOLEAN -> "asBoolean";
+      case BYTE -> "asByte";
+      case CHAR -> "asChar";
+      case DOUBLE -> "asDouble";
+      case FLOAT -> "asFloat";
+      case INT -> "asInt";
+      case LONG -> "asLong";
+      case SHORT -> "asShort";
+      case TYPEVAR, ARRAY -> "cast";
+      case DECLARED -> input.getType().toString().equals( "java.lang.String" ) ? "asString" : "cast";
+      default -> throw new ProcessorException( "Return type of @Input method is not yet handled. Type: " +
+                                               input.getType().getKind(),
+                                               input.getElement() );
+    };
   }
 }

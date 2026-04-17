@@ -156,7 +156,7 @@ define 'react4j' do
       jar.enhance do |f|
         Buildr::Shade.shade(f,
                             f,
-                            'com.squareup.javapoet' => 'react4j.processor.vendor.javapoet',
+                            'com.palantir.javapoet' => 'react4j.processor.vendor.javapoet',
                             'org.realityforge.proton' => 'react4j.processor.vendor.proton')
       end
     end
