@@ -636,12 +636,7 @@ final class ViewGenerator
                          .addAnnotation( GeneratorUtil.NULLABLE_CLASSNAME )
                          .build() );
 
-    final var observableInputs =
-      descriptor.getInputs()
-        .stream()
-        .filter( InputDescriptor::isObservable )
-        .toList();
-
+    final var observableInputs = descriptor.getObservableInputs();
     if ( !observableInputs.isEmpty() )
     {
       method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
@@ -662,14 +657,7 @@ final class ViewGenerator
       method.addCode( validateBlock.build() );
     }
 
-    final var updateOnChangeInputs =
-      descriptor
-        .getInputs()
-        .stream()
-        .filter( InputDescriptor::shouldUpdateOnChange )
-        // Observable properties already checked above
-        .filter( p -> !p.isObservable() )
-        .toList();
+    final var updateOnChangeInputs = descriptor.getUpdateOnChangeInputs();
 
     if ( observableInputs.isEmpty() && updateOnChangeInputs.isEmpty() )
     {

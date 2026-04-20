@@ -88,6 +88,8 @@ final class ViewDescriptor
   private List<PreludeChecksDescriptor> _preludeCheckCandidates;
   @Nullable
   private Boolean _hasDisposableInput;
+  @Nullable
+  private Boolean _hasNoValidateMethod;
 
   ViewDescriptor( @Nonnull final String name,
                   @Nonnull final TypeElement element,
@@ -248,6 +250,15 @@ final class ViewDescriptor
     return _hasDisposableInput;
   }
 
+  boolean hasNoValidateMethod()
+  {
+    if ( null == _hasNoValidateMethod )
+    {
+      _hasNoValidateMethod = getInputs().stream().noneMatch( InputDescriptor::hasValidateMethod );
+    }
+    return _hasNoValidateMethod;
+  }
+
   @Nonnull
   List<InputDescriptor> getImmutableInputs()
   {
@@ -278,6 +289,28 @@ final class ViewDescriptor
       .map( parameter -> (VariableElement) parameter )
       .filter( parameter -> !AnnotationsUtil.hasAnnotationOfType( parameter, Constants.INPUT_CLASSNAME ) )
       .toList();
+  }
+
+  @Nonnull
+  List<InputDescriptor> getUpdateOnChangeInputs()
+  {
+    return
+      getInputs()
+        .stream()
+        .filter( InputDescriptor::shouldUpdateOnChange )
+        // Observable properties already checked above
+        .filter( p -> !p.isObservable() )
+        .toList();
+  }
+
+  @Nonnull
+  List<InputDescriptor> getObservableInputs()
+  {
+    return
+      getInputs()
+        .stream()
+        .filter( InputDescriptor::isObservable )
+        .toList();
   }
 
   @Nonnull
@@ -555,7 +588,11 @@ final class ViewDescriptor
 
   boolean generateShouldComponentUpdate()
   {
-    return generateShouldComponentUpdateInLiteLifecycle() || shouldValidateInputs();
+    return generateShouldComponentUpdateInLiteLifecycle() ||
+           shouldValidateInputs() &&
+           ( !getObservableInputs().isEmpty() ||
+             !getUpdateOnChangeInputs().isEmpty() ||
+             trackRender() );
   }
 
   boolean generateShouldComponentUpdateInLiteLifecycle()
