@@ -44,12 +44,6 @@ abstract class React4j_MultiPublishView extends MultiPublishView {
     return viewConstructor;
   }
 
-  private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextInputs) {
-    assert null != nextInputs;
-    return false;
-  }
-
   private void $$react4j$$_componentWillUnmount() {
     ((Arez_React4j_MultiPublishView) this).dispose();
   }
@@ -94,7 +88,7 @@ abstract class React4j_MultiPublishView extends MultiPublishView {
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      return false;
     }
 
     @Override

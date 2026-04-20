@@ -45,12 +45,6 @@ abstract class React4j_ImmutablePropTypeArezComponentLikeClass extends Immutable
     return viewConstructor;
   }
 
-  private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextInputs) {
-    assert null != nextInputs;
-    return false;
-  }
-
   private void $$react4j$$_componentWillUnmount() {
     ((Arez_React4j_ImmutablePropTypeArezComponentLikeClass) this).dispose();
   }
@@ -94,11 +88,7 @@ abstract class React4j_ImmutablePropTypeArezComponentLikeClass extends Immutable
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if ( Disposable.isNotDisposed( view ) ) {
-        return view.$$react4j$$_shouldComponentUpdate( nextInputs );
-      } else {
-        return false;
-      }
+      return false;
     }
 
     @Override

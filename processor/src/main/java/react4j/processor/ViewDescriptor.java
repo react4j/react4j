@@ -581,23 +581,20 @@ final class ViewDescriptor
     // If both modes have the same lifecycle hooks then we avoid generating a lite variant.
     return ( generateComponentDidUpdateInLiteLifecycle() != generateComponentDidUpdate() ||
              generateComponentWillUnmountInLiteLifecycle() != generateComponentWillUnmount() ||
-             generateShouldComponentUpdateInLiteLifecycle() != generateShouldComponentUpdate() ||
              generateComponentDidMountInLiteLifecycle() != generateComponentDidMount() ) &&
            shouldGenerateLifecycle();
   }
 
   boolean generateShouldComponentUpdate()
   {
-    return generateShouldComponentUpdateInLiteLifecycle() ||
-           shouldValidateInputs() &&
-           ( !getObservableInputs().isEmpty() ||
-             !getUpdateOnChangeInputs().isEmpty() ||
-             trackRender() );
+    return trackRender() || hasObservableInputs() || !getUpdateOnChangeInputs().isEmpty() || shouldValidateInputs();
   }
 
   boolean generateShouldComponentUpdateInLiteLifecycle()
   {
-    return true; // type != STATELESS || hasObservableInputs() || hasUpdateOnChangeInputs();
+    // We currently always generate shouldComponentUpdate. If we happen to be a non-tracking view
+    // with no mutable inputs and no inputs that are validated, then we just return false to block re-render
+    return true;
   }
 
   boolean generateComponentDidCatch()

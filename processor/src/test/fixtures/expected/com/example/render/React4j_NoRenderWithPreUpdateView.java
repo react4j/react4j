@@ -43,12 +43,6 @@ abstract class React4j_NoRenderWithPreUpdateView extends NoRenderWithPreUpdateVi
     return viewConstructor;
   }
 
-  private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextInputs) {
-    assert null != nextInputs;
-    return false;
-  }
-
   private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevInputs) {
     preUpdate();
   }
@@ -77,7 +71,7 @@ abstract class React4j_NoRenderWithPreUpdateView extends NoRenderWithPreUpdateVi
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      return false;
     }
 
     @Override

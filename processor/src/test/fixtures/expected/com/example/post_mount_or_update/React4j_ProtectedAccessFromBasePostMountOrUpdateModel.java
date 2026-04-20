@@ -45,12 +45,6 @@ abstract class React4j_ProtectedAccessFromBasePostMountOrUpdateModel extends Pro
     return viewConstructor;
   }
 
-  private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextInputs) {
-    assert null != nextInputs;
-    return false;
-  }
-
   private void $$react4j$$_componentDidMount() {
     postMountOrUpdate();
   }
@@ -97,7 +91,7 @@ abstract class React4j_ProtectedAccessFromBasePostMountOrUpdateModel extends Pro
 
     @Override
     public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      return view.$$react4j$$_shouldComponentUpdate( nextInputs );
+      return false;
     }
 
     @Override

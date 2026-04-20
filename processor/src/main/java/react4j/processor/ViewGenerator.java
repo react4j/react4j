@@ -1290,10 +1290,9 @@ final class ViewGenerator
       {
         builder.addSuperinterface( ON_COMPONENT_DID_UPDATE_CLASSNAME );
       }
-      if ( descriptor.generateShouldComponentUpdate() )
-      {
-        builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
-      }
+      // We currently always generate shouldComponentUpdate. If we happen to be a non-tracking view
+      // with no mutable inputs and no inputs that are validated, then we just return false to block re-render
+      builder.addSuperinterface( ON_COMPONENT_SHOULD_UPDATE_CLASSNAME );
       if ( descriptor.generateComponentWillUnmount() )
       {
         builder.addSuperinterface( ON_COMPONENT_WILL_UNMOUNT_CLASSNAME );
@@ -1444,12 +1443,17 @@ final class ViewGenerator
       // We add this so the DevTool sees any debug data saved
       builder.addMethod( buildNativeViewDidMount( descriptor ) );
     }
-    if ( lite ?
-         descriptor.generateShouldComponentUpdateInLiteLifecycle() :
-         descriptor.generateShouldComponentUpdate() )
+    if ( descriptor.generateShouldComponentUpdateInLiteLifecycle() && !descriptor.generateShouldComponentUpdate() )
     {
-      builder.addMethod( buildNativeShouldComponentUpdate( descriptor ) );
+      builder.addMethod( buildNativeShouldComponentUpdate( descriptor, true ) );
     }
+    else if ( lite ?
+              descriptor.generateShouldComponentUpdateInLiteLifecycle() :
+              descriptor.generateShouldComponentUpdate() )
+    {
+      builder.addMethod( buildNativeShouldComponentUpdate( descriptor, false ) );
+    }
+
     if ( descriptor.generateComponentPreUpdate() )
     {
       builder.addMethod( buildNativeViewPreUpdate( descriptor ) );
@@ -1530,7 +1534,8 @@ final class ViewGenerator
   }
 
   @Nonnull
-  private static MethodSpec buildNativeShouldComponentUpdate( @Nonnull final ViewDescriptor descriptor )
+  private static MethodSpec buildNativeShouldComponentUpdate( @Nonnull final ViewDescriptor descriptor,
+                                                              final boolean fastReturnFalse )
   {
     final var method = MethodSpec
       .methodBuilder( "shouldComponentUpdate" )
@@ -1541,7 +1546,11 @@ final class ViewGenerator
                        .builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextInputs", Modifier.FINAL )
                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                        .build() );
-    if ( descriptor.hasDisposableInput() )
+    if ( fastReturnFalse )
+    {
+      method.addStatement( "return false" );
+    }
+    else if ( descriptor.hasDisposableInput() )
     {
       final var block = CodeBlock.builder();
       block.beginControlFlow( "if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD );
