@@ -1,11 +1,12 @@
 package react4j.processor;
 
 import java.util.Comparator;
+import javax.annotation.Nonnull;
 
 /**
  * Sort inputs.
- * Non-optional inputs in their declared order come first, then optional inputs in their
- * declared order and finally the child or children input.
+ * Non-optional inputs come first, then optional inputs and finally the child or children input.
+ * Within each group, constructor parameter inputs precede method inputs.
  */
 final class InputComparator
   implements Comparator<InputDescriptor>
@@ -17,7 +18,7 @@ final class InputComparator
   }
 
   @Override
-  public int compare( final InputDescriptor o1, final InputDescriptor o2 )
+  public int compare( @Nonnull final InputDescriptor o1, @Nonnull final InputDescriptor o2 )
   {
     if ( o1.isSpecialChildrenInput() )
     {
@@ -32,6 +33,14 @@ final class InputComparator
       return -1;
     }
     else if ( o1.isOptional() && o2.isRequired() )
+    {
+      return 1;
+    }
+    else if ( o1.isImmutable() && o2.isMethodInput() )
+    {
+      return -1;
+    }
+    else if ( o1.isMethodInput() && o2.isImmutable() )
     {
       return 1;
     }

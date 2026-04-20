@@ -1,4 +1,4 @@
-package com.example.prop;
+package com.example.input;
 
 import arez.Disposable;
 import arez.annotations.ArezComponent;
@@ -19,20 +19,19 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "com_example_prop_ImmutableMixedInputModel",
+    name = "com_example_input_InputOrderingView",
     disposeNotifier = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel {
+abstract class React4j_InputOrderingView extends InputOrderingView {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  React4j_ImmutableMixedInputModel(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
-      @Nullable final String myImmutableProp) {
-    super( myImmutableProp );
+  React4j_InputOrderingView(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
+      final boolean paramZ, final boolean paramP) {
+    super( paramZ, paramP );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
 
@@ -40,33 +39,44 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutableMixedInputModel" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "InputOrderingView" );
     }
     return viewConstructor;
   }
 
-  @Nullable
   @Override
-  String getMyMutableProp() {
-    if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myMutableProp ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myMutableProp ).asString() : null;
-    } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myMutableProp ) );
-    }
+  boolean paramB() {
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.paramB ).asBoolean();
+  }
+
+  @Override
+  boolean paramC() {
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.paramC ).asBoolean();
+  }
+
+  @Override
+  boolean paramA() {
+    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.paramA ).asBoolean();
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
-    if ( !Js.isTripleEqual( inputs.get( Inputs.myMutableProp ), nextInputs.get( Inputs.myMutableProp ) ) ) {
+    if ( !Js.isTripleEqual( inputs.get( Inputs.paramB ), nextInputs.get( Inputs.paramB ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( inputs.get( Inputs.paramC ), nextInputs.get( Inputs.paramC ) ) ) {
+      return true;
+    }
+    if ( !Js.isTripleEqual( inputs.get( Inputs.paramA ), nextInputs.get( Inputs.paramA ) ) ) {
       return true;
     }
     return false;
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ImmutableMixedInputModel) this).dispose();
+    ((Arez_React4j_InputOrderingView) this).dispose();
   }
 
   @Nullable
@@ -84,9 +94,15 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
   }
 
   static final class Inputs {
-    static final String myImmutableProp = React.shouldMinimizeInputKeys() ? "a" : "myImmutableProp";
+    static final String paramZ = React.shouldMinimizeInputKeys() ? "a" : "paramZ";
 
-    static final String myMutableProp = React.shouldMinimizeInputKeys() ? "b" : "myMutableProp";
+    static final String paramP = React.shouldMinimizeInputKeys() ? "b" : "paramP";
+
+    static final String paramB = React.shouldMinimizeInputKeys() ? "c" : "paramB";
+
+    static final String paramC = React.shouldMinimizeInputKeys() ? "d" : "paramC";
+
+    static final String paramA = React.shouldMinimizeInputKeys() ? "e" : "paramA";
 
     private Inputs() {
     }
@@ -94,18 +110,14 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ImmutableMixedInputModel view;
+    private final React4j_InputOrderingView view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      String myImmutableProp;
-      if ( React.shouldCheckInvariants() ) {
-        myImmutableProp = null != inputs.getAsAny( Inputs.myImmutableProp ) ? inputs.getAsAny( Inputs.myImmutableProp ).asString() : null;
-      } else {
-        myImmutableProp = Js.uncheckedCast( inputs.getAsAny( Inputs.myImmutableProp ) );
-      }
-      view = new Arez_React4j_ImmutableMixedInputModel( this, myImmutableProp );
+      final boolean paramZ = inputs.getAsAny( Inputs.paramZ ).asBoolean();
+      final boolean paramP = inputs.getAsAny( Inputs.paramP ).asBoolean();
+      view = new Arez_React4j_InputOrderingView( this, paramZ, paramP );
     }
 
     @Override

@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Order generated `@Input` traversals by required/optional/children as before, but within each group place constructor-parameter inputs before method-based inputs so builder steps and related generated artifacts handle immutable inputs first.
+
 ### [v0.214](https://github.com/react4j/react4j/tree/v0.214) (2026-04-20) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.213...v0.214)
 
 Changes in this release:

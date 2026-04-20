@@ -22,16 +22,16 @@ final class ImmutableMixedInputModelBuilder {
   @Contract(
       pure = true
   )
-  static Step1 myMutableProp(@Nullable final String myMutableProp) {
-    return newBuilder().myMutableProp( myMutableProp );
+  static Step1 myImmutableProp(@Nullable final String myImmutableProp) {
+    return newBuilder().myImmutableProp( myImmutableProp );
   }
 
   @Nonnull
   @Contract(
       pure = true
   )
-  static Step1 myImmutableProp(@Nullable final String myImmutableProp) {
-    return newBuilder().myImmutableProp( myImmutableProp );
+  static Step1 myMutableProp(@Nullable final String myMutableProp) {
+    return newBuilder().myMutableProp( myMutableProp );
   }
 
   @Nonnull
@@ -47,13 +47,13 @@ final class ImmutableMixedInputModelBuilder {
     @Contract(
         pure = true
     )
-    Step1 myMutableProp(@Nullable String myMutableProp);
+    Step1 myImmutableProp(@Nullable String myImmutableProp);
 
     @Nonnull
     @Contract(
         pure = true
     )
-    Step1 myImmutableProp(@Nullable String myImmutableProp);
+    Step1 myMutableProp(@Nullable String myMutableProp);
 
     @Nonnull
     @Contract(
@@ -71,8 +71,9 @@ final class ImmutableMixedInputModelBuilder {
     @Contract(
         pure = true
     )
-    public final Step1 myMutableProp(@Nullable final String myMutableProp) {
-      _element.input( React4j_ImmutableMixedInputModel.Inputs.myMutableProp, myMutableProp );
+    public final Step1 myImmutableProp(@Nullable final String myImmutableProp) {
+      _element.setKey( myImmutableProp + ( React.enableViewNames() ? "_ImmutableMixedInputModel_d59f83e7" : ImmutableMixedInputModel.class.getName() ) );
+      _element.input( React4j_ImmutableMixedInputModel.Inputs.myImmutableProp, myImmutableProp );
       return this;
     }
 
@@ -81,9 +82,8 @@ final class ImmutableMixedInputModelBuilder {
     @Contract(
         pure = true
     )
-    public final Step1 myImmutableProp(@Nullable final String myImmutableProp) {
-      _element.setKey( myImmutableProp + ( React.enableViewNames() ? "_ImmutableMixedInputModel_d59f83e7" : ImmutableMixedInputModel.class.getName() ) );
-      _element.input( React4j_ImmutableMixedInputModel.Inputs.myImmutableProp, myImmutableProp );
+    public final Step1 myMutableProp(@Nullable final String myMutableProp) {
+      _element.input( React4j_ImmutableMixedInputModel.Inputs.myMutableProp, myMutableProp );
       return this;
     }
 

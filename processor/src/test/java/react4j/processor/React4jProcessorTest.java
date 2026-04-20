@@ -54,6 +54,7 @@ public final class React4jProcessorTest
 
         new Object[]{ "com.example.input.ArezComponentInputView" },
         new Object[]{ "com.example.input.BasicInputView" },
+        new Object[]{ "com.example.input.InputOrderingView" },
         new Object[]{ "com.example.input.ChildInputView" },
 
         new Object[]{ "com.example.lifecycle.OverrideLifecycleMethodsComponent" },
