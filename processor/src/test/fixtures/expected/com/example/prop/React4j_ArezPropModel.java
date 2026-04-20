@@ -166,12 +166,18 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
     static final String value = React.shouldMinimizeInputKeys() ? "a" : "value";
 
     static final String model = React.shouldMinimizeInputKeys() ? "b" : "model";
+
+    private Inputs() {
+    }
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

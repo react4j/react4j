@@ -139,6 +139,9 @@ abstract class React4j_TrackingView extends TrackingView {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

@@ -141,6 +141,9 @@ abstract class React4j_ActionOnPostUpdateView extends ActionOnPostUpdateView {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {

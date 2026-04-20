@@ -115,6 +115,9 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -125,6 +128,9 @@ abstract class React4j_GenericTypeMultiPropModel<T> extends GenericTypeMultiProp
     static final String value3 = React.shouldMinimizeInputKeys() ? "c" : "value3";
 
     static final String value4 = React.shouldMinimizeInputKeys() ? "d" : "value4";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView<T> extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

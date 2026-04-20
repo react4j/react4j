@@ -67,6 +67,9 @@ abstract class React4j_PublicAccessViaInterfacePostMountModel extends PublicAcce
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount, OnShouldComponentUpdate, OnComponentWillUnmount {

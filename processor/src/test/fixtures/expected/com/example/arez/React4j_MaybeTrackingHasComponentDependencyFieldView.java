@@ -153,10 +153,16 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView extends Mayb
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
     static final String model = React.shouldMinimizeInputKeys() ? "a" : "model";
+
+    private Inputs() {
+    }
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

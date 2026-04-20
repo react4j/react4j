@@ -117,6 +117,9 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -177,6 +180,9 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     static final String nullableArezComponentProp = React.shouldMinimizeInputKeys() ? "|" : "nullableArezComponentProp";
 
     static final String nullableArezComponentWithExplicitRequireIdProp = React.shouldMinimizeInputKeys() ? "}" : "nullableArezComponentWithExplicitRequireIdProp";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

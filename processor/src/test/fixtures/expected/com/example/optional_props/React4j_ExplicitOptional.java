@@ -101,6 +101,9 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -109,6 +112,9 @@ abstract class React4j_ExplicitOptional extends ExplicitOptional {
     static final String myRequiredProp = React.shouldMinimizeInputKeys() ? "b" : "myRequiredProp";
 
     static final String myOtherOptionalProp = React.shouldMinimizeInputKeys() ? "c" : "myOtherOptionalProp";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

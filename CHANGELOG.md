@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Ensure private constructors exist for utility classes to avoid instantiation.
+
 ### [v0.213](https://github.com/react4j/react4j/tree/v0.213) (2026-04-17) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.212...v0.213)
 
 Changes in this release:

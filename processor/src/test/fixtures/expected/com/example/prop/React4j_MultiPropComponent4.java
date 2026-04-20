@@ -127,6 +127,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -139,6 +142,9 @@ abstract class React4j_MultiPropComponent4 extends MultiPropComponent4 {
     static final String myProp4 = React.shouldMinimizeInputKeys() ? "d" : "myProp4";
 
     static final String child = "children";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

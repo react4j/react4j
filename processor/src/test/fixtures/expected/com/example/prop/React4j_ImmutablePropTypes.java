@@ -65,6 +65,9 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -79,6 +82,9 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     static final String someProp = React.shouldMinimizeInputKeys() ? "e" : "someProp";
 
     static final String object = React.shouldMinimizeInputKeys() ? "f" : "object";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

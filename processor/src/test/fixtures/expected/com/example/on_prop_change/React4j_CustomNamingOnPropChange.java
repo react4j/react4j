@@ -111,6 +111,9 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -119,6 +122,9 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
     static final String myProp3 = React.shouldMinimizeInputKeys() ? "b" : "myProp3";
 
     static final String myProp2 = React.shouldMinimizeInputKeys() ? "c" : "myProp2";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {

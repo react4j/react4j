@@ -102,6 +102,9 @@ abstract class React4j_MyView extends MyView {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -110,6 +113,9 @@ abstract class React4j_MyView extends MyView {
     static final String dateRange = React.shouldMinimizeInputKeys() ? "b" : "dateRange";
 
     static final String field1InLeaf = React.shouldMinimizeInputKeys() ? "c" : "field1InLeaf";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

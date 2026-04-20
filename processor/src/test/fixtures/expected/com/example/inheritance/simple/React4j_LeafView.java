@@ -158,6 +158,9 @@ abstract class React4j_LeafView extends LeafView {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -184,6 +187,9 @@ abstract class React4j_LeafView extends LeafView {
     static final String field1InLeaf = React.shouldMinimizeInputKeys() ? "k" : "field1InLeaf";
 
     static final String field2InLeaf = React.shouldMinimizeInputKeys() ? "l" : "field2InLeaf";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

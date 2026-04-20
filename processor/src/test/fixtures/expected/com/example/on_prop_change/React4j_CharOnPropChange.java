@@ -81,10 +81,16 @@ abstract class React4j_CharOnPropChange extends CharOnPropChange {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
     static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {

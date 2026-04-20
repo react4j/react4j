@@ -126,6 +126,9 @@ abstract class React4j_MyView extends MyView {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -144,6 +147,9 @@ abstract class React4j_MyView extends MyView {
     static final String zzField1InLeafInterface = React.shouldMinimizeInputKeys() ? "g" : "zzField1InLeafInterface";
 
     static final String field1InLeaf = React.shouldMinimizeInputKeys() ? "h" : "field1InLeaf";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

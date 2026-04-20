@@ -75,10 +75,16 @@ abstract class React4j_GenericTypePropModel<T> extends GenericTypePropModel<T> {
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
     static final String value = React.shouldMinimizeInputKeys() ? "a" : "value";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView<T> extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

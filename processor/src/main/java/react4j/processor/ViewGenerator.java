@@ -1204,6 +1204,8 @@ final class ViewGenerator
     builder.addModifiers( Modifier.FINAL );
     builder.addModifiers( Modifier.STATIC );
 
+    builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
+
     // These fields have been moved to a separate class to avoid a <clinit> on containing class
     final var inputs = descriptor.getInputs();
     final var inputCount = inputs.size();
@@ -1223,6 +1225,8 @@ final class ViewGenerator
     // Ensure it cannot be subclassed
     builder.addModifiers( Modifier.FINAL );
     builder.addModifiers( Modifier.STATIC );
+
+    builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
 
     // This field has been moved to a separate class to avoid a <clinit> on containing class as that forces
     // every call to React_MyView to first check <clinit> has been invoked.

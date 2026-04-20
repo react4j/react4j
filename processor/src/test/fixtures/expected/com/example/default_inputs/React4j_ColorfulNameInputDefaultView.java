@@ -72,10 +72,16 @@ abstract class React4j_ColorfulNameInputDefaultView extends ColorfulNameInputDef
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
     static final String myProp12$23 = React.shouldMinimizeInputKeys() ? "a" : "myProp12$23";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

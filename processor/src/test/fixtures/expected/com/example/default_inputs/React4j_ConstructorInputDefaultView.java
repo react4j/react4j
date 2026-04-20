@@ -64,10 +64,16 @@ abstract class React4j_ConstructorInputDefaultView extends ConstructorInputDefau
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
     static final String myInput = React.shouldMinimizeInputKeys() ? "a" : "myInput";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

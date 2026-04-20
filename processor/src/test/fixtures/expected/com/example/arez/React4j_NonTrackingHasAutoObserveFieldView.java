@@ -64,10 +64,16 @@ abstract class React4j_NonTrackingHasAutoObserveFieldView extends NonTrackingHas
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
     static final String model = React.shouldMinimizeInputKeys() ? "a" : "model";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {

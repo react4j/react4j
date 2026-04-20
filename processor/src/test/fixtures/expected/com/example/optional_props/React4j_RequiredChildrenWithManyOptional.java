@@ -128,6 +128,9 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   static final class Factory {
     @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {
+    }
   }
 
   static final class Inputs {
@@ -140,6 +143,9 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
     static final String myPropD = React.shouldMinimizeInputKeys() ? "d" : "myPropD";
 
     static final String children = "children";
+
+    private Inputs() {
+    }
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
