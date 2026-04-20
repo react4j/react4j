@@ -50,7 +50,7 @@ abstract class React4j_QualifiedNonnullContextPropModel extends QualifiedNonnull
     return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString();
   }
 
-  private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+  private static void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
     final Object raw$myProp = inputs.get( Inputs.myProp );
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Context value of type java.lang.String with qualifier 'my-proppo' is missing when constructing view named 'QualifiedNonnullContextPropModel'. Ensure a parent view publishes the value to the context." ) ;
@@ -105,7 +105,7 @@ abstract class React4j_QualifiedNonnullContextPropModel extends QualifiedNonnull
       view = new Arez_React4j_QualifiedNonnullContextPropModel( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        view.$$react4j$$_validateInputValues( inputs );
+        React4j_QualifiedNonnullContextPropModel.$$react4j$$_validateInputValues( inputs );
       }
     }
 

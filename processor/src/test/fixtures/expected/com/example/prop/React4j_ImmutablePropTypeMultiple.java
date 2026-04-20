@@ -64,7 +64,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     return viewConstructor;
   }
 
-  private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+  private static void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
     final Object raw$enumProp = inputs.get( Inputs.enumProp );
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$enumProp, () -> "Required input named 'enumProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
@@ -294,7 +294,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
       view = Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentLikeProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentProp ).cast() ) || Disposable.isDisposed( inputs.getAsAny( Inputs.arezComponentWithExplicitRequireIdProp ).cast() ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentLikeProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentProp ) ) ) || Disposable.isDisposed( Js.uncheckedCast( inputs.getAsAny( Inputs.nullableArezComponentWithExplicitRequireIdProp ) ) ) ? null : new Arez_React4j_ImmutablePropTypeMultiple( this, booleanProp, byteProp, charProp, doubleProp, floatProp, intProp, longProp, shortProp, enumProp, keyedComponentProp, identifiableProp, objectProp, arezComponentLikeProp, arezComponentProp, arezComponentWithExplicitRequireIdProp, nullableEnumProp, nullableKeyedComponentProp, nullableIdentifiableProp, nullableBoxedBooleanProp, nullableBoxedByteProp, nullableBoxedDoubleProp, nullableBoxedFloatProp, nullableBoxedIntProp, nullableBoxedLongProp, nullableBoxedShortProp, nullableObjectProp, nullableArezComponentLikeProp, nullableArezComponentProp, nullableArezComponentWithExplicitRequireIdProp );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        view.$$react4j$$_validateInputValues( inputs );
+        React4j_ImmutablePropTypeMultiple.$$react4j$$_validateInputValues( inputs );
       }
     }
 

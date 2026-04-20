@@ -61,7 +61,7 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
     return viewConstructor;
   }
 
-  private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+  private static void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
     final Object raw$model = inputs.get( Inputs.model );
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$model, () -> "Required input named 'model' is missing from view named 'NonObservableComponentDependencyView' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
@@ -176,7 +176,7 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
       view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : new Arez_React4j_NonObservableComponentDependencyView( this, model );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        view.$$react4j$$_validateInputValues( inputs );
+        React4j_NonObservableComponentDependencyView.$$react4j$$_validateInputValues( inputs );
       }
     }
 
@@ -221,7 +221,7 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
       view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : new Arez_React4j_NonObservableComponentDependencyView( this, model );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        view.$$react4j$$_validateInputValues( inputs );
+        React4j_NonObservableComponentDependencyView.$$react4j$$_validateInputValues( inputs );
       }
     }
 

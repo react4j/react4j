@@ -60,7 +60,7 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
     }
   }
 
-  private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+  private static void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
     final Object raw$myProp = inputs.get( Inputs.myProp );
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Required input named 'myProp' is missing from view named 'NullabilityPropsComponent' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
@@ -120,7 +120,7 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
       view = new Arez_React4j_NullabilityPropsComponent( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        view.$$react4j$$_validateInputValues( inputs );
+        React4j_NullabilityPropsComponent.$$react4j$$_validateInputValues( inputs );
       }
     }
 

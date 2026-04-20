@@ -62,7 +62,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView extends Mayb
     return viewConstructor;
   }
 
-  private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+  private static void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
     final Object raw$model = inputs.get( Inputs.model );
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$model, () -> "Required input named 'model' is missing from view named 'MaybeTrackingHasComponentDependencyFieldView' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
@@ -176,7 +176,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView extends Mayb
       view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : new Arez_React4j_MaybeTrackingHasComponentDependencyFieldView( this, model );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        view.$$react4j$$_validateInputValues( inputs );
+        React4j_MaybeTrackingHasComponentDependencyFieldView.$$react4j$$_validateInputValues( inputs );
       }
     }
 
@@ -221,7 +221,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView extends Mayb
       view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : new Arez_React4j_MaybeTrackingHasComponentDependencyFieldView( this, model );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        view.$$react4j$$_validateInputValues( inputs );
+        React4j_MaybeTrackingHasComponentDependencyFieldView.$$react4j$$_validateInputValues( inputs );
       }
     }
 

@@ -1068,7 +1068,10 @@ final class ViewGenerator
         addModifiers( Modifier.PRIVATE ).
         addParameter( ParameterSpec.builder( JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "inputs", Modifier.FINAL ).
                         addAnnotation( GeneratorUtil.NONNULL_CLASSNAME ).build() );
-
+    if ( descriptor.hasNoValidateMethod() )
+    {
+      method.addModifiers( Modifier.STATIC );
+    }
     for ( final var input : descriptor.getInputs() )
     {
       final var requiresNonnullInvariant = input.isNonNull() && ( input.isRequired() || input.isContextSource() );
@@ -1421,7 +1424,14 @@ final class ViewGenerator
         final var block = CodeBlock.builder();
         block.beginControlFlow( "if ( $T.shouldValidateInputValues() )", REACT_CLASSNAME );
         block.addStatement( "assert null != inputs" );
-        block.addStatement( "$N.$N( inputs )", VIEW_FIELD, VALIDATE_INPUTS_METHOD );
+        if ( descriptor.hasNoValidateMethod() )
+        {
+          block.addStatement( "$T.$N( inputs )", descriptor.getEnhancedClassName(), VALIDATE_INPUTS_METHOD );
+        }
+        else
+        {
+          block.addStatement( "$N.$N( inputs )", VIEW_FIELD, VALIDATE_INPUTS_METHOD );
+        }
         block.endControlFlow();
         method.addCode( block.build() );
       }

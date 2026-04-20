@@ -1,4 +1,4 @@
-package com.example.prop;
+package com.example.input;
 
 import arez.Disposable;
 import arez.annotations.ArezComponent;
@@ -11,7 +11,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.OnComponentWillUnmount;
@@ -20,18 +19,20 @@ import react4j.internal.ViewConstructorFunction;
 
 @SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
 @ArezComponent(
-    name = "com_example_prop_NonnullContextPropModel",
+    name = "com_example_input_NoShouldComponentUpdateForInputsView",
     disposeNotifier = Feature.DISABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_NonnullContextPropModel extends NonnullContextPropModel {
+abstract class React4j_NoShouldComponentUpdateForInputsView extends NoShouldComponentUpdateForInputsView {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  React4j_NonnullContextPropModel(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
+  React4j_NoShouldComponentUpdateForInputsView(
+      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView, final boolean paramZ,
+      final boolean paramP) {
+    super( paramZ, paramP );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
 
@@ -39,39 +40,19 @@ abstract class React4j_NonnullContextPropModel extends NonnullContextPropModel {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NonnullContextPropModel" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoShouldComponentUpdateForInputsView" );
     }
     return viewConstructor;
-  }
-
-  @Nonnull
-  @Override
-  String getMyProp() {
-    return $$react4j$$_nativeView.inputs().getAsAny( Inputs.myProp ).asString();
-  }
-
-  private static void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
-    final Object raw$myProp = inputs.get( Inputs.myProp );
-    if ( React.shouldCheckInvariants() ) {
-      Guards.apiInvariant( () -> null != raw$myProp, () -> "Context value of type java.lang.String is missing when constructing view named 'NonnullContextPropModel'. Ensure a parent view publishes the value to the context." ) ;
-    }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<Object> nextInputs) {
     assert null != nextInputs;
-    if ( React.shouldValidateInputValues() ) {
-      $$react4j$$_validateInputValues( nextInputs );
-    }
-    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
-    if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
-      return true;
-    }
     return false;
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_NonnullContextPropModel) this).dispose();
+    ((Arez_React4j_NoShouldComponentUpdateForInputsView) this).dispose();
   }
 
   @Nullable
@@ -89,7 +70,9 @@ abstract class React4j_NonnullContextPropModel extends NonnullContextPropModel {
   }
 
   static final class Inputs {
-    static final String myProp = React.shouldMinimizeInputKeys() ? "a" : "myProp";
+    static final String paramZ = React.shouldMinimizeInputKeys() ? "a" : "paramZ";
+
+    static final String paramP = React.shouldMinimizeInputKeys() ? "b" : "paramP";
 
     private Inputs() {
     }
@@ -97,16 +80,14 @@ abstract class React4j_NonnullContextPropModel extends NonnullContextPropModel {
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_NonnullContextPropModel view;
+    private final React4j_NoShouldComponentUpdateForInputsView view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_NonnullContextPropModel( this );
-      if ( React.shouldValidateInputValues() ) {
-        assert null != inputs;
-        React4j_NonnullContextPropModel.$$react4j$$_validateInputValues( inputs );
-      }
+      final boolean paramZ = inputs.getAsAny( Inputs.paramZ ).asBoolean();
+      final boolean paramP = inputs.getAsAny( Inputs.paramP ).asBoolean();
+      view = new Arez_React4j_NoShouldComponentUpdateForInputsView( this, paramZ, paramP );
     }
 
     @Override

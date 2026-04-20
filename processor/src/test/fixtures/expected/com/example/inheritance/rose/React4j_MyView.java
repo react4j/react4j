@@ -60,7 +60,7 @@ abstract class React4j_MyView extends MyView {
     return $$react4j$$_nativeView.inputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
   }
 
-  private void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+  private static void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
     final Object raw$dateRange = inputs.get( Inputs.dateRange );
     if ( React.shouldCheckInvariants() ) {
       Guards.apiInvariant( () -> null != raw$dateRange, () -> "Context value of type java.util.Date is missing when constructing view named 'MyView'. Ensure a parent view publishes the value to the context." ) ;
@@ -128,7 +128,7 @@ abstract class React4j_MyView extends MyView {
       view = new Arez_React4j_MyView( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
-        view.$$react4j$$_validateInputValues( inputs );
+        React4j_MyView.$$react4j$$_validateInputValues( inputs );
       }
     }
 
