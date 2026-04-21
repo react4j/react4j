@@ -162,33 +162,9 @@ public final class React4jProcessor
     }
     final ExecutableElement constructor = constructors.get( 0 );
 
-    final boolean sting = deriveSting( typeElement, constructor );
+    final boolean sting = deriveSting( constructor );
     final boolean notSyntheticConstructor =
       Elements.Origin.EXPLICIT == processingEnv.getElementUtils().getOrigin( constructor );
-
-    final List<VariableElement> injectableParameters = getInjectableConstructorParameters( constructor );
-    if ( sting )
-    {
-      if ( injectableParameters.isEmpty() )
-      {
-        throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
-                                                            "have specified sting=ENABLED if the constructor has no parameters" ),
-                                      typeElement );
-      }
-    }
-    else
-    {
-      final boolean hasNamedAnnotation =
-        injectableParameters.stream()
-          .anyMatch( p -> AnnotationsUtil.hasAnnotationOfType( p, Constants.STING_NAMED_CLASSNAME ) );
-      if ( hasNamedAnnotation )
-      {
-        throw new ProcessorException( MemberChecks.mustNot( Constants.VIEW_CLASSNAME,
-                                                            "have specified sting=DISABLED and have a constructor parameter annotated with the " +
-                                                            Constants.STING_NAMED_CLASSNAME + " annotation" ),
-                                      constructor );
-      }
-    }
 
     final ViewDescriptor descriptor =
       new ViewDescriptor( name,
@@ -299,25 +275,10 @@ public final class React4jProcessor
     return null != overriddenMethod && overriddenMethod.getModifiers().contains( Modifier.PROTECTED );
   }
 
-  private boolean deriveSting( @Nonnull final TypeElement typeElement, final @Nonnull ExecutableElement constructor )
+  private boolean deriveSting( @Nonnull final ExecutableElement constructor )
   {
-    final String inject =
-      AnnotationsUtil.getEnumAnnotationParameter( typeElement,
-                                                  Constants.VIEW_CLASSNAME,
-                                                  "sting" );
-    if ( "ENABLE".equals( inject ) )
-    {
-      return true;
-    }
-    else if ( "DISABLE".equals( inject ) )
-    {
-      return false;
-    }
-    else
-    {
-      return !getInjectableConstructorParameters( constructor ).isEmpty() &&
-             null != processingEnv.getElementUtils().getTypeElement( Constants.STING_INJECTABLE_CLASSNAME );
-    }
+    return !getInjectableConstructorParameters( constructor ).isEmpty() &&
+           null != processingEnv.getElementUtils().getTypeElement( Constants.STING_INJECTABLE_CLASSNAME );
   }
 
   @Nonnull

@@ -70,17 +70,4 @@ public @interface View
    */
   @Nonnull
   Type type() default Type.STATEFUL;
-
-  /**
-   * Enum controlling whether Sting injection integration is generated for the view.
-   * The generated class is the same name as the view with the "Factory" suffix.
-   * React4j only supports constructor injection and thus this MUST NOT be set to {@link Feature#ENABLE}
-   * unless there are constructor parameters on the view. If the value is set to
-   * {@link Feature#AUTODETECT} then the feature will be enabled if the view has
-   * constructor parameters and the {@code sting.Injectable} class is present when compiling
-   * the view.
-   *
-   * @return an enum controlling whether sting integration is generated for the view.
-   */
-  Feature sting() default Feature.AUTODETECT;
 }

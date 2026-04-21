@@ -1,6 +1,7 @@
 package react4j.processor;
 
 import arez.processor.ArezProcessor;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -259,8 +260,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.inject.ConstructorInjectComponent" },
         new Object[]{ "com.example.inject.ConstructorInputAndInjectComponent" },
         new Object[]{ "com.example.inject.ConstructorInputAndInjectArezComponentTypeComponent" },
-        new Object[]{ "com.example.inject.ConstructorInjectRawTypeComponent" },
-        new Object[]{ "com.example.inject.FactoryOnlyInjectComponent" },
         new Object[]{ "com.example.inject.PublicView" },
         new Object[]{ "com.example.inject.StingNamedInjectComponent" },
         new Object[]{ "com.example.inject.StingNamedTypeComponent" },
@@ -273,6 +272,13 @@ public final class React4jProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( classname, true );
+  }
+
+  @Test
+  public void processSuccessfulRawTypeCompileWithoutSting()
+    throws Exception
+  {
+    assertSuccessfulCompileWithoutSting( "com.example.inject.ConstructorInjectRawTypeComponent", true );
   }
 
   @Test
@@ -727,10 +733,6 @@ public final class React4jProcessorTest
 
         new Object[]{ "com.example.inject.GenericTypeInjectedComponent",
                       "@View target has enabled injection integration but the class has type arguments which is incompatible with injection integration." },
-        new Object[]{ "com.example.inject.StingDisabledWithNamedConstructorParameterComponent",
-                      "@View target must not have specified sting=DISABLED and have a constructor parameter annotated with the sting.Named annotation" },
-        new Object[]{ "com.example.inject.StingEnabledButNoConstructorParametersComponent",
-                      "@View target must not have specified sting=ENABLED if the constructor has no parameters" },
         new Object[]{ "com.example.on_error.AbstractOnErrorComponent", "@OnError target must not be abstract" },
         new Object[]{ "com.example.on_error.BadParam1OnErrorComponent",
                       "@OnError target has parameter of invalid type named other" },
@@ -1151,6 +1153,29 @@ public final class React4jProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( classname, deriveExpectedOutputs( classname, factory ) );
+  }
+
+  void assertSuccessfulCompileWithoutSting( @Nonnull final String classname, final boolean factory )
+    throws Exception
+  {
+    final List<File> classpath =
+      buildClasspath().stream().filter( file -> !file.getName().startsWith( "sting-" ) ).toList();
+    final Compilation compilation =
+      CompileTestUtil.assertCompilesWithoutWarnings( inputs( classname ),
+                                                     getOptions(),
+                                                     Arrays.asList( processor(), new ArezProcessor() ),
+                                                     classpath );
+
+    outputFilesIfEnabled( compilation, this::emitGeneratedFile );
+
+    for ( final String expectedOutput : deriveExpectedOutputs( classname, factory ) )
+    {
+      final var fixture = fixtureDir().resolve( "expected" ).resolve( expectedOutput );
+      final var output1 = compilation.sourceOutput().resolve( expectedOutput );
+      final var output2 = compilation.classOutput().resolve( expectedOutput );
+      final var output = java.nio.file.Files.exists( output1 ) ? output1 : output2;
+      CompileTestUtil.assertSourceMatchesTarget( fixture, output );
+    }
   }
 
   @Nonnull

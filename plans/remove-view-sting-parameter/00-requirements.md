@@ -1,0 +1,173 @@
+# Remove View Sting Parameter
+
+## Mission
+- Remove `@View.sting()` and infer Sting-backed factory generation from constructor injection shape.
+
+## Scope
+- Public annotation API changes in `core`.
+- View parsing and factory-generation decision logic in `processor`.
+- Processor tests/fixtures, API-diff fixtures, changelog, and docs/examples.
+
+## Scope Boundaries
+- Do not add a compatibility shim or deprecation window.
+- Do not change generated `@ArezComponent(..., sting = Feature.DISABLE)` usage.
+- Do not remove `@ActAsStingComponent`.
+- Do not edit `AGENTS.md`.
+
+## Non-Negotiables
+- A view with any non-`@Input` constructor parameters still gets a generated `*Factory`.
+- Sting annotations on the generated factory remain conditional on Sting types being available on the compile classpath.
+- Plain factory generation remains available even when Sting annotations are not emitted.
+- Old `@View(sting = ...)` source is allowed to fail via normal javac annotation-member resolution.
+- Obsolete tests that only exercised explicit `sting=ENABLE`/`DISABLE` overrides are removed.
+- Positive coverage for named/type-level Sting annotation propagation and raw injected types remains.
+- The change is documented as a breaking change in `CHANGELOG.md` and API-diff fixtures.
+
+## Behavior Expectations
+- `@View` no longer declares a `sting()` member.
+- Processor behavior no longer reads or validates a `sting` annotation parameter.
+- Views with injectable constructor parameters still produce factories.
+- Generated factories continue to copy `sting.Named`, `javax.inject.Named`, and type-level Sting annotations when Sting integration is active.
+- If Sting is absent from the processor classpath, factories still generate without Sting annotations.
+
+## Quality Gates
+- Fast gate: `bundle exec buildr react4j:processor:test`
+- Compatibility gate: `bundle exec buildr test_api_diff`
+- Full gate for reference only: `bundle exec buildr test`
+
+## Intentional Divergences
+- This is a hard source break with no compatibility path.
+- No targeted regression test is added for old code that still writes `@View(sting = ...)`.
+- External downstream failures are acceptable during the migration window.
+
+## Open Questions Register
+- `Q-01`
+  - status: resolved
+  - question: Should constructor-injected views keep generating factories exactly as they do today?
+  - context: Removing `@View.sting()` leaves open whether factory generation itself should change.
+  - options:
+    - keep current factory-generation behavior
+    - tighten generation and remove some factories
+  - tradeoffs:
+    - keeping behavior makes the migration narrowly about removing configuration
+    - tightening generation would create a second semantic change
+  - recommended_default: keep current factory-generation behavior
+  - user_decision: keep current factory-generation behavior exactly as-is
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-02`
+  - status: resolved
+  - question: Should React4j add a targeted error when Sting qualifiers are used but Sting integration is unavailable?
+  - context: The old flag-based checks disappear once inference is constructor-driven.
+  - options:
+    - add a targeted React4j error
+    - assume Sting/Javac failures are sufficient
+  - tradeoffs:
+    - a targeted error is friendlier but adds special-case logic
+    - relying on existing compilation failure keeps the change simple
+  - recommended_default: add a targeted error
+  - user_decision: assume Sting annotations compiling implies the Sting processor setup is present; do not add a new React4j error
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-03`
+  - status: resolved
+  - question: Should the break be called out explicitly in changelog and API-diff artifacts?
+  - context: Removing an annotation member is an intentional public API break.
+  - options:
+    - update changelog and API-diff fixtures
+    - rely on fixture churn alone
+  - tradeoffs:
+    - explicit documentation makes the migration discoverable
+    - fixture-only updates hide intent
+  - recommended_default: update changelog and API-diff fixtures
+  - user_decision: update both
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-04`
+  - status: resolved
+  - question: Should docs/examples be swept in the same change?
+  - context: Javadoc and any user-facing guidance should not keep describing annotation-controlled Sting toggles.
+  - options:
+    - sweep docs/examples now
+    - leave docs cleanup for later
+  - tradeoffs:
+    - sweeping now keeps the hard cut coherent
+    - deferring docs leaves stale guidance after release
+  - recommended_default: sweep docs/examples now
+  - user_decision: sweep docs/examples in the same change
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-05`
+  - status: resolved
+  - question: Should explicit coverage for the plain non-Sting factory path be preserved?
+  - context: The old `sting = DISABLE` fixtures existed largely to force that path.
+  - options:
+    - keep dedicated non-Sting factory coverage
+    - simplify tests around constructor injection and drop dedicated forced-disable fixtures
+  - tradeoffs:
+    - dedicated coverage preserves one edge case explicitly
+    - simplifying the suite removes legacy override-oriented fixtures
+  - recommended_default: keep one focused case
+  - user_decision: do not preserve dedicated forced-disable coverage
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-06`
+  - status: resolved
+  - question: Should old `@View(sting = ...)` usage get a dedicated processor test?
+  - context: Once the member is removed, javac will reject old source before processor logic matters.
+  - options:
+    - add a dedicated rejection test
+    - rely on normal javac failure
+  - tradeoffs:
+    - a dedicated test is explicit but redundant
+    - normal javac failure matches the requested sharp migration
+  - recommended_default: rely on normal javac failure
+  - user_decision: rely on normal javac failure
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-07`
+  - status: resolved
+  - question: Should `@ActAsStingComponent` remain on `@View`?
+  - context: Removing `sting()` does not necessarily mean removing all Sting integration markers.
+  - options:
+    - keep `@ActAsStingComponent`
+    - remove it as part of shrinking the Sting surface
+  - tradeoffs:
+    - keeping it preserves type-level Sting annotation compatibility
+    - removing it broadens scope beyond the requested API cleanup
+  - recommended_default: keep `@ActAsStingComponent`
+  - user_decision: keep `@ActAsStingComponent`
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-08`
+  - status: resolved
+  - question: Should generated Arez annotations remain unchanged?
+  - context: Generated `@ArezComponent(..., sting = Feature.DISABLE)` is separate from `@View.sting()`.
+  - options:
+    - leave Arez annotation generation unchanged
+    - alter Arez generation too
+  - tradeoffs:
+    - leaving it unchanged keeps scope narrow and correct
+    - changing it would be a separate design change
+  - recommended_default: leave Arez generation unchanged
+  - user_decision: leave it unchanged
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-09`
+  - status: resolved
+  - question: Which legacy tests should be removed?
+  - context: Some bad-input cases exist only because explicit `ENABLE`/`DISABLE` overrides were possible.
+  - options:
+    - remove only the obsolete override-specific negative cases
+    - retain them by redesigning them around new behavior
+  - tradeoffs:
+    - removing the obsolete cases keeps the suite aligned with the live API
+    - redesigning them would add low-value tests around removed functionality
+  - recommended_default: remove only the obsolete override-specific cases
+  - user_decision: remove override-specific negative cases, keep positive named/type/raw coverage
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-10`
+  - status: resolved
+  - question: Should API-diff expectations record the removed annotation member as an intentional break?
+  - context: Revapi will detect the removed member.
+  - options:
+    - update fixtures to record the break
+    - suppress or bypass the signal
+  - tradeoffs:
+    - recording the break keeps compatibility checks honest
+    - suppressing it obscures the intended migration
+  - recommended_default: update fixtures to record the break
+  - user_decision: update fixtures to record the break
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`

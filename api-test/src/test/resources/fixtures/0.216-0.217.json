@@ -33,6 +33,22 @@
   {
     "code": "java.method.attributeRemovedFromAnnotationType",
     "description": "The annotation no longer has an attribute.",
+    "oldElement": "method react4j.annotations.Feature react4j.annotations.View::sting()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.View",
+      "classSimpleName": "View",
+      "elementKind": "method",
+      "methodName": "sting",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.attributeRemovedFromAnnotationType",
+    "description": "The annotation no longer has an attribute.",
     "oldElement": "method react4j.annotations.Input.Source react4j.annotations.Input::source()",
     "classification": {
       "SOURCE": "BREAKING",

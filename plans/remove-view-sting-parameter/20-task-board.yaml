@@ -1,0 +1,124 @@
+tasks:
+  - id: PLAN-SETUP
+    title: Create planning artifacts for removing `@View.sting()`
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements, implementation plan, and task board exist in `plans/remove-view-sting-parameter/`.
+      - Resolved design decisions are captured with stable `Q-*` entries.
+    files_touched:
+      - plans/remove-view-sting-parameter/*
+    evidence:
+      - command: planning artifacts created in repository
+        result: completed
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PLAN-APPROVAL
+    title: Capture user review of the `@View.sting()` removal plan
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-SETUP
+    acceptance_criteria:
+      - User decisions cover factory behavior, diagnostics, docs, tests, and API-diff handling.
+      - All tracked questions are resolved before implementation.
+    files_touched:
+      - plans/remove-view-sting-parameter/*
+    evidence:
+      - command: conversational design review
+        result: approved as a hard-cut removal with docs sweep, changelog/API-diff updates, javac-only compatibility failure, and retained positive Sting coverage
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: VIEW-API
+    title: Remove `@View.sting()` from the public annotation API
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - `View.sting()` no longer exists.
+      - `@View` Javadoc no longer documents annotation-controlled Sting factory generation.
+      - `@ActAsStingComponent` remains in place.
+    files_touched:
+      - core/src/main/java/react4j/annotations/View.java
+    evidence:
+      - command: update `core/src/main/java/react4j/annotations/View.java`
+        result: removed `sting()` while keeping `@ActAsStingComponent` in place
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PROCESSOR-SIMPLIFY
+    title: Remove explicit Sting override parsing and keep constructor-driven inference
+    status: completed
+    priority: high
+    depends_on:
+      - VIEW-API
+    acceptance_criteria:
+      - Processor no longer reads a `sting` annotation parameter from `@View`.
+      - Factory generation remains driven by constructor injection.
+      - Sting annotations on factories remain conditional on constructor injection plus Sting classpath availability.
+      - Obsolete override-specific diagnostics are removed.
+    files_touched:
+      - processor/src/main/java/react4j/processor/*
+    evidence:
+      - command: update `processor/src/main/java/react4j/processor/React4jProcessor.java`
+        result: removed `@View.sting()` parsing and override-specific validation; Sting inference now depends only on injectable constructor parameters plus Sting type availability
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: ARTIFACT-REFRESH
+    title: Refresh tests, fixtures, docs, changelog, and API-diff artifacts
+    status: completed
+    priority: medium
+    depends_on:
+      - PROCESSOR-SIMPLIFY
+    acceptance_criteria:
+      - Override-specific bad-input fixtures/tests are removed.
+      - Positive Sting propagation/raw-type fixtures still pass.
+      - Docs/examples and changelog match the new API.
+      - API-diff fixtures record removal of `View.sting()`.
+    files_touched:
+      - processor/src/test/**
+      - docs/**
+      - CHANGELOG.md
+      - api-test/**
+    evidence:
+      - command: update processor fixtures and tests
+        result: removed override-specific bad-input fixtures and the forced-disable factory fixture, kept named/type/raw positive coverage, and added a no-Sting-classpath raw-type test path
+      - command: update `CHANGELOG.md`
+        result: added an unreleased breaking-change entry for removing `@View.sting()`
+      - command: bundle exec buildr update_api_diff
+        result: refreshed `api-test/src/test/resources/fixtures/0.216-0.217.json` to include removal of `react4j.annotations.View::sting()`
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: VERIFY
+    title: Run targeted verification gates
+    status: completed
+    priority: high
+    depends_on:
+      - ARTIFACT-REFRESH
+    acceptance_criteria:
+      - `bundle exec buildr react4j:processor:test` passes.
+      - `bundle exec buildr test_api_diff` passes.
+      - Any optional downstream-only failure is recorded as acceptable if encountered.
+    files_touched:
+      - plans/remove-view-sting-parameter/*
+    evidence:
+      - command: bundle exec buildr react4j:processor:test
+        result: passed
+      - command: bundle exec buildr test_api_diff
+        result: passed
+      - command: bundle exec buildr test
+        result: not_run; targeted verification was the approved acceptance bar for this migration
+    commit:
+      hash: not_required
+      message: not_required
