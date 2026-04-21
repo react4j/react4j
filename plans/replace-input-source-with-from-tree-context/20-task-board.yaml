@@ -1,0 +1,127 @@
+tasks:
+  - id: PLAN-SETUP
+    title: Create planning artifacts for the fromTreeContext migration
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements, implementation plan, and task board exist in `plans/replace-input-source-with-from-tree-context/`.
+      - Resolved user decisions are recorded with stable `Q-*` entries.
+    files_touched:
+      - plans/replace-input-source-with-from-tree-context/*
+    evidence:
+      - command: planning artifacts created in repository
+        result: completed
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PLAN-APPROVAL
+    title: Capture user review of the fromTreeContext plan
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-SETUP
+    acceptance_criteria:
+      - User reviewed the design and approved the hard-cut migration.
+      - All tracked questions are resolved before implementation.
+    files_touched:
+      - plans/replace-input-source-with-from-tree-context/*
+    evidence:
+      - command: conversational design review
+        result: approved with hard-cut migration, full terminology purge, targeted verification, and no AGENTS.md update
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: INPUT-API
+    title: Replace `@Input.source` with `@Input.fromTreeContext`
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - `Input.source()` and `Input.Source` are removed.
+      - `Input.fromTreeContext()` exists with default `false`.
+      - `Input` Javadoc describes tree-context sourcing using the new terminology.
+    files_touched:
+      - core/src/main/java/react4j/annotations/Input.java
+    evidence:
+      - command: execution started
+        result: task moved to in_progress before annotation and processor edits
+      - command: update `core/src/main/java/react4j/annotations/Input.java`
+        result: removed `source()` and `Input.Source`, added `fromTreeContext()` with default `false`, and rewrote Javadoc to use tree-context terminology
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PROCESSOR-RENAME
+    title: Update processor parsing, diagnostics, and internal terminology
+    status: completed
+    priority: high
+    depends_on:
+      - INPUT-API
+    acceptance_criteria:
+      - Method and parameter parsing read `fromTreeContext`.
+      - Durable internal names and comments use the new terminology.
+      - Validation and generation behavior for tree-context inputs remains unchanged.
+      - Diagnostics mention `fromTreeContext=true` and use cleaned-up wording.
+    files_touched:
+      - processor/src/main/java/react4j/processor/*
+    evidence:
+      - command: update processor parsing and model naming
+        result: method and constructor-parameter parsing now read `fromTreeContext`, durable internals now use `isFromTreeContext`/`isFromTreeContextInput`, and builder/generator predicates were renamed without changing behavior
+      - command: update diagnostics
+        result: qualifier, `require=ENABLE`, and `@InputDefault` tree-context diagnostics now use cleaned-up `fromTreeContext=true` wording
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: ARTIFACT-REFRESH
+    title: Refresh fixtures, changelog, and api-diff artifacts
+    status: completed
+    priority: medium
+    depends_on:
+      - PROCESSOR-RENAME
+    acceptance_criteria:
+      - All fixture inputs use the new syntax.
+      - Exact diagnostic expectations are updated.
+      - `CHANGELOG.md` calls out the breaking change.
+      - Relevant api-diff fixtures match the new public annotation surface.
+    files_touched:
+      - processor/src/test/**
+      - CHANGELOG.md
+      - api-test/**
+    evidence:
+      - command: refresh processor fixtures and exact test expectations
+        result: all in-repo `source = Input.Source.CONTEXT` fixtures now use `fromTreeContext = true`, and exact bad-input expectations match the new diagnostics
+      - command: update `CHANGELOG.md`
+        result: added an unreleased breaking-change entry for replacing `@Input.source`/`Input.Source` with `@Input.fromTreeContext`
+      - command: bundle exec buildr update_api_diff
+        result: generated `api-test/src/test/resources/fixtures/0.216-0.217.json` with one non-breaking added attribute and two breaking removals (`Input.Source`, `Input.source()`)
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: VERIFY
+    title: Run targeted verification gates
+    status: completed
+    priority: high
+    depends_on:
+      - ARTIFACT-REFRESH
+    acceptance_criteria:
+      - `bundle exec buildr react4j:processor:test` passes.
+      - `bundle exec buildr test_api_diff` passes.
+      - Any optional downstream-only failure is recorded as acceptable if encountered.
+    files_touched:
+      - plans/replace-input-source-with-from-tree-context/*
+    evidence:
+      - command: bundle exec buildr react4j:processor:test
+        result: passed
+      - command: bundle exec buildr test_api_diff
+        result: passed
+      - command: bundle exec buildr test
+        result: not_run; targeted verification was the approved acceptance bar for this migration
+    commit:
+      hash: not_required
+      message: not_required

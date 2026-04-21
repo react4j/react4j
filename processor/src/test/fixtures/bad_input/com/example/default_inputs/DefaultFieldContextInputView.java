@@ -13,7 +13,7 @@ abstract class DefaultFieldContextInputView
   @InputDefault
   static final String DEFAULT_MY_INPUT = "Foo";
 
-  @Input( source = Input.Source.CONTEXT )
+  @Input( fromTreeContext = true )
   abstract String getMyInput();
 
   @Nullable

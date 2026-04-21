@@ -1,0 +1,49 @@
+[
+  {
+    "code": "java.method.attributeWithDefaultAddedToAnnotationType",
+    "description": "The annotation has a new attribute with a default value.",
+    "newElement": "method boolean react4j.annotations.Input::fromTreeContext()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Input",
+      "classSimpleName": "Input",
+      "elementKind": "method",
+      "methodName": "fromTreeContext",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.class.removed",
+    "description": "Class was removed.",
+    "oldElement": "enum react4j.annotations.Input.Source",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Input.Source",
+      "classSimpleName": "Source",
+      "elementKind": "enum",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.attributeRemovedFromAnnotationType",
+    "description": "The annotation no longer has an attribute.",
+    "oldElement": "method react4j.annotations.Input.Source react4j.annotations.Input::source()",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.Input",
+      "classSimpleName": "Input",
+      "elementKind": "method",
+      "methodName": "source",
+      "package": "react4j.annotations"
+    }
+  }
+]

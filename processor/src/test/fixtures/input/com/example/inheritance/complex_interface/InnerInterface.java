@@ -5,7 +5,7 @@ import react4j.annotations.Input;
 interface InnerInterface
   extends RootInterface
 {
-  @Input( source = Input.Source.CONTEXT )
+  @Input( fromTreeContext = true )
   boolean zzField1InInnerInterface();
 
   @Input

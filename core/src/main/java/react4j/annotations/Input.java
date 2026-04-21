@@ -51,7 +51,7 @@ public @interface Input
   /**
    * Return the name of the input.
    * The name is the key used when accessing the input from the inputs object. It is also used when creating
-   * the builder steps associated with the inputs that set {@link #source()} to {@link Source#DEFAULT}.
+   * the builder steps associated with inputs that are not sourced from tree context.
    *
    * @return the name of the input.
    */
@@ -60,7 +60,7 @@ public @interface Input
 
   /**
    * Return the qualifier used to access value from context.
-   * It must only be specified if {@link #source()} is set to {@link Source#CONTEXT}.
+   * It must only be specified if {@link #fromTreeContext()} is set to {@code true}.
    *
    * @return the qualifier used to access value from context.
    */
@@ -68,14 +68,13 @@ public @interface Input
   String qualifier() default "";
 
   /**
-   * The setting controlling where the input value is source from.
-   * If the source is set to {@link Source#CONTEXT} then the input is sometimes described as a "TreeInput"
-   * as it is transparently passed from a parent view to all child views. A "TreeInput" does not
-   * have to be specified by the user when creating the view.
+   * Return {@code true} if the input value should be sourced from tree context rather than supplied when
+   * creating the view. Inputs sourced from tree context are transparently passed from a parent view to
+   * descendant views and do not need to be specified by the user when creating the view.
    *
-   * @return the setting controlling where the input value is source from.
+   * @return {@code true} if the input value should be sourced from tree context.
    */
-  Source source() default Source.DEFAULT;
+  boolean fromTreeContext() default false;
 
   /**
    * Setting indicating whether the input should be supplied when the view is constructed.
@@ -83,9 +82,9 @@ public @interface Input
    * If set to {@link Feature#ENABLE} then the user MUST supply the input and the builder will require the user
    * to specify the value. If set to {@link Feature#DISABLE} then the user can optionally supply the input.
    * If set to {@link Feature#AUTODETECT} then the annotation processor will treat it as {@link Feature#DISABLE}
-   * if there is a corresponding {@link InputDefault} for the input or the {@link #source()} parameter is set to
-   * {@link Source#CONTEXT}, otherwise it will be treated as {@link Feature#ENABLE}. The value of this setting
-   * must not be {@link Feature#ENABLE} when {@link #source()} is set to {@link Source#CONTEXT}.
+   * if there is a corresponding {@link InputDefault} for the input or {@link #fromTreeContext()} is
+   * {@code true}, otherwise it will be treated as {@link Feature#ENABLE}. The value of this setting must not
+   * be {@link Feature#ENABLE} when {@link #fromTreeContext()} is {@code true}.
    *
    * @return the flag indicating whether the input needs to be supplied.
    */
@@ -104,18 +103,4 @@ public @interface Input
    */
   Feature observable() default Feature.AUTODETECT;
 
-  /**
-   * Enum where the input is sourced from.
-   */
-  enum Source
-  {
-    /**
-     * The input value is passed to the view during construction.
-     */
-    DEFAULT,
-    /**
-     * The input value is retrieved from the react context.
-     */
-    CONTEXT
-  }
 }

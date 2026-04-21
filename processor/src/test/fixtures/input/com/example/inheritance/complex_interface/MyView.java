@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 abstract class MyView
   implements LeafInterface
 {
-  @Input( source = Input.Source.CONTEXT )
+  @Input( fromTreeContext = true )
   abstract boolean field1InLeaf();
 
   @Input

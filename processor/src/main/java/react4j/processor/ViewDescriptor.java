@@ -658,7 +658,7 @@ final class ViewDescriptor
       _validateInputs = getInputs()
         .stream()
         .anyMatch( input -> input.hasValidateMethod() ||
-                            ( input.isNonNull() && ( input.isRequired() || input.isContextSource() ) ) );
+                            ( input.isNonNull() && ( input.isRequired() || input.isFromTreeContext() ) ) );
     }
     return _validateInputs;
   }

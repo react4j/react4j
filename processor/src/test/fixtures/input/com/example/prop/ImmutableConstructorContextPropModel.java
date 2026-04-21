@@ -9,7 +9,7 @@ import react4j.annotations.View;
 @View
 abstract class ImmutableConstructorContextPropModel
 {
-  ImmutableConstructorContextPropModel( @Nullable @Input( source = Input.Source.CONTEXT ) final String myProp )
+  ImmutableConstructorContextPropModel( @Nullable @Input( fromTreeContext = true ) final String myProp )
   {
   }
 

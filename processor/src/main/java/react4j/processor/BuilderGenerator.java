@@ -107,7 +107,7 @@ final class BuilderGenerator
     // first step which may be required input, optional inputs, or build terminal step.
     buildStaticStepMethodMethods( processingEnv, descriptor, builder, steps.get( 0 ) );
 
-    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isContextSource ) )
+    if ( descriptor.getInputs().stream().anyMatch( InputDescriptor::isFromTreeContext ) )
     {
       builder.addType( buildContextHolder( descriptor ) );
     }
@@ -698,9 +698,9 @@ final class BuilderGenerator
 
     builder.addMethod( MethodSpec.constructorBuilder().addModifiers( Modifier.PRIVATE ).build() );
 
-    final var contextInputs = descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).toList();
+    final var fromTreeContextInputs = descriptor.getInputs().stream().filter( InputDescriptor::isFromTreeContext ).toList();
 
-    for ( final var input : contextInputs )
+    for ( final var input : fromTreeContextInputs )
     {
       final var type = TypeName.get( input.getType() ).box();
       final var field = FieldSpec
@@ -790,16 +790,16 @@ final class BuilderGenerator
     }
     builder.addField( field.build() );
 
-    final var contextInputs = descriptor.getInputs().stream().filter( InputDescriptor::isContextSource ).toList();
-    if ( !contextInputs.isEmpty() )
+    final var fromTreeContextInputs = descriptor.getInputs().stream().filter( InputDescriptor::isFromTreeContext ).toList();
+    if ( !fromTreeContextInputs.isEmpty() )
     {
       builder.addMethod( buildInternalBuildStepImpl( descriptor ) );
-      builder.addMethod( buildContextBuildStepImpl( contextInputs.get( 0 ) ) );
-      final var size = contextInputs.size();
+      builder.addMethod( buildContextBuildStepImpl( fromTreeContextInputs.get( 0 ) ) );
+      final var size = fromTreeContextInputs.size();
       for ( var i = 0; i < size; i++ )
       {
-        final var current = contextInputs.get( i );
-        final var next = i == size - 1 ? null : contextInputs.get( i + 1 );
+        final var current = fromTreeContextInputs.get( i );
+        final var next = i == size - 1 ? null : fromTreeContextInputs.get( i + 1 );
         builder.addField( buildContextBuildField( current ) );
         builder.addMethod( buildContextBuildStepImpl( descriptor, current, next ) );
       }
@@ -847,7 +847,7 @@ final class BuilderGenerator
     final var builder = new BuilderDescriptor();
 
     Step optionalInputStep = null;
-    final var inputs = descriptor.getInputs().stream().filter( p -> !p.isContextSource() ).toList();
+    final var inputs = descriptor.getInputs().stream().filter( p -> !p.isFromTreeContext() ).toList();
 
     final var inputsSize = inputs.size();
 

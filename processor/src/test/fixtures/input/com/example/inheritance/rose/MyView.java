@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 abstract class MyView
   implements MyConsumerView
 {
-  @Input( source = Input.Source.CONTEXT )
+  @Input( fromTreeContext = true )
   abstract boolean field1InLeaf();
 
   @Input

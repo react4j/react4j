@@ -10,7 +10,7 @@ import react4j.annotations.View;
 abstract class QualifiedContextPropModel
 {
   @Nullable
-  @Input( source = Input.Source.CONTEXT, qualifier = "my-proppo" )
+  @Input( fromTreeContext = true, qualifier = "my-proppo" )
   abstract String getMyProp();
 
   @Nullable

@@ -10,7 +10,7 @@ import react4j.annotations.View;
 abstract class ContextPropModel
 {
   @Nullable
-  @Input( source = Input.Source.CONTEXT )
+  @Input( fromTreeContext = true )
   abstract String getMyProp();
 
   @Nullable

@@ -31,7 +31,7 @@ final class InputDescriptor
   private final ExecutableType _methodType;
   @Nullable
   private final VariableElement _parameter;
-  private final boolean _contextSource;
+  private final boolean _fromTreeContext;
   private final boolean _shouldUpdateOnChange;
   private final boolean _observable;
   private final boolean _disposable;
@@ -62,7 +62,7 @@ final class InputDescriptor
                    @Nullable final ExecutableElement method,
                    @Nullable final ExecutableType methodType,
                    @Nullable final VariableElement parameter,
-                   final boolean contextSource,
+                   final boolean fromTreeContext,
                    final boolean shouldUpdateOnChange,
                    final boolean observable,
                    final boolean disposable,
@@ -77,7 +77,7 @@ final class InputDescriptor
     _method = method;
     _methodType = methodType;
     _parameter = parameter;
-    _contextSource = contextSource;
+    _fromTreeContext = fromTreeContext;
     _shouldUpdateOnChange = shouldUpdateOnChange;
     _observable = observable;
     _disposable = disposable;
@@ -225,10 +225,10 @@ final class InputDescriptor
 
   void setDefaultField( @Nonnull final VariableElement field )
   {
-    if ( isContextSource() )
+    if ( isFromTreeContext() )
     {
       throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_DEFAULT_CLASSNAME,
-                                                          "be specified for a @Input method that specifies source=CONTEXT" ),
+                                                          "be specified for an @Input that has fromTreeContext=true" ),
                                     field );
     }
     if ( null != _defaultMethod )
@@ -261,10 +261,10 @@ final class InputDescriptor
 
   void setDefaultMethod( @Nonnull final ExecutableElement method )
   {
-    if ( isContextSource() )
+    if ( isFromTreeContext() )
     {
       throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_DEFAULT_CLASSNAME,
-                                                          "be specified for a @Input method that specifies source=CONTEXT" ),
+                                                          "be specified for an @Input that has fromTreeContext=true" ),
                                     method );
     }
     if ( null != _defaultMethod )
@@ -313,9 +313,9 @@ final class InputDescriptor
     return getName();
   }
 
-  boolean isContextSource()
+  boolean isFromTreeContext()
   {
-    return _contextSource;
+    return _fromTreeContext;
   }
 
   boolean isSpecialChildrenInput()

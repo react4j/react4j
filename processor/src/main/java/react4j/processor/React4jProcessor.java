@@ -272,10 +272,10 @@ public final class React4jProcessor
       }
       else
       {
-        if ( input.isContextSource() )
+        if ( input.isFromTreeContext() )
         {
           throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_CLASSNAME,
-                                                              "specify require=ENABLE parameter when the for source=CONTEXT parameter is specified" ),
+                                                              "specify require=ENABLE when fromTreeContext=true" ),
                                         input.getElement() );
         }
       }
@@ -869,7 +869,7 @@ public final class React4jProcessor
     {
       return false;
     }
-    else if ( input.isContextSource() )
+    else if ( input.isFromTreeContext() )
     {
       return false;
     }
@@ -927,7 +927,7 @@ public final class React4jProcessor
     }
     final String qualifier = (String) AnnotationsUtil
       .getAnnotationValue( method, Constants.INPUT_CLASSNAME, "qualifier" ).getValue();
-    final boolean contextInput = isContextInput( method );
+    final boolean fromTreeContextInput = isFromTreeContextInput( method );
     final Element inputType = processingEnv.getTypeUtils().asElement( returnType );
     final boolean observable = isInputObservable( methods, method );
     final boolean disposable = null != inputType && isDisposableDerivableAtCompileTime( inputType );
@@ -938,10 +938,10 @@ public final class React4jProcessor
                                     "@Nonnull annotation. The return type should be the primitive type.",
                                     method );
     }
-    if ( !"".equals( qualifier ) && !contextInput )
+    if ( !"".equals( qualifier ) && !fromTreeContextInput )
     {
       throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_CLASSNAME,
-                                                          "specify qualifier parameter unless source=CONTEXT is also specified" ),
+                                                          "specify qualifier unless fromTreeContext=true" ),
                                     method );
     }
     final String requiredValue =
@@ -958,7 +958,7 @@ public final class React4jProcessor
                            method,
                            methodType,
                            null,
-                           contextInput,
+                           fromTreeContextInput,
                            true,
                            observable,
                            disposable,
@@ -1000,7 +1000,7 @@ public final class React4jProcessor
 
     final String qualifier = (String) AnnotationsUtil
       .getAnnotationValue( parameter, Constants.INPUT_CLASSNAME, "qualifier" ).getValue();
-    final boolean contextInput = isContextInput( parameter );
+    final boolean fromTreeContextInput = isFromTreeContextInput( parameter );
     final Element inputType = processingEnv.getTypeUtils().asElement( type );
     //final boolean observable = isInputObservable( methods, method );
     final var observable =
@@ -1023,10 +1023,10 @@ public final class React4jProcessor
                                     parameter );
     }
     final ImmutableInputKeyStrategy strategy = getImmutableInputKeyStrategy( typeName, inputType );
-    if ( !"".equals( qualifier ) && !contextInput )
+    if ( !"".equals( qualifier ) && !fromTreeContextInput )
     {
       throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_CLASSNAME,
-                                                          "specify qualifier parameter unless source=CONTEXT is also specified" ),
+                                                          "specify qualifier unless fromTreeContext=true" ),
                                     parameter );
     }
     final String requiredValue =
@@ -1042,7 +1042,7 @@ public final class React4jProcessor
                                 null,
                                 null,
                                 parameter,
-                                contextInput,
+                                fromTreeContextInput,
                                 false,
                                 false,
                                 disposable,
@@ -1680,11 +1680,10 @@ public final class React4jProcessor
     NOT_AREZ_COMPONENT
   }
 
-  private boolean isContextInput( @Nonnull final Element element )
+  private boolean isFromTreeContextInput( @Nonnull final Element element )
   {
-    final VariableElement parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_CLASSNAME, "source" ).getValue();
-    return "CONTEXT".equals( parameter.getSimpleName().toString() );
+    return (Boolean) AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_CLASSNAME, "fromTreeContext" )
+      .getValue();
   }
 
   private boolean shouldSetDefaultPriority( @Nonnull final List<ExecutableElement> methods )

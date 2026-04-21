@@ -10,10 +10,10 @@ import react4j.annotations.View;
 abstract class MultiContextPropModel
 {
   @Nullable
-  @Input( source = Input.Source.CONTEXT )
+  @Input( fromTreeContext = true )
   abstract String getStringContextValue();
 
-  @Input( source = Input.Source.CONTEXT )
+  @Input( fromTreeContext = true )
   abstract int getIntContextValue();
 
   @Nullable

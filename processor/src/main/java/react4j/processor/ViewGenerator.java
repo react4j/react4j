@@ -1074,7 +1074,7 @@ final class ViewGenerator
     }
     for ( final var input : descriptor.getInputs() )
     {
-      final var requiresNonnullInvariant = input.isNonNull() && ( input.isRequired() || input.isContextSource() );
+      final var requiresNonnullInvariant = input.isNonNull() && ( input.isRequired() || input.isFromTreeContext() );
       if ( requiresNonnullInvariant || input.hasValidateMethod() )
       {
         final var name = input.getName();
@@ -1089,7 +1089,7 @@ final class ViewGenerator
           final var block = CodeBlock.builder();
           block.beginControlFlow( "if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME );
 
-          if ( input.isContextSource() )
+          if ( input.isFromTreeContext() )
           {
             final var qualifier = input.getQualifier();
             if ( qualifier.isEmpty() )

@@ -1,0 +1,228 @@
+# Replace Input Source With FromTreeContext
+
+## Mission
+- Replace `@Input.source` with `@Input.fromTreeContext()` and remove `Input.Source`.
+
+## Scope
+- Annotation API changes in `core`.
+- Annotation processor parsing, validation, model naming, and generation changes in `processor`.
+- Processor fixtures, api-diff fixtures, and changelog updates.
+
+## Scope Boundaries
+- Do not add a compatibility shim or dual-syntax support.
+- Do not change builder/runtime semantics for tree-context inputs.
+- Do not change `qualifier`, `require`, or `observable` semantics beyond terminology updates.
+- Do not edit `AGENTS.md`.
+
+## Non-Negotiables
+- `fromTreeContext` defaults to `false`.
+- `Input.Source` is removed.
+- `qualifier` remains legal only when `fromTreeContext = true`.
+- Constructor-parameter inputs and method inputs both continue to support tree-context sourcing.
+- `@InputDefault` remains invalid for tree-context inputs.
+- Builder generation for tree-context inputs remains unchanged.
+- Runtime validation for missing nonnull tree-context values remains unchanged.
+- Use a full terminology purge for the old annotation-model vocabulary, except generated/runtime `Context*` identifiers that describe actual React context mechanics.
+- External downstream failures are acceptable during the migration window.
+
+## Behavior Expectations
+- `@Input( source = Input.Source.CONTEXT )` becomes `@Input( fromTreeContext = true )`.
+- `@Input( source = Input.Source.CONTEXT, qualifier = "x" )` becomes `@Input( fromTreeContext = true, qualifier = "x" )`.
+- `require = ENABLE` remains invalid for tree-context inputs.
+- `require = AUTODETECT` and `require = DISABLE` continue to treat tree-context inputs as non-builder-required.
+- `qualifier = ""` continues to mean unqualified context lookup.
+- Public docs, processor diagnostics, and durable internal names align with `fromTreeContext`.
+
+## Quality Gates
+- Fast gate: `bundle exec buildr react4j:processor:test`
+- Compatibility gate: `bundle exec buildr test_api_diff`
+- Full gate for reference only: `bundle exec buildr test`
+
+## Intentional Divergences
+- The migration is an immediate source break with no deprecation path.
+- Old-syntax rejection is not covered by new dedicated tests; plain Java compilation failure is sufficient.
+- Full downstream-inclusive test success is not required if failures are due to external repos still using the removed API.
+
+## Open Questions Register
+- `Q-01`
+  - status: resolved
+  - question: Should `qualifier` remain legal only when the input is sourced from tree context?
+  - context: This decides whether the migration is a pure selector rename or broadens `qualifier` semantics.
+  - options:
+    - preserve the current restriction
+    - allow `qualifier` on ordinary inputs
+  - tradeoffs:
+    - preserving the restriction keeps the migration narrow and behaviorally stable
+    - widening `qualifier` semantics would create a second design change with no existing use case
+  - recommended_default: preserve the current restriction
+  - user_decision: preserve the restriction
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-02`
+  - status: resolved
+  - question: Should requiredness behavior for tree-context inputs remain unchanged?
+  - context: `require = ENABLE` is currently invalid and auto-detect makes tree-context inputs optional.
+  - options:
+    - preserve current requiredness behavior
+    - redesign requiredness rules
+  - tradeoffs:
+    - preserving behavior keeps the migration syntactic
+    - redesigning requiredness would change builder and validation semantics
+  - recommended_default: preserve current requiredness behavior
+  - user_decision: preserve current requiredness behavior
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-03`
+  - status: resolved
+  - question: Should `fromTreeContext` remain valid on both method and constructor-parameter inputs?
+  - context: The processor currently supports both mutable and immutable context-sourced inputs.
+  - options:
+    - support both methods and constructor parameters
+    - limit support to one target shape
+  - tradeoffs:
+    - supporting both preserves current capability
+    - limiting support would introduce an unnecessary behavioral break
+  - recommended_default: support both targets
+  - user_decision: support both targets
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-04`
+  - status: resolved
+  - question: Should old terms like `source=CONTEXT` and `TreeInput` be removed from public docs and diagnostics?
+  - context: Public text currently uses both terms.
+  - options:
+    - rewrite docs and diagnostics to `fromTreeContext`
+    - keep legacy prose terms as aliases
+  - tradeoffs:
+    - rewriting reduces future confusion and matches the hard cut
+    - keeping old aliases preserves history but muddies the new API
+  - recommended_default: rewrite docs and diagnostics to `fromTreeContext`
+  - user_decision: rewrite docs and diagnostics to `fromTreeContext`
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-05`
+  - status: resolved
+  - question: Should the public API name be exactly `fromTreeContext`?
+  - context: Alternative names were possible but would change readability/verbosity tradeoffs.
+  - options:
+    - `fromTreeContext`
+    - another shorter name
+  - tradeoffs:
+    - `fromTreeContext` is explicit and unambiguous
+    - shorter names would be terser but less descriptive
+  - recommended_default: `fromTreeContext`
+  - user_decision: `fromTreeContext`
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-06`
+  - status: resolved
+  - question: Should the migration be an atomic hard cut across code, fixtures, tests, changelog, and api-diff artifacts?
+  - context: This determines whether temporary dual support is needed.
+  - options:
+    - hard cut everywhere
+    - stage compatibility
+  - tradeoffs:
+    - a hard cut keeps the implementation simple and aligned with the requested break
+    - staged compatibility adds processor and test complexity
+  - recommended_default: hard cut everywhere
+  - user_decision: hard cut everywhere
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-07`
+  - status: resolved
+  - question: Should diagnostics only be mechanically renamed or also cleaned up?
+  - context: Some current messages have awkward wording.
+  - options:
+    - substitute names only
+    - rename and clean up wording
+  - tradeoffs:
+    - mechanical substitution minimizes churn
+    - cleanup improves user-facing diagnostics while keeping rules unchanged
+  - recommended_default: rename and clean up wording
+  - user_decision: rename and clean up wording
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-08`
+  - status: resolved
+  - question: Should internal processor terminology mirror `fromTreeContext` exactly?
+  - context: Internal names currently use the old `context source` vocabulary.
+  - options:
+    - rename durable internal names to mirror `fromTreeContext`
+    - leave internals as-is
+  - tradeoffs:
+    - aligned naming reduces future confusion
+    - leaving internals alone would work but preserve stale mental models
+  - recommended_default: rename durable internal names
+  - user_decision: rename durable internal names and use exact `fromTreeContext` naming
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-09`
+  - status: resolved
+  - question: Should the breaking change be called out explicitly in `CHANGELOG.md` and api-diff artifacts?
+  - context: The public annotation surface is changing and Revapi records such changes.
+  - options:
+    - add an explicit changelog entry and update fixtures
+    - rely on fixture churn only
+  - tradeoffs:
+    - explicit documentation makes the break discoverable
+    - relying on fixture churn hides the migration intent
+  - recommended_default: add explicit documentation and update fixtures
+  - user_decision: add explicit documentation and update fixtures
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-10`
+  - status: resolved
+  - question: Should external downstream failures block this migration?
+  - context: full `buildr test` includes external repos pinned to `master`.
+  - options:
+    - allow temporary downstream failures
+    - block until downstream repos migrate
+  - tradeoffs:
+    - allowing failures matches the requested sharp migration
+    - blocking would effectively force compatibility work here
+  - recommended_default: allow temporary downstream failures
+  - user_decision: allow temporary downstream failures
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-11`
+  - status: resolved
+  - question: Should verification rely on targeted in-repo gates rather than a clean downstream-inclusive test run?
+  - context: the downstream gate may fail for acceptable external migration reasons.
+  - options:
+    - targeted in-repo verification
+    - require a fully clean `buildr test`
+  - tradeoffs:
+    - targeted verification measures the change we control
+    - a full clean run is higher confidence but may be blocked by external lag
+  - recommended_default: targeted in-repo verification
+  - user_decision: targeted in-repo verification
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-12`
+  - status: resolved
+  - question: Should all fixtures move to the new syntax with no dedicated old-syntax rejection tests?
+  - context: keeping old-syntax fixtures would conflict with the hard cut.
+  - options:
+    - migrate all fixtures and skip dedicated old-syntax tests
+    - retain or add explicit old-syntax rejection coverage
+  - tradeoffs:
+    - migrating all fixtures keeps the suite aligned with the supported API
+    - dedicated old-syntax tests would be brittle and mostly duplicate Java compilation errors
+  - recommended_default: migrate all fixtures and skip dedicated old-syntax tests
+  - user_decision: migrate all fixtures and skip dedicated old-syntax tests
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-13`
+  - status: resolved
+  - question: Should the old annotation-model terminology be purged broadly?
+  - context: a partial rename could leave stale concepts in code comments and internal names.
+  - options:
+    - full terminology purge except generated/runtime `Context*` identifiers
+    - rename only public API references
+  - tradeoffs:
+    - a fuller purge aligns the repository vocabulary
+    - a narrower change reduces churn but leaves stale concepts behind
+  - recommended_default: full terminology purge except generated/runtime `Context*` identifiers
+  - user_decision: full terminology purge except generated/runtime `Context*` identifiers
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-14`
+  - status: resolved
+  - question: Should the scope stay limited to the live `@Input` API rather than retroactively rewriting historical `@Prop` references?
+  - context: old changelog entries and api fixtures include historical `@Prop.source` references.
+  - options:
+    - limit scope to live `@Input` API
+    - rewrite historical references too
+  - tradeoffs:
+    - limiting scope preserves historical accuracy
+    - rewriting history would blur the real API timeline
+  - recommended_default: limit scope to live `@Input` API
+  - user_decision: limit scope to live `@Input` API
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`

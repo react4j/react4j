@@ -7,7 +7,7 @@ import react4j.annotations.Input;
 public interface MyConsumerView
   extends MyBaseView
 {
-  @Input( source = Input.Source.CONTEXT )
+  @Input( fromTreeContext = true )
   @Override
   @Nonnull
   Date dateRange();
