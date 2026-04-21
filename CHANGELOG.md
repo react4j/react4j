@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.217](https://github.com/react4j/react4j/tree/v0.217) (2026-04-21) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.216...v0.217)
+
+Changes in this release:
 
 * Breaking: replace `@Input.source` and `Input.Source` with `@Input.fromTreeContext`, keeping tree-context input behavior unchanged while dropping the old enum-based syntax.
 * Breaking: remove `@View.sting()` and always infer Sting-backed factory generation from constructor injection shape instead of an annotation flag.
