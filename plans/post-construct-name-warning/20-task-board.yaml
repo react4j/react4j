@@ -1,0 +1,118 @@
+tasks:
+  - id: PLAN-SETUP
+    title: Create planning artifacts for the post-construct naming warning
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements, implementation plan, and task board exist in `plans/post-construct-name-warning/`.
+      - Resolved design decisions are captured with stable `Q-*` entries.
+    files_touched:
+      - plans/post-construct-name-warning/*
+    evidence:
+      - command: create planning artifacts
+        result: completed with `Q-01` through `Q-15` resolved
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PLAN-APPROVAL
+    title: Capture user review of the post-construct naming warning plan
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-SETUP
+    acceptance_criteria:
+      - All tracked `Q-*` items are resolved.
+      - User review of the latest plan has been explicitly requested.
+      - User feedback, if any, is reflected in planning artifacts before approval is recorded.
+    files_touched:
+      - plans/post-construct-name-warning/*
+    evidence:
+      - command: conversational design review
+        result: all tracked questions resolved; user reviewed the latest plan and accepted it as-is
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PROCESSOR-WARNING
+    title: Implement the post-construct naming warning in the processor
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - A new warning key exists for post-construct naming.
+      - A single misnamed effective `@PostConstruct` method emits one warning on the method element.
+      - Standard method/enclosing-type suppression works.
+      - Zero and multi-method cases do not warn.
+    files_touched:
+      - processor/src/main/java/react4j/processor/Constants.java
+      - processor/src/main/java/react4j/processor/React4jProcessor.java
+    evidence:
+      - command: update `processor/src/main/java/react4j/processor/Constants.java`
+        result: added `React4j:PostConstructName`
+      - command: update `processor/src/main/java/react4j/processor/React4jProcessor.java`
+        result: added an early parse-time single-`@PostConstruct` naming warning that emits on the method element with standard suppression handling
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: TEST-COVERAGE
+    title: Add post-construct naming fixtures and test registrations
+    status: completed
+    priority: high
+    depends_on:
+      - PROCESSOR-WARNING
+    acceptance_criteria:
+      - One valid single-method fixture compiles without warnings.
+      - One misnamed single-method fixture compiles with a single warning.
+      - Method-level and type-level suppression fixtures compile without warnings.
+      - One two-method boundary fixture compiles without warnings from this rule.
+    files_touched:
+      - processor/src/test/java/react4j/processor/React4jProcessorTest.java
+      - processor/src/test/fixtures/input/com/example/post_construct/*
+    evidence:
+      - command: update `processor/src/test/fixtures/input/com/example/post_construct/*`
+        result: added warned, valid, method-suppressed, type-suppressed, and multi-method boundary fixtures
+      - command: update `processor/src/test/java/react4j/processor/React4jProcessorTest.java`
+        result: registered the new warning and no-warning fixtures in the existing warning providers
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: CHANGELOG
+    title: Document the post-construct naming warning in the changelog
+    status: completed
+    priority: medium
+    depends_on:
+      - PROCESSOR-WARNING
+    acceptance_criteria:
+      - `CHANGELOG.md` includes an `Unreleased` entry describing the new warning and suppression key.
+    files_touched:
+      - CHANGELOG.md
+      - plans/post-construct-name-warning/*
+    evidence:
+      - command: update `CHANGELOG.md`
+        result: added an `Unreleased` entry for the `React4j:PostConstructName` warning and its suppression scope
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: VERIFY
+    title: Run the focused processor verification gate
+    status: completed
+    priority: high
+    depends_on:
+      - TEST-COVERAGE
+      - CHANGELOG
+    acceptance_criteria:
+      - `bundle exec buildr react4j:processor:test` passes.
+    files_touched:
+      - plans/post-construct-name-warning/*
+    evidence:
+      - command: bundle exec buildr react4j:processor:test
+        result: passed
+    commit:
+      hash: not_required
+      message: not_required

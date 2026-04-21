@@ -88,6 +88,8 @@ final class Constants
   static final String WARNING_FINAL_METHOD = "React4j:FinalMethod";
   @Nonnull
   static final String WARNING_CONSTRUCTOR_PARAMETER_ORDER = "React4j:ConstructorParameterOrder";
+  @Nonnull
+  static final String WARNING_POST_CONSTRUCT_NAME = "React4j:PostConstructName";
 
   private Constants()
   {

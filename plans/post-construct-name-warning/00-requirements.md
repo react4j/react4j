@@ -1,0 +1,237 @@
+# PostConstruct Name Warning
+
+## Mission
+- Add a suppressible React4j processor warning when a `@View` has exactly one effective `@PostConstruct` method and that method is not named `postConstruct`.
+
+## Scope
+- `processor` warning logic and suppression key.
+- Processor fixtures/tests for warned, valid, suppressed, and multi-method boundary cases.
+- Planning artifacts for the change.
+
+## Scope Boundaries
+- Do not change runtime behavior or generated code.
+- Do not add broader `@PostConstruct` structural validation in this change.
+- Do not turn the condition into a compile error.
+- Do not update public docs, Javadoc, or `CHANGELOG.md`.
+- Do not edit `AGENTS.md`.
+
+## Non-Negotiables
+- Apply the rule only when the effective method set contains exactly one `@PostConstruct` method.
+- Require an exact, case-sensitive simple-name match to `postConstruct`.
+- Use one warning attached to the misnamed `@PostConstruct` method element.
+- Respect normal React4j warning suppression via `@SuppressWarnings` and `@SuppressReact4jWarnings` on the method or enclosing type.
+- Ignore parameter-level suppression.
+- Use the same effective method set the processor already uses for other view analysis.
+
+## Behavior Expectations
+- `0` `@PostConstruct` methods: no warning.
+- `1` `@PostConstruct` method named `postConstruct`: no warning.
+- `1` `@PostConstruct` method with any other simple name: warning.
+- `2+` `@PostConstruct` methods: no naming warning from this rule, even if none is named `postConstruct`.
+- Warning text uses a dedicated suppression key and established React4j suppression wording.
+- The check runs early during `parse(...)`, before later descriptor work.
+
+## Quality Gates
+- Fast gate: `bundle exec buildr react4j:processor:test`
+- Full gate for reference only: `bundle exec buildr test`
+
+## Intentional Divergences
+- This is a style/consistency warning only; no lifecycle behavior changes are included.
+- Multi-method `@PostConstruct` cases are intentionally outside the warning rule.
+
+## Open Questions Register
+- `Q-01`
+  - status: resolved
+  - question: Should this be a warning-only validation with no runtime or codegen behavior changes?
+  - context: The processor currently only tracks whether any `@PostConstruct` exists and does not attach naming semantics to generation.
+  - options:
+    - warning-only validation
+    - behavior/codegen changes tied to the method name
+  - tradeoffs:
+    - warning-only is low risk and matches the constructor-order warning pattern
+    - behavior changes would be invasive and broaden scope
+  - recommended_default: warning-only validation
+  - user_decision: warning-only validation with no runtime or codegen behavior changes
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-02`
+  - status: resolved
+  - question: When should the naming warning apply?
+  - context: The rule needs an exact trigger boundary for zero, one, and multiple `@PostConstruct` methods.
+  - options:
+    - exactly one effective `@PostConstruct` method, and it is not named `postConstruct`
+    - one or more misnamed `@PostConstruct` methods
+  - tradeoffs:
+    - the exactly-one rule matches the requested behavior literally
+    - broader rules would invent behavior not requested
+  - recommended_default: exactly one effective `@PostConstruct` method, and it is not named `postConstruct`
+  - user_decision: only when the class has exactly one `@PostConstruct`-annotated method, and that method’s simple name is not `postConstruct`
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-03`
+  - status: resolved
+  - question: Should this use a dedicated suppression key?
+  - context: The rule is separate from the existing constructor-order warning.
+  - options:
+    - dedicated warning key
+    - reuse `React4j:ConstructorParameterOrder`
+  - tradeoffs:
+    - a dedicated key allows independent suppression
+    - reusing an unrelated key couples distinct style checks
+  - recommended_default: dedicated warning key
+  - user_decision: add a dedicated warning key, for example `React4j:PostConstructName`
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-04`
+  - status: resolved
+  - question: What should the warning message say?
+  - context: The diagnostic should be specific and parallel to the constructor-order warning style.
+  - options:
+    - a concise rule statement plus standard suppression wording
+    - include the actual misnamed method in the message
+  - tradeoffs:
+    - the concise rule statement is stable and consistent with existing warnings
+    - including the actual method name adds noise without changing the fix
+  - recommended_default: concise rule statement plus standard suppression wording
+  - user_decision: `@PostConstruct target should be named 'postConstruct' when it is the only @PostConstruct method in the @View. This warning can be suppressed by annotating the element with @SuppressWarnings( "React4j:PostConstructName" ) or @SuppressReact4jWarnings( "React4j:PostConstructName" )`
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-05`
+  - status: resolved
+  - question: What should the suppression scope be?
+  - context: React4j warnings already support method-level and enclosing-type suppression.
+  - options:
+    - one method-level warning with standard method/type suppression
+    - a new custom suppression model
+  - tradeoffs:
+    - standard suppression keeps the rule aligned with existing warning behavior
+    - a custom model adds unnecessary inconsistency
+  - recommended_default: one method-level warning with standard method/type suppression
+  - user_decision: use the same suppression scope as the constructor-order warning
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-06`
+  - status: resolved
+  - question: Should this change also add full `@PostConstruct` structural validation?
+  - context: Other lifecycle hooks go through `MemberChecks.mustBeLifecycleHook(...)`, but this work was requested as a naming warning.
+  - options:
+    - keep the change naming-warning only
+    - expand the change to include structural lifecycle-hook validation
+  - tradeoffs:
+    - keeping the change narrow preserves scope and test clarity
+    - expanding scope introduces a separate behavior change
+  - recommended_default: keep the change naming-warning only
+  - user_decision: keep it narrowly focused on the naming warning only
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-07`
+  - status: resolved
+  - question: How should the warning be tested?
+  - context: The constructor-order warning already established a minimal warned/valid/suppressed fixture pattern.
+  - options:
+    - mirror the constructor-warning fixture matrix
+    - rely on ad hoc assertions
+  - tradeoffs:
+    - mirrored fixtures are explicit and maintainable
+    - ad hoc assertions are harder to understand later
+  - recommended_default: mirror the constructor-warning fixture matrix
+  - user_decision: add warned, valid, and suppression fixtures matching the constructor-warning structure
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-08`
+  - status: resolved
+  - question: Should the `2+ @PostConstruct` no-warning boundary be locked in with a fixture?
+  - context: The exact-one trigger could otherwise drift during refactors.
+  - options:
+    - add an explicit no-warning multi-method fixture
+    - rely on the exact-one rule in prose only
+  - tradeoffs:
+    - a fixture makes the boundary durable
+    - prose-only leaves the edge case easier to regress
+  - recommended_default: add an explicit no-warning multi-method fixture
+  - user_decision: yes, add one explicit no-warning fixture with two `@PostConstruct` methods
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-09`
+  - status: resolved
+  - question: How should the fixtures be organized and named?
+  - context: Existing warnings use dedicated packages and parallel naming for warned and suppressed cases.
+  - options:
+    - dedicated `com.example.post_construct` fixtures with parallel names
+    - reuse unrelated fixture packages
+  - tradeoffs:
+    - a dedicated package keeps the intent obvious
+    - reusing unrelated packages obscures what the tests cover
+  - recommended_default: dedicated `com.example.post_construct` fixtures with parallel names
+  - user_decision: use `com.example.post_construct` with names parallel to the constructor fixtures
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-10`
+  - status: resolved
+  - question: Should the rule use the processor’s existing effective method set, including inherited methods if present?
+  - context: `parse(...)` already obtains a method list via `ElementsUtil.getMethods(...)` for other analysis.
+  - options:
+    - use the existing effective method set
+    - create a new declared-only rule
+  - tradeoffs:
+    - reusing the existing effective method set keeps semantics consistent
+    - declared-only logic would create a special-case interpretation
+  - recommended_default: use the existing effective method set
+  - user_decision: use the same effective method set the processor already uses for other view analysis
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-11`
+  - status: resolved
+  - question: How strict should the required method name match be?
+  - context: The naming rule needs a precise acceptance condition.
+  - options:
+    - exact case-sensitive match to `postConstruct`
+    - fuzzy or case-insensitive matching
+  - tradeoffs:
+    - exact matching is trivial to implement and unambiguous
+    - fuzzy matching creates avoidable ambiguity
+  - recommended_default: exact case-sensitive match to `postConstruct`
+  - user_decision: require an exact simple-name match to `postConstruct`
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-12`
+  - status: resolved
+  - question: Should this remain processor-only with no docs or changelog updates?
+  - context: The warning is a style check, not a runtime/API behavior change.
+  - options:
+    - processor-only
+    - include docs/changelog updates
+  - tradeoffs:
+    - processor-only keeps the change focused
+    - docs/changelog updates add overhead for a minor warning
+  - recommended_default: processor-only
+  - user_decision: yes, keep it processor-only
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-13`
+  - status: resolved
+  - question: When in `parse(...)` should the warning run?
+  - context: The rule depends only on the method set and simple names.
+  - options:
+    - run early during `parse(...)`, before later descriptor work
+    - defer until later after descriptor setup
+  - tradeoffs:
+    - running early keeps the check local and decoupled
+    - later execution adds unnecessary dependencies
+  - recommended_default: run early during `parse(...)`
+  - user_decision: yes, run it early during `parse(...)`
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-14`
+  - status: resolved
+  - question: How should the explicit multi-method fixture behave when neither method is named `postConstruct`?
+  - context: The boundary case should prove the rule is cardinality-based.
+  - options:
+    - compile without this warning
+    - still warn if neither method uses the preferred name
+  - tradeoffs:
+    - no warning keeps the rule exactly “only the single-method case”
+    - warning would broaden the rule beyond the agreed trigger
+  - recommended_default: compile without this warning
+  - user_decision: yes, it should compile without this warning
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`
+- `Q-15`
+  - status: resolved
+  - question: Should this work get its own plan artifacts under `plans/`, parallel to `constructor-parameter-order-warning`, or should it be treated as a small direct processor change?
+  - context: The change is small, but you explicitly referenced the prior plan and requested a rigorous design interview.
+  - options:
+    - create dedicated plan artifacts under `plans/post-construct-name-warning/`
+    - skip plan artifacts and implement directly
+  - tradeoffs:
+    - dedicated artifacts preserve traceability and match the prior plan structure
+    - direct implementation is lighter but leaves less durable design context
+  - recommended_default: create dedicated plan artifacts under `plans/post-construct-name-warning/`
+  - user_decision: keep the dedicated plan artifacts under `plans/post-construct-name-warning/`
+  - artifacts_updated: `00-requirements.md`, `10-implementation-plan.md`, `20-task-board.yaml`

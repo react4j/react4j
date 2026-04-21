@@ -163,6 +163,7 @@ public final class React4jProcessor
     }
     final ExecutableElement constructor = constructors.get( 0 );
     verifyConstructorParameterOrder( constructor );
+    verifyPostConstructMethodName( methods );
 
     final boolean sting = deriveSting( constructor );
     final boolean notSyntheticConstructor =
@@ -317,6 +318,31 @@ public final class React4jProcessor
                                MemberChecks.suppressedBy( Constants.WARNING_CONSTRUCTOR_PARAMETER_ORDER,
                                                           Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
         processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, constructor );
+      }
+    }
+  }
+
+  private void verifyPostConstructMethodName( @Nonnull final List<ExecutableElement> methods )
+  {
+    final List<ExecutableElement> postConstructMethods =
+      methods.stream()
+        .filter( e -> AnnotationsUtil.hasAnnotationOfType( e, Constants.POST_CONSTRUCT_CLASSNAME ) )
+        .toList();
+
+    if ( 1 == postConstructMethods.size() )
+    {
+      final ExecutableElement method = postConstructMethods.get( 0 );
+      if ( !"postConstruct".contentEquals( method.getSimpleName() ) &&
+           ElementsUtil.isWarningNotSuppressed( method,
+                                                Constants.WARNING_POST_CONSTRUCT_NAME,
+                                                Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
+      {
+        final String message =
+          MemberChecks.should( Constants.POST_CONSTRUCT_CLASSNAME,
+                               "be named 'postConstruct' when it is the only @PostConstruct method in the @View. " +
+                               MemberChecks.suppressedBy( Constants.WARNING_POST_CONSTRUCT_NAME,
+                                                          Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
+        processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
       }
     }
   }
