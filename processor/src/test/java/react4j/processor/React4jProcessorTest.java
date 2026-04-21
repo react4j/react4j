@@ -1041,7 +1041,10 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.schedule_render.ProtectedScheduleRenderComponent",
                       "@View target should not declare a protected method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings( \"React4j:ProtectedMethod\" )" },
         new Object[]{ "com.example.schedule_render.PublicScheduleRenderComponent",
-                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" }
+                      "@View target should not declare a public method. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings( \"React4j:PublicMethod\" )" },
+
+        new Object[]{ "com.example.constructor.BadOrderView",
+                      "@View target should declare constructor parameters in the order inject, tree, input. Actual order: input, inject, tree. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ConstructorParameterOrder\" ) or @SuppressReact4jWarnings( \"React4j:ConstructorParameterOrder\" )" }
       };
   }
 
@@ -1109,7 +1112,11 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.prop_validate.Suppressed2PublicAccessPropValidateModel" },
 
         new Object[]{ "com.example.schedule_render.SuppressedProtectedScheduleRenderComponent" },
-        new Object[]{ "com.example.schedule_render.SuppressedPublicScheduleRenderComponent" }
+        new Object[]{ "com.example.schedule_render.SuppressedPublicScheduleRenderComponent" },
+
+        new Object[]{ "com.example.constructor.GoodOrderView" },
+        new Object[]{ "com.example.constructor.Suppressed1BadOrderView" },
+        new Object[]{ "com.example.constructor.Suppressed2BadOrderView" }
       };
   }
 

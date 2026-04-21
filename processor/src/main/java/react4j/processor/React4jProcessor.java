@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
@@ -161,6 +162,7 @@ public final class React4jProcessor
                                     typeElement );
     }
     final ExecutableElement constructor = constructors.get( 0 );
+    verifyConstructorParameterOrder( constructor );
 
     final boolean sting = deriveSting( constructor );
     final boolean notSyntheticConstructor =
@@ -279,6 +281,61 @@ public final class React4jProcessor
   {
     return !getInjectableConstructorParameters( constructor ).isEmpty() &&
            null != processingEnv.getElementUtils().getTypeElement( Constants.STING_INJECTABLE_CLASSNAME );
+  }
+
+  private void verifyConstructorParameterOrder( @Nonnull final ExecutableElement constructor )
+  {
+    if ( Elements.Origin.EXPLICIT == processingEnv.getElementUtils().getOrigin( constructor ) &&
+         constructor.getParameters().size() > 1 &&
+         ElementsUtil.isWarningNotSuppressed( constructor,
+                                              Constants.WARNING_CONSTRUCTOR_PARAMETER_ORDER,
+                                              Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
+    {
+      final StringJoiner actualOrder = new StringJoiner( ", " );
+      int maxObservedGroup = -1;
+      boolean invalidOrder = false;
+      for ( final VariableElement parameter : constructor.getParameters() )
+      {
+        final int group = classifyConstructorParameterGroup( parameter );
+        actualOrder.add( getConstructorParameterGroupLabel( group ) );
+        if ( group < maxObservedGroup )
+        {
+          invalidOrder = true;
+        }
+        else
+        {
+          maxObservedGroup = group;
+        }
+      }
+
+      if ( invalidOrder )
+      {
+        final String message =
+          MemberChecks.should( Constants.VIEW_CLASSNAME,
+                               "declare constructor parameters in the order inject, tree, input. Actual order: " +
+                               actualOrder + ". " +
+                               MemberChecks.suppressedBy( Constants.WARNING_CONSTRUCTOR_PARAMETER_ORDER,
+                                                          Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
+        processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, constructor );
+      }
+    }
+  }
+
+  private int classifyConstructorParameterGroup( @Nonnull final VariableElement parameter )
+  {
+    return isInputParameter( parameter ) ? isFromTreeContextInput( parameter ) ? 1 : 2 : 0;
+  }
+
+  @Nonnull
+  private String getConstructorParameterGroupLabel( final int group )
+  {
+    return switch ( group )
+    {
+      case 0 -> "inject";
+      case 1 -> "tree";
+      case 2 -> "input";
+      default -> throw new IllegalArgumentException( "Unexpected constructor parameter group: " + group );
+    };
   }
 
   @Nonnull

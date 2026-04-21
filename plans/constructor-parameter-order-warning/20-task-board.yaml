@@ -1,0 +1,97 @@
+tasks:
+  - id: PLAN-SETUP
+    title: Create planning artifacts for constructor parameter order warnings
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements, implementation plan, and task board exist in `plans/constructor-parameter-order-warning/`.
+      - Resolved design decisions are captured with stable `Q-*` entries.
+    files_touched:
+      - plans/constructor-parameter-order-warning/*
+    evidence:
+      - command: create planning artifacts
+        result: completed
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PLAN-APPROVAL
+    title: Capture user review of the constructor parameter order warning plan
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-SETUP
+    acceptance_criteria:
+      - User decisions cover ordering semantics, warning shape, suppression scope, and verification strategy.
+      - All tracked questions are resolved before implementation.
+    files_touched:
+      - plans/constructor-parameter-order-warning/*
+    evidence:
+      - command: conversational design review
+        result: approved warning-only validation with canonical order `inject, tree, input`, compact actual sequence messaging, and dedicated warned/suppressed/valid fixtures
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: PROCESSOR-WARNING
+    title: Implement constructor parameter ordering warning in the processor
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-APPROVAL
+    acceptance_criteria:
+      - A new warning key exists for constructor parameter ordering.
+      - Explicit `@View` constructors warn when parameter groups are out of canonical order.
+      - The warning message includes expected order and actual compact group sequence.
+      - Standard constructor/enclosing suppression works.
+    files_touched:
+      - processor/src/main/java/react4j/processor/Constants.java
+      - processor/src/main/java/react4j/processor/React4jProcessor.java
+    evidence:
+      - command: update `processor/src/main/java/react4j/processor/Constants.java`
+        result: added `React4j:ConstructorParameterOrder`
+      - command: update `processor/src/main/java/react4j/processor/React4jProcessor.java`
+        result: added explicit-constructor monotonic group-order validation with constructor-level warning emission and standard suppression handling
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: TEST-COVERAGE
+    title: Add constructor-order fixtures and test registrations
+    status: completed
+    priority: high
+    depends_on:
+      - PROCESSOR-WARNING
+    acceptance_criteria:
+      - One valid explicit-constructor fixture compiles without warnings.
+      - One misordered fixture compiles with a single warning.
+      - Constructor-level and type-level suppression fixtures compile without warnings.
+    files_touched:
+      - processor/src/test/java/react4j/processor/React4jProcessorTest.java
+      - processor/src/test/fixtures/input/com/example/constructor/*
+    evidence:
+      - command: update `processor/src/test/fixtures/input/com/example/constructor/*`
+        result: added warned, suppressed, and valid constructor-order fixtures using primitive `@Input` parameters to avoid unrelated nullability diagnostics
+      - command: update `processor/src/test/java/react4j/processor/React4jProcessorTest.java`
+        result: registered the new warned and no-warning fixtures in the existing warning providers
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: VERIFY
+    title: Run the focused processor verification gate
+    status: completed
+    priority: high
+    depends_on:
+      - TEST-COVERAGE
+    acceptance_criteria:
+      - `bundle exec buildr react4j:processor:test` passes.
+    files_touched:
+      - plans/constructor-parameter-order-warning/*
+    evidence:
+      - command: bundle exec buildr react4j:processor:test
+        result: passed
+    commit:
+      hash: not_required
+      message: not_required

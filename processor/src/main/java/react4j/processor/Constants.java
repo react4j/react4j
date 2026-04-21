@@ -86,6 +86,8 @@ final class Constants
   static final String WARNING_PROTECTED_METHOD = "React4j:ProtectedMethod";
   @Nonnull
   static final String WARNING_FINAL_METHOD = "React4j:FinalMethod";
+  @Nonnull
+  static final String WARNING_CONSTRUCTOR_PARAMETER_ORDER = "React4j:ConstructorParameterOrder";
 
   private Constants()
   {

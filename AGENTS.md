@@ -14,6 +14,7 @@ When you learn something non-obvious, add it here if it would make future change
 
 - Render-prelude observation no longer comes from `@Input`. For `TRACKING` and `MAYBE_TRACKING` views, React4j scans subclass-accessible declared/inherited instance fields and zero-arg instance methods annotated with `@ComponentDependency` or `@AutoObserve`; known nullable candidates use `ComponentObservable.maybeObserve(...)`, uncertain types use a runtime `instanceof ComponentObservable` guard, and `@CascadeDispose` is ignored.
 - `bundle exec buildr test` includes `downstream-test` builds of external example repos pinned to their GitHub `master` branches via `tasks/util.rb`, so breaking annotation/API changes can fail there until those downstream repos are migrated even when local processor and api-diff tests pass.
+- Explicit `@View` constructors now emit a suppressible `React4j:ConstructorParameterOrder` warning unless parameters are grouped as non-`@Input`, then `@Input(fromTreeContext = true)`, then other `@Input`; the diagnostic is attached to the constructor and uses the compact labels `inject`, `tree`, and `input`.
 
 ## Project Structure & Module Organization
 
