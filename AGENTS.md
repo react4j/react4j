@@ -139,6 +139,7 @@ Testing and tooling properties:
 
 - Follow `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
 - Keep commits small and focused; update `CHANGELOG.md` for user-visible changes.
+- When updating `CHANGELOG.md`, add the message under the "Unreleased" section. DO NOT add a `Changes in this release:` header as that is added as part of the automation.
 - Remove trailing whitespace and keep file endings with a newline.
 
 ## Security & Release Notes
