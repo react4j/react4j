@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Update the `org.realityforge.arez` artifacts to version `0.236`.
+* Avoid reporting parameters if an `@Action` is generated for `shouldComponentUpdate()`.
 
 ### [v0.217](https://github.com/react4j/react4j/tree/v0.217) (2026-04-21) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.216...v0.217)
 

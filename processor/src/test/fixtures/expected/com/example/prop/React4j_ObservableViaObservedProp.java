@@ -67,7 +67,8 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
   abstract ObservableValue<?> getValueObservableValue();
 
   @Action(
-      verifyRequired = false
+      verifyRequired = false,
+      reportParameters = false
   )
   boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextInputs) {
     assert null != nextInputs;

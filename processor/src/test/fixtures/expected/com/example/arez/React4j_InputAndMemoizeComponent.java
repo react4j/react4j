@@ -84,7 +84,8 @@ abstract class React4j_InputAndMemoizeComponent extends InputAndMemoizeComponent
   abstract ObservableValue<?> getValueObservableValue();
 
   @Action(
-      verifyRequired = false
+      verifyRequired = false,
+      reportParameters = false
   )
   boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextInputs) {
     assert null != nextInputs;

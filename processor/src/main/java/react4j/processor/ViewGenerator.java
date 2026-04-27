@@ -639,7 +639,11 @@ final class ViewGenerator
     final var observableInputs = descriptor.getObservableInputs();
     if ( !observableInputs.isEmpty() )
     {
-      method.addAnnotation( AnnotationSpec.builder( ACTION_CLASSNAME ).addMember( "verifyRequired", "false" ).build() );
+      method.addAnnotation( AnnotationSpec
+                              .builder( ACTION_CLASSNAME )
+                              .addMember( "verifyRequired", "false" )
+                              .addMember( "reportParameters", "false" )
+                              .build() );
     }
     else
     {
