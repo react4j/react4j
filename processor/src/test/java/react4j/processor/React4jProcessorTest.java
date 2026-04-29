@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Processor;
-import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import org.realityforge.proton.qa.AbstractProcessorTest;
 import org.realityforge.proton.qa.Compilation;
@@ -16,7 +15,6 @@ import org.realityforge.proton.qa.CompileTestUtil;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import sting.processor.StingProcessor;
-import static org.testng.Assert.*;
 
 public final class React4jProcessorTest
   extends AbstractProcessorTest
@@ -652,7 +650,7 @@ public final class React4jProcessorTest
       inputs( pkg + ".ContributeToComponent",
               pkg + ".MyAutoFragment",
 
-              // The following input exists so that the synthesizing processor has types to "process"
+        // The following input exists so that the synthesizing processor has types to "process"
               pkg + ".MyFramework",
               pkg + ".MyFrameworkModel" );
 
@@ -1058,20 +1056,7 @@ public final class React4jProcessorTest
   @Test( dataProvider = "compileWithWarnings" )
   public void processCompileWithWarnings( @Nonnull final String classname, @Nonnull final String messageFragment )
   {
-    assertCompilesWithSingleWarning( classname, messageFragment );
-
-    final List<String> options = new ArrayList<>( getOptions() );
-    options.add( "-Areact4j.warnings_as_errors=true" );
-
-    final Compilation compilation =
-      CompileTestUtil.compile( Collections.singletonList( input( "input", classname ) ),
-                               options,
-                               processors(),
-                               Collections.emptyList() );
-
-    assertFalse( compilation.success() );
-    assertErrorDiagnostic( compilation, messageFragment );
-    assertDiagnosticCount( compilation, Diagnostic.Kind.ERROR, 1 );
+    assertCompilesWithSingleWarningThatCanBeUpgradedToError( classname, messageFragment );
   }
 
   @DataProvider( name = "compileWithoutWarnings" )
