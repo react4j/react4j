@@ -279,7 +279,7 @@ public final class React4jProcessorTest
   public void processSuccessfulRawTypeCompileWithoutSting()
     throws Exception
   {
-    assertSuccessfulCompileWithoutSting( "com.example.inject.ConstructorInjectRawTypeComponent", true );
+    assertSuccessfulCompileWithoutSting( "com.example.inject.ConstructorInjectRawTypeComponent" );
   }
 
   @Test
@@ -1172,7 +1172,8 @@ public final class React4jProcessorTest
     assertSuccessfulCompile( classname, deriveExpectedOutputs( classname, factory ) );
   }
 
-  void assertSuccessfulCompileWithoutSting( @Nonnull final String classname, final boolean factory )
+  @SuppressWarnings( "SameParameterValue" )
+  void assertSuccessfulCompileWithoutSting( @Nonnull final String classname )
     throws Exception
   {
     final List<File> classpath =
@@ -1185,7 +1186,7 @@ public final class React4jProcessorTest
 
     outputFilesIfEnabled( compilation, this::emitGeneratedFile );
 
-    for ( final String expectedOutput : deriveExpectedOutputs( classname, factory ) )
+    for ( final String expectedOutput : deriveExpectedOutputs( classname, true ) )
     {
       final var fixture = fixtureDir().resolve( "expected" ).resolve( expectedOutput );
       final var output1 = compilation.sourceOutput().resolve( expectedOutput );
