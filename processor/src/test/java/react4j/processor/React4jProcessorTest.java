@@ -20,6 +20,7 @@ public final class React4jProcessorTest
   extends AbstractProcessorTest
 {
   @DataProvider( name = "successfulCompiles" )
+  @Nonnull
   public Object[][] successfulCompiles()
   {
     return new Object[][]
