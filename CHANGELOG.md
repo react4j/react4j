@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.220](https://github.com/react4j/react4j/tree/v0.220) (2026-04-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.219...v0.220)
+
+Changes in this release:
 
 * Upgrade the `org.realityforge.proton` artifact to version `0.69`.
 
