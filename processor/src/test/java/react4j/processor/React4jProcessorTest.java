@@ -673,6 +673,7 @@ public final class React4jProcessorTest
   }
 
   @DataProvider( name = "failedCompiles" )
+  @Nonnull
   public Object[][] failedCompiles()
   {
     return new Object[][]
@@ -919,6 +920,7 @@ public final class React4jProcessorTest
   }
 
   @DataProvider( name = "packageAccessElementInDifferentPackage" )
+  @Nonnull
   public Object[][] packageAccessElementInDifferentPackage()
   {
     return new Object[][]
