@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.219](https://github.com/react4j/react4j/tree/v0.219) (2026-04-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.218...v0.219)
+
+Changes in this release:
 
 * Add the `react4j.warnings_as_errors` annotation processor option to upgrade warnings to errors.
 * Upgrade the `org.realityforge.proton` artifact to version `0.67`.
