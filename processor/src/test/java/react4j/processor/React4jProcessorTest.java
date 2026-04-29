@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Processor;
+import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import org.realityforge.proton.qa.AbstractProcessorTest;
 import org.realityforge.proton.qa.Compilation;
@@ -15,6 +16,7 @@ import org.realityforge.proton.qa.CompileTestUtil;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import sting.processor.StingProcessor;
+import static org.testng.Assert.*;
 
 public final class React4jProcessorTest
   extends AbstractProcessorTest
@@ -1057,6 +1059,19 @@ public final class React4jProcessorTest
   public void processCompileWithWarnings( @Nonnull final String classname, @Nonnull final String messageFragment )
   {
     assertCompilesWithSingleWarning( classname, messageFragment );
+
+    final List<String> options = new ArrayList<>( getOptions() );
+    options.add( "-Areact4j.warnings_as_errors=true" );
+
+    final Compilation compilation =
+      CompileTestUtil.compile( Collections.singletonList( input( "input", classname ) ),
+                               options,
+                               processors(),
+                               Collections.emptyList() );
+
+    assertFalse( compilation.success() );
+    assertErrorDiagnostic( compilation, messageFragment );
+    assertDiagnosticCount( compilation, Diagnostic.Kind.ERROR, 1 );
   }
 
   @DataProvider( name = "compileWithoutWarnings" )

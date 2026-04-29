@@ -35,7 +35,6 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.DeferredElementSet;
@@ -54,7 +53,8 @@ import org.realityforge.proton.StopWatch;
                      "react4j.defer.errors",
                      "react4j.debug",
                      "react4j.profile",
-                     "react4j.verbose_out_of_round.errors" } )
+                     "react4j.verbose_out_of_round.errors",
+                     "react4j.warnings_as_errors" } )
 public final class React4jProcessor
   extends AbstractStandardProcessor
 {
@@ -195,7 +195,7 @@ public final class React4jProcessor
                                     "declare a public method. " +
                                     MemberChecks.suppressedBy( Constants.WARNING_PUBLIC_METHOD,
                                                                Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
-          processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+          warning( message, method );
         }
         if ( method.getModifiers().contains( Modifier.FINAL ) &&
              ElementsUtil.isWarningNotSuppressed( method,
@@ -207,7 +207,7 @@ public final class React4jProcessor
                                     "declare a final method. " +
                                     MemberChecks.suppressedBy( Constants.WARNING_FINAL_METHOD,
                                                                Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
-          processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+          warning( message, method );
         }
         if ( method.getModifiers().contains( Modifier.PROTECTED ) &&
              ElementsUtil.isWarningNotSuppressed( method,
@@ -220,7 +220,7 @@ public final class React4jProcessor
                                     "declare a protected method. " +
                                     MemberChecks.suppressedBy( Constants.WARNING_PROTECTED_METHOD,
                                                                Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
-          processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+          warning( message, method );
         }
       }
     }
@@ -317,7 +317,7 @@ public final class React4jProcessor
                                actualOrder + ". " +
                                MemberChecks.suppressedBy( Constants.WARNING_CONSTRUCTOR_PARAMETER_ORDER,
                                                           Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
-        processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, constructor );
+        warning( message, constructor );
       }
     }
   }
@@ -342,7 +342,7 @@ public final class React4jProcessor
                                "be named 'postConstruct' when it is the only @PostConstruct method in the @View. " +
                                MemberChecks.suppressedBy( Constants.WARNING_POST_CONSTRUCT_NAME,
                                                           Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
-        processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+        warning( message, method );
       }
     }
   }
@@ -955,7 +955,7 @@ public final class React4jProcessor
                                 "return a non-primitive type without a @Nonnull or @Nullable annotation. " +
                                 MemberChecks.suppressedBy( Constants.WARNING_MISSING_INPUT_NULLABILITY,
                                                            Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
-      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+      warning( message, method );
     }
     validateInputNameAndType( name, returnType, method );
 
@@ -1038,7 +1038,7 @@ public final class React4jProcessor
                                 "return a non-primitive type without a @Nonnull or @Nullable annotation. " +
                                 MemberChecks.suppressedBy( Constants.WARNING_MISSING_INPUT_NULLABILITY,
                                                            Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
-      processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, parameter );
+      warning( message, parameter );
     }
     validateInputNameAndType( name, type, parameter );
 
@@ -1432,7 +1432,7 @@ public final class React4jProcessor
                                  "be annotated by a @Nonnull or a @Nullable annotation. " +
                                  MemberChecks.suppressedBy( Constants.WARNING_MISSING_RENDER_NULLABILITY,
                                                             Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
-          processingEnv.getMessager().printMessage( Diagnostic.Kind.WARNING, message, method );
+          warning( message, method );
         }
 
         descriptor.setRender( method );

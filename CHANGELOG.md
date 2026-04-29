@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Add the `react4j.warnings_as_errors` annotation processor option to upgrade warnings to errors.
 * Upgrade the `org.realityforge.proton` artifact to version `0.67`.
 
 ### [v0.218](https://github.com/react4j/react4j/tree/v0.218) (2026-04-27) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.217...v0.218)
