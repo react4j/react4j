@@ -44,7 +44,7 @@ abstract class React4j_NoShouldComponentUpdateForInputsView extends NoShouldComp
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoShouldComponentUpdateForInputsView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoShouldComponentUpdateForInputs" );
     }
     return viewConstructor;
   }

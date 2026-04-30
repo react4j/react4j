@@ -39,7 +39,7 @@ abstract class React4j_RootPackageView extends RootPackageView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "RootPackageView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "RootPackage" );
     }
     return viewConstructor;
   }

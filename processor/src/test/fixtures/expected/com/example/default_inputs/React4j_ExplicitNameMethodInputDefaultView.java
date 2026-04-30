@@ -42,7 +42,7 @@ abstract class React4j_ExplicitNameMethodInputDefaultView extends ExplicitNameMe
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ExplicitNameMethodInputDefaultView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ExplicitNameMethodInputDefault" );
     }
     return viewConstructor;
   }

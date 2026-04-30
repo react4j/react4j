@@ -43,7 +43,7 @@ abstract class React4j_BasicPublishView extends BasicPublishView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "BasicPublishView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "BasicPublish" );
     }
     return viewConstructor;
   }

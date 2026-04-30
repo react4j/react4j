@@ -41,7 +41,7 @@ abstract class React4j_LeafView extends LeafView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "LeafView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "Leaf" );
     }
     return viewConstructor;
   }

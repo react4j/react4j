@@ -168,6 +168,12 @@ final class ViewDescriptor
   }
 
   @Nonnull
+  String getDisplayName()
+  {
+    return getName().endsWith( "View" ) ? getName().substring( 0, getName().length() - "View".length() ) : getName();
+  }
+
+  @Nonnull
   ClassName getClassName()
   {
     return ClassName.get( getElement() );

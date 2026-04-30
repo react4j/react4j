@@ -43,7 +43,7 @@ abstract class React4j_MultiPublishView extends MultiPublishView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "MultiPublishView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "MultiPublish" );
     }
     return viewConstructor;
   }

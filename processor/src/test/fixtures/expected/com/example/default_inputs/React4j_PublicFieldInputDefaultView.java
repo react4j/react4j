@@ -42,7 +42,7 @@ abstract class React4j_PublicFieldInputDefaultView extends PublicFieldInputDefau
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "PublicFieldInputDefaultView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "PublicFieldInputDefault" );
     }
     return viewConstructor;
   }

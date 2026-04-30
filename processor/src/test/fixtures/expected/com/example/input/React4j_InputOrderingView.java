@@ -43,7 +43,7 @@ abstract class React4j_InputOrderingView extends InputOrderingView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "InputOrderingView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "InputOrdering" );
     }
     return viewConstructor;
   }

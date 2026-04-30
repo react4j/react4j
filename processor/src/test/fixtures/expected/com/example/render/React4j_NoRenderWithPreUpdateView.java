@@ -42,7 +42,7 @@ abstract class React4j_NoRenderWithPreUpdateView extends NoRenderWithPreUpdateVi
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoRenderWithPreUpdateView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoRenderWithPreUpdate" );
     }
     return viewConstructor;
   }

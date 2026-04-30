@@ -42,7 +42,7 @@ abstract class React4j_NoRenderWithPostMountView extends NoRenderWithPostMountVi
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoRenderWithPostMountView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoRenderWithPostMount" );
     }
     return viewConstructor;
   }

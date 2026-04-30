@@ -42,7 +42,7 @@ abstract class React4j_ProtectedFieldInputDefaultView extends ProtectedFieldInpu
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ProtectedFieldInputDefaultView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ProtectedFieldInputDefault" );
     }
     return viewConstructor;
   }

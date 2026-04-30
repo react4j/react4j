@@ -57,7 +57,7 @@ abstract class React4j_ObserveOnView extends ObserveOnView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ObserveOnView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ObserveOn" );
     }
     return viewConstructor;
   }

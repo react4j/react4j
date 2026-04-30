@@ -43,7 +43,7 @@ abstract class React4j_MyView extends MyView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "MyView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "My" );
     }
     return viewConstructor;
   }

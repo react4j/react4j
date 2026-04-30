@@ -58,7 +58,7 @@ abstract class React4j_KeepAliveMemoizeOnView extends KeepAliveMemoizeOnView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "KeepAliveMemoizeOnView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "KeepAliveMemoizeOn" );
     }
     return viewConstructor;
   }

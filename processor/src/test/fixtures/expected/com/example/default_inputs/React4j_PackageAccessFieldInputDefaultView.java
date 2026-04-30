@@ -42,7 +42,7 @@ abstract class React4j_PackageAccessFieldInputDefaultView extends PackageAccessF
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "PackageAccessFieldInputDefaultView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "PackageAccessFieldInputDefault" );
     }
     return viewConstructor;
   }

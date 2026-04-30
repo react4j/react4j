@@ -1193,7 +1193,7 @@ final class ViewGenerator
     codeBlock.beginControlFlow( "if ( $T.enableViewNames() )", REACT_CLASSNAME );
     codeBlock.addStatement( "$T.asPropertyMap( viewConstructor ).set( \"displayName\", $S )",
                             JS_CLASSNAME,
-                            descriptor.getName() );
+                            descriptor.getDisplayName() );
     codeBlock.endControlFlow();
 
     method.addCode( codeBlock.build() );

@@ -42,7 +42,7 @@ abstract class React4j_ColorfulNameInputDefaultView extends ColorfulNameInputDef
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ColorfulNameInputDefaultView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ColorfulNameInputDefault" );
     }
     return viewConstructor;
   }

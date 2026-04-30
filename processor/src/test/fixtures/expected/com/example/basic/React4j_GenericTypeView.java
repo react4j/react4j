@@ -41,7 +41,7 @@ abstract class React4j_GenericTypeView<T> extends GenericTypeView<T> {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "GenericTypeView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "GenericType" );
     }
     return viewConstructor;
   }

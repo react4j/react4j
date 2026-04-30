@@ -16,6 +16,7 @@ When you learn something non-obvious, add it here if it would make future change
 - `bundle exec buildr test` includes `downstream-test` builds of external example repos pinned to their GitHub `master` branches via `tasks/util.rb`, so breaking annotation/API changes can fail there until those downstream repos are migrated even when local processor and api-diff tests pass.
 - Explicit `@View` constructors now emit a suppressible `React4j:ConstructorParameterOrder` warning unless parameters are grouped as non-`@Input`, then `@Input(fromTreeContext = true)`, then other `@Input`; the diagnostic is attached to the constructor and uses the compact labels `inject`, `tree`, and `input`.
 - Generated view builder visibility is now controlled solely by `@View(exportBuilder = true|false)`: `false` keeps the top-level builder class, `newBuilder()`, static entry methods, and step interfaces package access, while `true` makes that builder API public; public `@View` classes themselves now emit suppressible `React4j:PublicView` warnings.
+- Generated native view `displayName` values trim a trailing `View` from the effective `@View.name`, but only for that React debug name; builder keys, generated class names, and other descriptor-name uses still keep the full view name.
 
 ## Project Structure & Module Organization
 
@@ -140,6 +141,7 @@ Testing and tooling properties:
 
 - Follow `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
 - Keep commits small and focused; update `CHANGELOG.md` for user-visible changes.
+- Any user-facing behavior change must add an `Unreleased` entry in `CHANGELOG.md` in the same change, even if the behavior only affects generated code or developer-facing warnings.
 - When updating `CHANGELOG.md`, add the message under the "Unreleased" section. DO NOT add a `Changes in this release:` header as that is added as part of the automation.
 - Remove trailing whitespace and keep file endings with a newline.
 

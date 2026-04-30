@@ -42,7 +42,7 @@ abstract class React4j_NoRenderWithPreRenderView extends NoRenderWithPreRenderVi
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoRenderWithPreRenderView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoRenderWithPreRender" );
     }
     return viewConstructor;
   }

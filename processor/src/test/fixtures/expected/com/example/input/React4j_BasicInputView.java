@@ -41,7 +41,7 @@ abstract class React4j_BasicInputView extends BasicInputView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "BasicInputView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "BasicInput" );
     }
     return viewConstructor;
   }

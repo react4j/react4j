@@ -42,7 +42,7 @@ abstract class NestedNestedView_DeepNesting_React4j_BasicView extends NestedNest
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "BasicView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "Basic" );
     }
     return viewConstructor;
   }

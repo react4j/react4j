@@ -56,7 +56,7 @@ abstract class React4j_ActionOnPostMountView extends ActionOnPostMountView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ActionOnPostMountView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ActionOnPostMount" );
     }
     return viewConstructor;
   }

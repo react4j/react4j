@@ -55,7 +55,7 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "MaybeTrackingView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "MaybeTracking" );
     }
     return viewConstructor;
   }

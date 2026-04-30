@@ -56,7 +56,7 @@ abstract class React4j_TrackingView extends TrackingView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "TrackingView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "Tracking" );
     }
     return viewConstructor;
   }

@@ -42,7 +42,7 @@ abstract class React4j_ExplicitNameFieldInputDefaultView extends ExplicitNameFie
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ExplicitNameFieldInputDefaultView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ExplicitNameFieldInputDefault" );
     }
     return viewConstructor;
   }

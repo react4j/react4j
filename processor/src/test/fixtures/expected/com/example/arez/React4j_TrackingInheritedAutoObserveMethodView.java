@@ -58,7 +58,7 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView extends TrackingIn
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "TrackingInheritedAutoObserveMethodView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "TrackingInheritedAutoObserveMethod" );
     }
     return viewConstructor;
   }

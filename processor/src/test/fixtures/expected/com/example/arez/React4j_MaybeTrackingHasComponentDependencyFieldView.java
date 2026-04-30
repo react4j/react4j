@@ -60,7 +60,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView extends Mayb
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "MaybeTrackingHasComponentDependencyFieldView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "MaybeTrackingHasComponentDependencyField" );
     }
     return viewConstructor;
   }

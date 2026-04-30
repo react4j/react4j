@@ -43,7 +43,7 @@ abstract class React4j_PublicView extends PublicView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "PublicView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "Public" );
     }
     return viewConstructor;
   }

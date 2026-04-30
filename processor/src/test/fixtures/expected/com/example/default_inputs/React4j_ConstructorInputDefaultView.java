@@ -44,7 +44,7 @@ abstract class React4j_ConstructorInputDefaultView extends ConstructorInputDefau
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ConstructorInputDefaultView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "ConstructorInputDefault" );
     }
     return viewConstructor;
   }

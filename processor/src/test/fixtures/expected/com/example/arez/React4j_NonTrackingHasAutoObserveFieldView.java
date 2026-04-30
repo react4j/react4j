@@ -44,7 +44,7 @@ abstract class React4j_NonTrackingHasAutoObserveFieldView extends NonTrackingHas
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NonTrackingHasAutoObserveFieldView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "NonTrackingHasAutoObserveField" );
     }
     return viewConstructor;
   }

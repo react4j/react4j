@@ -42,7 +42,7 @@ abstract class React4j_NonTrackingHasFieldCascadeDisposeView extends NonTracking
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NonTrackingHasFieldCascadeDisposeView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "NonTrackingHasFieldCascadeDispose" );
     }
     return viewConstructor;
   }

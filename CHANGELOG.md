@@ -7,6 +7,7 @@
 * Breaking: make generated `[MyView]Factory` dependency-injection helper classes package access, including their generated `create(...)` methods and non-Sting constructors.
 * Add `@View.exportBuilder()` to explicitly control whether generated builder APIs are public or package access, defaulting to package access.
 * Generate a suppressable warning when a `@View` annotated type is declared `public`. This warning can be suppressed by adding a `@SuppressWarnings( "React4j:PublicView" )` annotation to either the `@View` annotated type or the containing class.
+* Trim a trailing `View` suffix from generated native view `displayName` values while leaving explicit `@View(name = "...")` values unchanged unless they themselves end in `View`.
 
 ### [v0.220](https://github.com/react4j/react4j/tree/v0.220) (2026-04-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.219...v0.220)
 

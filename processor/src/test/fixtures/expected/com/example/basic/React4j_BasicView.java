@@ -41,7 +41,7 @@ abstract class React4j_BasicView extends BasicView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "BasicView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "Basic" );
     }
     return viewConstructor;
   }

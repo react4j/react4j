@@ -59,7 +59,7 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NonObservableComponentDependencyView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "NonObservableComponentDependency" );
     }
     return viewConstructor;
   }

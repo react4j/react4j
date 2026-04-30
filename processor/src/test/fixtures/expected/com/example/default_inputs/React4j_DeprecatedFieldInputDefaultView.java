@@ -42,7 +42,7 @@ abstract class React4j_DeprecatedFieldInputDefaultView extends DeprecatedFieldIn
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "DeprecatedFieldInputDefaultView" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "DeprecatedFieldInputDefault" );
     }
     return viewConstructor;
   }
