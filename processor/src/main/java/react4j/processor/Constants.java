@@ -90,6 +90,8 @@ final class Constants
   static final String WARNING_CONSTRUCTOR_PARAMETER_ORDER = "React4j:ConstructorParameterOrder";
   @Nonnull
   static final String WARNING_POST_CONSTRUCT_NAME = "React4j:PostConstructName";
+  @Nonnull
+  static final String WARNING_PUBLIC_VIEW = "React4j:PublicView";
 
   private Constants()
   {

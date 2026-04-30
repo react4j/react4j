@@ -14,7 +14,7 @@ final class NoShouldComponentUpdateForInputsViewBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -26,7 +26,7 @@ final class NoShouldComponentUpdateForInputsViewBuilder {
     return newBuilder().paramZ( paramZ );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true
@@ -34,7 +34,7 @@ final class NoShouldComponentUpdateForInputsViewBuilder {
     Step2 paramZ(boolean paramZ);
   }
 
-  public interface Step2 {
+  interface Step2 {
     @Nonnull
     @Contract(
         pure = true

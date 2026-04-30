@@ -14,7 +14,7 @@ final class InputOrderingViewBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -26,7 +26,7 @@ final class InputOrderingViewBuilder {
     return newBuilder().paramZ( paramZ );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true
@@ -34,7 +34,7 @@ final class InputOrderingViewBuilder {
     Step2 paramZ(boolean paramZ);
   }
 
-  public interface Step2 {
+  interface Step2 {
     @Nonnull
     @Contract(
         pure = true
@@ -42,7 +42,7 @@ final class InputOrderingViewBuilder {
     Step3 paramP(boolean paramP);
   }
 
-  public interface Step3 {
+  interface Step3 {
     @Nonnull
     @Contract(
         pure = true
@@ -50,7 +50,7 @@ final class InputOrderingViewBuilder {
     Step4 paramB(boolean paramB);
   }
 
-  public interface Step4 {
+  interface Step4 {
     @Nonnull
     @Contract(
         pure = true
@@ -58,7 +58,7 @@ final class InputOrderingViewBuilder {
     Step5 paramC(boolean paramC);
   }
 
-  public interface Step5 {
+  interface Step5 {
     @Nonnull
     @Contract(
         pure = true

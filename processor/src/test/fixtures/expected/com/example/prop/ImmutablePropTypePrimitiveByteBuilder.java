@@ -13,7 +13,7 @@ final class ImmutablePropTypePrimitiveByteBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -25,7 +25,7 @@ final class ImmutablePropTypePrimitiveByteBuilder {
     return newBuilder().myProp( myProp );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true

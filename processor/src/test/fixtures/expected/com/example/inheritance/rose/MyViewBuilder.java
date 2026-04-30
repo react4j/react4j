@@ -15,7 +15,7 @@ final class MyViewBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -27,7 +27,7 @@ final class MyViewBuilder {
     return newBuilder().field2InLeaf( field2InLeaf );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true

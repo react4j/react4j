@@ -14,7 +14,7 @@ final class ProtectedFieldInputDefaultViewBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -34,7 +34,7 @@ final class ProtectedFieldInputDefaultViewBuilder {
     return newBuilder().build();
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true

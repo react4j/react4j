@@ -7,12 +7,12 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 
 @Generated("react4j.processor.React4jProcessor")
-public final class PublicViewBuilder {
+final class PublicViewBuilder {
   private PublicViewBuilder() {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -20,11 +20,11 @@ public final class PublicViewBuilder {
   @Contract(
       pure = true
   )
-  public static ReactNode build() {
+  static ReactNode build() {
     return newBuilder().build();
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true

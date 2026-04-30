@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Add `@View.exportBuilder()` to explicitly control whether generated builder APIs are public or package access, defaulting to package access.
+* Generate a suppressable warning when a `@View` annotated type is declared `public`. This warning can be suppressed by adding a `@SuppressWarnings( "React4j:PublicView" )` annotation to either the `@View` annotated type or the containing class.
+
 ### [v0.220](https://github.com/react4j/react4j/tree/v0.220) (2026-04-29) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.219...v0.220)
 
 Changes in this release:

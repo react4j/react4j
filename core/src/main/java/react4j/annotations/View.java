@@ -62,6 +62,16 @@ public @interface View
   String name() default "<default>";
 
   /**
+   * Return true if the generated builder API should be public.
+   * When false, the generated builder API is package access and intended for local use.
+   * When true, the generated builder API is public and can be used from other packages while the
+   * annotated view type itself remains package access.
+   *
+   * @return true if the generated builder API should be public.
+   */
+  boolean exportBuilder() default false;
+
+  /**
    * Enum indicating the capabilities of the view.
    * See the {@link Type} enum for further details.
    *

@@ -12,7 +12,7 @@ public final class PublicViewBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  public static Step1 newBuilder() {
     return new Builder();
   }
 

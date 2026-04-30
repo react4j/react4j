@@ -135,6 +135,7 @@ public final class React4jProcessor
   {
     final String name = deriveViewName( typeElement );
     final ViewType type = extractViewType( typeElement );
+    final boolean exportBuilder = extractExportBuilder( typeElement );
     final List<ExecutableElement> methods =
       ElementsUtil.getMethods( typeElement, processingEnv.getElementUtils(), processingEnv.getTypeUtils() );
 
@@ -174,10 +175,24 @@ public final class React4jProcessor
                           typeElement,
                           constructor,
                           type,
+                          exportBuilder,
                           sting,
                           notSyntheticConstructor,
                           hasPostConstruct,
                           shouldSetDefaultPriority );
+
+    if ( typeElement.getModifiers().contains( Modifier.PUBLIC ) &&
+         ElementsUtil.isWarningNotSuppressed( typeElement,
+                                              Constants.WARNING_PUBLIC_VIEW,
+                                              Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) )
+    {
+      final String message =
+        MemberChecks.shouldNot( Constants.VIEW_CLASSNAME,
+                                "be public. " +
+                                MemberChecks.suppressedBy( Constants.WARNING_PUBLIC_VIEW,
+                                                           Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME ) );
+      warning( message, typeElement );
+    }
 
     for ( final Element element : descriptor.getElement().getEnclosedElements() )
     {
@@ -1608,6 +1623,12 @@ public final class React4jProcessor
         .getAnnotationValue( typeElement, Constants.VIEW_CLASSNAME, "type" )
         .getValue();
     return ViewType.valueOf( declaredTypeEnum.getSimpleName().toString() );
+  }
+
+  private boolean extractExportBuilder( @Nonnull final TypeElement typeElement )
+  {
+    return (Boolean) AnnotationsUtil.getAnnotationValue( typeElement, Constants.VIEW_CLASSNAME, "exportBuilder" )
+      .getValue();
   }
 
   private boolean isInputObservable( @Nonnull final List<ExecutableElement> methods,

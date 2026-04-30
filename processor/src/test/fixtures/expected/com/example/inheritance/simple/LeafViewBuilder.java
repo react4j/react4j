@@ -12,7 +12,7 @@ final class LeafViewBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -24,7 +24,7 @@ final class LeafViewBuilder {
     return newBuilder().zzField1InRootInterface( zzField1InRootInterface );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true
@@ -32,7 +32,7 @@ final class LeafViewBuilder {
     Step2 zzField1InRootInterface(boolean zzField1InRootInterface);
   }
 
-  public interface Step2 {
+  interface Step2 {
     @Nonnull
     @Contract(
         pure = true
@@ -40,7 +40,7 @@ final class LeafViewBuilder {
     Step3 aaField2InRootInterface(boolean aaField2InRootInterface);
   }
 
-  public interface Step3 {
+  interface Step3 {
     @Nonnull
     @Contract(
         pure = true
@@ -48,7 +48,7 @@ final class LeafViewBuilder {
     Step4 field1InRoot(boolean field1InRoot);
   }
 
-  public interface Step4 {
+  interface Step4 {
     @Nonnull
     @Contract(
         pure = true
@@ -56,7 +56,7 @@ final class LeafViewBuilder {
     Step5 field2InRoot(boolean field2InRoot);
   }
 
-  public interface Step5 {
+  interface Step5 {
     @Nonnull
     @Contract(
         pure = true
@@ -64,7 +64,7 @@ final class LeafViewBuilder {
     Step6 zzField1InInnerInterface(boolean zzField1InInnerInterface);
   }
 
-  public interface Step6 {
+  interface Step6 {
     @Nonnull
     @Contract(
         pure = true
@@ -72,7 +72,7 @@ final class LeafViewBuilder {
     Step7 aaField2InInnerInterface(boolean aaField2InInnerInterface);
   }
 
-  public interface Step7 {
+  interface Step7 {
     @Nonnull
     @Contract(
         pure = true
@@ -80,7 +80,7 @@ final class LeafViewBuilder {
     Step8 field1InInner(boolean field1InInner);
   }
 
-  public interface Step8 {
+  interface Step8 {
     @Nonnull
     @Contract(
         pure = true
@@ -88,7 +88,7 @@ final class LeafViewBuilder {
     Step9 field2InInner(boolean field2InInner);
   }
 
-  public interface Step9 {
+  interface Step9 {
     @Nonnull
     @Contract(
         pure = true
@@ -96,7 +96,7 @@ final class LeafViewBuilder {
     Step10 zzField1InLeafInterface(boolean zzField1InLeafInterface);
   }
 
-  public interface Step10 {
+  interface Step10 {
     @Nonnull
     @Contract(
         pure = true
@@ -104,7 +104,7 @@ final class LeafViewBuilder {
     Step11 aaField2InLeafInterface(boolean aaField2InLeafInterface);
   }
 
-  public interface Step11 {
+  interface Step11 {
     @Nonnull
     @Contract(
         pure = true
@@ -112,7 +112,7 @@ final class LeafViewBuilder {
     Step12 field1InLeaf(boolean field1InLeaf);
   }
 
-  public interface Step12 {
+  interface Step12 {
     @Nonnull
     @Contract(
         pure = true

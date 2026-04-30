@@ -14,7 +14,7 @@ final class NonnullChildPropComponentBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -26,7 +26,7 @@ final class NonnullChildPropComponentBuilder {
     return newBuilder().child( child );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true

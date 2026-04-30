@@ -40,8 +40,8 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.basic.BasicView" },
         new Object[]{ "com.example.basic.CustomNameView" },
         new Object[]{ "com.example.basic.DeprecatedView" },
+        new Object[]{ "com.example.basic.ExportedBuilderView" },
         new Object[]{ "com.example.basic.GenericTypeView" },
-        new Object[]{ "com.example.basic.PublicView" },
 
         new Object[]{ "com.example.default_inputs.ColorfulNameInputDefaultView" },
         new Object[]{ "com.example.default_inputs.ConstructorInputDefaultView" },
@@ -1048,6 +1048,8 @@ public final class React4jProcessorTest
 
         new Object[]{ "com.example.post_construct.BadNamePostConstructView",
                       "@PostConstruct target should be named 'postConstruct' when it is the only @PostConstruct method in the @View. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PostConstructName\" ) or @SuppressReact4jWarnings( \"React4j:PostConstructName\" )" },
+        new Object[]{ "com.example.basic.PublicView",
+                      "@View target should not be public. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:PublicView\" ) or @SuppressReact4jWarnings( \"React4j:PublicView\" )" },
         new Object[]{ "com.example.constructor.BadOrderView",
                       "@View target should declare constructor parameters in the order inject, tree, input. Actual order: input, inject, tree. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:ConstructorParameterOrder\" ) or @SuppressReact4jWarnings( \"React4j:ConstructorParameterOrder\" )" }
       };
@@ -1065,6 +1067,8 @@ public final class React4jProcessorTest
   {
     return new Object[][]
       {
+        new Object[]{ "com.example.basic.Suppressed1PublicView" },
+        new Object[]{ "com.example.basic.Suppressed2PublicView" },
         new Object[]{ "com.example.input.SuppressedNullabilityInputView" },
         new Object[]{ "com.example.render.SuppressedNullabilityRenderView" },
         new Object[]{ "com.example.on_error.Suppressed1ProtectedAccessOnErrorModel" },

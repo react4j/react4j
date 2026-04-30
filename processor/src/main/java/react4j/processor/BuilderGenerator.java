@@ -81,7 +81,10 @@ final class BuilderGenerator
     GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
     builder.addModifiers( Modifier.FINAL );
-    GeneratorUtil.copyAccessModifiers( descriptor.getElement(), builder );
+    if ( descriptor.exportBuilder() )
+    {
+      builder.addModifiers( Modifier.PUBLIC );
+    }
     GeneratorUtil.copyWhitelistedAnnotations( descriptor.getElement(), builder,
                                               Collections.singletonList( Deprecated.class.getName() ) );
 
@@ -134,10 +137,14 @@ final class BuilderGenerator
     final var infix = descriptor.getDeclaredType().getTypeArguments().isEmpty() ? "" : "<>";
     final var method = MethodSpec
       .methodBuilder( "newBuilder" )
-      .addModifiers( Modifier.PRIVATE, Modifier.STATIC )
+      .addModifiers( Modifier.STATIC )
       .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
       .returns( parameterizeIfRequired( descriptor, ClassName.bestGuess( "Step1" ) ) )
       .addStatement( "return new $T" + infix + "()", ClassName.bestGuess( "Builder" ) );
+    if ( descriptor.exportBuilder() )
+    {
+      method.addModifiers( Modifier.PUBLIC );
+    }
     GeneratorUtil.copyTypeParameters( descriptor.getElement(), method );
     return method.build();
   }
@@ -154,7 +161,7 @@ final class BuilderGenerator
     addPureContract( method );
 
     method.addModifiers( Modifier.STATIC );
-    if ( descriptor.getDeclaredType().asElement().getModifiers().contains( Modifier.PUBLIC ) )
+    if ( descriptor.exportBuilder() )
     {
       method.addModifiers( Modifier.PUBLIC );
     }
@@ -258,7 +265,11 @@ final class BuilderGenerator
   {
     final var stepIndex = step.getIndex();
     final var builder = TypeSpec.interfaceBuilder( "Step" + stepIndex );
-    builder.addModifiers( Modifier.PUBLIC, Modifier.STATIC );
+    builder.addModifiers( Modifier.STATIC );
+    if ( descriptor.exportBuilder() )
+    {
+      builder.addModifiers( Modifier.PUBLIC );
+    }
     builder.addTypeVariables( GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ) );
 
     if ( !descriptor.getDeclaredType().getTypeArguments().isEmpty() )

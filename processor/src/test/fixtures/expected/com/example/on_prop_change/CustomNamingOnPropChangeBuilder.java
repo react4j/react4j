@@ -13,7 +13,7 @@ final class CustomNamingOnPropChangeBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -25,7 +25,7 @@ final class CustomNamingOnPropChangeBuilder {
     return newBuilder().myProp1( myProp1 );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true
@@ -33,7 +33,7 @@ final class CustomNamingOnPropChangeBuilder {
     Step2 myProp1(boolean myProp1);
   }
 
-  public interface Step2 {
+  interface Step2 {
     @Nonnull
     @Contract(
         pure = true
@@ -41,7 +41,7 @@ final class CustomNamingOnPropChangeBuilder {
     Step3 myProp3(int myProp3);
   }
 
-  public interface Step3 {
+  interface Step3 {
     @Nonnull
     @Contract(
         pure = true

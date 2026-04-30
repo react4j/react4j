@@ -19,7 +19,7 @@ final class ImmutablePropTypeMultipleBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -31,7 +31,7 @@ final class ImmutablePropTypeMultipleBuilder {
     return newBuilder().booleanProp( booleanProp );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true
@@ -39,7 +39,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step2 booleanProp(boolean booleanProp);
   }
 
-  public interface Step2 {
+  interface Step2 {
     @Nonnull
     @Contract(
         pure = true
@@ -47,7 +47,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step3 byteProp(byte byteProp);
   }
 
-  public interface Step3 {
+  interface Step3 {
     @Nonnull
     @Contract(
         pure = true
@@ -55,7 +55,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step4 charProp(char charProp);
   }
 
-  public interface Step4 {
+  interface Step4 {
     @Nonnull
     @Contract(
         pure = true
@@ -63,7 +63,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step5 doubleProp(double doubleProp);
   }
 
-  public interface Step5 {
+  interface Step5 {
     @Nonnull
     @Contract(
         pure = true
@@ -71,7 +71,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step6 floatProp(float floatProp);
   }
 
-  public interface Step6 {
+  interface Step6 {
     @Nonnull
     @Contract(
         pure = true
@@ -79,7 +79,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step7 intProp(int intProp);
   }
 
-  public interface Step7 {
+  interface Step7 {
     @Nonnull
     @Contract(
         pure = true
@@ -87,7 +87,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step8 longProp(long longProp);
   }
 
-  public interface Step8 {
+  interface Step8 {
     @Nonnull
     @Contract(
         pure = true
@@ -95,7 +95,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step9 shortProp(short shortProp);
   }
 
-  public interface Step9 {
+  interface Step9 {
     @Nonnull
     @Contract(
         pure = true
@@ -103,7 +103,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step10 enumProp(@Nonnull ImmutablePropTypeMultiple.MyEnum enumProp);
   }
 
-  public interface Step10 {
+  interface Step10 {
     @Nonnull
     @Contract(
         pure = true
@@ -111,7 +111,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step11 keyedComponentProp(@Nonnull ImmutablePropTypeMultiple.KeyedComponent keyedComponentProp);
   }
 
-  public interface Step11 {
+  interface Step11 {
     @Nonnull
     @Contract(
         pure = true
@@ -120,7 +120,7 @@ final class ImmutablePropTypeMultipleBuilder {
         @Nonnull ImmutablePropTypeMultiple.IdentifiableComponent identifiableProp);
   }
 
-  public interface Step12 {
+  interface Step12 {
     @Nonnull
     @Contract(
         pure = true
@@ -128,7 +128,7 @@ final class ImmutablePropTypeMultipleBuilder {
     Step13 objectProp(@Nonnull Object objectProp);
   }
 
-  public interface Step13 {
+  interface Step13 {
     @Nonnull
     @Contract(
         pure = true
@@ -137,7 +137,7 @@ final class ImmutablePropTypeMultipleBuilder {
         @Nonnull ImmutablePropTypeMultiple.ArezComponentLikeComponent arezComponentLikeProp);
   }
 
-  public interface Step14 {
+  interface Step14 {
     @Nonnull
     @Contract(
         pure = true
@@ -146,7 +146,7 @@ final class ImmutablePropTypeMultipleBuilder {
         @Nonnull ImmutablePropTypeMultiple.ArezComponentComponent arezComponentProp);
   }
 
-  public interface Step15 {
+  interface Step15 {
     @Nonnull
     @Contract(
         pure = true
@@ -155,7 +155,7 @@ final class ImmutablePropTypeMultipleBuilder {
         @Nonnull ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent arezComponentWithExplicitRequireIdProp);
   }
 
-  public interface Step16 {
+  interface Step16 {
     @Nonnull
     @Contract(
         pure = true

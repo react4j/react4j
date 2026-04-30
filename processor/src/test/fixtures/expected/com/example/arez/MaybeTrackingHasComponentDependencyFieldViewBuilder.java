@@ -16,7 +16,7 @@ final class MaybeTrackingHasComponentDependencyFieldViewBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -28,7 +28,7 @@ final class MaybeTrackingHasComponentDependencyFieldViewBuilder {
     return newBuilder().model( model );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true

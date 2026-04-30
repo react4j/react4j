@@ -18,7 +18,7 @@ final class ImmutablePropTypesBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -30,7 +30,7 @@ final class ImmutablePropTypesBuilder {
     return newBuilder().stillAnotherProp( stillAnotherProp );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true
@@ -38,7 +38,7 @@ final class ImmutablePropTypesBuilder {
     Step2 stillAnotherProp(int stillAnotherProp);
   }
 
-  public interface Step2 {
+  interface Step2 {
     @Nonnull
     @Contract(
         pure = true

@@ -14,7 +14,7 @@ final class MyViewBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -26,7 +26,7 @@ final class MyViewBuilder {
     return newBuilder().aaField2InRootInterface( aaField2InRootInterface );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true
@@ -34,7 +34,7 @@ final class MyViewBuilder {
     Step2 aaField2InRootInterface(boolean aaField2InRootInterface);
   }
 
-  public interface Step2 {
+  interface Step2 {
     @Nonnull
     @Contract(
         pure = true
@@ -42,7 +42,7 @@ final class MyViewBuilder {
     Step3 aaField2InInnerInterface(boolean aaField2InInnerInterface);
   }
 
-  public interface Step3 {
+  interface Step3 {
     @Nonnull
     @Contract(
         pure = true
@@ -50,7 +50,7 @@ final class MyViewBuilder {
     Step4 aaField2InLeafInterface(boolean aaField2InLeafInterface);
   }
 
-  public interface Step4 {
+  interface Step4 {
     @Nonnull
     @Contract(
         pure = true

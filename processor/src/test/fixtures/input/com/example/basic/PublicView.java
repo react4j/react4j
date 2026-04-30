@@ -5,7 +5,7 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 import javax.annotation.Nullable;
 
-@View
+@View( exportBuilder = true )
 public abstract class PublicView
 {
   @Nullable

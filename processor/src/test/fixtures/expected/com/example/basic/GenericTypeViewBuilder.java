@@ -12,7 +12,7 @@ final class GenericTypeViewBuilder {
   }
 
   @Nonnull
-  private static <T> Step1<T> newBuilder() {
+  static <T> Step1<T> newBuilder() {
     return new Builder<>();
   }
 
@@ -25,7 +25,7 @@ final class GenericTypeViewBuilder {
   }
 
   @SuppressWarnings("unused")
-  public interface Step1<T> {
+  interface Step1<T> {
     @Nonnull
     @Contract(
         pure = true

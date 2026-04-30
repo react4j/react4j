@@ -14,7 +14,7 @@ final class MultiPropComponent3Builder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -50,7 +50,7 @@ final class MultiPropComponent3Builder {
     return newBuilder().build();
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true

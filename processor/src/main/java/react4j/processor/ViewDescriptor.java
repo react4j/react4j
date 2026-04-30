@@ -28,6 +28,7 @@ final class ViewDescriptor
   private final TypeElement _element;
   @Nonnull
   private final ViewType _type;
+  private final boolean _exportBuilder;
   private final boolean _sting;
   private final boolean _hasConstructor;
   private final boolean _hasPostConstruct;
@@ -95,6 +96,7 @@ final class ViewDescriptor
                   @Nonnull final TypeElement element,
                   @Nonnull final ExecutableElement constructor,
                   @Nonnull final ViewType type,
+                  final boolean exportBuilder,
                   final boolean sting,
                   final boolean hasConstructor,
                   final boolean hasPostConstruct,
@@ -104,6 +106,7 @@ final class ViewDescriptor
     _element = Objects.requireNonNull( element );
     _constructor = Objects.requireNonNull( constructor );
     _type = Objects.requireNonNull( type );
+    _exportBuilder = exportBuilder;
     _sting = sting;
     _hasConstructor = hasConstructor;
     _hasPostConstruct = hasPostConstruct;
@@ -125,6 +128,11 @@ final class ViewDescriptor
   boolean enableSting()
   {
     return _sting;
+  }
+
+  boolean exportBuilder()
+  {
+    return _exportBuilder;
   }
 
   boolean hasConstructor()

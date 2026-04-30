@@ -6,7 +6,7 @@ import react4j.annotations.View;
 import javax.annotation.Nullable;
 
 @View
-public abstract class PublicView
+abstract class PublicView
 {
   PublicView( String someParam )
   {

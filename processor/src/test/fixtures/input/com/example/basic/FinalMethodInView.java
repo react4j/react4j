@@ -6,7 +6,7 @@ import react4j.annotations.View;
 import javax.annotation.Nullable;
 
 @View
-public abstract class FinalMethodInView
+abstract class FinalMethodInView
 {
   final void someMethod()
   {

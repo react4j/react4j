@@ -12,7 +12,7 @@ final class PropTypeFloatBuilder {
   }
 
   @Nonnull
-  private static Step1 newBuilder() {
+  static Step1 newBuilder() {
     return new Builder();
   }
 
@@ -24,7 +24,7 @@ final class PropTypeFloatBuilder {
     return newBuilder().myProp( myProp );
   }
 
-  public interface Step1 {
+  interface Step1 {
     @Nonnull
     @Contract(
         pure = true
