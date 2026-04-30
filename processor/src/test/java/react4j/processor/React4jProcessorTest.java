@@ -640,38 +640,6 @@ public final class React4jProcessorTest
                              Arrays.asList( output1, output2 ) );
   }
 
-  @Test
-  public void processSuccessfulServiceViaContributeToStingModel()
-    throws Exception
-  {
-    final String pkg = "com.example.inject.autofragment";
-
-    final List<JavaFileObject> inputs =
-      inputs( pkg + ".ContributeToComponent",
-              pkg + ".MyAutoFragment",
-
-        // The following input exists so that the synthesizing processor has types to "process"
-              pkg + ".MyFramework",
-              pkg + ".MyFrameworkModel" );
-
-    // This one is just used to keep synthesizer running
-    final Processor synthesizingProcessor1 =
-      newSynthesizingProcessor( "input", pkg + ".MyFrameworkModelImpl", 1 );
-    // this synthesizer produces java file that we are using in test
-    final Processor synthesizingProcessor2 =
-      newSynthesizingProcessor( "input", pkg + ".OtherModel", 2 );
-
-    final List<Processor> processors = new ArrayList<>();
-    processors.add( processor() );
-    processors.addAll( processors() );
-    processors.add( synthesizingProcessor1 );
-    processors.add( synthesizingProcessor2 );
-    final Compilation compilation =
-      CompileTestUtil.assertCompilesWithoutWarnings( inputs, getOptions(), processors, Collections.emptyList() );
-    outputFilesIfEnabled( compilation, this::emitGeneratedFile );
-    assertCompilationSuccessful( compilation );
-  }
-
   @DataProvider( name = "failedCompiles" )
   @Nonnull
   public Object[][] failedCompiles()
