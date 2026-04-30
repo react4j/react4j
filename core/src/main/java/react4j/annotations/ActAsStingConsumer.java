@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.ANNOTATION_TYPE )
-@interface ActAsStingComponent
+@interface ActAsStingConsumer
 {
 }

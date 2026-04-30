@@ -12,9 +12,9 @@ import javax.annotation.Nonnull;
  */
 @Documented
 @Target( ElementType.TYPE )
-@ActAsStingComponent
+@ActAsStingConsumer
 @ActAsArezComponent
-@StingProvider( "[FlatEnclosingName]React4j_[SimpleName]" )
+@StingProvider( "[FlatEnclosingName]React4j_[SimpleName]Factory" )
 public @interface View
 {
   /**
