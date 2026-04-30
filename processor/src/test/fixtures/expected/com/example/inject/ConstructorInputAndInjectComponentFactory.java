@@ -15,7 +15,7 @@ import sting.Named;
 @Injectable
 @Eager
 @Named("blah")
-public final class ConstructorInputAndInjectComponentFactory {
+final class ConstructorInputAndInjectComponentFactory {
   @Nonnull
   private final String someParam;
 
@@ -25,7 +25,7 @@ public final class ConstructorInputAndInjectComponentFactory {
   }
 
   @Nonnull
-  public static React4j_ConstructorInputAndInjectComponent create(@Nonnull final NativeView view) {
+  static React4j_ConstructorInputAndInjectComponent create(@Nonnull final NativeView view) {
     return InjectSupport.create( view );
   }
 

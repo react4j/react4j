@@ -9,19 +9,19 @@ import react4j.React;
 import react4j.internal.NativeView;
 
 @Generated("react4j.processor.React4jProcessor")
-public final class ConstructorInjectRawTypeComponentFactory {
+final class ConstructorInjectRawTypeComponentFactory {
   @SuppressWarnings("rawtypes")
   @Nonnull
   private final Consumer someParam;
 
   @SuppressWarnings("rawtypes")
-  public ConstructorInjectRawTypeComponentFactory(@Nonnull final Consumer someParam) {
+  ConstructorInjectRawTypeComponentFactory(@Nonnull final Consumer someParam) {
     this.someParam = Objects.requireNonNull( someParam );
     InjectSupport.setFactory( this );
   }
 
   @Nonnull
-  public static React4j_ConstructorInjectRawTypeComponent create(@Nonnull final NativeView view) {
+  static React4j_ConstructorInjectRawTypeComponent create(@Nonnull final NativeView view) {
     return InjectSupport.create( view );
   }
 

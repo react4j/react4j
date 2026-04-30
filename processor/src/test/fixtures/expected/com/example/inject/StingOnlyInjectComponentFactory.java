@@ -12,7 +12,7 @@ import sting.Injectable;
 @Generated("react4j.processor.React4jProcessor")
 @Injectable
 @Eager
-public final class StingOnlyInjectComponentFactory {
+final class StingOnlyInjectComponentFactory {
   @Nonnull
   private final String someParam;
 
@@ -22,7 +22,7 @@ public final class StingOnlyInjectComponentFactory {
   }
 
   @Nonnull
-  public static React4j_StingOnlyInjectComponent create(@Nonnull final NativeView view) {
+  static React4j_StingOnlyInjectComponent create(@Nonnull final NativeView view) {
     return InjectSupport.create( view );
   }
 

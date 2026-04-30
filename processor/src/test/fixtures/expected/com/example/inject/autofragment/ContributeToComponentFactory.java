@@ -14,7 +14,7 @@ import sting.Injectable;
 @Injectable
 @Eager
 @ContributeTo("MyAutoFragment")
-public final class ContributeToComponentFactory {
+final class ContributeToComponentFactory {
   @Nonnull
   private final String someParam;
 
@@ -24,7 +24,7 @@ public final class ContributeToComponentFactory {
   }
 
   @Nonnull
-  public static React4j_ContributeToComponent create(@Nonnull final NativeView view) {
+  static React4j_ContributeToComponent create(@Nonnull final NativeView view) {
     return InjectSupport.create( view );
   }
 

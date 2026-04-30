@@ -45,7 +45,7 @@ final class FactoryGenerator
     GeneratorUtil.addGeneratedAnnotation( processingEnv, builder, React4jProcessor.class.getName() );
     GeneratorUtil.addOriginatingTypes( descriptor.getElement(), builder );
 
-    builder.addModifiers( Modifier.PUBLIC, Modifier.FINAL );
+    builder.addModifiers( Modifier.FINAL );
 
     if ( descriptor.enableSting() )
     {
@@ -82,11 +82,6 @@ final class FactoryGenerator
                                                         additionalSuppressions,
                                                         Collections.singletonList( constructor.asType() ) );
     GeneratorUtil.copyWhitelistedAnnotations( constructor, ctor );
-
-    if ( !sting )
-    {
-      ctor.addModifiers( Modifier.PUBLIC );
-    }
 
     final var whitelistedAnnotations = new ArrayList<>( GeneratorUtil.ANNOTATION_WHITELIST );
     whitelistedAnnotations.add( "sting.Named" );
@@ -137,7 +132,7 @@ final class FactoryGenerator
   {
     builder.addMethod( MethodSpec
                          .methodBuilder( "create" )
-                         .addModifiers( Modifier.PUBLIC, Modifier.STATIC )
+                         .addModifiers( Modifier.STATIC )
                          .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
                          .addParameter( ParameterSpec
                                           .builder( NATIVE_VIEW_CLASSNAME, "view", Modifier.FINAL )

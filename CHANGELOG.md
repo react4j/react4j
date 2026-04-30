@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Breaking: make generated `[MyView]Factory` dependency-injection helper classes package access, including their generated `create(...)` methods and non-Sting constructors.
 * Add `@View.exportBuilder()` to explicitly control whether generated builder APIs are public or package access, defaulting to package access.
 * Generate a suppressable warning when a `@View` annotated type is declared `public`. This warning can be suppressed by adding a `@SuppressWarnings( "React4j:PublicView" )` annotation to either the `@View` annotated type or the containing class.
 

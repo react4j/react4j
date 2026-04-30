@@ -14,7 +14,7 @@ import sting.Named;
 @Injectable
 @Eager
 @Named("blah")
-public final class StingNamedTypeComponentFactory {
+final class StingNamedTypeComponentFactory {
   @Nonnull
   private final String someParam;
 
@@ -24,7 +24,7 @@ public final class StingNamedTypeComponentFactory {
   }
 
   @Nonnull
-  public static React4j_StingNamedTypeComponent create(@Nonnull final NativeView view) {
+  static React4j_StingNamedTypeComponent create(@Nonnull final NativeView view) {
     return InjectSupport.create( view );
   }
 

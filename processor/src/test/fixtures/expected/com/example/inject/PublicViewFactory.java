@@ -11,7 +11,7 @@ import sting.Injectable;
 @Generated("react4j.processor.React4jProcessor")
 @Injectable
 @Eager
-public final class PublicViewFactory {
+final class PublicViewFactory {
   private final String someParam;
 
   PublicViewFactory(final String someParam) {
@@ -20,7 +20,7 @@ public final class PublicViewFactory {
   }
 
   @Nonnull
-  public static React4j_PublicView create(@Nonnull final NativeView view) {
+  static React4j_PublicView create(@Nonnull final NativeView view) {
     return InjectSupport.create( view );
   }
 

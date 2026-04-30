@@ -11,7 +11,7 @@ import sting.Injectable;
 @Generated("react4j.processor.React4jProcessor")
 @Injectable
 @Eager
-public final class NestedCompleteComponent_BasicViewFactory {
+final class NestedCompleteComponent_BasicViewFactory {
   private final String value;
 
   NestedCompleteComponent_BasicViewFactory(final String value) {
@@ -20,7 +20,7 @@ public final class NestedCompleteComponent_BasicViewFactory {
   }
 
   @Nonnull
-  public static NestedCompleteComponent_React4j_BasicView create(@Nonnull final NativeView view) {
+  static NestedCompleteComponent_React4j_BasicView create(@Nonnull final NativeView view) {
     return InjectSupport.create( view );
   }
 
