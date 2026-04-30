@@ -15,10 +15,14 @@ import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
-@SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
+@SuppressArezWarnings({
+    "Arez:UnnecessaryDefault",
+    "Arez:UnnecessaryAllowEmpty"
+})
 @ArezComponent(
     name = "RootPackageView",
     disposeNotifier = Feature.DISABLE,
+    defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

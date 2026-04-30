@@ -18,10 +18,14 @@ import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
-@SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
+@SuppressArezWarnings({
+    "Arez:UnnecessaryDefault",
+    "Arez:UnnecessaryAllowEmpty"
+})
 @ArezComponent(
     name = "com_example_on_prop_change_BooleanOnPropChange",
     disposeNotifier = Feature.DISABLE,
+    defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

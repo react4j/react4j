@@ -21,10 +21,14 @@ import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
-@SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
+@SuppressArezWarnings({
+    "Arez:UnnecessaryDefault",
+    "Arez:UnnecessaryAllowEmpty"
+})
 @ArezComponent(
     name = "com_example_prop_ObservableViaMemoizeProp",
     disposeNotifier = Feature.DISABLE,
+    defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )
@@ -68,6 +72,7 @@ abstract class React4j_ObservableViaMemoizeProp extends ObservableViaMemoizeProp
 
   @Action(
       verifyRequired = false,
+      skipIfDisposed = Feature.DISABLE,
       reportParameters = false
   )
   boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextInputs) {

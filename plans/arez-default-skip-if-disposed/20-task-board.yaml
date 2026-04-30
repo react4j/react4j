@@ -1,0 +1,71 @@
+tasks:
+  - id: PLAN-SETUP
+    title: Create planning artifacts for generated Arez defaultSkipIfDisposed emission
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Requirements, implementation plan, and task board exist in `plans/arez-default-skip-if-disposed/`.
+      - The approved in-thread plan is reflected in the artifacts.
+    files_touched:
+      - plans/arez-default-skip-if-disposed/*
+    evidence:
+      - command: create planning artifacts in repository
+        result: completed
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: GENERATOR-UPDATE
+    title: Emit defaultSkipIfDisposed and Arez unnecessary-default suppression from the generator
+    status: completed
+    priority: high
+    depends_on:
+      - PLAN-SETUP
+    acceptance_criteria:
+      - Generated `@ArezComponent(...)` includes `defaultSkipIfDisposed = Feature.ENABLE`.
+      - Tracking generated classes suppress `Arez:UnnecessaryDefault`.
+      - Non-tracking generated classes suppress both `Arez:UnnecessaryDefault` and `Arez:UnnecessaryAllowEmpty`.
+    files_touched:
+      - processor/src/main/java/react4j/processor/ViewGenerator.java
+    evidence:
+      - command: update `processor/src/main/java/react4j/processor/ViewGenerator.java`
+        result: added `defaultSkipIfDisposed = Feature.ENABLE` to generated `@ArezComponent`, centralized `@SuppressArezWarnings` emission, and explicitly set `skipIfDisposed = Feature.DISABLE` on generated boolean `@Action` methods
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: FIXTURE-REFRESH
+    title: Refresh processor expected fixtures for the new generated annotations
+    status: completed
+    priority: high
+    depends_on:
+      - GENERATOR-UPDATE
+    acceptance_criteria:
+      - Expected tracking fixtures include `defaultSkipIfDisposed = Feature.ENABLE` and `Arez:UnnecessaryDefault`.
+      - Expected non-tracking fixtures include both suppression ids and the new Arez component member.
+    files_touched:
+      - processor/src/test/fixtures/expected/**
+    evidence:
+      - command: refresh `processor/src/test/fixtures/expected/**`
+        result: updated all generated `@ArezComponent` annotations with `defaultSkipIfDisposed`, added `Arez:UnnecessaryDefault` suppressions, and updated the four generated `@Action` fixture blocks with `skipIfDisposed = Feature.DISABLE`
+    commit:
+      hash: not_required
+      message: not_required
+
+  - id: VERIFY
+    title: Run the processor verification gate
+    status: completed
+    priority: high
+    depends_on:
+      - FIXTURE-REFRESH
+    acceptance_criteria:
+      - `bundle exec buildr react4j:processor:test` passes.
+    files_touched:
+      - plans/arez-default-skip-if-disposed/*
+    evidence:
+      - command: `bundle exec buildr react4j:processor:test`
+        result: passed
+    commit:
+      hash: not_required
+      message: not_required

@@ -16,6 +16,7 @@ import arez.annotations.ObservableValueRef;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
+import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,9 +36,11 @@ import react4j.internal.SchedulerUtil;
 import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
+@SuppressArezWarnings("Arez:UnnecessaryDefault")
 @ArezComponent(
     name = "com_example_arez_InputAndMemoizeComponent",
     disposeNotifier = Feature.DISABLE,
+    defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
     defaultPriority = Priority.LOWEST
 )
@@ -85,6 +88,7 @@ abstract class React4j_InputAndMemoizeComponent extends InputAndMemoizeComponent
 
   @Action(
       verifyRequired = false,
+      skipIfDisposed = Feature.DISABLE,
       reportParameters = false
   )
   boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextInputs) {

@@ -19,10 +19,14 @@ import react4j.internal.ViewConstructorFunction;
 
 @Deprecated
 @SuppressWarnings("deprecation")
-@SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
+@SuppressArezWarnings({
+    "Arez:UnnecessaryDefault",
+    "Arez:UnnecessaryAllowEmpty"
+})
 @ArezComponent(
     name = "com_example_basic_DeprecatedView",
     disposeNotifier = Feature.DISABLE,
+    defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

@@ -183,18 +183,13 @@ final class ViewGenerator
     {
       builder.addAnnotation( suppression );
     }
-    if ( !descriptor.trackRender() )
-    {
-      builder.addAnnotation( AnnotationSpec
-                               .builder( SUPPRESS_AREZ_WARNINGS_CLASSNAME )
-                               .addMember( "value", "$S", "Arez:UnnecessaryAllowEmpty" )
-                               .build() );
-    }
+    builder.addAnnotation( buildSuppressArezWarnings( descriptor ) );
     final AnnotationSpec.Builder arezAnnotation =
       AnnotationSpec
         .builder( AREZ_COMPONENT_CLASSNAME ).
         addMember( "name", "$S", typeElement.getQualifiedName().toString().replace( ".", "_" ) ).
         addMember( "disposeNotifier", "$T.DISABLE", AREZ_FEATURE_CLASSNAME ).
+        addMember( "defaultSkipIfDisposed", "$T.ENABLE", AREZ_FEATURE_CLASSNAME ).
         addMember( "sting", "$T.DISABLE", AREZ_FEATURE_CLASSNAME );
     if ( !descriptor.trackRender() )
     {
@@ -320,6 +315,22 @@ final class ViewGenerator
     builder.addType( buildNativeView( descriptor, false ) );
 
     return builder.build();
+  }
+
+  @Nonnull
+  private static AnnotationSpec buildSuppressArezWarnings( @Nonnull final ViewDescriptor descriptor )
+  {
+    final AnnotationSpec.Builder annotation = AnnotationSpec.builder( SUPPRESS_AREZ_WARNINGS_CLASSNAME );
+    // Theoretically, we could scan the underlying component to detect the presence of `@Action` annotated
+    // that do not explicitly set skipIfDisposed parameter and only set defaultSkipIfDisposed if one such
+    // action is found. Then we would not need to add this next suppression. But there is no harm in adding
+    // suppression so doing that as it requires less work.
+    annotation.addMember( "value", "$S", "Arez:UnnecessaryDefault" );
+    if ( !descriptor.trackRender() )
+    {
+      annotation.addMember( "value", "$S", "Arez:UnnecessaryAllowEmpty" );
+    }
+    return annotation.build();
   }
 
   @Nonnull
@@ -642,6 +653,7 @@ final class ViewGenerator
       method.addAnnotation( AnnotationSpec
                               .builder( ACTION_CLASSNAME )
                               .addMember( "verifyRequired", "false" )
+                              .addMember( "skipIfDisposed", "$T.DISABLE", AREZ_FEATURE_CLASSNAME )
                               .addMember( "reportParameters", "false" )
                               .build() );
     }

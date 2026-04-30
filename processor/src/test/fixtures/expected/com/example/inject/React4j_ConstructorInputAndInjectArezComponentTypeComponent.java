@@ -18,10 +18,14 @@ import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
-@SuppressArezWarnings("Arez:UnnecessaryAllowEmpty")
+@SuppressArezWarnings({
+    "Arez:UnnecessaryDefault",
+    "Arez:UnnecessaryAllowEmpty"
+})
 @ArezComponent(
     name = "com_example_inject_ConstructorInputAndInjectArezComponentTypeComponent",
     disposeNotifier = Feature.DISABLE,
+    defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )

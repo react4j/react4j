@@ -12,6 +12,7 @@ import arez.annotations.Feature;
 import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
+import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,9 +31,11 @@ import react4j.internal.SchedulerUtil;
 import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
+@SuppressArezWarnings("Arez:UnnecessaryDefault")
 @ArezComponent(
     name = "com_example_arez_MaybeTrackingView",
     disposeNotifier = Feature.DISABLE,
+    defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE
 )
 @Generated("react4j.processor.React4jProcessor")
