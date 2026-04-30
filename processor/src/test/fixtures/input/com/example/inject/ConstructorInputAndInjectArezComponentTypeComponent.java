@@ -10,7 +10,6 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 import sting.Named;
 
-@Named( "blah" )
 @View
 abstract class ConstructorInputAndInjectArezComponentTypeComponent
 {

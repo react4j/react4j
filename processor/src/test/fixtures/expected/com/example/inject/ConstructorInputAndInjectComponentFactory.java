@@ -9,12 +9,10 @@ import react4j.React;
 import react4j.internal.NativeView;
 import sting.Eager;
 import sting.Injectable;
-import sting.Named;
 
 @Generated("react4j.processor.React4jProcessor")
 @Injectable
 @Eager
-@Named("blah")
 final class ConstructorInputAndInjectComponentFactory {
   @Nonnull
   private final String someParam;
