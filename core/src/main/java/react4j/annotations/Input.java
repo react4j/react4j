@@ -1,7 +1,5 @@
 package react4j.annotations;
 
-import arez.annotations.AutoObserve;
-import arez.annotations.ComponentDependency;
 import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.Observe;
