@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.222](https://github.com/react4j/react4j/tree/v0.222) (2026-04-30) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.221...v0.222)
+
+Changes in this release:
 
 * Trim a trailing `View` suffix from generated builder class names when the annotated Java type name ends with `View`, so `AccordionItemView` now emits `AccordionItemBuilder`.
 
