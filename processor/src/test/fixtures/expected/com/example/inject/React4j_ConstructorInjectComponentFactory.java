@@ -12,11 +12,11 @@ import sting.Injectable;
 @Generated("react4j.processor.React4jProcessor")
 @Injectable
 @Eager
-final class ConstructorInjectComponentFactory {
+final class React4j_ConstructorInjectComponentFactory {
   @Nonnull
   private final String someParam;
 
-  ConstructorInjectComponentFactory(@Nonnull final String someParam) {
+  React4j_ConstructorInjectComponentFactory(@Nonnull final String someParam) {
     this.someParam = Objects.requireNonNull( someParam );
     InjectSupport.setFactory( this );
   }
@@ -27,9 +27,10 @@ final class ConstructorInjectComponentFactory {
   }
 
   private static final class InjectSupport {
-    private static ConstructorInjectComponentFactory c_factory;
+    private static React4j_ConstructorInjectComponentFactory c_factory;
 
-    private static void setFactory(@Nonnull final ConstructorInjectComponentFactory factory) {
+    private static void setFactory(
+        @Nonnull final React4j_ConstructorInjectComponentFactory factory) {
       if ( React.shouldCheckInvariants() ) {
         Guards.invariant( () -> null == c_factory, () -> "Attempted to instantiate the React4j view factory for the view named 'ConstructorInjectComponent' a second time" );
       }

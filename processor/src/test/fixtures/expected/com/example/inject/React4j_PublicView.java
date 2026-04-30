@@ -73,7 +73,7 @@ abstract class React4j_PublicView extends PublicView {
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = PublicViewFactory.create( this );
+      view = React4j_PublicViewFactory.create( this );
     }
 
     @Override

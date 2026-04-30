@@ -74,7 +74,7 @@ abstract class React4j_ConstructorInjectComponent extends ConstructorInjectCompo
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = ConstructorInjectComponentFactory.create( this );
+      view = React4j_ConstructorInjectComponentFactory.create( this );
     }
 
     @Override

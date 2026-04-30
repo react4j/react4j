@@ -305,7 +305,7 @@ public final class React4jProcessorTest
   {
     assertSuccessfulCompile( "com.example.nested.NestedCompleteComponent",
                              "com/example/nested/NestedCompleteComponent_BasicViewBuilder.java",
-                             "com/example/nested/NestedCompleteComponent_BasicViewFactory.java",
+                             "com/example/nested/NestedCompleteComponent_React4j_BasicViewFactory.java",
                              "com/example/nested/NestedCompleteComponent_React4j_BasicView.java" );
   }
 
@@ -1175,7 +1175,7 @@ public final class React4jProcessorTest
     expectedOutputs.add( toFilename( classname, "", "Builder.java" ) );
     if ( factory )
     {
-      expectedOutputs.add( toFilename( classname, "", "Factory.java" ) );
+      expectedOutputs.add( toFilename( classname, "React4j_", "Factory.java" ) );
     }
     return expectedOutputs.toArray( new String[ 0 ] );
   }

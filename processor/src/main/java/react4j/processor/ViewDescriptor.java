@@ -206,7 +206,7 @@ final class ViewDescriptor
   @Nonnull
   ClassName getFactoryClassName()
   {
-    return GeneratorUtil.getGeneratedClassName( _element, "", "Factory" );
+    return GeneratorUtil.getGeneratedClassName( _element, "React4j_", "Factory" );
   }
 
   @Nonnull

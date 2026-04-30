@@ -5,7 +5,6 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
-import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
@@ -23,21 +22,20 @@ import react4j.internal.ViewConstructorFunction;
     "Arez:UnnecessaryAllowEmpty"
 })
 @ArezComponent(
-    name = "com_example_inject_ConstructorInjectRawTypeComponent",
+    name = "com_example_inject_StingNamedInjectComponent",
     disposeNotifier = Feature.DISABLE,
     defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInjectRawTypeComponent {
+abstract class React4j_StingNamedInjectComponent extends StingNamedInjectComponent {
   @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  @SuppressWarnings("rawtypes")
-  React4j_ConstructorInjectRawTypeComponent(
+  React4j_StingNamedInjectComponent(
       @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
-      @Nonnull final Consumer someParam) {
+      @Nonnull final String someParam) {
     super( someParam );
     this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
@@ -46,13 +44,13 @@ abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInje
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ConstructorInjectRawTypeComponent" );
+      Js.asPropertyMap( viewConstructor ).set( "displayName", "StingNamedInjectComponent" );
     }
     return viewConstructor;
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ConstructorInjectRawTypeComponent) this).dispose();
+    ((Arez_React4j_StingNamedInjectComponent) this).dispose();
   }
 
   @Nullable
@@ -71,12 +69,12 @@ abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInje
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
     @Nonnull
-    private final React4j_ConstructorInjectRawTypeComponent view;
+    private final React4j_StingNamedInjectComponent view;
 
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = React4j_ConstructorInjectRawTypeComponentFactory.create( this );
+      view = React4j_StingNamedInjectComponentFactory.create( this );
     }
 
     @Override

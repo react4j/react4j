@@ -74,7 +74,7 @@ abstract class React4j_StingOnlyInjectComponent extends StingOnlyInjectComponent
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = StingOnlyInjectComponentFactory.create( this );
+      view = React4j_StingOnlyInjectComponentFactory.create( this );
     }
 
     @Override

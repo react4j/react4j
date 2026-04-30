@@ -100,7 +100,7 @@ abstract class NestedCompleteComponent_React4j_BasicView extends NestedCompleteC
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = NestedCompleteComponent_BasicViewFactory.create( this );
+      view = NestedCompleteComponent_React4j_BasicViewFactory.create( this );
     }
 
     @Override

@@ -9,13 +9,13 @@ import react4j.React;
 import react4j.internal.NativeView;
 
 @Generated("react4j.processor.React4jProcessor")
-final class ConstructorInjectRawTypeComponentFactory {
+final class React4j_ConstructorInjectRawTypeComponentFactory {
   @SuppressWarnings("rawtypes")
   @Nonnull
   private final Consumer someParam;
 
   @SuppressWarnings("rawtypes")
-  ConstructorInjectRawTypeComponentFactory(@Nonnull final Consumer someParam) {
+  React4j_ConstructorInjectRawTypeComponentFactory(@Nonnull final Consumer someParam) {
     this.someParam = Objects.requireNonNull( someParam );
     InjectSupport.setFactory( this );
   }
@@ -26,10 +26,10 @@ final class ConstructorInjectRawTypeComponentFactory {
   }
 
   private static final class InjectSupport {
-    private static ConstructorInjectRawTypeComponentFactory c_factory;
+    private static React4j_ConstructorInjectRawTypeComponentFactory c_factory;
 
     private static void setFactory(
-        @Nonnull final ConstructorInjectRawTypeComponentFactory factory) {
+        @Nonnull final React4j_ConstructorInjectRawTypeComponentFactory factory) {
       if ( React.shouldCheckInvariants() ) {
         Guards.invariant( () -> null == c_factory, () -> "Attempted to instantiate the React4j view factory for the view named 'ConstructorInjectRawTypeComponent' a second time" );
       }

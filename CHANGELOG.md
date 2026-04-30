@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Rename factory with `React4j_` and instead expect framework users to use aliasing on the component to include react components in the sting injector graph.
 * Update the `org.realityforge.arez` artifacts to version `0.241`.
 * Generate `@ArezComponent(defaultSkipIfDisposed = Feature.ENABLE)` and explicitly disable `skipIfDisposed` on generated boolean-returning `@Action` methods such as `shouldComponentUpdate()`.
 * Breaking: make generated `[MyView]Factory` dependency-injection helper classes package access, including their generated `create(...)` methods and non-Sting constructors.

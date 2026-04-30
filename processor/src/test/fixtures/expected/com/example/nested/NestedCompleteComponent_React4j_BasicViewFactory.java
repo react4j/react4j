@@ -11,10 +11,10 @@ import sting.Injectable;
 @Generated("react4j.processor.React4jProcessor")
 @Injectable
 @Eager
-final class NestedCompleteComponent_BasicViewFactory {
+final class NestedCompleteComponent_React4j_BasicViewFactory {
   private final String value;
 
-  NestedCompleteComponent_BasicViewFactory(final String value) {
+  NestedCompleteComponent_React4j_BasicViewFactory(final String value) {
     this.value = value;
     InjectSupport.setFactory( this );
   }
@@ -25,10 +25,10 @@ final class NestedCompleteComponent_BasicViewFactory {
   }
 
   private static final class InjectSupport {
-    private static NestedCompleteComponent_BasicViewFactory c_factory;
+    private static NestedCompleteComponent_React4j_BasicViewFactory c_factory;
 
     private static void setFactory(
-        @Nonnull final NestedCompleteComponent_BasicViewFactory factory) {
+        @Nonnull final NestedCompleteComponent_React4j_BasicViewFactory factory) {
       if ( React.shouldCheckInvariants() ) {
         Guards.invariant( () -> null == c_factory, () -> "Attempted to instantiate the React4j view factory for the view named 'BasicView' a second time" );
       }

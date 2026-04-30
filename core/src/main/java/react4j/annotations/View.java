@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 @Target( ElementType.TYPE )
 @ActAsStingComponent
 @ActAsArezComponent
+@StingProvider( "[FlatEnclosingName]React4j_[SimpleName]" )
 public @interface View
 {
   /**

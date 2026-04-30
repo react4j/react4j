@@ -11,10 +11,10 @@ import sting.Injectable;
 @Generated("react4j.processor.React4jProcessor")
 @Injectable
 @Eager
-final class PublicViewFactory {
+final class React4j_PublicViewFactory {
   private final String someParam;
 
-  PublicViewFactory(final String someParam) {
+  React4j_PublicViewFactory(final String someParam) {
     this.someParam = someParam;
     InjectSupport.setFactory( this );
   }
@@ -25,9 +25,9 @@ final class PublicViewFactory {
   }
 
   private static final class InjectSupport {
-    private static PublicViewFactory c_factory;
+    private static React4j_PublicViewFactory c_factory;
 
-    private static void setFactory(@Nonnull final PublicViewFactory factory) {
+    private static void setFactory(@Nonnull final React4j_PublicViewFactory factory) {
       if ( React.shouldCheckInvariants() ) {
         Guards.invariant( () -> null == c_factory, () -> "Attempted to instantiate the React4j view factory for the view named 'PublicView' a second time" );
       }

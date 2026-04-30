@@ -99,7 +99,7 @@ abstract class React4j_ConstructorInputAndInjectArezComponentTypeComponent exten
     @JsConstructor
     NativeView(@Nullable final JsPropertyMap<Object> inputs) {
       super( inputs );
-      view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : ConstructorInputAndInjectArezComponentTypeComponentFactory.create( this );
+      view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : React4j_ConstructorInputAndInjectArezComponentTypeComponentFactory.create( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
         React4j_ConstructorInputAndInjectArezComponentTypeComponent.$$react4j$$_validateInputValues( inputs );
