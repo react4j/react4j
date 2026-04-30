@@ -1,0 +1,36 @@
+[
+  {
+    "code": "java.annotation.removed",
+    "description": "Element no longer annotated with 'react4j.annotations.ActAsStingComponent'.",
+    "element": "@interface react4j.annotations.View",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@react4j.annotations.ActAsStingComponent",
+      "annotationType": "react4j.annotations.ActAsStingComponent",
+      "classQualifiedName": "react4j.annotations.View",
+      "classSimpleName": "View",
+      "elementKind": "@interface",
+      "package": "react4j.annotations"
+    }
+  },
+  {
+    "code": "java.method.attributeWithDefaultAddedToAnnotationType",
+    "description": "The annotation has a new attribute with a default value.",
+    "newElement": "method boolean react4j.annotations.View::exportBuilder()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.View",
+      "classSimpleName": "View",
+      "elementKind": "method",
+      "methodName": "exportBuilder",
+      "package": "react4j.annotations"
+    }
+  }
+]

@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
  */
 @Documented
 @Target( ElementType.TYPE )
-@ActAsStingComponent
 @ActAsArezComponent
 public @interface View
 {
