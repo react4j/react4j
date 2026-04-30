@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.221](https://github.com/react4j/react4j/tree/v0.221) (2026-04-30) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.220...v0.221)
+
+Changes in this release:
 
 * Rename factory with `React4j_` and instead expect framework users to use aliasing on the component to include react components in the sting injector graph.
 * Update the `org.realityforge.arez` artifacts to version `0.241`.
