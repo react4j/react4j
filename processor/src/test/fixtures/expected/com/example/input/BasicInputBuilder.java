@@ -1,0 +1,57 @@
+package com.example.input;
+
+import javax.annotation.Nonnull;
+import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
+import react4j.ReactElement;
+import react4j.ReactNode;
+
+@Generated("react4j.processor.React4jProcessor")
+final class BasicInputBuilder {
+  private BasicInputBuilder() {
+  }
+
+  @Nonnull
+  static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode someField(final boolean someField) {
+    return newBuilder().someField( someField );
+  }
+
+  interface Step1 {
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode someField(boolean someField);
+  }
+
+  private static class Builder implements Step1 {
+    @Nonnull
+    private final ReactElement _element = ReactElement.createViewElement( React4j_BasicInputView.Factory.TYPE );
+
+    @Override
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    public final ReactNode someField(final boolean someField) {
+      _element.input( React4j_BasicInputView.Inputs.someField, someField );
+      return build();
+    }
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    public final ReactNode build() {
+      return _element;
+    }
+  }
+}

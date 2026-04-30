@@ -170,7 +170,7 @@ final class ViewDescriptor
   @Nonnull
   String getDisplayName()
   {
-    return getName().endsWith( "View" ) ? getName().substring( 0, getName().length() - "View".length() ) : getName();
+    return trimViewSuffix( getName() );
   }
 
   @Nonnull
@@ -200,13 +200,25 @@ final class ViewDescriptor
   @Nonnull
   ClassName getBuilderClassName()
   {
-    return GeneratorUtil.getGeneratedClassName( _element, "", "Builder" );
+    return ClassName.get( getPackageName(), getBuilderSimpleName() );
+  }
+
+  @Nonnull
+  String getBuilderSimpleName()
+  {
+    return trimViewSuffix( GeneratorUtil.getGeneratedSimpleClassName( _element, "", "" ) ) + "Builder";
   }
 
   @Nonnull
   ClassName getFactoryClassName()
   {
     return GeneratorUtil.getGeneratedClassName( _element, "React4j_", "Factory" );
+  }
+
+  @Nonnull
+  private static String trimViewSuffix( @Nonnull final String name )
+  {
+    return name.endsWith( "View" ) ? name.substring( 0, name.length() - "View".length() ) : name;
   }
 
   @Nonnull

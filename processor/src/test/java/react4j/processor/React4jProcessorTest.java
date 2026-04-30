@@ -286,7 +286,7 @@ public final class React4jProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( "com.example.nested.NestedView",
-                             "com/example/nested/NestedView_BasicViewBuilder.java",
+                             "com/example/nested/NestedView_BasicBuilder.java",
                              "com/example/nested/NestedView_React4j_BasicView.java" );
   }
 
@@ -295,7 +295,7 @@ public final class React4jProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( "com.example.nested.NestedNestedView",
-                             "com/example/nested/NestedNestedView_DeepNesting_BasicViewBuilder.java",
+                             "com/example/nested/NestedNestedView_DeepNesting_BasicBuilder.java",
                              "com/example/nested/NestedNestedView_DeepNesting_React4j_BasicView.java" );
   }
 
@@ -304,7 +304,7 @@ public final class React4jProcessorTest
     throws Exception
   {
     assertSuccessfulCompile( "com.example.nested.NestedCompleteComponent",
-                             "com/example/nested/NestedCompleteComponent_BasicViewBuilder.java",
+                             "com/example/nested/NestedCompleteComponent_BasicBuilder.java",
                              "com/example/nested/NestedCompleteComponent_React4j_BasicViewFactory.java",
                              "com/example/nested/NestedCompleteComponent_React4j_BasicView.java" );
   }
@@ -327,7 +327,7 @@ public final class React4jProcessorTest
     final JavaFileObject source2 = fixture( "input/com/example/arez/TrackingInheritedAutoObserveMethodView.java" );
     assertSuccessfulCompile( Arrays.asList( source1, source2 ),
                              Arrays.asList( "com/example/arez/React4j_TrackingInheritedAutoObserveMethodView.java",
-                                            "com/example/arez/TrackingInheritedAutoObserveMethodViewBuilder.java" ) );
+                                            "com/example/arez/TrackingInheritedAutoObserveMethodBuilder.java" ) );
   }
 
   @Test
@@ -597,7 +597,7 @@ public final class React4jProcessorTest
     final String input5 = "input/" + toFilename( "com.example.inheritance.simple.LeafView" );
     final String input6 = "input/" + toFilename( "com.example.inheritance.simple.LeafInterface" );
     final String output1 = toFilename( "com.example.inheritance.simple.React4j_LeafView" );
-    final String output2 = toFilename( "com.example.inheritance.simple.LeafViewBuilder" );
+    final String output2 = toFilename( "com.example.inheritance.simple.LeafBuilder" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ),
                                             fixture( input2 ),
                                             fixture( input3 ),
@@ -616,7 +616,7 @@ public final class React4jProcessorTest
     final String input3 = "input/" + toFilename( "com.example.inheritance.complex_interface.LeafInterface" );
     final String input4 = "input/" + toFilename( "com.example.inheritance.complex_interface.MyView" );
     final String output1 = toFilename( "com.example.inheritance.complex_interface.React4j_MyView" );
-    final String output2 = toFilename( "com.example.inheritance.complex_interface.MyViewBuilder" );
+    final String output2 = toFilename( "com.example.inheritance.complex_interface.MyBuilder" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ),
                                             fixture( input2 ),
                                             fixture( input3 ),
@@ -632,7 +632,7 @@ public final class React4jProcessorTest
     final String input2 = "input/" + toFilename( "com.example.inheritance.rose.MyConsumerView" );
     final String input3 = "input/" + toFilename( "com.example.inheritance.rose.MyView" );
     final String output1 = toFilename( "com.example.inheritance.rose.React4j_MyView" );
-    final String output2 = toFilename( "com.example.inheritance.rose.MyViewBuilder" );
+    final String output2 = toFilename( "com.example.inheritance.rose.MyBuilder" );
     assertSuccessfulCompile( Arrays.asList( fixture( input1 ),
                                             fixture( input2 ),
                                             fixture( input3 ) ),
@@ -1172,7 +1172,7 @@ public final class React4jProcessorTest
   {
     final List<String> expectedOutputs = new ArrayList<>();
     expectedOutputs.add( toFilename( classname, "React4j_", ".java" ) );
-    expectedOutputs.add( toFilename( classname, "", "Builder.java" ) );
+    expectedOutputs.add( deriveBuilderFilename( classname ) );
     if ( factory )
     {
       expectedOutputs.add( toFilename( classname, "React4j_", "Factory.java" ) );
@@ -1198,5 +1198,16 @@ public final class React4jProcessorTest
              target.endsWith( "Builder.java" ) ||
              target.endsWith( "Factory.java" )
            );
+  }
+
+  @Nonnull
+  private String deriveBuilderFilename( @Nonnull final String classname )
+  {
+    final int lastSeparator = classname.lastIndexOf( '.' );
+    final String prefix = -1 == lastSeparator ? "" : classname.substring( 0, lastSeparator + 1 );
+    final String simpleName = -1 == lastSeparator ? classname : classname.substring( lastSeparator + 1 );
+    final String builderName =
+      simpleName.endsWith( "View" ) ? simpleName.substring( 0, simpleName.length() - "View".length() ) : simpleName;
+    return toFilename( prefix + builderName + "Builder" );
   }
 }

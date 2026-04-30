@@ -1,0 +1,94 @@
+package com.example.inheritance.rose;
+
+import java.util.Date;
+import javax.annotation.Nonnull;
+import javax.annotation.processing.Generated;
+import org.jetbrains.annotations.Contract;
+import react4j.Context;
+import react4j.Contexts;
+import react4j.ReactElement;
+import react4j.ReactNode;
+
+@Generated("react4j.processor.React4jProcessor")
+final class MyBuilder {
+  private MyBuilder() {
+  }
+
+  @Nonnull
+  static Step1 newBuilder() {
+    return new Builder();
+  }
+
+  @Nonnull
+  @Contract(
+      pure = true
+  )
+  static ReactNode field2InLeaf(final boolean field2InLeaf) {
+    return newBuilder().field2InLeaf( field2InLeaf );
+  }
+
+  interface Step1 {
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    ReactNode field2InLeaf(boolean field2InLeaf);
+  }
+
+  private static class ContextHolder {
+    @Nonnull
+    private static final Context<Date> CONTEXT_dateRange = Contexts.get( Date.class );
+
+    @Nonnull
+    private static final Context<Boolean> CONTEXT_field1InLeaf = Contexts.get( Boolean.class );
+
+    private ContextHolder() {
+    }
+  }
+
+  private static class Builder implements Step1 {
+    @Nonnull
+    private final ReactElement _element = ReactElement.createViewElement( React4j_MyView.Factory.TYPE );
+
+    @Nonnull
+    private final Context.ConsumerRenderFunction<Date> _$context_dateRange = this::$context_dateRange;
+
+    @Nonnull
+    private final Context.ConsumerRenderFunction<Boolean> _$context_field1InLeaf = this::$context_field1InLeaf;
+
+    @Override
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    public final ReactNode field2InLeaf(final boolean field2InLeaf) {
+      _element.input( React4j_MyView.Inputs.field2InLeaf, field2InLeaf );
+      return build();
+    }
+
+    @Nonnull
+    private ReactNode build(@Nonnull final ReactElement element) {
+      return element;
+    }
+
+    @Nonnull
+    @Contract(
+        pure = true
+    )
+    public final ReactNode build() {
+      return ContextHolder.CONTEXT_dateRange.consumer().render( _$context_dateRange );
+    }
+
+    @Nonnull
+    private ReactNode $context_dateRange(final Date dateRange) {
+      _element.input( React4j_MyView.Inputs.dateRange, dateRange );
+      return ContextHolder.CONTEXT_field1InLeaf.consumer().render( _$context_field1InLeaf );
+    }
+
+    @Nonnull
+    private ReactNode $context_field1InLeaf(final boolean field1InLeaf) {
+      _element.input( React4j_MyView.Inputs.field1InLeaf, field1InLeaf );
+      return build( _element.dup() );
+    }
+  }
+}

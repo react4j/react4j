@@ -17,6 +17,7 @@ When you learn something non-obvious, add it here if it would make future change
 - Explicit `@View` constructors now emit a suppressible `React4j:ConstructorParameterOrder` warning unless parameters are grouped as non-`@Input`, then `@Input(fromTreeContext = true)`, then other `@Input`; the diagnostic is attached to the constructor and uses the compact labels `inject`, `tree`, and `input`.
 - Generated view builder visibility is now controlled solely by `@View(exportBuilder = true|false)`: `false` keeps the top-level builder class, `newBuilder()`, static entry methods, and step interfaces package access, while `true` makes that builder API public; public `@View` classes themselves now emit suppressible `React4j:PublicView` warnings.
 - Generated native view `displayName` values trim a trailing `View` from the effective `@View.name`, but only for that React debug name; builder keys, generated class names, and other descriptor-name uses still keep the full view name.
+- Processor fixture expectations for generated builders are split between `React4jProcessorTest.deriveExpectedOutputs()` for most cases and a few dedicated nested/inheritance tests with hardcoded builder filenames, so builder naming changes usually require updates in both places.
 
 ## Project Structure & Module Organization
 
