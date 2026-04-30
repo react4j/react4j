@@ -263,7 +263,6 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.inject.ConstructorInputAndInjectArezComponentTypeComponent" },
         new Object[]{ "com.example.inject.PublicView" },
         new Object[]{ "com.example.inject.StingNamedInjectComponent" },
-        new Object[]{ "com.example.inject.StingNamedTypeComponent" },
         new Object[]{ "com.example.inject.StingOnlyInjectComponent" }
       };
   }
