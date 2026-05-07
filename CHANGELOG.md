@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.223](https://github.com/react4j/react4j/tree/v0.223) (2026-05-07) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.222...v0.223)
+
+Changes in this release:
 
 * Update the `org.realityforge.proton` artifacts to version `0.70`.
 * Remove `ReactConfig.native.js` as it does not seem to be a supported pattern in the latest j2cl.
