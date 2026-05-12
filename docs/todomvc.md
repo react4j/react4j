@@ -17,7 +17,6 @@ React4j looks like.
   <thead>
   <tr>
     <th class="rotate"><div><span>Branch</span></div></th>
-    <th class="rotate" style="width: 90px"><div><span>Status</span></div></th>
     <th class="rotate"><div><span>Production Build</span></div></th>
     <th class="rotate"><div><span>Development Build</span></div></th>
     <th class="rotate"><div><span>Features</span></div></th>
@@ -26,11 +25,6 @@ React4j looks like.
   <tbody>
   <tr>
     <td><a href="https://github.com/react4j/react4j-todomvc/tree/raw">raw</a></td>
-    <td>
-      <a href="https://travis-ci.org/react4j/react4j-todomvc">
-        <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=raw" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
-      </a>
-    </td>
     <td><a href="/todomvc/raw/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
     <td><a href="/todomvc/raw/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
     <td>
@@ -41,11 +35,6 @@ React4j looks like.
   </tr>
   <tr>
     <td><a href="https://github.com/react4j/react4j-todomvc/tree/arez">arez</a></td>
-    <td>
-      <a href="https://travis-ci.org/react4j/react4j-todomvc">
-        <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=arez" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
-      </a>
-    </td>
     <td><a href="/todomvc/arez/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
     <td><a href="/todomvc/arez/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
     <td>
@@ -57,11 +46,6 @@ React4j looks like.
   </tr>
   <tr>
       <td><a href="https://github.com/react4j/react4j-todomvc/tree/sting">sting</a></td>
-      <td>
-        <a href="https://travis-ci.org/react4j/react4j-todomvc">
-          <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=sting" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
-        </a>
-      </td>
       <td><a href="/todomvc/sting/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
       <td><a href="/todomvc/sting/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
       <td>
@@ -74,11 +58,6 @@ React4j looks like.
     </tr>
   <tr>
     <td><a href="https://github.com/react4j/react4j-todomvc/tree/sting_maven">sting_maven</a></td>
-    <td>
-      <a href="https://travis-ci.org/react4j/react4j-todomvc">
-        <img src="https://secure.travis-ci.org/react4j/react4j-todomvc.png?branch=sting_maven" width="90px" height="20px" alt="Build Status" style="max-width:100%;">
-      </a>
-    </td>
     <td></td>
     <td></td>
     <td>
