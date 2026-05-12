@@ -105,9 +105,9 @@ task 'site:link_check' do
   socket.close
 
   webserver = WEBrick::HTTPServer.new(:Port => port, :DocumentRoot => root, :AccessLog => [])
-  Thread.new {webserver.start}
+  Thread.new { webserver.start }
 
-  trap('INT') {webserver.shutdown}
+  trap('INT') { webserver.shutdown }
   begin
     base_url = "http://#{address}:#{port}"
     excludes = []
@@ -119,14 +119,13 @@ task 'site:link_check' do
     excludes << 'https://reactjs.org'
     excludes << 'https://todomvc.com'
     excludes << 'https://dagger.dev'
-    excludes << 'https://secure.travis-ci.org'
     # This next line is required if updating docs in branch and adding new
     # pages then this url may not exist until it is merged to master
     excludes << 'https://github.com/react4j/react4j/tree/master/docs'
     (%w(todomvc) + DOWNSTREAM_PROJECTS).each do |project_name|
       excludes << "#{base_url}/#{project_name.gsub(/^react4j-/, '')}"
     end
-    sh "yarn blc --user-agent SiteChecker --ordered --recursive --filter-level 3 #{base_url} #{excludes.collect {|e| "--exclude #{e}"}.join(' ')}"
+    sh "yarn blc --user-agent SiteChecker --ordered --recursive --filter-level 3 #{base_url} #{excludes.collect { |e| "--exclude #{e}" }.join(' ')}"
   ensure
     webserver.shutdown
   end
@@ -142,33 +141,23 @@ task 'site:deploy' => ['site:build'] do
   # Verify the site is valid first
   task('site:link_check').invoke
 
-  # Only publish the site off the master branch if running out of Travis
-  if ENV['TRAVIS_BRANCH'].nil? || ENV['TRAVIS_BRANCH'] == 'master'
-    origin_url = 'https://github.com/react4j/react4j.github.io.git'
+  origin_url = 'https://github.com/react4j/react4j.github.io.git'
 
-    travis_build_number = ENV['TRAVIS_BUILD_NUMBER']
-    if travis_build_number
-      origin_url = origin_url.gsub('https://github.com/', 'git@github.com:')
-    end
+  local_dir = "#{WORKSPACE_DIR}/target/remote_site"
+  rm_rf local_dir
 
-    local_dir = "#{WORKSPACE_DIR}/target/remote_site"
-    rm_rf local_dir
+  sh "git clone -b master --depth 1 #{origin_url} #{local_dir}"
 
-    sh "git clone -b master --depth 1 #{origin_url} #{local_dir}"
+  # This is the list of directories controlled by other processes that should be left alone
+  excludes = %w(todomvc drumloop webspeechdemo heart-rate-monitor) + DOWNSTREAM_PROJECTS.collect { |project_name| project_name.gsub(/^react4j-/, '') }
 
-    # This is the list of directories controlled by other processes that should be left alone
-    excludes = %w(todomvc drumloop webspeechdemo heart-rate-monitor) + DOWNSTREAM_PROJECTS.collect {|project_name| project_name.gsub(/^react4j-/, '')}
-
-    in_dir(local_dir) do
-      message = "Publish website#{travis_build_number.nil? ? '' : " - Travis build: #{travis_build_number}"}"
-
-      rm_rf Dir["#{local_dir}/*"].select {|f| !excludes.include?(File.basename(f))}
-      cp_r Dir["#{SITE_DIR}/*"], local_dir
-      sh 'git add . -f'
-      unless `git status -s`.strip.empty?
-        sh "git commit -m \"#{message}\""
-        sh 'git push -f origin master'
-      end
+  in_dir(local_dir) do
+    rm_rf Dir["#{local_dir}/*"].select { |f| !excludes.include?(File.basename(f)) }
+    cp_r Dir["#{SITE_DIR}/*"], local_dir
+    sh 'git add . -f'
+    unless `git status -s`.strip.empty?
+      sh "git commit -m \"Publish website\""
+      sh 'git push -f origin master'
     end
   end
 end
