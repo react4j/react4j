@@ -10,7 +10,7 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 import sting.Named;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class ConstructorInputAndInjectArezComponentTypeComponent
 {
   @ArezComponent( allowEmpty = true )

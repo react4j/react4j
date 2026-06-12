@@ -6,7 +6,7 @@ import react4j.annotations.View;
 
 final class NonStaticInnerClassComponent
 {
-  @View
+  @View( type = View.Type.STATEFUL )
   abstract class MyReactClassComponent
   {
     @Render

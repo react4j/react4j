@@ -7,7 +7,7 @@ import react4j.annotations.View;
 import sting.Named;
 import javax.annotation.Nullable;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class StingNamedInjectComponent
 {
   StingNamedInjectComponent( @Nonnull @Named( "blah" ) String someParam )

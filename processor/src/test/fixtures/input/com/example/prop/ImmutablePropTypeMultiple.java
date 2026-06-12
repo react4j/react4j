@@ -15,7 +15,7 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 
 // Covers multiple immutable prop types as that forces code gen through separate path
-@View
+@View( type = View.Type.STATEFUL )
 abstract class ImmutablePropTypeMultiple
 {
   enum MyEnum

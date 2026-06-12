@@ -8,7 +8,7 @@ import react4j.annotations.SuppressReact4jWarnings;
 import react4j.annotations.View;
 
 @SuppressReact4jWarnings( "React4j:ConstructorParameterOrder" )
-@View
+@View( type = View.Type.STATEFUL )
 abstract class Suppressed2BadOrderView
 {
   Suppressed2BadOrderView( @Input final int inputValue,

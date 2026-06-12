@@ -5,7 +5,7 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 import javax.annotation.Nullable;
 
-@View( name = "ZANG" )
+@View( name = "ZANG", type = View.Type.STATEFUL )
 abstract class CustomNameView
 {
   @Nullable

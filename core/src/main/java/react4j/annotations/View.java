@@ -80,5 +80,5 @@ public @interface View
    * @see Type
    */
   @Nonnull
-  Type type() default Type.STATEFUL;
+  Type type() default Type.TRACKING;
 }

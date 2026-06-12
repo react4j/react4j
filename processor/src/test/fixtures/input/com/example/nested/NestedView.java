@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 public class NestedView
 {
-  @View
+  @View( type = View.Type.STATEFUL )
   static abstract class BasicView
   {
     @Nullable

@@ -7,7 +7,7 @@ import react4j.annotations.SuppressReact4jWarnings;
 import react4j.annotations.View;
 import javax.annotation.Nullable;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class Suppressed2PublicAccessPreRenderModel
 {
   // This uses the CLASS retention suppression

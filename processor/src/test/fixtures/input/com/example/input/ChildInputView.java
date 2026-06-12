@@ -6,7 +6,7 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@View( type = View.Type.TRACKING )
+@View
 abstract class ChildInputView
 {
   @Nullable

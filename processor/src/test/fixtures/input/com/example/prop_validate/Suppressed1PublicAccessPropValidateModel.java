@@ -7,7 +7,7 @@ import react4j.annotations.InputValidate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class Suppressed1PublicAccessPropValidateModel
 {
   // This uses the SOURCE retention suppression

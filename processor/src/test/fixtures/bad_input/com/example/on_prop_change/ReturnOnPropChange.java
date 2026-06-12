@@ -6,7 +6,7 @@ import react4j.annotations.OnInputChange;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class ReturnOnPropChange
 {
   @OnInputChange

@@ -6,7 +6,7 @@ import react4j.annotations.View;
 import javax.annotation.Nullable;
 
 @Deprecated
-@View
+@View( type = View.Type.STATEFUL )
 abstract class DeprecatedView
 {
   @Nullable

@@ -9,7 +9,7 @@ import react4j.annotations.OnError;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class ThrowsOnErrorComponent
 {
   @Render

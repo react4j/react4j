@@ -8,7 +8,7 @@ import react4j.annotations.View;
 
 public class NestedCompleteComponent
 {
-  @View
+  @View( type = View.Type.STATEFUL )
   static abstract class BasicView
   {
     private final String _value;

@@ -1,0 +1,21 @@
+[
+  {
+    "code": "java.method.defaultValueChanged",
+    "description": "Default value of attribute 'type' of annotation 'react4j.annotations.View' changed value from 'react4j.annotations.View.Type.STATEFUL' to 'react4j.annotations.View.Type.TRACKING'.",
+    "element": "method react4j.annotations.View.Type react4j.annotations.View::type()",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.annotations.View",
+      "classSimpleName": "View",
+      "elementKind": "method",
+      "methodName": "type",
+      "newValue": "react4j.annotations.View.Type.TRACKING",
+      "oldValue": "react4j.annotations.View.Type.STATEFUL",
+      "package": "react4j.annotations"
+    }
+  }
+]

@@ -9,7 +9,7 @@ public class NestedNestedView
 {
   public static class DeepNesting
   {
-    @View
+    @View( type = View.Type.STATEFUL )
     static abstract class BasicView
     {
       @Nullable

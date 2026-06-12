@@ -7,7 +7,7 @@ import react4j.annotations.SuppressReact4jWarnings;
 import react4j.annotations.View;
 
 @SuppressReact4jWarnings( "React4j:PublicView" )
-@View( exportBuilder = true )
+@View( exportBuilder = true, type = View.Type.STATEFUL )
 public abstract class Suppressed2PublicView
 {
   @Nullable

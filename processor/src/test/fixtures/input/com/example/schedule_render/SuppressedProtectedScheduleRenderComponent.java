@@ -6,7 +6,7 @@ import react4j.annotations.ScheduleRender;
 import react4j.annotations.View;
 import javax.annotation.Nullable;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class SuppressedProtectedScheduleRenderComponent
 {
   // This uses the SOURCE retention suppression

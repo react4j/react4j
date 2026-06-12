@@ -7,7 +7,7 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class CollectionPropModel
 {
   @Nullable

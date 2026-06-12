@@ -5,7 +5,7 @@ import react4j.annotations.PreRender;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class ParametersModel
 {
   @PreRender

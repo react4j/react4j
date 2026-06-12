@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 
 // An example of inheritance that appears all over Rose
 // That was being broken so added in here to avoid in future
-@View
+@View( type = View.Type.STATEFUL )
 abstract class MyView
   implements MyConsumerView
 {

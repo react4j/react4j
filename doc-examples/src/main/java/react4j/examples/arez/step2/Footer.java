@@ -12,7 +12,7 @@ import react4j.examples.arez.step2.model.AppData;
 import react4j.examples.arez.step2.model.FilterMode;
 import static react4j.dom.DOM.*;
 
-@View( type = View.Type.TRACKING )
+@View
 abstract class Footer
 {
   @Nullable

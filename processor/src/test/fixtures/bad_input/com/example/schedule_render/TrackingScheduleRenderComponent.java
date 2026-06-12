@@ -5,7 +5,7 @@ import react4j.annotations.Render;
 import react4j.annotations.ScheduleRender;
 import react4j.annotations.View;
 
-@View( type = View.Type.TRACKING )
+@View
 abstract class TrackingScheduleRenderComponent
 {
   @ScheduleRender

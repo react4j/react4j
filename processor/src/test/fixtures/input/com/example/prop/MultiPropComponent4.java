@@ -9,7 +9,7 @@ import react4j.annotations.View;
 /**
  * This prop has multiple optional props
  */
-@View
+@View( type = View.Type.STATEFUL )
 abstract class MultiPropComponent4
 {
   @Nullable

@@ -8,7 +8,7 @@ import react4j.annotations.Render;
 import react4j.annotations.SuppressReact4jWarnings;
 import react4j.annotations.View;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class Suppressed2ProtectedAccessOnPropChangeModel
 {
   // This uses the CLASS retention suppression

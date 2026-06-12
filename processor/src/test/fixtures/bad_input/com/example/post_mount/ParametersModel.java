@@ -5,7 +5,7 @@ import react4j.annotations.PostMount;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class ParametersModel
 {
   @PostMount

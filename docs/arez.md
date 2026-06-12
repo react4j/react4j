@@ -18,9 +18,8 @@ developer controls the scope of the re-render by controlling the size of the com
 
 ## Getting Started
 
-To trigger re-renders of a react4j component when observable Arez state is modified then set the `type`
-parameter of the `@View` annotation to `TRACKING` (i.e. Annotate the component with
-`@View( type = View.Type.TRACKING )`). This will result in the `@Render` annotated method being invoked
+To trigger re-renders of a react4j component when observable Arez state is modified then annotate the component
+with `@View`. This will result in the `@Render` annotated method being invoked
 within the scope of a read-only, tracking (Arez) transaction. Changes to the observable state accessed within the
 scope of the `@Render` annotated method will schedule the component for re-rendering.
 

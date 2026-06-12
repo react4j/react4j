@@ -9,7 +9,7 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 import javax.annotation.Nullable;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class Suppressed1PublicAccessOnErrorModel
 {
   @Nullable

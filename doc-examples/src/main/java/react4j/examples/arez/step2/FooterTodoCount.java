@@ -8,7 +8,7 @@ import react4j.dom.proptypes.html.HtmlProps;
 import react4j.examples.arez.step2.model.AppData;
 import static react4j.dom.DOM.*;
 
-@View( type = View.Type.TRACKING )
+@View
 abstract class FooterTodoCount
 {
   @Render

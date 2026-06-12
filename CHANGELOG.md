@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Breaking: change the default value of `@View.type` from `STATEFUL` to `TRACKING`.
+
 ### [v0.223](https://github.com/react4j/react4j/tree/v0.223) (2026-05-07) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.222...v0.223)
 
 Changes in this release:

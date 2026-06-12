@@ -11,7 +11,7 @@ import react4j.examples.arez.step1.model.AppData;
 import react4j.examples.arez.step1.model.FilterMode;
 import static react4j.dom.DOM.*;
 
-@View( type = View.Type.TRACKING )
+@View
 abstract class Footer
 {
   @Render

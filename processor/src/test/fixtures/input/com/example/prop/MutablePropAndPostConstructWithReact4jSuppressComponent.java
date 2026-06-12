@@ -8,7 +8,7 @@ import react4j.annotations.Render;
 import react4j.annotations.SuppressReact4jWarnings;
 import react4j.annotations.View;
 
-@View
+@View( type = View.Type.STATEFUL )
 abstract class MutablePropAndPostConstructWithReact4jSuppressComponent
 {
   @SuppressReact4jWarnings( "React4j:MutablePropAccessedInPostConstruct" )
