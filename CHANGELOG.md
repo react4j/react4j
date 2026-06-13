@@ -5,6 +5,7 @@
 * Update the `org.realityforge.proton` artifacts to version `0.71` and add the
   `react4j.format_generated_source` annotation processor option for formatting generated Java source before it is
   written.
+* Update the `org.realityforge.arez` artifacts to version `0.247`.
 
 ### [v0.224](https://github.com/react4j/react4j/tree/v0.224) (2026-06-12) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.223...v0.224)
 
