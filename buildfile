@@ -11,6 +11,16 @@ EXAMPLES = {
   'hello_world' => 'react4j.examples.hello_world.HelloWorld'
 }
 
+FORMATTER_JDK_EXPORTS =
+  %w(
+    --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+  )
+
 # JDK options passed to test environment. Essentially turns assertions on.
 REACT_TEST_OPTIONS =
   {
@@ -163,7 +173,7 @@ define 'react4j' do
 
     test.using :testng
     test.options[:properties] = { 'react4j.fixture_dir' => _('src/test/fixtures') }
-    test.options[:java_args] = %w(-ea)
+    test.options[:java_args] = ['-ea'] + FORMATTER_JDK_EXPORTS
 
     iml.test_source_directories << _('src/test/fixtures/input')
     iml.test_source_directories << _('src/test/fixtures/expected')
@@ -295,7 +305,7 @@ define 'react4j' do
                                :jvm_args => '-ea -Dbraincheck.environment=development -Dzemeckis.environment=development -Darez.environment=development -Dreact4j.environment=development -Dreact4j.dom.compile_target=../target/react4j_dom/idea/classes')
   ipr.add_testng_configuration('processor',
                                :module => 'processor',
-                               :jvm_args => '-ea -Dreact4j.output_fixture_data=true -Dreact4j.fixture_dir=src/test/fixtures')
+                               :jvm_args => "-ea #{FORMATTER_JDK_EXPORTS.join(' ')} -Dreact4j.output_fixture_data=true -Dreact4j.fixture_dir=src/test/fixtures")
 
   ipr.nonnull_assertions = false
 

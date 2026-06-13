@@ -52,6 +52,7 @@ import org.realityforge.proton.StopWatch;
 @SupportedOptions( { "react4j.defer.unresolved",
                      "react4j.defer.errors",
                      "react4j.debug",
+                     "react4j.format_generated_source",
                      "react4j.profile",
                      "react4j.verbose_out_of_round.errors",
                      "react4j.warnings_as_errors" } )
