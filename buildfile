@@ -20,6 +20,7 @@ FORMATTER_JDK_EXPORTS =
     --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
     --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
   )
+FORMATTER_JAVAC_EXPORTS = FORMATTER_JDK_EXPORTS.map { |option| "-J#{option}" }
 
 # JDK options passed to test environment. Essentially turns assertions on.
 REACT_TEST_OPTIONS =
@@ -39,7 +40,7 @@ define 'react4j' do
   compile.options.target = '17'
   compile.options.lint = 'all,-processing,-serial'
   project.compile.options.warnings = true
-  project.compile.options.other = %w(-Werror -Xmaxerrs 10000 -Xmaxwarns 10000)
+  project.compile.options.other = %w(-Werror -Xmaxerrs 10000 -Xmaxwarns 10000) + FORMATTER_JAVAC_EXPORTS
 
   project.version = ENV['PRODUCT_VERSION'] if ENV['PRODUCT_VERSION']
 

@@ -1206,11 +1206,13 @@ public final class React4jProcessorTest
   void assertSuccessfulCompileWithoutSting( @Nonnull final String classname )
     throws Exception
   {
-    assertSuccessfulCompileWithoutSting( classname, "expected", getOptions() );
+    final List<String> unformattedOptions = new ArrayList<>( getOptions() );
+    unformattedOptions.add( "-A" + getOptionPrefix() + ".format_generated_source=false" );
+    assertSuccessfulCompileWithoutSting( classname, "expected", unformattedOptions );
 
-    final List<String> options = new ArrayList<>( getOptions() );
-    options.add( "-A" + getOptionPrefix() + ".format_generated_source=true" );
-    assertSuccessfulCompileWithoutSting( classname, "expectedFormatted", options );
+    final List<String> formattedOptions = new ArrayList<>( getOptions() );
+    formattedOptions.add( "-A" + getOptionPrefix() + ".format_generated_source=true" );
+    assertSuccessfulCompileWithoutSting( classname, "expectedFormatted", formattedOptions );
   }
 
   void assertSuccessfulCompileWithoutSting( @Nonnull final String classname,
