@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.akasha` artifacts to version `0.33`.
+
 ### [v0.225](https://github.com/react4j/react4j/tree/v0.225) (2026-06-14) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.224...v0.225)
 
 Changes in this release:
