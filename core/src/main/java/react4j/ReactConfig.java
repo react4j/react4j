@@ -40,6 +40,11 @@ final class ReactConfig
     return ENABLE_VIEW_NAMES;
   }
 
+  static void setEnableViewNames( final boolean enableViewNames )
+  {
+    ENABLE_VIEW_NAMES = enableViewNames;
+  }
+
   /**
    * Return true if the input keys should be minimized.
    * This will significantly reduce the size of the compiled output but will make inspecting the inputs
@@ -52,6 +57,11 @@ final class ReactConfig
     return MINIMIZE_INPUT_KEYS;
   }
 
+  static void setMinimizeInputKeys( final boolean minimizeInputKeys )
+  {
+    MINIMIZE_INPUT_KEYS = minimizeInputKeys;
+  }
+
   /**
    * Return true if the input value should be validated when initially set or when changed.
    *
@@ -60,6 +70,11 @@ final class ReactConfig
   static boolean shouldValidateInputValues()
   {
     return SHOULD_VALIDATE_INPUT_VALUES;
+  }
+
+  static void setShouldValidateInputValues( final boolean shouldValidateInputValues )
+  {
+    SHOULD_VALIDATE_INPUT_VALUES = shouldValidateInputValues;
   }
 
   /**
@@ -74,6 +89,11 @@ final class ReactConfig
     return SHOULD_STORE_DEBUG_DATA_AS_STATE;
   }
 
+  static void setShouldStoreDebugDataAsState( final boolean shouldStoreDebugDataAsState )
+  {
+    SHOULD_STORE_DEBUG_DATA_AS_STATE = shouldStoreDebugDataAsState;
+  }
+
   /**
    * Return true if invariants will be checked.
    *
@@ -82,6 +102,11 @@ final class ReactConfig
   static boolean shouldCheckInvariants()
   {
     return CHECK_INVARIANTS && BrainCheckConfig.checkInvariants();
+  }
+
+  static void setCheckInvariants( final boolean checkInvariants )
+  {
+    CHECK_INVARIANTS = checkInvariants;
   }
 
   @SuppressWarnings( "SimplifiableConditionalExpression" )
@@ -107,14 +132,16 @@ final class ReactConfig
     @Override
     boolean shouldMinimizeInputKeys()
     {
-      return "true".equals( System.getProperty( "react4j.minimize_input_keys", PRODUCTION_ENVIRONMENT ? "true" : "false" ) );
+      return "true".equals( System.getProperty( "react4j.minimize_input_keys",
+                                                PRODUCTION_ENVIRONMENT ? "true" : "false" ) );
     }
 
     @GwtIncompatible
     @Override
     boolean shouldValidateInputValues()
     {
-      return "true".equals( System.getProperty( "react4j.validate_input_values", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.validate_input_values",
+                                                PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
 
     @GwtIncompatible
@@ -129,7 +156,8 @@ final class ReactConfig
     @Override
     boolean shouldCheckInvariants()
     {
-      return "true".equals( System.getProperty( "react4j.check_invariants", PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
+      return "true".equals( System.getProperty( "react4j.check_invariants",
+                                                PRODUCTION_ENVIRONMENT ? "false" : "true" ) );
     }
   }
 

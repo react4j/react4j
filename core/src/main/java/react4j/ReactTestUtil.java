@@ -1,12 +1,8 @@
 package react4j;
 
-import java.lang.reflect.Field;
-import javax.annotation.Nonnull;
-
 /**
  * Utility class for interacting with React4j in tests.
  */
-@GwtIncompatible
 public final class ReactTestUtil
 {
   private ReactTestUtil()
@@ -58,7 +54,7 @@ public final class ReactTestUtil
    */
   public static void disableViewNames()
   {
-    setViewEnableNames( true );
+    setViewEnableNames( false );
   }
 
   /**
@@ -68,7 +64,7 @@ public final class ReactTestUtil
    */
   public static void setViewEnableNames( final boolean setting )
   {
-    setConstant( "ENABLE_VIEW_NAMES", setting );
+    ReactConfig.setEnableViewNames( setting );
   }
 
   /**
@@ -76,7 +72,7 @@ public final class ReactTestUtil
    */
   public static void minimizeInputKeys()
   {
-    setMinimizeInputKeys( true );
+    ReactConfig.setMinimizeInputKeys( true );
   }
 
   /**
@@ -84,17 +80,7 @@ public final class ReactTestUtil
    */
   public static void noMinimizeInputKeys()
   {
-    setMinimizeInputKeys( false );
-  }
-
-  /**
-   * Configure the `react4j.minimize_input_keys` setting.
-   *
-   * @param setting the setting.
-   */
-  private static void setMinimizeInputKeys( final boolean setting )
-  {
-    setConstant( "MINIMIZE_INPUT_KEYS", setting );
+    ReactConfig.setMinimizeInputKeys( false );
   }
 
   /**
@@ -102,7 +88,7 @@ public final class ReactTestUtil
    */
   public static void validateInputValues()
   {
-    setValidateInputValues( true );
+    ReactConfig.setShouldValidateInputValues( true );
   }
 
   /**
@@ -110,17 +96,7 @@ public final class ReactTestUtil
    */
   public static void noValidateInputValues()
   {
-    setValidateInputValues( false );
-  }
-
-  /**
-   * Configure the `react4j.validate_input_values` setting.
-   *
-   * @param setting the setting.
-   */
-  private static void setValidateInputValues( final boolean setting )
-  {
-    setConstant( "SHOULD_VALIDATE_INPUT_VALUES", setting );
+    ReactConfig.setShouldValidateInputValues( false );
   }
 
   /**
@@ -128,7 +104,7 @@ public final class ReactTestUtil
    */
   public static void storeDebugDataAsState()
   {
-    setStoreDebugDataAsState( true );
+    ReactConfig.setShouldStoreDebugDataAsState( true );
   }
 
   /**
@@ -136,17 +112,7 @@ public final class ReactTestUtil
    */
   public static void noStoreDebugDataAsState()
   {
-    setStoreDebugDataAsState( false );
-  }
-
-  /**
-   * Configure the `react4j.store_debug_data_as_state` setting.
-   *
-   * @param setting the setting.
-   */
-  private static void setStoreDebugDataAsState( final boolean setting )
-  {
-    setConstant( "SHOULD_STORE_DEBUG_DATA_AS_STATE", setting );
+    ReactConfig.setShouldStoreDebugDataAsState( false );
   }
 
   /**
@@ -154,7 +120,7 @@ public final class ReactTestUtil
    */
   public static void checkInvariants()
   {
-    setCheckInvariants( true );
+    ReactConfig.setCheckInvariants( true );
   }
 
   /**
@@ -162,34 +128,6 @@ public final class ReactTestUtil
    */
   public static void noCheckInvariants()
   {
-    setCheckInvariants( false );
-  }
-
-  /**
-   * Configure the `react4j.check_invariants` setting.
-   *
-   * @param setting the setting.
-   */
-  private static void setCheckInvariants( final boolean setting )
-  {
-    setConstant( "CHECK_INVARIANTS", setting );
-  }
-
-  /**
-   * Set the specified field name on BrainCheckConfig.
-   */
-  @SuppressWarnings( "NonJREEmulationClassesInClientCode" )
-  private static void setConstant( @Nonnull final String fieldName, final boolean value )
-  {
-    try
-    {
-      final Field field = ReactConfig.class.getDeclaredField( fieldName );
-      field.setAccessible( true );
-      field.set( null, value );
-    }
-    catch ( NoSuchFieldException | IllegalAccessException e )
-    {
-      throw new IllegalStateException( "Unable to change constant " + fieldName, e );
-    }
+    ReactConfig.setCheckInvariants( false );
   }
 }
