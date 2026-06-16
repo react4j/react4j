@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Update the `org.realityforge.akasha` artifacts to version `0.33`.
+* Update the `org.realityforge.sting` artifacts to version `0.37`.
 * Update the `org.realityforge.braincheck` artifacts to version `1.33.0`.
 * Update the `org.realityforge.arez` artifacts to version `0.249`.
 
