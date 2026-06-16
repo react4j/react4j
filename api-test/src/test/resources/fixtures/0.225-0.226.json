@@ -1,0 +1,20 @@
+[
+  {
+    "code": "java.annotation.removed",
+    "description": "Element no longer annotated with 'react4j.GwtIncompatible'.",
+    "element": "class react4j.ReactTestUtil",
+    "classification": {
+      "SOURCE": "EQUIVALENT",
+      "BINARY": "EQUIVALENT",
+      "SEMANTIC": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "annotation": "@react4j.GwtIncompatible",
+      "annotationType": "react4j.GwtIncompatible",
+      "classQualifiedName": "react4j.ReactTestUtil",
+      "classSimpleName": "ReactTestUtil",
+      "elementKind": "class",
+      "package": "react4j"
+    }
+  }
+]
