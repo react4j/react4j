@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.226](https://github.com/react4j/react4j/tree/v0.226) (2026-06-16) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.225...v0.226)
+
+Changes in this release:
 
 * Update the `org.realityforge.akasha` artifacts to version `0.33`.
 * Update the `org.realityforge.sting` artifacts to version `0.37`.
