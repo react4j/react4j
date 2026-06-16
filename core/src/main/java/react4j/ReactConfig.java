@@ -84,6 +84,7 @@ final class ReactConfig
     return CHECK_INVARIANTS && BrainCheckConfig.checkInvariants();
   }
 
+  @SuppressWarnings( "SimplifiableConditionalExpression" )
   private static final class ConfigProvider
     extends AbstractConfigProvider
   {
