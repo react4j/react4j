@@ -145,17 +145,8 @@ public final class React4jProcessor
 
     MemberChecks.mustNotBeFinal( Constants.VIEW_CLASSNAME, typeElement );
     MemberChecks.mustBeAbstract( Constants.VIEW_CLASSNAME, typeElement );
-    if ( ElementKind.CLASS != typeElement.getKind() )
-    {
-      throw new ProcessorException( MemberChecks.must( Constants.VIEW_CLASSNAME, "be a class" ),
-                                    typeElement );
-    }
-    else if ( ElementsUtil.isNonStaticNestedClass( typeElement ) )
-    {
-      throw new ProcessorException( MemberChecks.toSimpleName( Constants.VIEW_CLASSNAME ) +
-                                    " target must not be a non-static nested class",
-                                    typeElement );
-    }
+    MemberChecks.mustBeClass( Constants.VIEW_CLASSNAME, typeElement );
+    MemberChecks.mustNotBeNonStaticNestedType( Constants.VIEW_CLASSNAME, typeElement );
     final List<ExecutableElement> constructors = ElementsUtil.getConstructors( typeElement );
     if ( 1 != constructors.size() || !isConstructorValid( constructors.get( 0 ) ) )
     {
@@ -402,11 +393,7 @@ public final class React4jProcessor
     }
     else
     {
-      final Set<Modifier> modifiers = ctor.getModifiers();
-      return
-        !modifiers.contains( Modifier.PRIVATE ) &&
-        !modifiers.contains( Modifier.PUBLIC ) &&
-        !modifiers.contains( Modifier.PROTECTED );
+      return ElementsUtil.isPackageAccess( ctor );
     }
   }
 
@@ -439,9 +426,9 @@ public final class React4jProcessor
     final ArrayList<OnInputChangeDescriptor> onInputChangeDescriptors = new ArrayList<>();
     for ( final ExecutableElement method : onInputChangeMethods )
     {
-      final VariableElement phase = (VariableElement)
-        AnnotationsUtil.getAnnotationValue( method, Constants.ON_INPUT_CHANGE_CLASSNAME, "phase" ).getValue();
-      final boolean preUpdate = phase.getSimpleName().toString().equals( "PRE" );
+      final String phase =
+        AnnotationsUtil.getEnumAnnotationParameter( method, Constants.ON_INPUT_CHANGE_CLASSNAME, "phase" );
+      final boolean preUpdate = phase.equals( "PRE" );
 
       final List<? extends VariableElement> parameters = method.getParameters();
       final ExecutableType methodType = resolveMethodType( descriptor, method );
@@ -841,9 +828,7 @@ public final class React4jProcessor
       }
       else
       {
-        final var typeElement = processingEnv.getElementUtils().getTypeElement( Constants.DISPOSABLE_CLASSNAME );
-        return null != typeElement &&
-               processingEnv.getTypeUtils().isAssignable( type.asType(), typeElement.asType() );
+        return ElementsUtil.isAssignableTo( processingEnv, type, Constants.DISPOSABLE_CLASSNAME );
       }
     }
     else
@@ -988,7 +973,7 @@ public final class React4jProcessor
     final String qualifier = (String) AnnotationsUtil
       .getAnnotationValue( method, Constants.INPUT_CLASSNAME, "qualifier" ).getValue();
     final boolean fromTreeContextInput = isFromTreeContextInput( method );
-    final Element inputType = processingEnv.getTypeUtils().asElement( returnType );
+    final Element inputType = ElementsUtil.asTypeElement( processingEnv, returnType );
     final boolean observable = isInputObservable( methods, method );
     final boolean disposable = null != inputType && isDisposableDerivableAtCompileTime( inputType );
     final TypeName typeName = TypeName.get( returnType );
@@ -1005,9 +990,7 @@ public final class React4jProcessor
                                     method );
     }
     final String requiredValue =
-      ( (VariableElement) AnnotationsUtil.getAnnotationValue( method, Constants.INPUT_CLASSNAME, "require" )
-        .getValue() )
-        .getSimpleName().toString();
+      AnnotationsUtil.getEnumAnnotationParameter( method, Constants.INPUT_CLASSNAME, "require" );
 
     final InputDescriptor inputDescriptor =
       new InputDescriptor( descriptor,
@@ -1061,14 +1044,10 @@ public final class React4jProcessor
     final String qualifier = (String) AnnotationsUtil
       .getAnnotationValue( parameter, Constants.INPUT_CLASSNAME, "qualifier" ).getValue();
     final boolean fromTreeContextInput = isFromTreeContextInput( parameter );
-    final Element inputType = processingEnv.getTypeUtils().asElement( type );
+    final Element inputType = ElementsUtil.asTypeElement( processingEnv, type );
     //final boolean observable = isInputObservable( methods, method );
     final var observable =
-      ( (VariableElement) AnnotationsUtil
-        .getAnnotationValue( parameter, Constants.INPUT_CLASSNAME, "observable" )
-        .getValue() )
-        .getSimpleName()
-        .toString();
+      AnnotationsUtil.getEnumAnnotationParameter( parameter, Constants.INPUT_CLASSNAME, "observable" );
     if ( "ENABLE".equals( observable ) )
     {
       throw new ProcessorException( "@Input target must not specify observable=ENABLE " +
@@ -1090,9 +1069,7 @@ public final class React4jProcessor
                                     parameter );
     }
     final String requiredValue =
-      ( (VariableElement) AnnotationsUtil.getAnnotationValue( parameter, Constants.INPUT_CLASSNAME, "require" )
-        .getValue() )
-        .getSimpleName().toString();
+      AnnotationsUtil.getEnumAnnotationParameter( parameter, Constants.INPUT_CLASSNAME, "require" );
 
     return new InputDescriptor( descriptor,
                                 name,
@@ -1149,8 +1126,7 @@ public final class React4jProcessor
 
   private boolean isAssignableToKeyed( @Nonnull final Element element )
   {
-    final TypeElement typeElement = processingEnv.getElementUtils().getTypeElement( Constants.KEYED_CLASSNAME );
-    return processingEnv.getTypeUtils().isAssignable( element.asType(), typeElement.asType() );
+    return ElementsUtil.isAssignableTo( processingEnv, element, Constants.KEYED_CLASSNAME );
   }
 
   private boolean isAssignableToIdentifiable( @Nonnull final Element element )
@@ -1166,10 +1142,9 @@ public final class React4jProcessor
    */
   private boolean isIdRequired( @Nonnull final TypeElement element )
   {
-    final VariableElement requireIdParameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_CLASSNAME, "requireId" )
-        .getValue();
-    return !"DISABLE".equals( requireIdParameter.getSimpleName().toString() );
+    final String requireIdParameter =
+      AnnotationsUtil.getEnumAnnotationParameter( element, Constants.AREZ_COMPONENT_CLASSNAME, "requireId" );
+    return !"DISABLE".equals( requireIdParameter );
   }
 
   @Nonnull
@@ -1619,11 +1594,9 @@ public final class React4jProcessor
   @Nonnull
   private ViewType extractViewType( @Nonnull final TypeElement typeElement )
   {
-    final VariableElement declaredTypeEnum = (VariableElement)
-      AnnotationsUtil
-        .getAnnotationValue( typeElement, Constants.VIEW_CLASSNAME, "type" )
-        .getValue();
-    return ViewType.valueOf( declaredTypeEnum.getSimpleName().toString() );
+    final String declaredType =
+      AnnotationsUtil.getEnumAnnotationParameter( typeElement, Constants.VIEW_CLASSNAME, "type" );
+    return ViewType.valueOf( declaredType );
   }
 
   private boolean extractExportBuilder( @Nonnull final TypeElement typeElement )
@@ -1635,9 +1608,9 @@ public final class React4jProcessor
   private boolean isInputObservable( @Nonnull final List<ExecutableElement> methods,
                                      @Nonnull final Element element )
   {
-    final var parameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( element, Constants.INPUT_CLASSNAME, "observable" ).getValue();
-    return switch ( parameter.getSimpleName().toString() )
+    final var parameter =
+      AnnotationsUtil.getEnumAnnotationParameter( element, Constants.INPUT_CLASSNAME, "observable" );
+    return switch ( parameter )
     {
       case "ENABLE" -> true;
       case "DISABLE" -> false;
@@ -1665,10 +1638,10 @@ public final class React4jProcessor
     }
     else
     {
-      final var typeElement = processingEnv.getTypeUtils().asElement( type );
-      if ( typeElement instanceof TypeElement )
+      final TypeElement typeElement = ElementsUtil.asTypeElement( processingEnv, type );
+      if ( null != typeElement )
       {
-        final var resolution = resolveArezComponentObservable( (TypeElement) typeElement );
+        final var resolution = resolveArezComponentObservable( typeElement );
         if ( ArezComponentObservableResolution.DISABLED == resolution )
         {
           return ObserveMode.NO_OBSERVE;
@@ -1709,8 +1682,7 @@ public final class React4jProcessor
 
   private boolean isAssignableToComponentObservable( @Nonnull final TypeMirror type )
   {
-    final var typeElement = processingEnv.getElementUtils().getTypeElement( Constants.COMPONENT_OBSERVABLE_CLASSNAME );
-    return null != typeElement && processingEnv.getTypeUtils().isAssignable( type, typeElement.asType() );
+    return ElementsUtil.isAssignableTo( processingEnv, type, Constants.COMPONENT_OBSERVABLE_CLASSNAME );
   }
 
   @Nonnull
@@ -1721,9 +1693,9 @@ public final class React4jProcessor
       return ArezComponentObservableResolution.NOT_AREZ_COMPONENT;
     }
 
-    final VariableElement observableParameter = (VariableElement)
-      AnnotationsUtil.getAnnotationValue( element, Constants.AREZ_COMPONENT_CLASSNAME, "observable" ).getValue();
-    return switch ( observableParameter.getSimpleName().toString() )
+    final String observableParameter =
+      AnnotationsUtil.getEnumAnnotationParameter( element, Constants.AREZ_COMPONENT_CLASSNAME, "observable" );
+    return switch ( observableParameter )
     {
       case "ENABLE" -> ArezComponentObservableResolution.ENABLED;
       case "DISABLE" -> ArezComponentObservableResolution.DISABLED;
