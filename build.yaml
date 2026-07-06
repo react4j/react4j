@@ -46,8 +46,8 @@ artifacts:
 
   javapoet: com.palantir.javapoet:javapoet:jar:0.14.0
 
-  proton_core: org.realityforge.proton:proton-core:jar:0.73-SNAPSHOT
-  proton_qa: org.realityforge.proton:proton-qa:jar:0.73-SNAPSHOT
+  proton_core: org.realityforge.proton:proton-core:jar:0.74
+  proton_qa: org.realityforge.proton:proton-qa:jar:0.74
 
   gir: org.realityforge.gir:gir-core:jar:0.12
 
