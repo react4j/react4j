@@ -17,7 +17,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
@@ -49,13 +48,6 @@ import org.realityforge.proton.StopWatch;
 @SuppressWarnings( "Duplicates" )
 @SupportedAnnotationTypes( Constants.VIEW_CLASSNAME )
 @SupportedSourceVersion( SourceVersion.RELEASE_17 )
-@SupportedOptions( { "react4j.defer.unresolved",
-                     "react4j.defer.errors",
-                     "react4j.debug",
-                     "react4j.format_generated_source",
-                     "react4j.profile",
-                     "react4j.verbose_out_of_round.errors",
-                     "react4j.warnings_as_errors" } )
 public final class React4jProcessor
   extends AbstractStandardProcessor
 {
