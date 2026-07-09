@@ -4,6 +4,7 @@
 
 * Update the `org.realityforge.proton` artifacts to version `0.75`.
 * Rely on Proton to declare common annotation processor options.
+* Update the `org.realityforge.sting` artifacts to version `0.40`.
 * Update the `org.realityforge.arez` artifacts to version `0.250`.
 
 ### [v0.226](https://github.com/react4j/react4j/tree/v0.226) (2026-06-16) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.225...v0.226)
