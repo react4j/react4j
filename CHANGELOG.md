@@ -4,6 +4,7 @@
 
 * Update the `org.realityforge.proton` artifacts to version `0.75`.
 * Rely on Proton to declare common annotation processor options.
+* Update the `org.realityforge.arez` artifacts to version `0.250`.
 
 ### [v0.226](https://github.com/react4j/react4j/tree/v0.226) (2026-06-16) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.225...v0.226)
 
@@ -12,7 +13,7 @@ Changes in this release:
 * Update the `org.realityforge.akasha` artifacts to version `0.33`.
 * Update the `org.realityforge.sting` artifacts to version `0.37`.
 * Update the `org.realityforge.braincheck` artifacts to version `1.33.0`.
-* Update the `org.realityforge.arez` artifacts to version `0.250`.
+* Update the `org.realityforge.arez` artifacts to version `0.249`.
 * Make `ReactTestUtil` usable in JavaScript tests by replacing JVM reflection with package-local React config mutators.
 
 ### [v0.225](https://github.com/react4j/react4j/tree/v0.225) (2026-06-14) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.224...v0.225)
