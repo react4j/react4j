@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.228](https://github.com/react4j/react4j/tree/v0.228) (2026-07-13) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.227...v0.228)
+
+Changes in this release:
 
 * Correct the nullability annotation on generated native view fields that can contain a disposed-input sentinel.
 * Update the `org.realityforge.arez` artifacts to version `0.251`.
