@@ -75,7 +75,7 @@ abstract class React4j_ImmutablePropTypeArezComponentLikeAndKeyed extends Immuta
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
+    @Nullable
     private final React4j_ImmutablePropTypeArezComponentLikeAndKeyed view;
 
     @JsConstructor

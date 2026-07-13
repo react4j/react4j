@@ -1271,10 +1271,14 @@ final class ViewGenerator
         GeneratorUtil.getTypeArgumentsAsNames( descriptor.getDeclaredType() ).toArray( new TypeName[ 0 ] );
       viewFieldType = ParameterizedTypeName.get( descriptor.getEnhancedClassName(), typeNames );
     }
+    final var disposableInputs =
+      descriptor.getImmutableInputs().stream().filter( InputDescriptor::isDisposable ).toList();
 
     builder.addField( FieldSpec
                         .builder( viewFieldType, VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL )
-                        .addAnnotation( GeneratorUtil.NONNULL_CLASSNAME )
+                        .addAnnotation( disposableInputs.isEmpty() ?
+                                        GeneratorUtil.NONNULL_CLASSNAME :
+                                        GeneratorUtil.NULLABLE_CLASSNAME )
                         .build() );
 
     if ( lite )
@@ -1335,8 +1339,6 @@ final class ViewGenerator
       final var prefix = new StringBuilder();
       final var params = new ArrayList<>();
       params.add( VIEW_FIELD );
-      final var disposableInputs =
-        descriptor.getImmutableInputs().stream().filter( InputDescriptor::isDisposable ).toList();
       for ( final var input : disposableInputs )
       {
         if ( !prefix.isEmpty() )

@@ -179,7 +179,7 @@ abstract class React4j_NonObservableComponentDependencyView
 
   private static final class LiteNativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
+    @Nullable
     private final React4j_NonObservableComponentDependencyView view;
 
     @JsConstructor
@@ -228,7 +228,7 @@ abstract class React4j_NonObservableComponentDependencyView
           OnComponentDidUpdate,
           OnShouldComponentUpdate,
           OnComponentWillUnmount {
-    @Nonnull
+    @Nullable
     private final React4j_NonObservableComponentDependencyView view;
 
     @JsConstructor

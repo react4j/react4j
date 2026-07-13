@@ -1,0 +1,112 @@
+meta:
+  project: generated-view-field-nullability
+  status: accepted
+  approved_on: 2026-07-13
+  last_updated: 2026-07-13
+  required_full_gates:
+    - bundle exec buildr react4j:processor:test
+  statuses:
+    - pending
+    - in_progress
+    - completed
+    - cancelled
+
+current_focus: complete
+
+tasks:
+  - id: T01
+    title: Make generated native view-field nullability conditional
+    status: completed
+    priority: high
+    depends_on: []
+    acceptance_criteria:
+      - Fields that can receive the disposed-input null sentinel are annotated Nullable.
+      - Fields that cannot receive null remain annotated Nonnull.
+      - One immutable-disposable input list drives both annotation and assignment generation.
+    files_touched:
+      - processor/src/main/java/react4j/processor/ViewGenerator.java
+    evidence:
+      - command: bundle exec buildr react4j:processor:compile
+        result: pass; 21 source files compiled with Java 17 and -Werror
+
+  - id: T02
+    title: Update expected generated sources and changelog
+    status: completed
+    priority: high
+    depends_on:
+      - T01
+    acceptance_criteria:
+      - Exactly 13 affected fields in each fixture suite change to Nullable (26 fields across 22 files).
+      - Fixture inputs remain unchanged.
+      - CHANGELOG.md records the correction under Unreleased.
+    files_touched:
+      - processor/src/test/fixtures/expected/com/example/arez/React4j_MaybeTrackingHasComponentDependencyFieldView.java
+      - processor/src/test/fixtures/expected/com/example/arez/React4j_NonObservableComponentDependencyView.java
+      - processor/src/test/fixtures/expected/com/example/inject/React4j_ConstructorInputAndInjectArezComponentTypeComponent.java
+      - processor/src/test/fixtures/expected/com/example/prop/React4j_ImmutablePropTypeArezComponent.java
+      - processor/src/test/fixtures/expected/com/example/prop/React4j_ImmutablePropTypeArezComponentAndKeyed.java
+      - processor/src/test/fixtures/expected/com/example/prop/React4j_ImmutablePropTypeArezComponentLikeAndKeyed.java
+      - processor/src/test/fixtures/expected/com/example/prop/React4j_ImmutablePropTypeArezComponentLikeClass.java
+      - processor/src/test/fixtures/expected/com/example/prop/React4j_ImmutablePropTypeArezComponentLikeInterface.java
+      - processor/src/test/fixtures/expected/com/example/prop/React4j_ImmutablePropTypeArezComponentWithExplicitRequireId.java
+      - processor/src/test/fixtures/expected/com/example/prop/React4j_ImmutablePropTypeMultiple.java
+      - processor/src/test/fixtures/expected/com/example/prop/React4j_ImmutablePropTypes.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/arez/React4j_MaybeTrackingHasComponentDependencyFieldView.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/arez/React4j_NonObservableComponentDependencyView.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/inject/React4j_ConstructorInputAndInjectArezComponentTypeComponent.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/prop/React4j_ImmutablePropTypeArezComponent.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/prop/React4j_ImmutablePropTypeArezComponentAndKeyed.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/prop/React4j_ImmutablePropTypeArezComponentLikeAndKeyed.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/prop/React4j_ImmutablePropTypeArezComponentLikeClass.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/prop/React4j_ImmutablePropTypeArezComponentLikeInterface.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/prop/React4j_ImmutablePropTypeArezComponentWithExplicitRequireId.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/prop/React4j_ImmutablePropTypeMultiple.java
+      - processor/src/test/fixtures/expectedFormatted/com/example/prop/React4j_ImmutablePropTypes.java
+      - CHANGELOG.md
+    evidence:
+      - command: JDK_JAVA_OPTIONS='-Dreact4j.output_fixture_data=true' bundle exec buildr react4j:processor:test
+        result: pass; 468 processor tests regenerated and verified both fixture suites
+      - command: fixture diff count
+        result: pass; 13 Nullable changes in 11 files per suite and no input fixture changes
+
+  - id: T03
+    title: Run validation and inspect final scope
+    status: completed
+    priority: high
+    depends_on:
+      - T02
+    acceptance_criteria:
+      - The processor test task passes.
+      - Nullability searches confirm affected and unaffected output contracts.
+      - The final diff is clean and contains no unrelated changes.
+    files_touched: []
+    evidence:
+      - command: bundle exec buildr react4j:processor:test
+        result: pass; 468 processor tests
+      - command: generated fixture nullability invariant script
+        result: pass; 13 Nullable sentinel fields and 2 Nonnull mutable-only negative fields verified per suite
+      - command: git diff --check
+        result: pass
+
+history:
+  - timestamp: 2026-07-13
+    task: plan
+    note: Plan accepted by explicit user instruction; no implementation started.
+  - timestamp: 2026-07-13
+    task: plan-review
+    note: Read-only review round 1 found no actionable issues; plan is implementation-ready.
+  - timestamp: 2026-07-13
+    task: T01
+    note: Generator condition implemented and targeted processor compilation passed.
+  - timestamp: 2026-07-13
+    task: T02
+    note: Fixture regeneration exposed the parallel expectedFormatted suite; plan scope updated to 26 fields across 22 files.
+  - timestamp: 2026-07-13
+    task: T02
+    note: Both generated fixture suites and the Unreleased changelog entry were updated; regeneration test passed.
+  - timestamp: 2026-07-13
+    task: T03
+    note: Full processor gate, fixture invariants, YAML validation, and diff checks passed.
+  - timestamp: 2026-07-13
+    task: implementation-review
+    note: Full read-only alignment review round 1 found no actionable issues.

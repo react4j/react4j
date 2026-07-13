@@ -172,7 +172,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
 
   private static final class LiteNativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
+    @Nullable
     private final React4j_MaybeTrackingHasComponentDependencyFieldView view;
 
     @JsConstructor
@@ -222,7 +222,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
           OnComponentDidUpdate,
           OnShouldComponentUpdate,
           OnComponentWillUnmount {
-    @Nonnull
+    @Nullable
     private final React4j_MaybeTrackingHasComponentDependencyFieldView view;
 
     @JsConstructor

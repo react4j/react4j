@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Correct the nullability annotation on generated native view fields that can contain a disposed-input sentinel.
+
 ### [v0.227](https://github.com/react4j/react4j/tree/v0.227) (2026-07-09) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.226...v0.227)
 
 Changes in this release:
