@@ -18,6 +18,7 @@ When you learn something non-obvious, add it here if it would make future change
 - Generated view builder visibility is now controlled solely by `@View(exportBuilder = true|false)`: `false` keeps the top-level builder class, `newBuilder()`, static entry methods, and step interfaces package access, while `true` makes that builder API public; public `@View` classes themselves now emit suppressible `React4j:PublicView` warnings.
 - Generated native view `displayName` values trim a trailing `View` from the effective `@View.name`, but only for that React debug name; builder keys, generated class names, and other descriptor-name uses still keep the full view name.
 - Processor fixture expectations for generated builders are split between `React4jProcessorTest.deriveExpectedOutputs()` for most cases and a few dedicated nested/inheritance tests with hardcoded builder filenames, so builder naming changes usually require updates in both places.
+- Zemeckis 0.15 uses JSpecify type-use annotations, so React4j's GWT path needs `org.jspecify:jspecify:1.0.0` in `CORE_DEPS` and GWT 2.13.1. The released `realityforge-buildr` 1.5.24 only supports GWT 2.10; `Gemfile` pins the last upstream revision that adds GWT 2.13.1 support before IntelliJ `.ipr` generation was removed.
 
 ## Project Structure & Module Organization
 

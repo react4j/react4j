@@ -9,18 +9,19 @@ artifacts:
   jetbrains_annotations: org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.7.0
 
   # GWT deps
-  gwt_user: org.gwtproject:gwt-user:jar:2.11.0
-  gwt_dev: org.gwtproject:gwt-dev:jar:2.11.0
+  gwt_user: org.gwtproject:gwt-user:jar:2.13.1
+  gwt_dev: org.gwtproject:gwt-dev:jar:2.13.1
 
   jsinterop_annotations: com.google.jsinterop:jsinterop-annotations:jar:2.0.0
 
   jsinterop_base: com.google.jsinterop:base:jar:1.0.0
+  jspecify: org.jspecify:jspecify:jar:1.0.0
 
-  akasha: org.realityforge.akasha:akasha-gwt:jar:0.33
+  akasha: org.realityforge.akasha:akasha-gwt:jar:0.34
 
-  arez_core: org.realityforge.arez:arez-core:jar:0.251
-  arez_processor: org.realityforge.arez:arez-processor:jar:0.251
-  arez_testng: org.realityforge.arez:arez-extras-testng:jar:0.251
+  arez_core: org.realityforge.arez:arez-core:jar:0.253
+  arez_processor: org.realityforge.arez:arez-processor:jar:0.253
+  arez_testng: org.realityforge.arez:arez-extras-testng:jar:0.253
 
   # Mockito deps
   mockito: org.mockito:mockito-core:jar:4.5.1
@@ -30,13 +31,13 @@ artifacts:
   sting_core: org.realityforge.sting:sting-core:jar:0.40
   sting_processor: org.realityforge.sting:sting-processor:jar:0.40
 
-  braincheck_core: org.realityforge.braincheck:braincheck-core:jar:1.33.0
+  braincheck_core: org.realityforge.braincheck:braincheck-core:jar:1.35.0
 
   grim_annotations: org.realityforge.grim:grim-annotations:jar:0.09
   grim_asserts: org.realityforge.grim:grim-asserts:jar:0.09
   grim_processor: org.realityforge.grim:grim-processor:jar:0.09
 
-  zemeckis: org.realityforge.zemeckis:zemeckis-core:jar:0.14
+  zemeckis: org.realityforge.zemeckis:zemeckis-core:jar:0.15
 
   javaemul_internal_annotations: org.realityforge.javaemul.internal.annotations:javaemul.internal.annotations:jar:0.01
 

@@ -2,6 +2,14 @@
 
 ### Unreleased
 
+* Update the `org.realityforge.arez` artifacts to version `0.253`.
+* Update the `org.realityforge.akasha` artifact to version `0.34`.
+* Update the `org.realityforge.zemeckis` artifact to version `0.15`.
+* Update the `org.realityforge.braincheck` artifact to version `1.35.0`.
+* Update GWT to version `2.13.1`.
+* Update Buildr to a development revision with GWT 2.13.1 support.
+* Register the React4j J2CL configuration defines as system properties.
+
 ### [v0.228](https://github.com/react4j/react4j/tree/v0.228) (2026-07-13) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.227...v0.228)
 
 Changes in this release:
