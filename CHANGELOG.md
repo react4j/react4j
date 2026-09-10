@@ -2,9 +2,9 @@
 
 ### Unreleased
 
-* Update the `org.realityforge.arez` artifacts to version `0.253`.
-* Update the `org.realityforge.akasha` artifact to version `0.34`.
-* Update the `org.realityforge.zemeckis` artifact to version `0.15`.
+* Update the `org.realityforge.arez` artifacts to version `0.256`.
+* Update the `org.realityforge.akasha` artifact to version `0.35`.
+* Update the `org.realityforge.zemeckis` artifact to version `0.18`.
 * Update the `org.realityforge.braincheck` artifact to version `1.35.0`.
 * Update GWT to version `2.13.1`.
 * Update Buildr to a development revision with GWT 2.13.1 support.
