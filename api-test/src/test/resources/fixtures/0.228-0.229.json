@@ -1,0 +1,677 @@
+[
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.JsError",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.JsError",
+      "classSimpleName": "JsError",
+      "elementKind": "class",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<akasha.clipboard.ClipboardEvent>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.ClipboardEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.ClipboardEvent",
+      "classSimpleName": "ClipboardEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<akasha.clipboard.ClipboardEvent>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<Event>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.CompositionEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.CompositionEvent",
+      "classSimpleName": "CompositionEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<Event>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.dom.events.DataTransfer",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.DataTransfer",
+      "classSimpleName": "DataTransfer",
+      "elementKind": "class",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.dom.events.Document",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.Document",
+      "classSimpleName": "Document",
+      "elementKind": "class",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<akasha.DragEvent>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.DragEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.DragEvent",
+      "classSimpleName": "DragEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<akasha.DragEvent>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.dom.events.Element",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.Element",
+      "classSimpleName": "Element",
+      "elementKind": "class",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.dom.events.Event",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.Event",
+      "classSimpleName": "Event",
+      "elementKind": "class",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.dom.events.EventTarget",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.EventTarget",
+      "classSimpleName": "EventTarget",
+      "elementKind": "class",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<akasha.FocusEvent>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.FocusEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.FocusEvent",
+      "classSimpleName": "FocusEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<akasha.FocusEvent>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<Event>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.FormEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.FormEvent",
+      "classSimpleName": "FormEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<Event>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<akasha.KeyboardEvent>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.KeyboardEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.KeyboardEvent",
+      "classSimpleName": "KeyboardEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<akasha.KeyboardEvent>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<akasha.MouseEvent>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.MouseEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.MouseEvent",
+      "classSimpleName": "MouseEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<akasha.MouseEvent>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.generics.formalTypeParameterChanged",
+    "description": "The formal type parameter changed from 'E extends Event' to 'E extends react4j.dom.events.Event'.",
+    "newElement": "class react4j.dom.events.SyntheticEvent<E extends react4j.dom.events.Event>",
+    "oldElement": "class react4j.dom.events.SyntheticEvent<E extends Event>",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.SyntheticEvent",
+      "classSimpleName": "SyntheticEvent",
+      "elementKind": "class",
+      "newTypeParameter": "E extends react4j.dom.events.Event",
+      "oldTypeParameter": "E extends Event",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<akasha.TouchEvent>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.TouchEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.TouchEvent",
+      "classSimpleName": "TouchEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<akasha.TouchEvent>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.added",
+    "description": "Class was added.",
+    "newElement": "class react4j.dom.events.TouchList",
+    "classification": {
+      "SOURCE": "NON_BREAKING",
+      "BINARY": "NON_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.TouchList",
+      "classSimpleName": "TouchList",
+      "elementKind": "class",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<akasha.UIEvent>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.UIEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.UIEvent",
+      "classSimpleName": "UIEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<akasha.UIEvent>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.class.superTypeTypeParametersChanged",
+    "description": "Super type's type parameters changed from 'react4j.dom.events.SyntheticEvent<akasha.WheelEvent>' to 'react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>'.",
+    "element": "class react4j.dom.events.WheelEvent",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "POTENTIALLY_BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.WheelEvent",
+      "classSimpleName": "WheelEvent",
+      "elementKind": "class",
+      "newSuperType": "react4j.dom.events.SyntheticEvent<react4j.dom.events.Event>",
+      "oldSuperType": "react4j.dom.events.SyntheticEvent<akasha.WheelEvent>",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.field.typeChanged",
+    "description": "The type of the field changed from 'Element' to 'java.lang.Object'.",
+    "element": "field react4j.dom.ReactPortal.containerInfo",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.ReactPortal",
+      "classSimpleName": "ReactPortal",
+      "elementKind": "field",
+      "fieldName": "containerInfo",
+      "newType": "java.lang.Object",
+      "oldType": "Element",
+      "package": "react4j.dom"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'E extends Event' to  'E extends react4j.dom.events.Event'.",
+    "newElement": "method E react4j.dom.events.SyntheticEvent<E extends react4j.dom.events.Event>::getNativeEvent()",
+    "oldElement": "method E react4j.dom.events.SyntheticEvent<E extends Event>::getNativeEvent()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.SyntheticEvent",
+      "classSimpleName": "SyntheticEvent",
+      "elementKind": "method",
+      "methodName": "getNativeEvent",
+      "newType": "E extends react4j.dom.events.Event",
+      "oldType": "E extends Event",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'JsDate' to  'double'.",
+    "newElement": "method double react4j.dom.events.SyntheticEvent<E extends react4j.dom.events.Event>::getTimeStamp()",
+    "oldElement": "method JsDate react4j.dom.events.SyntheticEvent<E extends Event>::getTimeStamp()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.SyntheticEvent",
+      "classSimpleName": "SyntheticEvent",
+      "elementKind": "method",
+      "methodName": "getTimeStamp",
+      "newType": "double",
+      "oldType": "JsDate",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'DataTransfer' to  'react4j.dom.events.DataTransfer'.",
+    "newElement": "method react4j.dom.events.DataTransfer react4j.dom.events.ClipboardEvent::getClipboardData()",
+    "oldElement": "method DataTransfer react4j.dom.events.ClipboardEvent::getClipboardData()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.ClipboardEvent",
+      "classSimpleName": "ClipboardEvent",
+      "elementKind": "method",
+      "methodName": "getClipboardData",
+      "newType": "react4j.dom.events.DataTransfer",
+      "oldType": "DataTransfer",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'DataTransfer' to  'react4j.dom.events.DataTransfer'.",
+    "newElement": "method react4j.dom.events.DataTransfer react4j.dom.events.DragEvent::getDataTransfer()",
+    "oldElement": "method DataTransfer react4j.dom.events.DragEvent::getDataTransfer()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.DragEvent",
+      "classSimpleName": "DragEvent",
+      "elementKind": "method",
+      "methodName": "getDataTransfer",
+      "newType": "react4j.dom.events.DataTransfer",
+      "oldType": "DataTransfer",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'Document' to  'react4j.dom.events.Document'.",
+    "newElement": "method react4j.dom.events.Document react4j.dom.events.AbstractView::getDocument()",
+    "oldElement": "method Document react4j.dom.events.AbstractView::getDocument()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.AbstractView",
+      "classSimpleName": "AbstractView",
+      "elementKind": "method",
+      "methodName": "getDocument",
+      "newType": "react4j.dom.events.Document",
+      "oldType": "Document",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'Element' to  'react4j.dom.events.Element'.",
+    "newElement": "method react4j.dom.events.Element react4j.dom.events.SyntheticEvent<E extends react4j.dom.events.Event>::getCurrentTarget()",
+    "oldElement": "method Element react4j.dom.events.SyntheticEvent<E extends Event>::getCurrentTarget()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.SyntheticEvent",
+      "classSimpleName": "SyntheticEvent",
+      "elementKind": "method",
+      "methodName": "getCurrentTarget",
+      "newType": "react4j.dom.events.Element",
+      "oldType": "Element",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'Element' to  'react4j.dom.events.Element'.",
+    "newElement": "method react4j.dom.events.Element react4j.dom.events.SyntheticEvent<E extends react4j.dom.events.Event>::getTarget()",
+    "oldElement": "method Element react4j.dom.events.SyntheticEvent<E extends Event>::getTarget()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.SyntheticEvent",
+      "classSimpleName": "SyntheticEvent",
+      "elementKind": "method",
+      "methodName": "getTarget",
+      "newType": "react4j.dom.events.Element",
+      "oldType": "Element",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'EventTarget' to  'react4j.dom.events.EventTarget'.",
+    "newElement": "method react4j.dom.events.EventTarget react4j.dom.events.FocusEvent::getRelatedTarget()",
+    "oldElement": "method EventTarget react4j.dom.events.FocusEvent::getRelatedTarget()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.FocusEvent",
+      "classSimpleName": "FocusEvent",
+      "elementKind": "method",
+      "methodName": "getRelatedTarget",
+      "newType": "react4j.dom.events.EventTarget",
+      "oldType": "EventTarget",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'EventTarget' to  'react4j.dom.events.EventTarget'.",
+    "newElement": "method react4j.dom.events.EventTarget react4j.dom.events.MouseEvent::getRelatedTarget()",
+    "oldElement": "method EventTarget react4j.dom.events.MouseEvent::getRelatedTarget()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.MouseEvent",
+      "classSimpleName": "MouseEvent",
+      "elementKind": "method",
+      "methodName": "getRelatedTarget",
+      "newType": "react4j.dom.events.EventTarget",
+      "oldType": "EventTarget",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'TouchList' to  'react4j.dom.events.TouchList'.",
+    "newElement": "method react4j.dom.events.TouchList react4j.dom.events.TouchEvent::getChangedTouches()",
+    "oldElement": "method TouchList react4j.dom.events.TouchEvent::getChangedTouches()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.TouchEvent",
+      "classSimpleName": "TouchEvent",
+      "elementKind": "method",
+      "methodName": "getChangedTouches",
+      "newType": "react4j.dom.events.TouchList",
+      "oldType": "TouchList",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'TouchList' to  'react4j.dom.events.TouchList'.",
+    "newElement": "method react4j.dom.events.TouchList react4j.dom.events.TouchEvent::getTargetTouches()",
+    "oldElement": "method TouchList react4j.dom.events.TouchEvent::getTargetTouches()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.TouchEvent",
+      "classSimpleName": "TouchEvent",
+      "elementKind": "method",
+      "methodName": "getTargetTouches",
+      "newType": "react4j.dom.events.TouchList",
+      "oldType": "TouchList",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.returnTypeChanged",
+    "description": "The return type changed from 'TouchList' to  'react4j.dom.events.TouchList'.",
+    "newElement": "method react4j.dom.events.TouchList react4j.dom.events.TouchEvent::getTouches()",
+    "oldElement": "method TouchList react4j.dom.events.TouchEvent::getTouches()",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.events.TouchEvent",
+      "classSimpleName": "TouchEvent",
+      "elementKind": "method",
+      "methodName": "getTouches",
+      "newType": "react4j.dom.events.TouchList",
+      "oldType": "TouchList",
+      "package": "react4j.dom.events"
+    }
+  },
+  {
+    "code": "java.method.removed",
+    "description": "Method was removed.",
+    "oldElement": "method react4j.ReactNode react4j.ReactNode::of(<any>)",
+    "classification": {
+      "SOURCE": "BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.ReactNode",
+      "classSimpleName": "ReactNode",
+      "elementKind": "method",
+      "methodName": "of",
+      "package": "react4j"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'Element' to 'java.lang.Object'.",
+    "newElement": "parameter boolean react4j.dom.ReactDOM::unmountComponentAtNode(===java.lang.Object===)",
+    "oldElement": "parameter boolean react4j.dom.ReactDOM::unmountComponentAtNode(===Element===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.ReactDOM",
+      "classSimpleName": "ReactDOM",
+      "elementKind": "parameter",
+      "methodName": "unmountComponentAtNode",
+      "newType": "java.lang.Object",
+      "oldType": "Element",
+      "package": "react4j.dom",
+      "parameterIndex": "0"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'Element' to 'java.lang.Object'.",
+    "newElement": "parameter java.lang.Object react4j.dom.ReactDOM::render(react4j.ReactNode, ===java.lang.Object===)",
+    "oldElement": "parameter java.lang.Object react4j.dom.ReactDOM::render(react4j.ReactNode, ===Element===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.ReactDOM",
+      "classSimpleName": "ReactDOM",
+      "elementKind": "parameter",
+      "methodName": "render",
+      "newType": "java.lang.Object",
+      "oldType": "Element",
+      "package": "react4j.dom",
+      "parameterIndex": "1"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'Element' to 'java.lang.Object'.",
+    "newElement": "parameter java.lang.Object react4j.dom.ReactDOM::render(react4j.ReactNode, ===java.lang.Object===, react4j.dom.ReactDOM.RenderCallbackFn)",
+    "oldElement": "parameter java.lang.Object react4j.dom.ReactDOM::render(react4j.ReactNode, ===Element===, react4j.dom.ReactDOM.RenderCallbackFn)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.ReactDOM",
+      "classSimpleName": "ReactDOM",
+      "elementKind": "parameter",
+      "methodName": "render",
+      "newType": "java.lang.Object",
+      "oldType": "Element",
+      "package": "react4j.dom",
+      "parameterIndex": "1"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'Element' to 'java.lang.Object'.",
+    "newElement": "parameter react4j.dom.ReactPortal react4j.dom.ReactDOM::createPortal(react4j.ReactNode, ===java.lang.Object===)",
+    "oldElement": "parameter react4j.dom.ReactPortal react4j.dom.ReactDOM::createPortal(react4j.ReactNode, ===Element===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.ReactDOM",
+      "classSimpleName": "ReactDOM",
+      "elementKind": "parameter",
+      "methodName": "createPortal",
+      "newType": "java.lang.Object",
+      "oldType": "Element",
+      "package": "react4j.dom",
+      "parameterIndex": "1"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'Element' to 'java.lang.Object'.",
+    "newElement": "parameter react4j.dom.ReactRoot react4j.dom.ReactDOM::createRoot(===java.lang.Object===)",
+    "oldElement": "parameter react4j.dom.ReactRoot react4j.dom.ReactDOM::createRoot(===Element===)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.dom.ReactDOM",
+      "classSimpleName": "ReactDOM",
+      "elementKind": "parameter",
+      "methodName": "createRoot",
+      "newType": "java.lang.Object",
+      "oldType": "Element",
+      "package": "react4j.dom",
+      "parameterIndex": "0"
+    }
+  },
+  {
+    "code": "java.method.parameterTypeChanged",
+    "description": "The type of the parameter changed from 'JsError' to 'react4j.JsError'.",
+    "newElement": "parameter void react4j.internal.OnComponentDidCatch::componentDidCatch(===react4j.JsError===, react4j.ReactErrorInfo)",
+    "oldElement": "parameter void react4j.internal.OnComponentDidCatch::componentDidCatch(===JsError===, react4j.ReactErrorInfo)",
+    "classification": {
+      "SOURCE": "POTENTIALLY_BREAKING",
+      "BINARY": "BREAKING"
+    },
+    "attachments": {
+      "classQualifiedName": "react4j.internal.OnComponentDidCatch",
+      "classSimpleName": "OnComponentDidCatch",
+      "elementKind": "parameter",
+      "methodName": "componentDidCatch",
+      "newType": "react4j.JsError",
+      "oldType": "JsError",
+      "package": "react4j.internal",
+      "parameterIndex": "0"
+    }
+  }
+]
