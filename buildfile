@@ -31,7 +31,7 @@ REACT_TEST_OPTIONS =
     'react4j.environment' => 'development'
   }
 
-CORE_DEPS=[:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jspecify, :jetbrains_annotations, :braincheck_core, :grim_annotations, :zemeckis, :arez_core, :akasha, :javaemul_internal_annotations]
+CORE_DEPS=[:javax_annotation, :jsinterop_annotations, :jsinterop_base, :jspecify, :jetbrains_annotations, :braincheck_core, :grim_annotations, :zemeckis, :arez_core, :javaemul_internal_annotations]
 
 desc 'React4j: An opinionated Java binding for React'
 define 'react4j' do

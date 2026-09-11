@@ -1,9 +1,5 @@
 package react4j.examples.arez;
 
-import akasha.HashChangeEvent;
-import akasha.HashChangeEventListener;
-import akasha.Location;
-import akasha.WindowGlobal;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
@@ -11,6 +7,11 @@ import arez.annotations.PostConstruct;
 import arez.annotations.PreDispose;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * This is a simple abstraction over browser location as a hash.
@@ -29,6 +30,49 @@ import javax.annotation.Nonnull;
 @ArezComponent
 public abstract class BrowserLocation
 {
+  @JsFunction
+  private interface HashChangeEventListener
+  {
+    void handleEvent( HashChangeEvent event );
+  }
+
+  @JsType( isNative = true, name = "HashChangeEvent", namespace = JsPackage.GLOBAL )
+  private static class HashChangeEvent
+  {
+    @JsMethod
+    native void preventDefault();
+  }
+
+  @JsType( isNative = true, name = "Location", namespace = JsPackage.GLOBAL )
+  private static class Location
+  {
+    @JsProperty( name = "hash" )
+    native String hash();
+
+    @JsProperty
+    native void setHash( String hash );
+
+    @JsProperty( name = "pathname" )
+    native String pathname();
+
+    @JsProperty( name = "search" )
+    native String search();
+  }
+
+  @JsType( isNative = true, name = "History", namespace = JsPackage.GLOBAL )
+  private static class History
+  {
+    @JsMethod
+    native void pushState( Object data, String unused, String url );
+  }
+
+  @JsType( isNative = true, name = "Document", namespace = JsPackage.GLOBAL )
+  private static class Document
+  {
+    @JsProperty( name = "title" )
+    native String title();
+  }
+
   @Nonnull
   private final HashChangeEventListener _listener = this::onHashChangeEvent;
 
@@ -69,14 +113,14 @@ public abstract class BrowserLocation
   @PostConstruct
   void postConstruct()
   {
-    WindowGlobal.addHashchangeListener( _listener, false );
+    addEventListener( "hashchange", _listener, false );
     _targetLocation = _browserLocation = _location = getHash();
   }
 
   @PreDispose
   void preDispose()
   {
-    WindowGlobal.removeHashchangeListener(  _listener, false );
+    removeEventListener( "hashchange", _listener, false );
   }
 
   /**
@@ -184,23 +228,38 @@ public abstract class BrowserLocation
   @Nonnull
   private String getHash()
   {
-    return WindowGlobal.location().hash.substring( 1 );
+    return location().hash().substring( 1 );
   }
 
   private void setHash( @Nonnull final String hash )
   {
-    final Location location = WindowGlobal.location();
+    final Location location = location();
     if ( 0 == hash.length() )
     {
       /*
        * This code is needed to remove the stray #.
        * See https://stackoverflow.com/questions/1397329/how-to-remove-the-hash-from-window-location-url-with-javascript-without-page-r/5298684#5298684
        */
-      WindowGlobal.history().pushState( "", WindowGlobal.document().title, location.pathname + location.search );
+      history().pushState( "", document().title(), location.pathname() + location.search() );
     }
     else
     {
-      location.hash = hash;
+      location.setHash( hash );
     }
   }
+
+  @JsMethod( name = "addEventListener", namespace = JsPackage.GLOBAL )
+  private static native void addEventListener( String type, HashChangeEventListener listener, boolean capture );
+
+  @JsMethod( name = "removeEventListener", namespace = JsPackage.GLOBAL )
+  private static native void removeEventListener( String type, HashChangeEventListener listener, boolean capture );
+
+  @JsProperty( name = "location", namespace = JsPackage.GLOBAL )
+  private static native Location location();
+
+  @JsProperty( name = "history", namespace = JsPackage.GLOBAL )
+  private static native History history();
+
+  @JsProperty( name = "document", namespace = JsPackage.GLOBAL )
+  private static native Document document();
 }

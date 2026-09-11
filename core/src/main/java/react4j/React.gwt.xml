@@ -1,5 +1,5 @@
 <module>
-  <inherits name='akasha.Akasha'/>
+  <inherits name='jsinterop.base.Base'/>
   <inherits name='arez.component.Component'/>
   <inherits name='zemeckis.Zemeckis'/>
 
