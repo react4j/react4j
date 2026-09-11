@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [`SPEC.md`](../SPEC.md)
-- Status: `reviewing`
-- Current frontier: `implementation review`
+- Status: `complete`
+- Current frontier: `closeout`
 - Planning reviewer: `/root/planning_reviewer` — `Findings: none` (`1/3` rounds)
 - Human approval: `pre-approved by explicit user instruction after completed grill-me session`
-- Implementation reviewer: `pending` (`0/5` rounds)
+- Implementation reviewer: `/root/implementation_reviewer` — `Findings: none` (`1/5` rounds). Residual risk: browser behavior was verified through production compile/link and generated-output inspection, not an interactive UI smoke test.
 
 ## Full-scope validation
 
