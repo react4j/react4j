@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import akasha.lang.JsArray;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
@@ -44,7 +43,7 @@ final class NonnullChildPropComponentBuilder {
         pure = true
     )
     public final ReactNode child(@Nonnull final ReactNode child) {
-      _element.input( React4j_NonnullChildPropComponent.Inputs.child, JsArray.of( Objects.requireNonNull( child ) ) );
+      _element.input( React4j_NonnullChildPropComponent.Inputs.child, ReactNode.of( Objects.requireNonNull( child ) ) );
       return build();
     }
 

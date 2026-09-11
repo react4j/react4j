@@ -1,6 +1,5 @@
 package com.example.optional_props;
 
-import akasha.lang.JsArray;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -158,7 +157,7 @@ final class RequiredChildrenWithManyOptionalBuilder {
     @Contract(pure = true)
     public final Step1 children(@Nullable final ReactNode... children) {
       _element.input(
-          React4j_RequiredChildrenWithManyOptional.Inputs.children, JsArray.of(children));
+          React4j_RequiredChildrenWithManyOptional.Inputs.children, ReactNode.of(children));
       return this;
     }
 

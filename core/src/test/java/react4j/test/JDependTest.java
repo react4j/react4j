@@ -31,8 +31,6 @@ public class JDependTest
     final JavaPackage braincheck = constraint.addPackage( "org.realityforge.braincheck" );
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
     final JavaPackage jsinteropBase = constraint.addPackage( "jsinterop.base" );
-    final JavaPackage akashaLang = constraint.addPackage( "akasha.lang" );
-    final JavaPackage akashaCore = constraint.addPackage( "akasha.core" );
     final JavaPackage arez = constraint.addPackage( "arez" );
     final JavaPackage arezSpy = constraint.addPackage( "arez.spy" );
     final JavaPackage zemeckis = constraint.addPackage( "zemeckis" );
@@ -40,12 +38,10 @@ public class JDependTest
     react4j.dependsUpon( jsinteropAnnotations );
     react4j.dependsUpon( jsinteropBase );
     react4j.dependsUpon( braincheck );
-    react4j.dependsUpon( akashaLang );
     react4j.dependsUpon( react4jInternal );
 
     react4jInternal.dependsUpon( jsinteropAnnotations );
     react4jInternal.dependsUpon( jsinteropBase );
-    react4jInternal.dependsUpon( akashaCore );
     react4jInternal.dependsUpon( react4j );
     react4jInternal.dependsUpon( arez );
     react4jInternal.dependsUpon( arezSpy );

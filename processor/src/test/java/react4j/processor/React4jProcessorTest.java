@@ -712,7 +712,7 @@ public final class React4jProcessorTest
         new Object[]{ "com.example.on_error.BadParam1OnErrorComponent",
                       "@OnError target has parameter of invalid type named other" },
         new Object[]{ "com.example.on_error.BadParam2OnErrorComponent",
-                      "@OnError target has multiple parameters of type akasha.core.JsError" },
+                      "@OnError target has multiple parameters of type react4j.JsError" },
         new Object[]{ "com.example.on_error.BadParam3OnErrorComponent",
                       "@OnError target has parameter of invalid type named value" },
         new Object[]{ "com.example.on_error.BadParam4OnErrorComponent",

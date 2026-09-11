@@ -1,9 +1,9 @@
 package react4j.annotations;
 
-import akasha.core.JsError;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
+import react4j.JsError;
 import react4j.ReactErrorInfo;
 
 /**

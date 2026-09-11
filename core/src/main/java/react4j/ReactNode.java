@@ -1,6 +1,5 @@
 package react4j;
 
-import akasha.lang.JsArray;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -52,12 +51,6 @@ public interface ReactNode
   static ReactNode of( final String string )
   {
     return Js.uncheckedCast( string );
-  }
-
-  @JsOverlay
-  static ReactNode of( final JsArray<ReactNode> elements )
-  {
-    return Js.uncheckedCast( elements );
   }
 
   @JsOverlay

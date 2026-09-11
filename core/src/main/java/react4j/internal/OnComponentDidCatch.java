@@ -1,9 +1,9 @@
 package react4j.internal;
 
-import akasha.core.JsError;
 import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import react4j.JsError;
 import react4j.ReactErrorInfo;
 
 /**

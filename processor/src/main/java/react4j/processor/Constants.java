@@ -73,7 +73,7 @@ final class Constants
   @Nonnull
   static final String STING_CONTRIBUTE_TO_CLASSNAME = "sting.ContributeTo";
   @Nonnull
-  static final String JS_ERROR_CLASSNAME = "akasha.core.JsError";
+  static final String JS_ERROR_CLASSNAME = "react4j.JsError";
   @Nonnull
   static final String WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT = "React4j:MutableInputAccessedInPostConstruct";
   @Nonnull

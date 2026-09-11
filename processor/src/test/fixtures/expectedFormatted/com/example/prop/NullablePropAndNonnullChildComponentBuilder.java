@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import akasha.lang.JsArray;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -70,7 +69,8 @@ final class NullablePropAndNonnullChildComponentBuilder {
     @Nonnull
     @Contract(pure = true)
     public final Step2 child(@Nullable final ReactNode child) {
-      _element.input(React4j_NullablePropAndNonnullChildComponent.Inputs.child, JsArray.of(child));
+      _element.input(
+          React4j_NullablePropAndNonnullChildComponent.Inputs.child, ReactNode.of(child));
       return this;
     }
 

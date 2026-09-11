@@ -1,6 +1,5 @@
 package com.example.on_error;
 
-import akasha.core.JsError;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
@@ -12,6 +11,7 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import react4j.JsError;
 import react4j.React;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;

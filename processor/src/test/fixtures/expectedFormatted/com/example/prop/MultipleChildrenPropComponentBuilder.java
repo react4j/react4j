@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import akasha.lang.JsArray;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,7 +66,7 @@ final class MultipleChildrenPropComponentBuilder {
     @Nonnull
     @Contract(pure = true)
     public final ReactNode children(@Nullable final ReactNode... children) {
-      _element.input(React4j_MultipleChildrenPropComponent.Inputs.children, JsArray.of(children));
+      _element.input(React4j_MultipleChildrenPropComponent.Inputs.children, ReactNode.of(children));
       return build();
     }
 

@@ -1,6 +1,5 @@
 package com.example.prop;
 
-import akasha.lang.JsArray;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
@@ -58,7 +57,7 @@ final class SingleChildPropComponentBuilder {
         pure = true
     )
     public final ReactNode child(@Nullable final ReactNode child) {
-      _element.input( React4j_SingleChildPropComponent.Inputs.child, JsArray.of( child ) );
+      _element.input( React4j_SingleChildPropComponent.Inputs.child, ReactNode.of( child ) );
       return build();
     }
 

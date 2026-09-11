@@ -34,9 +34,6 @@ final class BuilderGenerator
 {
   @Nonnull
   private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get( "arez", "Disposable" );
-  @Nonnull
-  private static final ClassName JS_ARRAY_CLASSNAME = ClassName.get( "akasha.lang", "JsArray" );
-  @Nonnull
   private static final ClassName IDENTIFIABLE_CLASSNAME = ClassName.get( "arez.component", "Identifiable" );
   @Nonnull
   private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get( "react4j", "ReactElement" );
@@ -433,7 +430,7 @@ final class BuilderGenerator
       method.addStatement( "_element.input( $T.Inputs.$N, $T.of( $N ) )",
                            descriptor.getEnhancedClassName(),
                            input.getConstantName(),
-                           JS_ARRAY_CLASSNAME,
+                           REACT_NODE_CLASSNAME,
                            stepMethod.getName() );
     }
     else if ( stepMethod.isChildrenStreamIntrinsic() )
@@ -451,7 +448,7 @@ final class BuilderGenerator
         method.addStatement( "_element.input( $T.Inputs.$N, $T.of( $T.requireNonNull( $N ) ) )",
                              descriptor.getEnhancedClassName(),
                              input.getConstantName(),
-                             JS_ARRAY_CLASSNAME,
+                             REACT_NODE_CLASSNAME,
                              Objects.class,
                              stepMethod.getName() );
       }
@@ -460,7 +457,7 @@ final class BuilderGenerator
         method.addStatement( "_element.input( $T.Inputs.$N, $T.of( $N ) )",
                              descriptor.getEnhancedClassName(),
                              input.getConstantName(),
-                             JS_ARRAY_CLASSNAME,
+                             REACT_NODE_CLASSNAME,
                              stepMethod.getName() );
       }
     }

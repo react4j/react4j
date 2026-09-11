@@ -15,8 +15,8 @@ import javax.lang.model.type.TypeMirror;
  * <ul>
  * <li>name = build: no parameters returns ReactNode and terminates build. This has custom code in implementation.</li>
  * <li>name = child, key = child: This is for single child views and the implementation caches child and returns build().</li>
- * <li>name = children: This is for multi child views and the implementation creates JsArray if null and adds all supplied non-null children to array before invoking build().</li>
- * <li>name = child, key = children: This is for multi child views built one child at a time. The implementation returns if null passed to it, initializes JsArray if null, adds child to array.</li>
+ * <li>name = children: This is for multi child views and the implementation passes the supplied Java array to the input before invoking build().</li>
+ * <li>name = child, key = children: This is for multi child views built one child at a time. The implementation passes the child as a single-element Java array.</li>
  * </ul>
  */
 final class StepMethod

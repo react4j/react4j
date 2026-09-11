@@ -1,6 +1,5 @@
 package com.example.input;
 
-import akasha.lang.JsArray;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
@@ -48,7 +47,7 @@ final class ChildInputBuilder {
     @Nonnull
     @Contract(pure = true)
     public final ReactNode child(@Nullable final ReactNode child) {
-      _element.input(React4j_ChildInputView.Inputs.child, JsArray.of(child));
+      _element.input(React4j_ChildInputView.Inputs.child, ReactNode.of(child));
       return build();
     }
 

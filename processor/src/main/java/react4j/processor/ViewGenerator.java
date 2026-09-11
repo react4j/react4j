@@ -82,7 +82,7 @@ final class ViewGenerator
   private static final ClassName AREZ_COMPONENT_CLASSNAME =
     ClassName.get( "arez.annotations", "ArezComponent" );
   @Nonnull
-  private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "akasha.core", "JsError" );
+  private static final ClassName JS_ERROR_CLASSNAME = ClassName.get( "react4j", "JsError" );
   @Nonnull
   private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get( "jsinterop.annotations", "JsConstructor" );
   @Nonnull
