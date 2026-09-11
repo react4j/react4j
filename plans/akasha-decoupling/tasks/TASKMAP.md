@@ -2,7 +2,7 @@
 
 - Spec: [`SPEC.md`](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T06`
+- Current frontier: `T07`
 - Planning reviewer: `/root/planning_reviewer` — `Findings: none` (`1/3` rounds)
 - Human approval: `pre-approved by explicit user instruction after completed grill-me session`
 - Implementation reviewer: `pending` (`0/5` rounds)
@@ -21,8 +21,8 @@
 | `T03` | [`Remove the repository dependency`](T03-repository-dependency-removal.md) | `done` | `T02` |
 | `T04` | [`Record the breaking API transition`](T04-api-transition.md) | `done` | `T03` |
 | `T05` | [`Migrate TodoMVC upgrade branches`](T05-todomvc-branches.md) | `done` | `T04` |
-| `T06` | [`Migrate broad-browser upgrade branches`](T06-browser-app-branches.md) | `in_progress` | `T04` |
-| `T07` | [`Regenerate release evidence and run the full gate`](T07-release-evidence.md) | `pending` | `T05`, `T06` |
+| `T06` | [`Migrate broad-browser upgrade branches`](T06-browser-app-branches.md) | `done` | `T04` |
+| `T07` | [`Regenerate release evidence and run the full gate`](T07-release-evidence.md) | `in_progress` | `T05`, `T06` |
 
 ## Sequencing notes
 
