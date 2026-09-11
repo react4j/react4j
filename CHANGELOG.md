@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.229](https://github.com/react4j/react4j/tree/v0.229) (2026-09-11) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.228...v0.229)
+
+Changes in this release:
 
 * Breaking: remove the Akasha dependency and replace Akasha types in public APIs with React4j-owned opaque browser
   facades or `Object`; consumers that need browser-specific APIs should convert values with `Js.uncheckedCast`.
