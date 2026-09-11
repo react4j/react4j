@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [`SPEC.md`](../SPEC.md)
-- Status: `implementing`
-- Current frontier: `T07`
+- Status: `reviewing`
+- Current frontier: `implementation review`
 - Planning reviewer: `/root/planning_reviewer` — `Findings: none` (`1/3` rounds)
 - Human approval: `pre-approved by explicit user instruction after completed grill-me session`
 - Implementation reviewer: `pending` (`0/5` rounds)
@@ -10,7 +10,7 @@
 ## Full-scope validation
 
 - Gate: full React4j test/package/API-diff/downstream-statistics workflow, generated-POM and active-reference inspection, all ten remote branch-tip verification, and clean diff checks.
-- Evidence: `pending`
+- Evidence: The J2CL-enabled statistics workflow built all ten remote upgrade branches and regenerated the `0.229` fixture. The full J2CL-enabled package gate passed core, processor, DOM, GWT, API-diff, packaging, and downstream validation. Generated core and DOM POMs are valid and Akasha-free; active source/generated scans contain no Akasha reference. All ten remote tips are exactly one commit above unchanged permanent refs, no associated PR exists, all downstream worktrees are clean, and `git diff --check` passes.
 
 ## Tasks
 
@@ -22,7 +22,7 @@
 | `T04` | [`Record the breaking API transition`](T04-api-transition.md) | `done` | `T03` |
 | `T05` | [`Migrate TodoMVC upgrade branches`](T05-todomvc-branches.md) | `done` | `T04` |
 | `T06` | [`Migrate broad-browser upgrade branches`](T06-browser-app-branches.md) | `done` | `T04` |
-| `T07` | [`Regenerate release evidence and run the full gate`](T07-release-evidence.md) | `in_progress` | `T05`, `T06` |
+| `T07` | [`Regenerate release evidence and run the full gate`](T07-release-evidence.md) | `done` | `T05`, `T06` |
 
 ## Sequencing notes
 
