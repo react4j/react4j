@@ -1,6 +1,5 @@
 package react4j.dom.events;
 
-import akasha.Document;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;

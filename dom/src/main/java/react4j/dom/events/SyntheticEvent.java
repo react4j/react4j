@@ -1,8 +1,5 @@
 package react4j.dom.events;
 
-import akasha.Element;
-import akasha.Event;
-import akasha.core.JsDate;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -19,7 +16,7 @@ public class SyntheticEvent<E extends Event>
   private boolean isTrusted;
   private E nativeEvent;
   private Element target;
-  private JsDate timeStamp;
+  private double timeStamp;
   private String type;
 
   public native void preventDefault();
@@ -75,7 +72,7 @@ public class SyntheticEvent<E extends Event>
   }
 
   @JsOverlay
-  public final JsDate getTimeStamp()
+  public final double getTimeStamp()
   {
     return timeStamp;
   }

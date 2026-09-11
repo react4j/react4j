@@ -1,6 +1,5 @@
 package react4j.dom;
 
-import akasha.Element;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsPackage;
@@ -15,7 +14,7 @@ public class ReactPortal
   @Nullable
   public String key;
   @Nonnull
-  public Element containerInfo;
+  public Object containerInfo;
   @Nonnull
   public ReactNode children;
 

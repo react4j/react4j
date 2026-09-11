@@ -1,6 +1,5 @@
 package react4j.dom;
 
-import akasha.Element;
 import arez.Arez;
 import arez.ArezContext;
 import javax.annotation.Nonnull;
@@ -55,13 +54,13 @@ public class ReactDOM
 
   @JsOverlay
   @Nonnull
-  public static ReactRoot createRoot( @Nonnull final Element container )
+  public static ReactRoot createRoot( @Nonnull final Object container )
   {
     return unstable_createRoot( container );
   }
 
   @Nonnull
-  private static native ReactRoot unstable_createRoot( @Nonnull Element container );
+  private static native ReactRoot unstable_createRoot( @Nonnull Object container );
 
   /**
    * Portals provide a first-class way to render children into a DOM node that exists outside the DOM hierarchy
@@ -78,7 +77,7 @@ public class ReactDOM
    * @param container the DOM element to render into.
    * @return the new portal.
    */
-  public static native ReactPortal createPortal( @Nonnull ReactNode children, @Nonnull Element container );
+  public static native ReactPortal createPortal( @Nonnull ReactNode children, @Nonnull Object container );
 
   /**
    * Render a React element into the DOM in the supplied container.
@@ -96,7 +95,7 @@ public class ReactDOM
   @Nullable
   @JsOverlay
   public static Object render( @Nonnull final ReactNode node,
-                               @Nonnull final Element container,
+                               @Nonnull final Object container,
                                @Nullable final RenderCallbackFn onUpdate )
   {
     return _render( React.shouldCheckInvariants() ? ReactElement.createStrictMode( node ) : node, container, onUpdate );
@@ -105,7 +104,7 @@ public class ReactDOM
   @Nullable
   @JsMethod( name = "render" )
   private static native Object _render( @Nonnull ReactNode node,
-                                        @Nonnull Element container,
+                                        @Nonnull Object container,
                                         @Nullable RenderCallbackFn onUpdate );
 
   /**
@@ -117,11 +116,11 @@ public class ReactDOM
    * @param node      the react node to render.
    * @param container the DOM element to render into.
    * @return a reference to the created React Component, DOM Node, Portal or null (stateless components).
-   * @see #render(ReactNode, Element, RenderCallbackFn)
+   * @see #render(ReactNode, Object, RenderCallbackFn)
    */
   @Nullable
   @JsOverlay
-  public static Object render( @Nonnull ReactNode node, @Nonnull Element container )
+  public static Object render( @Nonnull ReactNode node, @Nonnull Object container )
   {
     return render( node, container, null );
   }
@@ -133,7 +132,7 @@ public class ReactDOM
    * @param container the DOM container containing the react component to unmount
    * @return true if a component was unmounted and false if there was no component to unmount.
    */
-  public static native boolean unmountComponentAtNode( @Nonnull Element container );
+  public static native boolean unmountComponentAtNode( @Nonnull Object container );
 
   /**
    * Batch all state updates within the action.

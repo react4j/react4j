@@ -8,7 +8,7 @@ import jsinterop.annotations.JsType;
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 @SuppressWarnings( "unused" )
 public class KeyboardEvent
-  extends SyntheticEvent<akasha.KeyboardEvent>
+  extends SyntheticEvent<Event>
 {
   private boolean altKey;
   private int charCode;

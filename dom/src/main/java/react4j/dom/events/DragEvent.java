@@ -1,6 +1,5 @@
 package react4j.dom.events;
 
-import akasha.DataTransfer;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -8,7 +7,7 @@ import jsinterop.annotations.JsType;
 @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
 @SuppressWarnings( "unused" )
 public class DragEvent
-  extends SyntheticEvent<akasha.DragEvent>
+  extends SyntheticEvent<Event>
 {
   private DataTransfer dataTransfer;
 

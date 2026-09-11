@@ -439,7 +439,7 @@ React.SyntheticEvent.prototype.isTrusted;
 React.SyntheticEvent.prototype.nativeEvent;
  /** @type {!EventTarget} */
 React.SyntheticEvent.prototype.target;
- /** @type {!Date} */
+ /** @type {number} */
 React.SyntheticEvent.prototype.timeStamp;
  /** @type {string} */
 React.SyntheticEvent.prototype.type;

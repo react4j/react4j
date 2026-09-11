@@ -35,19 +35,14 @@ public class DomJDependTest
     final JavaPackage braincheck = constraint.addPackage( "org.realityforge.braincheck" );
     final JavaPackage jsinteropAnnotations = constraint.addPackage( "jsinterop.annotations" );
     final JavaPackage jsinteropBase = constraint.addPackage( "jsinterop.base" );
-    final JavaPackage akasha = constraint.addPackage( "akasha" );
-    final JavaPackage akashaCore = constraint.addPackage( "akasha.core" );
 
     react4jDom.dependsUpon( arez );
     react4jDom.dependsUpon( react4j );
     react4jDom.dependsUpon( jsinteropAnnotations );
     react4jDom.dependsUpon( jsinteropBase );
-    react4jDom.dependsUpon( akasha );
     react4jDom.dependsUpon( react4jDomHtml );
 
     react4jDomEvents.dependsUpon( jsinteropAnnotations );
-    react4jDomEvents.dependsUpon( akasha );
-    react4jDomEvents.dependsUpon( akashaCore );
 
     react4jDomHtml.dependsUpon( braincheck );
     react4jDomHtml.dependsUpon( react4j );
