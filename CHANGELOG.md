@@ -1,6 +1,8 @@
 # Change Log
 
-### Unreleased
+### [v0.230](https://github.com/react4j/react4j/tree/v0.230) (2026-09-22) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.229...v0.230)
+
+Changes in this release:
 
 * * Fix J2CL configuration initialization when the React4j Closure namespace is loaded directly.
 
