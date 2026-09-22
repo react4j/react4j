@@ -6,7 +6,7 @@
 
 Changes in this release:
 
-* * Fix J2CL configuration initialization when the React4j Closure namespace is loaded directly.
+* Fix J2CL configuration initialization when the React4j Closure namespace is loaded directly.
 
 ### [v0.229](https://github.com/react4j/react4j/tree/v0.229) (2026-09-11) · [Full Changelog](https://github.com/react4j/react4j/compare/v0.228...v0.229)
 
