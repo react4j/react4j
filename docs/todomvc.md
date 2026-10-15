@@ -8,6 +8,8 @@ The [TodoMVC](https://todomvc.com/) project specified a standard project that ai
 frontend framework. The functionality is fixed as is the look and feel so that it easier to compare
 and contrast the different implementations of the application using different approaches.
 
+These applications and their hosted directories are maintained separately from the React4j build and may use older releases.
+
 The React4j project has implemented several variants of the TodoMVC application using different
 combinations of features. The goal is to give you an idea about what an application built using
 React4j looks like.
@@ -25,34 +27,31 @@ React4j looks like.
   <tbody>
   <tr>
     <td><a href="https://github.com/react4j/react4j-todomvc/tree/raw">raw</a></td>
-    <td><a href="/todomvc/raw/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
-    <td><a href="/todomvc/raw/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
+    <td><a href="/todomvc/raw/todomvc"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
+    <td><a href="/todomvc/raw/todomvc_dev"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
     <td>
       <ul>
-        <li>Build System: <a href="https://buildr.apache.org">Buildr</a></li>
       </ul>
     </td>
   </tr>
   <tr>
     <td><a href="https://github.com/react4j/react4j-todomvc/tree/arez">arez</a></td>
-    <td><a href="/todomvc/arez/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
-    <td><a href="/todomvc/arez/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
+    <td><a href="/todomvc/arez/todomvc"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
+    <td><a href="/todomvc/arez/todomvc_dev"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
     <td>
       <ul>
         <li>State Management: <a href="https://arez.github.io">Arez</a></li>
-        <li>Build System: <a href="https://buildr.apache.org">Buildr</a></li>
       </ul>
     </td>
   </tr>
   <tr>
       <td><a href="https://github.com/react4j/react4j-todomvc/tree/sting">sting</a></td>
-      <td><a href="/todomvc/sting/todomvc"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
-      <td><a href="/todomvc/sting/todomvc_dev"><img src="/img/external-link-symbol.svg" width=20px" /></a></td>
+      <td><a href="/todomvc/sting/todomvc"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
+      <td><a href="/todomvc/sting/todomvc_dev"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
       <td>
         <ul>
           <li>Dependency Injection: <a href="https://sting-ioc.github.io/">Sting</a></li>
           <li>State Management: <a href="https://arez.github.io">Arez</a></li>
-          <li>Build System: <a href="https://buildr.apache.org">Buildr</a></li>
         </ul>
       </td>
     </tr>

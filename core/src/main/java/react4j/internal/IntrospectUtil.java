@@ -4,7 +4,6 @@ import arez.Arez;
 import arez.Observer;
 import arez.spy.ObservableValueInfo;
 import arez.spy.ObserverInfo;
-import grim.annotations.OmitType;
 import java.util.Objects;
 import java.util.stream.Stream;
 import jsinterop.base.Any;
@@ -15,7 +14,6 @@ import org.jspecify.annotations.Nullable;
 /**
  * Utilities for introspecting the React4j views and runtime.
  */
-@OmitType(unless = "react4j.store_debug_data_as_state")
 public final class IntrospectUtil {
     private IntrospectUtil() {}
 

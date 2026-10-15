@@ -1,10 +1,10 @@
 # Code generation
 
-Change generators and regenerate outputs rather than hand-editing `core/generated`, `dom/generated`, or generated processor fixture outputs. Keep local build output (`target/`, `reports/`, `node_modules/`) out of changes.
+[CONTRIBUTING.md](../../CONTRIBUTING.md) owns generation/update commands. Edit generators and regenerate outputs, including changes caused only by annotations. Keep generated build output outside version control.
 
 ## Annotation processor
 
-`processor/` processes `@react4j.annotations.View` and generates `React4j_*` classes, builders, and factories. Arez/Sting integration constants are in [`Constants.java`](../../processor/src/main/java/react4j/processor/Constants.java); [`buildfile`](../../buildfile) shades JavaPoet and Proton under `react4j.processor.vendor.*`.
+`processor/` generates enhanced views, builders and factories. `Constants.java` owns integration names; `tools/release/release.bzl` shades JavaPoet and Proton under `react4j.processor.vendor.*` and merges services.
 
 ### Current behavior
 
@@ -13,16 +13,16 @@ Change generators and regenerate outputs rather than hand-editing `core/generate
 - `@View(exportBuilder = true|false)` alone controls builder API visibility. `false` gives package access to the top-level builder, `newBuilder()`, static entry methods, and step interfaces; `true` makes them public. Public `@View` classes emit the suppressible `React4j:PublicView` warning.
 - React's native-view `displayName` trims a trailing `View` from the effective `@View.name`; the descriptor name and builder keys retain it. Builder class naming separately trims the suffix from the Java type name in [`ViewDescriptor`](../../processor/src/main/java/react4j/processor/ViewDescriptor.java).
 
-### Fixtures
+### Nullness and fixtures
 
-Fixtures live under `processor/src/test/fixtures`: `input`, `bad_input`, `expected`, and `expectedFormatted`. When generator behavior changes, regenerate affected expected outputs, including for annotation-only changes. The test harness uses `react4j.fixture_dir` and `react4j.output_fixture_data`; [`buildfile`](../../buildfile) includes an IntelliJ fixture-generation configuration.
+`Nullability.java` resolves declaration scopes and substituted inherited types, including compiled generic bounds, nested/enclosing arguments, wildcards and arrays. Emitted type names must retain type-use annotations. Unmarked injected types stored in generated fields need specified nullness throughout their type tree; generated marked scopes must not silently strengthen unknown contracts.
 
-Builder output expectations are split between `React4jProcessorTest.deriveExpectedOutputs()` and dedicated nested/inheritance tests with hardcoded filenames in [`React4jProcessorTest.java`](../../processor/src/test/java/react4j/processor/React4jProcessorTest.java). Naming changes must account for both paths.
+Javac needs `-XDaddTypeAnnotationsToSymbol=true` to retain compiled JSpecify type annotations. The strict generated-code pass compiles every emitted Java body, including Arez/Sting integration files; golden comparisons maintain the React4j output set in both formatting modes. Keep the deliberate invalid-body NullAway control, no-Sting classpath regression and formatter subprocess export regression.
 
-## DOM factories
+The golden updater operates in an isolated runfiles/temporary compilation tree. Its baseline comparison preserves unrelated maintained edits and rejects conflicts before copying. Naming changes must account for both `deriveExpectedOutputs()` and dedicated nested/inheritance output names in `React4jProcessorTest.java`.
 
-Edit [`tasks/react_dom.rake`](../../tasks/react_dom.rake), then run `bundle exec buildr react4j:dom:reactgen` to regenerate `dom/generated/reactgen/main/java/react4j/dom/DOM.java`.
+## DOM and assets
 
-## Bundled JavaScript
+`tools/generation/src/main/java/react4j/generation/DomGenerator.java` and adjacent resource templates own DOM factories. Its deterministic source archive includes the generated factories compiled by the DOM target and distributed in its source archive.
 
-[`tasks/js_asset.rake`](../../tasks/js_asset.rake) downloads React/ReactDOM into `core/generated/js_assets` and `dom/generated/js_assets` and patches React to expose `React.Element`. Change asset versions and patches in that task; regenerate with `bundle exec buildr react4j:core:js_resources react4j:dom:js_resources`.
+`ReactAssetPatcher.java` transforms the pinned React 16.6.0 UMD inputs to expose React.Element. `MODULE.bazel` owns URLs/checksums. Published source archives include the native companions, externs and UMD assets; binaries contain bytecode and metadata. Keep these boundaries in archive checks when changing resources.

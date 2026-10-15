@@ -229,20 +229,6 @@ _http_file(
 )
 
 _http_file(
-    name = "javax_json_api",
-    downloaded_file_path = "javax/json/javax.json-api/1.1/javax.json-api-1.1.jar",
-    sha256 = "208746be8ab088e6c4b17e8ecdb07ff7a6f7e62bb2b88bb09b993335ea17c615",
-    urls = ["https://repo.maven.apache.org/maven2/javax/json/javax.json-api/1.1/javax.json-api-1.1.jar"],
-)
-
-_http_file(
-    name = "javax_json_api__sources",
-    downloaded_file_path = "javax/json/javax.json-api/1.1/javax.json-api-1.1-sources.jar",
-    sha256 = "e510cc6b5982d373ef329eec7af3e4cde958909f99dc49812ce895227988ad2a",
-    urls = ["https://repo.maven.apache.org/maven2/javax/json/javax.json-api/1.1/javax.json-api-1.1-sources.jar"],
-)
-
-_http_file(
     name = "byte_buddy",
     downloaded_file_path = "net/bytebuddy/byte-buddy/1.12.9/byte-buddy-1.12.9.jar",
     sha256 = "e305b6b5bdf8602bc5012efaa50c96b0fb922a3c60308ee1af85605b74d82710",
@@ -296,20 +282,6 @@ _http_file(
     downloaded_file_path = "org/commonmark/commonmark-ext-gfm-tables/0.30.1/commonmark-ext-gfm-tables-0.30.1-sources.jar",
     sha256 = "f7c365fd5cb53c66c086eed5078d6d7416d660d1e7e594615c7a18d612df600d",
     urls = ["https://repo.maven.apache.org/maven2/org/commonmark/commonmark-ext-gfm-tables/0.30.1/commonmark-ext-gfm-tables-0.30.1-sources.jar"],
-)
-
-_http_file(
-    name = "javax_json",
-    downloaded_file_path = "org/glassfish/javax.json/1.1/javax.json-1.1.jar",
-    sha256 = "4b1f21bc50b728aaae5f44ff550383182b58b67647362959e31004e4522ee24f",
-    urls = ["https://repo.maven.apache.org/maven2/org/glassfish/javax.json/1.1/javax.json-1.1.jar"],
-)
-
-_http_file(
-    name = "javax_json__sources",
-    downloaded_file_path = "org/glassfish/javax.json/1.1/javax.json-1.1-sources.jar",
-    sha256 = "2766ebfa95ca7499149d480d2c475874e2c573109a145d6f93b4495187d7469c",
-    urls = ["https://repo.maven.apache.org/maven2/org/glassfish/javax.json/1.1/javax.json-1.1-sources.jar"],
 )
 
 _http_file(
@@ -404,20 +376,6 @@ _http_file(
 )
 
 _http_file(
-    name = "grim_processor",
-    downloaded_file_path = "org/realityforge/grim/grim-processor/0.09/grim-processor-0.09.jar",
-    sha256 = "3afa824af7dadb4e57d575c019b1069429ffd1dd45af0f34389a01f5b2de386c",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/grim/grim-processor/0.09/grim-processor-0.09.jar"],
-)
-
-_http_file(
-    name = "grim_processor__sources",
-    downloaded_file_path = "org/realityforge/grim/grim-processor/0.09/grim-processor-0.09-sources.jar",
-    sha256 = "20a3596daf2d1ccaf64560dd88c937db3125d66e32b256609b40305db31acfc1",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/grim/grim-processor/0.09/grim-processor-0.09-sources.jar"],
-)
-
-_http_file(
     name = "javaemul_internal_annotations",
     downloaded_file_path = "org/realityforge/javaemul/internal/annotations/javaemul.internal.annotations/0.01/javaemul.internal.annotations-0.01.jar",
     sha256 = "220413df4d2e0e606d8d89d4c0694649cad68267815e0ed18c475cc9a4d628e5",
@@ -433,16 +391,16 @@ _http_file(
 
 _http_file(
     name = "javax_annotation",
-    downloaded_file_path = "org/realityforge/javax/annotation/javax.annotation/1.1.1/javax.annotation-1.1.1.jar",
-    sha256 = "147d086711cd48670097ac626bfe1ed137786144c2a2c46b2aa1bb7292adc77b",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/javax/annotation/javax.annotation/1.1.1/javax.annotation-1.1.1.jar"],
+    downloaded_file_path = "org/realityforge/javax/annotation/javax.annotation/1.0.1/javax.annotation-1.0.1.jar",
+    sha256 = "6adb7bcd07bdfc2e28d815dc7e0ce594181fe8a5a74d336cbf7cd7cfb283bb8d",
+    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/javax/annotation/javax.annotation/1.0.1/javax.annotation-1.0.1.jar"],
 )
 
 _http_file(
     name = "javax_annotation__sources",
-    downloaded_file_path = "org/realityforge/javax/annotation/javax.annotation/1.1.1/javax.annotation-1.1.1-sources.jar",
-    sha256 = "1c1af94b554daa452a2b2bc8c3df1dd0d847bb4f20b9ec5cc9c7a1d41e03c39e",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/javax/annotation/javax.annotation/1.1.1/javax.annotation-1.1.1-sources.jar"],
+    downloaded_file_path = "org/realityforge/javax/annotation/javax.annotation/1.0.1/javax.annotation-1.0.1-sources.jar",
+    sha256 = "049e2910100b7d27af24a821883f5ce94006955c7b08b9fb60cf57b67cd06061",
+    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/javax/annotation/javax.annotation/1.0.1/javax.annotation-1.0.1-sources.jar"],
 )
 
 _http_file(

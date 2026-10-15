@@ -1,21 +1,16 @@
 # Java and runtime
 
-## Source conventions
+Use Java 17 language/output for owned APIs and generated code. The formatter and strict compiler policy are canonical in the build graph; [CONTRIBUTING.md](../../CONTRIBUTING.md) owns their commands.
 
-- Use Java 17, two-space indentation, and opening braces on a new line for types and methods. Compilation treats warnings as errors with `-Xlint:all,-processing,-serial`.
-- Prefer `javax.annotation.Nonnull` and `javax.annotation.Nullable`.
-- Mark JVM-only helpers with [`@GwtIncompatible`](../../core/src/main/java/react4j/GwtIncompatible.java).
-- Document public APIs with Javadoc; put package documentation in `package-info.java`.
+Owned contracts use JSpecify. Place `@NullMarked` on packages/types; preserve `@NullUnmarked` declaration scopes and explicit qualifiers when generating APIs. Type variables are conditionally nullable unless their bounds establish a stronger contract. Qualifiers on array elements and array references are separate. Legacy annotations are deliberately ignored by processor inference.
 
-## Runtime and browser compilation
+Keep dynamic validation of React props/context and conversions from nullable values. Static non-null parameters and initialized internal state need no repeated `Objects.requireNonNull`. Native JavaScript fields may need narrow initialization suppressions because Java constructors do not populate them.
 
-Core APIs live under `react4j`, with internal helpers in `react4j.internal`. DOM bindings are under `react4j.dom`, with event wrappers in `react4j.dom.events`.
+Core APIs live under `react4j`, internal helpers under `react4j.internal`, and DOM bindings under `react4j.dom`. When changing runtime switches, inspect these sources together:
 
-When changing runtime flags or their defaults, inspect these sources together:
+- `core/src/main/java/react4j/ReactConfig.java`: JVM overrides and browser providers.
+- `core/src/main/java/react4j/react4j.js` and `ReactConfig.native.js`: registered Closure definitions and retention.
+- `tools/browser/rules.bzl`: explicit development/production values and runtime defines for BUNDLE.
+- `doc-examples/browser_test.js`: live configuration and rendering contracts.
 
-- [`ReactConfig.java`](../../core/src/main/java/react4j/ReactConfig.java): configuration consumers and JVM/system-property providers.
-- [`React.gwt.xml`](../../core/src/main/java/react4j/React.gwt.xml): GWT properties and production defaults.
-- [`ReactDev.gwt.xml`](../../core/src/main/java/react4j/ReactDev.gwt.xml): development defaults and assets.
-- [`react4j.js`](../../core/src/main/java/react4j/react4j.js): Closure/J2CL defines registered as system properties.
-
-Core output trimming uses Grim `@OmitPattern`/`@KeepPattern` declarations in [`package-info.java`](../../core/src/main/java/react4j/package-info.java). DOM GWT modules are [`Dom.gwt.xml`](../../dom/src/main/java/react4j/dom/Dom.gwt.xml) and [`DomDev.gwt.xml`](../../dom/src/main/java/react4j/dom/DomDev.gwt.xml).
+The package-private `GwtIncompatible` annotation is a J2CL pruning marker recognized by simple name. It removes JVM-only System.getProperty overrides from browser sources. Keep it independent of any compiler dependency. The browser runtime retains React/ReactDOM 16.6.0 and the React.Element symbol patch; changing these needs asset and both-mode browser validation.

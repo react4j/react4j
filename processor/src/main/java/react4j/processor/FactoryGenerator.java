@@ -122,7 +122,7 @@ final class FactoryGenerator {
 
     private static TypeSpec buildInjectSupport(final ViewDescriptor descriptor) {
         // We create a separate InjectSupport class to avoid generating a clinit for the factory class
-        // which can block optimizations in GWT
+        // which can block browser optimizations
         final var builder = TypeSpec.classBuilder("InjectSupport")
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
                 .addAnnotation(ClassName.get("org.jspecify.annotations", "NullMarked"));

@@ -1,6 +1,6 @@
 # T14 — Shared CI gate and full verification
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: `T13`
 - Spec coverage: `R1`, `R3`, `R7`, `R8`, `R9`, `R10`, `R11`, `R12`, `R13`, `AC1`, `AC2`, `AC3`, `AC4`, `AC5`, `AC6`, `AC7`, `AC8`
 

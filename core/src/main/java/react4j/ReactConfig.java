@@ -1,13 +1,11 @@
 package react4j;
 
-import grim.annotations.OmitType;
 import org.realityforge.braincheck.BrainCheckConfig;
 
 /**
  * Location of all compile time configuration settings for framework.
  */
 @SuppressWarnings("FieldMayBeFinal")
-@OmitType
 final class ReactConfig {
 
     private static final ConfigProvider PROVIDER = new ConfigProvider();
