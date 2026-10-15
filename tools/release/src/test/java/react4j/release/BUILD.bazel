@@ -1,0 +1,25 @@
+load("//third_party/java:rules.bzl", "java_test")
+
+java_test(
+    name = "bundle_tests",
+    size = "small",
+    srcs = ["ReleaseBundleTest.java"],
+    args = [
+        "$(rootpath //tools/release:core_jar)",
+        "$(rootpath //tools/release:version_file)",
+        "$(rootpath //tools/release:arez_version_file)",
+    ],
+    data = [
+        "//tools/release:arez_version_file",
+        "//tools/release:core_jar",
+        "//tools/release:maven_artifacts",
+        "//tools/release:version_file",
+    ],
+    main_class = "react4j.release.ReleaseBundleTest",
+    use_testrunner = False,
+    visibility = [
+        "//:__pkg__",
+        "//tools/release:__pkg__",
+    ],
+    deps = ["//tools/release/src/main/java/react4j/release:bundle_classes"],
+)

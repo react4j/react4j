@@ -33,3 +33,22 @@ java_binary(
     main_class = "react4j.release.ArtifactCheck",
     runtime_deps = [":artifact_check_classes"],
 )
+
+java_library(
+    name = "bundle_classes",
+    srcs = [
+        "ReleaseBundle.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//tools/release:__pkg__",
+        "//tools/release/src/test/java/react4j/release:__pkg__",
+    ],
+)
+
+java_binary(
+    name = "bundle_tool",
+    main_class = "react4j.release.ReleaseBundle",
+    runtime_deps = [":bundle_classes"],
+)

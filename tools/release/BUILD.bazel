@@ -477,3 +477,17 @@ release_jar(
     exclude_prefixes = ["react4j/dom/public/"],
     jars = [":dom_sources"],
 )
+
+alias(
+    name = "bundle_tool",
+    actual = "//tools/release/src/main/java/react4j/release:bundle_tool",
+)
+
+test_suite(
+    name = "tests",
+    tests = [
+        ":archive_checks",
+        "//tools/release/consumer/src/main/java/isolated:packaged_consumer",
+        "//tools/release/src/test/java/react4j/release:bundle_tests",
+    ],
+)

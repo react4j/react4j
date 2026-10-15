@@ -1,6 +1,6 @@
 # T13 — Contributor guidance and obsolete infrastructure removal
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: `T12`
 - Spec coverage: `R9`, `R10`, `R11`, `R13`, `AC5`, `AC6`, `AC8`
 
