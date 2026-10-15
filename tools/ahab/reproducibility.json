@@ -4,6 +4,16 @@
       "spec": {
         "reproducibility": "always"
       }
+    },
+    "//tools/generation/src/main/java/react4j/generation/dom_generator": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//tools/generation/src/main/java/react4j/generation/react_asset_patcher": {
+      "spec": {
+        "reproducibility": "always"
+      }
     }
   }
 }

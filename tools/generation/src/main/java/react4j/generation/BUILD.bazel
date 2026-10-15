@@ -1,0 +1,17 @@
+load("//third_party/java:rules.bzl", "java_binary")
+
+package(default_visibility = ["//tools/generation:__pkg__"])
+
+java_binary(
+    name = "dom_generator",
+    srcs = ["DomGenerator.java"],
+    main_class = "react4j.generation.DomGenerator",
+    resource_strip_prefix = "tools/generation/src/main/resources",
+    resources = ["//tools/generation/src/main/resources/react4j/generation:templates"],
+)
+
+java_binary(
+    name = "react_asset_patcher",
+    srcs = ["ReactAssetPatcher.java"],
+    main_class = "react4j.generation.ReactAssetPatcher",
+)

@@ -530,3 +530,31 @@ _http_file(
 )
 
 # --- depgen-generated repository rules end ---
+
+_http_file(
+    name = "react_development",
+    downloaded_file_path = "react.development.js",
+    sha256 = "13967667b11791930cc0201a41a0e553659cbcf108e75d421a2f6aa1d47df76b",
+    urls = ["https://unpkg.com/react@16.6.0/umd/react.development.js"],
+)
+
+_http_file(
+    name = "react_production",
+    downloaded_file_path = "react.production.min.js",
+    sha256 = "678b4387249a82fb7012cb5bdbd0142f2a758c1e7ad817913485b4c94b674239",
+    urls = ["https://unpkg.com/react@16.6.0/umd/react.production.min.js"],
+)
+
+_http_file(
+    name = "react_dom_development",
+    downloaded_file_path = "react-dom.development.js",
+    sha256 = "078c80bf556d876a6bd9d972227ce1e23f2f85ff100c0921433bf23c1bc49079",
+    urls = ["https://unpkg.com/react-dom@16.6.0/umd/react-dom.development.js"],
+)
+
+_http_file(
+    name = "react_dom_production",
+    downloaded_file_path = "react-dom.production.min.js",
+    sha256 = "91758fd769bfe8c936505615fbf5a07f1d2c2eddfac7b6f2433f4b7fd8d972d6",
+    urls = ["https://unpkg.com/react-dom@16.6.0/umd/react-dom.production.min.js"],
+)

@@ -1,0 +1,11 @@
+filegroup(
+    name = "templates",
+    srcs = [
+        "dom-children.txt",
+        "dom-common.txt",
+        "dom-element.txt",
+        "dom-footer.txt",
+        "dom-header.txt",
+    ],
+    visibility = ["//tools/generation/src/main/java/react4j/generation:__pkg__"],
+)

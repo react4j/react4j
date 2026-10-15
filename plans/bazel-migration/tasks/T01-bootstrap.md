@@ -23,5 +23,5 @@ Bazel resolves the immutable toolchain/dependency graph and runs buildifier/form
 - `tools/update_java_deps.sh`: passed; checksummed depgen 0.26 generated only React4j's selected roots/transitives. `bazel test //third_party/java:verify_config_sha256`: passed (1 test).
 - `bazel run //tools/buildifier:buildifier_check`: passed. Formatter compiled and formatted a temporary Java probe successfully; `--help` reports usage with exit 2, so the actual format operation was used as the smoke check.
 - `bazel run //tools/ahab:hermeticity` and `:hermeticity.check`: passed on the current seed graph with empty exceptions/baseline. Final graph policy remains owned by T14.
-- `bash -n tools/java_format.sh tools/update_java_deps.sh`, Ahab JSON parsing and `git diff --check`: passed. The root formatter-check target will be populated with owned source targets as they land (T03 onward/T14).
+- `bash -n tools/java_format.sh tools/update_java_deps.sh`, Ahab JSON parsing and scoped `git diff --check` (excluding raw third-party patch context whitespace): passed. The root formatter-check target will be populated with owned source targets as they land (T03 onward/T14).
 - No Ruby/Node commands used; no remote mutations or secret access. Temporary formatting probe removed.

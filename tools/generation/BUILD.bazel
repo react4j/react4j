@@ -1,0 +1,56 @@
+load(":generation.bzl", "dom_source", "react_asset")
+
+package(default_visibility = ["//visibility:public"])
+
+alias(
+    name = "dom_generator",
+    actual = "//tools/generation/src/main/java/react4j/generation:dom_generator",
+)
+
+alias(
+    name = "react_asset_patcher",
+    actual = "//tools/generation/src/main/java/react4j/generation:react_asset_patcher",
+)
+
+dom_source(
+    name = "dom_sources",
+    out = "dom.srcjar",
+)
+
+react_asset(
+    name = "react_dev",
+    src = "@react_development//file",
+    out = "react4j/public/dev/react.js",
+    mode = "development",
+)
+
+react_asset(
+    name = "react_prod",
+    src = "@react_production//file",
+    out = "react4j/public/react.js",
+    mode = "production",
+)
+
+react_asset(
+    name = "react_dom_dev",
+    src = "@react_dom_development//file",
+    out = "react4j/dom/public/dev/react-dom.js",
+    mode = "copy",
+)
+
+react_asset(
+    name = "react_dom_prod",
+    src = "@react_dom_production//file",
+    out = "react4j/dom/public/react-dom.js",
+    mode = "copy",
+)
+
+filegroup(
+    name = "assets",
+    srcs = [
+        ":react_dev",
+        ":react_dom_dev",
+        ":react_dom_prod",
+        ":react_prod",
+    ],
+)
