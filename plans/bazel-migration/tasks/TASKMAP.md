@@ -21,7 +21,7 @@
 | T02 | [Java DOM and React asset generation](T02-generators.md) | complete | T01 |
 | T03 | [Core JVM contracts and tests](T03-core.md) | complete | T02 |
 | T04 | [DOM JVM contracts and tests](T04-dom.md) | complete | T03 |
-| T05 | [Processor Proton and golden baseline](T05-processor-foundation.md) | pending | T04 |
+| T05 | [Processor Proton and golden baseline](T05-processor-foundation.md) | in_progress | T04 |
 | T06 | [Effective processor nullness and input rules](T06-processor-nullness.md) | pending | T05 |
 | T07 | [Complete strict golden verification](T07-strict-goldens.md) | pending | T06 |
 | T08 | [Maven-equivalent publication archives](T08-publication.md) | pending | T07 |

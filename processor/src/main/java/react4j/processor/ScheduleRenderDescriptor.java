@@ -4,26 +4,23 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.lang.model.element.ExecutableElement;
 
-final class ScheduleRenderDescriptor
-{
-  @Nonnull
-  private final ExecutableElement _method;
-  private final boolean _skipShouldViewUpdate;
+final class ScheduleRenderDescriptor {
+    @Nonnull
+    private final ExecutableElement _method;
 
-  ScheduleRenderDescriptor( @Nonnull final ExecutableElement method, final boolean skipShouldViewUpdate )
-  {
-    _method = Objects.requireNonNull( method );
-    _skipShouldViewUpdate = skipShouldViewUpdate;
-  }
+    private final boolean _skipShouldViewUpdate;
 
-  @Nonnull
-  ExecutableElement getMethod()
-  {
-    return _method;
-  }
+    ScheduleRenderDescriptor(@Nonnull final ExecutableElement method, final boolean skipShouldViewUpdate) {
+        _method = Objects.requireNonNull(method);
+        _skipShouldViewUpdate = skipShouldViewUpdate;
+    }
 
-  boolean skipShouldViewUpdate()
-  {
-    return _skipShouldViewUpdate;
-  }
+    @Nonnull
+    ExecutableElement getMethod() {
+        return _method;
+    }
+
+    boolean skipShouldViewUpdate() {
+        return _skipShouldViewUpdate;
+    }
 }

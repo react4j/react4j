@@ -5,35 +5,30 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 
-final class Step
-{
-  private final int _index;
-  @Nonnull
-  private final List<StepMethod> _methods = new ArrayList<>();
+final class Step {
+    private final int _index;
 
-  Step( final int index )
-  {
-    _index = index;
-  }
+    @Nonnull
+    private final List<StepMethod> _methods = new ArrayList<>();
 
-  int getIndex()
-  {
-    return _index;
-  }
+    Step(final int index) {
+        _index = index;
+    }
 
-  void addMethod( @Nonnull final InputDescriptor input, @Nonnull final StepMethodType stepMethodType )
-  {
-    getMethods().add( new StepMethod( input, stepMethodType ) );
-  }
+    int getIndex() {
+        return _index;
+    }
 
-  void addTerminalMethod( @Nonnull final String name, @Nonnull final String key, @Nonnull final TypeName type )
-  {
-    getMethods().add( new StepMethod( name, key, type, null, StepMethodType.TERMINATE ) );
-  }
+    void addMethod(@Nonnull final InputDescriptor input, @Nonnull final StepMethodType stepMethodType) {
+        getMethods().add(new StepMethod(input, stepMethodType));
+    }
 
-  @Nonnull
-  List<StepMethod> getMethods()
-  {
-    return _methods;
-  }
+    void addTerminalMethod(@Nonnull final String name, @Nonnull final String key, @Nonnull final TypeName type) {
+        getMethods().add(new StepMethod(name, key, type, null, StepMethodType.TERMINATE));
+    }
+
+    @Nonnull
+    List<StepMethod> getMethods() {
+        return _methods;
+    }
 }

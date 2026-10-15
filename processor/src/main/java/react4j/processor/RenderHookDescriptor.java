@@ -5,37 +5,33 @@ import javax.annotation.Nonnull;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
 
-final class RenderHookDescriptor
-{
-  private final int _sortOrder;
-  @Nonnull
-  private final ExecutableElement _method;
-  @Nonnull
-  private final ExecutableType _methodType;
+final class RenderHookDescriptor {
+    private final int _sortOrder;
 
-  RenderHookDescriptor( final int sortOrder,
-                        @Nonnull final ExecutableElement method,
-                        @Nonnull final ExecutableType methodType )
-  {
-    _sortOrder = sortOrder;
-    _method = Objects.requireNonNull( method );
-    _methodType = Objects.requireNonNull( methodType );
-  }
+    @Nonnull
+    private final ExecutableElement _method;
 
-  int getSortOrder()
-  {
-    return _sortOrder;
-  }
+    @Nonnull
+    private final ExecutableType _methodType;
 
-  @Nonnull
-  ExecutableElement getMethod()
-  {
-    return _method;
-  }
+    RenderHookDescriptor(
+            final int sortOrder, @Nonnull final ExecutableElement method, @Nonnull final ExecutableType methodType) {
+        _sortOrder = sortOrder;
+        _method = Objects.requireNonNull(method);
+        _methodType = Objects.requireNonNull(methodType);
+    }
 
-  @Nonnull
-  ExecutableType getMethodType()
-  {
-    return _methodType;
-  }
+    int getSortOrder() {
+        return _sortOrder;
+    }
+
+    @Nonnull
+    ExecutableElement getMethod() {
+        return _method;
+    }
+
+    @Nonnull
+    ExecutableType getMethodType() {
+        return _methodType;
+    }
 }

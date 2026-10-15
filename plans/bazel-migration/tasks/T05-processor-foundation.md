@@ -1,6 +1,6 @@
 # T05 — Processor Proton and golden baseline
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: `T04`
 - Spec coverage: `R1`, `R3`, `R4`, `R7`, `AC2`, `AC3`
 
@@ -18,4 +18,4 @@ Upgrade processor infrastructure to the pinned Proton API and JSpecify, adapting
 
 ## Evidence
 
-- pending
+- Mechanical formatting checkpoint: equivalent Java token comparison passed for 21 maintained processor main/test files; original fixtures/test inventory captured before migration.
