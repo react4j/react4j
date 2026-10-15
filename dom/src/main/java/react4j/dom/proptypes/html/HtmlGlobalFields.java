@@ -1,5 +1,7 @@
 package react4j.dom.proptypes.html;
 
+import static org.realityforge.braincheck.Guards.*;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
@@ -24,1581 +26,1553 @@ import react4j.dom.events.UIEventHandler;
 import react4j.dom.events.WheelEventHandler;
 import react4j.dom.proptypes.html.attributeTypes.InputType;
 import react4j.dom.proptypes.html.attributeTypes.YesNo;
-import static org.realityforge.braincheck.Guards.*;
 
-@SuppressWarnings( "unused" )
-@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-public class HtmlGlobalFields<T extends HtmlGlobalFields<T>>
-{
-  @Nullable
-  public ReactNode children;
-  @Nullable
-  public String key;
-  @Nullable
-  public RefConsumer ref;
+@SuppressWarnings("unused")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
+    @Nullable
+    public ReactNode children;
 
-  @JsOverlay
-  @Nonnull
-  public final T ref( @Nullable final RefConsumer callback )
-  {
-    ref = callback;
-    return self();
-  }
+    @Nullable
+    public String key;
 
-  @JsOverlay
-  @Nonnull
-  public final T key( final int value )
-  {
-    return key( String.valueOf( value ) );
-  }
+    @Nullable
+    public RefConsumer ref;
 
-  @JsOverlay
-  @Nonnull
-  public final T key( @Nonnull final String value )
-  {
-    key = value;
-    return self();
-  }
-
-  @JsOverlay
-  @Nonnull
-  public final T dangerouslySetInnerHTML( @Nonnull final String html )
-  {
-    setDangerouslySetInnerHTML( JsPropertyMap.of( "__html", html ) );
-    return self();
-  }
-
-  @JsOverlay
-  @Nonnull
-  public final T prop( @Nonnull final String key, @Nullable final Any value )
-  {
-    Js.asPropertyMap( this ).set( key, value );
-    return self();
-  }
-
-  @JsProperty
-  protected native void setDangerouslySetInnerHTML( @Nonnull JsPropertyMap<Object> __html );
-
-  //React Specific
-  @JsProperty
-  public native boolean isDefaultChecked();
-
-  @JsProperty
-  protected native void setDefaultChecked( boolean defaultChecked );
-
-  @JsProperty
-  public native String getDefaultValue();
-
-  @JsProperty
-  protected native void setDefaultValue( String defaultValue );
-
-  // Standard HTML Attributes
-  @JsProperty
-  public native String getAccept();
-
-  @JsProperty
-  protected native void setAccept( String accept );
-
-  @JsProperty
-  public native String getAcceptCharset();
-
-  @JsProperty
-  protected native void setAcceptCharset( String acceptCharset );
-
-  @JsProperty
-  public native String getAccessKey();
-
-  @JsOverlay
-  @Nonnull
-  public final T accessKey( String accessKey )
-  {
-    setAccessKey( accessKey );
-    return self();
-  }
-
-  @JsProperty
-  protected native void setAccessKey( String accessKey );
-
-  @JsProperty
-  public native String getAction();
-
-  @JsProperty
-  protected native void setAction( String action );
-
-  @JsProperty
-  public native boolean isAllowFullScreen();
-
-  @JsProperty
-  protected native void setAllowFullScreen( boolean allowFullScreen );
-
-  @JsProperty
-  public native boolean isAllowTransparency();
-
-  @JsProperty
-  protected native void setAllowTransparency( boolean allowTransparency );
-
-  @JsProperty
-  public native String getAlt();
-
-  @JsProperty
-  protected native void setAlt( String alt );
-
-  @JsProperty
-  public native boolean isAsync();
-
-  @JsProperty
-  protected native void setAsync( boolean async );
-
-  @JsProperty
-  public native String getAutoComplete();
-
-  @JsProperty
-  protected native void setAutoComplete( String autoComplete );
-
-  @JsProperty
-  public native boolean isAutoFocus();
-
-  @JsProperty
-  protected native void setAutoFocus( boolean autoFocus );
-
-  @JsProperty
-  public native boolean isAutoPlay();
-
-  @JsProperty
-  protected native void setAutoPlay( boolean autoPlay );
-
-  @JsProperty
-  public native boolean isCapture();
-
-  @JsProperty
-  protected native void setCapture( boolean capture );
-
-  @JsProperty
-  public native String getCellPadding();
-
-  @JsProperty
-  protected native void setCellPadding( String cellPadding );
-
-  @JsProperty
-  public native String getCellSpacing();
-
-  @JsProperty
-  protected native void setCellSpacing( String cellSpacing );
-
-  @JsProperty
-  public native String getCharSet();
-
-  @JsProperty
-  protected native void setCharSet( String charSet );
-
-  @JsProperty
-  public native String getChallenge();
-
-  @JsProperty
-  protected native void setChallenge( String challenge );
-
-  @JsProperty
-  public native boolean isChecked();
-
-  @JsProperty
-  protected native void setChecked( boolean checked );
-
-  @JsProperty
-  public native String getClassID();
-
-  @JsProperty
-  protected native void setClassID( String classID );
-
-  @JsProperty
-  public native String getClassName();
-
-  @SuppressWarnings( "StringConcatenationInLoop" )
-  @JsOverlay
-  @Nonnull
-  public final T className( final String... elements )
-  {
-    String className = null;
-    for ( final String element : elements )
-    {
-      if ( null != element )
-      {
-        if ( React.shouldCheckInvariants() )
-        {
-          invariant( () -> !element.equals( "" ) && !element.matches( "^\\s+$" ),
-                     () -> "Empty classname element supplied. Remove the element." );
-          invariant( () -> !element.matches( "^\\s.*$" ),
-                     () -> "Classname element '" + element + "' starts with whitespace. Remove the whitespace." );
-          invariant( () -> !element.matches( "^.*\\s$" ),
-                     () -> "Classname element '" + element + "' ends with whitespace. Remove the whitespace." );
-        }
-        if ( null == className )
-        {
-          className = element;
-        }
-        else
-        {
-          className += " " + element;
-        }
-      }
+    @JsOverlay
+    @Nonnull
+    public final T ref(@Nullable final RefConsumer callback) {
+        ref = callback;
+        return self();
     }
-    if ( null != className )
-    {
-      setClassName( className );
+
+    @JsOverlay
+    @Nonnull
+    public final T key(final int value) {
+        return key(String.valueOf(value));
     }
-    return self();
-  }
 
-  @JsProperty
-  protected native void setClassName( String className );
+    @JsOverlay
+    @Nonnull
+    public final T key(@Nonnull final String value) {
+        key = value;
+        return self();
+    }
 
-  @JsProperty
-  public native int getCols();
+    @JsOverlay
+    @Nonnull
+    public final T dangerouslySetInnerHTML(@Nonnull final String html) {
+        setDangerouslySetInnerHTML(JsPropertyMap.of("__html", html));
+        return self();
+    }
 
-  @JsProperty
-  protected native void setCols( int cols );
+    @JsOverlay
+    @Nonnull
+    public final T prop(@Nonnull final String key, @Nullable final Any value) {
+        Js.asPropertyMap(this).set(key, value);
+        return self();
+    }
 
-  @JsProperty
-  public native int getColSpan();
+    @JsProperty
+    protected native void setDangerouslySetInnerHTML(@Nonnull JsPropertyMap<Object> __html);
 
-  @JsProperty
-  protected native void setColSpan( int colSpan );
+    // React Specific
+    @JsProperty
+    public native boolean isDefaultChecked();
 
-  @JsProperty
-  public native String getContent();
+    @JsProperty
+    protected native void setDefaultChecked(boolean defaultChecked);
 
-  @JsProperty
-  protected native void setContent( String content );
+    @JsProperty
+    public native String getDefaultValue();
 
-  @JsProperty
-  public native boolean isContentEditable();
+    @JsProperty
+    protected native void setDefaultValue(String defaultValue);
 
-  @JsOverlay
-  @Nonnull
-  public final T contentEditable( boolean contentEditable )
-  {
-    setContentEditable( contentEditable );
-    return self();
-  }
+    // Standard HTML Attributes
+    @JsProperty
+    public native String getAccept();
 
-  @JsProperty
-  protected native void setContentEditable( boolean contentEditable );
+    @JsProperty
+    protected native void setAccept(String accept);
 
-  @JsProperty
-  public native String getContextMenu();
+    @JsProperty
+    public native String getAcceptCharset();
 
-  @JsOverlay
-  @Nonnull
-  public final T contextMenu( String contextMenu )
-  {
-    setContextMenu( contextMenu );
-    return self();
-  }
+    @JsProperty
+    protected native void setAcceptCharset(String acceptCharset);
 
-  @JsProperty
-  protected native void setContextMenu( String contextMenu );
+    @JsProperty
+    public native String getAccessKey();
 
-  @JsProperty
-  public native boolean isControls();
+    @JsOverlay
+    @Nonnull
+    public final T accessKey(String accessKey) {
+        setAccessKey(accessKey);
+        return self();
+    }
 
-  @JsProperty
-  protected native void setControls( boolean controls );
+    @JsProperty
+    protected native void setAccessKey(String accessKey);
 
-  @JsProperty
-  public native String getCoords();
+    @JsProperty
+    public native String getAction();
 
-  @JsProperty
-  protected native void setCoords( String coords );
+    @JsProperty
+    protected native void setAction(String action);
 
-  @JsProperty
-  public native String getCrossOrigin();
+    @JsProperty
+    public native boolean isAllowFullScreen();
 
-  @JsProperty
-  protected native void setCrossOrigin( String crossOrigin );
+    @JsProperty
+    protected native void setAllowFullScreen(boolean allowFullScreen);
 
-  @JsProperty
-  public native String getData();
+    @JsProperty
+    public native boolean isAllowTransparency();
 
-  @JsProperty
-  protected native void setData( String data );
+    @JsProperty
+    protected native void setAllowTransparency(boolean allowTransparency);
 
-  @JsProperty
-  public native String getDateTime();
+    @JsProperty
+    public native String getAlt();
 
-  @JsProperty
-  protected native void setDateTime( String dateTime );
+    @JsProperty
+    protected native void setAlt(String alt);
 
-  //@JsProperty public native boolean is_default();
-  //@JsProperty protected native void set_default(boolean _default);
+    @JsProperty
+    public native boolean isAsync();
 
-  @JsProperty
-  public native boolean isDefer();
+    @JsProperty
+    protected native void setAsync(boolean async);
 
-  @JsProperty
-  protected native void setDefer( boolean defer );
+    @JsProperty
+    public native String getAutoComplete();
 
-  @JsProperty
-  public native String getDir();
+    @JsProperty
+    protected native void setAutoComplete(String autoComplete);
 
-  @JsOverlay
-  @Nonnull
-  public final T dir( String dir )
-  {
-    setDir( dir );
-    return self();
-  }
+    @JsProperty
+    public native boolean isAutoFocus();
+
+    @JsProperty
+    protected native void setAutoFocus(boolean autoFocus);
+
+    @JsProperty
+    public native boolean isAutoPlay();
+
+    @JsProperty
+    protected native void setAutoPlay(boolean autoPlay);
+
+    @JsProperty
+    public native boolean isCapture();
+
+    @JsProperty
+    protected native void setCapture(boolean capture);
+
+    @JsProperty
+    public native String getCellPadding();
+
+    @JsProperty
+    protected native void setCellPadding(String cellPadding);
+
+    @JsProperty
+    public native String getCellSpacing();
+
+    @JsProperty
+    protected native void setCellSpacing(String cellSpacing);
+
+    @JsProperty
+    public native String getCharSet();
+
+    @JsProperty
+    protected native void setCharSet(String charSet);
+
+    @JsProperty
+    public native String getChallenge();
+
+    @JsProperty
+    protected native void setChallenge(String challenge);
+
+    @JsProperty
+    public native boolean isChecked();
 
-  @JsProperty
-  protected native void setDir( String dir );
+    @JsProperty
+    protected native void setChecked(boolean checked);
 
-  @JsProperty
-  public native boolean isDisabled();
+    @JsProperty
+    public native String getClassID();
 
-  @JsProperty
-  protected native void setDisabled( boolean disabled );
+    @JsProperty
+    protected native void setClassID(String classID);
 
-  @JsProperty
-  public native String getDownload();
+    @JsProperty
+    public native String getClassName();
 
-  @JsProperty
-  protected native void setDownload( String download );
+    @SuppressWarnings("StringConcatenationInLoop")
+    @JsOverlay
+    @Nonnull
+    public final T className(final String... elements) {
+        String className = null;
+        for (final String element : elements) {
+            if (null != element) {
+                if (React.shouldCheckInvariants()) {
+                    invariant(
+                            () -> !element.equals("") && !element.matches("^\\s+$"),
+                            () -> "Empty classname element supplied. Remove the element.");
+                    invariant(
+                            () -> !element.matches("^\\s.*$"),
+                            () -> "Classname element '" + element + "' starts with whitespace. Remove the whitespace.");
+                    invariant(
+                            () -> !element.matches("^.*\\s$"),
+                            () -> "Classname element '" + element + "' ends with whitespace. Remove the whitespace.");
+                }
+                if (null == className) {
+                    className = element;
+                } else {
+                    className += " " + element;
+                }
+            }
+        }
+        if (null != className) {
+            setClassName(className);
+        }
+        return self();
+    }
 
-  @JsProperty
-  public native boolean isDraggable();
+    @JsProperty
+    protected native void setClassName(String className);
 
-  @JsOverlay
-  @Nonnull
-  public final T draggable( boolean draggable )
-  {
-    setDraggable( draggable );
-    return self();
-  }
+    @JsProperty
+    public native int getCols();
 
-  @JsProperty
-  protected native void setDraggable( boolean draggable );
+    @JsProperty
+    protected native void setCols(int cols);
 
-  @JsProperty
-  public native String getEncType();
+    @JsProperty
+    public native int getColSpan();
 
-  @JsProperty
-  protected native void setEncType( String encType );
+    @JsProperty
+    protected native void setColSpan(int colSpan);
 
-  @JsProperty
-  public native String getForm();
+    @JsProperty
+    public native String getContent();
 
-  @JsProperty
-  protected native void setForm( String form );
+    @JsProperty
+    protected native void setContent(String content);
 
-  @JsProperty
-  public native String getFormAction();
+    @JsProperty
+    public native boolean isContentEditable();
 
-  @JsProperty
-  protected native void setFormAction( String formAction );
+    @JsOverlay
+    @Nonnull
+    public final T contentEditable(boolean contentEditable) {
+        setContentEditable(contentEditable);
+        return self();
+    }
 
-  @JsProperty
-  public native String getFormEncType();
+    @JsProperty
+    protected native void setContentEditable(boolean contentEditable);
 
-  @JsProperty
-  protected native void setFormEncType( String formEncType );
+    @JsProperty
+    public native String getContextMenu();
 
-  @JsProperty
-  public native String getFormMethod();
+    @JsOverlay
+    @Nonnull
+    public final T contextMenu(String contextMenu) {
+        setContextMenu(contextMenu);
+        return self();
+    }
 
-  @JsProperty
-  protected native void setFormMethod( String formMethod );
+    @JsProperty
+    protected native void setContextMenu(String contextMenu);
 
-  @JsProperty
-  public native boolean isFormNoValidate();
+    @JsProperty
+    public native boolean isControls();
 
-  @JsProperty
-  protected native void setFormNoValidate( boolean formNoValidate );
+    @JsProperty
+    protected native void setControls(boolean controls);
 
-  @JsProperty
-  public native String getFormTarget();
+    @JsProperty
+    public native String getCoords();
 
-  @JsProperty
-  protected native void setFormTarget( String formTarget );
+    @JsProperty
+    protected native void setCoords(String coords);
 
-  @JsProperty
-  public native String getFrameBorder();
+    @JsProperty
+    public native String getCrossOrigin();
 
-  @JsProperty
-  protected native void setFrameBorder( String frameBorder );
+    @JsProperty
+    protected native void setCrossOrigin(String crossOrigin);
 
-  @JsProperty
-  public native String getHeaders();
+    @JsProperty
+    public native String getData();
 
-  @JsProperty
-  protected native void setHeaders( String headers );
+    @JsProperty
+    protected native void setData(String data);
 
-  @JsProperty
-  public native String getHeight();
+    @JsProperty
+    public native String getDateTime();
 
-  @JsProperty
-  protected native void setHeight( String height );
+    @JsProperty
+    protected native void setDateTime(String dateTime);
 
-  @JsProperty
-  public native boolean isHidden();
+    // @JsProperty public native boolean is_default();
+    // @JsProperty protected native void set_default(boolean _default);
 
-  @JsOverlay
-  @Nonnull
-  public final T hidden( boolean hidden )
-  {
-    setHidden( hidden );
-    return self();
-  }
+    @JsProperty
+    public native boolean isDefer();
 
-  @JsProperty
-  protected native void setHidden( boolean hidden );
+    @JsProperty
+    protected native void setDefer(boolean defer);
 
-  @JsProperty
-  public native int getHigh();
+    @JsProperty
+    public native String getDir();
 
-  @JsProperty
-  protected native void setHigh( int high );
+    @JsOverlay
+    @Nonnull
+    public final T dir(String dir) {
+        setDir(dir);
+        return self();
+    }
 
-  @JsProperty
-  public native String getHref();
+    @JsProperty
+    protected native void setDir(String dir);
 
-  @JsProperty
-  protected native void setHref( String href );
+    @JsProperty
+    public native boolean isDisabled();
 
-  @JsProperty
-  public native String getHrefLang();
+    @JsProperty
+    protected native void setDisabled(boolean disabled);
 
-  @JsProperty
-  protected native void setHrefLang( String hrefLang );
+    @JsProperty
+    public native String getDownload();
 
-  @JsProperty
-  public native String getHtmlFor();
+    @JsProperty
+    protected native void setDownload(String download);
 
-  @JsProperty
-  protected native void setHtmlFor( String htmlFor );
+    @JsProperty
+    public native boolean isDraggable();
 
-  @JsProperty
-  public native String getHttpEquiv();
+    @JsOverlay
+    @Nonnull
+    public final T draggable(boolean draggable) {
+        setDraggable(draggable);
+        return self();
+    }
 
-  @JsProperty
-  protected native void setHttpEquiv( String httpEquiv );
+    @JsProperty
+    protected native void setDraggable(boolean draggable);
 
-  @JsProperty
-  public native String getIcon();
+    @JsProperty
+    public native String getEncType();
 
-  @JsProperty
-  protected native void setIcon( String icon );
+    @JsProperty
+    protected native void setEncType(String encType);
 
-  @JsProperty
-  public native String getId();
+    @JsProperty
+    public native String getForm();
 
-  @JsOverlay
-  @Nonnull
-  public final T id( String id )
-  {
-    setId( id );
-    return self();
-  }
+    @JsProperty
+    protected native void setForm(String form);
 
-  @JsProperty
-  protected native void setId( String id );
+    @JsProperty
+    public native String getFormAction();
 
-  @JsProperty
-  public native String getInputMode();
+    @JsProperty
+    protected native void setFormAction(String formAction);
 
-  @JsProperty
-  protected native void setInputMode( String inputMode );
+    @JsProperty
+    public native String getFormEncType();
 
-  @JsProperty
-  public native String getIntegrity();
+    @JsProperty
+    protected native void setFormEncType(String formEncType);
 
-  @JsProperty
-  protected native void setIntegrity( String integrity );
+    @JsProperty
+    public native String getFormMethod();
 
-  @JsProperty
-  public native String getIs();
+    @JsProperty
+    protected native void setFormMethod(String formMethod);
 
-  @JsProperty
-  protected native void setIs( String is );
+    @JsProperty
+    public native boolean isFormNoValidate();
 
-  @JsProperty
-  public native String getKeyParams();
+    @JsProperty
+    protected native void setFormNoValidate(boolean formNoValidate);
 
-  @JsProperty
-  protected native void setKeyParams( String keyParams );
+    @JsProperty
+    public native String getFormTarget();
 
-  @JsProperty
-  public native String getKeyType();
+    @JsProperty
+    protected native void setFormTarget(String formTarget);
 
-  @JsProperty
-  protected native void setKeyType( String keyType );
+    @JsProperty
+    public native String getFrameBorder();
 
-  @JsProperty
-  public native String getKind();
+    @JsProperty
+    protected native void setFrameBorder(String frameBorder);
 
-  @JsProperty
-  protected native void setKind( String kind );
+    @JsProperty
+    public native String getHeaders();
 
-  @JsProperty
-  public native String getLabel();
+    @JsProperty
+    protected native void setHeaders(String headers);
 
-  @JsProperty
-  protected native void setLabel( String label );
+    @JsProperty
+    public native String getHeight();
 
-  @JsProperty
-  public native String getLang();
+    @JsProperty
+    protected native void setHeight(String height);
 
-  @JsOverlay
-  @Nonnull
-  public final T lang( String lang )
-  {
-    setLang( lang );
-    return self();
-  }
+    @JsProperty
+    public native boolean isHidden();
 
-  @JsProperty
-  protected native void setLang( String lang );
+    @JsOverlay
+    @Nonnull
+    public final T hidden(boolean hidden) {
+        setHidden(hidden);
+        return self();
+    }
 
-  @JsProperty
-  public native String getList();
+    @JsProperty
+    protected native void setHidden(boolean hidden);
 
-  @JsProperty
-  protected native void setList( String list );
+    @JsProperty
+    public native int getHigh();
 
-  @JsProperty
-  public native boolean isLoop();
+    @JsProperty
+    protected native void setHigh(int high);
 
-  @JsProperty
-  protected native void setLoop( boolean loop );
+    @JsProperty
+    public native String getHref();
 
-  @JsProperty
-  public native int getLow();
+    @JsProperty
+    protected native void setHref(String href);
 
-  @JsProperty
-  protected native void setLow( int low );
+    @JsProperty
+    public native String getHrefLang();
 
-  @JsProperty
-  public native String getManifest();
+    @JsProperty
+    protected native void setHrefLang(String hrefLang);
 
-  @JsProperty
-  protected native void setManifest( String manifest );
+    @JsProperty
+    public native String getHtmlFor();
 
-  @JsProperty
-  public native int getMarginHeight();
+    @JsProperty
+    protected native void setHtmlFor(String htmlFor);
 
-  @JsProperty
-  protected native void setMarginHeight( int marginHeight );
+    @JsProperty
+    public native String getHttpEquiv();
 
-  @JsProperty
-  public native int getMarginWidth();
+    @JsProperty
+    protected native void setHttpEquiv(String httpEquiv);
 
-  @JsProperty
-  protected native void setMarginWidth( int marginWidth );
+    @JsProperty
+    public native String getIcon();
 
-  @JsProperty
-  public native String getMax();
+    @JsProperty
+    protected native void setIcon(String icon);
 
-  @JsProperty
-  protected native void setMax( String max );
+    @JsProperty
+    public native String getId();
 
-  @JsProperty
-  public native int getMaxLength();
+    @JsOverlay
+    @Nonnull
+    public final T id(String id) {
+        setId(id);
+        return self();
+    }
 
-  @JsProperty
-  protected native void setMaxLength( int maxLength );
+    @JsProperty
+    protected native void setId(String id);
 
-  @JsProperty
-  public native String getMedia();
+    @JsProperty
+    public native String getInputMode();
 
-  @JsProperty
-  protected native void setMedia( String media );
+    @JsProperty
+    protected native void setInputMode(String inputMode);
 
-  @JsProperty
-  public native String getMediaGroup();
+    @JsProperty
+    public native String getIntegrity();
 
-  @JsProperty
-  protected native void setMediaGroup( String mediaGroup );
+    @JsProperty
+    protected native void setIntegrity(String integrity);
 
-  @JsProperty
-  public native String getMethod();
+    @JsProperty
+    public native String getIs();
 
-  @JsProperty
-  protected native void setMethod( String method );
+    @JsProperty
+    protected native void setIs(String is);
 
-  @JsProperty
-  public native String getMin();
+    @JsProperty
+    public native String getKeyParams();
 
-  @JsProperty
-  protected native void setMin( String min );
+    @JsProperty
+    protected native void setKeyParams(String keyParams);
 
-  @JsProperty
-  public native int getMinLength();
+    @JsProperty
+    public native String getKeyType();
 
-  @JsProperty
-  protected native void setMinLength( int minLength );
+    @JsProperty
+    protected native void setKeyType(String keyType);
 
-  @JsProperty
-  public native boolean isMultiple();
+    @JsProperty
+    public native String getKind();
 
-  @JsProperty
-  protected native void setMultiple( boolean multiple );
+    @JsProperty
+    protected native void setKind(String kind);
 
-  @JsProperty
-  public native boolean isMuted();
+    @JsProperty
+    public native String getLabel();
 
-  @JsProperty
-  protected native void setMuted( boolean muted );
+    @JsProperty
+    protected native void setLabel(String label);
 
-  @JsProperty
-  public native String getName();
+    @JsProperty
+    public native String getLang();
 
-  @JsProperty
-  protected native void setName( String name );
+    @JsOverlay
+    @Nonnull
+    public final T lang(String lang) {
+        setLang(lang);
+        return self();
+    }
 
-  @JsProperty
-  public native boolean isNoValidate();
+    @JsProperty
+    protected native void setLang(String lang);
 
-  @JsProperty
-  protected native void setNoValidate( boolean noValidate );
+    @JsProperty
+    public native String getList();
 
-  @JsProperty
-  public native boolean isOpen();
+    @JsProperty
+    protected native void setList(String list);
 
-  @JsProperty
-  protected native void setOpen( boolean open );
+    @JsProperty
+    public native boolean isLoop();
 
-  @JsProperty
-  public native int getOptimum();
+    @JsProperty
+    protected native void setLoop(boolean loop);
 
-  @JsProperty
-  protected native void setOptimum( int optimum );
+    @JsProperty
+    public native int getLow();
 
-  @JsProperty
-  public native String getPattern();
+    @JsProperty
+    protected native void setLow(int low);
 
-  @JsProperty
-  protected native void setPattern( String pattern );
+    @JsProperty
+    public native String getManifest();
 
-  @JsProperty
-  public native String getPlaceholder();
+    @JsProperty
+    protected native void setManifest(String manifest);
 
-  @JsProperty
-  protected native void setPlaceholder( String placeholder );
+    @JsProperty
+    public native int getMarginHeight();
 
-  @JsProperty
-  public native String getPoster();
+    @JsProperty
+    protected native void setMarginHeight(int marginHeight);
 
-  @JsProperty
-  protected native void setPoster( String poster );
+    @JsProperty
+    public native int getMarginWidth();
 
-  @JsProperty
-  public native String getPreload();
+    @JsProperty
+    protected native void setMarginWidth(int marginWidth);
 
-  @JsProperty
-  protected native void setPreload( String preload );
+    @JsProperty
+    public native String getMax();
 
-  @JsProperty
-  public native String getRadioGroup();
+    @JsProperty
+    protected native void setMax(String max);
 
-  @JsProperty
-  protected native void setRadioGroup( String radioGroup );
+    @JsProperty
+    public native int getMaxLength();
 
-  @JsProperty
-  public native boolean isReadOnly();
+    @JsProperty
+    protected native void setMaxLength(int maxLength);
 
-  @JsProperty
-  protected native void setReadOnly( boolean readOnly );
+    @JsProperty
+    public native String getMedia();
 
-  @JsProperty
-  public native String getRel();
+    @JsProperty
+    protected native void setMedia(String media);
 
-  @JsProperty
-  protected native void setRel( String rel );
+    @JsProperty
+    public native String getMediaGroup();
 
-  @JsProperty
-  public native String getReferrerPolicy();
+    @JsProperty
+    protected native void setMediaGroup(String mediaGroup);
 
-  @JsProperty
-  protected native void setReferrerPolicy( String rel );
+    @JsProperty
+    public native String getMethod();
 
-  @JsProperty
-  public native boolean isRequired();
+    @JsProperty
+    protected native void setMethod(String method);
 
-  @JsProperty
-  protected native void setRequired( boolean required );
+    @JsProperty
+    public native String getMin();
 
-  @JsProperty
-  public native String getRole();
+    @JsProperty
+    protected native void setMin(String min);
 
-  @JsProperty
-  protected native void setRole( String role );
+    @JsProperty
+    public native int getMinLength();
 
-  @JsProperty
-  public native int getRows();
+    @JsProperty
+    protected native void setMinLength(int minLength);
 
-  @JsProperty
-  protected native void setRows( int rows );
+    @JsProperty
+    public native boolean isMultiple();
 
-  @JsProperty
-  public native int getRowSpan();
+    @JsProperty
+    protected native void setMultiple(boolean multiple);
 
-  @JsProperty
-  protected native void setRowSpan( int rowSpan );
+    @JsProperty
+    public native boolean isMuted();
 
-  @JsProperty
-  public native String getSandbox();
+    @JsProperty
+    protected native void setMuted(boolean muted);
 
-  @JsProperty
-  protected native void setSandbox( String sandbox );
+    @JsProperty
+    public native String getName();
 
-  @JsProperty
-  public native String getScope();
+    @JsProperty
+    protected native void setName(String name);
 
-  @JsProperty
-  protected native void setScope( String scope );
+    @JsProperty
+    public native boolean isNoValidate();
 
-  @JsProperty
-  public native boolean isScoped();
+    @JsProperty
+    protected native void setNoValidate(boolean noValidate);
 
-  @JsProperty
-  protected native void setScoped( boolean scoped );
+    @JsProperty
+    public native boolean isOpen();
 
-  @JsProperty
-  public native String getScrolling();
+    @JsProperty
+    protected native void setOpen(boolean open);
 
-  @JsProperty
-  protected native void setScrolling( String scrolling );
+    @JsProperty
+    public native int getOptimum();
 
-  @JsProperty
-  public native boolean isSeamless();
+    @JsProperty
+    protected native void setOptimum(int optimum);
 
-  @JsProperty
-  protected native void setSeamless( boolean seamless );
+    @JsProperty
+    public native String getPattern();
 
-  @JsProperty
-  public native boolean isSelected();
+    @JsProperty
+    protected native void setPattern(String pattern);
 
-  @JsProperty
-  protected native void setSelected( boolean selected );
+    @JsProperty
+    public native String getPlaceholder();
 
-  @JsProperty
-  public native String getShape();
+    @JsProperty
+    protected native void setPlaceholder(String placeholder);
 
-  @JsProperty
-  protected native void setShape( String shape );
+    @JsProperty
+    public native String getPoster();
 
-  @JsProperty
-  public native int getSize();
+    @JsProperty
+    protected native void setPoster(String poster);
 
-  @JsProperty
-  protected native void setSize( int size );
+    @JsProperty
+    public native String getPreload();
 
-  @JsProperty
-  public native String getSizes();
+    @JsProperty
+    protected native void setPreload(String preload);
 
-  @JsProperty
-  protected native void setSizes( String sizes );
+    @JsProperty
+    public native String getRadioGroup();
 
-  @JsProperty
-  public native int getSpan();
+    @JsProperty
+    protected native void setRadioGroup(String radioGroup);
 
-  @JsProperty
-  protected native void setSpan( int span );
+    @JsProperty
+    public native boolean isReadOnly();
 
-  @JsProperty
-  public native boolean isSpellCheck();
+    @JsProperty
+    protected native void setReadOnly(boolean readOnly);
 
-  @JsOverlay
-  @Nonnull
-  public final T spellCheck( boolean spellCheck )
-  {
-    setSpellCheck( spellCheck );
-    return self();
-  }
+    @JsProperty
+    public native String getRel();
 
-  @JsProperty
-  protected native void setSpellCheck( boolean spellCheck );
+    @JsProperty
+    protected native void setRel(String rel);
 
-  @JsProperty
-  public native String getSrc();
+    @JsProperty
+    public native String getReferrerPolicy();
 
-  @JsProperty
-  protected native void setSrc( String src );
+    @JsProperty
+    protected native void setReferrerPolicy(String rel);
 
-  @JsProperty
-  public native String getSrcDoc();
+    @JsProperty
+    public native boolean isRequired();
 
-  @JsProperty
-  protected native void setSrcDoc( String srcDoc );
+    @JsProperty
+    protected native void setRequired(boolean required);
 
-  @JsProperty
-  public native String getSrcLang();
+    @JsProperty
+    public native String getRole();
 
-  @JsProperty
-  protected native void setSrcLang( String srcLang );
+    @JsProperty
+    protected native void setRole(String role);
 
-  @JsProperty
-  public native String getSrcSet();
+    @JsProperty
+    public native int getRows();
 
-  @JsProperty
-  protected native void setSrcSet( String srcSet );
+    @JsProperty
+    protected native void setRows(int rows);
 
-  @JsProperty
-  public native int getStart();
+    @JsProperty
+    public native int getRowSpan();
 
-  @JsProperty
-  protected native void setStart( int start );
+    @JsProperty
+    protected native void setRowSpan(int rowSpan);
 
-  @JsProperty
-  public native String getStep();
+    @JsProperty
+    public native String getSandbox();
 
-  @JsProperty
-  protected native void setStep( String step );
+    @JsProperty
+    protected native void setSandbox(String sandbox);
 
-  @JsProperty
-  public native CssProps getStyle();
+    @JsProperty
+    public native String getScope();
 
-  @JsOverlay
-  @Nonnull
-  public final T style( CssProps style )
-  {
-    setStyle( style );
-    return self();
-  }
+    @JsProperty
+    protected native void setScope(String scope);
 
-  @JsProperty
-  protected native void setStyle( CssProps style );
+    @JsProperty
+    public native boolean isScoped();
 
-  @JsProperty
-  public native String getSummary();
+    @JsProperty
+    protected native void setScoped(boolean scoped);
 
-  @JsProperty
-  protected native void setSummary( String summary );
+    @JsProperty
+    public native String getScrolling();
 
-  @JsProperty
-  public native int getTabIndex();
+    @JsProperty
+    protected native void setScrolling(String scrolling);
 
-  @JsOverlay
-  @Nonnull
-  public final T tabIndex( int tabIndex )
-  {
-    setTabIndex( tabIndex );
-    return self();
-  }
+    @JsProperty
+    public native boolean isSeamless();
 
-  @JsProperty
-  protected native void setTabIndex( int tabIndex );
+    @JsProperty
+    protected native void setSeamless(boolean seamless);
 
-  @JsProperty
-  public native String getTarget();
+    @JsProperty
+    public native boolean isSelected();
 
-  @JsProperty
-  protected native void setTarget( String target );
+    @JsProperty
+    protected native void setSelected(boolean selected);
 
-  @JsProperty
-  public native String getTitle();
+    @JsProperty
+    public native String getShape();
 
-  @JsOverlay
-  @Nonnull
-  public final T title( String title )
-  {
-    setTitle( title );
-    return self();
-  }
+    @JsProperty
+    protected native void setShape(String shape);
 
-  @JsProperty
-  protected native void setTitle( String title );
+    @JsProperty
+    public native int getSize();
 
-  @JsProperty
-  public native String getType();
+    @JsProperty
+    protected native void setSize(int size);
 
-  @JsProperty
-  protected native void setType( @Nonnull @InputType String type );
+    @JsProperty
+    public native String getSizes();
 
-  @JsProperty
-  public native String getTranslate();
+    @JsProperty
+    protected native void setSizes(String sizes);
 
-  @JsOverlay
-  @Nonnull
-  public final T translate( @Nonnull @YesNo final String s )
-  {
-    setTranslate( s );
-    return self();
-  }
+    @JsProperty
+    public native int getSpan();
 
-  @JsProperty
-  protected native void setTranslate( String translate );
+    @JsProperty
+    protected native void setSpan(int span);
 
-  @JsProperty
-  public native String getUseMap();
+    @JsProperty
+    public native boolean isSpellCheck();
 
-  @JsProperty
-  protected native void setUseMap( String useMap );
+    @JsOverlay
+    @Nonnull
+    public final T spellCheck(boolean spellCheck) {
+        setSpellCheck(spellCheck);
+        return self();
+    }
 
-  @JsProperty
-  public native String getValue();
+    @JsProperty
+    protected native void setSpellCheck(boolean spellCheck);
 
-  @JsProperty
-  protected native void setValue( String value );
+    @JsProperty
+    public native String getSrc();
 
-  @JsProperty
-  public native String getWidth();
+    @JsProperty
+    protected native void setSrc(String src);
 
-  @JsProperty
-  protected native void setWidth( String width );
+    @JsProperty
+    public native String getSrcDoc();
 
-  @JsProperty
-  public native String getWmode();
+    @JsProperty
+    protected native void setSrcDoc(String srcDoc);
 
-  @JsProperty
-  protected native void setWmode( String wmode );
+    @JsProperty
+    public native String getSrcLang();
 
-  @JsProperty
-  public native String getWrap();
+    @JsProperty
+    protected native void setSrcLang(String srcLang);
 
-  @JsProperty
-  protected native void setWrap( String wrap );
+    @JsProperty
+    public native String getSrcSet();
 
-  // RDFa Attributes
+    @JsProperty
+    protected native void setSrcSet(String srcSet);
 
-  @JsProperty
-  public native String getAbout();
+    @JsProperty
+    public native int getStart();
 
-  @JsProperty
-  protected native void setAbout( String about );
+    @JsProperty
+    protected native void setStart(int start);
 
-  @JsProperty
-  public native String getDatatype();
+    @JsProperty
+    public native String getStep();
 
-  @JsProperty
-  protected native void setDatatype( String datatype );
+    @JsProperty
+    protected native void setStep(String step);
 
-  @JsProperty
-  public native String getInlist();
+    @JsProperty
+    public native CssProps getStyle();
 
-  @JsProperty
-  protected native void setInlist( String inlist );
+    @JsOverlay
+    @Nonnull
+    public final T style(CssProps style) {
+        setStyle(style);
+        return self();
+    }
 
-  @JsProperty
-  public native String getPrefix();
+    @JsProperty
+    protected native void setStyle(CssProps style);
 
-  @JsProperty
-  protected native void setPrefix( String prefix );
+    @JsProperty
+    public native String getSummary();
 
-  @JsProperty
-  public native String getProperty();
+    @JsProperty
+    protected native void setSummary(String summary);
 
-  @JsProperty
-  protected native void setProperty( String property );
+    @JsProperty
+    public native int getTabIndex();
 
-  @JsProperty
-  public native String getResource();
+    @JsOverlay
+    @Nonnull
+    public final T tabIndex(int tabIndex) {
+        setTabIndex(tabIndex);
+        return self();
+    }
 
-  @JsProperty
-  protected native void setResource( String resource );
+    @JsProperty
+    protected native void setTabIndex(int tabIndex);
 
-  @JsProperty
-  public native String getTypeof();
+    @JsProperty
+    public native String getTarget();
 
-  @JsProperty
-  protected native void setTypeof( String typeof );
+    @JsProperty
+    protected native void setTarget(String target);
 
-  @JsProperty
-  public native String getVocab();
+    @JsProperty
+    public native String getTitle();
 
-  @JsProperty
-  protected native void setVocab( String vocab );
+    @JsOverlay
+    @Nonnull
+    public final T title(String title) {
+        setTitle(title);
+        return self();
+    }
 
-  // Non-standard Attributes
+    @JsProperty
+    protected native void setTitle(String title);
 
-  @JsProperty
-  public native String getAutoCapitalize();
+    @JsProperty
+    public native String getType();
 
-  @JsProperty
-  protected native void setAutoCapitalize( String autoCapitalize );
+    @JsProperty
+    protected native void setType(@Nonnull @InputType String type);
 
-  @JsProperty
-  public native String getAutoCorrect();
+    @JsProperty
+    public native String getTranslate();
 
-  @JsProperty
-  protected native void setAutoCorrect( String autoCorrect );
+    @JsOverlay
+    @Nonnull
+    public final T translate(@Nonnull @YesNo final String s) {
+        setTranslate(s);
+        return self();
+    }
 
-  @JsProperty
-  public native String getAutoSave();
+    @JsProperty
+    protected native void setTranslate(String translate);
 
-  @JsProperty
-  protected native void setAutoSave( String autoSave );
+    @JsProperty
+    public native String getUseMap();
 
-  @JsProperty
-  public native String getColor();
+    @JsProperty
+    protected native void setUseMap(String useMap);
 
-  @JsProperty
-  protected native void setColor( String color );
+    @JsProperty
+    public native String getValue();
 
-  @JsProperty
-  public native String getItemProp();
+    @JsProperty
+    protected native void setValue(String value);
 
-  @JsProperty
-  protected native void setItemProp( String itemProp );
+    @JsProperty
+    public native String getWidth();
 
-  @JsProperty
-  public native boolean isItemScope();
+    @JsProperty
+    protected native void setWidth(String width);
 
-  @JsProperty
-  protected native void setItemScope( boolean itemScope );
+    @JsProperty
+    public native String getWmode();
 
-  @JsProperty
-  public native String getItemType();
+    @JsProperty
+    protected native void setWmode(String wmode);
 
-  @JsProperty
-  protected native void setItemType( String itemType );
+    @JsProperty
+    public native String getWrap();
 
-  @JsProperty
-  public native String getItemID();
+    @JsProperty
+    protected native void setWrap(String wrap);
 
-  @JsProperty
-  protected native void setItemID( String itemID );
+    // RDFa Attributes
 
-  @JsProperty
-  public native String getItemRef();
+    @JsProperty
+    public native String getAbout();
 
-  @JsProperty
-  protected native void setItemRef( String itemRef );
+    @JsProperty
+    protected native void setAbout(String about);
 
-  @JsProperty
-  public native int getResults();
+    @JsProperty
+    public native String getDatatype();
 
-  @JsProperty
-  protected native void setResults( int results );
+    @JsProperty
+    protected native void setDatatype(String datatype);
 
-  @JsProperty
-  public native String getSecurity();
+    @JsProperty
+    public native String getInlist();
 
-  @JsProperty
-  protected native void setSecurity( String security );
+    @JsProperty
+    protected native void setInlist(String inlist);
 
-  @JsProperty
-  public native boolean isUnselectable();
+    @JsProperty
+    public native String getPrefix();
 
-  @JsProperty
-  protected native void setUnselectable( boolean unselectable );
+    @JsProperty
+    protected native void setPrefix(String prefix);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnAnimationStart();
+    @JsProperty
+    public native String getProperty();
 
-  @JsOverlay
-  @Nonnull
-  public final T onAnimationStart( @Nullable final ReactEventHandler handler )
-  {
-    setOnAnimationStart( handler );
-    return self();
-  }
+    @JsProperty
+    protected native void setProperty(String property);
 
-  @JsProperty
-  protected native void setOnAnimationStart( @Nullable final ReactEventHandler onCopy );
+    @JsProperty
+    public native String getResource();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnAnimationEnd();
+    @JsProperty
+    protected native void setResource(String resource);
 
-  @JsOverlay
-  @Nonnull
-  public final T onAnimationEnd( @Nullable final ReactEventHandler handler )
-  {
-    setOnAnimationEnd( handler );
-    return self();
-  }
+    @JsProperty
+    public native String getTypeof();
 
-  @JsProperty
-  protected native void setOnAnimationEnd( @Nullable final ReactEventHandler onCopy );
+    @JsProperty
+    protected native void setTypeof(String typeof);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnAnimationIteration();
+    @JsProperty
+    public native String getVocab();
 
-  @JsOverlay
-  @Nonnull
-  public final T onAnimationIteration( @Nullable final ReactEventHandler handler )
-  {
-    setOnAnimationIteration( handler );
-    return self();
-  }
+    @JsProperty
+    protected native void setVocab(String vocab);
 
-  @JsProperty
-  protected native void setOnAnimationIteration( @Nullable final ReactEventHandler onCopy );
+    // Non-standard Attributes
 
-  // Clipboard Events
+    @JsProperty
+    public native String getAutoCapitalize();
 
-  @JsProperty
-  @Nullable
-  public native ClipboardEventHandler getOnCopy();
+    @JsProperty
+    protected native void setAutoCapitalize(String autoCapitalize);
 
-  @JsProperty
-  protected native void setOnCopy( @Nullable final ClipboardEventHandler onCopy );
+    @JsProperty
+    public native String getAutoCorrect();
 
-  @JsProperty
-  @Nullable
-  public native ClipboardEventHandler getOnCut();
+    @JsProperty
+    protected native void setAutoCorrect(String autoCorrect);
 
-  @JsProperty
-  protected native void setOnCut( @Nullable final ClipboardEventHandler onCut );
+    @JsProperty
+    public native String getAutoSave();
 
-  @JsProperty
-  @Nullable
-  public native ClipboardEventHandler getOnPaste();
+    @JsProperty
+    protected native void setAutoSave(String autoSave);
 
-  @JsProperty
-  protected native void setOnPaste( @Nullable final ClipboardEventHandler onPaste );
+    @JsProperty
+    public native String getColor();
 
-  // Composition Events
+    @JsProperty
+    protected native void setColor(String color);
 
-  @JsProperty
-  @Nullable
-  public native CompositionEventHandler getOnCompositionEnd();
+    @JsProperty
+    public native String getItemProp();
 
-  @JsProperty
-  protected native void setOnCompositionEnd( @Nullable final CompositionEventHandler onCompositionEnd );
+    @JsProperty
+    protected native void setItemProp(String itemProp);
 
-  @JsProperty
-  @Nullable
-  public native CompositionEventHandler getOnCompositionStart();
+    @JsProperty
+    public native boolean isItemScope();
 
-  @JsProperty
-  protected native void setOnCompositionStart( @Nullable final CompositionEventHandler onCompositionStart );
+    @JsProperty
+    protected native void setItemScope(boolean itemScope);
 
-  @JsProperty
-  @Nullable
-  public native CompositionEventHandler getOnCompositionUpdate();
+    @JsProperty
+    public native String getItemType();
 
-  @JsProperty
-  protected native void setOnCompositionUpdate( @Nullable final CompositionEventHandler onCompositionUpdate );
+    @JsProperty
+    protected native void setItemType(String itemType);
 
-  // Focus Events
+    @JsProperty
+    public native String getItemID();
 
-  @JsProperty
-  @Nullable
-  public native FocusEventHandler getOnFocus();
+    @JsProperty
+    protected native void setItemID(String itemID);
 
-  @JsProperty
-  protected native void setOnFocus( @Nullable final FocusEventHandler onFocus );
+    @JsProperty
+    public native String getItemRef();
 
-  @JsProperty
-  @Nullable
-  public native FocusEventHandler getOnBlur();
+    @JsProperty
+    protected native void setItemRef(String itemRef);
 
-  @JsProperty
-  protected native void setOnBlur( @Nullable final FocusEventHandler onBlur );
+    @JsProperty
+    public native int getResults();
 
-  // Form Events
+    @JsProperty
+    protected native void setResults(int results);
 
-  @JsProperty
-  @Nullable
-  public native FormEventHandler getOnChange();
+    @JsProperty
+    public native String getSecurity();
 
-  @JsProperty
-  protected native void setOnChange( @Nullable final FormEventHandler onChange );
+    @JsProperty
+    protected native void setSecurity(String security);
 
-  @JsProperty
-  @Nullable
-  public native FormEventHandler getOnInput();
+    @JsProperty
+    public native boolean isUnselectable();
 
-  @JsProperty
-  protected native void setOnInput( @Nullable final FormEventHandler onInput );
+    @JsProperty
+    protected native void setUnselectable(boolean unselectable);
 
-  @JsProperty
-  @Nullable
-  public native FormEventHandler getOnSubmit();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnAnimationStart();
 
-  @JsProperty
-  protected native void setOnSubmit( @Nullable final FormEventHandler onSubmit );
+    @JsOverlay
+    @Nonnull
+    public final T onAnimationStart(@Nullable final ReactEventHandler handler) {
+        setOnAnimationStart(handler);
+        return self();
+    }
 
-  // Image Events
+    @JsProperty
+    protected native void setOnAnimationStart(@Nullable final ReactEventHandler onCopy);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnLoad();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnAnimationEnd();
 
-  @JsProperty
-  protected native void setOnLoad( @Nullable final ReactEventHandler onLoad );
+    @JsOverlay
+    @Nonnull
+    public final T onAnimationEnd(@Nullable final ReactEventHandler handler) {
+        setOnAnimationEnd(handler);
+        return self();
+    }
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnError();
+    @JsProperty
+    protected native void setOnAnimationEnd(@Nullable final ReactEventHandler onCopy);
 
-  @JsProperty
-  protected native void setOnError( @Nullable final ReactEventHandler onError );
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnAnimationIteration();
 
-  // Keyboard Events
+    @JsOverlay
+    @Nonnull
+    public final T onAnimationIteration(@Nullable final ReactEventHandler handler) {
+        setOnAnimationIteration(handler);
+        return self();
+    }
 
-  @JsProperty
-  @Nullable
-  public native KeyboardEventHandler getOnKeyDown();
+    @JsProperty
+    protected native void setOnAnimationIteration(@Nullable final ReactEventHandler onCopy);
 
-  @JsProperty
-  protected native void setOnKeyDown( @Nullable final KeyboardEventHandler onKeyDown );
+    // Clipboard Events
 
-  @JsProperty
-  @Nullable
-  public native KeyboardEventHandler getOnKeyPress();
+    @JsProperty
+    @Nullable
+    public native ClipboardEventHandler getOnCopy();
 
-  @JsProperty
-  protected native void setOnKeyPress( @Nullable final KeyboardEventHandler onKeyPress );
+    @JsProperty
+    protected native void setOnCopy(@Nullable final ClipboardEventHandler onCopy);
 
-  @JsProperty
-  @Nullable
-  public native KeyboardEventHandler getOnKeyUp();
+    @JsProperty
+    @Nullable
+    public native ClipboardEventHandler getOnCut();
 
-  @JsProperty
-  protected native void setOnKeyUp( @Nullable final KeyboardEventHandler onKeyUp );
+    @JsProperty
+    protected native void setOnCut(@Nullable final ClipboardEventHandler onCut);
 
-  // Media Events
+    @JsProperty
+    @Nullable
+    public native ClipboardEventHandler getOnPaste();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnAbort();
+    @JsProperty
+    protected native void setOnPaste(@Nullable final ClipboardEventHandler onPaste);
 
-  @JsProperty
-  protected native void setOnAbort( @Nullable final ReactEventHandler onAbort );
+    // Composition Events
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnCanPlay();
+    @JsProperty
+    @Nullable
+    public native CompositionEventHandler getOnCompositionEnd();
 
-  @JsProperty
-  protected native void setOnCanPlay( @Nullable final ReactEventHandler onCanPlay );
+    @JsProperty
+    protected native void setOnCompositionEnd(@Nullable final CompositionEventHandler onCompositionEnd);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnCanPlayThrough();
+    @JsProperty
+    @Nullable
+    public native CompositionEventHandler getOnCompositionStart();
 
-  @JsProperty
-  protected native void setOnCanPlayThrough( @Nullable final ReactEventHandler onCanPlayThrough );
+    @JsProperty
+    protected native void setOnCompositionStart(@Nullable final CompositionEventHandler onCompositionStart);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnDurationChange();
+    @JsProperty
+    @Nullable
+    public native CompositionEventHandler getOnCompositionUpdate();
 
-  @JsProperty
-  protected native void setOnDurationChange( @Nullable final ReactEventHandler onDurationChange );
+    @JsProperty
+    protected native void setOnCompositionUpdate(@Nullable final CompositionEventHandler onCompositionUpdate);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnEmptied();
+    // Focus Events
 
-  @JsProperty
-  protected native void setOnEmptied( @Nullable final ReactEventHandler onEmptied );
+    @JsProperty
+    @Nullable
+    public native FocusEventHandler getOnFocus();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnEncrypted();
+    @JsProperty
+    protected native void setOnFocus(@Nullable final FocusEventHandler onFocus);
 
-  @JsProperty
-  protected native void setOnEncrypted( @Nullable final ReactEventHandler onEncrypted );
+    @JsProperty
+    @Nullable
+    public native FocusEventHandler getOnBlur();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnEnded();
+    @JsProperty
+    protected native void setOnBlur(@Nullable final FocusEventHandler onBlur);
 
-  @JsProperty
-  protected native void setOnEnded( @Nullable final ReactEventHandler onEnded );
+    // Form Events
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnLoadedData();
+    @JsProperty
+    @Nullable
+    public native FormEventHandler getOnChange();
 
-  @JsProperty
-  protected native void setOnLoadedData( @Nullable final ReactEventHandler onLoadedData );
+    @JsProperty
+    protected native void setOnChange(@Nullable final FormEventHandler onChange);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnLoadedMetadata();
+    @JsProperty
+    @Nullable
+    public native FormEventHandler getOnInput();
 
-  @JsProperty
-  protected native void setOnLoadedMetadata( @Nullable final ReactEventHandler onLoadedMetadata );
+    @JsProperty
+    protected native void setOnInput(@Nullable final FormEventHandler onInput);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnLoadStart();
+    @JsProperty
+    @Nullable
+    public native FormEventHandler getOnSubmit();
 
-  @JsProperty
-  protected native void setOnLoadStart( @Nullable final ReactEventHandler onLoadStart );
+    @JsProperty
+    protected native void setOnSubmit(@Nullable final FormEventHandler onSubmit);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnPause();
+    // Image Events
 
-  @JsProperty
-  protected native void setOnPause( @Nullable final ReactEventHandler onPause );
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnLoad();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnPlay();
+    @JsProperty
+    protected native void setOnLoad(@Nullable final ReactEventHandler onLoad);
 
-  @JsProperty
-  protected native void setOnPlay( @Nullable final ReactEventHandler onPlay );
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnError();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnPlaying();
+    @JsProperty
+    protected native void setOnError(@Nullable final ReactEventHandler onError);
 
-  @JsProperty
-  protected native void setOnPlaying( @Nullable final ReactEventHandler onPlaying );
+    // Keyboard Events
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnProgress();
+    @JsProperty
+    @Nullable
+    public native KeyboardEventHandler getOnKeyDown();
 
-  @JsProperty
-  protected native void setOnProgress( @Nullable final ReactEventHandler onProgress );
+    @JsProperty
+    protected native void setOnKeyDown(@Nullable final KeyboardEventHandler onKeyDown);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnRateChange();
+    @JsProperty
+    @Nullable
+    public native KeyboardEventHandler getOnKeyPress();
 
-  @JsProperty
-  protected native void setOnRateChange( @Nullable final ReactEventHandler onRateChange );
+    @JsProperty
+    protected native void setOnKeyPress(@Nullable final KeyboardEventHandler onKeyPress);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnSeeked();
+    @JsProperty
+    @Nullable
+    public native KeyboardEventHandler getOnKeyUp();
 
-  @JsProperty
-  protected native void setOnSeeked( @Nullable final ReactEventHandler onSeeked );
+    @JsProperty
+    protected native void setOnKeyUp(@Nullable final KeyboardEventHandler onKeyUp);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnSeeking();
+    // Media Events
 
-  @JsProperty
-  protected native void setOnSeeking( @Nullable final ReactEventHandler onSeeking );
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnAbort();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnStalled();
+    @JsProperty
+    protected native void setOnAbort(@Nullable final ReactEventHandler onAbort);
 
-  @JsProperty
-  protected native void setOnStalled( @Nullable final ReactEventHandler onStalled );
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnCanPlay();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnSuspend();
+    @JsProperty
+    protected native void setOnCanPlay(@Nullable final ReactEventHandler onCanPlay);
 
-  @JsProperty
-  protected native void setOnSuspend( @Nullable final ReactEventHandler onSuspend );
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnCanPlayThrough();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnTimeUpdate();
+    @JsProperty
+    protected native void setOnCanPlayThrough(@Nullable final ReactEventHandler onCanPlayThrough);
 
-  @JsProperty
-  protected native void setOnTimeUpdate( @Nullable final ReactEventHandler onTimeUpdate );
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnDurationChange();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnVolumeChange();
+    @JsProperty
+    protected native void setOnDurationChange(@Nullable final ReactEventHandler onDurationChange);
 
-  @JsProperty
-  protected native void setOnVolumeChange( @Nullable final ReactEventHandler onVolumeChange );
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnEmptied();
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnWaiting();
+    @JsProperty
+    protected native void setOnEmptied(@Nullable final ReactEventHandler onEmptied);
 
-  @JsProperty
-  protected native void setOnWaiting( @Nullable final ReactEventHandler onWaiting );
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnEncrypted();
 
-  // MouseEvents
+    @JsProperty
+    protected native void setOnEncrypted(@Nullable final ReactEventHandler onEncrypted);
 
-  @JsProperty
-  public native MouseEventHandler getOnClick();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnEnded();
 
-  @JsProperty
-  protected native void setOnClick( @Nullable final MouseEventHandler onClick );
+    @JsProperty
+    protected native void setOnEnded(@Nullable final ReactEventHandler onEnded);
 
-  @JsProperty
-  @Nullable
-  public native MouseEventHandler getOnContextMenu();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnLoadedData();
 
-  @JsProperty
-  protected native void setOnContextMenu( @Nullable final MouseEventHandler onContextMenu );
+    @JsProperty
+    protected native void setOnLoadedData(@Nullable final ReactEventHandler onLoadedData);
 
-  @JsProperty
-  @Nullable
-  public native MouseEventHandler getOnDoubleClick();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnLoadedMetadata();
 
-  @JsProperty
-  protected native void setOnDoubleClick( @Nullable final MouseEventHandler onDoubleClick );
+    @JsProperty
+    protected native void setOnLoadedMetadata(@Nullable final ReactEventHandler onLoadedMetadata);
 
-  @JsProperty
-  @Nullable
-  public native DragEventHandler getOnDrag();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnLoadStart();
 
-  @JsProperty
-  protected native void setOnDrag( @Nullable final DragEventHandler onDrag );
+    @JsProperty
+    protected native void setOnLoadStart(@Nullable final ReactEventHandler onLoadStart);
 
-  @JsProperty
-  @Nullable
-  public native DragEventHandler getOnDragEnd();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnPause();
 
-  @JsProperty
-  protected native void setOnDragEnd( @Nullable final DragEventHandler onDragEnd );
+    @JsProperty
+    protected native void setOnPause(@Nullable final ReactEventHandler onPause);
 
-  @JsProperty
-  @Nullable
-  public native DragEventHandler getOnDragEnter();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnPlay();
 
-  @JsProperty
-  protected native void setOnDragEnter( @Nullable final DragEventHandler onDragEnter );
+    @JsProperty
+    protected native void setOnPlay(@Nullable final ReactEventHandler onPlay);
 
-  @JsProperty
-  @Nullable
-  public native DragEventHandler getOnDragExit();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnPlaying();
 
-  @JsProperty
-  protected native void setOnDragExit( @Nullable final DragEventHandler onDragExit );
+    @JsProperty
+    protected native void setOnPlaying(@Nullable final ReactEventHandler onPlaying);
 
-  @JsProperty
-  @Nullable
-  public native DragEventHandler getOnDragLeave();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnProgress();
 
-  @JsProperty
-  protected native void setOnDragLeave( @Nullable final DragEventHandler onDragLeave );
+    @JsProperty
+    protected native void setOnProgress(@Nullable final ReactEventHandler onProgress);
 
-  @JsProperty
-  @Nullable
-  public native DragEventHandler getOnDragOver();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnRateChange();
 
-  @JsProperty
-  protected native void setOnDragOver( @Nullable final DragEventHandler onDragOver );
+    @JsProperty
+    protected native void setOnRateChange(@Nullable final ReactEventHandler onRateChange);
 
-  @JsProperty
-  @Nullable
-  public native DragEventHandler getOnDragStart();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnSeeked();
 
-  @JsProperty
-  protected native void setOnDragStart( @Nullable final DragEventHandler onDragStart );
+    @JsProperty
+    protected native void setOnSeeked(@Nullable final ReactEventHandler onSeeked);
 
-  @JsProperty
-  @Nullable
-  public native DragEventHandler getOnDrop();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnSeeking();
 
-  @JsProperty
-  protected native void setOnDrop( @Nullable final DragEventHandler onDrop );
+    @JsProperty
+    protected native void setOnSeeking(@Nullable final ReactEventHandler onSeeking);
 
-  @JsProperty
-  @Nullable
-  public native MouseEventHandler getOnMouseDown();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnStalled();
 
-  @JsProperty
-  protected native void setOnMouseDown( @Nullable final MouseEventHandler onMouseDown );
+    @JsProperty
+    protected native void setOnStalled(@Nullable final ReactEventHandler onStalled);
 
-  @JsProperty
-  @Nullable
-  public native MouseEventHandler getOnMouseEnter();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnSuspend();
 
-  @JsProperty
-  protected native void setOnMouseEnter( @Nullable final MouseEventHandler onMouseEnter );
+    @JsProperty
+    protected native void setOnSuspend(@Nullable final ReactEventHandler onSuspend);
 
-  @JsProperty
-  @Nullable
-  public native MouseEventHandler getOnMouseLeave();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnTimeUpdate();
 
-  @JsProperty
-  protected native void setOnMouseLeave( @Nullable final MouseEventHandler onMouseLeave );
+    @JsProperty
+    protected native void setOnTimeUpdate(@Nullable final ReactEventHandler onTimeUpdate);
 
-  @JsProperty
-  @Nullable
-  public native MouseEventHandler getOnMouseMove();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnVolumeChange();
 
-  @JsProperty
-  protected native void setOnMouseMove( @Nullable final MouseEventHandler onMouseMove );
+    @JsProperty
+    protected native void setOnVolumeChange(@Nullable final ReactEventHandler onVolumeChange);
 
-  @JsProperty
-  @Nullable
-  public native MouseEventHandler getOnMouseOut();
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnWaiting();
 
-  @JsProperty
-  protected native void setOnMouseOut( @Nullable final MouseEventHandler onMouseOut );
+    @JsProperty
+    protected native void setOnWaiting(@Nullable final ReactEventHandler onWaiting);
 
-  @JsProperty
-  @Nullable
-  public native MouseEventHandler getOnMouseOver();
+    // MouseEvents
 
-  @JsProperty
-  protected native void setOnMouseOver( @Nullable final MouseEventHandler onMouseOver );
+    @JsProperty
+    public native MouseEventHandler getOnClick();
 
-  @JsProperty
-  @Nullable
-  public native MouseEventHandler getOnMouseUp();
+    @JsProperty
+    protected native void setOnClick(@Nullable final MouseEventHandler onClick);
 
-  @JsProperty
-  protected native void setOnMouseUp( @Nullable final MouseEventHandler onMouseUp );
+    @JsProperty
+    @Nullable
+    public native MouseEventHandler getOnContextMenu();
 
-  // Selection Events
+    @JsProperty
+    protected native void setOnContextMenu(@Nullable final MouseEventHandler onContextMenu);
 
-  @JsProperty
-  @Nullable
-  public native ReactEventHandler getOnSelect();
+    @JsProperty
+    @Nullable
+    public native MouseEventHandler getOnDoubleClick();
 
-  @JsProperty
-  protected native void setOnSelect( @Nullable final ReactEventHandler onSelect );
+    @JsProperty
+    protected native void setOnDoubleClick(@Nullable final MouseEventHandler onDoubleClick);
 
-  // Touch Events
+    @JsProperty
+    @Nullable
+    public native DragEventHandler getOnDrag();
 
-  @JsProperty
-  @Nullable
-  public native TouchEventHandler getOnTouchCancel();
+    @JsProperty
+    protected native void setOnDrag(@Nullable final DragEventHandler onDrag);
 
-  @JsProperty
-  protected native void setOnTouchCancel( @Nullable final TouchEventHandler onTouchCancel );
+    @JsProperty
+    @Nullable
+    public native DragEventHandler getOnDragEnd();
 
-  @JsProperty
-  @Nullable
-  public native TouchEventHandler getOnTouchEnd();
+    @JsProperty
+    protected native void setOnDragEnd(@Nullable final DragEventHandler onDragEnd);
 
-  @JsProperty
-  protected native void setOnTouchEnd( @Nullable final TouchEventHandler onTouchEnd );
+    @JsProperty
+    @Nullable
+    public native DragEventHandler getOnDragEnter();
 
-  @JsProperty
-  @Nullable
-  public native TouchEventHandler getOnTouchMove();
+    @JsProperty
+    protected native void setOnDragEnter(@Nullable final DragEventHandler onDragEnter);
 
-  @JsProperty
-  protected native void setOnTouchMove( @Nullable final TouchEventHandler onTouchMove );
+    @JsProperty
+    @Nullable
+    public native DragEventHandler getOnDragExit();
 
-  @JsProperty
-  @Nullable
-  public native TouchEventHandler getOnTouchStart();
+    @JsProperty
+    protected native void setOnDragExit(@Nullable final DragEventHandler onDragExit);
 
-  @JsProperty
-  protected native void setOnTouchStart( @Nullable final TouchEventHandler onTouchStart );
+    @JsProperty
+    @Nullable
+    public native DragEventHandler getOnDragLeave();
 
-  // UI Events
-  @JsProperty
-  @Nullable
-  public native UIEventHandler getOnScroll();
+    @JsProperty
+    protected native void setOnDragLeave(@Nullable final DragEventHandler onDragLeave);
 
-  @JsProperty
-  protected native void setOnScroll( @Nullable final UIEventHandler onScroll );
+    @JsProperty
+    @Nullable
+    public native DragEventHandler getOnDragOver();
 
-  // Wheel Events
-  @JsProperty
-  @Nullable
-  public native WheelEventHandler getOnWheel();
+    @JsProperty
+    protected native void setOnDragOver(@Nullable final DragEventHandler onDragOver);
 
-  @JsProperty
-  protected native void setOnWheel( WheelEventHandler onWheel );
+    @JsProperty
+    @Nullable
+    public native DragEventHandler getOnDragStart();
 
-  @JsOverlay
-  @Nonnull
-  public final T onWheel( @Nullable final WheelEventHandler onWheel )
-  {
-    setOnWheel( onWheel );
-    return self();
-  }
+    @JsProperty
+    protected native void setOnDragStart(@Nullable final DragEventHandler onDragStart);
 
-  @JsOverlay
-  @Nonnull
-  protected final T self()
-  {
-    return Js.uncheckedCast( this );
-  }
+    @JsProperty
+    @Nullable
+    public native DragEventHandler getOnDrop();
+
+    @JsProperty
+    protected native void setOnDrop(@Nullable final DragEventHandler onDrop);
+
+    @JsProperty
+    @Nullable
+    public native MouseEventHandler getOnMouseDown();
+
+    @JsProperty
+    protected native void setOnMouseDown(@Nullable final MouseEventHandler onMouseDown);
+
+    @JsProperty
+    @Nullable
+    public native MouseEventHandler getOnMouseEnter();
+
+    @JsProperty
+    protected native void setOnMouseEnter(@Nullable final MouseEventHandler onMouseEnter);
+
+    @JsProperty
+    @Nullable
+    public native MouseEventHandler getOnMouseLeave();
+
+    @JsProperty
+    protected native void setOnMouseLeave(@Nullable final MouseEventHandler onMouseLeave);
+
+    @JsProperty
+    @Nullable
+    public native MouseEventHandler getOnMouseMove();
+
+    @JsProperty
+    protected native void setOnMouseMove(@Nullable final MouseEventHandler onMouseMove);
+
+    @JsProperty
+    @Nullable
+    public native MouseEventHandler getOnMouseOut();
+
+    @JsProperty
+    protected native void setOnMouseOut(@Nullable final MouseEventHandler onMouseOut);
+
+    @JsProperty
+    @Nullable
+    public native MouseEventHandler getOnMouseOver();
+
+    @JsProperty
+    protected native void setOnMouseOver(@Nullable final MouseEventHandler onMouseOver);
+
+    @JsProperty
+    @Nullable
+    public native MouseEventHandler getOnMouseUp();
+
+    @JsProperty
+    protected native void setOnMouseUp(@Nullable final MouseEventHandler onMouseUp);
+
+    // Selection Events
+
+    @JsProperty
+    @Nullable
+    public native ReactEventHandler getOnSelect();
+
+    @JsProperty
+    protected native void setOnSelect(@Nullable final ReactEventHandler onSelect);
+
+    // Touch Events
+
+    @JsProperty
+    @Nullable
+    public native TouchEventHandler getOnTouchCancel();
+
+    @JsProperty
+    protected native void setOnTouchCancel(@Nullable final TouchEventHandler onTouchCancel);
+
+    @JsProperty
+    @Nullable
+    public native TouchEventHandler getOnTouchEnd();
+
+    @JsProperty
+    protected native void setOnTouchEnd(@Nullable final TouchEventHandler onTouchEnd);
+
+    @JsProperty
+    @Nullable
+    public native TouchEventHandler getOnTouchMove();
+
+    @JsProperty
+    protected native void setOnTouchMove(@Nullable final TouchEventHandler onTouchMove);
+
+    @JsProperty
+    @Nullable
+    public native TouchEventHandler getOnTouchStart();
+
+    @JsProperty
+    protected native void setOnTouchStart(@Nullable final TouchEventHandler onTouchStart);
+
+    // UI Events
+    @JsProperty
+    @Nullable
+    public native UIEventHandler getOnScroll();
+
+    @JsProperty
+    protected native void setOnScroll(@Nullable final UIEventHandler onScroll);
+
+    // Wheel Events
+    @JsProperty
+    @Nullable
+    public native WheelEventHandler getOnWheel();
+
+    @JsProperty
+    protected native void setOnWheel(WheelEventHandler onWheel);
+
+    @JsOverlay
+    @Nonnull
+    public final T onWheel(@Nullable final WheelEventHandler onWheel) {
+        setOnWheel(onWheel);
+        return self();
+    }
+
+    @JsOverlay
+    @Nonnull
+    protected final T self() {
+        return Js.uncheckedCast(this);
+    }
 }

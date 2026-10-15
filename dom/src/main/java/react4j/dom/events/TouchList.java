@@ -9,10 +9,7 @@ import jsinterop.annotations.JsType;
  * <p>Use {@code Js.uncheckedCast(touches)} to convert this value to the touch-list type supplied by
  * the browser JsInterop library used by the application.</p>
  */
-@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "TouchList" )
-public class TouchList
-{
-  protected TouchList()
-  {
-  }
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "TouchList")
+public class TouchList {
+    protected TouchList() {}
 }

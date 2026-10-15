@@ -4,7 +4,6 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface MouseEventHandler
-{
-  void onMouseEvent( MouseEvent event );
+public interface MouseEventHandler {
+    void onMouseEvent(MouseEvent event);
 }

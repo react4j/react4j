@@ -1,6 +1,6 @@
 # T04 — DOM JVM contracts and tests
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: `T03`
 - Spec coverage: `R2`, `R3`, `R4`, `R6`, `R7`, `AC1`, `AC2`
 
@@ -18,4 +18,4 @@ Build/test authored and generated DOM Java under the complete policy, preserving
 
 ## Evidence
 
-- pending
+- Mechanical formatting checkpoint: 66 DOM main/test files formatted; equivalent Java token comparison against the previous commit passed. Semantic migration and compilation remain in progress.

@@ -8,14 +8,13 @@ import jsinterop.annotations.JsFunction;
  */
 @JsFunction
 @FunctionalInterface
-public interface RefConsumer
-{
-  /**
-   * Passes the reference to the component instance or element.
-   * The reference is nonnull when the element has been attached to the DOM and
-   * null when the reference has been detached from the DOM.
-   *
-   * @param reference the reference.
-   */
-  void accept( @Nullable Object reference );
+public interface RefConsumer {
+    /**
+     * Passes the reference to the component instance or element.
+     * The reference is nonnull when the element has been attached to the DOM and
+     * null when the reference has been detached from the DOM.
+     *
+     * @param reference the reference.
+     */
+    void accept(@Nullable Object reference);
 }

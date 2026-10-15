@@ -4,7 +4,6 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface CompositionEventHandler
-{
-  void onCompositionEvent( CompositionEvent event );
+public interface CompositionEventHandler {
+    void onCompositionEvent(CompositionEvent event);
 }

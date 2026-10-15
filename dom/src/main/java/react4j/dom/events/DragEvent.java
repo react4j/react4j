@@ -4,16 +4,13 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "Object" )
-@SuppressWarnings( "unused" )
-public class DragEvent
-  extends SyntheticEvent<Event>
-{
-  private DataTransfer dataTransfer;
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+@SuppressWarnings("unused")
+public class DragEvent extends SyntheticEvent<Event> {
+    private DataTransfer dataTransfer;
 
-  @JsOverlay
-  public final DataTransfer getDataTransfer()
-  {
-    return dataTransfer;
-  }
+    @JsOverlay
+    public final DataTransfer getDataTransfer() {
+        return dataTransfer;
+    }
 }

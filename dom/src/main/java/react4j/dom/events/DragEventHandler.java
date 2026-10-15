@@ -4,7 +4,6 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface DragEventHandler
-{
-  void onDragEvent( DragEvent event );
+public interface DragEventHandler {
+    void onDragEvent(DragEvent event);
 }

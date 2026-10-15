@@ -20,7 +20,7 @@
 | T01 | [Pinned Bazel graph and maintenance tools](T01-bootstrap.md) | complete | None |
 | T02 | [Java DOM and React asset generation](T02-generators.md) | complete | T01 |
 | T03 | [Core JVM contracts and tests](T03-core.md) | complete | T02 |
-| T04 | [DOM JVM contracts and tests](T04-dom.md) | pending | T03 |
+| T04 | [DOM JVM contracts and tests](T04-dom.md) | in_progress | T03 |
 | T05 | [Processor Proton and golden baseline](T05-processor-foundation.md) | pending | T04 |
 | T06 | [Effective processor nullness and input rules](T06-processor-nullness.md) | pending | T05 |
 | T07 | [Complete strict golden verification](T07-strict-goldens.md) | pending | T06 |
